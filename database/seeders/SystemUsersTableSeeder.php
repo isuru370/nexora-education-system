@@ -28,9 +28,9 @@ class SystemUsersTableSeeder extends Seeder
             ],
             [
                 'custom_id' => 'ADM002',
-                'full_name' => 'Vidyananda Admin',
-                'email' => 'vidyananda@gmail.com',
-                'password' => 'Admin@vidyananda',
+                'full_name' => 'Institute Admin',
+                'email' => 'institute@gmail.com',
+                'password' => 'Admin@institute',
                 'role' => 'ADMIN',
 
                 'mobile' => '0778282529',
