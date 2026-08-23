@@ -21,6 +21,8 @@ services:
       "
 
   worker:
+    depends_on:
+      - app
     build:
       context: .
       dockerfile: Dockerfile
