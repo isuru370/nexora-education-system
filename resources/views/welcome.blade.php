@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MIHISARA HIGHER EDUCATION INSTITUTE · welcome</title>
+    <title>SAVIDYA · Higher Education Institute</title>
 
     <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;0,14..32,800;1,14..32,300&display=swap" rel="stylesheet">
@@ -60,7 +60,7 @@
                 linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
             background-size: 42px 42px;
-            mask-image: linear-gradient(to bottom, rgba(0,0,0,0.9), rgba(0,0,0,0.55));
+            mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.9), rgba(0, 0, 0, 0.55));
             pointer-events: none;
         }
 
@@ -360,7 +360,8 @@
         }
 
         @keyframes drift {
-            0%, 100% {
+            0%,
+            100% {
                 transform: translateY(0) scale(1);
             }
             50% {
@@ -416,7 +417,7 @@
             <div class="topbar">
                 <div class="brand-chip">
                     <i class="fas fa-layer-group"></i>
-                    Premium dashboard welcome screen
+                    Premium dashboard · Savidya
                 </div>
                 <div class="status-group">
                     <div class="status-pill"><i class="fas fa-shield-halved"></i> Secure portal</div>
@@ -425,13 +426,13 @@
             </div>
 
             <div class="logo-container">
-                <img src="{{ asset('storage/logo/logo.png') }}" alt="MIHISARA HIGHER EDUCATION INSTITUTE logo" class="logo"
-                    onerror="this.src='https://placehold.co/320x120/0f766e/ffffff?text=MINIPALASA+INSTITUTE&font=inter';">
+                <img src="{{ asset('storage/logo/logo.png') }}" alt="Savidya Higher Education Institute logo" class="logo"
+                    onerror="this.src='https://placehold.co/320x120/0f766e/ffffff?text=SAVIDYA+INSTITUTE&font=inter';">
             </div>
 
             <div class="hero">
                 <h1>
-                    Welcome to <span class="accent">MIHISARA HIGHER EDUCATION INSTITUTE</span>
+                    Welcome to <span class="accent">Savidya Higher Education Institute</span>
                 </h1>
 
                 <p class="subline">
@@ -463,7 +464,7 @@
     </div>
 
     <script>
-        (function () {
+        (function() {
             let secondsLeft = 5;
             const countdownSpan = document.getElementById('countdown');
             countdownSpan.textContent = secondsLeft;
