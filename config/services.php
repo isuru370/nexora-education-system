@@ -1,0 +1,77 @@
+<?php
+
+return [
+
+    /*
+    |--------------------------------------------------------------------------
+    | Third Party Services
+    |--------------------------------------------------------------------------
+    |
+    | This file is for storing the credentials for third party services such
+    | as Mailgun, Postmark, AWS and more. This file provides the de facto
+    | location for this type of information, allowing packages to have
+    | a conventional file to locate the various service credentials.
+    |
+    */
+
+    'mailgun' => [
+        'domain' => env('MAILGUN_DOMAIN'),
+        'secret' => env('MAILGUN_SECRET'),
+        'endpoint' => env('MAILGUN_ENDPOINT', 'api.mailgun.net'),
+    ],
+
+    'postmark' => [
+        'token' => env('POSTMARK_TOKEN'),
+    ],
+
+    'ses' => [
+        'key' => env('AWS_ACCESS_KEY_ID'),
+        'secret' => env('AWS_SECRET_ACCESS_KEY'),
+        'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
+    ],
+
+    'sms' => [
+        'base_url' => env('SMS_BASE_URL', 'https://smsapi.chatbiz.net/v1'),
+        'user_id' => env('SMS_USER_ID'),
+        'api_key' => env('SMS_API_KEY'),
+        'sender_id' => env('SMS_SENDER_ID'),
+    ],
+
+    // ✅ Add this block for image URLs
+    'image' => [
+        'base_url' => env('IMAGE_BASE_URL'),
+    ],
+
+    'parent_hub' => [
+
+        'url' => env('PARENT_HUB_URL'),
+
+        'secret' => env('PARENT_HUB_SECRET'),
+
+    ],
+
+    'institute' => [
+
+        'code' => env('INSTITUTE_CODE'),
+
+        'name' => env('INSTITUTE_NAME'),
+
+        'contact_email' => env('CONTACT_EMAIL'),
+
+        'contact_mobile' => env('CONTACT_MOBILE'),
+
+    ],
+
+    'firebase' => [
+        'project_id' => env('FIREBASE_PROJECT_ID'),
+    ],
+
+    'google_drive' => [
+        'client_id' => env('GOOGLE_DRIVE_CLIENT_ID'),
+        'client_secret' => env('GOOGLE_DRIVE_CLIENT_SECRET'),
+        'refresh_token' => env('GOOGLE_DRIVE_REFRESH_TOKEN'),
+        'folder_id' => env('GOOGLE_DRIVE_FOLDER_ID'),
+    ],
+
+    'bulk_delay' => env('SMS_BULK_DELAY', 500000),
+];

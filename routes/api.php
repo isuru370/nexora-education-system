@@ -1,0 +1,440 @@
+<?php
+
+use App\Http\Controllers\API\AdmissionPaymentController;
+use App\Http\Controllers\API\AttendanceReportController;
+use App\Http\Controllers\API\AttendanceScheduleController;
+use App\Http\Controllers\API\StudentCardAssignmentController;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\API\Auth\LoginController;
+use App\Http\Controllers\API\ClassScheduleController;
+use App\Http\Controllers\API\GradeController;
+use App\Http\Controllers\API\InstituteHallController;
+use App\Http\Controllers\API\MobileDashboardController;
+use App\Http\Controllers\API\Notification\NotificationController;
+use App\Http\Controllers\API\QuickPhotoController;
+use App\Http\Controllers\API\StudentAttendanceController;
+use App\Http\Controllers\API\StudentAttendanceReadController;
+use App\Http\Controllers\API\StudentAttendanceScanController;
+use App\Http\Controllers\API\StudentCardRegisterController;
+use App\Http\Controllers\API\StudentClassController;
+use App\Http\Controllers\API\StudentClassEnrollmentController;
+use App\Http\Controllers\API\StudentController;
+use App\Http\Controllers\API\StudentImageController;
+use App\Http\Controllers\API\StudentPaymentController;
+use App\Http\Controllers\API\StudentPaymentReadController;
+use App\Http\Controllers\API\StudentRegisterController;
+use App\Http\Controllers\API\StudentTuteController;
+
+/*
+|--------------------------------------------------------------------------
+| API Routes
+|--------------------------------------------------------------------------
+|
+| Mobile App + Web API
+|
+*/
+
+/*
+|--------------------------------------------------------------------------
+| Authentication
+|--------------------------------------------------------------------------
+*/
+
+Route::post(
+    '/login',
+    [LoginController::class, 'login']
+)->name('api.login');
+
+
+/*
+|--------------------------------------------------------------------------
+| Protected Routes
+|--------------------------------------------------------------------------
+*/
+
+
+Route::middleware([
+    'auth:sanctum',
+    'user.active',
+    'role:ADMIN,USER'
+])->group(function () {
+
+    /*
+    |--------------------------------------------------------------------------
+    | Logout
+    |--------------------------------------------------------------------------
+    */
+
+    Route::post(
+        '/logout',
+        [LoginController::class, 'logout']
+    )->name('api.logout');
+
+    Route::post(
+        '/qr-code',
+        [StudentCardRegisterController::class, 'searchQrcode']
+    )->name('api.card.searchQrcode');
+
+    Route::post('/re-assign', [
+        StudentCardRegisterController::class,
+        'reAssign'
+    ])->name('api.card.reassign');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Student
+    |--------------------------------------------------------------------------
+    */
+
+
+    Route::post(
+        '/student',
+        [StudentRegisterController::class, 'QuickStudentStore']
+    )->name('api.QuickStudentStore');
+
+    Route::post(
+        '/student-new',
+        [StudentCardRegisterController::class, 'store']
+    )->name('api.student.store');
+
+    Route::get(
+        '/students',
+        [StudentController::class, 'fetchAllStudent']
+    )->name('api.students.all');
+
+    Route::get(
+        '/students/filter',
+        [StudentController::class, 'studentDetailsSearch']
+    )->name('api.students.filter');
+
+    Route::get(
+        '/students/search',
+        [StudentController::class, 'searchStudent']
+    )->name('api.students.search');
+
+    Route::post(
+        '/students/update-image',
+        [StudentController::class, 'updateStudentImage']
+    )->name('api.students.update-image');
+
+
+    Route::post(
+        '/quick-photo/upload',
+        [QuickPhotoController::class, 'uploadQuickPhoto']
+    )->name('api.quick-photo.upload');
+
+    Route::post(
+        '/quick-photo/update',
+        [QuickPhotoController::class, 'imageUpdate']
+    )->name('api.quick-photo.imageUpdate');
+
+    Route::get(
+        '/students-image/fetch-image',
+        [StudentImageController::class, 'fetchStudentImage']
+    )->name('api.students.fetch-image');
+
+    Route::post(
+        '/students-image/update-image',
+        [StudentImageController::class, 'updateStudentImage']
+    )->name('api.students.update-image');
+
+
+    Route::get(
+        '/grades',
+        [GradeController::class, 'fetchGrade']
+    )->name('api.grades.fetch');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Payments
+    |--------------------------------------------------------------------------
+    */
+
+    // Read payment info from QR
+    Route::post(
+        '/payments/read',
+        [StudentPaymentReadController::class, 'read']
+    )->name('api.payments.read');
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Student Payment Store
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get(
+        '/payments/today-payments',
+        [StudentPaymentController::class, 'todayReceipt']
+    )->name('api.student-payments.today-receipt');
+
+    Route::post(
+        '/payments/today',
+        [StudentPaymentController::class, 'todayPayments']
+    );
+
+    Route::get(
+        '/payments/students/{studentId}/enrollments/{enrolledId}',
+        [StudentPaymentController::class, 'fetchStudentAllPayment']
+    );
+
+
+
+    Route::post(
+        '/student-payments',
+        [StudentPaymentController::class, 'store']
+    )->name('api.student-payments.store');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Student Admission Payment Delete
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get(
+        '/admission',
+        [AdmissionPaymentController::class, 'fetchAdmission']
+    )->name('api.admission-payment.fetch-admission');
+
+    Route::get(
+        '/admission-payments',
+        [AdmissionPaymentController::class, 'fetchAdmissionPayment']
+    )->name('api.admission-payment.fetch-admission-payments');
+
+    Route::post(
+        '/admission-payments/store',
+        [AdmissionPaymentController::class, 'storeAdmissionPayment']
+    )->name('api.admission-payment.store-admission-payment');
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Student Payment Delete
+    |--------------------------------------------------------------------------
+    */
+
+    Route::delete(
+        '/payments/{paymentId}',
+        [StudentPaymentController::class, 'destroy']
+    )->name('api.student-payments.destroy');
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Attendance
+    |--------------------------------------------------------------------------
+    */
+
+    // Read attendance info from QR
+    Route::post(
+        '/attendance/read',
+        [StudentAttendanceReadController::class, 'read']
+    )->name('api.attendance.read');
+
+    // new version of attendance scan
+    Route::post(
+        '/attendance/scan',
+        [StudentAttendanceScanController::class, 'scan']
+    )->name('api.attendance.scan');
+
+
+
+    Route::post(
+        '/attendance/store',
+        [StudentAttendanceController::class, 'store']
+    )->name('api.attendance.store');
+
+    Route::get(
+        '/attendance/students/{studentId}/enrollments/{enrolledId}',
+        [StudentAttendanceController::class, 'studentAttendanceHistory']
+    );
+
+    Route::delete(
+        '/student-attendances/{attendanceId}',
+        [StudentAttendanceController::class, 'deleteAttendance']
+    )->name('api.student-attendances.delete');
+
+    Route::post(
+        'attendance/schedules',
+        [AttendanceScheduleController::class, 'index']
+    );
+
+    Route::post(
+        'attendance/report',
+        [AttendanceReportController::class, 'index']
+    );
+
+
+    Route::post(
+        '/student-tutes/read',
+        [StudentTuteController::class, 'readStudentTute']
+    )->name('api.attendance.read');
+
+    Route::post(
+        '/student-tutes/store',
+        [StudentTuteController::class, 'store']
+    )->name('api.student-tutes.store');
+
+    Route::get(
+        '/student-tutes/students/{studentId}/enrollments/{enrolledId}',
+        [StudentTuteController::class, 'studentTuteHistory']
+    );
+
+
+    Route::get(
+        '/student-classes/{gradeId}',
+        [StudentClassController::class, 'fetchStudentClass']
+    )->name('api.student-classes.fetch_student_classes');
+
+
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Class Enrollments
+    |--------------------------------------------------------------------------
+    */
+
+    Route::get(
+        '/student-class-enrollments/{studentId}',
+        [StudentClassEnrollmentController::class, 'fetchStudentClasses']
+    )->name('api.student-class-enrollments.fetch_student_classes');
+
+
+    Route::post(
+        '/student-class-enrollments',
+        [StudentClassEnrollmentController::class, 'store']
+    )->name('api.student-class-enrollments.store');
+
+    Route::patch(
+        '/student-class-enrollments/{enrollment}',
+        [StudentClassEnrollmentController::class, 'update']
+    )->name('api.student-class-enrollments.patch');
+
+    Route::post(
+        '/student-class-enrollments/read-student-class',
+        [StudentClassEnrollmentController::class, 'readStudentClass']
+    )->name('api.student-class-enrollments.read_student_class');
+
+
+    Route::patch(
+        '/student-class-enrollments/toggle-status/{enrollmentId}',
+        [StudentClassEnrollmentController::class, 'toggleClassStatusChange']
+    );
+
+    Route::patch(
+        '/student-class-enrollments/{enrollmentId}/deactivate',
+        [StudentClassEnrollmentController::class, 'deactivateEnrollment']
+    )->name('api.student-class-enrollments.deactivate');
+
+
+
+    Route::get(
+        '/class-schedule/today-class',
+        [ClassScheduleController::class, 'todayClasses']
+    );
+
+    Route::get(
+        '/class-schedule/ongoing-class',
+        [ClassScheduleController::class, 'fetchOngoingClass']
+    );
+
+    Route::get(
+        '/class-schedule/category',
+        [ClassScheduleController::class, 'fetchClassCategory']
+    );
+
+    Route::get(
+        '/class-schedule/fetch',
+        [ClassScheduleController::class, 'fetchClassSchedule']
+    );
+
+    Route::post(
+        '/class-schedule/store',
+        [ClassScheduleController::class, 'storeAddNewDay']
+    );
+
+    Route::put(
+        '/class-schedule/update',
+        [ClassScheduleController::class, 'updateClassSchedule']
+    );
+
+    Route::patch(
+        '/class-schedule/cancel',
+        [ClassScheduleController::class, 'classCancel']
+    );
+
+    Route::get(
+        '/institute-halls',
+        [InstituteHallController::class, 'fetchInstituteHall']
+    );
+
+
+    Route::get(
+        '/mobile-dashboard',
+        [MobileDashboardController::class, 'mobileDashboardDetails']
+    );
+
+    /*
+    |--------------------------------------------------------------------------
+    | Admin Notifications (Send, Manage)
+    |--------------------------------------------------------------------------
+    */
+
+    Route::prefix('/notifications')->group(function () {
+        // Send notifications
+        Route::post('/send', [NotificationController::class, 'send']);
+        Route::post('/send-now', [NotificationController::class, 'sendNow']);
+        Route::post('/bulk', [NotificationController::class, 'sendBulk']);
+        Route::post('/send-to-all', [NotificationController::class, 'sendToAll']);
+        Route::post('/send-to-grade/{grade}', [NotificationController::class, 'sendToGrade']);
+
+        // Get notification status
+        Route::get('/{id}/status', [NotificationController::class, 'status']);
+
+        // Manage notifications
+        Route::post('/{id}/retry', [NotificationController::class, 'retry']);
+        Route::post('/{id}/cancel', [NotificationController::class, 'cancel']);
+        Route::post('/{id}/read', [NotificationController::class, 'markAsRead']);
+
+        // List and filter
+        Route::get('/', [NotificationController::class, 'index']);
+        Route::get('/student/{studentId}/history', [NotificationController::class, 'history']);
+
+        // Stats and maintenance
+        Route::get('/stats', [NotificationController::class, 'stats']);
+        Route::delete('/cleanup', [NotificationController::class, 'deleteOld']);
+    });
+
+    /*
+|--------------------------------------------------------------------------
+| Student Card Assignment
+|--------------------------------------------------------------------------
+*/
+
+    Route::prefix('student-card-assignment')
+        ->name('api.student-card-assignment.')
+        ->group(function () {
+
+            Route::post(
+                '/search-student',
+                [StudentCardAssignmentController::class, 'searchStudent']
+            )->name('search-student');
+
+            Route::post(
+                '/search-card',
+                [StudentCardAssignmentController::class, 'searchAvailableCard']
+            )->name('search-card');
+
+            Route::post(
+                '/assign',
+                [StudentCardAssignmentController::class, 'assignCard']
+            )->name('assign');
+        });
+});
