@@ -36,6 +36,11 @@ class CreateExtraIncomesTable extends Migration
                 'cancelled'
             ])->default('received');
 
+            $table->string('receipt_number', 100)
+                ->nullable()
+                ->unique();
+
+
             // user
             $table->foreignId('user_id')
                 ->nullable()

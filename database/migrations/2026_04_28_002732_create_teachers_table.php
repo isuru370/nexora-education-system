@@ -13,6 +13,12 @@ class CreateTeachersTable extends Migration
 
             $table->string('custom_id', 50)->unique();
 
+            $table->foreignId('user_id')
+                ->nullable()
+                ->unique()
+                ->constrained('users')
+                ->cascadeOnDelete();
+
             $table->string('full_name', 150);
             $table->string('initials', 20);
 

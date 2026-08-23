@@ -29,6 +29,11 @@ class CreateStudentResultsTable extends Migration
             $table->decimal('marks', 6, 2)->nullable();
             $table->decimal('max_marks', 6, 2)->default(100);
 
+            $table->decimal('percentage', 6, 2)->nullable();
+            $table->string('grade', 10)->nullable();
+            $table->integer('rank')->nullable();
+
+
             $table->enum('status', [
                 'pending',
                 'passed',
@@ -38,7 +43,13 @@ class CreateStudentResultsTable extends Migration
 
             $table->string('reason', 255)->nullable();
 
+            // Add this
+            $table->text('remark')->nullable();
+
             $table->boolean('is_updated')->default(false);
+
+            // Add this
+            $table->boolean('is_absent')->default(false);
 
             $table->timestamps();
             $table->softDeletes();

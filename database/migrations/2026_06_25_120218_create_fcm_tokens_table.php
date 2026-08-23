@@ -16,6 +16,8 @@ return new class extends Migration
                 ->constrained()
                 ->cascadeOnDelete();
 
+            $table->string('device_id')->nullable();
+
             $table->string('token', 255)->unique();
 
             $table->string('device_name')->nullable();
