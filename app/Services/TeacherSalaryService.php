@@ -56,8 +56,8 @@ class TeacherSalaryService
                 ->where('salary_month', $month)
                 ->first();
 
-            $dbNet = $salaryRecord?->net_amount;
-            $status = $salaryRecord?->status ?? 'pending';
+            $dbNet = $salaryRecord ? $salaryRecord->net_amount : null;
+            $status = $salaryRecord ? $salaryRecord->status : 'pending';
 
             $finalNet = $dbNet ?? $calculatedNet;
             $netDifference = $salaryRecord ? ($calculatedNet - $dbNet) : 0;
@@ -150,7 +150,7 @@ class TeacherSalaryService
             ->where('salary_month', $month)
             ->first();
 
-        $salaryStatus = $salaryRecord?->status ?? 'pending';
+        $salaryStatus = $salaryRecord ? $salaryRecord->status : 'pending';
         $salaryPaid = ($salaryRecord && $salaryRecord->status === 'paid')
             ? $salaryRecord->net_amount
             : 0;
@@ -450,7 +450,7 @@ class TeacherSalaryService
 
                 /*
         |--------------------------------------------------------------------------
-        | Category Fees
+        | Category Fee Options
         |--------------------------------------------------------------------------
         */
                 'categoryFees.category:id,category_name',
@@ -473,7 +473,13 @@ class TeacherSalaryService
                         ->where('is_active', true)
 
                         ->with([
-                            'classCategoryFee:id,class_category_id,fee',
+                            'classCategoryFee:id,class_category_id',
+                            'classCategoryFee.feeOptions' => function ($optionQuery) {
+                                $optionQuery
+                                    ->where('is_active', true)
+                                    ->orderBy('is_default', 'desc')
+                                    ->orderBy('id', 'asc');
+                            },
                             'classCategoryFee.category:id,category_name',
                         ])
 
@@ -584,13 +590,34 @@ class TeacherSalaryService
                 $classTotal += $categoryTotal;
 
                 $categorySummaries[] = [
-                    'category_fee_id' => $categoryFee?->id,
+                    'category_fee_id' => $categoryFee ? $categoryFee->id : null,
 
-                    'category_id' => $categoryFee->category?->id,
+                    'category_id' => $categoryFee->category ? $categoryFee->category->id : null,
 
-                    'category_name' => $categoryFee->category?->category_name,
+                    'category_name' => $categoryFee->category ? $categoryFee->category->category_name : null,
 
-                    'fee' => (float) $categoryFee->fee,
+                    'fee' => null,
+
+                    'fee_options' => $categoryFee->feeOptions
+                        ->map(function ($option) {
+                            return [
+                                'id' => $option->id,
+                                'label' => $option->label,
+                                'fee' => (float) $option->fee,
+                                'is_default' => (bool) $option->is_default,
+                            ];
+                        })
+                        ->values()
+                        ->all(),
+
+                    'expected_total' => round(
+                        $enrollments->sum(function ($enrollment) {
+                            return $enrollment->is_free_card
+                                ? 0
+                                : (float) $enrollment->final_fee;
+                        }),
+                        2
+                    ),
 
                     'student_count' => $studentCount,
 
@@ -612,7 +639,7 @@ class TeacherSalaryService
 
                 'class_name' => $class->class_name,
 
-                'grade_name' => $class->grade?->grade_name,
+                'grade_name' => $class->grade ? $class->grade->grade_name : null,
 
                 'total_students' => $classStudentCount,
 

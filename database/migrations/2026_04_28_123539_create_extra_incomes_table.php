@@ -4,12 +4,20 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateExtraIncomesTable extends Migration
+return new class extends Migration
 {
-    public function up()
+    public function up(): void
     {
         Schema::create('extra_incomes', function (Blueprint $table) {
             $table->id();
+
+            // 🔥 Branch ownership (NULLABLE — institute-wide incomes)
+            // Set = branch-specific income
+            // NULL = institute-wide income (interest, donation, etc.)
+            $table->foreignId('branch_id')
+                ->nullable()
+                ->constrained('branches')
+                ->restrictOnDelete();
 
             // 💰 amount
             $table->decimal('amount', 12, 2);
@@ -20,7 +28,7 @@ class CreateExtraIncomesTable extends Migration
             // reason
             $table->string('reason', 150)->nullable();
 
-            // 🔥 income type (future ready)
+            // 🔥 income type
             $table->enum('income_type', [
                 'hall_rent',
                 'extra',
@@ -40,7 +48,6 @@ class CreateExtraIncomesTable extends Migration
                 ->nullable()
                 ->unique();
 
-
             // user
             $table->foreignId('user_id')
                 ->nullable()
@@ -53,14 +60,38 @@ class CreateExtraIncomesTable extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            // indexes
-            $table->index(['income_date', 'status']);
-            $table->index('income_type');
+            /*
+            |--------------------------------------------------------------------------
+            | 🔥 Branch-scoped indexes (NEW)
+            |--------------------------------------------------------------------------
+            */
+            $table->index(
+                ['branch_id', 'income_date', 'status'],
+                'ei_branch_date_status_idx'
+            );
+
+            $table->index(
+                ['branch_id', 'income_type', 'status'],
+                'ei_branch_type_status_idx'
+            );
+
+            $table->index(
+                ['branch_id', 'user_id', 'income_date'],
+                'ei_branch_user_date_idx'
+            );
+
+            /*
+            |--------------------------------------------------------------------------
+            | පරණ indexes (still useful)
+            |--------------------------------------------------------------------------
+            */
+            $table->index(['income_date', 'status'], 'ei_date_status_idx');
+            $table->index('income_type', 'ei_income_type_idx');
         });
     }
 
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('extra_incomes');
     }
-}
+};

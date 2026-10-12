@@ -16,8 +16,6 @@ class CreateStudentPortalLoginsTable extends Migration
                 ->constrained('students')
                 ->cascadeOnDelete();
 
-            $table->string('institute_code', 20)->nullable();
-
             $table->string('username', 100)->unique();
             $table->string('password'); // hashed password
 
@@ -32,7 +30,6 @@ class CreateStudentPortalLoginsTable extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->index('institute_code'); // Add this
             $table->index(['is_active', 'is_verified']);
         });
     }

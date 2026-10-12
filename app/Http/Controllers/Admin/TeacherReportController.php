@@ -126,11 +126,13 @@ class TeacherReportController extends Controller
 
         return Excel::download(
             new DailyReportExport(
-                title: $title,
-                headings: [
+                $title,
+                [
                     'Class Name',
                     'Grade Name',
                     'Category Name',
+                    'Fee Option',
+                    'Fee Option Fee',
                     'Student Code',
                     'Student Name',
                     'Guardian Mobile',
@@ -142,10 +144,12 @@ class TeacherReportController extends Controller
                     'Reference Number',
                     'Note',
                 ],
-                columns: [
+                [
                     'class_name',
                     'grade_name',
                     'category_name',
+                    'fee_option',
+                    'fee_option_fee',
                     'student_code',
                     'student_name',
                     'guardian_mobile',
@@ -157,7 +161,7 @@ class TeacherReportController extends Controller
                     'reference_number',
                     'note',
                 ],
-                rows: $rows
+                $rows
             ),
             Str::slug($title) . '-' . $date . '.xlsx'
         );
@@ -188,6 +192,12 @@ class TeacherReportController extends Controller
                             'class_name' => $class['class_name'] ?? null,
                             'grade_name' => $class['grade_name'] ?? null,
                             'category_name' => $category['category_name'] ?? null,
+                            'fee_option' => isset($student['fee_option'])
+                                ? ($student['fee_option']['label'] ?? null)
+                                : null,
+                            'fee_option_fee' => isset($student['fee_option'])
+                                ? ($student['fee_option']['fee'] ?? 0)
+                                : 0,
                             'student_code' => $student['student_code'] ?? null,
                             'student_name' => $student['student_name'] ?? null,
                             'guardian_mobile' => $student['guardian_mobile'] ?? null,

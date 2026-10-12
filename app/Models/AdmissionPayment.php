@@ -2,10 +2,9 @@
 
 namespace App\Models;
 
-use App\Services\ReceiptNumberService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class AdmissionPayment extends Model
 {
@@ -17,12 +16,13 @@ class AdmissionPayment extends Model
     |--------------------------------------------------------------------------
     */
 
-    public const STATUS_PENDING   = 'pending';
-    public const STATUS_PAID      = 'paid';
+    public const STATUS_PENDING = 'pending';
+    public const STATUS_PAID = 'paid';
     public const STATUS_CANCELLED = 'cancelled';
-    public const STATUS_REFUNDED  = 'refunded';
+    public const STATUS_REFUNDED = 'refunded';
 
     protected $fillable = [
+        'branch_id',
         'student_id',
         'admission_id',
         'user_id',
@@ -45,17 +45,22 @@ class AdmissionPayment extends Model
     |--------------------------------------------------------------------------
     */
 
-    public function student()
+    public function branch(): BelongsTo
+    {
+        return $this->belongsTo(Branch::class);
+    }
+
+    public function student(): BelongsTo
     {
         return $this->belongsTo(Student::class);
     }
 
-    public function admission()
+    public function admission(): BelongsTo
     {
         return $this->belongsTo(Admission::class);
     }
 
-    public function collectedBy()
+    public function collectedBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
     }
@@ -112,41 +117,13 @@ class AdmissionPayment extends Model
         return $query->where('status', self::STATUS_REFUNDED);
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | Booted
-    |--------------------------------------------------------------------------
-    */
-
-    protected static function booted(): void
+    public function scopeForBranches($query, $branchIds)
     {
-        static::creating(function ($payment) {
+        return $query->whereIn('branch_id', $branchIds);
+    }
 
-            if (empty($payment->receipt_number)) {
-                $payment->receipt_number =
-                    ReceiptNumberService::generate();
-            }
-
-            if (empty($payment->note)) {
-                $payment->note =
-                    'Admission payment collected successfully.';
-            }
-
-            if (empty($payment->user_id)) {
-                $payment->user_id = Auth::id();
-            }
-
-            if (empty($payment->payment_method)) {
-                $payment->payment_method = 'cash';
-            }
-
-            if (empty($payment->status)) {
-                $payment->status = self::STATUS_PAID;
-            }
-
-            if (empty($payment->paid_at)) {
-                $payment->paid_at = now();
-            }
-        });
+    public function scopeForBranch($query, int $branchId)
+    {
+        return $query->where('branch_id', $branchId);
     }
 }

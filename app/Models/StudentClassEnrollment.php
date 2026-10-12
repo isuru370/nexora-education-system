@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class StudentClassEnrollment extends Model
@@ -10,15 +12,13 @@ class StudentClassEnrollment extends Model
     use SoftDeletes;
 
     protected $fillable = [
+        'branch_id',
         'student_id',
         'student_class_id',
         'class_category_fee_id',
+        'class_category_fee_option_id',
         'is_active',
         'is_free_card',
-        'custom_fee',
-        'custom_fee_reason',
-        'discount_percentage',
-        'discount_reason',
         'enrolled_at',
         'left_at',
         'note',
@@ -27,82 +27,130 @@ class StudentClassEnrollment extends Model
     protected $casts = [
         'is_active' => 'boolean',
         'is_free_card' => 'boolean',
-        'custom_fee' => 'decimal:2',
-        'discount_percentage' => 'decimal:2',
         'enrolled_at' => 'date',
         'left_at' => 'date',
     ];
 
-    public function student()
+    /**
+     * Branch where this enrollment belongs.
+     */
+    public function branch(): BelongsTo
+    {
+        return $this->belongsTo(Branch::class);
+    }
+
+    /**
+     * Student.
+     */
+    public function student(): BelongsTo
     {
         return $this->belongsTo(Student::class);
     }
 
-    public function studentClass()
+    /**
+     * Student class.
+     */
+    public function studentClass(): BelongsTo
     {
         return $this->belongsTo(StudentClass::class);
     }
 
-    public function classCategoryFee()
+    /**
+     * Class category fee.
+     */
+    public function classCategoryFee(): BelongsTo
     {
-        return $this->belongsTo(ClassCategoryFee::class, 'class_category_fee_id');
-    }
-    
-    public function category()
-    {
-        return $this->hasOneThrough(
-            ClassCategory::class,
+        return $this->belongsTo(
             ClassCategoryFee::class,
-            'id',
-            'id',
-            'class_category_fee_id',
-            'class_category_id'
+            'class_category_fee_id'
         );
     }
 
-    public function payments()
+    /**
+     * Selected fee option.
+     */
+    public function classCategoryFeeOption(): BelongsTo
+    {
+        return $this->belongsTo(
+            ClassCategoryFeeOption::class,
+            'class_category_fee_option_id'
+        );
+    }
+
+    /**
+     * Payments made for this enrollment.
+     */
+    public function payments(): HasMany
     {
         return $this->hasMany(Payment::class);
     }
 
+    /**
+     * Scope: enrollments belonging to given branches.
+     */
+    public function scopeForBranches($query, $branchIds)
+    {
+        return $query->whereIn('branch_id', $branchIds);
+    }
+
+    /**
+     * Scope: enrollments belonging to a specific branch.
+     */
+    public function scopeForBranch($query, int $branchId)
+    {
+        return $query->where('branch_id', $branchId);
+    }
+
+    /**
+     * Final fee for this enrollment.
+     */
     public function getFinalFeeAttribute()
     {
         if ($this->is_free_card) {
             return 0;
         }
 
-        $baseFee = !is_null($this->custom_fee)
-            ? $this->custom_fee
-            : $this->getDefaultFee();
-
-        $discount = $this->discount_percentage ?? 0;
-
-        return round($baseFee - ($baseFee * $discount / 100), 2);
+        return $this->getSelectedFee();
     }
 
-    public function getDefaultFee()
+    /**
+     * Get the selected fee option amount.
+     */
+    public function getSelectedFee()
     {
-        return $this->classCategoryFee?->fee ?? 0;
+        if (!$this->classCategoryFeeOption) {
+            return 0;
+        }
+
+        return (float) $this->classCategoryFeeOption->fee;
     }
 
+    /**
+     * Total amount paid for this enrollment.
+     */
     public function getPaidAmountAttribute()
     {
         return $this->payments()->sum('amount');
     }
 
+    /**
+     * Remaining balance.
+     */
     public function getBalanceAttribute()
     {
-        return max($this->final_fee - $this->paid_amount, 0);
+        return max(
+            $this->final_fee - $this->paid_amount,
+            0
+        );
     }
 
+    /**
+     * Payment status.
+     */
     public function getPaymentStatusAttribute()
     {
         if ($this->paid_amount <= 0) {
             return 'unpaid';
-        }
-
-        if ($this->paid_amount < $this->final_fee) {
-            return 'partial';
         }
 
         return 'paid';

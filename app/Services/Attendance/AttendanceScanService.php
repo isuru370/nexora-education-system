@@ -117,21 +117,15 @@ class AttendanceScanService
             */
 
             $attendanceWindow = $this->checkAttendanceWindow(
-
                 $student->id,
-
                 $todaySchedules
-
             );
 
             if (!$attendanceWindow['success']) {
 
                 return $this->error(
-
                     $attendanceWindow['message'],
-
                     $attendanceWindow['status_code']
-
                 );
             }
 
@@ -149,25 +143,25 @@ class AttendanceScanService
             |--------------------------------------------------------------------------
             */
 
-            $enrollment = $enrollments->first(function ($enrollment) use ($schedule) {
+            $enrollment = $enrollments->first(
+                function ($enrollment) use ($schedule) {
 
-                return
+                    return
+                        $enrollment->student_class_id ==
+                            $schedule->student_class_id
 
-                    $enrollment->student_class_id == $schedule->student_class_id
+                        &&
 
-                    &&
-
-                    $enrollment->class_category_fee_id == $schedule->class_category_fee_id;
-            });
+                        $enrollment->class_category_fee_id ==
+                            $schedule->class_category_fee_id;
+                }
+            );
 
             if (!$enrollment) {
 
                 return $this->error(
-
                     'Student enrollment not found.',
-
                     404
-
                 );
             }
 
@@ -178,15 +172,10 @@ class AttendanceScanService
             */
 
             $context = new AttendanceContext(
-
                 $student,
-
                 $enrollment,
-
                 $schedule,
-
-                $todaySchedules,
-
+                $todaySchedules
             );
 
             /*
@@ -205,100 +194,175 @@ class AttendanceScanService
             */
 
             return $this->success(
-
                 $attendanceWindow['message'],
-
                 [
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | Student
+                    |--------------------------------------------------------------------------
+                    */
 
                     'student' => [
 
                         'id' => $student->id,
 
-                        'student_code' => $student->permanent_qr_active
-                            ? $student->custom_id
-                            : $student->temporary_qr_code,
+                        'student_code' =>
+                            $student->permanent_qr_active
+                                ? $student->custom_id
+                                : $student->temporary_qr_code,
 
-                        'initial_name' => $student->initial_name,
+                        'initial_name' =>
+                            $student->initial_name,
 
-                        'guardian_mobile' => $student->guardian_mobile,
+                        'guardian_mobile' =>
+                            $student->guardian_mobile,
 
-                        'img_url' => $student->img_url,
+                        'img_url' =>
+                            $student->img_url,
 
                         'grade' => [
-                            'id' => $student->grade->id,
-                            'grade_name' => $student->grade->grade_name,
-                        ],
+                            'id' =>
+                                $student->grade->id,
 
+                            'grade_name' =>
+                                $student->grade->grade_name,
+                        ],
                     ],
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | Schedule
+                    |--------------------------------------------------------------------------
+                    */
 
                     'schedule' => [
 
                         'id' => $schedule->id,
 
-                        'class_date' => $schedule->class_date->format('Y-m-d'),
+                        'class_date' =>
+                            $schedule->class_date
+                                ->format('Y-m-d'),
 
-                        'start_time' => $schedule->start_time,
+                        'start_time' =>
+                            $schedule->start_time,
 
-                        'end_time' => $schedule->end_time,
+                        'end_time' =>
+                            $schedule->end_time,
 
-                        'hall' => optional($schedule->hall)->hall_name,
+                        'status' =>
+                            $schedule->status,
+
+                        'hall' =>
+                            optional(
+                                $schedule->hall
+                            )->hall_name,
 
                         'class' => [
 
-                            'id' => optional($schedule->studentClass)->id,
+                            'id' =>
+                                optional(
+                                    $schedule->studentClass
+                                )->id,
 
-                            'class_name' => optional($schedule->studentClass)->class_name,
+                            'class_name' =>
+                                optional(
+                                    $schedule->studentClass
+                                )->class_name,
 
-                            'teacher' => optional(optional($schedule->studentClass)->teacher)->full_name,
+                            'teacher' =>
+                                optional(
+                                    optional(
+                                        $schedule->studentClass
+                                    )->teacher
+                                )->full_name,
 
-                            'subject' => optional(optional($schedule->studentClass)->subject)->subject_name,
+                            'subject' =>
+                                optional(
+                                    optional(
+                                        $schedule->studentClass
+                                    )->subject
+                                )->subject_name,
 
-                            'grade' => optional(optional($schedule->studentClass)->grade)->grade_name,
+                            'grade' =>
+                                optional(
+                                    optional(
+                                        $schedule->studentClass
+                                    )->grade
+                                )->grade_name,
 
-                            'category' => optional(optional($schedule->classCategoryFee)->category)->category_name,
-
+                            'category' =>
+                                optional(
+                                    optional(
+                                        $schedule->classCategoryFee
+                                    )->category
+                                )->category_name,
                         ],
-
                     ],
 
-                    'enrollment' => $studentInfo['enrollment'],
+                    /*
+                    |--------------------------------------------------------------------------
+                    | Enrollment Information
+                    |--------------------------------------------------------------------------
+                    */
 
-                    'last_payment' => $studentInfo['last_payment'],
+                    'enrollment' =>
+                        $studentInfo['enrollment'],
 
-                    'attendance' => $studentInfo['attendance'],
+                    /*
+                    |--------------------------------------------------------------------------
+                    | Last Payment
+                    |--------------------------------------------------------------------------
+                    */
 
-                    'tute' => $studentInfo['tute'],
+                    'last_payment' =>
+                        $studentInfo['last_payment'],
 
+                    /*
+                    |--------------------------------------------------------------------------
+                    | Attendance
+                    |--------------------------------------------------------------------------
+                    */
+
+                    'attendance' =>
+                        $studentInfo['attendance'],
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | Tute
+                    |--------------------------------------------------------------------------
+                    */
+
+                    'tute' =>
+                        $studentInfo['tute'],
                 ]
-
             );
+
         } catch (Throwable $e) {
 
-            Log::error('Attendance Scan Failed', [
+            Log::error(
+                'Attendance Scan Failed',
+                [
+                    'qr_code' => $qrCode,
 
-                'qr_code' => $qrCode,
+                    'message' =>
+                        $e->getMessage(),
 
-                'message' => $e->getMessage(),
+                    'file' =>
+                        $e->getFile(),
 
-                'file' => $e->getFile(),
-
-                'line' => $e->getLine(),
-
-            ]);
+                    'line' =>
+                        $e->getLine(),
+                ]
+            );
 
             return $this->error(
-
                 'Something went wrong while scanning.',
-
                 500
-
             );
         }
     }
 
-    /**
-     * Load Active Student
-     */
     /**
      * Load Active Student
      */
@@ -331,7 +395,10 @@ class AttendanceScanService
     {
         return $student->enrollments()
 
-            ->where('is_active', true)
+            ->where(
+                'is_active',
+                true
+            )
 
             ->with([
 
@@ -351,13 +418,29 @@ class AttendanceScanService
 
                 /*
                 |--------------------------------------------------------------------------
-                | Category
+                | Category Fee
                 |--------------------------------------------------------------------------
+                |
+                | IMPORTANT:
+                | class_category_fees.fee no longer exists.
+                |
                 */
 
-                'classCategoryFee:id,class_category_id,fee',
+                'classCategoryFee:id,class_category_id,is_active',
 
                 'classCategoryFee.category:id,category_name',
+
+                /*
+                |--------------------------------------------------------------------------
+                | Selected Fee Option
+                |--------------------------------------------------------------------------
+                |
+                | Actual fee now comes from
+                | class_category_fee_options.
+                |
+                */
+
+                'classCategoryFeeOption:id,class_category_fee_id,label,fee,is_default,is_active',
 
                 /*
                 |--------------------------------------------------------------------------
@@ -368,9 +451,10 @@ class AttendanceScanService
                 'payments' => function ($query) {
 
                     $query
-
-                        ->where('status', 'completed')
-
+                        ->where(
+                            'status',
+                            'completed'
+                        )
                         ->latest('paid_at');
                 },
 
@@ -386,7 +470,9 @@ class AttendanceScanService
     {
         $studentClassIds = $enrollments
 
-            ->pluck('student_class_id')
+            ->pluck(
+                'student_class_id'
+            )
 
             ->unique()
 
@@ -396,7 +482,9 @@ class AttendanceScanService
 
         $categoryFeeIds = $enrollments
 
-            ->pluck('class_category_fee_id')
+            ->pluck(
+                'class_category_fee_id'
+            )
 
             ->unique()
 
@@ -414,9 +502,16 @@ class AttendanceScanService
                 'class_date',
                 'start_time',
                 'end_time',
+                'status',
             ])
 
             ->with([
+
+                /*
+                |--------------------------------------------------------------------------
+                | Class
+                |--------------------------------------------------------------------------
+                */
 
                 'studentClass:id,class_name,teacher_id,subject_id,grade_id',
 
@@ -426,9 +521,21 @@ class AttendanceScanService
 
                 'studentClass.grade:id,grade_name',
 
-                'classCategoryFee:id,class_category_id',
+                /*
+                |--------------------------------------------------------------------------
+                | Category Fee
+                |--------------------------------------------------------------------------
+                */
+
+                'classCategoryFee:id,class_category_id,is_active',
 
                 'classCategoryFee.category:id,category_name',
+
+                /*
+                |--------------------------------------------------------------------------
+                | Hall
+                |--------------------------------------------------------------------------
+                */
 
                 'hall:id,hall_name',
 
@@ -449,17 +556,22 @@ class AttendanceScanService
                 today()
             )
 
-            ->whereIn('status', [
-                'scheduled',
-                'ongoing',
-            ])
+            ->whereIn(
+                'status',
+                [
+                    'scheduled',
+                    'ongoing',
+                ]
+            )
 
             ->where(
                 'is_active',
                 true
             )
 
-            ->orderBy('start_time')
+            ->orderBy(
+                'start_time'
+            )
 
             ->get();
     }
@@ -490,6 +602,12 @@ class AttendanceScanService
                     $schedule->end_time
                 );
 
+            /*
+            |--------------------------------------------------------------------------
+            | Attendance opens 1 hour before class
+            |--------------------------------------------------------------------------
+            */
+
             $attendanceOpen = $classStart
                 ->copy()
                 ->subHour();
@@ -500,37 +618,37 @@ class AttendanceScanService
             |--------------------------------------------------------------------------
             */
 
-            if ($now->between(
-                $attendanceOpen,
-                $classEnd
-            )) {
+            if (
+                $now->between(
+                    $attendanceOpen,
+                    $classEnd
+                )
+            ) {
 
-                $alreadyMarked = StudentAttendance::query()
+                $alreadyMarked =
+                    StudentAttendance::query()
 
-                    ->where(
-                        'student_id',
-                        $studentId
-                    )
+                        ->where(
+                            'student_id',
+                            $studentId
+                        )
 
-                    ->where(
-                        'class_schedule_id',
-                        $schedule->id
-                    )
+                        ->where(
+                            'class_schedule_id',
+                            $schedule->id
+                        )
 
-                    ->exists();
+                        ->exists();
 
                 if ($alreadyMarked) {
 
-
                     return [
-
                         'success' => false,
 
                         'status_code' => 409,
 
                         'message' =>
-                        'Attendance has already been marked.',
-
+                            'Attendance has already been marked.',
                     ];
                 }
 
@@ -541,10 +659,10 @@ class AttendanceScanService
                     'status_code' => 200,
 
                     'message' =>
-                    'Attendance can be marked.',
+                        'Attendance can be marked.',
 
-                    'schedule' => $schedule,
-
+                    'schedule' =>
+                        $schedule,
                 ];
             }
 
@@ -557,7 +675,6 @@ class AttendanceScanService
             if ($attendanceOpen->gt($now)) {
 
                 if (
-
                     is_null($nextAttendanceOpen)
 
                     ||
@@ -565,10 +682,10 @@ class AttendanceScanService
                     $attendanceOpen->lt(
                         $nextAttendanceOpen
                     )
-
                 ) {
 
-                    $nextAttendanceOpen = $attendanceOpen;
+                    $nextAttendanceOpen =
+                        $attendanceOpen;
                 }
             }
         }
@@ -588,15 +705,11 @@ class AttendanceScanService
                 'status_code' => 403,
 
                 'message' =>
-
-                'Attendance opens at ' .
-
+                    'Attendance opens at ' .
                     $nextAttendanceOpen->format(
                         'h:i A'
                     ) .
-
                     '.',
-
             ];
         }
 
@@ -613,8 +726,7 @@ class AttendanceScanService
             'status_code' => 403,
 
             'message' =>
-            'All scheduled classes for today have finished.',
-
+                'All scheduled classes for today have finished.',
         ];
     }
 
@@ -635,7 +747,6 @@ class AttendanceScanService
             'message' => $message,
 
             'data' => $data,
-
         ];
     }
 
@@ -656,7 +767,6 @@ class AttendanceScanService
             'message' => $message,
 
             'data' => null,
-
         ];
     }
 }

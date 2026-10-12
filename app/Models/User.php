@@ -2,6 +2,10 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -30,37 +34,70 @@ class User extends Authenticatable
         'is_active' => 'boolean',
     ];
 
-    public function setPasswordAttribute($value)
+    /**
+     * Hash password automatically when setting a new password.
+     */
+    public function setPasswordAttribute($value): void
     {
         if (!empty($value) && strlen($value) !== 60) {
             $this->attributes['password'] = Hash::make($value);
         }
     }
 
-    public function isSuperAdmin()
+    /**
+     * Check whether the user is a super administrator.
+     */
+    public function isSuperAdmin(): bool
     {
-        return $this->userType && $this->userType->code === 'SUPER_ADMIN';
+        return $this->userType
+            && $this->userType->code === 'SUPER_ADMIN';
     }
 
-    public function systemUser()
+    /**
+     * System user profile.
+     */
+    public function systemUser(): HasOne
     {
         return $this->hasOne(SystemUser::class);
     }
 
-
-
-    public function userType()
+    /**
+     * User type.
+     */
+    public function userType(): BelongsTo
     {
-        return $this->belongsTo(UserType::class);
+        return $this->belongsTo(
+            UserType::class,
+            'user_type_id'
+        );
     }
 
-    public function payments()
+    /**
+     * Payments created by this user.
+     */
+    public function payments(): HasMany
     {
         return $this->hasMany(Payment::class);
     }
 
-    public function teacher()
+    /**
+     * Teacher profile.
+     */
+    public function teacher(): HasOne
     {
         return $this->hasOne(Teacher::class);
+    }
+
+    /**
+     * Branches accessible by this user.
+     */
+    public function branches(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Branch::class,
+            'branch_users',
+            'user_id',
+            'branch_id'
+        )->withTimestamps();
     }
 }

@@ -21,7 +21,6 @@
             line-height: 1.4;
         }
 
-        /* Header */
         .header {
             text-align: center;
             margin-bottom: 20px;
@@ -42,7 +41,6 @@
             margin-top: 5px;
         }
 
-        /* Company Info */
         .company-info {
             text-align: center;
             margin-bottom: 20px;
@@ -55,7 +53,6 @@
             letter-spacing: 0.5px;
         }
 
-        /* Summary Table - Horizontal Table */
         .summary-table {
             width: 60%;
             margin: 0 auto 20px auto;
@@ -99,7 +96,6 @@
             color: #8b5cf6;
         }
 
-        /* Table */
         .data-table {
             width: 100%;
             border-collapse: collapse;
@@ -141,7 +137,6 @@
             font-family: monospace;
         }
 
-        /* Footer */
         .footer {
             margin-top: 20px;
             text-align: center;
@@ -189,14 +184,26 @@
                 @endforeach
             </tr>
         </thead>
+
         <tbody>
             @forelse($rows as $row)
                 <tr>
                     @foreach($columns as $column)
                         @php
                             $value = data_get($row, $column, '-');
-                            $isAmount = str_contains($column, 'amount') || str_contains($column, 'fee') || str_contains($column, 'total');
+
+                            /*
+                             * PHP 7.4 compatible replacement for str_contains().
+                             * This also supports nested columns such as:
+                             * fee_option.label
+                             * fee_option.fee
+                             */
+                            $isAmount =
+                                strpos($column, 'amount') !== false ||
+                                strpos($column, 'fee') !== false ||
+                                strpos($column, 'total') !== false;
                         @endphp
+
                         <td class="{{ $isAmount ? 'text-right amount' : '' }}">
                             @if($isAmount && is_numeric($value))
                                 Rs. {{ number_format($value, 2) }}

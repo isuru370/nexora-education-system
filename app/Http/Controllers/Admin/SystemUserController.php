@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\DB;
 use App\Exports\SystemUserExport;
+use App\Models\Branch;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Log;
@@ -37,98 +38,31 @@ class SystemUserController extends Controller
     }
     public function create(): View
     {
-        $userTypes = UserType::where('is_active', 1)
+        $userTypes = UserType::where('is_active', true)
+            ->orderBy('name')
+            ->get();
+
+        $branches = Branch::where('is_active', true)
             ->orderBy('name')
             ->get();
 
         return view(
             'admin.system-users.create',
-            compact('userTypes')
+            compact('userTypes', 'branches')
         );
     }
 
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
+            // Branches
+            'branch_ids' => ['nullable', 'array'],
+            'branch_ids.*' => ['integer', 'exists:branches,id'],
+
+            // User
             'user_type_id' => ['required', 'exists:user_types,id'],
 
-            'full_name' => ['required', 'string', 'max:255'],
-            'mobile'    => ['required', 'string', 'max:20'],
-            'nic'       => ['required', 'string', 'max:30'],
-            'bday'      => ['nullable', 'date'],
-            'gender'    => ['required', 'in:male,female,other'],
-            'address1'  => ['required', 'string', 'max:255'],
-            'address2'  => ['nullable', 'string', 'max:255'],
-            'address3'  => ['nullable', 'string', 'max:255'],
-            'is_active' => ['nullable', 'boolean'],
-            'note'      => ['nullable', 'string'],
-
-            'email'     => ['required', 'email', 'max:255', 'unique:users,email'],
-            'password'  => ['required', 'string', 'min:6'],
-        ]);
-
-        try {
-            DB::transaction(function () use ($request, $validated) {
-
-                $customId = $this->generateSystemUserCustomId();
-
-                $user = User::create([
-                    'name' => $validated['full_name'],
-                    'email' => $validated['email'],
-                    'password' => $validated['password'],
-                    'is_active' => $request->boolean('is_active'),
-                    'user_type_id' => $validated['user_type_id'],
-                ]);
-
-                SystemUser::create([
-                    'custom_id' => $customId,
-                    'user_id' => $user->id,
-                    'full_name' => $validated['full_name'],
-                    'mobile' => $validated['mobile'],
-                    'nic' => $validated['nic'],
-                    'bday' => $validated['bday'] ?? null,
-                    'gender' => $validated['gender'],
-                    'address1' => $validated['address1'],
-                    'address2' => $validated['address2'] ?? null,
-                    'address3' => $validated['address3'] ?? null,
-                    'is_active' => $request->boolean('is_active'),
-                    'note' => $validated['note'] ?? null,
-                ]);
-            });
-
-            return redirect()
-                ->route('admin.system-users.index')
-                ->with('success', 'System user created successfully.');
-        } catch (\Throwable $e) {
-
-            Log::error('System user create failed', [
-                'message' => $e->getMessage(),
-                'file' => $e->getFile(),
-                'line' => $e->getLine(),
-                'trace' => $e->getTraceAsString(),
-            ]);
-
-            return back()
-                ->withInput()
-                ->with('error', 'Something went wrong while saving system user.');
-        }
-    }
-
-    public function edit(SystemUser $systemUser): View
-    {
-        $userTypes = UserType::where('is_active', true)
-            ->orderBy('name')
-            ->get();
-
-        return view(
-            'admin.system-users.edit',
-            compact('systemUser', 'userTypes')
-        );
-    }
-
-    public function update(Request $request, SystemUser $systemUser): RedirectResponse
-    {
-        $validated = $request->validate([
+            // System User
             'full_name' => ['required', 'string', 'max:255'],
             'mobile' => ['required', 'string', 'max:20'],
             'nic' => ['required', 'string', 'max:30'],
@@ -140,7 +74,185 @@ class SystemUserController extends Controller
             'is_active' => ['nullable', 'boolean'],
             'note' => ['nullable', 'string'],
 
-            // user table fields
+            // Login
+            'email' => [
+                'required',
+                'email',
+                'max:255',
+                'unique:users,email',
+            ],
+
+            'password' => [
+                'required',
+                'string',
+                'min:6',
+            ],
+        ]);
+
+        try {
+
+            DB::transaction(function () use ($request, $validated) {
+
+                /*
+            |--------------------------------------------------------------------------
+            | Generate System User Custom ID
+            |--------------------------------------------------------------------------
+            */
+
+                $customId = $this->generateSystemUserCustomId();
+
+
+                /*
+            |--------------------------------------------------------------------------
+            | Create User
+            |--------------------------------------------------------------------------
+            */
+
+                $user = User::create([
+                    'name' => $validated['full_name'],
+                    'email' => $validated['email'],
+                    'password' => $validated['password'],
+                    'is_active' => $request->boolean('is_active'),
+                    'user_type_id' => $validated['user_type_id'],
+                ]);
+
+
+                /*
+            |--------------------------------------------------------------------------
+            | Assign Branches
+            |--------------------------------------------------------------------------
+            |
+            | branch_ids comes from the create form.
+            | Example:
+            |
+            | branch_ids = [1, 2, 3]
+            |
+            | This will create records in branch_users table.
+            |
+            */
+
+                $user->branches()->sync(
+                    $validated['branch_ids'] ?? []
+                );
+
+
+                /*
+            |--------------------------------------------------------------------------
+            | Create System User Profile
+            |--------------------------------------------------------------------------
+            */
+
+                SystemUser::create([
+                    'custom_id' => $customId,
+                    'user_id' => $user->id,
+
+                    'full_name' => $validated['full_name'],
+                    'mobile' => $validated['mobile'],
+                    'nic' => $validated['nic'],
+
+                    'bday' => $validated['bday'] ?? null,
+                    'gender' => $validated['gender'],
+
+                    'address1' => $validated['address1'],
+                    'address2' => $validated['address2'] ?? null,
+                    'address3' => $validated['address3'] ?? null,
+
+                    'is_active' => $request->boolean('is_active'),
+
+                    'note' => $validated['note'] ?? null,
+                ]);
+            });
+
+
+            /*
+        |--------------------------------------------------------------------------
+        | Success
+        |--------------------------------------------------------------------------
+        */
+
+            return redirect()
+                ->route('admin.system-users.index')
+                ->with(
+                    'success',
+                    'System user created successfully.'
+                );
+        } catch (\Throwable $e) {
+
+            /*
+        |--------------------------------------------------------------------------
+        | Log Error
+        |--------------------------------------------------------------------------
+        */
+
+            Log::error('System user create failed', [
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
+
+            /*
+        |--------------------------------------------------------------------------
+        | Return Back
+        |--------------------------------------------------------------------------
+        */
+
+            return back()
+                ->withInput()
+                ->with(
+                    'error',
+                    'Something went wrong while saving system user.'
+                );
+        }
+    }
+
+    public function edit(SystemUser $systemUser): View
+    {
+        $userTypes = UserType::where('is_active', true)
+            ->orderBy('name')
+            ->get();
+
+        // Active branches
+        $branches = Branch::where('is_active', true)
+            ->orderBy('name')
+            ->get();
+
+        // Load current user's assigned branches
+        $systemUser->load('user.branches');
+
+        return view(
+            'admin.system-users.edit',
+            compact(
+                'systemUser',
+                'userTypes',
+                'branches'
+            )
+        );
+    }
+
+
+    public function update(Request $request, SystemUser $systemUser): RedirectResponse
+    {
+        $validated = $request->validate([
+
+            // Branches
+            'branch_ids' => ['nullable', 'array'],
+            'branch_ids.*' => ['integer', 'exists:branches,id'],
+
+            // System User
+            'full_name' => ['required', 'string', 'max:255'],
+            'mobile' => ['required', 'string', 'max:20'],
+            'nic' => ['required', 'string', 'max:30'],
+            'bday' => ['nullable', 'date'],
+            'gender' => ['required', 'in:male,female,other'],
+            'address1' => ['required', 'string', 'max:255'],
+            'address2' => ['nullable', 'string', 'max:255'],
+            'address3' => ['nullable', 'string', 'max:255'],
+            'is_active' => ['nullable', 'boolean'],
+            'note' => ['nullable', 'string'],
+
+            // User table fields
             'email' => [
                 'required',
                 'email',
@@ -148,14 +260,29 @@ class SystemUserController extends Controller
                 'unique:users,email,' . $systemUser->user_id,
             ],
 
-            'password' => ['nullable', 'string', 'min:6'],
+            // Password is optional during update
+            'password' => [
+                'nullable',
+                'string',
+                'min:6',
+            ],
         ]);
+
 
         try {
 
-            DB::transaction(function () use ($request, $validated, $systemUser) {
+            DB::transaction(function () use (
+                $request,
+                $validated,
+                $systemUser
+            ) {
 
-                // update related user
+                /*
+            |--------------------------------------------------------------------------
+            | Update Related User
+            |--------------------------------------------------------------------------
+            */
+
                 if ($systemUser->user) {
 
                     $userData = [
@@ -164,38 +291,95 @@ class SystemUserController extends Controller
                         'is_active' => $request->boolean('is_active'),
                     ];
 
-                    // password only if entered
+
+                    /*
+                |--------------------------------------------------------------------------
+                | Update Password Only If Entered
+                |--------------------------------------------------------------------------
+                */
+
                     if (!empty($validated['password'])) {
                         $userData['password'] = $validated['password'];
                     }
 
+
                     $systemUser->user->update($userData);
+
+
+                    /*
+                |--------------------------------------------------------------------------
+                | Update Branch Assignments
+                |--------------------------------------------------------------------------
+                */
+
+                    $systemUser->user->branches()->sync(
+                        $validated['branch_ids'] ?? []
+                    );
                 }
 
-                // update system user
+
+                /*
+            |--------------------------------------------------------------------------
+            | Update System User Profile
+            |--------------------------------------------------------------------------
+            */
+
                 $systemUser->update([
-                    // custom_id NOT editable
+
+                    // custom_id is NOT editable
                     'full_name' => $validated['full_name'],
                     'mobile' => $validated['mobile'],
                     'nic' => $validated['nic'],
+
                     'bday' => $validated['bday'] ?? null,
                     'gender' => $validated['gender'],
+
                     'address1' => $validated['address1'],
                     'address2' => $validated['address2'] ?? null,
                     'address3' => $validated['address3'] ?? null,
+
                     'is_active' => $request->boolean('is_active'),
+
                     'note' => $validated['note'] ?? null,
                 ]);
             });
 
+
+            /*
+        |--------------------------------------------------------------------------
+        | Success
+        |--------------------------------------------------------------------------
+        */
+
             return redirect()
                 ->route('admin.system-users.index')
-                ->with('success', 'System user updated successfully.');
+                ->with(
+                    'success',
+                    'System user updated successfully.'
+                );
         } catch (\Throwable $e) {
+
+            /*
+        |--------------------------------------------------------------------------
+        | Log Error
+        |--------------------------------------------------------------------------
+        */
+
+            Log::error('System user update failed', [
+                'system_user_id' => $systemUser->id,
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+
 
             return back()
                 ->withInput()
-                ->with('error', 'Something went wrong while updating system user.');
+                ->with(
+                    'error',
+                    'Something went wrong while updating system user.'
+                );
         }
     }
 

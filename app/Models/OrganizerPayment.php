@@ -4,12 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class OrganizerPayment extends Model
 {
     use SoftDeletes;
 
     protected $fillable = [
+        'branch_id',
         'organizer_id',
         'user_id',
         'payment_type',
@@ -26,17 +28,22 @@ class OrganizerPayment extends Model
         'payment_date' => 'date',
     ];
 
-    public function organizer()
+    public function branch(): BelongsTo
+    {
+        return $this->belongsTo(Branch::class);
+    }
+
+    public function organizer(): BelongsTo
     {
         return $this->belongsTo(Organizer::class);
     }
 
-    public function createdBy()
+    public function createdBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function paymentReason()
+    public function paymentReason(): BelongsTo
     {
         return $this->belongsTo(
             PaymentReason::class,
@@ -45,24 +52,42 @@ class OrganizerPayment extends Model
         );
     }
 
-    // helpers
+    public function scopeForBranches($query, $branchIds)
+    {
+        return $query->whereIn('branch_id', $branchIds);
+    }
 
-    public function isSalary()
+    public function scopeForBranch($query, int $branchId)
+    {
+        return $query->where('branch_id', $branchId);
+    }
+
+    public function scopePaid($query)
+    {
+        return $query->where('status', 'paid');
+    }
+
+    public function scopePending($query)
+    {
+        return $query->where('status', 'pending');
+    }
+
+    public function isSalary(): bool
     {
         return $this->payment_type === 'salary';
     }
 
-    public function isAdvance()
+    public function isAdvance(): bool
     {
         return $this->payment_type === 'advance';
     }
 
-    public function isDeduction()
+    public function isDeduction(): bool
     {
         return $this->payment_type === 'deduction';
     }
 
-    public function isOther()
+    public function isOther(): bool
     {
         return $this->payment_type === 'other';
     }

@@ -138,14 +138,29 @@ class ExamService
      */
     public function getCategoriesByClass(int $classId): Collection
     {
-        $classCategoryFees = ClassCategoryFee::with('category')
+        $classCategoryFees = ClassCategoryFee::with([
+                'category',
+                'activeFeeOptions:id,class_category_fee_id,label,fee,is_default,is_active',
+            ])
             ->where('student_class_id', $classId)
             ->where('is_active', true)
             ->get();
 
         // Extract unique categories
         $categories = $classCategoryFees->map(function ($fee) {
-            return $fee->category;
+            $category = $fee->category;
+
+            if (!$category) {
+                return null;
+            }
+
+            // Keep only active fee options for categories returned to the controller.
+            $category->setRelation(
+                'feeOptions',
+                $fee->activeFeeOptions
+            );
+
+            return $category;
         })->filter(function ($category) {
             return $category !== null && $category->is_active;
         })->unique('id')->values();
@@ -484,12 +499,22 @@ class ExamService
      */
     public function calculateGrade(float $percentage): string
     {
-        return match (true) {
-            $percentage >= 75 => 'A',
-            $percentage >= 65 => 'B',
-            $percentage >= 50 => 'C',
-            $percentage >= 35 => 'S',
-            default => 'F',
-        };
+        if ($percentage >= 75) {
+            return 'A';
+        }
+
+        if ($percentage >= 65) {
+            return 'B';
+        }
+
+        if ($percentage >= 50) {
+            return 'C';
+        }
+
+        if ($percentage >= 35) {
+            return 'S';
+        }
+
+        return 'F';
     }
 }

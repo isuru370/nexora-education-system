@@ -19,8 +19,7 @@ class QuickPhoto extends Model
         'is_active' => 'boolean',
     ];
 
-    // helper
-    public function isActive()
+    public function isActive(): bool
     {
         return $this->is_active;
     }

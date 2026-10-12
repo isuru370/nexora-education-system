@@ -23,7 +23,7 @@ use Barryvdh\DomPDF\Facade\Pdf;
 
 class ExamController extends Controller
 {
-    protected ExamService $examService;
+    protected $examService;
 
     public function __construct(ExamService $examService)
     {
@@ -75,7 +75,8 @@ class ExamController extends Controller
         $classes = StudentClass::with([
             'grade:id,grade_name',
             'teacher:id,full_name',
-            'categoryFees.category:id,category_name'
+            'categoryFees.category:id,category_name',
+            'categoryFees.activeFeeOptions:id,class_category_fee_id,label,fee,is_default,is_active'
         ])
             ->where('is_active', true)
             ->get();
@@ -109,7 +110,8 @@ class ExamController extends Controller
         $classes = StudentClass::with([
             'grade:id,grade_name',
             'teacher:id,full_name',
-            'categoryFees.category:id,category_name'
+            'categoryFees.category:id,category_name',
+            'categoryFees.activeFeeOptions:id,class_category_fee_id,label,fee,is_default,is_active'
         ])
             ->where('is_active', true)
             ->get();
@@ -156,6 +158,20 @@ class ExamController extends Controller
                             'id' => $category->id,
                             'name' => $category->category_name,
                             'code' => $category->code,
+                            'fee_options' => $category->feeOptions
+                                ? $category->feeOptions
+                                    ->where('is_active', true)
+                                    ->map(function ($option) {
+                                        return [
+                                            'id' => $option->id,
+                                            'label' => $option->label,
+                                            'fee' => (float) $option->fee,
+                                            'is_default' => (bool) $option->is_default,
+                                        ];
+                                    })
+                                    ->values()
+                                    ->all()
+                                : [],
                         ];
                     })
                     ->values()

@@ -151,26 +151,19 @@ class AttendanceReportService
         return StudentClassEnrollment::query()
 
             ->select([
-
                 'student_class_enrollments.id',
-
                 'student_class_enrollments.student_id',
-
                 'student_class_enrollments.student_class_id',
-
                 'student_class_enrollments.class_category_fee_id',
-
+                'student_class_enrollments.class_category_fee_option_id',
                 'student_class_enrollments.is_free_card',
-
-                'student_class_enrollments.custom_fee',
-
-                'student_class_enrollments.discount_percentage',
-
             ])
 
             ->with([
                 'student:id,custom_id,initial_name,img_url,guardian_mobile,grade_id',
                 'student.grade:id,grade_name',
+
+                'classCategoryFeeOption:id,class_category_fee_id,label,fee,is_default,is_active',
             ])
 
             ->join(
@@ -179,8 +172,6 @@ class AttendanceReportService
                 '=',
                 'student_class_enrollments.student_id'
             )
-
-            ->orderBy('student_id')
 
             ->where(
                 'student_class_enrollments.student_class_id',
@@ -196,11 +187,6 @@ class AttendanceReportService
                 'student_class_enrollments.is_active',
                 true
             )
-
-            // ✅ Add this: Only include enrollments with existing students
-            ->whereHas('student', function ($query) {
-                $query->whereNotNull('id'); // or add any other active conditions
-            })
 
             ->orderBy('students.custom_id')
 

@@ -283,7 +283,7 @@
     @php
         $data = $data ?? [];
         $isSuccess = ($data['status'] ?? '') === 'success';
-        $teacherId = $data['teacher_id'] ?? '';
+        $teacherId = $data['teacher_custom_id'] ?? '';
         $teacherName = $data['teacher_name'] ?? '';
         $monthYearDisplay = $data['month_year_display'] ?? '';
         $dateGenerated = $data['date_generated'] ?? now()->format('d M Y, h:i A');
@@ -300,23 +300,36 @@
         $paymentMethod = $data['payment_method'] ?? 'Cash';
     @endphp
 
-    @if(!$isSuccess)
+    @if (!$isSuccess)
 
         <div class="error-message">
             <h2>⚠️ Salary Slip Load Failed</h2>
             <p>{{ $data['message'] ?? 'Unknown error occurred.' }}</p>
         </div>
-
     @else
-
         <div class="slip-container">
 
             {{-- Header --}}
             <div class="slip-header">
-                <h1>MINIPALASA HIGHER EDUCATION</h1>
-                <div class="institution">Mirigama</div>
-                <div class="address">📞 +94 XX XXX XXXX | ✉ info@minipalasa.edu</div>
-                <div class="slip-title">TEACHER SALARY SLIP</div>
+                <h1>{{ config('institution.name') }}</h1>
+
+                <div class="institution">
+                    {{ config('institution.location') }}
+                </div>
+
+                <div class="address">
+                    @if (config('institution.phone'))
+                        📞 {{ config('institution.phone') }}
+                    @endif
+
+                    @if (config('institution.email'))
+                        | ✉ {{ config('institution.email') }}
+                    @endif
+                </div>
+
+                <div class="slip-title">
+                    TEACHER SALARY SLIP
+                </div>
             </div>
 
             {{-- Body --}}
@@ -325,7 +338,7 @@
                 {{-- Teacher Information Grid --}}
                 <div class="info-grid">
                     <div class="info-item">
-                        <div class="info-label">Teacher ID</div>
+                        <div class="info-label">Teacher Code</div>
                         <div class="info-value">{{ $teacherId }}</div>
                     </div>
                     <div class="info-item">
@@ -367,15 +380,16 @@
                             $maxRows = max(count($earnings), count($deductions));
                         @endphp
 
-                        @for($i = 0; $i < $maxRows; $i++)
+                        @for ($i = 0; $i < $maxRows; $i++)
                             <tr>
                                 {{-- Earnings --}}
-                                @if(isset($earnings[$i]))
+                                @if (isset($earnings[$i]))
                                     <td>
                                         <strong>{{ $earnings[$i]['description'] ?? '' }}</strong>
-                                        @if(isset($earnings[$i]['class_total']))
+                                        @if (isset($earnings[$i]['class_total']))
                                             <div class="small-text">
-                                                Class Total: Rs. {{ number_format($earnings[$i]['class_total'], 2) }}<br>
+                                                Class Total: Rs.
+                                                {{ number_format($earnings[$i]['class_total'], 2) }}<br>
                                                 Teacher ({{ $earnings[$i]['teacher_percentage'] ?? 0 }}%): Rs.
                                                 {{ number_format($earnings[$i]['teacher_share'] ?? 0, 2) }}
                                             </div>
@@ -389,7 +403,7 @@
                                 @endif
 
                                 {{-- Deductions --}}
-                                @if(isset($deductions[$i]))
+                                @if (isset($deductions[$i]))
                                     <td>{{ $deductions[$i]['description'] ?? '' }}</td>
                                     <td class="text-right amount amount-deduction">- Rs.
                                         {{ number_format($deductions[$i]['amount'] ?? 0, 2) }}</td>
@@ -465,7 +479,7 @@
     @endif
 
     <script>
-        window.addEventListener('load', function () {
+        window.addEventListener('load', function() {
             const urlParams = new URLSearchParams(window.location.search);
             if (urlParams.get('autoPrint') === 'true') {
                 setTimeout(() => {
@@ -505,7 +519,7 @@
                     60 => 'Sixty',
                     70 => 'Seventy',
                     80 => 'Eighty',
-                    90 => 'Ninety'
+                    90 => 'Ninety',
                 ];
 
                 if ($number < 20) {

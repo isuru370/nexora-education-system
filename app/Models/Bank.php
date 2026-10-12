@@ -19,11 +19,17 @@ class Bank extends Model
         'is_active' => 'boolean',
     ];
 
+    /**
+     * Bank has many bank branches.
+     */
     public function branches()
     {
         return $this->hasMany(BankBranch::class);
     }
 
+    /**
+     * Scope: Get active banks only.
+     */
     public function scopeActive($query)
     {
         return $query->where('is_active', true);

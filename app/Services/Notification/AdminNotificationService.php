@@ -3,144 +3,318 @@
 namespace App\Services\Notification;
 
 use App\Models\Notification;
-use App\Models\Student;
-use App\Enums\NotificationType;
-use App\Enums\NotificationStatus;
-use App\Jobs\SendNotificationJob;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Facades\Log;
+use InvalidArgumentException;
+use RuntimeException;
 
 class AdminNotificationService
 {
+    public function __construct(
+        protected NotificationService $notificationService
+    ) {
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | CREATE SINGLE
+    |--------------------------------------------------------------------------
+    */
+
     /**
-     * Create a single notification.
+     * Create and queue a notification for one student.
+     *
+     * Actual notification logic is handled by NotificationService.
      */
     public function create(array $data): Notification
     {
-        return DB::transaction(function () use ($data) {
-            $student = Student::findOrFail($data['student_id']);
+        /*
+         * Admin service accepts "body".
+         *
+         * NotificationService expects "message".
+         */
+        $payload = [
+            'student_id' => $data['student_id'],
 
-            $notification = Notification::create([
-                'student_id' => $student->id,
-                'title' => $data['title'],
-                'body' => $data['body'],
-                'type' => $data['type'] ?? NotificationType::GENERAL,
-                'data' => $data['data'] ?? null,
-                'status' => NotificationStatus::PENDING,
-                'scheduled_at' => $data['scheduled_at'] ?? null,
-                'created_by' => auth()->id(),
-            ]);
+            'title' => $data['title'],
 
-            // Dispatch to queue
-            SendNotificationJob::dispatch($notification->id)
-                ->onQueue('notifications');
+            'message' => $data['body'],
 
-            Log::info('Admin created notification', [
-                'notification_id' => $notification->id,
-                'student_id' => $student->id,
-                'admin_id' => auth()->id(),
-            ]);
+            'type' => $data['type'] ?? null,
 
-            return $notification;
-        });
+            'data' => $data['data'] ?? null,
+
+            'scheduled_at' =>
+                $data['scheduled_at'] ?? null,
+        ];
+
+        $notification =
+            $this->notificationService->send(
+                $payload
+            );
+
+        Log::info(
+            'Admin notification created.',
+            [
+                'notification_id' =>
+                    $notification->id,
+
+                'student_id' =>
+                    $notification->student_id,
+
+                'admin_id' =>
+                    auth()->id(),
+
+                'status' =>
+                    $notification->status,
+            ]
+        );
+
+        return $notification;
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | BULK
+    |--------------------------------------------------------------------------
+    */
+
     /**
-     * Send bulk notifications.
+     * Create and queue notifications for multiple students.
+     *
+     * Returns number of successfully queued notifications.
      */
     public function sendBulk(array $data): int
     {
-        $studentIds = $data['student_ids'];
-        $count = 0;
-
-        foreach ($studentIds as $studentId) {
-            try {
-                $notification = Notification::create([
-                    'student_id' => $studentId,
-                    'title' => $data['title'],
-                    'body' => $data['body'],
-                    'type' => $data['type'] ?? NotificationType::GENERAL,
-                    'data' => $data['data'] ?? null,
-                    'status' => NotificationStatus::PENDING,
-                    'scheduled_at' => $data['scheduled_at'] ?? null,
-                    'created_by' => auth()->id(),
-                ]);
-
-                SendNotificationJob::dispatch($notification->id)
-                    ->onQueue('notifications');
-
-                $count++;
-            } catch (\Exception $e) {
-                Log::error('Failed to send bulk notification', [
-                    'student_id' => $studentId,
-                    'error' => $e->getMessage(),
-                ]);
-            }
+        if (
+            !isset($data['student_ids'])
+            || !is_array($data['student_ids'])
+        ) {
+            throw new InvalidArgumentException(
+                'student_ids must be an array.'
+            );
         }
 
-        Log::info('Bulk notifications created', [
-            'total' => count($studentIds),
-            'success' => $count,
-            'admin_id' => auth()->id(),
-        ]);
+        /*
+         * Normalize IDs.
+         */
+        $studentIds = collect($data['student_ids'])
+            ->filter(
+                fn ($id) =>
+                    is_numeric($id)
+                    && (int) $id > 0
+            )
+            ->map(
+                fn ($id) => (int) $id
+            )
+            ->unique()
+            ->values()
+            ->toArray();
 
-        return $count;
+        if (empty($studentIds)) {
+            throw new InvalidArgumentException(
+                'At least one valid student ID is required.'
+            );
+        }
+
+        /*
+         * Convert body → message.
+         */
+        $payload = [
+            'title' =>
+                $data['title'],
+
+            'message' =>
+                $data['body'],
+
+            'type' =>
+                $data['type'] ?? null,
+
+            'data' =>
+                $data['data'] ?? null,
+
+            'scheduled_at' =>
+                $data['scheduled_at'] ?? null,
+        ];
+
+        $results =
+            $this->notificationService->sendToMany(
+                $studentIds,
+                $payload
+            );
+
+        $successCount =
+            count($results['success']);
+
+        Log::info(
+            'Admin bulk notifications processed.',
+            [
+                'total' =>
+                    count($studentIds),
+
+                'queued' =>
+                    $successCount,
+
+                'failed' =>
+                    count($results['failed']),
+
+                'admin_id' =>
+                    auth()->id(),
+            ]
+        );
+
+        return $successCount;
     }
+
+    /*
+    |--------------------------------------------------------------------------
+    | RETRY
+    |--------------------------------------------------------------------------
+    */
 
     /**
      * Retry a failed notification.
      */
-    public function retry(Notification $notification): void
-    {
-        $notification->markAsPending();
-        SendNotificationJob::dispatch($notification->id)->onQueue('notifications');
+    public function retry(
+        Notification $notification
+    ): void {
+        /*
+         * Delegate retry rules to the main service.
+         *
+         * This includes:
+         *
+         * - FAILED status check
+         * - retry limit
+         * - active token check
+         * - atomic status update
+         * - afterCommit queue dispatch
+         */
+        $this->notificationService->retry(
+            $notification
+        );
 
-        Log::info('Notification retry queued', [
-            'notification_id' => $notification->id,
-            'admin_id' => auth()->id(),
-        ]);
+        Log::info(
+            'Admin notification retry requested.',
+            [
+                'notification_id' =>
+                    $notification->id,
+
+                'admin_id' =>
+                    auth()->id(),
+            ]
+        );
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | STATISTICS
+    |--------------------------------------------------------------------------
+    */
+
     /**
-     * Get notification statistics.
+     * Get notification dashboard statistics.
      */
     public function getStats(): array
     {
-        return [
-            'total' => Notification::count(),
-            'pending' => Notification::pending()->count(),
-            'processing' => Notification::processing()->count(),
-            'sent' => Notification::sent()->count(),
-            'failed' => Notification::failed()->count(),
-            'cancelled' => Notification::cancelled()->count(),
-            'unread' => Notification::unread()->count(),
-            'today' => Notification::whereDate('created_at', today())->count(),
-            'this_week' => Notification::whereBetween('created_at', [
-                now()->startOfWeek(),
-                now()->endOfWeek(),
-            ])->count(),
-            'this_month' => Notification::whereMonth('created_at', now()->month)->count(),
-        ];
+        return $this->notificationService->getStats()
+            + [
+                'unread' =>
+                    Notification::query()
+                        ->unread()
+                        ->count(),
+
+                'today' =>
+                    Notification::query()
+                        ->whereDate(
+                            'created_at',
+                            today()
+                        )
+                        ->count(),
+
+                'this_week' =>
+                    Notification::query()
+                        ->whereBetween(
+                            'created_at',
+                            [
+                                now()->startOfWeek(),
+                                now()->endOfWeek(),
+                            ]
+                        )
+                        ->count(),
+
+                'this_month' =>
+                    Notification::query()
+                        ->whereBetween(
+                            'created_at',
+                            [
+                                now()->startOfMonth(),
+                                now()->endOfMonth(),
+                            ]
+                        )
+                        ->count(),
+            ];
     }
+
+    /*
+    |--------------------------------------------------------------------------
+    | RECENT
+    |--------------------------------------------------------------------------
+    */
 
     /**
      * Get recent notifications.
      */
-    public function getRecent(int $limit = 10): \Illuminate\Database\Eloquent\Collection
-    {
-        return Notification::with(['student', 'creator'])
-            ->orderBy('created_at', 'desc')
+    public function getRecent(
+        int $limit = 10
+    ): Collection {
+        /*
+         * Prevent unreasonable queries.
+         */
+        $limit = max(
+            1,
+            min($limit, 100)
+        );
+
+        return Notification::query()
+            ->with([
+                'student',
+                'creator',
+            ])
+            ->latest('created_at')
             ->limit($limit)
             ->get();
     }
 
+    /*
+    |--------------------------------------------------------------------------
+    | BY STUDENT
+    |--------------------------------------------------------------------------
+    */
+
     /**
-     * Get notifications by student.
+     * Get notifications belonging to a student.
      */
-    public function getByStudent(int $studentId, int $limit = 20): \Illuminate\Database\Eloquent\Collection
-    {
-        return Notification::where('student_id', $studentId)
-            ->orderBy('created_at', 'desc')
+    public function getByStudent(
+        int $studentId,
+        int $limit = 20
+    ): Collection {
+        if ($studentId <= 0) {
+            throw new InvalidArgumentException(
+                'Invalid student ID.'
+            );
+        }
+
+        $limit = max(
+            1,
+            min($limit, 100)
+        );
+
+        return Notification::query()
+            ->where(
+                'student_id',
+                $studentId
+            )
+            ->latest('created_at')
             ->limit($limit)
             ->get();
     }

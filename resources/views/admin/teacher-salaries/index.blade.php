@@ -130,7 +130,7 @@
                         <h6>Total Teachers</h6>
 
                         <h3>
-                            {{ $summary['total_teachers'] }}
+                            {{ $summary['total_teachers'] ?? count($salaryRows) }}
                         </h3>
 
                     </div>

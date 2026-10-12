@@ -136,12 +136,11 @@ class DailyReportController extends Controller
                 'Payment ID',
                 'Paid At',
                 'Amount',
-                'Discount Amount',
                 'Student Code',
                 'Student Name',
                 'Guardian Mobile',
-                'Custom Fee',
-                'Discount %',
+                'Fee Option',
+                'Fee Option Fee',
                 'Final Fee',
                 'Payment Status',
                 'Class Name',
@@ -153,12 +152,11 @@ class DailyReportController extends Controller
                 'payment_id',
                 'paid_at',
                 'amount',
-                'discount_amount',
                 'student_code',
                 'student_name',
                 'guardian_mobile',
-                'custom_fee',
-                'discount_percentage',
+                'fee_option.label',
+                'fee_option.fee',
                 'final_fee',
                 'payment_status',
                 'class_name',
@@ -375,11 +373,12 @@ class DailyReportController extends Controller
 
         $report['headings'] = $this->pdfHeadings($type);
         $report['columns'] = $this->pdfColumns($type);
-        $report['rows'] = $this->pdfRows($report['rows'], $report['columns']);
 
         $pdf = Pdf::loadView('admin.daily-report.pdf', $report);
 
-        return $pdf->download(Str::slug($report['title']) . '-' . $report['date'] . '.pdf');
+        return $pdf->download(
+            Str::slug($report['title']) . '-' . $report['date'] . '.pdf'
+        );
     }
 
     /*
@@ -435,6 +434,9 @@ class DailyReportController extends Controller
                 'student_code',
                 'student_name',
                 'amount',
+                'fee_option.label',
+                'fee_option.fee',
+                'final_fee',
                 'payment_status',
                 'collected_by',
             ],
@@ -476,7 +478,18 @@ class DailyReportController extends Controller
     protected function pdfHeadings(string $type): array
     {
         return match ($type) {
-            'student' => ['Payment ID', 'Paid At', 'Qr Code', 'Student Name', 'Amount', 'Status', 'Collected By'],
+            'student' => [
+                'Payment ID',
+                'Paid At',
+                'Qr Code',
+                'Student Name',
+                'Amount',
+                'Fee Option',
+                'Fee Option Fee',
+                'Final Fee',
+                'Status',
+                'Collected By',
+            ],
             'teacher' => ['Payment Date', 'Teacher Name', 'Student Name', 'Teacher Amount'],
             'institution' => ['Payment ID', 'Payment Date', 'Student Name', 'Institution Amount'],
             'organizer' => ['Payment ID', 'Payment Date', 'Organizer Name', 'Student Name', 'Organizer Amount'],
@@ -484,14 +497,5 @@ class DailyReportController extends Controller
             'summary' => ['Category', 'Sub Category', 'Amount (Rs.)'],
             default => [],
         };
-    }
-
-    protected function pdfRows(array $rows, array $columns): array
-    {
-        return collect($rows)->map(function ($row) use ($columns) {
-            return collect($columns)->mapWithKeys(function ($column) use ($row) {
-                return [$column => data_get($row, $column)];
-            })->all();
-        })->values()->all();
     }
 }

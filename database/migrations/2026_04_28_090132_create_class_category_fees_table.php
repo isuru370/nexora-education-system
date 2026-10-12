@@ -21,8 +21,6 @@ class CreateClassCategoryFeesTable extends Migration
                 ->cascadeOnUpdate()
                 ->restrictOnDelete();
 
-            $table->decimal('fee', 10, 2)->default(0);
-
             $table->boolean('is_active')->default(true);
 
             $table->text('note')->nullable();

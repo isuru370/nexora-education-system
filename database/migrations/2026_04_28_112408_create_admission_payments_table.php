@@ -4,12 +4,17 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateAdmissionPaymentsTable extends Migration
+return new class extends Migration
 {
-    public function up()
+    public function up(): void
     {
         Schema::create('admission_payments', function (Blueprint $table) {
             $table->id();
+
+            // 🔥 Branch ownership (denormalized from student)
+            $table->foreignId('branch_id')
+                ->constrained('branches')
+                ->restrictOnDelete();
 
             $table->foreignId('student_id')
                 ->constrained('students')
@@ -50,14 +55,39 @@ class CreateAdmissionPaymentsTable extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->index(['student_id', 'status']);
-            $table->index(['admission_id', 'status']);
-            $table->index(['paid_at', 'status']);
+            /*
+            |--------------------------------------------------------------------------
+            | 🔥 Branch-scoped indexes (NEW)
+            |--------------------------------------------------------------------------
+            */
+            $table->index(
+                ['branch_id', 'paid_at', 'status'],
+                'ap_branch_paid_status_idx'
+            );
+
+            $table->index(
+                ['branch_id', 'student_id', 'status'],
+                'ap_branch_student_status_idx'
+            );
+
+            $table->index(
+                ['branch_id', 'admission_id', 'status'],
+                'ap_branch_admission_status_idx'
+            );
+
+            /*
+            |--------------------------------------------------------------------------
+            | පරණ indexes (still useful)
+            |--------------------------------------------------------------------------
+            */
+            $table->index(['student_id', 'status'], 'ap_student_status_idx');
+            $table->index(['admission_id', 'status'], 'ap_admission_status_idx');
+            $table->index(['paid_at', 'status'], 'ap_paid_status_idx');
         });
     }
 
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('admission_payments');
     }
-}
+};

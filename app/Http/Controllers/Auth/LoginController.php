@@ -3,58 +3,63 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Services\Auth\AuthService;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use App\Services\AuthService;
+use Illuminate\View\View;
 
 class LoginController extends Controller
 {
-    protected $authService;
+    public function __construct(
+        protected AuthService $authService
+    ) {}
 
     /**
-     * Constructor
+     * Show login page.
      */
-    public function __construct(AuthService $authService)
-    {
-        $this->authService = $authService;
-    }
-
-    /**
-     * Show login page
-     */
-    public function showLoginForm()
+    public function showLoginForm(): View
     {
         return view('auth.login');
     }
 
     /**
-     * Handle login
+     * Handle login request.
      */
-    public function login(Request $request)
+    public function login(Request $request): RedirectResponse
     {
-        $validated = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required|string',
+        $credentials = $request->validate([
+            'email' => [
+                'required',
+                'email',
+            ],
+
+            'password' => [
+                'required',
+                'string',
+            ],
         ]);
 
-        $result = $this->authService->login($validated);
-
+        $result = $this->authService->login($credentials);
 
         if (!$result['success']) {
-
-            return back()->withErrors([
-                'email' => $result['message']
-            ]);
+            return back()
+                ->withInput($request->only('email'))
+                ->withErrors([
+                    'email' => $result['message'],
+                ]);
         }
 
-        return redirect()->route('admin.dashboard');
+        return redirect()->intended(
+            route('dashboard')
+        );
     }
 
     /**
-     * Logout
+     * Logout authenticated user.
      */
-    public function logout(Request $request)
+    public function logout(Request $request): RedirectResponse
     {
-        $this->authService->logout($request->user());
+        $this->authService->logout();
 
         $request->session()->invalidate();
         $request->session()->regenerateToken();

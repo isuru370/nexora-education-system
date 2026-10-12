@@ -6,10 +6,15 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    public function up()
+    public function up(): void
     {
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
+
+            // 🔥 Branch ownership (denormalized from enrollment → class)
+            $table->foreignId('branch_id')
+                ->constrained('branches')
+                ->restrictOnDelete();
 
             // 🔥 Offline support
             $table->uuid('local_uuid')->nullable()->unique();
@@ -39,7 +44,6 @@ return new class extends Migration
 
             // 💰 Paid amount only
             $table->decimal('amount', 10, 2);
-            
 
             // Optional discount tracking
             $table->decimal('discount_amount', 10, 2)->default(0);
@@ -88,15 +92,31 @@ return new class extends Migration
                 'payment_month',
             ], 'unique_enrollment_month_payment');
 
-            // indexes
-            $table->index(['student_id', 'paid_at']);
-            $table->index(['student_class_enrollment_id', 'paid_at']);
-            $table->index(['status', 'paid_at']);
-            $table->index(['payment_month', 'status']);
+            // 🔥 Branch-scoped indexes (NEW)
+            $table->index(
+                ['branch_id', 'paid_at'],
+                'pay_branch_paid_idx'
+            );
+
+            $table->index(
+                ['branch_id', 'payment_month', 'status'],
+                'pay_branch_month_status_idx'
+            );
+
+            $table->index(
+                ['branch_id', 'student_id'],
+                'pay_branch_student_idx'
+            );
+
+            // පරණ indexes (still useful)
+            $table->index(['student_id', 'paid_at'], 'pay_student_paid_idx');
+            $table->index(['student_class_enrollment_id', 'paid_at'], 'pay_enrollment_paid_idx');
+            $table->index(['status', 'paid_at'], 'pay_status_paid_idx');
+            $table->index(['payment_month', 'status'], 'pay_month_status_idx');
         });
     }
 
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('payments');
     }

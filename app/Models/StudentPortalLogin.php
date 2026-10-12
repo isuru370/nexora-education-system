@@ -21,6 +21,11 @@ class StudentPortalLogin extends Model
         'last_login_at',
     ];
 
+    protected $hidden = [
+        'password',
+        'otp',
+    ];
+
     protected $casts = [
         'is_verified' => 'boolean',
         'is_active' => 'boolean',
@@ -28,14 +33,19 @@ class StudentPortalLogin extends Model
         'last_login_at' => 'datetime',
     ];
 
-    // 🔐 auto hash password
-    public function setPasswordAttribute($value)
+    /**
+     * Hash password automatically.
+     */
+    public function setPasswordAttribute($value): void
     {
-        if (!empty($value)) {
+        if (!empty($value) && strlen($value) !== 60) {
             $this->attributes['password'] = Hash::make($value);
         }
     }
 
+    /**
+     * Student who owns this portal login.
+     */
     public function student()
     {
         return $this->belongsTo(Student::class);

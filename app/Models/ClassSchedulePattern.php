@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class ClassSchedulePattern extends Model
@@ -10,6 +12,7 @@ class ClassSchedulePattern extends Model
     use SoftDeletes;
 
     protected $fillable = [
+        'branch_id',
         'student_class_id',
         'class_category_fee_id',
         'class_hall_id',
@@ -28,28 +31,79 @@ class ClassSchedulePattern extends Model
         'is_active' => 'boolean',
     ];
 
-    public function schedules()
+    /**
+     * Branch this schedule pattern belongs to.
+     */
+    public function branch(): BelongsTo
     {
-        return $this->hasMany(ClassSchedule::class, 'class_schedule_pattern_id');
+        return $this->belongsTo(Branch::class);
     }
 
-    public function studentClass()
+    /**
+     * Generated schedules from this pattern.
+     */
+    public function schedules(): HasMany
     {
-        return $this->belongsTo(StudentClass::class);
+        return $this->hasMany(
+            ClassSchedule::class,
+            'class_schedule_pattern_id'
+        );
     }
 
-    public function categoryFee()
+    /**
+     * Student class.
+     */
+    public function studentClass(): BelongsTo
     {
-        return $this->belongsTo(ClassCategoryFee::class, 'class_category_fee_id');
+        return $this->belongsTo(
+            StudentClass::class,
+            'student_class_id'
+        );
     }
 
-    public function hall()
+    /**
+     * Class category fee.
+     */
+    public function categoryFee(): BelongsTo
     {
-        return $this->belongsTo(ClassHall::class, 'class_hall_id');
+        return $this->belongsTo(
+            ClassCategoryFee::class,
+            'class_category_fee_id'
+        );
     }
 
+    /**
+     * Class hall.
+     */
+    public function hall(): BelongsTo
+    {
+        return $this->belongsTo(
+            ClassHall::class,
+            'class_hall_id'
+        );
+    }
+
+    /**
+     * Scope: active patterns only.
+     */
     public function scopeActive($query)
     {
         return $query->where('is_active', true);
+    }
+
+    /**
+     * Scope: patterns belonging to given branches.
+     */
+    public function scopeForBranches($query, $branchIds)
+    {
+        return $query->whereIn('branch_id', $branchIds);
+    }
+
+    /**
+     * Scope: patterns belonging to a specific branch.
+     */
+    public function scopeForBranch($query, int $branchId)
+    {
+        return $query->where('branch_id', $branchId);
     }
 }

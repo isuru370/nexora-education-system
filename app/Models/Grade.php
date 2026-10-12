@@ -18,11 +18,17 @@ class Grade extends Model
         'is_active' => 'boolean',
     ];
 
+    /**
+     * Students belonging to this grade.
+     */
     public function students()
     {
         return $this->hasMany(Student::class);
     }
 
+    /**
+     * Classes belonging to this grade.
+     */
     public function classes()
     {
         return $this->hasMany(StudentClass::class);

@@ -1,1366 +1,3086 @@
 <?php
 
+
+
 use App\Http\Controllers\Admin\ActivityLogController;
+
 use App\Http\Controllers\Admin\AdmissionController;
+
 use App\Http\Controllers\Admin\AdmissionPaymentController;
+
 use App\Http\Controllers\Admin\OrganizerPaymentController;
+
 use App\Http\Controllers\Admin\SystemUserController;
+
 use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\Admin\DashboardController;
-use App\Http\Controllers\Admin\StudentController;
-use App\Http\Controllers\Admin\StudentClassController;
-use App\Http\Controllers\Admin\StudentClassEnrollmentController;
-use App\Http\Controllers\Admin\TeacherController;
-use App\Http\Controllers\Admin\OrganizerController;
-use App\Http\Controllers\Admin\ClassCategoryController;
-use App\Http\Controllers\Admin\ClassCategoryFeeController;
-use App\Http\Controllers\Admin\ClassHallController;
-use App\Http\Controllers\Admin\ClassScheduleController;
-use App\Http\Controllers\Admin\ClassTimeTableController;
+
 use App\Http\Controllers\Admin\DailyReportController;
+
 use App\Http\Controllers\Admin\DatabaseBackupController;
+
 use App\Http\Controllers\Admin\ExamController;
+
 use App\Http\Controllers\Admin\ExtraIncomeController;
+
 use App\Http\Controllers\Admin\FcmTokenController;
+
 use App\Http\Controllers\Admin\ForgotPasswordController;
+
 use App\Http\Controllers\Admin\GradeController;
+
 use App\Http\Controllers\Admin\ImageUploadController;
+
 use App\Http\Controllers\Admin\InstituteExpenseController;
+
 use App\Http\Controllers\Admin\InstituteIncomeController;
+
 use App\Http\Controllers\Admin\InstitutePaymentReportController;
+
 use App\Http\Controllers\Admin\InstituteReportController;
+
 use App\Http\Controllers\Admin\LogController;
+
+use App\Http\Controllers\Admin\MonthlyClassAttendanceReportController;
+
 use App\Http\Controllers\Admin\MonthlyReportController;
+
+use App\Http\Controllers\Admin\NewAttendance\AttendanceController;
+
 use App\Http\Controllers\Admin\NotificationController;
+
+use App\Http\Controllers\Admin\PaymentCollectionReportController;
+
+use App\Http\Controllers\Admin\PaymentReminderController;
+
 use App\Http\Controllers\Admin\ReceiptController;
-use App\Http\Controllers\Admin\StudentCardController;
-use App\Http\Controllers\Admin\StudentCardRegistrationController;
-use App\Http\Controllers\Admin\StudentClassManagementController;
-use App\Http\Controllers\Admin\StudentIDCardController;
+
 use App\Http\Controllers\Admin\StudentImageController;
-use App\Http\Controllers\Admin\StudentPaymentController;
+
 use App\Http\Controllers\Admin\TeacherReportController;
+
 use App\Http\Controllers\Admin\TeacherSalaryController;
-use App\Http\Controllers\Admin\TemporaryIDCardController;
+
+
 use App\Http\Controllers\Admin\TodayAttendanceController;
+
 use App\Http\Controllers\Admin\UserController;
-use App\Http\Controllers\Admin\UserPermissionController;
+
+
 use App\Http\Controllers\Admin\UserProfileController;
+use App\Http\Controllers\Web\Branch\BranchController;
+use App\Http\Controllers\Web\ClassCategory\ClassCategoryController;
+use App\Http\Controllers\Web\ClassCategoryFee\ClassCategoryFeeController;
+use App\Http\Controllers\Web\ClassCategoryFeeOption\ClassCategoryFeeOptionController;
+use App\Http\Controllers\Web\ClassHall\ClassHallController;
+use App\Http\Controllers\Web\ClassSchedule\ClassScheduleController;
+use App\Http\Controllers\Web\ClassSchedule\ClassTimeTableController;
+use App\Http\Controllers\Web\Dashboard\DashboardController;
+use App\Http\Controllers\Web\GenerateStudentId\GenerateStudentIdController;
+use App\Http\Controllers\Web\Organizer\OrganizerController;
+use App\Http\Controllers\Web\Payment\PaymentController;
+use App\Http\Controllers\Web\Student\StudentCardRegistrationController;
+use App\Http\Controllers\Web\Student\StudentController;
+use App\Http\Controllers\Web\Student\StudentTemporaryRegistrationController;
+use App\Http\Controllers\Web\StudentCard\StudentCardController;
+use App\Http\Controllers\Web\StudentClass\StudentClassController;
+use App\Http\Controllers\Web\StudentClass\StudentClassManagementController;
+use App\Http\Controllers\Web\StudentClassEnrollment\StudentClassEnrollmentController;
+use App\Http\Controllers\Web\Teacher\TeacherController;
+use App\Http\Controllers\Web\TemporaryCard\TemporaryIDCardController;
 use Illuminate\Http\Request;
+
 use Illuminate\Support\Facades\Mail;
+
 use Illuminate\Support\Facades\Route;
 
+
+
 /*
+
 |--------------------------------------------------------------------------
+
 | Public Routes
+
 |--------------------------------------------------------------------------
+
 */
+
+
 
 Route::get('/', function () {
 
     if (auth()->check()) {
-        return redirect('/admin/dashboard');
+        return redirect('/dashboard');
     }
 
     return view('welcome');
 })->name('welcome');
 
 
+
+
+
 Route::get('/contact_administrator', function () {
+
     return view('contact_administrator');
 })->name('contact_administrator');
 
+
+
 Route::post('/contact_administrator', function (Request $request) {
+
     $validated = $request->validate([
+
         'full_name'  => ['required', 'string', 'max:100'],
+
         'email'      => ['required', 'email', 'max:150'],
+
         'phone'      => ['required', 'string', 'max:20'],
+
         'subject'    => ['required', 'string', 'max:150'],
+
         'message'    => ['required', 'string', 'max:5000'],
+
         'attachment' => ['nullable', 'file', 'max:5120', 'mimes:pdf,doc,docx,jpg,jpeg,png'],
+
     ]);
+
+
 
     $toEmail = 'info@nexorait.lk';
 
+
+
     Mail::send('emails.contact_administrator', [
+
         'data' => $validated,
+
     ], function ($mail) use ($validated, $toEmail, $request) {
+
         $mail->to($toEmail)
+
             ->subject('Contact Form: ' . $validated['subject'])
+
             ->replyTo($validated['email'], $validated['full_name']);
 
+
+
         if ($request->hasFile('attachment')) {
+
             $file = $request->file('attachment');
 
+
+
             $mail->attach($file->getRealPath(), [
+
                 'as' => $file->getClientOriginalName(),
+
                 'mime' => $file->getMimeType(),
+
             ]);
         }
     });
+
+
 
     return back()->with('success', 'Your message has been sent successfully.');
 })->name('contact_administrator.send');
 
 
+
+
+
 /*
+
 |--------------------------------------------------------------------------
+
 | Forgot Password
+
 |--------------------------------------------------------------------------
+
 */
 
+
+
 Route::prefix('forgot-password')
+
     ->controller(ForgotPasswordController::class)
+
     ->group(function () {
 
+
+
         Route::get('/', 'index')->name('forgot_password.form');
+
         Route::post('/send-otp', 'sendOtp')->name('forgot_password.send_otp');
+
         Route::post('/verify-otp', 'verifyOtp')->name('forgot_password.verify_otp');
+
         Route::post('/resend-otp', 'resendOtp')->name('forgot_password.resend_otp');
+
         Route::post('/reset-password', 'updatePassword')->name('forgot_password.reset');
     });
 
 
+
+
+
 /*
+
 |--------------------------------------------------------------------------
+
 | Authentication
+
 |--------------------------------------------------------------------------
+
 */
+
+
 
 // Login
-Route::get(
-    '/login',
-    [LoginController::class, 'showLoginForm']
-)->name('login');
+
+Route::get('/login', function () {
+    return view('auth.login');
+})->name('login');
+
+
 
 Route::post(
+
     '/login',
+
     [LoginController::class, 'login']
+
 )->name('login.post');
 
+
+
 // Logout
+
 Route::post(
+
     '/logout',
+
     [LoginController::class, 'logout']
-)->name('logout');
+
+)->name('logout')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
+
+
+
 
 
 /*
+
 |--------------------------------------------------------------------------
+
 | Protected Admin Routes
+
 |--------------------------------------------------------------------------
+
 |
+
 | Only authenticated active users
+
 |
+
 */
+
+
 
 Route::middleware([
+
     'auth',
+
     'user.active',
+
     'role:SUPER_ADMIN'
+
 ])->group(function () {
+
     /*
+
 |--------------------------------------------------------------------------
+
 |  Laravel Logs
+
 |--------------------------------------------------------------------------
+
 */
 
+
+
     Route::get(
+
         '/logs/laravel',
+
         [LogController::class, 'index']
-    )->name('logs.laravel.index');
+
+    )->name('logs.laravel.index')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
+
+
+
+    Route::get('/logs/laravel/content', [LogController::class, 'content'])
+
+        ->name('logs.laravel.content')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
+
+
 
     Route::post(
+
         '/logs/laravel/clear',
+
         [LogController::class, 'clear']
-    )->name('logs.laravel.clear');
+
+    )->name('logs.laravel.clear')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
+
+
 
     Route::get(
+
         '/logs/laravel/download',
+
         [LogController::class, 'download']
-    )->name('logs.laravel.download');
+
+    )->name('logs.laravel.download')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
+
+
 
     Route::get(
+
         '/logs/laravel/stats',
+
         [LogController::class, 'stats']
+
     )
-        ->name('logs.laravel.stats');
+
+        ->name('logs.laravel.stats')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
 });
 
+
+
 Route::middleware([
+
     'auth',
+
     'user.active',
-    'role:ADMIN'
+
 ])->prefix('admin')
+
     ->name('admin.')
+
     ->group(function () {
 
+
+
         Route::get(
+
             '/receipts',
+
             [ReceiptController::class, 'index']
-        )->name('receipts.index');
+
+        )->name('receipts.index')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
+
+
 
         Route::get(
+
             '/receipts/export/excel',
+
             [ReceiptController::class, 'exportExcel']
-        )->name('receipts.export.excel');
+
+        )->name('receipts.export.excel')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
+
+
 
         Route::get(
+
             '/receipts/export/pdf',
+
             [ReceiptController::class, 'exportPdf']
-        )->name('receipts.export.pdf');
+
+        )->name('receipts.export.pdf')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
+
+
+
 
 
         Route::get('/profile', [UserProfileController::class, 'index'])
-            ->name('profile.index');
+
+            ->name('profile.index')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
+
+
 
         Route::post('/profile', [UserProfileController::class, 'update'])
-            ->name('profile.update');
+
+            ->name('profile.update')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
+
+
 
         Route::post('/profile/password', [UserProfileController::class, 'changePassword'])
-            ->name('profile.password');
-        /*
-        |--------------------------------------------------------------------------
-        | Dashboard
-        |--------------------------------------------------------------------------
-        */
 
-        Route::get(
-            '/dashboard',
-            [DashboardController::class, 'index']
-        )->name('dashboard');
+            ->name('profile.password')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
 
-        Route::resource(
-            'system-users',
-            SystemUserController::class
-        );
+
+
+        Route::middleware('role:ADMIN')->group(function () {
+
+            Route::resource(
+
+                'system-users',
+
+                SystemUserController::class
+
+            );
+        });
+
+
 
         Route::get('system-users/export/excel', [SystemUserController::class, 'exportExcel'])
-            ->name('system-users.export.excel');
+
+            ->name('system-users.export.excel')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
+
+
 
         Route::get('system-users/export/pdf', [SystemUserController::class, 'exportPdf'])
-            ->name('system-users.export.pdf');
 
+            ->name('system-users.export.pdf')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
         Route::get(
-            'user-permissions/{systemUser}',
-            [UserPermissionController::class, 'index']
-        )->name('user-permissions.index');
 
-        Route::post(
-            'user-permissions/{systemUser}',
-            [UserPermissionController::class, 'store']
-        )->name('user-permissions.store');
-
-
-        Route::get(
             'institute-yearly-report',
+
             [InstitutePaymentReportController::class, 'yearlyPaymentReport']
-        )->name('institute-yearly-report');
+
+        )->name('institute-yearly-report')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
 
 
         /*
+
         |--------------------------------------------------------------------------
-        | Student Management
-        |--------------------------------------------------------------------------
-        */
 
-        // Search
-        Route::get(
-            'students/search',
-            [StudentController::class, 'search']
-        )->name('students.search');
-
-        // Resource
-        Route::resource(
-            'students',
-            StudentController::class
-        );
-
-        // Toggle Active
-        Route::patch(
-            'students/{student}/toggle-active',
-            [StudentController::class, 'toggleActive']
-        )->name('students.toggleActive');
-
-        // Export
-        Route::get(
-            'students-export/excel',
-            [StudentController::class, 'exportExcel']
-        )->name('students.exportExcel');
-
-        Route::get(
-            'students-export/pdf',
-            [StudentController::class, 'exportPdf']
-        )->name('students.exportPdf');
-
-        /*
-        |--------------------------------------------------------------------------
-        | Student QR Reports
-        |--------------------------------------------------------------------------
-        */
-
-        Route::get(
-            'students-export/all-students-pdf',
-            [StudentController::class, 'allStudentDetailsPdf']
-        )->name('students.allStudentDetailsPdf');
-
-        Route::get(
-            'students-export/temporary-card-expired-soon-pdf',
-            [StudentController::class, 'studentTemporaryCardExpiredSoon']
-        )->name('students.studentTemporaryCardExpiredSoon');
-
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | Student Payment Counter
-        |--------------------------------------------------------------------------
-        */
-
-        Route::get(
-            '/students-payments',
-            [StudentPaymentController::class, 'index']
-        )->name('students-payments.index');
-
-        Route::get(
-            '/students-payments/{id}',
-            [StudentPaymentController::class, 'show']
-        )->name('students-payments.show');
-
-
-        /*
-        |--------------------------------------------------------------------------
         | Student Image Upload
+
         |--------------------------------------------------------------------------
+
         */
 
-        Route::post(
-            '/upload/student-image',
-            [ImageUploadController::class, 'uploadStudentImage']
-        )->name('upload.student.image');
+
 
         Route::post(
+
+            '/upload/student-image',
+
+            [ImageUploadController::class, 'uploadStudentImage']
+
+        )->name('upload.student.image')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
+
+
+
+        Route::post(
+
             '/upload/quick-photo',
+
             [ImageUploadController::class, 'uploadQuickPhoto']
-        )->name('upload.quick.photo');
+
+        )->name('upload.quick.photo')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
+
+
 
         Route::delete(
+
             '/upload/delete',
+
             [ImageUploadController::class, 'delete']
-        )->name('upload.delete');
+
+        )->name('upload.delete')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
 
 
-        /*
-        |--------------------------------------------------------------------------
-        | Teacher Management
-        |--------------------------------------------------------------------------
-        */
 
-        Route::resource(
-            'teachers',
-            TeacherController::class
-        );
 
-        Route::get(
-            'teachers/{teacher}/login-details',
-            [TeacherController::class, 'loginDetails']
-        )->name('teachers.loginDetails');
 
-        Route::post(
-            '/teachers/{teacher}/create-login',
-            [TeacherController::class, 'createLogin']
-        )->name('teachers.create-login');
 
-        Route::post(
-            '/teachers/{teacher}/reset-password',
-            [TeacherController::class, 'resetPassword']
-        )->name('teachers.reset-password');
 
-        Route::patch(
-            'teachers/{teacher}/toggle-active',
-            [TeacherController::class, 'toggleActive']
-        )->name('teachers.toggleActive');
 
-        Route::get(
-            'teachers-export/excel',
-            [TeacherController::class, 'exportExcel']
-        )->name('teachers.exportExcel');
 
-        Route::get(
-            'teachers-export/pdf',
-            [TeacherController::class, 'exportPdf']
-        )->name('teachers.exportPdf');
+
+
+
+
+
+
+
+
 
 
         /*
-        |--------------------------------------------------------------------------
-        | Organizer Management
-        |--------------------------------------------------------------------------
-        */
 
-        Route::resource(
-            'organizers',
-            OrganizerController::class
-        );
-
-        Route::patch(
-            'organizers/{organizer}/toggle-active',
-            [OrganizerController::class, 'toggleActive']
-        )->name('organizers.toggleActive');
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | Student Classes
-        |--------------------------------------------------------------------------
-        */
-
-        Route::get(
-            'student-classes/search',
-            [StudentClassController::class, 'search']
-        )->name('student-classes.search');
-
-        Route::resource(
-            'student-classes',
-            StudentClassController::class
-        );
-
-        Route::patch(
-            'student-classes/{studentClass}/toggle-active',
-            [StudentClassController::class, 'toggleActive']
-        )->name('student-classes.toggleActive');
-
-        Route::patch(
-            'student-classes/{studentClass}/toggle-ongoing',
-            [StudentClassController::class, 'toggleOngoing']
-        )->name('student-classes.toggleOngoing');
-
-        Route::get(
-            'student-classes/export/excel',
-            [StudentClassController::class, 'exportExcel']
-        )->name('student-classes.exportExcel');
-
-        Route::get(
-            'student-classes/export/pdf',
-            [StudentClassController::class, 'exportPdf']
-        )->name('student-classes.exportPdf');
-
-
-        /*
 |--------------------------------------------------------------------------
+
 | Grade Management
+
 |--------------------------------------------------------------------------
+
 */
 
-        Route::resource(
-            'grades',
-            GradeController::class
-        );
+
+
+        Route::middleware('role:ADMIN,BRANCH_ADMIN,USER')->group(function () {
+
+            Route::resource(
+
+                'grades',
+
+                GradeController::class
+
+            );
+        });
+
+
 
         Route::patch(
+
             'grades/{grade}/toggle-active',
+
             [GradeController::class, 'toggleActive']
-        )->name('grades.toggleActive');
 
-
-        /*
-        |--------------------------------------------------------------------------
-        | Class Categories
-        |--------------------------------------------------------------------------
-        */
-
-        Route::resource(
-            'class-categories',
-            ClassCategoryController::class
-        );
-
-        Route::patch(
-            'class-categories/{classCategory}/toggle-active',
-            [ClassCategoryController::class, 'toggleActive']
-        )->name('class-categories.toggleActive');
-
+        )->name('grades.toggleActive')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
 
         /*
+
         |--------------------------------------------------------------------------
-        | Class Category Fees
-        |--------------------------------------------------------------------------
-        */
 
-        Route::get(
-            'class-category-fees/by-class/{studentClass}',
-            [ClassCategoryFeeController::class, 'byClass']
-        )->name('class-category-fees.byClass');
-
-        Route::resource(
-            'class-category-fees',
-            ClassCategoryFeeController::class
-        );
-
-        Route::patch(
-            'class-category-fees/{classCategoryFee}/toggle-active',
-            [ClassCategoryFeeController::class, 'toggleActive']
-        )->name('class-category-fees.toggleActive');
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | Class Halls
-        |--------------------------------------------------------------------------
-        */
-
-        Route::resource(
-            'class-halls',
-            ClassHallController::class
-        );
-
-        Route::patch(
-            'class-halls/{classHall}/toggle-active',
-            [ClassHallController::class, 'toggleActive']
-        )->name('class-halls.toggleActive');
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | Class Schedules
-        |--------------------------------------------------------------------------
-        */
-        Route::get('class-schedules/category-view', [ClassScheduleController::class, 'categorySchedules'])
-            ->name('class-schedules.categorySchedules');
-
-        Route::get(
-            'class-schedules/bulk-edit',
-            [ClassScheduleController::class, 'bulkEdit']
-        )->name('class-schedules.bulkEdit');
-
-        Route::put(
-            'class-schedules/patterns/{pattern}/bulk-update',
-            [ClassScheduleController::class, 'updateBulkSchedule']
-        )->name('class-schedules.updateBulkSchedule');
-
-        Route::get(
-            'class-schedules/patterns/{pattern}/edit',
-            [ClassScheduleController::class, 'editBulkSchedule']
-        )->name('class-schedules.editBulkSchedule');
-
-        Route::resource(
-            'class-schedules',
-            ClassScheduleController::class
-        );
-
-        Route::patch(
-            'class-schedules/{classSchedule}/toggle-active',
-            [ClassScheduleController::class, 'toggleActive']
-        )->name('class-schedules.toggleActive');
-
-        Route::patch(
-            'class-schedules/{classSchedule}/cancel',
-            [ClassScheduleController::class, 'cancel']
-        )->name('class-schedules.cancel');
-
-        Route::patch(
-            'class-schedules/{classSchedule}/status-update',
-            [ClassScheduleController::class, 'statusUpdate']
-        )->name('class-schedules.statusUpdate');
-
-        Route::get(
-            'today-classes',
-            [ClassScheduleController::class, 'todayClasses']
-        )->name('class-schedules.todayClasses');
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | Student Class Enrollments
-        |--------------------------------------------------------------------------
-        */
-
-        // Category Students
-        Route::get(
-            'student-class-enrollments/class/{studentClass}/category/{classCategory}/students',
-            [StudentClassEnrollmentController::class, 'categoryStudents']
-        )->name('student-class-enrollments.categoryStudents');
-
-        // Export PDF
-        Route::get(
-            'student-class-enrollments/class/{studentClass}/category/{classCategory}/students/pdf',
-            [StudentClassEnrollmentController::class, 'categoryStudentsPdf']
-        )->name('student-class-enrollments.categoryStudentsPdf');
-
-        // Export Excel
-        Route::get(
-            'student-class-enrollments/class/{studentClass}/category/{classCategory}/students/excel',
-            [StudentClassEnrollmentController::class, 'categoryStudentsExcel']
-        )->name('student-class-enrollments.categoryStudentsExcel');
-
-        Route::get(
-            'student-class-enrollments/class/{class}/category-fee/{classCategoryFee}/students/{year}/{month}',
-            [StudentClassEnrollmentController::class, 'classCategoryWisePaymentStudent']
-        )->name('student-class-enrollments.category-wise-payment');
-
-        // Resource
-        Route::resource(
-            'student-class-enrollments',
-            StudentClassEnrollmentController::class
-        );
-
-        // Toggle Active
-        Route::patch(
-            'student-class-enrollments/{studentClassEnrollment}/toggle-active',
-            [StudentClassEnrollmentController::class, 'toggleActive']
-        )->name('student-class-enrollments.toggleActive');
-
-        // Leave Enrollment
-        Route::patch(
-            'student-class-enrollments/{studentClassEnrollment}/leave',
-            [StudentClassEnrollmentController::class, 'leave']
-        )->name('student-class-enrollments.leave');
-
-        // Restore Enrollment
-        Route::patch(
-            'student-class-enrollments/{id}/restore',
-            [StudentClassEnrollmentController::class, 'restore']
-        )->name('student-class-enrollments.restore');
-
-
-        /*
-        |--------------------------------------------------------------------------
         | Payments
+
         |--------------------------------------------------------------------------
+
         */
+
+
 
         Route::get('/payments', function () {
+
             return view('admin.payment.index');
-        })->name('payments.index');
+        })->name('payments.index')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
+
+
 
         Route::get('/payments/today-receipt', function () {
+
             return view('admin.payment.today-receipt');
-        })->name('payments.today-receipt');
+        })->name('payments.today-receipt')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
 
 
 
-        Route::resource(
-            'admissions',
-            AdmissionController::class
-        );
 
-        Route::resource(
-            'admission-payments',
-            AdmissionPaymentController::class
-        );
+
+
+
+        Route::middleware('role:ADMIN,BRANCH_ADMIN,USER')->group(function () {
+
+            Route::resource(
+
+                'admissions',
+
+                AdmissionController::class
+
+            );
+        });
+
+
+
+        Route::middleware('role:ADMIN,BRANCH_ADMIN,USER')->group(function () {
+
+            Route::resource(
+
+                'admission-payments',
+
+                AdmissionPaymentController::class
+
+            );
+        });
+
+
 
         /*
+
         |--------------------------------------------------------------------------
+
         | Attendance
+
         |--------------------------------------------------------------------------
+
         */
+
+
 
         Route::get('/attendance', function () {
+
             return view('admin.attendance.index');
-        })->name('attendance.index');
+        })->name('attendance.index')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
+
+
+
+
 
         /*
+
 |--------------------------------------------------------------------------
-| STUDENT EXAM
+
+| New Attendance
+
 |--------------------------------------------------------------------------
+
 */
 
-        // Upcoming exams view
-        Route::get(
-            'exams/upcoming',
-            [ExamController::class, 'upcoming']
-        )->name('exams.upcoming');
-
-        // Exam counts for dashboard
-        Route::get(
-            'exams/counts',
-            [ExamController::class, 'counts']
-        )->name('exams.counts');
-
-        // Export Excel
-        Route::get(
-            'exams/export/excel',
-            [ExamController::class, 'exportExcel']
-        )->name('exams.export.excel');
-
-        // Export PDF
-        Route::get(
-            'exams/export/pdf',
-            [ExamController::class, 'exportPdf']
-        )->name('exams.export.pdf');
-
-        // Hall availability check (AJAX)
-        Route::get(
-            'exams/check-hall-availability',
-            [
-                ExamController::class,
-                'checkHallAvailability'
-            ]
-        )->name('exams.check-hall-availability');
-
-        // Get categories by class (AJAX)
-        Route::get(
-            'exams/get-categories',
-            [ExamController::class, 'getCategoriesByClass']
-        )->name('exams.get-categories');
-
-        // Resource routes
-        Route::resource(
-            'exams',
-            ExamController::class
-        )->except(['destroy']);
-
-        // Delete (soft delete)
-        Route::delete(
-            'exams/{exam}',
-            [ExamController::class, 'destroy']
-        )->name('exams.destroy');
-
-        // Cancel exam
-        Route::post(
-            'exams/{exam}/cancel',
-            [ExamController::class, 'cancel']
-        )->name('exams.cancel');
-
-        // Quick status update
-        Route::put(
-            'exams/{exam}/status',
-            [ExamController::class, 'updateStatus']
-        )->name('exams.update-status');
-
-        Route::get(
-            '/exams/search-classes',
-            [ExamController::class, 'searchClasses']
-        )->name('exams.search-classes');
-
-        /*
-|--------------------------------------------------------------------------
-| EXAM RESULTS / MARK ENTRY
-|--------------------------------------------------------------------------
-*/
-
-        // Mark entry page
-        Route::get(
-            'exams/{exam}/mark-entry',
-            [ExamController::class, 'markEntry']
-        )->name('exams.mark-entry');
-
-        // Save student marks
-        Route::post(
-            'exams/{exam}/save-marks',
-            [ExamController::class, 'saveMarks']
-        )->name('exams.save-marks');
-
-        // View exam results
-        Route::get(
-            'exams/{exam}/results',
-            [ExamController::class, 'results']
-        )->name('exams.results');
-
-        // Recalculate ranks
-        Route::post(
-            'exams/{exam}/recalculate-ranks',
-            [ExamController::class, 'recalculateRanks']
-        )->name('exams.recalculate-ranks');
-
-        Route::get(
-            'exams/{exam}/results/excel',
-            [ExamController::class, 'exportResultsExcel']
-        )->name('exams.results.excel');
-
-        Route::get(
-            'exams/{exam}/results/pdf',
-            [ExamController::class, 'exportResultsPdf']
-        )->name('exams.results.pdf');
 
 
-        /*
-        |--------------------------------------------------------------------------
-        | Organizer Payments
-        |--------------------------------------------------------------------------
-        */
+        Route::prefix('new-attendance')
 
-        Route::get('/organizer-payments', [
-            OrganizerPaymentController::class,
-            'index'
-        ])->name('organizer-payments.index');
+            ->name('new-attendance.')
 
-        Route::get('/organizer-payments/{organizer}/pay', [
-            OrganizerPaymentController::class,
-            'pay'
-        ])->name('organizer-payments.pay');
+            ->middleware('role:ADMIN,BRANCH_ADMIN,USER')
 
-        Route::post('/organizer-payments/{organizer}/store', [
-            OrganizerPaymentController::class,
-            'store'
-        ])->name('organizer-payments.store');
+            ->controller(AttendanceController::class)
 
-        Route::delete('/organizer-payments/{organizerPayment}', [
-            OrganizerPaymentController::class,
-            'destroy'
-        ])->name('organizer-payments.destroy');
-
-        Route::get('/organizer-payments/{organizer}/salary-slip', [
-            OrganizerPaymentController::class,
-            'salarySlip'
-        ])->name('organizer-payments.salary-slip');
-
-        Route::post('/organizer-payments/{organizer}/adjustment', [
-            OrganizerPaymentController::class,
-            'storeAdjustment'
-        ])->name('organizer-payments.adjustment-store');
-
-        Route::get('organizers/export/excel', [OrganizerController::class, 'exportExcel'])
-            ->name('organizers.export.excel');
-
-        Route::get('organizers/export/pdf', [OrganizerController::class, 'exportPdf'])
-            ->name('organizers.export.pdf');
-
-
-        /*
-        |--------------------------------------------------------------------------
-        | Teacher Salary Management
-        |--------------------------------------------------------------------------
-        */
-
-        Route::get('/teacher-salaries', [
-            TeacherSalaryController::class,
-            'index'
-        ])->name('teacher-salaries.index');
-
-        Route::get('/teacher-salaries/{teacher}/{year}/{month}', [
-            TeacherSalaryController::class,
-            'show'
-        ])->name('teacher-salaries.show');
-
-        Route::post('/teacher-salaries/{teacher}/pay', [
-            TeacherSalaryController::class,
-            'teacherSalaryPaid'
-        ])->name('teacher-salaries.pay');
-
-        Route::get('/teacher-salaries/{teacher}/{year}/{month}/slip', [
-            TeacherSalaryController::class,
-            'printSalarySlip'
-        ])->name('teacher-salaries.slip');
-
-
-        Route::post(
-            '/teacher-salaries/{teacher}/payment',
-            [TeacherSalaryController::class, 'teacherPaymentStore']
-        )->name('teacher-salaries.payment.store');
-
-        Route::get('/teacher-salaries/{teacher}/{year}/{month}/details', [
-            TeacherSalaryController::class,
-            'paymentDetailsView'
-        ])->name('teacher-salaries.payment-details');
-
-        Route::delete('/teacher-salaries/{paymentId}', [
-            TeacherSalaryController::class,
-            'paymentDelete'
-        ])->name('teacher-salaries.payment-delete');
-
-        Route::get('/teacher-salaries/{teacher}/{year}/{month}/summary', [
-            TeacherSalaryController::class,
-            'teacherPaymentAndClassSummery'
-        ])->name('teacher-salaries.payment-summary');
-
-        /* 
-        |--------------------------------------------------------------------------
-        | Institute Income Report
-        |-------------------------------------------------------------------------- 
-        */
-        Route::get('institute-income/monthly-report', [
-            InstituteIncomeController::class,
-            'monthlyIncomeReport'
-        ])->name('institute-income.monthly-report');
-
-        /*
-        |--------------------------------------------------------------------------
-        | Extra Incomes
-        |--------------------------------------------------------------------------
-        */
-
-        Route::resource(
-            'extra-incomes',
-            ExtraIncomeController::class
-        );
-
-        Route::resource(
-            'temporary-id-cards',
-            TemporaryIDCardController::class
-        )->only([
-            'index',
-            'create',
-            'store'
-        ]);;
-
-        Route::get(
-            'temporary-id-cards/preview',
-            [TemporaryIDCardController::class, 'preview']
-        )->name('temporary-id-cards.preview');
-
-        Route::post(
-            'temporary-id-cards/preview-generate',
-            [TemporaryIDCardController::class, 'generatePreview']
-        )->name('temporary-id-cards.preview-generate');
-
-        Route::get(
-            'temporary-id-cards/status',
-            [TemporaryIDCardController::class, 'updateStatusPage']
-        )->name('temporary-id-cards.update-status');
-
-        Route::post(
-            'temporary-id-cards/change-status',
-            [TemporaryIDCardController::class, 'changeStatus']
-        )->name('temporary-id-cards.change-status');
-
-        Route::post(
-            'temporary-id-cards/download-pdf',
-            [TemporaryIDCardController::class, 'downloadPdf']
-        )->name('temporary-id-cards.download-pdf');
-
-        Route::get(
-            'temporary-id-cards/pdf',
-            [TemporaryIDCardController::class, 'downloadIdCardPdf']
-        )->name('temporary-id-cards.pdf');
-        /*
-|--------------------------------------------------------------------------
-| Daily Reports
-|--------------------------------------------------------------------------
-*/
-
-        // Daily Report Routes
-        Route::get('daily-report', [DailyReportController::class, 'index'])->name('daily-report.index');
-        Route::get('daily-report/{type}/pdf', [DailyReportController::class, 'downloadPdf'])->name('daily-report.pdf');
-        Route::get('daily-report/{type}/excel', [DailyReportController::class, 'downloadExcel'])->name('daily-report.excel');
-
-        // Summary Report Download Routes (for generateDailyReport)
-        Route::get('daily-report/summary/pdf', [DailyReportController::class, 'downloadSummaryPdf'])->name('daily-report.summary.pdf');
-        Route::get('daily-report/summary/excel', [DailyReportController::class, 'downloadSummaryExcel'])->name('daily-report.summary.excel');
-
-        // Teacher Report Routes
-        Route::get('/teacher-report', [TeacherReportController::class, 'index'])->name('teacher-report.index');
-        Route::get('/teacher-report/pdf', [TeacherReportController::class, 'downloadTeacherWithStudentPaymentsPdf'])->name('teacher-report.pdf');
-        Route::get('/teacher-report/excel', [TeacherReportController::class, 'downloadTeacherWithStudentPaymentsExcel'])->name('teacher-report.excel');
-        // Teacher Expense Report
-        Route::get('/teacher-report/expense', [TeacherReportController::class, 'teacherExpenseReport'])->name('teacher-expense-report');
-        Route::get('/teacher-report/expense/excel', [TeacherReportController::class, 'teacherExpenseReportExcel'])->name('teacher-expense-report.excel');
-        Route::get('/teacher-report/expense/pdf', [TeacherReportController::class, 'teacherExpenseReportPdf'])->name('teacher-expense-report.pdf');
-
-        Route::get('/monthly-report', [MonthlyReportController::class, 'index'])
-            ->name('monthly-report.index');
-
-        // Excel
-        Route::get(
-            '/excel/teacher/teacher-salary-report/excel',
-            [MonthlyReportController::class, 'TeacherSalaryReportExcel']
-        )->name('teacher.salary.report.excel');
-
-        // PDF
-        Route::get(
-            '/pdf/teacher/teacher-salary-report/pdf',
-            [MonthlyReportController::class, 'TeacherSalaryReportPdf']
-        )->name('teacher.salary.report.pdf');
-        /*
-|--------------------------------------------------------------------------
-| Institute Expenses
-|--------------------------------------------------------------------------
-*/
-
-        Route::get('/student-images', [StudentImageController::class, 'index'])
-            ->name('student-images.index');
-
-        Route::post('/student-images/{quickPhoto}/assign', [StudentImageController::class, 'assign'])
-            ->name('student-images.assign');
-
-        Route::resource(
-            'institute-expenses',
-            InstituteExpenseController::class
-        );
-
-        Route::patch(
-            'institute-expenses/{instituteExpense}/toggle-status',
-            [InstituteExpenseController::class, 'toggleStatus']
-        )->name('institute-expenses.toggle-status');
-
-
-        Route::prefix('student-id-cards')
-            ->name('student-id-cards.')
             ->group(function () {
 
-                // View routes
-                Route::get('/', [StudentIDCardController::class, 'index'])
-                    ->name('index');
 
-                Route::get('{studentIdCard}/print', [StudentIDCardController::class, 'print'])
-                    ->name('print');
 
-                // Download routes (NO Browsershot - Client side)
-                Route::get('{studentIdCard}/download', [StudentIDCardController::class, 'downloadSingle'])
-                    ->name('download-single');
+                /*
 
-                Route::post('download-bulk', [StudentIDCardController::class, 'downloadBulk'])
-                    ->name('download-bulk');
+        |--------------------------------------------------------------------------
 
-                // Status update routes (using Fetch API)
-                Route::patch('{studentIdCard}/status', [StudentIDCardController::class, 'updateStatus'])
-                    ->name('update-status');
+        | Attendance Screen
 
-                Route::patch('bulk-status', [StudentIDCardController::class, 'bulkUpdateStatus'])
-                    ->name('bulk-update-status');
+        |--------------------------------------------------------------------------
+
+        */
+
+
+
+                Route::get('/', 'index')
+
+                    ->name('index')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
+
+
+
+                /*
+
+        |--------------------------------------------------------------------------
+
+        | Scan Student
+
+        |--------------------------------------------------------------------------
+
+        |
+
+        | QR Web:
+
+        |     qr_web
+
+        |
+
+        | Manual Web:
+
+        |     manual_web
+
+        |
+
+        */
+
+
+
+                Route::post('/scan', 'scan')
+
+                    ->name('scan')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
             });
 
-        Route::get('/today-attendance', [TodayAttendanceController::class, 'index'])
-            ->name('today-attendance.index');
+        /*
 
-        Route::get(
-            '/reports/teacher-student-payment',
-            [MonthlyReportController::class, 'TeacherWithStudentPaymentReport']
-        )->name('teacher.student.payment.report');
-        Route::get(
-            '/reports/teacher-student-payment-excel',
-            [MonthlyReportController::class, 'TeacherWithStudentPaymentReportExcel']
-        )->name('teacher.student.payment.report.excel');
-        Route::get(
-            '/reports/teacher-student-payment-pdf',
-            [MonthlyReportController::class, 'TeacherWithStudentPaymentReportPdf']
-        )->name('teacher.student.payment.report.pdf');
+|--------------------------------------------------------------------------
+
+| STUDENT EXAM
+
+|--------------------------------------------------------------------------
+
+*/
 
 
 
-        Route::get(
-            '/reports/teacher-student-payment-date',
-            [MonthlyReportController::class, 'TeacherWithStudentPaymentDateReport']
-        )->name('teacher.student.payment.report');
-        Route::get(
-            '/reports/teacher-student-payment-date-excel',
-            [MonthlyReportController::class, 'TeacherWithStudentPaymentDateReportExcel']
-        )->name('teacher.student.payment.report.excel');
-        Route::get(
-            '/reports/teacher-student-payment-date-pdf',
-            [MonthlyReportController::class, 'TeacherWithStudentPaymentDateReportPdf']
-        )->name('teacher.student.payment.report.pdf');
+        // Upcoming exams view
 
-        // Report Page
         Route::get(
-            '/institute-reports',
-            [InstituteReportController::class, 'index']
-        )->name('institute-reports.index');
 
-        // PDF Download
-        Route::get(
-            '/institute-reports/pdf',
-            [InstituteReportController::class, 'institutePaymentReportPdf']
-        )->name('institute-reports.pdf');
+            'exams/upcoming',
 
-        // Excel Download
+            [ExamController::class, 'upcoming']
+
+        )->name('exams.upcoming')->middleware('role:ADMIN,BRANCH_ADMIN,USER,TEACHER');
+
+
+
+        // Exam counts for dashboard
+
         Route::get(
-            '/institute-reports/excel',
-            [InstituteReportController::class, 'institutePaymentReportExcel']
-        )->name('institute-reports.excel');
+
+            'exams/counts',
+
+            [ExamController::class, 'counts']
+
+        )->name('exams.counts')->middleware('role:ADMIN,BRANCH_ADMIN,USER,TEACHER');
+
+
+
+        // Export Excel
+
+        Route::get(
+
+            'exams/export/excel',
+
+            [ExamController::class, 'exportExcel']
+
+        )->name('exams.export.excel')->middleware('role:ADMIN,BRANCH_ADMIN,USER,TEACHER');
+
+
+
+        // Export PDF
+
+        Route::get(
+
+            'exams/export/pdf',
+
+            [ExamController::class, 'exportPdf']
+
+        )->name('exams.export.pdf')->middleware('role:ADMIN,BRANCH_ADMIN,USER,TEACHER');
+
+
+
+        // Hall availability check (AJAX)
+
+        Route::get(
+
+            'exams/check-hall-availability',
+
+            [
+
+                ExamController::class,
+
+                'checkHallAvailability'
+
+            ]
+
+        )->name('exams.check-hall-availability')->middleware('role:ADMIN,BRANCH_ADMIN,USER,TEACHER');
+
+
+
+        // Get categories by class (AJAX)
+
+        Route::get(
+
+            'exams/get-categories',
+
+            [ExamController::class, 'getCategoriesByClass']
+
+        )->name('exams.get-categories')->middleware('role:ADMIN,BRANCH_ADMIN,USER,TEACHER');
+
+
+
+        // Resource routes
+
+        Route::middleware('role:ADMIN,BRANCH_ADMIN,USER,TEACHER')->group(function () {
+
+            Route::resource(
+
+                'exams',
+
+                ExamController::class
+
+            )->except(['destroy']);
+        });
+
+
+
+        // Delete (soft delete)
+
+        Route::delete(
+
+            'exams/{exam}',
+
+            [ExamController::class, 'destroy']
+
+        )->name('exams.destroy')->middleware('role:ADMIN,BRANCH_ADMIN,USER,TEACHER');
+
+
+
+        // Cancel exam
+
+        Route::post(
+
+            'exams/{exam}/cancel',
+
+            [ExamController::class, 'cancel']
+
+        )->name('exams.cancel')->middleware('role:ADMIN,BRANCH_ADMIN,USER,TEACHER');
+
+
+
+        // Quick status update
+
+        Route::put(
+
+            'exams/{exam}/status',
+
+            [ExamController::class, 'updateStatus']
+
+        )->name('exams.update-status')->middleware('role:ADMIN,BRANCH_ADMIN,USER,TEACHER');
+
+
+
+        Route::get(
+
+            '/exams/search-classes',
+
+            [ExamController::class, 'searchClasses']
+
+        )->name('exams.search-classes')->middleware('role:ADMIN,BRANCH_ADMIN,USER,TEACHER');
+
 
 
         /*
+
 |--------------------------------------------------------------------------
+
+| EXAM RESULTS / MARK ENTRY
+
+|--------------------------------------------------------------------------
+
+*/
+
+
+
+        // Mark entry page
+
+        Route::get(
+
+            'exams/{exam}/mark-entry',
+
+            [ExamController::class, 'markEntry']
+
+        )->name('exams.mark-entry')->middleware('role:ADMIN,BRANCH_ADMIN,USER,TEACHER');
+
+
+
+        // Save student marks
+
+        Route::post(
+
+            'exams/{exam}/save-marks',
+
+            [ExamController::class, 'saveMarks']
+
+        )->name('exams.save-marks')->middleware('role:ADMIN,BRANCH_ADMIN,USER,TEACHER');
+
+
+
+        // View exam results
+
+        Route::get(
+
+            'exams/{exam}/results',
+
+            [ExamController::class, 'results']
+
+        )->name('exams.results')->middleware('role:ADMIN,BRANCH_ADMIN,USER,TEACHER');
+
+
+
+        // Recalculate ranks
+
+        Route::post(
+
+            'exams/{exam}/recalculate-ranks',
+
+            [ExamController::class, 'recalculateRanks']
+
+        )->name('exams.recalculate-ranks')->middleware('role:ADMIN,BRANCH_ADMIN,USER,TEACHER');
+
+
+
+        Route::get(
+
+            'exams/{exam}/results/excel',
+
+            [ExamController::class, 'exportResultsExcel']
+
+        )->name('exams.results.excel')->middleware('role:ADMIN,BRANCH_ADMIN,USER,TEACHER');
+
+
+
+        Route::get(
+
+            'exams/{exam}/results/pdf',
+
+            [ExamController::class, 'exportResultsPdf']
+
+        )->name('exams.results.pdf')->middleware('role:ADMIN,BRANCH_ADMIN,USER,TEACHER');
+
+
+
+
+
+        /*
+
+        |--------------------------------------------------------------------------
+
+        | Organizer Payments
+
+        |--------------------------------------------------------------------------
+
+        */
+
+
+
+        Route::get('/organizer-payments', [
+
+            OrganizerPaymentController::class,
+
+            'index'
+
+        ])->name('organizer-payments.index')->middleware('role:ADMIN,BRANCH_ADMIN');
+
+
+
+        Route::get('/organizer-payments/{organizer}/pay', [
+
+            OrganizerPaymentController::class,
+
+            'pay'
+
+        ])->name('organizer-payments.pay')->middleware('role:ADMIN,BRANCH_ADMIN');
+
+
+
+        Route::post('/organizer-payments/{organizer}/store', [
+
+            OrganizerPaymentController::class,
+
+            'store'
+
+        ])->name('organizer-payments.store')->middleware('role:ADMIN,BRANCH_ADMIN');
+
+
+
+        Route::delete('/organizer-payments/{organizerPayment}', [
+
+            OrganizerPaymentController::class,
+
+            'destroy'
+
+        ])->name('organizer-payments.destroy')->middleware('role:ADMIN,BRANCH_ADMIN');
+
+
+
+        Route::get('/organizer-payments/{organizer}/salary-slip', [
+
+            OrganizerPaymentController::class,
+
+            'salarySlip'
+
+        ])->name('organizer-payments.salary-slip')->middleware('role:ADMIN,BRANCH_ADMIN');
+
+
+
+        Route::post('/organizer-payments/{organizer}/adjustment', [
+
+            OrganizerPaymentController::class,
+
+            'storeAdjustment'
+
+        ])->name('organizer-payments.adjustment-store')->middleware('role:ADMIN,BRANCH_ADMIN');
+
+
+
+        /*
+
+        |--------------------------------------------------------------------------
+
+        | Teacher Salary Management
+
+        |--------------------------------------------------------------------------
+
+        */
+
+
+
+        Route::get('/teacher-salaries', [
+
+            TeacherSalaryController::class,
+
+            'index'
+
+        ])->name('teacher-salaries.index')->middleware('role:ADMIN,BRANCH_ADMIN');
+
+
+
+        Route::get('/teacher-salaries/{teacher}/{year}/{month}', [
+
+            TeacherSalaryController::class,
+
+            'show'
+
+        ])->name('teacher-salaries.show')->middleware('role:ADMIN,BRANCH_ADMIN');
+
+
+
+        Route::post('/teacher-salaries/{teacher}/pay', [
+
+            TeacherSalaryController::class,
+
+            'teacherSalaryPaid'
+
+        ])->name('teacher-salaries.pay')->middleware('role:ADMIN,BRANCH_ADMIN');
+
+
+
+        Route::get('/teacher-salaries/{teacher}/{year}/{month}/slip', [
+
+            TeacherSalaryController::class,
+
+            'printSalarySlip'
+
+        ])->name('teacher-salaries.slip')->middleware('role:ADMIN,BRANCH_ADMIN');
+
+
+
+
+
+        Route::post(
+
+            '/teacher-salaries/{teacher}/payment',
+
+            [TeacherSalaryController::class, 'teacherPaymentStore']
+
+        )->name('teacher-salaries.payment.store')->middleware('role:ADMIN,BRANCH_ADMIN');
+
+
+
+        Route::get('/teacher-salaries/{teacher}/{year}/{month}/details', [
+
+            TeacherSalaryController::class,
+
+            'paymentDetailsView'
+
+        ])->name('teacher-salaries.payment-details')->middleware('role:ADMIN,BRANCH_ADMIN');
+
+
+
+        Route::delete('/teacher-salaries/{paymentId}', [
+
+            TeacherSalaryController::class,
+
+            'paymentDelete'
+
+        ])->name('teacher-salaries.payment-delete')->middleware('role:ADMIN,BRANCH_ADMIN');
+
+
+
+        Route::get('/teacher-salaries/{teacher}/{year}/{month}/summary', [
+
+            TeacherSalaryController::class,
+
+            'teacherPaymentAndClassSummery'
+
+        ])->name('teacher-salaries.payment-summary')->middleware('role:ADMIN,BRANCH_ADMIN');
+
+
+
+        /*&#x20;
+
+        |--------------------------------------------------------------------------
+
+        | Institute Income Report
+
+        |--------------------------------------------------------------------------&#x20;
+
+        */
+
+        // Institute Income - Monthly Report
+
+        Route::get(
+
+            '/institute-income/monthly-report',
+
+            [InstituteIncomeController::class, 'monthlyIncomeReport']
+
+        )->name('institute-income.monthly-report')->middleware('role:ADMIN');
+
+
+
+        Route::get(
+
+            '/institute-income/monthly/excel',
+
+            [InstituteIncomeController::class, 'monthlyIncomeReportExcel']
+
+        )->name('institute-income.monthly.excel')->middleware('role:ADMIN');
+
+        /*
+
+        |--------------------------------------------------------------------------
+
+        | Extra Incomes
+
+        |--------------------------------------------------------------------------
+
+        */
+
+
+
+        Route::middleware('role:ADMIN')->group(function () {
+
+            Route::resource(
+
+                'extra-incomes',
+
+                ExtraIncomeController::class
+
+            );
+        });
+
+
+        /*
+
+|--------------------------------------------------------------------------
+
+| Daily Reports
+
+|--------------------------------------------------------------------------
+
+*/
+
+
+
+        // Daily Report Routes
+
+        Route::get('daily-report', [DailyReportController::class, 'index'])->name('daily-report.index')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
+
+        Route::get('daily-report/{type}/pdf', [DailyReportController::class, 'downloadPdf'])->name('daily-report.pdf')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
+
+        Route::get('daily-report/{type}/excel', [DailyReportController::class, 'downloadExcel'])->name('daily-report.excel')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
+
+
+
+        // Summary Report Download Routes (for generateDailyReport)
+
+        Route::get('daily-report/summary/pdf', [DailyReportController::class, 'downloadSummaryPdf'])->name('daily-report.summary.pdf')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
+
+        Route::get('daily-report/summary/excel', [DailyReportController::class, 'downloadSummaryExcel'])->name('daily-report.summary.excel')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
+
+
+
+        // Teacher Report Routes
+
+        Route::get('/teacher-report', [TeacherReportController::class, 'index'])->name('teacher-report.index')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
+
+        Route::get('/teacher-report/pdf', [TeacherReportController::class, 'downloadTeacherWithStudentPaymentsPdf'])->name('teacher-report.pdf')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
+
+        Route::get('/teacher-report/excel', [TeacherReportController::class, 'downloadTeacherWithStudentPaymentsExcel'])->name('teacher-report.excel')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
+
+        // Teacher Expense Report
+
+        Route::get('/teacher-report/expense', [TeacherReportController::class, 'teacherExpenseReport'])->name('teacher-expense-report')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
+
+        Route::get('/teacher-report/expense/excel', [TeacherReportController::class, 'teacherExpenseReportExcel'])->name('teacher-expense-report.excel')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
+
+        Route::get('/teacher-report/expense/pdf', [TeacherReportController::class, 'teacherExpenseReportPdf'])->name('teacher-expense-report.pdf')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
+
+
+
+        Route::get('/monthly-report', [MonthlyReportController::class, 'index'])
+
+            ->name('monthly-report.index')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
+
+
+
+        // Excel
+
+        Route::get(
+
+            '/excel/teacher/teacher-salary-report/excel',
+
+            [MonthlyReportController::class, 'TeacherSalaryReportExcel']
+
+        )->name('teacher.salary.report.excel')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
+
+
+
+        // PDF
+
+        Route::get(
+
+            '/pdf/teacher/teacher-salary-report/pdf',
+
+            [MonthlyReportController::class, 'TeacherSalaryReportPdf']
+
+        )->name('teacher.salary.report.pdf')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
+
+
+
+
+
+        Route::get('/student-images', [StudentImageController::class, 'index'])
+
+            ->name('student-images.index')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
+
+
+
+        Route::post('/student-images/{quickPhoto}/assign', [StudentImageController::class, 'assign'])
+
+            ->name('student-images.assign')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
+
+
+
+        /*
+
+|--------------------------------------------------------------------------
+
 | Institute Expenses
+
 |--------------------------------------------------------------------------
+
 */
 
-        Route::get('weekly-timetable', [ClassTimeTableController::class, 'weeklyTimeTable'])
-            ->name('weekly-timetable');
 
-        Route::get('weekly-timetable/pdf', [ClassTimeTableController::class, 'downloadPdf'])
-            ->name('weekly.pdf');
 
-        Route::get('weekly-timetable/excel', [ClassTimeTableController::class, 'downloadExcel'])
-            ->name('weekly.excel');
+        Route::middleware('role:ADMIN')->group(function () {
+
+
+
+            Route::resource(
+
+                'institute-expenses',
+
+                InstituteExpenseController::class
+
+            );
+
+
+
+            Route::patch(
+
+                'institute-expenses/{instituteExpense}/toggle-status',
+
+                [InstituteExpenseController::class, 'toggleStatus']
+
+            )->name(
+
+                'institute-expenses.toggle-status'
+
+            );
+        });
+
+
+
+        Route::get('/today-attendance', [TodayAttendanceController::class, 'index'])
+
+            ->name('today-attendance.index')->middleware('role:ADMIN,BRANCH_ADMIN,USER,TEACHER');
+
+
+
+        Route::get(
+
+            '/reports/teacher-student-payment',
+
+            [MonthlyReportController::class, 'TeacherWithStudentPaymentReport']
+
+        )->name('teacher.student.payment.report')->middleware('role:ADMIN,BRANCH_ADMIN,USER,TEACHER');
+
+        Route::get(
+
+            '/reports/teacher-student-payment-excel',
+
+            [MonthlyReportController::class, 'TeacherWithStudentPaymentReportExcel']
+
+        )->name('teacher.student.payment.report.excel')->middleware('role:ADMIN,BRANCH_ADMIN,USER,TEACHER');
+
+        Route::get(
+
+            '/reports/teacher-student-payment-pdf',
+
+            [MonthlyReportController::class, 'TeacherWithStudentPaymentReportPdf']
+
+        )->name('teacher.student.payment.report.pdf')->middleware('role:ADMIN,BRANCH_ADMIN,USER,TEACHER');
+
+
+
+
+
+
+
+        Route::get(
+
+            '/reports/teacher-student-payment-date',
+
+            [MonthlyReportController::class, 'TeacherWithStudentPaymentDateReport']
+
+        )->name('teacher.student.payment.report')->middleware('role:ADMIN,BRANCH_ADMIN,USER,TEACHER');
+
+        Route::get(
+
+            '/reports/teacher-student-payment-date-excel',
+
+            [MonthlyReportController::class, 'TeacherWithStudentPaymentDateReportExcel']
+
+        )->name('teacher.student.payment.report.excel')->middleware('role:ADMIN,BRANCH_ADMIN,USER,TEACHER');
+
+        Route::get(
+
+            '/reports/teacher-student-payment-date-pdf',
+
+            [MonthlyReportController::class, 'TeacherWithStudentPaymentDateReportPdf']
+
+        )->name('teacher.student.payment.report.pdf')->middleware('role:ADMIN,BRANCH_ADMIN,USER,TEACHER');
+
+
+
+        // Institute Reports
+
+        Route::get(
+
+            '/institute-reports',
+
+            [InstituteReportController::class, 'index']
+
+        )->name('institute-reports.index')->middleware('role:ADMIN');
+
+
+
+        // Institute Financial Report - PDF
+
+        Route::get(
+
+            '/institute-reports/pdf',
+
+            [InstituteReportController::class, 'institutePaymentReportPdf']
+
+        )->name('institute-reports.pdf')->middleware('role:ADMIN');
+
+
+
+        // Institute Financial Report - Excel
+
+        Route::get(
+
+            '/institute-reports/excel',
+
+            [InstituteReportController::class, 'institutePaymentReportExcel']
+
+        )->name('institute-reports.excel')->middleware('role:ADMIN');
+
+
+
 
         /*
+
 |--------------------------------------------------------------------------
+
 | System Setting
+
 |--------------------------------------------------------------------------
+
 */
 
-        Route::get('setting', [DatabaseBackupController::class, 'index'])
-            ->name('setting.index');
 
-        Route::get('setting/backup/export', [DatabaseBackupController::class, 'export'])
-            ->name('setting.backup.export');
 
-        Route::post('setting/backup/import', [DatabaseBackupController::class, 'import'])
-            ->name('setting.backup.import');
+        Route::middleware('role:ADMIN')->group(function () {
+
+            Route::get('setting', [DatabaseBackupController::class, 'index'])
+
+                ->name('setting.index');
+
+
+
+            Route::get('setting/backup/export', [DatabaseBackupController::class, 'export'])
+
+                ->name('setting.backup.export');
+
+
+
+            Route::post('setting/backup/import', [DatabaseBackupController::class, 'import'])
+
+                ->name('setting.backup.import');
+        });
+
+
 
         /*
+
 |--------------------------------------------------------------------------
+
 |  Activity Logs
+
 |--------------------------------------------------------------------------
+
 */
 
-        Route::get('/activity-logs', [ActivityLogController::class, 'index'])->name('activity-logs.index');
-        Route::get('/activity-logs/export', [ActivityLogController::class, 'export'])->name('activity-logs.export');
-        Route::post('/activity-logs/clear', [ActivityLogController::class, 'clearOld'])->name('activity-logs.clear');
+
+
+        Route::get('/activity-logs', [ActivityLogController::class, 'index'])->name('activity-logs.index')->middleware('role:ADMIN');
+
+        Route::get('/activity-logs/export', [ActivityLogController::class, 'export'])->name('activity-logs.export')->middleware('role:ADMIN');
+
+        Route::post('/activity-logs/clear', [ActivityLogController::class, 'clearOld'])->name('activity-logs.clear')->middleware('role:ADMIN');
+
+
+
 
 
         // Notification Routes
+
         Route::prefix('notifications')
+
             ->name('notifications.')
+
+            ->middleware('role:ADMIN,BRANCH_ADMIN,USER')
+
             ->group(function () {
 
+
+
                 // List all notifications
+
                 Route::get('/', [NotificationController::class, 'index'])
+
                     ->name('index');
 
+
+
                 // Create notification
+
                 Route::get('/create', [NotificationController::class, 'create'])
+
                     ->name('create');
 
+
+
                 // Store notification
+
                 Route::post('/', [NotificationController::class, 'store'])
+
                     ->name('store');
 
+
+
                 // Bulk send notification
+
                 Route::post('/bulk', [NotificationController::class, 'sendBulk'])
+
                     ->name('bulk');
 
+
+
                 // Show single notification
+
                 Route::get('/{id}', [NotificationController::class, 'show'])
+
                     ->name('show');
 
+
+
                 // Mark as read
+
                 Route::post('/{id}/read', [NotificationController::class, 'markAsRead'])
+
                     ->name('mark-read');
 
+
+
                 // Mark all as read
+
                 Route::post('/mark-all-read', [NotificationController::class, 'markAllAsRead'])
+
                     ->name('mark-all-read');
 
+
+
                 // Retry failed notification
+
                 Route::post('/{id}/retry', [NotificationController::class, 'retry'])
+
                     ->name('retry');
 
+
+
                 // Cancel notification
+
                 Route::post('/{id}/cancel', [NotificationController::class, 'cancel'])
+
                     ->name('cancel');
 
+
+
                 // Delete notification
+
                 Route::delete('/{id}', [NotificationController::class, 'destroy'])
+
                     ->name('destroy');
 
+
+
                 // Delete old notifications
+
                 Route::delete('/cleanup', [NotificationController::class, 'deleteOld'])
+
                     ->name('cleanup');
 
+
+
                 // Export notifications
+
                 Route::get('/export', [NotificationController::class, 'export'])
+
                     ->name('export');
             });
 
 
 
+
+
+
+
         // ============================================
+
         // FCM TOKEN ROUTES
+
         // ============================================
+
         Route::prefix('fcm-tokens')
+
             ->name('fcm-tokens.')
+
+            ->middleware('role:ADMIN')
+
             ->group(function () {
 
+
+
                 // List all tokens
+
                 Route::get('/', [FcmTokenController::class, 'index'])
-                    ->name('index')
-                    ->middleware('permission:fcm-tokens.view');
+
+                    ->name('index');
+
+
+
 
                 // Show single token
+
                 Route::get('/{id}', [FcmTokenController::class, 'show'])
-                    ->name('show')
-                    ->middleware('permission:fcm-tokens.view');
+
+                    ->name('show');
+
+
+
 
                 // Student tokens
+
                 Route::get('/student/{studentId}', [FcmTokenController::class, 'studentTokens'])
-                    ->name('student')
-                    ->middleware('permission:fcm-tokens.view');
+
+                    ->name('student');
+
+
+
 
                 // Activate token
+
                 Route::post('/{id}/activate', [FcmTokenController::class, 'activate'])
-                    ->name('activate')
-                    ->middleware('permission:fcm-tokens.update');
+
+                    ->name('activate');
+
+
+
 
                 // Deactivate token
+
                 Route::post('/{id}/deactivate', [FcmTokenController::class, 'deactivate'])
-                    ->name('deactivate')
-                    ->middleware('permission:fcm-tokens.update');
+
+                    ->name('deactivate');
+
+
+
 
                 // Delete token
+
                 Route::delete('/{id}', [FcmTokenController::class, 'destroy'])
-                    ->name('destroy')
-                    ->middleware('permission:fcm-tokens.delete');
+
+                    ->name('destroy');
+
+
+
 
                 // Delete all inactive tokens
+
                 Route::delete('/inactive/delete', [FcmTokenController::class, 'deleteInactive'])
-                    ->name('delete-inactive')
-                    ->middleware('permission:fcm-tokens.delete');
+
+                    ->name('delete-inactive');
+
+
+
 
                 // Export tokens
+
                 Route::get('/export', [FcmTokenController::class, 'export'])
-                    ->name('export')
-                    ->middleware('permission:fcm-tokens.view');
+
+                    ->name('export');
+
+
+
 
                 // Stats (AJAX)
+
                 Route::get('/stats', [FcmTokenController::class, 'stats'])
+
                     ->name('stats');
             });
 
-        Route::prefix('student-class-management')
-            ->name('student-class-management.')
-            ->controller(StudentClassManagementController::class)
-            ->group(function () {
-
-                // Main page
-                Route::get('/', 'index')->name('index');
-
-                // ✅ Search - Support both GET and POST
-                Route::match(['GET', 'POST'], '/search-student', 'searchStudentClasses')
-                    ->name('search');
-
-                // OR use ANY (supports all methods)
-                // Route::any('/search-student', 'searchStudentClasses')->name('search');
-
-                // Show student classes
-                Route::get('/student/{studentId}', 'showStudentClasses')->name('show');
-
-                // Toggle status - PUT
-                Route::put('/{enrollmentId}/toggle-status', 'toggleClassStatus')->name('toggle-status');
-
-                // Deactivate - PUT
-                Route::put('/{enrollmentId}/deactivate', 'deactivateClass')->name('deactivate');
-
-                // Activate - PUT
-                Route::put('/{enrollmentId}/activate', 'activateClass')->name('activate');
-
-                // Toggle all - PUT
-                Route::put('/student/{studentId}/toggle-all', 'toggleAllClassesStatus')->name('toggle-all');
-
-                // Assign form - GET
-                Route::get('/assign/{studentId?}', 'showAssignClassForm')->name('assign-form');
-
-                // Assign store - POST
-                Route::post('/assign', 'assignClassToStudent')->name('assign');
-
-                // Get category fees - GET (AJAX)
-                Route::get('/class/{classId}/category-fees', 'getCategoryFees')->name('get-category-fees');
-            });
 
         /*
+
 |--------------------------------------------------------------------------
+
 | User Management
+
+|--------------------------------------------------------------------------
+
+*/
+
+
+
+        Route::middleware('role:ADMIN')->group(function () {
+
+            Route::resource('users', UserController::class);
+        });
+
+
+
+        // Toggle Active Status
+
+        Route::patch(
+
+            'users/{user}/toggle-active',
+
+            [UserController::class, 'toggleActive']
+
+        )->name('users.toggleActive')->middleware('role:ADMIN');
+
+
+
+        // Change Password
+
+        Route::patch(
+
+            'users/{user}/change-password',
+
+            [UserController::class, 'changePassword']
+
+        )->name('users.changePassword')->middleware('role:ADMIN');
+
+
+
+        // Restore Soft Deleted User
+
+        Route::post(
+
+            'users/{id}/restore',
+
+            [UserController::class, 'restore']
+
+        )->name('users.restore')->middleware('role:ADMIN');
+
+
+
+        // Force Delete User
+
+        Route::delete(
+
+            'users/{id}/force-delete',
+
+            [UserController::class, 'forceDelete']
+
+        )->name('users.forceDelete')->middleware('role:ADMIN');
+
+
+
+        // Bulk Actions
+
+        Route::post(
+
+            'users/bulk-action',
+
+            [UserController::class, 'bulkAction']
+
+        )->name('users.bulkAction')->middleware('role:ADMIN');
+
+
+
+        // Export Routes
+
+        Route::get(
+
+            'users-export/excel',
+
+            [UserController::class, 'exportExcel']
+
+        )->name('users.exportExcel')->middleware('role:ADMIN');
+
+
+
+        Route::get(
+
+            'users-export/pdf',
+
+            [UserController::class, 'exportPdf']
+
+        )->name('users.exportPdf')->middleware('role:ADMIN');
+
+
+
+        // API Routes for AJAX
+
+        Route::get(
+
+            'api/user-types',
+
+            [UserController::class, 'getUserTypes']
+
+        )->name('api.user-types')->middleware('role:ADMIN');
+
+
+
+        Route::get(
+
+            'api/users/stats',
+
+            [UserController::class, 'getStats']
+
+        )->name('api.users.stats')->middleware('role:ADMIN');
+
+
+
+
+
+
+        /*
+
+        |--------------------------------------------------------------------------
+
+        | Payment Reminder
+
+        |--------------------------------------------------------------------------
+
+        */
+
+
+
+        Route::prefix('payment-reminder')
+
+            ->name('payment-reminder.')
+
+            ->controller(PaymentReminderController::class)
+
+            ->middleware(['auth', 'user.active', 'role:ADMIN,BRANCH_ADMIN,USER'])
+
+            ->group(function () {
+
+
+
+                Route::get('/', 'index')
+
+                    ->name('index')->middleware('role:ADMIN');
+
+
+
+                Route::get('/categories', 'getCategories')
+
+                    ->name('categories')->middleware('role:ADMIN');
+
+
+
+                Route::get('/unpaid', 'getUnpaid')
+
+                    ->name('unpaid')->middleware('role:ADMIN');
+
+
+
+                Route::get('/paid', 'getPaid')
+
+                    ->name('paid')->middleware('role:ADMIN');
+
+
+
+                Route::get('/summary', 'getSummary')
+
+                    ->name('summary')->middleware('role:ADMIN');
+
+
+
+                Route::post('/send', 'sendReminder')
+
+                    ->name('send')->middleware('role:ADMIN');
+
+
+
+                Route::get('/export-unpaid', 'exportUnpaid')
+
+                    ->name('export-unpaid')->middleware('role:ADMIN');
+
+
+
+                Route::get('/export-all', 'exportAll')
+
+                    ->name('export-all')->middleware('role:ADMIN');
+            });
+
+
+
+        /*
+
+|--------------------------------------------------------------------------
+
+| Payment Collection Report
+
+|--------------------------------------------------------------------------
+
+*/
+
+
+
+        Route::middleware('role:ADMIN')->group(function () {
+
+
+
+            Route::get(
+
+                '/payment-collection-report',
+
+                [PaymentCollectionReportController::class, 'index']
+
+            )->name('payment-collection-report.index')->middleware('role:ADMIN');
+
+            Route::get(
+
+                '/payment-collection-report/export',
+
+                [PaymentCollectionReportController::class, 'export']
+
+            )->name('payment-collection-report.export')->middleware('role:ADMIN');
+        });
+
+
+
+        Route::middleware('role:ADMIN')->group(function () {
+
+
+
+            Route::get(
+
+                '/monthly-class-attendance-report',
+
+                [MonthlyClassAttendanceReportController::class, 'index']
+
+            )->name('monthly-class-attendance-report.index')->middleware('role:ADMIN');
+
+
+
+            Route::get(
+
+                '/monthly-class-attendance-report/export',
+
+                [MonthlyClassAttendanceReportController::class, 'export']
+
+            )->name('monthly-class-attendance-report.export')->middleware('role:ADMIN');
+        });
+    });
+
+Route::prefix('student-cards')
+    ->name('student-cards.')
+    ->controller(StudentCardController::class)
+    ->group(function () {
+
+        // Card inventory
+        Route::get('/', [StudentCardController::class, 'index'])
+            ->name('index')->middleware([
+                'auth',
+                'user.active',
+                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+            ]);
+
+        // Generate cards
+        Route::get('/generate', [StudentCardController::class, 'generate'])
+            ->name('generate')->middleware([
+                'auth',
+                'user.active',
+                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+            ]);
+
+        Route::post('/generate', [StudentCardController::class, 'generateCards'])
+            ->name('generate.store')->middleware([
+                'auth',
+                'user.active',
+                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+            ]);
+
+        // Available cards
+        Route::get('/available', [StudentCardController::class, 'available'])
+            ->name('available')->middleware([
+                'auth',
+                'user.active',
+                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+            ]);
+
+        // Search cards
+        Route::get('/search', [StudentCardController::class, 'search'])
+            ->name('search')->middleware([
+                'auth',
+                'user.active',
+                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+            ]);
+
+        // Preview cards
+        Route::get('/preview', [StudentCardController::class, 'preview'])
+            ->name('preview')->middleware([
+                'auth',
+                'user.active',
+                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+            ]);
+
+        // Check current student card
+        Route::post('/check-current-card', [StudentCardController::class, 'checkCurrentCard'])
+            ->name('check-current-card')->middleware([
+                'auth',
+                'user.active',
+                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+            ]);
+
+        // Assign card form
+        Route::get('/assign', [StudentCardController::class, 'assignForm'])
+            ->name('assign-form')->middleware([
+                'auth',
+                'user.active',
+                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+            ]);
+
+        // Assign card
+        Route::post('/assign', [StudentCardController::class, 'assign'])
+            ->name('assign')->middleware([
+                'auth',
+                'user.active',
+                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+            ]);
+
+        // Student card history
+        Route::get('/students/{student}/history', [StudentCardController::class, 'history'])
+            ->name('history')->middleware([
+                'auth',
+                'user.active',
+                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+            ]);
+
+        // Branch sequences
+        Route::get('/branch-sequences', [
+            StudentCardController::class,
+            'branchSequences'
+        ])->name('branch-sequences')->middleware([
+            'auth',
+            'user.active',
+            'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+        ]);
+
+
+        // Replace card form
+        Route::get('/{card}/replace', [StudentCardController::class, 'replaceForm'])
+            ->name('replace-form')->middleware([
+                'auth',
+                'user.active',
+                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+            ]);
+
+        // Replace card
+        Route::put('/{card}/replace', [StudentCardController::class, 'replace'])
+            ->name('replace')->middleware([
+                'auth',
+                'user.active',
+                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+            ]);
+
+        // Mark card as lost
+        Route::patch('/{card}/lost', [StudentCardController::class, 'markLost'])
+            ->name('lost')->middleware([
+                'auth',
+                'user.active',
+                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+            ]);
+
+        // Mark card as damaged
+        Route::patch('/{card}/damaged', [StudentCardController::class, 'markDamaged'])
+            ->name('damaged')->middleware([
+                'auth',
+                'user.active',
+                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+            ]);
+
+        // Deactivate card
+        Route::patch('/{card}/deactivate', [StudentCardController::class, 'deactivate'])
+            ->name('deactivate')->middleware([
+                'auth',
+                'user.active',
+                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+            ]);
+
+        // Card details — keep this after static routes
+        Route::get('/{card}', [StudentCardController::class, 'show'])
+            ->name('show')->middleware([
+                'auth',
+                'user.active',
+                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+            ]);
+    });
+
+
+/*
+|--------------------------------------------------------------------------
+| Generate Student ID
 |--------------------------------------------------------------------------
 */
 
-        Route::resource('users', UserController::class);
-
-        // Toggle Active Status
-        Route::patch(
-            'users/{user}/toggle-active',
-            [UserController::class, 'toggleActive']
-        )->name('users.toggleActive');
-
-        // Change Password
-        Route::patch(
-            'users/{user}/change-password',
-            [UserController::class, 'changePassword']
-        )->name('users.changePassword');
-
-        // Restore Soft Deleted User
-        Route::post(
-            'users/{id}/restore',
-            [UserController::class, 'restore']
-        )->name('users.restore');
-
-        // Force Delete User
-        Route::delete(
-            'users/{id}/force-delete',
-            [UserController::class, 'forceDelete']
-        )->name('users.forceDelete');
-
-        // Bulk Actions
-        Route::post(
-            'users/bulk-action',
-            [UserController::class, 'bulkAction']
-        )->name('users.bulkAction');
-
-        // Export Routes
-        Route::get(
-            'users-export/excel',
-            [UserController::class, 'exportExcel']
-        )->name('users.exportExcel');
-
-        Route::get(
-            'users-export/pdf',
-            [UserController::class, 'exportPdf']
-        )->name('users.exportPdf');
-
-        // API Routes for AJAX
-        Route::get(
-            'api/user-types',
-            [UserController::class, 'getUserTypes']
-        )->name('api.user-types');
-
-        Route::get(
-            'api/users/stats',
-            [UserController::class, 'getStats']
-        )->name('api.users.stats');
-
-        Route::prefix('student-cards')->name('student-cards.')->group(function () {
-
-            Route::get('/', [StudentCardController::class, 'index'])->name('index');
-
-            Route::get('/available', [StudentCardController::class, 'available'])->name('available');
-
-            Route::get('/search', [StudentCardController::class, 'search'])->name('search');
-
-            Route::get('/students/check-current-card', [StudentCardController::class, 'checkCurrentCard'])
-                ->name('students.check-current-card');
-
-            Route::get('/generate', [StudentCardController::class, 'generate'])->name('generate');
-            Route::post('/generate', [StudentCardController::class, 'generateCards'])->name('generate.store');
-
-            Route::get('/assign-form', [StudentCardController::class, 'assignForm'])->name('assign.form');
-            Route::post('/assign', [StudentCardController::class, 'assign'])->name('assign');
-
-            Route::get('/history/{student}', [StudentCardController::class, 'history'])->name('history');
-
-            // ✅ Preview Route
-            Route::get('/preview', [StudentCardController::class, 'preview'])
-                ->name('preview');
-
-            Route::get('/{card}', [StudentCardController::class, 'show'])->name('show');
-
-            Route::get('/{card}/replace', [StudentCardController::class, 'replaceForm'])->name('replace.form');
-            Route::post('/{card}/replace', [StudentCardController::class, 'replace'])->name('replace');
-
-            Route::patch('/{card}/lost', [StudentCardController::class, 'markLost'])->name('lost');
-            Route::patch('/{card}/damaged', [StudentCardController::class, 'markDamaged'])->name('damaged');
-            Route::patch('/{card}/deactivate', [StudentCardController::class, 'deactivate'])->name('deactivate');
-        });
+Route::prefix('generate-student-id')
+    ->name('generate-student-id.')
+    ->controller(GenerateStudentIdController::class)
+    ->group(function () {
 
         /*
+        |--------------------------------------------------------------------------
+        | Index - Display student ID card generation page
+        |--------------------------------------------------------------------------
+        */
+        Route::get('/', 'index')
+            ->name('index')
+            ->middleware([
+                'auth',
+                'user.active',
+                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+            ]);
+
+        /*
+        |--------------------------------------------------------------------------
+        | Update Status - Single card status update (AJAX)
+        |--------------------------------------------------------------------------
+        */
+        Route::patch('/{studentIdCard}/status', 'updateStatus')
+            ->name('status')
+            ->middleware([
+                'auth',
+                'user.active',
+                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+            ]);
+
+        /*
+        |--------------------------------------------------------------------------
+        | Bulk Update Status - Multiple cards status update (AJAX)
+        |--------------------------------------------------------------------------
+        */
+        Route::patch('/bulk-status', 'bulkUpdateStatus')
+            ->name('bulk-status')
+            ->middleware([
+                'auth',
+                'user.active',
+                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+            ]);
+    });
+
+/*
+|--------------------------------------------------------------------------
+| Temporary ID Cards
+|--------------------------------------------------------------------------
+*/
+
+Route::prefix('temporary_id_cards')
+    ->name('temporary_id_cards.')
+    ->controller(TemporaryIDCardController::class)
+    ->group(function () {
+
+        /*
+        |--------------------------------------------------------------------------
+        | Index - List all temporary ID cards
+        |--------------------------------------------------------------------------
+        */
+        Route::get('/', 'index')
+            ->name('index')->middleware([
+                'auth',
+                'user.active',
+                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+            ]);
+
+        /*
+        |--------------------------------------------------------------------------
+        | Create - Show create form
+        |--------------------------------------------------------------------------
+        */
+        Route::get('/create', 'create')
+            ->name('create')->middleware([
+                'auth',
+                'user.active',
+                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+            ]);
+
+        /*
+        |--------------------------------------------------------------------------
+        | Store - Save new temporary ID cards
+        |--------------------------------------------------------------------------
+        */
+        Route::post('/', 'store')
+            ->name('store')->middleware([
+                'auth',
+                'user.active',
+                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+            ]);
+
+        /*
+        |--------------------------------------------------------------------------
+        | Preview - Show preview page (empty state)
+        |--------------------------------------------------------------------------
+        */
+        Route::get('/preview', 'preview')
+            ->name('preview')->middleware([
+                'auth',
+                'user.active',
+                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+            ]);
+
+        /*
+        |--------------------------------------------------------------------------
+        | Generate Preview - Generate preview for a TMP range
+        |--------------------------------------------------------------------------
+        */
+        Route::post('/preview-generate', 'generatePreview')
+            ->name('preview-generate')->middleware([
+                'auth',
+                'user.active',
+                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+            ]);
+
+        /*
+        |--------------------------------------------------------------------------
+        | Update Status Page - Show status update form
+        |--------------------------------------------------------------------------
+        */
+        Route::get('/status', 'updateStatusPage')
+            ->name('update-status')->middleware([
+                'auth',
+                'user.active',
+                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+            ]);
+
+        /*
+        |--------------------------------------------------------------------------
+        | Change Status - Update card statuses
+        |--------------------------------------------------------------------------
+        */
+        Route::post('/change-status', 'changeStatus')
+            ->name('change-status')->middleware([
+                'auth',
+                'user.active',
+                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+            ]);
+
+        /*
+        |--------------------------------------------------------------------------
+        | Download PDF - Range-based PDF
+        |--------------------------------------------------------------------------
+        */
+        Route::post('/download-pdf', 'downloadPdf')
+            ->name('download-pdf')->middleware([
+                'auth',
+                'user.active',
+                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+            ]);
+
+        /*
+        |--------------------------------------------------------------------------
+        | Download Issued Cards PDF - Statistics report
+        |--------------------------------------------------------------------------
+        */
+        Route::get('/pdf', 'downloadIdCardPdf')
+            ->name('pdf')->middleware([
+                'auth',
+                'user.active',
+                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+            ]);
+    });
+
+
+/*
 |--------------------------------------------------------------------------
 | Student Card Registration
 |--------------------------------------------------------------------------
 */
 
-        Route::prefix('student-card-registration')
-            ->name('student-card-registration.')
-            ->group(function () {
+Route::prefix('student-card-registration')
+    ->name('student-card-registration.')
+    ->controller(StudentCardRegistrationController::class)
+    ->group(function () {
 
-                // Registration Form
-                Route::get(
-                    '/',
-                    [StudentCardRegistrationController::class, 'create']
-                )->name('create');
+        Route::get('/', 'create')
+            ->name('create')
+            ->middleware([
+                'auth',
+                'user.active',
+                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+            ]);
 
-                // Register Student
-                Route::post(
-                    '/',
-                    [StudentCardRegistrationController::class, 'store']
-                )->name('store');
-            });
+        Route::post('/', 'store')
+            ->name('store')
+            ->middleware([
+                'auth',
+                'user.active',
+                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+            ]);
+    });
+
+
+/*
+|--------------------------------------------------------------------------
+| Student Temporary Registration
+|--------------------------------------------------------------------------
+*/
+
+Route::prefix('student-temporary-registration')
+    ->name('student-temporary-registration.')
+    ->controller(StudentTemporaryRegistrationController::class)
+    ->group(function () {
+
+        Route::get('/', 'create')
+            ->name('create')
+            ->middleware([
+                'auth',
+                'user.active',
+                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+            ]);
+
+        Route::post('/', 'store')
+            ->name('store')
+            ->middleware([
+                'auth',
+                'user.active',
+                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+            ]);
+    });
+
+
+/*
+|--------------------------------------------------------------------------
+| Student Management
+|--------------------------------------------------------------------------
+*/
+
+Route::prefix('students')
+    ->name('students.')
+    ->controller(StudentController::class)
+    ->group(function () {
+
+        // List
+        Route::get('/', 'index')
+            ->name('index')
+            ->middleware([
+                'auth',
+                'user.active',
+                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+            ]);
+
+        // Search
+        Route::get('/search', 'search')
+            ->name('search')
+            ->middleware([
+                'auth',
+                'user.active',
+                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+            ]);
+
+        // Export Excel
+        Route::get('/export/excel', 'exportExcel')
+            ->name('export.excel')
+            ->middleware([
+                'auth',
+                'user.active',
+                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+            ]);
+
+        // Export PDF
+        Route::get('/export/pdf', 'exportPdf')
+            ->name('export.pdf')
+            ->middleware([
+                'auth',
+                'user.active',
+                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+            ]);
+
+        // Export QR Details PDF
+        Route::get('/export/qr-details-pdf', 'downloadQrDetailsPdf')
+            ->name('export.qr-details-pdf')
+            ->middleware([
+                'auth',
+                'user.active',
+                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+            ]);
+
+        // View
+        Route::get('/{student}', 'show')
+            ->whereNumber('student')
+            ->name('show')
+            ->middleware([
+                'auth',
+                'user.active',
+                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+            ]);
+
+        // Edit
+        Route::get('/{student}/edit', 'edit')
+            ->whereNumber('student')
+            ->name('edit')
+            ->middleware([
+                'auth',
+                'user.active',
+                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+            ]);
+
+        // Update
+        Route::put('/{student}', 'update')
+            ->whereNumber('student')
+            ->name('update')
+            ->middleware([
+                'auth',
+                'user.active',
+                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+            ]);
+
+        // Toggle Active
+        Route::patch('/{student}/toggle-active', 'toggleActive')
+            ->whereNumber('student')
+            ->name('toggle-active')
+            ->middleware([
+                'auth',
+                'user.active',
+                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+            ]);
+
+        // Delete
+        Route::delete('/{student}', 'destroy')
+            ->whereNumber('student')
+            ->name('destroy')
+            ->middleware([
+                'auth',
+                'user.active',
+                'role:ADMIN,BRANCH_ADMIN',
+            ]);
+    });
+
+/*
+|--------------------------------------------------------------------------
+| Teacher Management
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware([
+    'auth',
+    'user.active',
+    'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+])
+    ->prefix('teachers')
+    ->name('teachers.')
+    ->controller(TeacherController::class)
+    ->group(function () {
+
+        Route::get('/', 'index')
+            ->name('index')
+            ->middleware('role:ADMIN,BRANCH_ADMIN');
+
+        Route::get('/create', 'create')
+            ->name('create')
+            ->middleware('role:ADMIN,BRANCH_ADMIN');
+
+        Route::post('/', 'store')
+            ->name('store')
+            ->middleware('role:ADMIN,BRANCH_ADMIN');
+
+        Route::get('/export/excel', 'exportExcel')
+            ->name('exportExcel')
+            ->middleware('role:ADMIN,BRANCH_ADMIN');
+
+        Route::get('/export/pdf', 'exportPdf')
+            ->name('exportPdf')
+            ->middleware('role:ADMIN,BRANCH_ADMIN');
+
+        Route::get('{teacher}/login-details', 'loginDetails')
+            ->name('loginDetails')
+            ->middleware('role:ADMIN,BRANCH_ADMIN');
+
+        Route::post('{teacher}/create-login', 'createLogin')
+            ->name('create-login')
+            ->middleware('role:ADMIN,BRANCH_ADMIN');
+
+        Route::post('{teacher}/reset-password', 'resetPassword')
+            ->name('reset-password')
+            ->middleware('role:ADMIN,BRANCH_ADMIN');
+
+        Route::patch('{teacher}/toggle-active', 'toggleActive')
+            ->name('toggleActive')
+            ->middleware('role:ADMIN,BRANCH_ADMIN');
+
+        Route::get('{teacher}/edit', 'edit')
+            ->name('edit')
+            ->middleware('role:ADMIN,BRANCH_ADMIN');
+
+        Route::get('{teacher}', 'show')
+            ->name('show')
+            ->middleware('role:ADMIN,BRANCH_ADMIN');
+
+        Route::put('{teacher}', 'update')
+            ->name('update')
+            ->middleware('role:ADMIN,BRANCH_ADMIN');
+
+        Route::patch('{teacher}', 'update')
+            ->name('update')
+            ->middleware('role:ADMIN,BRANCH_ADMIN');
+
+        Route::delete('{teacher}', 'destroy')
+            ->name('destroy')
+            ->middleware('role:ADMIN,BRANCH_ADMIN');
+    });
+
+/*
+        |--------------------------------------------------------------------------
+
+        | Student Classes
+
+        |--------------------------------------------------------------------------
+        */
+
+
+Route::prefix('student-classes')
+    ->name('student-classes.')
+    ->controller(StudentClassController::class)
+    ->group(function () {
+
+        // List classes
+        Route::get('/', 'index')
+            ->name('index')
+            ->middleware('role:ADMIN,BRANCH_ADMIN');
+
+        // Create class form
+        Route::get('/create', 'create')
+            ->name('create')
+            ->middleware('role:ADMIN,BRANCH_ADMIN');
+
+        // Store new class
+        Route::post('/', 'store')
+            ->name('store')
+            ->middleware('role:ADMIN,BRANCH_ADMIN');
+
+        // Export classes
+        Route::get('/export/excel', 'exportExcel')
+            ->name('exportExcel')
+            ->middleware('role:ADMIN,BRANCH_ADMIN');
+
+        Route::get('/export/pdf', 'exportPdf')
+            ->name('exportPdf')
+            ->middleware('role:ADMIN,BRANCH_ADMIN');
+
+        // Search classes (AJAX)
+        Route::get('/search', 'search')
+            ->name('search')
+            ->middleware('role:ADMIN,BRANCH_ADMIN');
+
+        // View single class
+        Route::get('/{studentClass}', 'show')
+            ->name('show')
+            ->middleware('role:ADMIN,BRANCH_ADMIN');
+
+        // Edit class form
+        Route::get('/{studentClass}/edit', 'edit')
+            ->name('edit')
+            ->middleware('role:ADMIN,BRANCH_ADMIN');
+
+        // Update class
+        Route::put('/{studentClass}', 'update')
+            ->name('update')
+            ->middleware('role:ADMIN,BRANCH_ADMIN');
+
+        // Delete class
+        Route::delete('/{studentClass}', 'destroy')
+            ->name('destroy')
+            ->middleware('role:ADMIN,BRANCH_ADMIN');
+
+        // Toggle active status
+        Route::patch('/{studentClass}/toggle-active', 'toggleActive')
+            ->name('toggleActive')
+            ->middleware('role:ADMIN,BRANCH_ADMIN');
+
+        // Toggle ongoing status
+        Route::patch('/{studentClass}/toggle-ongoing', 'toggleOngoing')
+            ->name('toggleOngoing')
+            ->middleware('role:ADMIN,BRANCH_ADMIN');
+    });
+
+    /*
+|--------------------------------------------------------------------------
+| Student Class Management Routes
+|--------------------------------------------------------------------------
+*/
+
+Route::prefix('student-class-management')
+    ->name('student-class-management.')
+    ->controller(StudentClassManagementController::class)
+    ->group(function () {
+
+        Route::get('/', 'index')
+            ->name('index');
+
+
+        // ✅ QR scan — GET
+        Route::get('scan/{qrCode}', 'scanQr')
+            ->name('scan-qr');
+
+
+        // ✅ Search — POST (CSRF protection)
+        Route::post('search', 'searchStudentClasses')
+            ->name('search');
+
+
+        // ✅ Assign Class — GET (form) + POST (submit)
+        Route::get('assign/{studentId?}', 'showAssignClassForm')
+            ->name('assign-form');
+
+        Route::post('assign', 'assignClassToStudent')
+            ->name('assign');
+
+
+        Route::get('student/{studentId}', 'showStudentClasses')
+            ->name('show')
+            ->whereNumber('studentId');
+
+
+        Route::get('payment/{studentId}/{studentClassId}/{enrollmentId}', 'payment')
+            ->name('payment');
+
+        Route::get('attendance/{studentId}/{studentClassId}/{enrollmentId}', 'attendance')
+            ->name('attendance');
+
+        Route::get('tute/{studentId}/{studentClassId}/{enrollmentId}', 'tute')
+            ->name('tute');
+
+
+        Route::patch('toggle-class/{enrollmentId}', 'toggleClassStatus')
+            ->name('toggle-class');
+
+        Route::patch('deactivate-class/{enrollmentId}', 'deactivateClass')
+            ->name('deactivate-class');
+
+        Route::patch('activate-class/{enrollmentId}', 'activateClass')
+            ->name('activate-class');
+
+        Route::patch('toggle-all-classes/{studentId}', 'toggleAllClassesStatus')
+            ->name('toggle-all-classes');
+
+
+        Route::get('category-fees/{classId}', 'getCategoryFees')
+            ->name('category-fees');
+    });
+
+    /*
+|--------------------------------------------------------------------------
+| Class Time Table Routes
+|--------------------------------------------------------------------------
+*/
+
+Route::prefix('class-time-table')
+    ->name('class-time-table.')
+    ->controller(ClassTimeTableController::class)
+    ->middleware(['auth'])
+    ->group(function () {
+
+        /*
+        |------------------------------------------------------------------
+        | Weekly Time Table — Page
+        |------------------------------------------------------------------
+        */
+        Route::get('weekly', 'weeklyTimeTable')
+            ->name('weekly');
+
+
+        /*
+        |------------------------------------------------------------------
+        | Weekly Time Table — PDF Download
+        |------------------------------------------------------------------
+        */
+        Route::get('weekly/pdf', 'downloadPdf')
+            ->name('weekly.pdf');
+
+
+        /*
+        |------------------------------------------------------------------
+        | Weekly Time Table — Excel Download
+        |------------------------------------------------------------------
+        */
+        Route::get('weekly/excel', 'downloadExcel')
+            ->name('weekly.excel');
+    });
+
+/*
+        |--------------------------------------------------------------------------
+
+        | Class Categories
+
+        |--------------------------------------------------------------------------
+        */
+
+Route::prefix('class-categories')
+    ->name('class-categories.')
+    ->controller(ClassCategoryController::class)
+    ->middleware('role:ADMIN,BRANCH_ADMIN')
+    ->group(function () {
+
+        // List categories
+        Route::get('/', 'index')->name('index');
+
+        // Create category
+        Route::get('/create', 'create')->name('create');
+        Route::post('/', 'store')->name('store');
+
+        // Edit category
+        Route::get('/{classCategory}/edit', 'edit')->name('edit');
+
+        // Show category
+        Route::get('/{classCategory}', 'show')->name('show');
+
+        // Update category
+        Route::put('/{classCategory}', 'update')->name('update');
+
+        // Delete category
+        Route::delete('/{classCategory}', 'destroy')->name('destroy');
+
+        // Activate / deactivate category
+        Route::patch('/{classCategory}/toggle-active', 'toggleActive')
+            ->name('toggleActive');
+    });
+
+/*
+
+        |--------------------------------------------------------------------------
+
+        | Class Category Fees
+
+        |--------------------------------------------------------------------------
+
+        */
+
+Route::prefix('class-category-fees')
+    ->name('class-category-fees.')
+    ->controller(ClassCategoryFeeController::class)
+    ->group(function () {
+
+        // List all class category fees
+        Route::get('/', 'index')->name('index')->middleware('role:ADMIN,BRANCH_ADMIN');
+
+        // Create
+        Route::get('/create', 'create')->name('create')->middleware('role:ADMIN,BRANCH_ADMIN');
+        Route::post('/', 'store')->name('store')->middleware('role:ADMIN,BRANCH_ADMIN');
+
+        // Get fees by student class (AJAX)
+        Route::get('/by-class/{studentClass}', 'byClass')
+            ->name('by-class')->middleware('role:ADMIN,BRANCH_ADMIN');
+
+        // View details
+        Route::get('/{id}', 'show')->name('show')->middleware('role:ADMIN,BRANCH_ADMIN');
+
+        // Edit
+        Route::get('/{id}/edit', 'edit')->name('edit')->middleware('role:ADMIN,BRANCH_ADMIN');
+
+        // Update
+        Route::put('/{id}', 'update')->name('update')->middleware('role:ADMIN,BRANCH_ADMIN');
+
+        // Delete
+        Route::delete('/{id}', 'destroy')->name('destroy')->middleware('role:ADMIN,BRANCH_ADMIN');
+
+        // Activate / Deactivate
+        Route::patch('/{id}/toggle-active', 'toggleActive')
+            ->name('toggle-active')->middleware('role:ADMIN,BRANCH_ADMIN');
+    });
+
+/*
+
+        |--------------------------------------------------------------------------
+
+        | Class Category Fee Option
+
+        |--------------------------------------------------------------------------
+
+        */
+
+Route::prefix('class-category-fees/{classCategoryFeeId}/fee-options')
+    ->name('class-category-fee-options.')
+    ->controller(ClassCategoryFeeOptionController::class)
+    ->group(function () {
+
+        Route::get('/', 'index')->name('index');
+        Route::get('/create', 'create')->name('create');
+        Route::post('/', 'store')->name('store');
+
+        Route::get('/{id}/edit', 'edit')->name('edit');
+        Route::put('/{id}', 'update')->name('update');
+        Route::delete('/{id}', 'destroy')->name('destroy');
+
+        Route::patch('/{id}/restore', 'restore')->name('restore');
+        Route::patch('/{id}/set-default', 'setDefault')->name('set-default');
+        Route::patch('/{id}/activate', 'activate')->name('activate');
+        Route::patch('/{id}/deactivate', 'deactivate')->name('deactivate');
+    });
+
+/*
+
+        |--------------------------------------------------------------------------
+
+        | Class Halls
+
+        |--------------------------------------------------------------------------
+
+        */
+
+Route::prefix('class-halls')
+    ->name('class-halls.')
+    ->controller(ClassHallController::class)
+    ->group(function () {
+        Route::get('/', 'index')->name('index')->middleware('role:ADMIN,BRANCH_ADMIN');
+
+        Route::get('/create', 'create')->name('create')->middleware('role:ADMIN,BRANCH_ADMIN');
+
+        Route::post('/', 'store')->name('store')->middleware('role:ADMIN,BRANCH_ADMIN');
+
+        Route::get('/{classHall}/edit', 'edit')->name('edit')->middleware('role:ADMIN,BRANCH_ADMIN');
+
+        Route::get('/{classHall}', 'show')->name('show')->middleware('role:ADMIN,BRANCH_ADMIN');
+
+        Route::put('/{classHall}', 'update')->name('update')->middleware('role:ADMIN,BRANCH_ADMIN');
+
+        Route::delete('/{classHall}', 'destroy')->name('destroy')->middleware('role:ADMIN,BRANCH_ADMIN');
+
+        Route::patch('/{classHall}/toggle-active', 'toggleActive')
+            ->name('toggleActive')->middleware('role:ADMIN,BRANCH_ADMIN');
+    });
+
+/*
+
+        |--------------------------------------------------------------------------
+
+        | Class Schedules
+
+        |--------------------------------------------------------------------------
+
+        */
+
+Route::prefix('class-schedules')
+    ->name('class-schedules.')
+    ->controller(ClassScheduleController::class)
+    ->group(function () {
+
+        // List and create
+        Route::get('/', 'index')->name('index');
+        Route::get('/today', 'todayClasses')->name('todayClasses');
+        Route::get('/create', 'create')->name('create');
+        Route::post('/', 'store')->name('store');
+
+        // Category schedules
+        Route::get('/category-schedules', 'categorySchedules')
+            ->name('categorySchedules');
+
+        // Bulk schedule management
+        Route::get('/bulk-edit', 'bulkEdit')->name('bulkEdit');
+
+        Route::get('/patterns/{pattern}/edit', 'editBulkSchedule')
+            ->name('editBulkSchedule');
+
+        Route::put('/patterns/{pattern}', 'updateBulkSchedule')
+            ->name('updateBulkSchedule');
+
+        // Schedule status actions
+        Route::patch('/{classSchedule}/toggle-active', 'toggleActive')
+            ->name('toggleActive');
+
+        Route::patch('/{classSchedule}/cancel', 'cancel')
+            ->name('cancel');
+
+        Route::patch('/{classSchedule}/status', 'statusUpdate')
+            ->name('statusUpdate');
+
+        // Individual schedule CRUD
+        Route::get('/{classSchedule}/edit', 'edit')->name('edit');
+        Route::get('/{classSchedule}', 'show')->name('show');
+        Route::put('/{classSchedule}', 'update')->name('update');
+        Route::delete('/{classSchedule}', 'destroy')->name('destroy');
+    });
+
+/*
+|--------------------------------------------------------------------------
+| Student Class Enrollment Routes
+|--------------------------------------------------------------------------
+*/
+
+Route::prefix('student-class-enrollments')
+    ->name('student-class-enrollments.')
+    ->controller(StudentClassEnrollmentController::class)
+    ->group(function () {
+
+        /*
+        |------------------------------------------------------------------
+        | Index — view only (all authenticated users)
+        |------------------------------------------------------------------
+        */
+        Route::get('/', 'index')
+            ->name('index')
+            ->middleware('role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER');
+
+        /*
+        |------------------------------------------------------------------
+        | Create + Store — Admin only
+        |------------------------------------------------------------------
+        */
+        Route::get('/create', 'create')
+            ->name('create')
+            ->middleware('role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN');
+
+        Route::post('/', 'store')
+            ->name('store')
+            ->middleware('role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN');
+
+        /*
+        |------------------------------------------------------------------
+        | Category-wise Students List — all users
+        |------------------------------------------------------------------
+        */
+        Route::get(
+            '/classes/{studentClass}/categories/{classCategory}/students',
+            'categoryStudents'
+        )->name('category-students')
+            ->middleware('role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER');
+
+        /*
+        |------------------------------------------------------------------
+        | PDF Export — all users
+        |------------------------------------------------------------------
+        */
+        Route::get(
+            '/classes/{studentClass}/categories/{classCategory}/students/pdf',
+            'categoryStudentsPdf'
+        )->name('category-students.pdf')
+            ->middleware('role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER');
+
+        /*
+        |------------------------------------------------------------------
+        | Excel Export — all users
+        |------------------------------------------------------------------
+        */
+        Route::get(
+            '/classes/{studentClass}/categories/{classCategory}/students/excel',
+            'categoryStudentsExcel'
+        )->name('category-students.excel')
+            ->middleware('role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER');
+
+        /*
+        |------------------------------------------------------------------
+        | Category-wise Payment Students — all users
+        |------------------------------------------------------------------
+        */
+        Route::get(
+            '/classes/{class}/categories/{classCategoryFee}/payments/{year}/{month}',
+            'classCategoryWisePaymentStudent'
+        )->name('category-wise-payment')
+            ->middleware('role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER');
+
+        /*
+        |------------------------------------------------------------------
+        | Restore — Admin only (must be BEFORE /{id} route)
+        |------------------------------------------------------------------
+        */
+        Route::post('/{id}/restore', 'restore')
+            ->name('restore')
+            ->whereNumber('id')
+            ->middleware('role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN');
+
+        /*
+        |------------------------------------------------------------------
+        | Show — all users
+        |------------------------------------------------------------------
+        */
+        Route::get('/{studentClassEnrollment}', 'show')
+            ->name('show')
+            ->middleware('role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER');
+
+        /*
+        |------------------------------------------------------------------
+        | Edit — Admin only
+        |------------------------------------------------------------------
+        */
+        Route::get('/{studentClassEnrollment}/edit', 'edit')
+            ->name('edit')
+            ->middleware('role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN');
+
+        /*
+        |------------------------------------------------------------------
+        | Update — Admin only
+        |------------------------------------------------------------------
+        */
+        Route::put('/{studentClassEnrollment}', 'update')
+            ->name('update')
+            ->middleware('role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN');
+
+        /*
+        |------------------------------------------------------------------
+        | Delete — Admin only
+        |------------------------------------------------------------------
+        */
+        Route::delete('/{studentClassEnrollment}', 'destroy')
+            ->name('destroy')
+            ->middleware('role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN');
+
+        /*
+        |------------------------------------------------------------------
+        | Toggle Active — Admin only
+        |------------------------------------------------------------------
+        */
+        Route::patch('/{studentClassEnrollment}/toggle-active', 'toggleActive')
+            ->name('toggle-active')
+            ->middleware('role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN');
+
+        /*
+        |------------------------------------------------------------------
+        | Leave — all users
+        |------------------------------------------------------------------
+        */
+        Route::patch('/{studentClassEnrollment}/leave', 'leave')
+            ->name('leave')
+            ->middleware('role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER');
+    });
+
+/*
+
+        |--------------------------------------------------------------------------
+
+        | Organizer Management
+
+        |--------------------------------------------------------------------------
+
+        */
+Route::prefix('organizers')
+    ->name('organizers.')
+    ->controller(OrganizerController::class)
+    ->group(function () {
+
+        // Organizer list
+        Route::get('/', 'index')->name('index')->middleware('role:ADMIN,BRANCH_ADMIN');
+
+        // Create organizer
+        Route::get('/create', 'create')->name('create')->middleware('role:ADMIN,BRANCH_ADMIN');
+        Route::post('/', 'store')->name('store')->middleware('role:ADMIN,BRANCH_ADMIN');
+
+        // Export routes (dynamic routes වලට කලින්)
+        Route::get('/export/excel', 'exportExcel')->name('exportExcel')->middleware('role:ADMIN,BRANCH_ADMIN');
+        Route::get('/export/pdf', 'exportPdf')->name('exportPdf')->middleware('role:ADMIN,BRANCH_ADMIN');
+
+        // Organizer details
+        Route::get('/{organizer}', 'show')->name('show')->middleware('role:ADMIN,BRANCH_ADMIN');
+
+        // Edit organizer
+        Route::get('/{organizer}/edit', 'edit')->name('edit')->middleware('role:ADMIN,BRANCH_ADMIN');
+
+        // Update organizer
+        Route::put('/{organizer}', 'update')->name('update')->middleware('role:ADMIN,BRANCH_ADMIN');
+
+        // Delete organizer
+        Route::delete('/{organizer}', 'destroy')->name('destroy')->middleware('role:ADMIN,BRANCH_ADMIN');
+
+        // Activate / Deactivate organizer
+        Route::patch('/{organizer}/toggle-active', 'toggleActive')
+            ->name('toggleActive')->middleware('role:ADMIN,BRANCH_ADMIN');
+    });
+
+/*
+        |--------------------------------------------------------------------------
+
+        | Dashboard
+
+        |--------------------------------------------------------------------------
+        */
+Route::middleware([
+    'auth',
+    'user.active',
+    'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+])->group(function () {
+
+    Route::get('/dashboard', [DashboardController::class, 'index'])
+        ->name('dashboard');
+});
+
+/*
+|--------------------------------------------------------------------------
+| Branch Management (Admin Folder එකෙන් පිටත)
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware([
+    'auth',
+    'user.active',
+    'role:SUPER_ADMIN,ADMIN',
+])->prefix('branches')
+    ->name('branches.')
+    ->controller(BranchController::class)
+    ->group(function () {
+
+        Route::get('/', 'index')->name('index');
+        Route::get('/create', 'create')->name('create');
+        Route::post('/', 'store')->name('store');
+        Route::get('/{branch}', 'show')->name('show');
+        Route::get('/{branch}/edit', 'edit')->name('edit');
+        Route::put('/{branch}', 'update')->name('update');
+        Route::patch('/{branch}/activate', 'activate')->name('activate');
+        Route::patch('/{branch}/deactivate', 'deactivate')->name('deactivate');
+        Route::patch('/{branch}/restore', 'restore')->name('restore');
+        Route::delete('/{branch}', 'destroy')->name('destroy');
+    });
+
+
+    /*
+|--------------------------------------------------------------------------
+| Web Payment Routes
+|--------------------------------------------------------------------------
+*/
+
+Route::prefix('new-payment')
+    ->name('new-payment.')
+    ->controller(PaymentController::class)
+    ->middleware(['auth'])
+    ->group(function () {
+
+        // Show New Payment page
+        Route::get('/', 'index')
+            ->name('index');
+
+        // Read student payment information (POST + CSRF)
+        Route::post('read', 'read')
+            ->name('read');
+
+        // Store one payment
+        Route::post('pay', 'pay')
+            ->name('pay');
+
+        // Store multiple payments
+        Route::post('bulk-pay', 'bulkPay')
+            ->name('bulk-pay');
     });

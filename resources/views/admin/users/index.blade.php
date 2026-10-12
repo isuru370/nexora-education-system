@@ -77,10 +77,10 @@
             </div>
 
             <div class="header-buttons">
-                <a href="{{ route('admin.users.create') }}" class="btn btn-primary custom-btn">
+                {{-- <a href="{{ route('admin.users.create') }}" class="btn btn-primary custom-btn">
                     <i class="bi bi-plus-lg"></i>
                     Add User
-                </a>
+                </a> --}}
                 <a href="{{ route('admin.users.exportExcel') }}" class="btn btn-success custom-btn">
                     <i class="bi bi-file-earmark-excel-fill"></i>
                     Excel

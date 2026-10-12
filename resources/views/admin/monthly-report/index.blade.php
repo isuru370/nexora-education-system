@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
-@section('title', 'Monthly Payment Report')
-@section('page-title', 'Monthly Payment Report')
+@section('title', 'Monthly Financial Reports')
+@section('page-title', 'Monthly Financial Reports')
 
 @push('styles')
     <style>
@@ -269,9 +269,9 @@
                         <i class="bi bi-graph-up"></i>
                         Financial Reports
                     </div>
-                    <h2 class="fw-bold mb-2">Monthly Payment Reports</h2>
+                    <h2 class="fw-bold mb-2">Monthly Financial Reports</h2>
                     <p class="mb-0 text-light-soft">
-                        Generate and download teacher salary reports, salary slips, and student payment reports.
+                        Generate and download financial, salary, student payment, and expense reports.
                     </p>
                 </div>
                 <div class="text-end">
@@ -294,9 +294,9 @@
             <div class="report-header">
                 <div class="report-title">
                     <i class="bi bi-cash-stack"></i>
-                    Teacher Salary Report
+                    Teacher Salary Summary
                 </div>
-                <div class="report-subtitle">Filter and download monthly teacher salary reports</div>
+                <div class="report-subtitle">View and download the monthly salary summary for all teachers</div>
             </div>
             <div class="report-body">
                 <form method="GET" action="{{ route('admin.monthly-report.index') }}">
@@ -349,7 +349,7 @@
                 <div class="info-box">
                     <i class="bi bi-info-circle-fill"></i>
                     <div class="info-box-text">
-                        This report includes all teacher salary details for the selected month and year.
+                        Shows each teacher’s earnings, deductions, and net salary for the selected month.
                     </div>
                 </div>
             </div>
@@ -362,9 +362,9 @@
             <div class="report-header">
                 <div class="report-title">
                     <i class="bi bi-receipt"></i>
-                    Teacher Salary Slip
+                    Individual Teacher Salary Slip
                 </div>
-                <div class="report-subtitle">Generate and print individual teacher salary slips</div>
+                <div class="report-subtitle">Select a teacher and month to view or print the individual salary slip</div>
             </div>
             <div class="report-body">
                 <form method="GET" action="{{ route('admin.monthly-report.index') }}">
@@ -429,7 +429,7 @@
                         <div class="info-box" style="background: #fef3c7;">
                             <i class="bi bi-exclamation-triangle-fill" style="color: #f59e0b;"></i>
                             <div class="info-box-text">
-                                Please select a teacher to generate the salary slip.
+                                Select a teacher, year, and month to generate the salary slip.
                             </div>
                         </div>
                     @endif
@@ -444,9 +444,9 @@
             <div class="report-header">
                 <div class="report-title">
                     <i class="bi bi-people-fill"></i>
-                    Teacher Student Payment Month Report
+                    Student Payments by Fee Month
                 </div>
-                <div class="report-subtitle">Shows students who paid for the selected fee month.</div>
+                <div class="report-subtitle">Shows students whose payments are assigned to the selected fee month.</div>
             </div>
             <div class="report-body">
                 <form method="GET" action="{{ route('admin.monthly-report.index') }}">
@@ -512,7 +512,7 @@
                         <div class="info-box" style="background: #fef3c7;">
                             <i class="bi bi-exclamation-triangle-fill" style="color: #f59e0b;"></i>
                             <div class="info-box-text">
-                                Please select a teacher to generate the student payment report.
+                                Select a teacher, year, and month to generate the student payment report.
                             </div>
                         </div>
                     @endif
@@ -521,9 +521,9 @@
                 <div class="info-box mt-3">
                     <i class="bi bi-info-circle-fill"></i>
                     <div class="info-box-text">
-                        <strong>Payment Month Report:</strong>
-                        This report shows students who have paid for the selected payment month.
-                        The payment can be made on any date, but students will be included if their
+                        <strong>Fee Month:</strong>
+                        This report shows students whose payment month matches the selected year and month.
+                        The payment can be made on any date, but the student is included when the
                         payment month matches the selected year and month.
                     </div>
                 </div>
@@ -537,9 +537,9 @@
             <div class="report-header">
                 <div class="report-title">
                     <i class="bi bi-people-fill"></i>
-                    Teacher Student Collection Report
+                    Student Payments by Collection Date
                 </div>
-                <div class="report-subtitle">Shows students who made payments during the selected month.</div>
+                <div class="report-subtitle">Shows students who actually made a payment during the selected year and month.</div>
             </div>
             <div class="report-body">
                 <form method="GET" action="{{ route('admin.monthly-report.index') }}">
@@ -605,7 +605,7 @@
                         <div class="info-box" style="background: #fef3c7;">
                             <i class="bi bi-exclamation-triangle-fill" style="color: #f59e0b;"></i>
                             <div class="info-box-text">
-                                Please select a teacher to generate the student payment report.
+                                Select a teacher, year, and month to generate the student payment report.
                             </div>
                         </div>
                     @endif
@@ -614,9 +614,9 @@
                 <div class="info-box mt-3">
                     <i class="bi bi-info-circle-fill"></i>
                     <div class="info-box-text">
-                        <strong>Payment Date Report:</strong>
-                        This report shows students who made payments during the selected year and month,
-                        regardless of which payment month the payment was assigned to.
+                        <strong>Collection Date:</strong>
+                        This report shows students who actually made payments during the selected year and month,
+                        regardless of which fee month the payment was assigned to.
                     </div>
                 </div>
             </div>
@@ -629,10 +629,10 @@
             <div class="report-header">
                 <div class="report-title">
                     <i class="bi bi-wallet2"></i>
-                    Teacher Expense Report
+                    Teacher Expense Summary
                 </div>
                 <div class="report-subtitle">
-                    Filter teacher, year and month to download expense reports
+                    Select a teacher, year, and month to view and download expense details
                 </div>
             </div>
 
@@ -713,7 +713,7 @@
                     <div class="info-box" style="background: #fef3c7;">
                         <i class="bi bi-exclamation-triangle-fill" style="color: #f59e0b;"></i>
                         <div class="info-box-text">
-                            Please select a teacher to generate the expense report.
+                            Select a teacher, year, and month to generate the expense report.
                         </div>
                     </div>
                 @endif
@@ -721,7 +721,7 @@
                 <div class="info-box mt-3">
                     <i class="bi bi-info-circle-fill"></i>
                     <div class="info-box-text">
-                        This report shows all teacher expenses for the selected
+                        Shows all recorded teacher expenses for the selected
                         month and year.
                     </div>
                 </div>
@@ -736,4 +736,26 @@
         </div>
 
     </div>
+
+<script>
+(function () {
+    function blockTeacherSelectAutoSubmit(event) {
+        var target = event.target;
+
+        if (
+            target &&
+            target.tagName &&
+            target.tagName.toLowerCase() === 'select' &&
+            target.name === 'teacher_id'
+        ) {
+            event.stopPropagation();
+            event.stopImmediatePropagation();
+        }
+    }
+
+    // Capture phase: runs before normal/bubbling change handlers.
+    document.addEventListener('change', blockTeacherSelectAutoSubmit, true);
+})();
+</script>
+
 @endsection

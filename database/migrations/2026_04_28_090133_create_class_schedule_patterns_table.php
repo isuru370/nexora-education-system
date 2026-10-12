@@ -4,12 +4,17 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateClassSchedulePatternsTable extends Migration
+return new class extends Migration
 {
-    public function up()
+    public function up(): void
     {
         Schema::create('class_schedule_patterns', function (Blueprint $table) {
             $table->id();
+
+            // 🔥 Branch ownership (denormalized from student_class)
+            $table->foreignId('branch_id')
+                ->constrained('branches')
+                ->restrictOnDelete();
 
             $table->foreignId('student_class_id')
                 ->constrained('student_classes')
@@ -46,6 +51,31 @@ class CreateClassSchedulePatternsTable extends Migration
             $table->timestamps();
             $table->softDeletes();
 
+            /*
+            |--------------------------------------------------------------------------
+            | 🔥 Branch-scoped indexes (NEW)
+            |--------------------------------------------------------------------------
+            */
+            $table->index(
+                ['branch_id', 'start_date', 'end_date'],
+                'csp_branch_date_idx'
+            );
+
+            $table->index(
+                ['branch_id', 'class_hall_id'],
+                'csp_branch_hall_idx'
+            );
+
+            $table->index(
+                ['branch_id', 'student_class_id', 'is_active'],
+                'csp_branch_class_active_idx'
+            );
+
+            /*
+            |--------------------------------------------------------------------------
+            | පරණ indexes (still useful)
+            |--------------------------------------------------------------------------
+            */
             $table->index(['student_class_id', 'start_date', 'end_date'], 'csp_class_date_idx');
             $table->index(['class_category_fee_id', 'start_date'], 'csp_category_fee_date_idx');
             $table->index(['class_hall_id', 'start_date'], 'csp_hall_date_idx');
@@ -54,8 +84,8 @@ class CreateClassSchedulePatternsTable extends Migration
         });
     }
 
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('class_schedule_patterns');
     }
-}
+};

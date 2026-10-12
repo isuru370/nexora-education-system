@@ -15,11 +15,17 @@ class BankBranch extends Model
         'branch_code',
     ];
 
+    /**
+     * Bank this branch belongs to.
+     */
     public function bank()
     {
         return $this->belongsTo(Bank::class);
     }
 
+    /**
+     * Teachers using this bank branch.
+     */
     public function teachers()
     {
         return $this->hasMany(Teacher::class);

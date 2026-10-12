@@ -16,11 +16,11 @@ use PhpOffice\PhpSpreadsheet\Style\Border;
 
 class TeacherStudentsExport implements FromArray, WithHeadings, WithTitle, WithStyles, WithColumnWidths, WithMapping
 {
-    protected array $data;
-    protected array $teacher;
-    protected array $students;
-    protected string $selectedDate;
-    protected string $selectedDay;
+    protected $data;
+    protected $teacher;
+    protected $students;
+    protected $selectedDate;
+    protected $selectedDay;
 
     public function __construct(array $data)
     {
@@ -124,8 +124,14 @@ class TeacherStudentsExport implements FromArray, WithHeadings, WithTitle, WithS
             $student['student_email'] ?? '-',
             $student['payment_status'] ?? 'pending',
             number_format($student['balance'] ?? 0, 2),
+            isset($student['fee_option']['label'])
+                ? $student['fee_option']['label']
+                : '-',
+            isset($student['fee_option']['fee'])
+                ? number_format($student['fee_option']['fee'], 2)
+                : number_format($student['final_fee'] ?? 0, 2),
             number_format($student['final_fee'] ?? 0, 2),
-            $student['has_class_today'] ? 'Yes' : 'No',
+            !empty($student['has_class_today']) ? 'Yes' : 'No',
             $student['class_day'] ?? '-',
             $student['last_payment'] ? date('d M Y', strtotime($student['last_payment']['paid_at'])) : 'No Payment',
             $student['last_payment'] ? number_format($student['last_payment']['amount'], 2) : '0.00',
@@ -151,6 +157,8 @@ class TeacherStudentsExport implements FromArray, WithHeadings, WithTitle, WithS
             'Email',
             'Payment Status',
             'Balance (Rs.)',
+            'Fee Option',
+            'Fee Option Fee (Rs.)',
             'Final Fee (Rs.)',
             'Has Class Today',
             'Class Day',
@@ -258,12 +266,14 @@ class TeacherStudentsExport implements FromArray, WithHeadings, WithTitle, WithS
             'H' => 30,  // Email
             'I' => 15,  // Payment Status
             'J' => 15,  // Balance
-            'K' => 15,  // Final Fee
-            'L' => 15,  // Has Class Today
-            'M' => 15,  // Class Day
-            'N' => 18,  // Last Payment Date
-            'O' => 18,  // Last Payment Amount
-            'P' => 20,  // Receipt Number
+            'K' => 25,  // Fee Option
+            'L' => 18,  // Fee Option Fee
+            'M' => 15,  // Final Fee
+            'N' => 15,  // Has Class Today
+            'O' => 15,  // Class Day
+            'P' => 18,  // Last Payment Date
+            'Q' => 18,  // Last Payment Amount
+            'R' => 20,  // Receipt Number
         ];
     }
 
@@ -275,14 +285,14 @@ class TeacherStudentsExport implements FromArray, WithHeadings, WithTitle, WithS
     public function applyStyles(Worksheet $sheet): void
     {
         // Auto-size all columns
-        foreach (range('A', 'P') as $column) {
+        foreach (range('A', 'R') as $column) {
             $sheet->getColumnDimension($column)->setAutoSize(false);
         }
         
         // Apply borders to the table
         $tableHeaderRow = $this->getTableHeaderRow();
         $lastRow = $sheet->getHighestRow();
-        $lastColumn = 'P';
+        $lastColumn = 'R';
         
         // Apply borders to the data table
         $sheet->getStyle("A{$tableHeaderRow}:{$lastColumn}{$lastRow}")
@@ -297,7 +307,7 @@ class TeacherStudentsExport implements FromArray, WithHeadings, WithTitle, WithS
             ->setHorizontal(Alignment::HORIZONTAL_CENTER);
         
         // Right align amount columns
-        $amountColumns = ['J', 'K', 'O'];
+        $amountColumns = ['J', 'L', 'M', 'Q'];
         foreach ($amountColumns as $column) {
             $sheet->getStyle("{$column}{$tableHeaderRow}:{$column}{$lastRow}")
                 ->getAlignment()

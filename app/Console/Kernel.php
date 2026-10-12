@@ -26,6 +26,9 @@ class Kernel extends ConsoleKernel
         $schedule->command('backup:database')
             ->dailyAt('02:15')
             ->timezone('Asia/Colombo');
+
+        $schedule->command('class-schedules:complete-finished')
+            ->everyMinute();
     }
 
     /**

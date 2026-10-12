@@ -56,9 +56,12 @@ class Kernel extends HttpKernel
     protected $routeMiddleware = [
         'auth' => \App\Http\Middleware\Authenticate::class,
         'user.active' => \App\Http\Middleware\CheckUserActive::class,
+        'branch.access' => \App\Http\Middleware\CheckBranchAccess::class,
 
         // Role Based
         'role' => \App\Http\Middleware\CheckUserRole::class,
+        'permission' => \App\Http\Middleware\CheckUserPermission::class,
+        
 
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,

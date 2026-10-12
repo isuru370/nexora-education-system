@@ -207,8 +207,8 @@ class MonthlyReportService
                         'class_name' => $studentClass->class_name,
                         'grade_name' => $studentClass->grade->grade_name ?? '-',
                         'day_of_week' => $targetDayOfWeek,
-                        'start_time' => $classTime?->start_time,
-                        'end_time' => $classTime?->end_time,
+                        'start_time' => optional($classTime)->start_time,
+                        'end_time' => optional($classTime)->end_time,
                         'time_slot' => $timeSlot,
                         'schedule_id' => $schedule->id,
                         'students' => []
@@ -283,11 +283,12 @@ class MonthlyReportService
         return Payment::with([
             'student:id,custom_id,permanent_qr_active,temporary_qr_code,initial_name,guardian_mobile',
             'collectedBy:id,name',
-            'enrollment:id,student_id,student_class_id,class_category_fee_id,custom_fee,discount_percentage,is_free_card',
+            'enrollment:id,student_id,student_class_id,class_category_fee_id,class_category_fee_option_id,is_free_card',
             'enrollment.studentClass:id,class_name,grade_id',
             'enrollment.studentClass.grade:id,grade_name',
-            'enrollment.classCategoryFee:id,student_class_id,class_category_id,fee',
+            'enrollment.classCategoryFee:id,student_class_id,class_category_id',
             'enrollment.classCategoryFee.category:id,category_name',
+            'enrollment.classCategoryFeeOption:id,class_category_fee_id,label,fee',
         ])
             ->whereBetween('paid_at', [$start, $end])
             ->where('status', 'completed')
@@ -295,28 +296,32 @@ class MonthlyReportService
             ->map(function ($payment) {
                 $student = $payment->student;
                 $enrollment = $payment->enrollment;
-                $studentClass = $enrollment?->studentClass;
-                $categoryFee = $enrollment?->classCategoryFee;
+                $studentClass = optional($enrollment)->studentClass;
+                $categoryFee = optional($enrollment)->classCategoryFee;
 
                 return [
                     'payment_id' => $payment->id,
-                    'paid_at' => $payment->paid_at?->format('Y-m-d H:i:s'),
-                    'student_code' => $student?->permanent_qr_active
-                        ? $student?->custom_id
-                        : $student?->temporary_qr_code,
-                    'student_name' => $student?->initial_name,
-                    'guardian_mobile' => $student?->guardian_mobile,
-                    'class_name' => $studentClass?->class_name,
-                    'grade_name' => $studentClass?->grade?->grade_name,
-                    'category_name' => $categoryFee?->category?->category_name,
+                    'paid_at' => optional($payment->paid_at)->format('Y-m-d H:i:s'),
+                    'student_code' => optional($student)->permanent_qr_active
+                        ? optional($student)->custom_id
+                        : optional($student)->temporary_qr_code,
+                    'student_name' => optional($student)->initial_name,
+                    'guardian_mobile' => optional($student)->guardian_mobile,
+                    'class_name' => optional($studentClass)->class_name,
+                    'grade_name' => optional(optional($studentClass)->grade)->grade_name,
+                    'category_name' => optional(optional($categoryFee)->category)->category_name,
                     'amount' => $payment->amount,
-                    'discount_amount' => $payment->discount_amount,
-                    'custom_fee' => $enrollment?->custom_fee,
-                    'discount_percentage' => $enrollment?->discount_percentage,
-                    'final_fee' => $enrollment?->final_fee,
+                    'fee_option' => $enrollment && $enrollment->classCategoryFeeOption
+                        ? [
+                            'id' => $enrollment->classCategoryFeeOption->id,
+                            'label' => $enrollment->classCategoryFeeOption->label,
+                            'fee' => (float) $enrollment->classCategoryFeeOption->fee,
+                        ]
+                        : null,
+                    'final_fee' => $enrollment ? (float) $enrollment->final_fee : 0,
                     'balance' => $enrollment?->balance,
                     'payment_status' => $enrollment?->payment_status,
-                    'collected_by' => $payment->collectedBy?->name,
+                    'collected_by' => optional($payment->collectedBy)->name,
                 ];
             });
     }
@@ -328,11 +333,12 @@ class MonthlyReportService
         return Payment::with([
             'student:id,custom_id,permanent_qr_active,temporary_qr_code,initial_name,guardian_mobile',
             'collectedBy:id,name',
-            'enrollment:id,student_id,student_class_id,class_category_fee_id,custom_fee,discount_percentage,is_free_card',
+            'enrollment:id,student_id,student_class_id,class_category_fee_id,class_category_fee_option_id,is_free_card',
             'enrollment.studentClass:id,class_name,grade_id',
             'enrollment.studentClass.grade:id,grade_name',
-            'enrollment.classCategoryFee:id,student_class_id,class_category_id,fee',
+            'enrollment.classCategoryFee:id,student_class_id,class_category_id',
             'enrollment.classCategoryFee.category:id,category_name',
+            'enrollment.classCategoryFeeOption:id,class_category_fee_id,label,fee',
         ])
             ->whereBetween('paid_at', [$start, $end])
             ->where('status', 'completed')
@@ -340,28 +346,32 @@ class MonthlyReportService
             ->map(function ($payment) {
                 $student = $payment->student;
                 $enrollment = $payment->enrollment;
-                $studentClass = $enrollment?->studentClass;
-                $categoryFee = $enrollment?->classCategoryFee;
+                $studentClass = optional($enrollment)->studentClass;
+                $categoryFee = optional($enrollment)->classCategoryFee;
 
                 return [
                     'payment_id' => $payment->id,
-                    'paid_at' => $payment->paid_at?->format('Y-m-d H:i:s'),
-                    'student_code' => $student?->permanent_qr_active
-                        ? $student?->custom_id
-                        : $student?->temporary_qr_code,
-                    'student_name' => $student?->initial_name,
-                    'guardian_mobile' => $student?->guardian_mobile,
-                    'class_name' => $studentClass?->class_name,
-                    'grade_name' => $studentClass?->grade?->grade_name,
-                    'category_name' => $categoryFee?->category?->category_name,
+                    'paid_at' => optional($payment->paid_at)->format('Y-m-d H:i:s'),
+                    'student_code' => optional($student)->permanent_qr_active
+                        ? optional($student)->custom_id
+                        : optional($student)->temporary_qr_code,
+                    'student_name' => optional($student)->initial_name,
+                    'guardian_mobile' => optional($student)->guardian_mobile,
+                    'class_name' => optional($studentClass)->class_name,
+                    'grade_name' => optional(optional($studentClass)->grade)->grade_name,
+                    'category_name' => optional(optional($categoryFee)->category)->category_name,
                     'amount' => $payment->amount,
-                    'discount_amount' => $payment->discount_amount,
-                    'custom_fee' => $enrollment?->custom_fee,
-                    'discount_percentage' => $enrollment?->discount_percentage,
-                    'final_fee' => $enrollment?->final_fee,
+                    'fee_option' => $enrollment && $enrollment->classCategoryFeeOption
+                        ? [
+                            'id' => $enrollment->classCategoryFeeOption->id,
+                            'label' => $enrollment->classCategoryFeeOption->label,
+                            'fee' => (float) $enrollment->classCategoryFeeOption->fee,
+                        ]
+                        : null,
+                    'final_fee' => $enrollment ? (float) $enrollment->final_fee : 0,
                     'balance' => $enrollment?->balance,
                     'payment_status' => $enrollment?->payment_status,
-                    'collected_by' => $payment->collectedBy?->name,
+                    'collected_by' => optional($payment->collectedBy)->name,
                 ];
             });
     }
@@ -384,17 +394,17 @@ class MonthlyReportService
             ->whereBetween('payment_date', [$start, $end])
             ->get()
             ->map(function ($row) {
-                $student = $row->enrollment?->student;
+                $student = optional($row->enrollment)->student;
 
                 return [
-                    'payment_date' => $row->payment_date?->format('Y-m-d H:i:s'),
-                    'teacher_name' => $row->teacher?->full_name,
-                    'student_code' => $student?->permanent_qr_active
-                        ? $student?->custom_id
-                        : $student?->temporary_qr_code,
-                    'student_name' => $student?->initial_name,
-                    'guardian_mobile' => $student?->guardian_mobile,
-                    'class_name' => $row->studentClass?->class_name,
+                    'payment_date' => optional($row->payment_date)->format('Y-m-d H:i:s'),
+                    'teacher_name' => optional($row->teacher)->full_name,
+                    'student_code' => optional($student)->permanent_qr_active
+                        ? optional($student)->custom_id
+                        : optional($student)->temporary_qr_code,
+                    'student_name' => optional($student)->initial_name,
+                    'guardian_mobile' => optional($student)->guardian_mobile,
+                    'class_name' => optional($row->studentClass)->class_name,
                     'grade_name' => $row->studentClass?->grade?->grade_name,
                     'payment_amount' => $row->payment_amount,
                     'teacher_amount' => $row->teacher_amount,
@@ -417,17 +427,17 @@ class MonthlyReportService
             ->whereBetween('payment_date', [$start, $end])
             ->get()
             ->map(function ($row) {
-                $student = $row->enrollment?->student;
+                $student = optional($row->enrollment)->student;
 
                 return [
-                    'payment_date' => $row->payment_date?->format('Y-m-d H:i:s'),
-                    'teacher_name' => $row->teacher?->full_name,
-                    'student_code' => $student?->permanent_qr_active
-                        ? $student?->custom_id
-                        : $student?->temporary_qr_code,
-                    'student_name' => $student?->initial_name,
-                    'guardian_mobile' => $student?->guardian_mobile,
-                    'class_name' => $row->studentClass?->class_name,
+                    'payment_date' => optional($row->payment_date)->format('Y-m-d H:i:s'),
+                    'teacher_name' => optional($row->teacher)->full_name,
+                    'student_code' => optional($student)->permanent_qr_active
+                        ? optional($student)->custom_id
+                        : optional($student)->temporary_qr_code,
+                    'student_name' => optional($student)->initial_name,
+                    'guardian_mobile' => optional($student)->guardian_mobile,
+                    'class_name' => optional($row->studentClass)->class_name,
                     'grade_name' => $row->studentClass?->grade?->grade_name,
                     'payment_amount' => $row->payment_amount,
                     'teacher_amount' => $row->teacher_amount,
@@ -463,17 +473,17 @@ class MonthlyReportService
             'total_institution_amount' => $snapshots->sum('institution_amount'),
             'count' => $snapshots->count(),
             'details' => $snapshots->map(function ($row) {
-                $student = $row->enrollment?->student;
+                $student = optional($row->enrollment)->student;
 
                 return [
                     'payment_id' => $row->payment_id,
-                    'payment_date' => $row->payment_date?->format('Y-m-d H:i:s'),
-                    'student_code' => $student?->permanent_qr_active
-                        ? $student?->custom_id
-                        : $student?->temporary_qr_code,
-                    'student_name' => $student?->initial_name,
-                    'guardian_mobile' => $student?->guardian_mobile,
-                    'class_name' => $row->studentClass?->class_name,
+                    'payment_date' => optional($row->payment_date)->format('Y-m-d H:i:s'),
+                    'student_code' => optional($student)->permanent_qr_active
+                        ? optional($student)->custom_id
+                        : optional($student)->temporary_qr_code,
+                    'student_name' => optional($student)->initial_name,
+                    'guardian_mobile' => optional($student)->guardian_mobile,
+                    'class_name' => optional($row->studentClass)->class_name,
                     'grade_name' => $row->studentClass?->grade?->grade_name,
                     'payment_amount' => $row->payment_amount,
                     'institution_amount' => $row->institution_amount,
@@ -503,17 +513,17 @@ class MonthlyReportService
             'total_institution_amount' => $snapshots->sum('institution_amount'),
             'count' => $snapshots->count(),
             'details' => $snapshots->map(function ($row) {
-                $student = $row->enrollment?->student;
+                $student = optional($row->enrollment)->student;
 
                 return [
                     'payment_id' => $row->payment_id,
-                    'payment_date' => $row->payment_date?->format('Y-m-d H:i:s'),
-                    'student_code' => $student?->permanent_qr_active
-                        ? $student?->custom_id
-                        : $student?->temporary_qr_code,
-                    'student_name' => $student?->initial_name,
-                    'guardian_mobile' => $student?->guardian_mobile,
-                    'class_name' => $row->studentClass?->class_name,
+                    'payment_date' => optional($row->payment_date)->format('Y-m-d H:i:s'),
+                    'student_code' => optional($student)->permanent_qr_active
+                        ? optional($student)->custom_id
+                        : optional($student)->temporary_qr_code,
+                    'student_name' => optional($student)->initial_name,
+                    'guardian_mobile' => optional($student)->guardian_mobile,
+                    'class_name' => optional($row->studentClass)->class_name,
                     'grade_name' => $row->studentClass?->grade?->grade_name,
                     'payment_amount' => $row->payment_amount,
                     'institution_amount' => $row->institution_amount,
@@ -548,20 +558,20 @@ class MonthlyReportService
             'total_organizer_amount' => $snapshots->sum('organizer_amount'),
             'count' => $snapshots->count(),
             'details' => $snapshots->map(function ($row) {
-                $student = $row->enrollment?->student;
+                $student = optional($row->enrollment)->student;
 
                 return [
                     'payment_id' => $row->payment_id,
-                    'payment_date' => $row->payment_date?->format('Y-m-d H:i:s'),
+                    'payment_date' => optional($row->payment_date)->format('Y-m-d H:i:s'),
                     'organizer_id' => $row->organizer_id,
-                    'organizer_name' => $row->organizer?->name,
-                    'organizer_mobile' => $row->organizer?->mobile,
-                    'student_code' => $student?->permanent_qr_active
-                        ? $student?->custom_id
-                        : $student?->temporary_qr_code,
-                    'student_name' => $student?->initial_name,
-                    'guardian_mobile' => $student?->guardian_mobile,
-                    'class_name' => $row->studentClass?->class_name,
+                    'organizer_name' => optional($row->organizer)->name,
+                    'organizer_mobile' => optional($row->organizer)->mobile,
+                    'student_code' => optional($student)->permanent_qr_active
+                        ? optional($student)->custom_id
+                        : optional($student)->temporary_qr_code,
+                    'student_name' => optional($student)->initial_name,
+                    'guardian_mobile' => optional($student)->guardian_mobile,
+                    'class_name' => optional($row->studentClass)->class_name,
                     'grade_name' => $row->studentClass?->grade?->grade_name,
                     'payment_amount' => $row->payment_amount,
                     'organizer_amount' => $row->organizer_amount,
@@ -591,20 +601,20 @@ class MonthlyReportService
             'total_organizer_amount' => $snapshots->sum('organizer_amount'),
             'count' => $snapshots->count(),
             'details' => $snapshots->map(function ($row) {
-                $student = $row->enrollment?->student;
+                $student = optional($row->enrollment)->student;
 
                 return [
                     'payment_id' => $row->payment_id,
-                    'payment_date' => $row->payment_date?->format('Y-m-d H:i:s'),
+                    'payment_date' => optional($row->payment_date)->format('Y-m-d H:i:s'),
                     'organizer_id' => $row->organizer_id,
-                    'organizer_name' => $row->organizer?->name,
-                    'organizer_mobile' => $row->organizer?->mobile,
-                    'student_code' => $student?->permanent_qr_active
-                        ? $student?->custom_id
-                        : $student?->temporary_qr_code,
-                    'student_name' => $student?->initial_name,
-                    'guardian_mobile' => $student?->guardian_mobile,
-                    'class_name' => $row->studentClass?->class_name,
+                    'organizer_name' => optional($row->organizer)->name,
+                    'organizer_mobile' => optional($row->organizer)->mobile,
+                    'student_code' => optional($student)->permanent_qr_active
+                        ? optional($student)->custom_id
+                        : optional($student)->temporary_qr_code,
+                    'student_name' => optional($student)->initial_name,
+                    'guardian_mobile' => optional($student)->guardian_mobile,
+                    'class_name' => optional($row->studentClass)->class_name,
                     'grade_name' => $row->studentClass?->grade?->grade_name,
                     'payment_amount' => $row->payment_amount,
                     'organizer_amount' => $row->organizer_amount,
@@ -634,14 +644,14 @@ class MonthlyReportService
 
                 return [
                     'payment_id' => $payment->id,
-                    'created_at' => $payment->created_at?->format('Y-m-d H:i:s'),
-                    'student_code' => $student?->permanent_qr_active
-                        ? $student?->custom_id
-                        : $student?->temporary_qr_code,
-                    'student_name' => $student?->initial_name,
-                    'guardian_mobile' => $student?->guardian_mobile,
+                    'created_at' => optional($payment->created_at)->format('Y-m-d H:i:s'),
+                    'student_code' => optional($student)->permanent_qr_active
+                        ? optional($student)->custom_id
+                        : optional($student)->temporary_qr_code,
+                    'student_name' => optional($student)->initial_name,
+                    'guardian_mobile' => optional($student)->guardian_mobile,
                     'amount' => $payment->amount,
-                    'collected_by' => $payment->collectedBy?->name,
+                    'collected_by' => optional($payment->collectedBy)->name,
                 ];
             });
     }
@@ -662,14 +672,14 @@ class MonthlyReportService
 
                 return [
                     'payment_id' => $payment->id,
-                    'created_at' => $payment->created_at?->format('Y-m-d H:i:s'),
-                    'student_code' => $student?->permanent_qr_active
-                        ? $student?->custom_id
-                        : $student?->temporary_qr_code,
-                    'student_name' => $student?->initial_name,
-                    'guardian_mobile' => $student?->guardian_mobile,
+                    'created_at' => optional($payment->created_at)->format('Y-m-d H:i:s'),
+                    'student_code' => optional($student)->permanent_qr_active
+                        ? optional($student)->custom_id
+                        : optional($student)->temporary_qr_code,
+                    'student_name' => optional($student)->initial_name,
+                    'guardian_mobile' => optional($student)->guardian_mobile,
                     'amount' => $payment->amount,
-                    'collected_by' => $payment->collectedBy?->name,
+                    'collected_by' => optional($payment->collectedBy)->name,
                 ];
             });
     }
@@ -689,7 +699,7 @@ class MonthlyReportService
                 ->where('teacher_id', $teacherId)
                 ->with([
                     'grade:id,grade_name',
-                    'categoryFees:id,student_class_id,class_category_id,fee',
+                    'categoryFees:id,student_class_id,class_category_id',
                     'categoryFees.category:id,category_name,code',
                 ])
                 ->orderBy('class_name')
@@ -708,8 +718,9 @@ class MonthlyReportService
                 ])
                 ->with([
                     'student:id,initial_name,guardian_mobile,custom_id,temporary_qr_code,permanent_qr_active',
-                    'classCategoryFee:id,student_class_id,class_category_id,fee',
+                    'classCategoryFee:id,student_class_id,class_category_id',
                     'classCategoryFee.category:id,category_name,code',
+                    'classCategoryFeeOption:id,class_category_fee_id,label,fee',
                     'payments' => function ($query) use ($start, $end) {
                         $query->select([
                             'id',
@@ -749,7 +760,7 @@ class MonthlyReportService
                                 return [
                                     'payment_id' => $payment->id,
                                     'amount' => (float) $payment->amount,
-                                    'paid_at' => $payment->paid_at?->format('Y-m-d H:i:s'),
+                                    'paid_at' => optional($payment->paid_at)->format('Y-m-d H:i:s'),
                                     'payment_method' => $payment->payment_method,
                                     'receipt_number' => $payment->receipt_number,
                                     'reference_number' => $payment->reference_number,
@@ -759,11 +770,11 @@ class MonthlyReportService
 
                             return [
                                 'enrollment_id' => $enrollment->id,
-                                'student_code' => $student?->permanent_qr_active
-                                    ? $student?->custom_id
-                                    : $student?->temporary_qr_code,
-                                'student_name' => $student?->initial_name,
-                                'guardian_mobile' => $student?->guardian_mobile,
+                                'student_code' => optional($student)->permanent_qr_active
+                                    ? optional($student)->custom_id
+                                    : optional($student)->temporary_qr_code,
+                                'student_name' => optional($student)->initial_name,
+                                'guardian_mobile' => optional($student)->guardian_mobile,
                                 'payments' => $payments,
                                 'total_paid' => (float) $payments->sum('amount'),
                             ];
@@ -772,7 +783,7 @@ class MonthlyReportService
                         return [
                             'class_category_fee_id' => $fee->id,
                             'category_id' => $fee->class_category_id,
-                            'category_name' => $fee->category?->category_name,
+                            'category_name' => optional($fee->category)->category_name,
                             'fee' => (float) $fee->fee,
                             'students' => $students,
                             'category_total_paid' => (float) $students->sum('total_paid'),
@@ -784,7 +795,7 @@ class MonthlyReportService
                 return [
                     'class_id' => $class->id,
                     'class_name' => $class->class_name,
-                    'grade_name' => $class->grade?->grade_name,
+                    'grade_name' => optional($class->grade)->grade_name,
                     'categories' => $categories,
                     'class_total_paid' => (float) $categories->sum('category_total_paid'),
                 ];

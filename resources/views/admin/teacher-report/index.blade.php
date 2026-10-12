@@ -243,6 +243,26 @@
             color: #2563eb;
         }
 
+        .fee-option-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: .35rem;
+            padding: .25rem .6rem;
+            border-radius: 20px;
+            background: #ede9fe;
+            color: #6d28d9;
+            font-size: .7rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
+        .fee-option-fee {
+            color: #475569;
+            font-size: .78rem;
+            font-weight: 700;
+            white-space: nowrap;
+        }
+
         /* Table Styles */
         .payment-table {
             width: 100%;
@@ -534,9 +554,21 @@
                                         <i class="bi bi-tag-fill"></i>
                                         {{ $category['category_name'] }}
                                     </div>
-                                    <div class="category-total">
-                                        <i class="bi bi-cash-stack me-1"></i>
-                                        Total: Rs. {{ number_format($category['category_total_paid'], 2) }}
+                                    <div class="d-flex align-items-center gap-2 flex-wrap">
+                                        @foreach($category['fee_options'] ?? [] as $feeOption)
+                                            <span class="fee-option-badge">
+                                                <i class="bi bi-wallet2"></i>
+                                                {{ $feeOption['label'] ?? 'Fee Option' }}
+                                                @if(isset($feeOption['fee']))
+                                                    - Rs. {{ number_format((float) $feeOption['fee'], 2) }}
+                                                @endif
+                                            </span>
+                                        @endforeach
+
+                                        <div class="category-total">
+                                            <i class="bi bi-cash-stack me-1"></i>
+                                            Total: Rs. {{ number_format($category['category_total_paid'], 2) }}
+                                        </div>
                                     </div>
                                 </div>
 
@@ -546,6 +578,8 @@
                                             <tr>
                                                 <th>Student Code</th>
                                                 <th>Student Name</th>
+                                                <th>Fee Option</th>
+                                                <th>Fee</th>
                                                 <th>Guardian Mobile</th>
                                                 <th>Payment ID</th>
                                                 <th>Paid At</th>
@@ -561,6 +595,23 @@
                                                             <code class="bg-light px-1 py-0 rounded">{{ $student['student_code'] }}</code>
                                                         </td>
                                                         <td class="fw-semibold">{{ $student['student_name'] }}</td>
+                                                        <td>
+                                                            @if(!empty($student['fee_option']))
+                                                                <span class="fee-option-badge">
+                                                                    <i class="bi bi-tag-fill"></i>
+                                                                    {{ $student['fee_option']['label'] ?? 'N/A' }}
+                                                                </span>
+                                                            @else
+                                                                <span class="text-muted">N/A</span>
+                                                            @endif
+                                                        </td>
+                                                        <td class="fee-option-fee">
+                                                            @if(!empty($student['fee_option']) && isset($student['fee_option']['fee']))
+                                                                Rs. {{ number_format((float) $student['fee_option']['fee'], 2) }}
+                                                            @else
+                                                                -
+                                                            @endif
+                                                        </td>
                                                         <td>{{ $student['guardian_mobile'] }}</td>
                                                         <td>
                                                             <span class="badge bg-secondary">#{{ $payment['payment_id'] }}</span>

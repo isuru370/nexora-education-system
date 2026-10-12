@@ -10,84 +10,118 @@ class SystemUsersTableSeeder extends Seeder
 {
     public function run(): void
     {
-        $admins = [
-            [
-                'custom_id' => 'ADM001',
-                'full_name' => 'System Administrator',
-                'email' => 'admin@nexorait.lk',
-                'password' => 'Admin@123',
-                'role' => 'SUPER_ADMIN',
+        $username = env('SUPER_ADMIN_USERNAME');
+        $password = env('SUPER_ADMIN_PASSWORD');
 
-                'mobile' => '0711234567',
-                'nic' => '123456789V',
-                'bday' => '1985-01-15',
-                'gender' => 'male',
-                'address1' => 'Mirigama, Sri Lanka',
-                'address2' => 'Nexora IT Solutions',
-                'address3' => 'Mirigama',
-            ],
-            [
-                'custom_id' => 'ADM002',
-                'full_name' => 'Institute Admin',
-                'email' => 'institute@gmail.com',
-                'password' => 'Admin@institute',
-                'role' => 'ADMIN',
+        // -------------------------------------------------
+        // Validate Environment Variables
+        // -------------------------------------------------
 
-                'mobile' => '0778282529',
-                'nic' => '987654321V',
-                'bday' => '1990-05-20',
-                'gender' => 'male',
-                'address1' => 'Giriulla',
-                'address2' => 'Sri Lanka',
-                'address3' => 'Sri Lanka',
-            ],
+        if (!is_string($username) || trim($username) === '') {
+            throw new \RuntimeException(
+                'SUPER_ADMIN_USERNAME is not configured in the .env file.'
+            );
+        }
+
+        if (!is_string($password) || trim($password) === '') {
+            throw new \RuntimeException(
+                'SUPER_ADMIN_PASSWORD is not configured in the .env file.'
+            );
+        }
+
+        $admin = [
+            'custom_id' => 'ADM001',
+            'full_name' => 'System Administrator',
+
+            'email' => $username,
+            'password' => $password,
+
+            'role' => 'SUPER_ADMIN',
+
+            'mobile' => '0711234567',
+            'nic' => '123456789V',
+            'bday' => '1985-01-15',
+            'gender' => 'male',
+            'address1' => 'Mirigama, Sri Lanka',
+            'address2' => 'Nexora IT Solutions',
+            'address3' => 'Mirigama',
         ];
 
-        foreach ($admins as $admin) {
+        // -------------------------------------------------
+        // Get Role ID
+        // -------------------------------------------------
 
-            // Get role ID
-            $userTypeId = DB::table('user_types')
-                ->where('code', $admin['role'])
-                ->value('id');
+        $userTypeId = DB::table('user_types')
+            ->where('code', $admin['role'])
+            ->value('id');
 
-            // Users table
-            DB::table('users')->updateOrInsert(
-                ['email' => $admin['email']],
-                [
-                    'name' => $admin['full_name'],
-                    'password' => Hash::make($admin['password']),
-                    'user_type_id' => $userTypeId,
-                    'is_active' => true,
-                    'email_verified_at' => now(),
-                    'updated_at' => now(),
-                    'created_at' => now(),
-                ]
+        if (!$userTypeId) {
+            throw new \RuntimeException(
+                "User type '{$admin['role']}' not found."
             );
-
-            $user = DB::table('users')
-                ->where('email', $admin['email'])
-                ->first();
-
-            // System Users
-            DB::table('system_users')->updateOrInsert(
-                ['custom_id' => $admin['custom_id']],
-                [
-                    'user_id' => $user->id,
-                    'full_name' => $admin['full_name'],
-                    'mobile' => $admin['mobile'],
-                    'nic' => $admin['nic'],
-                    'bday' => $admin['bday'],
-                    'gender' => $admin['gender'],
-                    'address1' => $admin['address1'],
-                    'address2' => $admin['address2'],
-                    'address3' => $admin['address3'],
-                    'is_active' => true,
-                    'updated_at' => now(),
-                    'created_at' => now(),
-                ]
-            );
-
-            $this->command->info("✅ {$admin['role']} {$admin['email']} ready");
         }
+
+        // -------------------------------------------------
+        // Users Table
+        // -------------------------------------------------
+
+        DB::table('users')->updateOrInsert(
+            [
+                'email' => $admin['email'],
+            ],
+            [
+                'name' => $admin['full_name'],
+                'password' => Hash::make($admin['password']),
+                'user_type_id' => $userTypeId,
+                'is_active' => true,
+                'email_verified_at' => now(),
+                'updated_at' => now(),
+            ]
+        );
+
+        // -------------------------------------------------
+        // Get User
+        // -------------------------------------------------
+
+        $user = DB::table('users')
+            ->where('email', $admin['email'])
+            ->first();
+
+        if (!$user) {
+            throw new \RuntimeException(
+                "Failed to create or retrieve user: {$admin['email']}"
+            );
+        }
+
+        // -------------------------------------------------
+        // System Users Table
+        // -------------------------------------------------
+
+        DB::table('system_users')->updateOrInsert(
+            [
+                'custom_id' => $admin['custom_id'],
+            ],
+            [
+                'user_id' => $user->id,
+                'full_name' => $admin['full_name'],
+                'mobile' => $admin['mobile'],
+                'nic' => $admin['nic'],
+                'bday' => $admin['bday'],
+                'gender' => $admin['gender'],
+                'address1' => $admin['address1'],
+                'address2' => $admin['address2'],
+                'address3' => $admin['address3'],
+                'is_active' => true,
+                'updated_at' => now(),
+            ]
+        );
+
+        // -------------------------------------------------
+        // Success
+        // -------------------------------------------------
+
+        $this->command->info(
+            "SUPER_ADMIN {$admin['email']} ready"
+        );
     }
 }

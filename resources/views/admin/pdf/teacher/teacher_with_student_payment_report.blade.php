@@ -132,10 +132,6 @@
             color: #166534;
         }
 
-        .summary-value.partial {
-            color: #92400e;
-        }
-
         .summary-value.unpaid {
             color: #991b1b;
         }
@@ -217,11 +213,6 @@
             font-weight: 700;
         }
 
-        .status-partial {
-            color: #92400e;
-            font-weight: 700;
-        }
-
         .status-unpaid {
             color: #991b1b;
             font-weight: 700;
@@ -279,7 +270,7 @@
         </div>
     </div>
 
-    {{-- Summary Table (8 Columns) --}}
+    {{-- Summary Table (7 Columns) --}}
     <table class="summary-table">
         <tr>
             <td>
@@ -303,19 +294,23 @@
                 <div class="summary-value paid">{{ $report['summary']['paid_students'] }}</div>
             </td>
             <td>
-                <div class="summary-label">PARTIAL</div>
-                <div class="summary-value partial">{{ $report['summary']['partial_students'] }}</div>
-            </td>
-            <td>
                 <div class="summary-label">UNPAID</div>
                 <div class="summary-value unpaid">{{ $report['summary']['unpaid_students'] }}</div>
             </td>
             <td>
                 <div class="summary-label">FREE CARD</div>
-                <div class="summary-value free">{{ $report['summary']['freecard_students'] }}</div>
+                <div class="summary-value free">{{ $report['summary']['freecard_students'] ?? 0 }}</div>
             </td>
         </tr>
     </table>
+
+    {{-- 
+        Fee Option architecture:
+        - Category-level fee is no longer used.
+        - Each student uses the selected fee option from the enrollment.
+        - Report statuses are Paid / Unpaid / Free Card.
+        - No discount or custom fee is displayed.
+    --}}
 
     {{-- Classes Section --}}
     @foreach($report['classes'] as $class)
@@ -327,10 +322,15 @@
             @foreach($class['categories'] as $category)
                 <div class="category-header">
                     🏷️ Category: {{ $category['category_name'] }} |
-                    Fee: Rs. {{ number_format($category['fee'], 2) }} |
+                    @if(!empty($category['fee_options']))
+                        Fee Options:
+                        @foreach($category['fee_options'] as $feeOption)
+                            {{ $feeOption['label'] }} (Rs. {{ number_format($feeOption['fee'], 2) }})@if(!$loop->last), @endif
+                        @endforeach
+                        |
+                    @endif
                     Total: {{ $category['total_students'] }} |
                     Paid: {{ $category['paid_count'] }} |
-                    Partial: {{ $category['partial_count'] }} |
                     Unpaid: {{ $category['unpaid_count'] }} |
                     Free: {{ $category['freecard_count'] }}
                 </div>
@@ -342,6 +342,7 @@
                             <th style="width: 20%;">Student Name</th>
                             <th style="width: 15%;">Guardian Mobile</th>
                             <th style="width: 10%;">Status</th>
+                            <th style="width: 13%;">Fee Option</th>
                             <th style="width: 10%;" class="text-right">Final Fee</th>
                             <th style="width: 10%;" class="text-right">Paid</th>
                             <th style="width: 10%;" class="text-right">Balance</th>
@@ -361,19 +362,6 @@
                             </tr>
                         @endforeach
 
-                        {{-- Partial Students --}}
-                        @foreach($category['students']['partial'] as $student)
-                            <tr>
-                                <td>{{ $student['student_code'] }}</td>
-                                <td><strong>{{ $student['initial_name'] }}</strong></td>
-                                <td>{{ $student['guardian_mobile'] }}</td>
-                                <td class="status-partial text-center">⏳ Partial</td>
-                                <td class="text-right amount">Rs. {{ number_format($student['final_fee'], 2) }}</td>
-                                <td class="text-right amount">Rs. {{ number_format($student['paid_amount'], 2) }}</td>
-                                <td class="text-right amount">Rs. {{ number_format($student['balance'], 2) }}</td>
-                            </tr>
-                        @endforeach
-
                         {{-- Unpaid Students --}}
                         @foreach($category['students']['unpaid'] as $student)
                             <tr>
@@ -381,6 +369,14 @@
                                 <td><strong>{{ $student['initial_name'] }}</strong></td>
                                 <td>{{ $student['guardian_mobile'] }}</td>
                                 <td class="status-unpaid text-center">✗ Unpaid</td>
+                                <td>
+                                    @if(!empty($student['fee_option']))
+                                        <strong>{{ $student['fee_option']['label'] }}</strong><br>
+                                        <small>Rs. {{ number_format($student['fee_option']['fee'], 2) }}</small>
+                                    @else
+                                        <span>-</span>
+                                    @endif
+                                </td>
                                 <td class="text-right amount">Rs. {{ number_format($student['final_fee'], 2) }}</td>
                                 <td class="text-right amount">Rs. {{ number_format($student['paid_amount'], 2) }}</td>
                                 <td class="text-right amount">Rs. {{ number_format($student['balance'], 2) }}</td>
@@ -394,6 +390,14 @@
                                 <td><strong>{{ $student['initial_name'] }}</strong></td>
                                 <td>{{ $student['guardian_mobile'] }}</td>
                                 <td class="status-freecard text-center">🎫 Free Card</td>
+                                <td>
+                                    @if(!empty($student['fee_option']))
+                                        <strong>{{ $student['fee_option']['label'] }}</strong><br>
+                                        <small>Rs. {{ number_format($student['fee_option']['fee'], 2) }}</small>
+                                    @else
+                                        <span>-</span>
+                                    @endif
+                                </td>
                                 <td class="text-right amount">Rs. {{ number_format($student['final_fee'], 2) }}</td>
                                 <td class="text-right amount">Rs. {{ number_format($student['paid_amount'], 2) }}</td>
                                 <td class="text-right amount">Rs. {{ number_format($student['balance'], 2) }}</td>
@@ -402,12 +406,11 @@
 
                         @if(
                                 count($category['students']['paid']) === 0 &&
-                                count($category['students']['partial']) === 0 &&
                                 count($category['students']['unpaid']) === 0 &&
                                 count($category['students']['freecard']) === 0
                             )
                             <tr>
-                                <td colspan="7" class="text-center">No students found in this category.</td>
+                                <td colspan="8" class="text-center">No students found in this category.</td>
                             </tr>
                         @endif
                     </tbody>

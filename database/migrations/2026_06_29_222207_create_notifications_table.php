@@ -7,13 +7,15 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::create('notifications', function (Blueprint $table) {
             $table->id();
+
+            // 🔥 Branch ownership (denormalized from student)
+            $table->foreignId('branch_id')
+                ->constrained('branches')
+                ->restrictOnDelete();
 
             // Student who receives the notification
             $table->foreignId('student_id')
@@ -60,23 +62,44 @@ return new class extends Migration
 
             /*
             |--------------------------------------------------------------------------
-            | Indexes
+            | 🔥 Branch-scoped indexes (NEW)
             |--------------------------------------------------------------------------
             */
+            $table->index(
+                ['branch_id', 'status'],
+                'notif_branch_status_idx'
+            );
 
-            $table->index('student_id');
-            $table->index('status');
-            $table->index('type');
-            $table->index('read_at');
-            $table->index('scheduled_at');
-            $table->index(['student_id', 'read_at']);
-            $table->index(['status', 'created_at']);
+            $table->index(
+                ['branch_id', 'student_id', 'read_at'],
+                'notif_branch_student_read_idx'
+            );
+
+            $table->index(
+                ['branch_id', 'scheduled_at', 'status'],
+                'notif_branch_scheduled_status_idx'
+            );
+
+            $table->index(
+                ['branch_id', 'type', 'created_at'],
+                'notif_branch_type_created_idx'
+            );
+
+            /*
+            |--------------------------------------------------------------------------
+            | පරණ indexes (still useful)
+            |--------------------------------------------------------------------------
+            */
+            $table->index('student_id', 'notif_student_idx');
+            $table->index('status', 'notif_status_idx');
+            $table->index('type', 'notif_type_idx');
+            $table->index('read_at', 'notif_read_idx');
+            $table->index('scheduled_at', 'notif_scheduled_idx');
+            $table->index(['student_id', 'read_at'], 'notif_student_read_idx');
+            $table->index(['status', 'created_at'], 'notif_status_created_idx');
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('notifications');

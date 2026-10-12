@@ -4,12 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class TeacherSalary extends Model
 {
     use SoftDeletes;
 
     protected $fillable = [
+        'branch_id',
         'teacher_id',
         'user_id',
         'salary_year',
@@ -35,21 +37,65 @@ class TeacherSalary extends Model
         'paid_at' => 'datetime',
     ];
 
-    public function teacher()
+    public function branch(): BelongsTo
+    {
+        return $this->belongsTo(Branch::class);
+    }
+
+    public function teacher(): BelongsTo
     {
         return $this->belongsTo(Teacher::class);
     }
 
-    public function generatedBy()
+    public function generatedBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function getFinalNetAmountAttribute()
+    public function scopeForBranches($query, $branchIds)
+    {
+        return $query->whereIn('branch_id', $branchIds);
+    }
+
+    public function scopeForBranch($query, int $branchId)
+    {
+        return $query->where('branch_id', $branchId);
+    }
+
+    public function scopePaid($query)
+    {
+        return $query->where('status', 'paid');
+    }
+
+    public function scopePending($query)
+    {
+        return $query->where('status', 'pending');
+    }
+
+    public function scopeForMonth($query, int $year, int $month)
+    {
+        return $query->where('salary_year', $year)
+            ->where('salary_month', $month);
+    }
+
+    public function getFinalNetAmountAttribute(): float
     {
         return max(
-            $this->gross_amount + $this->bonus_amount - $this->advance_deduction - $this->other_deduction,
+            (float) $this->gross_amount
+            + (float) $this->bonus_amount
+            - (float) $this->advance_deduction
+            - (float) $this->other_deduction,
             0
         );
+    }
+
+    public function isPaid(): bool
+    {
+        return $this->status === 'paid';
+    }
+
+    public function isPending(): bool
+    {
+        return $this->status === 'pending';
     }
 }

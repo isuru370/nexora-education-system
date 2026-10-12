@@ -1,61 +1,58 @@
 <?php
 
-namespace App\Http\Controllers\API\Auth;
+namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Services\AuthService;
+use App\Services\Auth\AuthService;
 use Illuminate\Http\Request;
 
 class LoginController extends Controller
 {
-    protected AuthService $authService;
+    public function __construct(
+        protected AuthService $authService
+    ) {}
 
-    public function __construct(AuthService $authService)
+    /**
+     * Show login page.
+     */
+    public function showLoginForm()
     {
-        $this->authService = $authService;
+        return view('auth.login');
     }
 
     /**
-     * Login
+     * Handle web login (session-based).
      */
     public function login(Request $request)
     {
         $validated = $request->validate([
-            'email' => 'required|email',
-            'password' => 'required|string',
+            'email'    => ['required', 'email'],
+            'password' => ['required', 'string'],
         ]);
 
-        $result = $this->authService->login($validated);
+        $result = $this->authService->loginWithSession($validated);
 
         if (!$result['success']) {
-            return response()->json([
-                'status' => 'error',
-                'message' => $result['message'],
-            ], 401);
+            return back()
+                ->withErrors(['email' => $result['message']])
+                ->withInput($request->only('email'));
         }
 
-        $token = $result['user']
-            ->createToken('mobile-token')
-            ->plainTextToken;
+        $request->session()->regenerate();
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Login successful',
-            'token' => $token,
-            'user' => $result['user'],
-        ], 200);
+        return redirect()->intended(route('admin.dashboard'));
     }
 
     /**
-     * Logout
+     * Handle web logout.
      */
     public function logout(Request $request)
     {
-        $this->authService->logout($request->user());
+        $this->authService->logoutSession($request->user());
 
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Logout successful',
-        ], 200);
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('login');
     }
 }

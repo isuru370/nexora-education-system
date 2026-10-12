@@ -2,7 +2,9 @@
 
 namespace App\Services;
 
+use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
+use Throwable;
 
 class SmsService
 {
@@ -13,97 +15,131 @@ class SmsService
 
     public function __construct()
     {
-        $this->baseUrl = rtrim(config('services.sms.base_url') ?? 'https://smsapi.chatbiz.net/v1', '/');
+        $this->baseUrl = rtrim(
+            config(
+                'services.sms.base_url',
+                'https://smssender.chatbiz.net/v1'
+            ),
+            '/'
+        );
+
         $this->userId = (string) config('services.sms.user_id');
         $this->apiKey = (string) config('services.sms.api_key');
         $this->senderId = (string) config('services.sms.sender_id');
     }
 
-    // Single SMS
+    /**
+     * Send single SMS
+     */
     public function sendSms(string $recipient, string $message): array
     {
         try {
             $recipient = $this->formatNumber($recipient);
 
-            $response = Http::timeout(15)->get("{$this->baseUrl}/send", [
-                'user_id' => $this->userId,
-                'api_key' => $this->apiKey,
-                'sender_id' => $this->senderId,
-                'recipient_contact_no' => $recipient,
-                'message' => $message,
-            ]);
-
-            return [
-                'success' => ($response->json()['status_code'] ?? null) == 204,
-                'http_status' => $response->status(),
-                'provider_status_code' => $response->json()['status_code'] ?? null,
-                'message_id' => $response->json()['msg_id'] ?? null,
-                'body' => $response->body(),
-                'json' => $response->json(),
-            ];
-        } catch (\Throwable $e) {
-            return [
-                'success' => false,
-                'error' => $e->getMessage(),
-            ];
-        }
-    }
-    // Bulk SMS
-    public function sendBulkSms(array $numbers, string $message, string $campaign = 'LaravelCampaign'): array
-    {
-        try {
-            $formattedNumbers = array_map(fn($number) => $this->formatNumber((string) $number), $numbers);
-
             $response = Http::asForm()
-                ->timeout(20)
-                ->post("{$this->baseUrl}/bulk", [
+                ->timeout(15)
+                ->post("{$this->baseUrl}/send", [
                     'user_id' => $this->userId,
                     'api_key' => $this->apiKey,
                     'sender_id' => $this->senderId,
-                    'campaign_name' => $campaign,
+                    'recipient_contact_no' => $recipient,
                     'message' => $message,
-                    'recipient_contact_no' => implode(',', $formattedNumbers),
                 ]);
 
             return $this->buildResponse($response);
-        } catch (\Throwable $e) {
+
+        } catch (Throwable $e) {
             return $this->exceptionResponse($e);
         }
     }
 
-    // OTP SMS
+    /**
+     * Send bulk SMS
+     */
+    public function sendBulkSms(
+        array $numbers,
+        string $message
+    ): array {
+        try {
+            $formattedNumbers = array_map(
+                fn ($number) => $this->formatNumber((string) $number),
+                $numbers
+            );
+
+            $formattedNumbers = array_values(
+                array_filter($formattedNumbers)
+            );
+
+            if (empty($formattedNumbers)) {
+                return [
+                    'success' => false,
+                    'provider_status_code' => 207,
+                    'error' => 'No contact numbers.',
+                ];
+            }
+
+            $response = Http::asForm()
+                ->timeout(30)
+                ->post("{$this->baseUrl}/bulk", [
+                    'user_id' => $this->userId,
+                    'api_key' => $this->apiKey,
+                    'sender_id' => $this->senderId,
+                    'recipient_contact_no' => implode(',', $formattedNumbers),
+                    'message' => $message,
+                ]);
+
+            return $this->buildResponse($response);
+
+        } catch (Throwable $e) {
+            return $this->exceptionResponse($e);
+        }
+    }
+
+    /**
+     * Send OTP
+     */
     public function sendOtp(string $number): array
     {
         $otp = (string) random_int(100000, 999999);
+
         $message = "Your verification code is: {$otp}";
 
-        $smsResponse = $this->sendSms($number, $message);
+        $response = $this->sendSms(
+            $number,
+            $message
+        );
 
         return [
-            'success' => $smsResponse['success'] ?? false,
+            'success' => $response['success'] ?? false,
             'otp' => $otp,
-            'sms_response' => $smsResponse,
+            'sms_response' => $response,
         ];
     }
 
-    // Balance
+    /**
+     * Get SMS account balance
+     */
     public function getBalance(): array
     {
         try {
             $response = Http::asForm()
                 ->timeout(15)
-                ->get("{$this->baseUrl}/getBalance", [
+                ->post("{$this->baseUrl}/balance", [
                     'user_id' => $this->userId,
                     'api_key' => $this->apiKey,
                 ]);
 
             return $this->buildResponse($response);
-        } catch (\Throwable $e) {
+
+        } catch (Throwable $e) {
             return $this->exceptionResponse($e);
         }
     }
 
-    private function buildResponse($response): array
+    /**
+     * Build provider response
+     */
+    private function buildResponse(Response $response): array
     {
         $body = $response->json();
 
@@ -111,40 +147,81 @@ class SmsService
             return [
                 'success' => false,
                 'http_status' => $response->status(),
-                'error' => 'Invalid response from SMS provider',
+                'provider_status_code' => null,
+                'message_id' => null,
                 'body' => $response->body(),
+                'json' => null,
+                'error' => 'Invalid response from SMS provider.',
             ];
         }
 
-        $providerStatusCode = $body['status_code'] ?? null;
+        $providerStatusCode = isset($body['status_code'])
+            ? (int) $body['status_code']
+            : null;
 
-        if ($providerStatusCode == 211) {
-            return [
-                'success' => false,
-                'http_status' => $response->status(),
-                'provider_status_code' => 211,
-                'error' => 'No Sender ID / Sender ID is not approved',
-                'data' => $body,
-            ];
-        }
+        $success = $providerStatusCode === 204;
 
         return [
-            'success' => $response->successful(),
+            'success' => $success,
             'http_status' => $response->status(),
             'provider_status_code' => $providerStatusCode,
-            'data' => $body,
+            'message_id' => $body['msg_id'] ?? null,
+            'body' => $response->body(),
+            'json' => $body,
+            'error' => $success
+                ? null
+                : $this->getStatusMessage($providerStatusCode, $body),
         ];
     }
 
-    private function exceptionResponse(\Throwable $e): array
+    /**
+     * Get readable ChatBiz status message
+     */
+    private function getStatusMessage(
+        ?int $statusCode,
+        array $body = []
+    ): string {
+        return match ($statusCode) {
+            201 => 'Sender ID / API status is inactive.',
+            202 => 'Invalid API key.',
+            203 => 'Contact number is invalid or operator is not supported.',
+            204 => 'Successfully sent the message.',
+            205 => 'Length of contact number is invalid.',
+            206 => 'Country is not available for SMS sending.',
+            207 => 'No contact numbers.',
+            208 => 'Account balance is insufficient.',
+            209 => 'Sending the message was unsuccessful.',
+            210 => 'Client account is suspended.',
+            211 => 'Sender ID is missing or not approved.',
+            212 => 'Rate card is not set for the country.',
+            213 => 'SMS route is not set for the country.',
+            214 => 'API is under maintenance.',
+            215 => $body['error'] ?? 'Scheduled maintenance.',
+            216 => 'Message contains a blocked word.',
+            default => $body['error']
+                ?? 'Unknown SMS provider error.',
+        };
+    }
+
+    /**
+     * Exception response
+     */
+    private function exceptionResponse(Throwable $e): array
     {
         return [
             'success' => false,
+            'http_status' => null,
+            'provider_status_code' => null,
+            'message_id' => null,
+            'body' => null,
+            'json' => null,
             'error' => $e->getMessage(),
         ];
     }
 
-    // Format Sri Lanka numbers
+    /**
+     * Format Sri Lankan mobile number
+     */
     private function formatNumber(string $number): string
     {
         $number = preg_replace('/\D+/', '', trim($number));

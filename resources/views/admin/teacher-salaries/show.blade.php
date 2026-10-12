@@ -12,7 +12,7 @@
 
         $isCurrentMonth = ($selectedYear == now()->year && $selectedMonth == now()->month);
         $isLastFiveDays = $isCurrentMonth && \Carbon\Carbon::now()->endOfMonth()->diffInDays(\Carbon\Carbon::now()) <= 5;
-        $canShowPayButton = ($data['salary_status'] !== 'paid') && ($isLastFiveDays || !$isCurrentMonth);
+        $canShowPayButton = (($data['salary_status'] ?? 'pending') !== 'paid') && ($isLastFiveDays || !$isCurrentMonth);
         $deductionTotal = ($data['advance'] ?? 0) + ($data['deduction'] ?? 0) + ($data['other'] ?? 0);
     @endphp
 
@@ -150,7 +150,7 @@
                 <div>
                     <h5 class="mb-1 fw-bold">Payment Status</h5>
 
-                    @if($data['salary_status'] === 'paid')
+                    @if(($data['salary_status'] ?? 'pending') === 'paid')
                         <span class="badge bg-success custom-badge">Paid</span>
                         <div class="mt-2 text-success fw-semibold">
                             Paid Amount: LKR {{ number_format($data['salary_paid'] ?? 0, 2) }}
@@ -175,7 +175,7 @@
                 </div>
 
                 <div class="header-badge">
-                    @if($data['salary_status'] === 'paid')
+                    @if(($data['salary_status'] ?? 'pending') === 'paid')
                         PAID
                     @else
                         PENDING
@@ -186,7 +186,7 @@
             <div class="row g-3 align-items-stretch">
 
                 <div class="col-lg-3 col-md-6">
-                    @if($data['salary_status'] !== 'paid')
+                    @if(($data['salary_status'] ?? 'pending') !== 'paid')
                         @if($canShowPayButton)
                             <form method="POST" action="{{ route('admin.teacher-salaries.pay', $teacher->id) }}">
                                 @csrf
@@ -226,7 +226,7 @@
                 </div>
 
                 <div class="col-lg-3 col-md-6">
-                    @if($data['salary_status'] === 'paid')
+                    @if(($data['salary_status'] ?? 'pending') === 'paid')
                         <a href="{{ route('admin.teacher-salaries.slip', [$teacher->id, $selectedYear, $selectedMonth]) }}?autoPrint=true"
                             target="_blank" class="btn btn-primary action-btn-full">
                             <i class="bi bi-printer-fill me-1"></i>
@@ -282,7 +282,7 @@
             </div>
 
             <div class="mt-4">
-                @if($data['salary_status'] === 'paid')
+                @if(($data['salary_status'] ?? 'pending') === 'paid')
                     <div class="alert alert-success custom-alert mb-0">
                         <i class="bi bi-check-circle-fill me-2"></i>
                         Salary has been paid. Slip will open automatically.
@@ -300,7 +300,7 @@
                             <i class="bi bi-check-circle-fill me-2"></i>
                             Payment is now available. Please process the salary before month end.
                         </div>
-                    @elseif(!$isCurrentMonth && $data['salary_status'] !== 'paid')
+                    @elseif(!$isCurrentMonth && ($data['salary_status'] ?? 'pending') !== 'paid')
                         <div class="alert alert-warning custom-alert mb-0">
                             <i class="bi bi-exclamation-triangle-fill me-2"></i>
                             This is a past month's pending salary. Payment can still be completed.

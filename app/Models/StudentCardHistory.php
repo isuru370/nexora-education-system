@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class StudentCardHistory extends Model
 {
@@ -26,35 +27,41 @@ class StudentCardHistory extends Model
     ];
 
     /**
-     * Student
+     * Student related to this history.
      */
-    public function student()
+    public function student(): BelongsTo
     {
         return $this->belongsTo(Student::class, 'student_id');
     }
 
     /**
-     * Card related to the action
+     * Card related to the action.
      */
-    public function card()
+    public function card(): BelongsTo
     {
         return $this->belongsTo(StudentCard::class, 'card_id');
     }
 
-    public function oldCard()
+    /**
+     * Previous card.
+     */
+    public function oldCard(): BelongsTo
     {
         return $this->belongsTo(StudentCard::class, 'old_card_id');
     }
 
-    public function newCard()
+    /**
+     * New card.
+     */
+    public function newCard(): BelongsTo
     {
         return $this->belongsTo(StudentCard::class, 'new_card_id');
     }
 
     /**
-     * User who performed the action
+     * User who performed the action.
      */
-    public function performedBy()
+    public function performedBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'performed_by');
     }

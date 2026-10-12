@@ -21,19 +21,20 @@ class ClassCategory extends Model
         'is_active' => 'boolean',
     ];
 
-    // 🔹 default fees per class
+    /**
+     * Fee configurations for this category.
+     */
     public function classCategoryFees()
     {
-        return $this->hasMany(ClassCategoryFee::class, 'class_category_id');
+        return $this->hasMany(
+            ClassCategoryFee::class,
+            'class_category_id'
+        );
     }
 
-    // 🔹 students enrolled in this category
-    public function enrollments()
-    {
-        return $this->hasMany(StudentClassEnrollment::class, 'class_category_id');
-    }
-
-    // 🔹 classes that use this category
+    /**
+     * Classes using this category.
+     */
     public function classes()
     {
         return $this->belongsToMany(
@@ -41,6 +42,14 @@ class ClassCategory extends Model
             'class_category_fees',
             'class_category_id',
             'student_class_id'
-        );
+        )
+            ->withPivot([
+                'id',
+                'is_active',
+                'deleted_at',
+            ])
+            ->withTimestamps()
+            ->wherePivot('is_active', true)
+            ->wherePivotNull('deleted_at');
     }
 }

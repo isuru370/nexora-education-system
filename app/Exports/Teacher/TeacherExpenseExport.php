@@ -11,7 +11,7 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
 class TeacherExpenseExport implements FromCollection, WithHeadings, WithMapping, WithStyles
 {
-    protected Collection $payments;
+    protected $payments;
     protected $teacherId;
     protected $year;
     protected $month;
@@ -37,6 +37,7 @@ class TeacherExpenseExport implements FromCollection, WithHeadings, WithMapping,
             'Payment Type',
             'Amount',
             'Payment Date',
+            'Payment Method',
             'Reason',
             'Note',
             'Status',
@@ -61,7 +62,11 @@ class TeacherExpenseExport implements FromCollection, WithHeadings, WithMapping,
     public function styles(Worksheet $sheet)
     {
         return [
-            1 => ['font' => ['bold' => true]],
+            1 => [
+                'font' => [
+                    'bold' => true,
+                ],
+            ],
         ];
     }
 }

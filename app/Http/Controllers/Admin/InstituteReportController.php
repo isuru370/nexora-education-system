@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Exports\institute\InstituteReportExport;
+use App\Exports\institute\InstituteFinancialReportExport;
 use App\Http\Controllers\Controller;
 use App\Models\ExtraIncome;
 use App\Models\InstitutePayment;
@@ -24,7 +24,12 @@ class InstituteReportController extends Controller
         $expenseQuery = $this->buildExpenseQuery($filters);
 
         $snapshotPayments = $snapshotQuery
-            ->with(['studentClass', 'teacher', 'organizer', 'createdBy'])
+            ->with([
+                'studentClass',
+                'teacher',
+                'organizer',
+                'createdBy',
+            ])
             ->orderBy('payment_date', 'asc')
             ->get();
 
@@ -38,21 +43,11 @@ class InstituteReportController extends Controller
             ->orderBy('payment_date', 'asc')
             ->get();
 
-        $snapshotIncomeTotal = (float) $snapshotPayments->sum('institution_amount');
-        $extraIncomeTotal = (float) $extraIncomes->sum('amount');
-        $expenseTotal = (float) $expenses->sum('amount');
-
-        $summary = [
-            'snapshot_income_total' => $snapshotIncomeTotal,
-            'extra_income_total'    => $extraIncomeTotal,
-            'total_income'          => $snapshotIncomeTotal + $extraIncomeTotal,
-            'total_expense'         => $expenseTotal,
-            'net_total'             => ($snapshotIncomeTotal + $extraIncomeTotal) - $expenseTotal,
-            'snapshot_count'        => $snapshotPayments->count(),
-            'extra_income_count'    => $extraIncomes->count(),
-            'expense_count'         => $expenses->count(),
-            'total_records'         => $snapshotPayments->count() + $extraIncomes->count() + $expenses->count(),
-        ];
+        $summary = $this->buildSummary(
+            $snapshotPayments,
+            $extraIncomes,
+            $expenses
+        );
 
         return view('admin.institute_report.index', compact(
             'filters',
@@ -68,24 +63,28 @@ class InstituteReportController extends Controller
         try {
             $filters = $this->getFilters($request);
 
-            $fileName = 'institute-report-'
+            $fileName = 'institute-financial-report-'
                 . ($filters['start_date'] ?? now()->format('Y-m-d'))
                 . '-to-'
                 . ($filters['end_date'] ?? now()->format('Y-m-d'))
                 . '.xlsx';
 
             return Excel::download(
-                new InstituteReportExport($filters),
+                new InstituteFinancialReportExport($filters),
                 $fileName
             );
         } catch (\Throwable $e) {
-            Log::error('Error generating Excel report: ' . $e->getMessage());
+            Log::error('Error generating institute financial Excel report: ' . $e->getMessage(), [
+                'exception' => $e,
+                'filters' => $filters ?? [],
+            ]);
 
             return response()->json([
-                'error' => 'Failed to generate Excel report'
+                'error' => 'Failed to generate Excel report',
             ], 500);
         }
     }
+
 
     public function institutePaymentReportPdf(Request $request)
     {
@@ -93,7 +92,12 @@ class InstituteReportController extends Controller
             $filters = $this->getFilters($request);
 
             $snapshotPayments = $this->buildSnapshotQuery($filters)
-                ->with(['studentClass', 'teacher', 'organizer', 'createdBy'])
+                ->with([
+                    'studentClass',
+                    'teacher',
+                    'organizer',
+                    'createdBy',
+                ])
                 ->orderBy('payment_date', 'asc')
                 ->get();
 
@@ -107,21 +111,11 @@ class InstituteReportController extends Controller
                 ->orderBy('payment_date', 'asc')
                 ->get();
 
-            $snapshotIncomeTotal = (float) $snapshotPayments->sum('institution_amount');
-            $extraIncomeTotal = (float) $extraIncomes->sum('amount');
-            $expenseTotal = (float) $expenses->sum('amount');
-
-            $summary = [
-                'snapshot_income_total' => $snapshotIncomeTotal,
-                'extra_income_total'    => $extraIncomeTotal,
-                'total_income'          => $snapshotIncomeTotal + $extraIncomeTotal,
-                'total_expense'         => $expenseTotal,
-                'net_total'             => ($snapshotIncomeTotal + $extraIncomeTotal) - $expenseTotal,
-                'snapshot_count'        => $snapshotPayments->count(),
-                'extra_income_count'    => $extraIncomes->count(),
-                'expense_count'         => $expenses->count(),
-                'total_records'         => $snapshotPayments->count() + $extraIncomes->count() + $expenses->count(),
-            ];
+            $summary = $this->buildSummary(
+                $snapshotPayments,
+                $extraIncomes,
+                $expenses
+            );
 
             $pdf = Pdf::loadView('admin.institute_report.pdf', [
                 'filters' => $filters,
@@ -139,12 +133,85 @@ class InstituteReportController extends Controller
 
             return $pdf->download($fileName);
         } catch (\Throwable $e) {
-            Log::error('Error generating PDF report: ' . $e->getMessage());
+            Log::error('Error generating PDF report: ' . $e->getMessage(), [
+                'exception' => $e,
+            ]);
 
             return response()->json([
-                'error' => 'Failed to generate PDF report'
+                'error' => 'Failed to generate PDF report',
             ], 500);
         }
+    }
+
+    /**
+     * Build the report summary from payment split snapshots,
+     * extra incomes and institute expenses.
+     *
+     * Important:
+     * - institution_amount already includes the institution's class-fee
+     *   share + the hall fee.
+     * - hall_fee must NOT be added again to total institute income.
+     * - teacher/organizer percentages apply only to class_fee.
+     */
+    private function buildSummary($snapshotPayments, $extraIncomes, $expenses): array
+    {
+        $classFeeIncome = (float) $snapshotPayments->sum('class_fee');
+        $hallFeeIncome = (float) $snapshotPayments->sum('hall_fee');
+        $totalFeeIncome = (float) $snapshotPayments->sum('total_fee');
+
+        $teacherIncome = (float) $snapshotPayments->sum('teacher_amount');
+        $organizerIncome = (float) $snapshotPayments->sum('organizer_amount');
+        $institutionIncome = (float) $snapshotPayments->sum('institution_amount');
+
+        $extraIncomeTotal = (float) $extraIncomes->sum('amount');
+        $expenseTotal = (float) $expenses->sum('amount');
+
+        /*
+         * institution_amount already contains:
+         *
+         * institution class share + hall fee
+         *
+         * Therefore hall_fee is NOT added again here.
+         */
+        $totalIncome = $institutionIncome + $extraIncomeTotal;
+
+        $netTotal = $totalIncome - $expenseTotal;
+
+        return [
+            // Payment snapshot totals
+            'snapshot_income_total' => $institutionIncome,
+            'snapshot_count' => $snapshotPayments->count(),
+
+            // Fee breakdown
+            'class_fee_income' => $classFeeIncome,
+            'hall_fee_income' => $hallFeeIncome,
+            'total_fee_income' => $totalFeeIncome,
+
+            // Split breakdown
+            'teacher_income' => $teacherIncome,
+            'organizer_income' => $organizerIncome,
+            'institution_income' => $institutionIncome,
+
+            // Other income
+            'extra_income_total' => $extraIncomeTotal,
+            'extra_income_count' => $extraIncomes->count(),
+
+            // Overall income
+            'total_income' => $totalIncome,
+
+            // Expenses
+            'total_expense' => $expenseTotal,
+            'expense_count' => $expenses->count(),
+
+            // Net
+            'net_total' => $netTotal,
+
+            // Record count
+            'total_records' =>
+                $snapshotPayments->count()
+                + $extraIncomes->count()
+                + $expenses->count(),
+        ];
     }
 
     private function getFilters(Request $request): array
@@ -156,12 +223,31 @@ class InstituteReportController extends Controller
 
         if ($period === 'daily') {
             $date = $request->input('date', now()->toDateString());
-            $startDate = Carbon::parse($date)->startOfDay()->toDateString();
-            $endDate = Carbon::parse($date)->endOfDay()->toDateString();
+
+            $parsedDate = Carbon::parse($date);
+
+            $startDate = $parsedDate->copy()
+                ->startOfDay()
+                ->toDateString();
+
+            $endDate = $parsedDate->copy()
+                ->endOfDay()
+                ->toDateString();
         } elseif ($period === 'monthly') {
-            $month = $request->input('month', now()->format('Y-m'));
-            $startDate = Carbon::parse($month . '-01')->startOfMonth()->toDateString();
-            $endDate = Carbon::parse($month . '-01')->endOfMonth()->toDateString();
+            $month = $request->input(
+                'month',
+                now()->format('Y-m')
+            );
+
+            $parsedMonth = Carbon::parse($month . '-01');
+
+            $startDate = $parsedMonth->copy()
+                ->startOfMonth()
+                ->toDateString();
+
+            $endDate = $parsedMonth->copy()
+                ->endOfMonth()
+                ->toDateString();
         } else {
             $startDate = $request->input('start_date');
             $endDate = $request->input('end_date');

@@ -31,7 +31,6 @@ class CreateOrganizersTable extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            // indexes
             $table->index(['name', 'is_active']);
             $table->index('mobile');
         });

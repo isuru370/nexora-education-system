@@ -21,6 +21,16 @@ class UserTypesTableSeeder extends Seeder
                 'description' => 'Institute Administrator',
             ],
             [
+                'name' => 'Branch Admin',
+                'code' => 'BRANCH_ADMIN',
+                'description' => 'Branch Administrator',
+            ],
+            [
+                'name' => 'User',
+                'code' => 'USER',
+                'description' => 'Regular User',
+            ],
+            [
                 'name' => 'Teacher',
                 'code' => 'TEACHER',
                 'description' => 'Teacher Mobile App User',

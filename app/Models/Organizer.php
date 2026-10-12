@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Organizer extends Model
 {
@@ -27,6 +28,16 @@ class Organizer extends Model
     public function createdBy()
     {
         return $this->belongsTo(User::class, 'created_by');
+    }
+
+    public function branches(): BelongsToMany
+    {
+        return $this->belongsToMany(
+            Branch::class,
+            'organizer_branches',
+            'organizer_id',
+            'branch_id'
+        )->withTimestamps();
     }
 
     public function paymentConfigs()

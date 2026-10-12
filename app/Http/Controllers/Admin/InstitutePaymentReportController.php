@@ -9,19 +9,24 @@ use App\Models\PaymentSplitSnapshot;
 
 class InstitutePaymentReportController extends Controller
 {
-
+    /**
+     * Yearly Institute Payment Report
+     *
+     * Returns monthly:
+     * - Total payments collected
+     * - Institution income
+     */
     public function yearlyPaymentReport(Request $request)
     {
         try {
-
-            $year = $request->get('year', now()->year);
+            $year = (int) $request->get('year', now()->year);
 
             $monthlyTotals = PaymentSplitSnapshot::query()
                 ->selectRaw('
-                MONTH(payment_date) as month,
-                SUM(payment_amount) as total_payment,
-                SUM(institution_amount) as institute_total
-            ')
+                    MONTH(payment_date) as month,
+                    SUM(payment_amount) as total_payment,
+                    SUM(institution_amount) as institute_total
+                ')
                 ->whereYear('payment_date', $year)
                 ->groupByRaw('MONTH(payment_date)')
                 ->orderByRaw('MONTH(payment_date)')
@@ -40,43 +45,42 @@ class InstitutePaymentReportController extends Controller
                 'Sep',
                 'Oct',
                 'Nov',
-                'Dec'
+                'Dec',
             ];
 
             $totalPayments = [];
             $institutionPayments = [];
 
             for ($i = 1; $i <= 12; $i++) {
-
-                $totalPayments[] = isset($monthlyTotals[$i])
-                    ? (float) $monthlyTotals[$i]->total_payment
-                    : 0;
-
-                $institutionPayments[] = isset($monthlyTotals[$i])
-                    ? (float) $monthlyTotals[$i]->institute_total
-                    : 0;
+                if (isset($monthlyTotals[$i])) {
+                    $totalPayments[] = (float) $monthlyTotals[$i]->total_payment;
+                    $institutionPayments[] = (float) $monthlyTotals[$i]->institute_total;
+                } else {
+                    $totalPayments[] = 0;
+                    $institutionPayments[] = 0;
+                }
             }
 
             return response()->json([
                 'success' => true,
-                'year'    => (int) $year,
-                'labels'  => $labels,
+                'year' => $year,
+                'labels' => $labels,
 
                 'total_payments' => $totalPayments,
 
                 'institution_payments' => $institutionPayments,
             ]);
         } catch (\Exception $e) {
-
-            Log::error('Yearly Payment Report Error', [
+            Log::error('Yearly Institute Payment Report Error', [
                 'message' => $e->getMessage(),
-                'file'    => $e->getFile(),
-                'line'    => $e->getLine(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'year' => $request->get('year'),
             ]);
 
             return response()->json([
                 'success' => false,
-                'message' => 'Something went wrong.'
+                'message' => 'Something went wrong.',
             ], 500);
         }
     }

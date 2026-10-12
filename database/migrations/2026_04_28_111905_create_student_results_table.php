@@ -4,12 +4,17 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateStudentResultsTable extends Migration
+return new class extends Migration
 {
-    public function up()
+    public function up(): void
     {
         Schema::create('student_results', function (Blueprint $table) {
             $table->id();
+
+            // 🔥 Branch ownership (denormalized from exams)
+            $table->foreignId('branch_id')
+                ->constrained('branches')
+                ->restrictOnDelete();
 
             $table->foreignId('student_id')
                 ->constrained('students')
@@ -33,7 +38,6 @@ class CreateStudentResultsTable extends Migration
             $table->string('grade', 10)->nullable();
             $table->integer('rank')->nullable();
 
-
             $table->enum('status', [
                 'pending',
                 'passed',
@@ -43,12 +47,10 @@ class CreateStudentResultsTable extends Migration
 
             $table->string('reason', 255)->nullable();
 
-            // Add this
             $table->text('remark')->nullable();
 
             $table->boolean('is_updated')->default(false);
 
-            // Add this
             $table->boolean('is_absent')->default(false);
 
             $table->timestamps();
@@ -60,14 +62,30 @@ class CreateStudentResultsTable extends Migration
                 'unique_student_exam'
             );
 
-            // indexes
-            $table->index(['exam_id', 'status']);
-            $table->index(['student_id', 'status']);
+            // 🔥 Branch-scoped indexes (NEW)
+            $table->index(
+                ['branch_id', 'status'],
+                'sr_branch_status_idx'
+            );
+
+            $table->index(
+                ['branch_id', 'exam_id', 'status'],
+                'sr_branch_exam_status_idx'
+            );
+
+            $table->index(
+                ['branch_id', 'student_id'],
+                'sr_branch_student_idx'
+            );
+
+            // පරණ indexes (still useful)
+            $table->index(['exam_id', 'status'], 'sr_exam_status_idx');
+            $table->index(['student_id', 'status'], 'sr_student_status_idx');
         });
     }
 
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('student_results');
     }
-}
+};

@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class TemporaryIdCard extends Model
 {
@@ -28,10 +29,16 @@ class TemporaryIdCard extends Model
     |--------------------------------------------------------------------------
     */
 
-    public function student()
+    public function student(): BelongsTo
     {
         return $this->belongsTo(Student::class);
     }
+
+    /*
+    |--------------------------------------------------------------------------
+    | QR Code
+    |--------------------------------------------------------------------------
+    */
 
     public function getQrBase64Attribute()
     {
@@ -50,27 +57,27 @@ class TemporaryIdCard extends Model
     |--------------------------------------------------------------------------
     */
 
-    public function isPending()
+    public function isPending(): bool
     {
         return $this->status === 'pending';
     }
 
-    public function isDownloaded()
+    public function isDownloaded(): bool
     {
         return $this->status === 'downloaded';
     }
 
-    public function isIssued()
+    public function isIssued(): bool
     {
         return $this->status === 'issued';
     }
 
-    public function isActive()
+    public function isActive(): bool
     {
         return $this->status === 'active';
     }
 
-    public function isExpired()
+    public function isExpired(): bool
     {
         return $this->status === 'expired';
     }

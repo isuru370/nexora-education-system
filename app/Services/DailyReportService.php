@@ -146,8 +146,8 @@ class DailyReportService
                         'class_name' => $studentClass->class_name,
                         'grade_name' => $studentClass->grade->grade_name ?? '-',
                         'day_of_week' => $targetDayOfWeek,
-                        'start_time' => $classTime?->start_time,
-                        'end_time' => $classTime?->end_time,
+                        'start_time' => ($classTime ? $classTime->start_time : null),
+                        'end_time' => ($classTime ? $classTime->end_time : null),
                         'time_slot' => $timeSlot,
                         'schedule_id' => $schedule->id,
                         'students' => []
@@ -243,11 +243,12 @@ class DailyReportService
         return Payment::with([
             'student:id,custom_id,permanent_qr_active,temporary_qr_code,initial_name,guardian_mobile',
             'collectedBy:id,name',
-            'enrollment:id,student_id,student_class_id,class_category_fee_id,custom_fee,discount_percentage,is_free_card',
+            'enrollment:id,student_id,student_class_id,class_category_fee_id,class_category_fee_option_id,is_free_card',
             'enrollment.studentClass:id,class_name,grade_id',
             'enrollment.studentClass.grade:id,grade_name',
-            'enrollment.classCategoryFee:id,student_class_id,class_category_id,fee',
+            'enrollment.classCategoryFee:id,student_class_id,class_category_id',
             'enrollment.classCategoryFee.category:id,category_name',
+            'enrollment.classCategoryFeeOption:id,class_category_fee_id,label,fee',
         ])
             ->whereDate('paid_at', $date)
             ->where('status', 'completed')
@@ -256,34 +257,46 @@ class DailyReportService
 
                 $student = $payment->student;
                 $enrollment = $payment->enrollment;
-                $studentClass = $enrollment?->studentClass;
-                $categoryFee = $enrollment?->classCategoryFee;
+                $studentClass = $enrollment ? $enrollment->studentClass : null;
+                $categoryFee = $enrollment ? $enrollment->classCategoryFee : null;
+                $feeOption = $enrollment ? $enrollment->classCategoryFeeOption : null;
 
                 return [
                     'payment_id' => $payment->id,
-                    'paid_at' => $payment->paid_at?->format('Y-m-d H:i:s'),
+                    'paid_at' => $payment->paid_at ? $payment->paid_at->format('Y-m-d H:i:s') : null,
 
-                    'student_code' => $student?->permanent_qr_active
-                        ? $student?->custom_id
-                        : $student?->temporary_qr_code,
+                    'student_code' => $student
+                        ? ($student->permanent_qr_active
+                            ? $student->custom_id
+                            : $student->temporary_qr_code)
+                        : null,
 
-                    'student_name' => $student?->initial_name,
-                    'guardian_mobile' => $student?->guardian_mobile,
+                    'student_name' => $student ? $student->initial_name : null,
+                    'guardian_mobile' => $student ? $student->guardian_mobile : null,
 
-                    'class_name' => $studentClass?->class_name,
-                    'grade_name' => $studentClass?->grade?->grade_name,
-                    'category_name' => $categoryFee?->category?->category_name,
+                    'class_name' => $studentClass ? $studentClass->class_name : null,
+                    'grade_name' => ($studentClass && $studentClass->grade)
+                        ? $studentClass->grade->grade_name
+                        : null,
+                    'category_name' => ($categoryFee && $categoryFee->category)
+                        ? $categoryFee->category->category_name
+                        : null,
 
                     'amount' => $payment->amount,
-                    'discount_amount' => $payment->discount_amount,
 
-                    'custom_fee' => $enrollment?->custom_fee,
-                    'discount_percentage' => $enrollment?->discount_percentage,
-                    'final_fee' => $enrollment?->final_fee,
-                    'balance' => $enrollment?->balance,
-                    'payment_status' => $enrollment?->payment_status,
+                    'fee_option' => $feeOption ? [
+                        'id' => $feeOption->id,
+                        'label' => $feeOption->label,
+                        'fee' => (float) $feeOption->fee,
+                    ] : null,
 
-                    'collected_by' => $payment->collectedBy?->name,
+                    'final_fee' => (float) $enrollment->final_fee,
+                    'balance' => (float) $enrollment->balance,
+                    'payment_status' => $enrollment->payment_status,
+
+                    'collected_by' => $payment->collectedBy
+                        ? $payment->collectedBy->name
+                        : null,
                 ];
             });
     }
@@ -470,7 +483,13 @@ class DailyReportService
                 ->where('teacher_id', $teacherId)
                 ->with([
                     'grade:id,grade_name',
-                    'categoryFees:id,student_class_id,class_category_id,fee',
+                    'categoryFees' => function ($query) {
+                        $query->select([
+                            'id',
+                            'student_class_id',
+                            'class_category_id',
+                        ]);
+                    },
                     'categoryFees.category:id,category_name,code',
                 ])
                 ->orderBy('class_name')
@@ -486,11 +505,13 @@ class DailyReportService
                     'student_id',
                     'student_class_id',
                     'class_category_fee_id',
+                    'class_category_fee_option_id',
                 ])
                 ->with([
                     'student:id,initial_name,guardian_mobile,custom_id,temporary_qr_code,permanent_qr_active',
-                    'classCategoryFee:id,student_class_id,class_category_id,fee',
+                    'classCategoryFee:id,student_class_id,class_category_id',
                     'classCategoryFee.category:id,category_name,code',
+                    'classCategoryFeeOption:id,class_category_fee_id,label,fee',
                     'payments' => function ($query) use ($reportDate) {
                         $query->select([
                             'id',
@@ -516,61 +537,96 @@ class DailyReportService
                 ->get()
                 ->groupBy('student_class_id');
 
-            return $classes->map(function (StudentClass $class) use ($enrollments) {
-                $classEnrollments = $enrollments->get($class->id, collect());
+            return $classes
+                ->map(function (StudentClass $class) use ($enrollments) {
+                    $classEnrollments = $enrollments->get($class->id, collect());
 
-                $categories = $class->categoryFees
-                    ->map(function ($fee) use ($classEnrollments) {
-                        $feeEnrollments = $classEnrollments->where('class_category_fee_id', $fee->id);
+                    $categories = $class->categoryFees
+                        ->map(function ($fee) use ($classEnrollments) {
+                            $feeEnrollments = $classEnrollments->where(
+                                'class_category_fee_id',
+                                $fee->id
+                            );
 
-                        $students = $feeEnrollments->map(function (StudentClassEnrollment $enrollment) {
-                            $student = $enrollment->student;
+                            $students = $feeEnrollments
+                                ->map(function (StudentClassEnrollment $enrollment) {
+                                    $student = $enrollment->student;
+                                    $feeOption = $enrollment->classCategoryFeeOption;
 
-                            $payments = $enrollment->payments->map(function (Payment $payment) {
-                                return [
-                                    'payment_id' => $payment->id,
-                                    'amount' => (float) $payment->amount,
-                                    'paid_at' => $payment->paid_at?->format('Y-m-d H:i:s'),
-                                    'payment_method' => $payment->payment_method,
-                                    'receipt_number' => $payment->receipt_number,
-                                    'reference_number' => $payment->reference_number,
-                                    'note' => $payment->note,
-                                ];
-                            })->values();
+                                    $payments = $enrollment->payments
+                                        ->map(function (Payment $payment) {
+                                            return [
+                                                'payment_id' => $payment->id,
+                                                'amount' => (float) $payment->amount,
+                                                'paid_at' => $payment->paid_at
+                                                    ? $payment->paid_at->format('Y-m-d H:i:s')
+                                                    : null,
+                                                'payment_method' => $payment->payment_method,
+                                                'receipt_number' => $payment->receipt_number,
+                                                'reference_number' => $payment->reference_number,
+                                                'note' => $payment->note,
+                                            ];
+                                        })
+                                        ->values();
+
+                                    $studentCode = null;
+
+                                    if ($student) {
+                                        $studentCode = $student->permanent_qr_active
+                                            ? $student->custom_id
+                                            : $student->temporary_qr_code;
+                                    }
+
+                                    return [
+                                        'enrollment_id' => $enrollment->id,
+                                        'student_code' => $studentCode,
+                                        'student_name' => $student ? $student->initial_name : null,
+                                        'guardian_mobile' => $student ? $student->guardian_mobile : null,
+                                        'fee_option' => $feeOption
+                                            ? [
+                                                'id' => $feeOption->id,
+                                                'label' => $feeOption->label,
+                                                'fee' => (float) $feeOption->fee,
+                                            ]
+                                            : null,
+                                        'payments' => $payments,
+                                        'total_paid' => (float) $payments->sum('amount'),
+                                    ];
+                                })
+                                ->values();
 
                             return [
-                                'enrollment_id' => $enrollment->id,
-                                'student_code' => $student?->permanent_qr_active
-                                    ? $student?->custom_id
-                                    : $student?->temporary_qr_code,
-                                'student_name' => $student?->initial_name,
-                                'guardian_mobile' => $student?->guardian_mobile,
-                                'payments' => $payments,
-                                'total_paid' => (float) $payments->sum('amount'),
+                                'class_category_fee_id' => $fee->id,
+                                'category_id' => $fee->class_category_id,
+                                'category_name' => $fee->category
+                                    ? $fee->category->category_name
+                                    : null,
+                                'fee_options' => $students
+                                    ->pluck('fee_option')
+                                    ->filter()
+                                    ->unique('id')
+                                    ->values()
+                                    ->all(),
+                                'students' => $students,
+                                'category_total_paid' => (float) $students->sum('total_paid'),
                             ];
-                        })->values();
+                        })
+                        ->filter(function ($category) {
+                            return $category['students']->isNotEmpty();
+                        })
+                        ->values();
 
-                        return [
-                            'class_category_fee_id' => $fee->id,
-                            'category_id' => $fee->class_category_id,
-                            'category_name' => $fee->category?->category_name,
-                            'fee' => (float) $fee->fee,
-                            'students' => $students,
-                            'category_total_paid' => (float) $students->sum('total_paid'),
-                        ];
-                    })
-                    ->filter(fn($category) => $category['students']->isNotEmpty())
-                    ->values();
-
-                return [
-                    'class_id' => $class->id,
-                    'class_name' => $class->class_name,
-                    'grade_name' => $class->grade?->grade_name,
-                    'categories' => $categories,
-                    'class_total_paid' => (float) $categories->sum('category_total_paid'),
-                ];
-            })
-                ->filter(fn($class) => $class['categories']->isNotEmpty())
+                    return [
+                        'class_id' => $class->id,
+                        'class_name' => $class->class_name,
+                        'grade_name' => $class->grade ? $class->grade->grade_name : null,
+                        'categories' => $categories,
+                        'class_total_paid' => (float) $categories->sum('category_total_paid'),
+                    ];
+                })
+                ->filter(function ($class) {
+                    return $class['categories']->isNotEmpty();
+                })
                 ->values()
                 ->all();
         } catch (\Throwable $e) {

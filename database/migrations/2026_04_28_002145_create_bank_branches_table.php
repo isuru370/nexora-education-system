@@ -22,7 +22,6 @@ class CreateBankBranchesTable extends Migration
             $table->softDeletes();
 
             // Indexes
-            $table->index('bank_id');
             $table->index('branch_name');
             $table->index(['bank_id', 'branch_code'], 'bank_branch_code_idx');
         });

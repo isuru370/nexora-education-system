@@ -4,12 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ClassPaymentConfig extends Model
 {
     use SoftDeletes;
 
     protected $fillable = [
+        'branch_id',
         'student_class_id',
         'teacher_id',
         'organizer_id',
@@ -32,33 +34,60 @@ class ClassPaymentConfig extends Model
         'is_active' => 'boolean',
     ];
 
-    public function studentClass()
+    /*
+    |--------------------------------------------------------------------------
+    | Relationships
+    |--------------------------------------------------------------------------
+    */
+
+    public function branch(): BelongsTo
+    {
+        return $this->belongsTo(Branch::class);
+    }
+
+    public function studentClass(): BelongsTo
     {
         return $this->belongsTo(StudentClass::class);
     }
 
-    public function teacher()
+    public function teacher(): BelongsTo
     {
         return $this->belongsTo(Teacher::class);
     }
 
-    public function organizer()
+    public function organizer(): BelongsTo
     {
         return $this->belongsTo(Organizer::class);
     }
 
-    public function paymentConfig()
-    {
-        return $this->hasOne(ClassPaymentConfig::class);
-    }
-
-    public function createdBy()
+    public function createdBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'created_by');
     }
 
-    public function updatedBy()
+    public function updatedBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'updated_by');
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Scopes
+    |--------------------------------------------------------------------------
+    */
+
+    public function scopeForBranches($query, $branchIds)
+    {
+        return $query->whereIn('branch_id', $branchIds);
+    }
+
+    public function scopeForBranch($query, int $branchId)
+    {
+        return $query->where('branch_id', $branchId);
+    }
+
+    public function scopeActive($query)
+    {
+        return $query->where('is_active', true);
     }
 }

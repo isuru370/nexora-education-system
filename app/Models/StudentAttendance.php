@@ -2,8 +2,8 @@
 
 namespace App\Models;
 
-use App\Observers\StudentAttendanceObserver;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class StudentAttendance extends Model
@@ -11,6 +11,7 @@ class StudentAttendance extends Model
     use SoftDeletes;
 
     protected $fillable = [
+        'branch_id',
         'local_uuid',
         'student_id',
         'class_schedule_id',
@@ -27,22 +28,22 @@ class StudentAttendance extends Model
         'is_synced' => 'boolean',
     ];
 
-    protected static function booted(): void
+    public function branch(): BelongsTo
     {
-        static::observe(StudentAttendanceObserver::class);
+        return $this->belongsTo(Branch::class);
     }
 
-    public function student()
+    public function student(): BelongsTo
     {
         return $this->belongsTo(Student::class);
     }
 
-    public function classSchedule()
+    public function classSchedule(): BelongsTo
     {
         return $this->belongsTo(ClassSchedule::class);
     }
 
-    public function enrollment()
+    public function enrollment(): BelongsTo
     {
         return $this->belongsTo(
             StudentClassEnrollment::class,
@@ -50,8 +51,18 @@ class StudentAttendance extends Model
         );
     }
 
-    public function markedBy()
+    public function markedBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'marked_by');
+    }
+
+    public function scopeForBranches($query, $branchIds)
+    {
+        return $query->whereIn('branch_id', $branchIds);
+    }
+
+    public function scopeForBranch($query, int $branchId)
+    {
+        return $query->where('branch_id', $branchId);
     }
 }

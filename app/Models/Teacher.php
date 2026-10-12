@@ -34,26 +34,51 @@ class Teacher extends Model
         'is_active' => 'boolean',
     ];
 
+    /**
+     * User account linked to this teacher.
+     */
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
+    /**
+     * Bank branch used for teacher payments.
+     */
     public function bankBranch()
     {
         return $this->belongsTo(BankBranch::class);
     }
 
+    /**
+     * Classes handled by this teacher.
+     */
     public function classes()
     {
         return $this->hasMany(StudentClass::class);
     }
 
+    /**
+     * Schedules belonging to this teacher's classes.
+     */
     public function schedules()
     {
         return $this->hasManyThrough(
             ClassSchedule::class,
             StudentClass::class
         );
+    }
+
+    /**
+     * Branches assigned to this teacher.
+     */
+    public function branches()
+    {
+        return $this->belongsToMany(
+            Branch::class,
+            'teacher_branches',
+            'teacher_id',
+            'branch_id'
+        )->withTimestamps();
     }
 }

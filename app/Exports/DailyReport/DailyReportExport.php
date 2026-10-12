@@ -11,12 +11,17 @@ use Maatwebsite\Excel\Concerns\WithTitle;
 
 class DailyReportExport implements FromCollection, WithHeadings, WithMapping, WithTitle, ShouldAutoSize
 {
-    public function __construct(
-        protected string $title,
-        protected array $headings,
-        protected array $columns,
-        protected array $rows
-    ) {
+    protected $title;
+    protected $headings;
+    protected $columns;
+    protected $rows;
+
+    public function __construct($title, array $headings, array $columns, array $rows)
+    {
+        $this->title = $title;
+        $this->headings = $headings;
+        $this->columns = $columns;
+        $this->rows = $rows;
     }
 
     public function collection(): Collection
@@ -31,10 +36,9 @@ class DailyReportExport implements FromCollection, WithHeadings, WithMapping, Wi
 
     public function map($row): array
     {
-        return array_map(
-            fn ($column) => data_get($row, $column),
-            $this->columns
-        );
+        return array_map(function ($column) use ($row) {
+            return data_get($row, $column);
+        }, $this->columns);
     }
 
     public function title(): string

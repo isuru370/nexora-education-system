@@ -4,12 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class StudentResult extends Model
 {
     use SoftDeletes;
 
     protected $fillable = [
+        'branch_id',
         'student_id',
         'exam_id',
         'user_id',
@@ -22,7 +24,7 @@ class StudentResult extends Model
         'reason',
         'remark',
         'is_updated',
-        'is_absent',  // ✅ Added
+        'is_absent',
     ];
 
     protected $casts = [
@@ -31,7 +33,7 @@ class StudentResult extends Model
         'percentage' => 'decimal:2',
         'rank' => 'integer',
         'is_updated' => 'boolean',
-        'is_absent' => 'boolean',  // ✅ Added
+        'is_absent' => 'boolean',
     ];
 
     /*
@@ -40,19 +42,40 @@ class StudentResult extends Model
     |--------------------------------------------------------------------------
     */
 
-    public function student()
+    public function branch(): BelongsTo
+    {
+        return $this->belongsTo(Branch::class);
+    }
+
+    public function student(): BelongsTo
     {
         return $this->belongsTo(Student::class);
     }
 
-    public function exam()
+    public function exam(): BelongsTo
     {
         return $this->belongsTo(Exam::class);
     }
 
-    public function enteredBy()
+    public function enteredBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Scopes
+    |--------------------------------------------------------------------------
+    */
+
+    public function scopeForBranches($query, $branchIds)
+    {
+        return $query->whereIn('branch_id', $branchIds);
+    }
+
+    public function scopeForBranch($query, int $branchId)
+    {
+        return $query->where('branch_id', $branchId);
     }
 
     /*
@@ -71,12 +94,16 @@ class StudentResult extends Model
             return null;
         }
 
-        if (!$this->marks || !$this->max_marks) {
+        if (is_null($this->marks) || is_null($this->max_marks)) {
+            return null;
+        }
+
+        if ((float) $this->max_marks <= 0) {
             return null;
         }
 
         return round(
-            ($this->marks / $this->max_marks) * 100,
+            ((float) $this->marks / (float) $this->max_marks) * 100,
             2
         );
     }

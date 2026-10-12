@@ -421,7 +421,10 @@
                                 @foreach($report['columns'] ?? [] as $column)
                                     @php
                                         $value = data_get($row, $column, '-');
-                                        $isAmount = str_contains($column, 'amount') || str_contains($column, 'fee') || str_contains($column, 'total');
+                                        $isAmount =
+    strpos($column, 'amount') !== false ||
+    strpos($column, 'fee') !== false ||
+    strpos($column, 'total') !== false;
                                         $rowType = $row['type'] ?? '';
                                     @endphp
                                     <td class="{{ $isAmount ? 'text-end' : '' }}">

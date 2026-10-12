@@ -10,7 +10,7 @@
             $reportMonth = \Carbon\Carbon::create($year, $month, 1)->format('F Y');
             $currentYear = now()->year;
             $currentMonth = now()->month;
-            $isCurrentMonth = ($year == $currentYear && $month == $currentMonth);
+            $isCurrentMonth = $year == $currentYear && $month == $currentMonth;
         @endphp
 
         <!-- HERO -->
@@ -19,7 +19,7 @@
                 <div>
                     <h3 class="fw-bold mb-1">Institute Monthly Income Report</h3>
                     <p class="text-muted mb-0">{{ $reportMonth }}</p>
-                    @if(!$isCurrentMonth)
+                    @if (!$isCurrentMonth)
                         <span class="badge bg-secondary mt-2">
                             <i class="bi bi-calendar-lock me-1"></i> Read Only Mode (Past Month)
                         </span>
@@ -31,11 +31,20 @@
                 </div>
 
                 <div class="hero-actions">
-                    @if($isCurrentMonth)
-                        <button type="button" class="btn btn-danger custom-btn" data-bs-toggle="modal" data-bs-target="#expenseModal">
+                    @if ($isCurrentMonth)
+                        <button type="button" class="btn btn-danger custom-btn" data-bs-toggle="modal"
+                            data-bs-target="#expenseModal">
                             <i class="bi bi-cash-coin me-1"></i> Add Expense
                         </button>
                     @endif
+
+                    <a href="{{ route('admin.institute-income.monthly.excel', [
+                        'year' => $year,
+                        'month' => $month,
+                    ]) }}"
+                        class="btn btn-success custom-btn">
+                        <i class="bi bi-file-earmark-excel me-1"></i> Excel
+                    </a>
 
                     <button onclick="window.print()" class="btn btn-primary custom-btn">
                         <i class="bi bi-printer me-1"></i> Print
@@ -50,14 +59,14 @@
                 class="row g-3 align-items-end">
                 <div class="col-lg-3 col-md-6">
                     <label class="form-label fw-semibold">Year</label>
-                    <input type="number" name="year" class="form-control custom-input" value="{{ $year }}" min="2000"
-                        max="2100">
+                    <input type="number" name="year" class="form-control custom-input" value="{{ $year }}"
+                        min="2000" max="2100">
                 </div>
 
                 <div class="col-lg-3 col-md-6">
                     <label class="form-label fw-semibold">Month</label>
                     <select name="month" class="form-select custom-input">
-                        @foreach(range(1, 12) as $m)
+                        @foreach (range(1, 12) as $m)
                             <option value="{{ $m }}" {{ $month == $m ? 'selected' : '' }}>
                                 {{ \Carbon\Carbon::create()->month($m)->format('F') }}
                             </option>
@@ -72,43 +81,54 @@
                 </div>
 
                 <div class="col-lg-3 col-md-6">
-                    <button type="button" onclick="window.print()" class="btn btn-outline-secondary w-100 custom-btn">
-                        <i class="bi bi-printer me-1"></i> Print
-                    </button>
+                    <div class="d-flex gap-2">
+                        <a href="{{ route('admin.institute-income.monthly.excel', [
+                            'year' => $year,
+                            'month' => $month,
+                        ]) }}"
+                            class="btn btn-success custom-btn flex-fill">
+                            <i class="bi bi-file-earmark-excel me-1"></i> Excel
+                        </a>
+
+                        <button type="button" onclick="window.print()"
+                            class="btn btn-outline-secondary custom-btn flex-fill">
+                            <i class="bi bi-printer me-1"></i> Print
+                        </button>
+                    </div>
                 </div>
             </form>
         </div>
 
         <!-- SUMMARY CARDS -->
         @include('admin.institute-income.components.summary-cards', [
-            'summary' => $summary ?? []
+            'summary' => $summary ?? [],
         ])
 
         @include('admin.institute-income.components.admission-table', [
-            'summary' => $summary ?? []
+            'summary' => $summary ?? [],
         ])
 
         <!-- TEACHER TABLE -->
         @include('admin.institute-income.components.teacher-table', [
-            'teacher_summaries' => $teacher_summaries ?? []
+            'teacher_summaries' => $teacher_summaries ?? [],
         ])
 
         <!-- ORGANIZER TABLE -->
         @include('admin.institute-income.components.organizer-table', [
-            'organizer_summaries' => $organizer_summaries ?? []
+            'organizer_summaries' => $organizer_summaries ?? [],
         ])
 
         <!-- CLASS TABLE -->
         @include('admin.institute-income.components.class-table', [
-            'class_summaries' => $class_summaries ?? []
+            'class_summaries' => $class_summaries ?? [],
         ])
 
         @php
-            $netIncome = $summary['net_total'] ?? 0;
+            $netIncome = $summary['net_income'] ?? 0;
         @endphp
 
         <!-- EXPENSE MODAL - Only shown for current month -->
-        @if($isCurrentMonth)
+        @if ($isCurrentMonth)
             <div class="modal fade" id="expenseModal" tabindex="-1" aria-labelledby="expenseModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content border-0 shadow rounded-4">
@@ -128,25 +148,19 @@
                                     Current Net Income Before Expense:
                                     <strong>Rs. {{ number_format($netIncome, 2) }}</strong>
                                 </div>
-                                
+
                                 <div class="alert alert-warning">
                                     <i class="bi bi-exclamation-triangle me-2"></i>
-                                    <strong>Note:</strong> Adding an expense will reduce the net income. 
+                                    <strong>Note:</strong> Adding an expense will reduce the net income.
                                     You can add any amount. If expense exceeds net income, the net will become negative.
                                 </div>
 
                                 <div class="mb-3">
-                                    <label class="form-label fw-semibold">Expense Amount <span class="text-danger">*</span></label>
-                                    <input
-                                        type="number"
-                                        step="0.01"
-                                        min="0"
-                                        name="amount"
-                                        id="expenseAmount"
+                                    <label class="form-label fw-semibold">Expense Amount <span
+                                            class="text-danger">*</span></label>
+                                    <input type="number" step="0.01" min="0" name="amount" id="expenseAmount"
                                         class="form-control custom-input @error('amount') is-invalid @enderror"
-                                        placeholder="Enter expense amount"
-                                        required
-                                    >
+                                        placeholder="Enter expense amount" required>
                                     @error('amount')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -156,14 +170,11 @@
                                 </div>
 
                                 <div class="mb-3">
-                                    <label class="form-label fw-semibold">Payment Date <span class="text-danger">*</span></label>
-                                    <input
-                                        type="date"
-                                        name="payment_date"
+                                    <label class="form-label fw-semibold">Payment Date <span
+                                            class="text-danger">*</span></label>
+                                    <input type="date" name="payment_date"
                                         class="form-control custom-input @error('payment_date') is-invalid @enderror"
-                                        value="{{ now()->format('Y-m-d') }}"
-                                        required
-                                    >
+                                        value="{{ now()->format('Y-m-d') }}" required>
                                     @error('payment_date')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -171,12 +182,8 @@
 
                                 <div class="mb-3">
                                     <label class="form-label fw-semibold">Reason / Description</label>
-                                    <textarea
-                                        name="reason"
-                                        rows="3"
-                                        class="form-control custom-input @error('reason') is-invalid @enderror"
-                                        placeholder="Enter reason for expense (optional)"
-                                    ></textarea>
+                                    <textarea name="reason" rows="3" class="form-control custom-input @error('reason') is-invalid @enderror"
+                                        placeholder="Enter reason for expense (optional)"></textarea>
                                     @error('reason')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -188,7 +195,8 @@
                             </div>
 
                             <div class="modal-footer">
-                                <button type="button" class="btn btn-outline-secondary custom-btn" data-bs-dismiss="modal">
+                                <button type="button" class="btn btn-outline-secondary custom-btn"
+                                    data-bs-dismiss="modal">
                                     Cancel
                                 </button>
                                 <button type="submit" class="btn btn-danger custom-btn" id="expenseSubmitBtn">
@@ -216,7 +224,7 @@
         .summary-card {
             background: #fff;
             border-radius: 28px;
-            box-shadow: 0 10px 30px rgba(0,0,0,.05);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, .05);
             border: 1px solid #eef2f7;
         }
 
@@ -260,7 +268,7 @@
 
         .custom-input:focus {
             border-color: #2563eb;
-            box-shadow: 0 0 0 4px rgba(37,99,235,.10);
+            box-shadow: 0 0 0 4px rgba(37, 99, 235, .10);
         }
 
         textarea.custom-input {
@@ -298,12 +306,30 @@
             font-size: .8rem;
         }
 
-        .summary-blue { background: linear-gradient(135deg,#2563eb,#3b82f6); }
-        .summary-green { background: linear-gradient(135deg,#10b981,#34d399); }
-        .summary-warning { background: linear-gradient(135deg,#f59e0b,#fbbf24); color: #111827; }
-        .summary-red { background: linear-gradient(135deg,#ef4444,#f87171); }
-        .summary-info { background: linear-gradient(135deg,#0ea5e9,#38bdf8); }
-        .summary-dark { background: linear-gradient(135deg,#0f172a,#334155); }
+        .summary-blue {
+            background: linear-gradient(135deg, #2563eb, #3b82f6);
+        }
+
+        .summary-green {
+            background: linear-gradient(135deg, #10b981, #34d399);
+        }
+
+        .summary-warning {
+            background: linear-gradient(135deg, #f59e0b, #fbbf24);
+            color: #111827;
+        }
+
+        .summary-red {
+            background: linear-gradient(135deg, #ef4444, #f87171);
+        }
+
+        .summary-info {
+            background: linear-gradient(135deg, #0ea5e9, #38bdf8);
+        }
+
+        .summary-dark {
+            background: linear-gradient(135deg, #0f172a, #334155);
+        }
 
         .main-card-header {
             display: flex;
@@ -394,6 +420,7 @@
         }
 
         @media (max-width: 768px) {
+
             .hero-content,
             .main-card-header {
                 flex-direction: column;
@@ -410,6 +437,7 @@
         }
 
         @media print {
+
             .btn,
             .alert,
             .sidebar,
@@ -432,42 +460,42 @@
 @endpush
 
 @push('scripts')
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const form = document.getElementById('expenseForm');
-        const amountInput = document.getElementById('expenseAmount');
-        
-        if (form && amountInput) {
-            // Remove any validation that prevents saving
-            form.addEventListener('submit', function (e) {
-                const amount = parseFloat(amountInput.value || 0);
-                
-                if (isNaN(amount) || amount <= 0) {
-                    e.preventDefault();
-                    amountInput.classList.add('is-invalid');
-                    
-                    let feedback = amountInput.parentNode.querySelector('.custom-error-message');
-                    if (!feedback) {
-                        feedback = document.createElement('div');
-                        feedback.className = 'text-danger mt-1 custom-error-message';
-                        amountInput.parentNode.appendChild(feedback);
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('expenseForm');
+            const amountInput = document.getElementById('expenseAmount');
+
+            if (form && amountInput) {
+                // Remove any validation that prevents saving
+                form.addEventListener('submit', function(e) {
+                    const amount = parseFloat(amountInput.value || 0);
+
+                    if (isNaN(amount) || amount <= 0) {
+                        e.preventDefault();
+                        amountInput.classList.add('is-invalid');
+
+                        let feedback = amountInput.parentNode.querySelector('.custom-error-message');
+                        if (!feedback) {
+                            feedback = document.createElement('div');
+                            feedback.className = 'text-danger mt-1 custom-error-message';
+                            amountInput.parentNode.appendChild(feedback);
+                        }
+                        feedback.textContent = 'Please enter a valid expense amount greater than 0.';
+                        amountInput.focus();
                     }
-                    feedback.textContent = 'Please enter a valid expense amount greater than 0.';
-                    amountInput.focus();
-                }
-            });
-            
-            // Clear validation on input
-            amountInput.addEventListener('input', function () {
-                const amount = parseFloat(amountInput.value || 0);
-                let feedback = amountInput.parentNode.querySelector('.custom-error-message');
-                
-                if (amount > 0) {
-                    amountInput.classList.remove('is-invalid');
-                    if (feedback) feedback.remove();
-                }
-            });
-        }
-    });
-</script>
+                });
+
+                // Clear validation on input
+                amountInput.addEventListener('input', function() {
+                    const amount = parseFloat(amountInput.value || 0);
+                    let feedback = amountInput.parentNode.querySelector('.custom-error-message');
+
+                    if (amount > 0) {
+                        amountInput.classList.remove('is-invalid');
+                        if (feedback) feedback.remove();
+                    }
+                });
+            }
+        });
+    </script>
 @endpush

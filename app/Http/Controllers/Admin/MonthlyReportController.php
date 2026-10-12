@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Exports\Teacher\TeacherSalaryReportExport;
-use App\Exports\Teacher\TeacherWithStudentPaymentDateReportExport;
-use App\Exports\Teacher\TeacherWithStudentPaymentReportExport;
+use App\Exports\MonthlyReport\TeacherWithStudentPaymentDateReportExport;
+use App\Exports\MonthlyReport\TeacherWithStudentPaymentReportExport;
 use App\Http\Controllers\Controller;
 use App\Models\PaymentSplitSnapshot;
 use App\Models\StudentClass;
@@ -58,7 +58,7 @@ class MonthlyReportController extends Controller
                 'initials'          => $teacher->initials,
                 'gross_income'      => (float) $grossIncome,
                 'advance_deduction' => (float) $advanceDeduction,
-                'salary_paid_status' => $salary?->status ?? 'unpaid',
+                'salary_paid_status' => optional($salary)->status ?: 'unpaid',
                 'salary'            => $salary,
             ];
         })->toArray();
@@ -243,7 +243,7 @@ class MonthlyReportController extends Controller
             ->with([
                 'grade:id,grade_name',
                 'categoryFees' => function ($query) {
-                    $query->select('id', 'student_class_id', 'class_category_id', 'fee')
+                    $query->select('id', 'student_class_id', 'class_category_id')
                         ->with([
                             'category:id,category_name',
                         ])
@@ -255,10 +255,9 @@ class MonthlyReportController extends Controller
                         'student_id',
                         'student_class_id',
                         'class_category_fee_id',
+                        'class_category_fee_option_id',
                         'is_active',
-                        'is_free_card',
-                        'custom_fee',
-                        'discount_percentage'
+                        'is_free_card'
                     )
                         ->where('is_active', 1)
                         ->with([
@@ -276,8 +275,9 @@ class MonthlyReportController extends Controller
                                     ->whereYear('payment_month', $year)
                                     ->whereMonth('payment_month', $month);
                             },
-                            'classCategoryFee:id,student_class_id,class_category_id,fee',
+                            'classCategoryFee:id,student_class_id,class_category_id',
                             'classCategoryFee.category:id,category_name',
+                            'classCategoryFeeOption:id,class_category_fee_id,label,fee',
                         ]);
                 },
             ])
@@ -289,7 +289,6 @@ class MonthlyReportController extends Controller
         $overallPaidStudents = 0;
         $overallUnpaidStudents = 0;
         $overallFreeCardStudents = 0;
-        $overallPartialStudents = 0;
 
         foreach ($classes as $class) {
             $classCategories = [];
@@ -301,7 +300,6 @@ class MonthlyReportController extends Controller
 
                 $paidStudents = [];
                 $unpaidStudents = [];
-                $partialStudents = [];
                 $freeCardStudents = [];
 
                 foreach ($categoryEnrollments as $enrollment) {
@@ -316,37 +314,37 @@ class MonthlyReportController extends Controller
                         $status = 'paid';
                     } elseif ($paidAmount >= $finalFee) {
                         $status = 'paid';
-                    } elseif ($paidAmount > 0) {
-                        $status = 'partial';
                     } else {
                         $status = 'unpaid';
                     }
 
                     $studentData = [
-                        'student_id' => $student?->id,
-                        'student_code' => ($student?->permanent_qr_active == 1)
-                            ? $student?->custom_id
-                            : $student?->temporary_qr_code,
-                        'initial_name' => $student?->initial_name,
-                        'guardian_mobile' => $student?->guardian_mobile,
+                        'student_id' => optional($student)->id,
+                        'student_code' => (optional($student)->permanent_qr_active == 1)
+                            ? optional($student)->custom_id
+                            : optional($student)->temporary_qr_code,
+                        'initial_name' => optional($student)->initial_name,
+                        'guardian_mobile' => optional($student)->guardian_mobile,
                         'is_free_card' => (bool) $enrollment->is_free_card,
-                        'custom_fee' => $enrollment->custom_fee,
-                        'discount_percentage' => $enrollment->discount_percentage,
+                        'fee_option' => $enrollment->classCategoryFeeOption
+                            ? [
+                                'id' => $enrollment->classCategoryFeeOption->id,
+                                'label' => $enrollment->classCategoryFeeOption->label,
+                                'fee' => (float) $enrollment->classCategoryFeeOption->fee,
+                            ]
+                            : null,
                         'final_fee' => $finalFee,
                         'paid_amount' => $paidAmount,
                         'balance' => max($finalFee - $paidAmount, 0),
                         'status' => $status,
                     ];
 
-                    if ($status === 'paid') {
-                        $paidStudents[] = $studentData;
-                        $overallPaidStudents++;
-                    } elseif ($status === 'partial') {
-                        $partialStudents[] = $studentData;
-                        $overallPartialStudents++;
-                    } elseif ($status === 'freecard') {
+                    if ($status === 'freecard') {
                         $freeCardStudents[] = $studentData;
                         $overallFreeCardStudents++;
+                    } elseif ($status === 'paid') {
+                        $paidStudents[] = $studentData;
+                        $overallPaidStudents++;
                     } else {
                         $unpaidStudents[] = $studentData;
                         $overallUnpaidStudents++;
@@ -357,17 +355,36 @@ class MonthlyReportController extends Controller
 
                 $classCategories[] = [
                     'category_fee_id' => $fee->id,
+
                     'category_id' => $fee->class_category_id,
-                    'category_name' => $fee->category?->category_name,
-                    'fee' => (float) $fee->fee,
+
+                    'category_name' => optional($fee->category)->category_name,
+
+                    'fee_options' => $categoryEnrollments
+                        ->map(function ($enrollment) {
+                            return $enrollment->classCategoryFeeOption
+                                ? [
+                                    'id' => $enrollment->classCategoryFeeOption->id,
+                                    'label' => $enrollment->classCategoryFeeOption->label,
+                                    'fee' => (float) $enrollment->classCategoryFeeOption->fee,
+                                ]
+                                : null;
+                        })
+                        ->filter()
+                        ->unique('id')
+                        ->values()
+                        ->toArray(),
+
                     'total_students' => $categoryEnrollments->count(),
+
                     'paid_count' => count($paidStudents),
-                    'partial_count' => count($partialStudents),
+
                     'unpaid_count' => count($unpaidStudents),
+
                     'freecard_count' => count($freeCardStudents),
+
                     'students' => [
                         'paid' => $paidStudents,
-                        'partial' => $partialStudents,
                         'unpaid' => $unpaidStudents,
                         'freecard' => $freeCardStudents,
                     ],
@@ -377,7 +394,7 @@ class MonthlyReportController extends Controller
             $reportClasses[] = [
                 'class_id' => $class->id,
                 'class_name' => $class->class_name,
-                'grade_name' => $class->grade?->grade_name,
+                'grade_name' => optional($class->grade)->grade_name,
                 'categories' => $classCategories,
             ];
         }
@@ -396,7 +413,6 @@ class MonthlyReportController extends Controller
                 'total_classes' => $classes->count(),
                 'total_students' => $overallTotalStudents,
                 'paid_students' => $overallPaidStudents,
-                'partial_students' => $overallPartialStudents,
                 'unpaid_students' => $overallUnpaidStudents,
                 'freecard_students' => $overallFreeCardStudents,
             ],
@@ -529,27 +545,31 @@ class MonthlyReportController extends Controller
             ->where('teacher_id', $teacherId)
             ->with([
                 'grade:id,grade_name',
+
                 'categoryFees' => function ($query) {
-                    $query->select('id', 'student_class_id', 'class_category_id', 'fee')
-                        ->with([
-                            'category:id,category_name',
-                        ])
-                        ->orderBy('id');
+                    $query->select(
+                        'id',
+                        'student_class_id',
+                        'class_category_id'
+                    )->with([
+                        'category:id,category_name',
+                    ])->orderBy('id');
                 },
+
                 'enrollments' => function ($query) use ($year, $month) {
                     $query->select(
                         'id',
                         'student_id',
                         'student_class_id',
                         'class_category_fee_id',
+                        'class_category_fee_option_id',
                         'is_active',
-                        'is_free_card',
-                        'custom_fee',
-                        'discount_percentage'
+                        'is_free_card'
                     )
                         ->where('is_active', 1)
                         ->with([
                             'student:id,permanent_qr_active,custom_id,temporary_qr_code,initial_name,guardian_mobile',
+
                             'payments' => function ($paymentQuery) use ($year, $month) {
                                 $paymentQuery->select(
                                     'id',
@@ -563,8 +583,10 @@ class MonthlyReportController extends Controller
                                     ->whereYear('paid_at', $year)
                                     ->whereMonth('paid_at', $month);
                             },
-                            'classCategoryFee:id,student_class_id,class_category_id,fee',
+
+                            'classCategoryFee:id,student_class_id,class_category_id',
                             'classCategoryFee.category:id,category_name',
+                            'classCategoryFeeOption:id,class_category_fee_id,label,fee',
                         ]);
                 },
             ])
@@ -572,70 +594,108 @@ class MonthlyReportController extends Controller
             ->get();
 
         $reportClasses = [];
+
         $overallTotalStudents = 0;
         $overallPaidStudents = 0;
         $overallUnpaidStudents = 0;
         $overallFreeCardStudents = 0;
-        $overallPartialStudents = 0;
 
         foreach ($classes as $class) {
+
             $classCategories = [];
 
             foreach ($class->categoryFees as $fee) {
+
                 $categoryEnrollments = $class->enrollments
                     ->where('class_category_fee_id', $fee->id)
                     ->values();
 
                 $paidStudents = [];
                 $unpaidStudents = [];
-                $partialStudents = [];
                 $freeCardStudents = [];
 
                 foreach ($categoryEnrollments as $enrollment) {
+
                     $student = $enrollment->student;
 
                     $paidAmount = (float) $enrollment->payments->sum('amount');
+
                     $finalFee = (float) $enrollment->final_fee;
 
+                    /*
+                 * FREE CARD
+                 */
                     if ($enrollment->is_free_card) {
+
                         $status = 'freecard';
+
+                        /*
+                 * PAID
+                 */
                     } elseif ($finalFee <= 0) {
+
                         $status = 'paid';
                     } elseif ($paidAmount >= $finalFee) {
+
                         $status = 'paid';
-                    } elseif ($paidAmount > 0) {
-                        $status = 'partial';
+
+                        /*
+                 * UNPAID
+                 */
                     } else {
+
                         $status = 'unpaid';
                     }
 
                     $studentData = [
-                        'student_id' => $student?->id,
-                        'student_code' => ($student?->permanent_qr_active == 1)
-                            ? $student?->custom_id
-                            : $student?->temporary_qr_code,
-                        'initial_name' => $student?->initial_name,
-                        'guardian_mobile' => $student?->guardian_mobile,
+                        'student_id' => optional($student)->id,
+
+                        'student_code' => (
+                            optional($student)->permanent_qr_active == 1
+                        )
+                            ? optional($student)->custom_id
+                            : optional($student)->temporary_qr_code,
+
+                        'initial_name' => optional($student)->initial_name,
+
+                        'guardian_mobile' => optional($student)->guardian_mobile,
+
                         'is_free_card' => (bool) $enrollment->is_free_card,
-                        'custom_fee' => $enrollment->custom_fee,
-                        'discount_percentage' => $enrollment->discount_percentage,
+
+                        'fee_option' => $enrollment->classCategoryFeeOption
+                            ? [
+                                'id' => $enrollment->classCategoryFeeOption->id,
+                                'label' => $enrollment->classCategoryFeeOption->label,
+                                'fee' => (float) $enrollment->classCategoryFeeOption->fee,
+                            ]
+                            : null,
+
                         'final_fee' => $finalFee,
+
                         'paid_amount' => $paidAmount,
+
                         'balance' => max($finalFee - $paidAmount, 0),
+
                         'status' => $status,
                     ];
 
-                    if ($status === 'paid') {
-                        $paidStudents[] = $studentData;
-                        $overallPaidStudents++;
-                    } elseif ($status === 'partial') {
-                        $partialStudents[] = $studentData;
-                        $overallPartialStudents++;
-                    } elseif ($status === 'freecard') {
+                    /*
+                 * Separate student groups
+                 */
+                    if ($status === 'freecard') {
+
                         $freeCardStudents[] = $studentData;
+
                         $overallFreeCardStudents++;
+                    } elseif ($status === 'paid') {
+
+                        $paidStudents[] = $studentData;
+
+                        $overallPaidStudents++;
                     } else {
+
                         $unpaidStudents[] = $studentData;
+
                         $overallUnpaidStudents++;
                     }
 
@@ -644,18 +704,45 @@ class MonthlyReportController extends Controller
 
                 $classCategories[] = [
                     'category_fee_id' => $fee->id,
+
                     'category_id' => $fee->class_category_id,
-                    'category_name' => $fee->category?->category_name,
-                    'fee' => (float) $fee->fee,
+
+                    'category_name' => optional($fee->category)->category_name,
+
+                    /*
+                 * Available Fee Options
+                 */
+                    'fee_options' => $categoryEnrollments
+                        ->map(function ($enrollment) {
+                            return $enrollment->classCategoryFeeOption
+                                ? [
+                                    'id' => $enrollment->classCategoryFeeOption->id,
+                                    'label' => $enrollment->classCategoryFeeOption->label,
+                                    'fee' => (float) $enrollment->classCategoryFeeOption->fee,
+                                ]
+                                : null;
+                        })
+                        ->filter()
+                        ->unique('id')
+                        ->values()
+                        ->toArray(),
+
                     'total_students' => $categoryEnrollments->count(),
+
                     'paid_count' => count($paidStudents),
-                    'partial_count' => count($partialStudents),
+
                     'unpaid_count' => count($unpaidStudents),
+
                     'freecard_count' => count($freeCardStudents),
+
+                    /*
+                 * Students
+                 */
                     'students' => [
                         'paid' => $paidStudents,
-                        'partial' => $partialStudents,
+
                         'unpaid' => $unpaidStudents,
+
                         'freecard' => $freeCardStudents,
                     ],
                 ];
@@ -663,8 +750,11 @@ class MonthlyReportController extends Controller
 
             $reportClasses[] = [
                 'class_id' => $class->id,
+
                 'class_name' => $class->class_name,
-                'grade_name' => $class->grade?->grade_name,
+
+                'grade_name' => optional($class->grade)->grade_name,
+
                 'categories' => $classCategories,
             ];
         }
@@ -675,18 +765,24 @@ class MonthlyReportController extends Controller
                 'custom_id' => $teacher->custom_id,
                 'initials' => $teacher->initials,
             ],
+
             'filter' => [
                 'year' => $year,
                 'month' => $month,
             ],
+
             'summary' => [
                 'total_classes' => $classes->count(),
+
                 'total_students' => $overallTotalStudents,
+
                 'paid_students' => $overallPaidStudents,
-                'partial_students' => $overallPartialStudents,
+
                 'unpaid_students' => $overallUnpaidStudents,
+
                 'freecard_students' => $overallFreeCardStudents,
             ],
+
             'classes' => $reportClasses,
         ];
     }

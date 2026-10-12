@@ -3,6 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Exam extends Model
@@ -10,6 +12,7 @@ class Exam extends Model
     use SoftDeletes;
 
     protected $fillable = [
+        'branch_id',
         'title',
         'student_class_id',
         'class_category_id',
@@ -29,18 +32,26 @@ class Exam extends Model
         'cancelled_at' => 'datetime',
     ];
 
-    /*
-    |--------------------------------------------------------------------------
-    | Relationships
-    |--------------------------------------------------------------------------
-    */
+    /**
+     * Branch where this exam belongs.
+     */
+    public function branch(): BelongsTo
+    {
+        return $this->belongsTo(Branch::class);
+    }
 
-    public function studentClass()
+    /**
+     * Student class for this exam.
+     */
+    public function studentClass(): BelongsTo
     {
         return $this->belongsTo(StudentClass::class);
     }
 
-    public function category()
+    /**
+     * Class category.
+     */
+    public function category(): BelongsTo
     {
         return $this->belongsTo(
             ClassCategory::class,
@@ -48,7 +59,10 @@ class Exam extends Model
         );
     }
 
-    public function hall()
+    /**
+     * Class hall.
+     */
+    public function hall(): BelongsTo
     {
         return $this->belongsTo(
             ClassHall::class,
@@ -56,7 +70,10 @@ class Exam extends Model
         );
     }
 
-    public function cancelledBy()
+    /**
+     * User who cancelled the exam.
+     */
+    public function cancelledBy(): BelongsTo
     {
         return $this->belongsTo(
             User::class,
@@ -64,43 +81,65 @@ class Exam extends Model
         );
     }
 
-    public function results()
+    /**
+     * Student results.
+     */
+    public function results(): HasMany
     {
         return $this->hasMany(StudentResult::class);
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | Scopes
-    |--------------------------------------------------------------------------
-    */
-
+    /**
+     * Scheduled exams.
+     */
     public function scopeScheduled($query)
     {
         return $query->where('status', 'scheduled');
     }
 
+    /**
+     * Ongoing exams.
+     */
     public function scopeOngoing($query)
     {
         return $query->where('status', 'ongoing');
     }
 
+    /**
+     * Completed exams.
+     */
     public function scopeCompleted($query)
     {
         return $query->where('status', 'completed');
     }
 
+    /**
+     * Cancelled exams.
+     */
     public function scopeCancelled($query)
     {
         return $query->where('status', 'cancelled');
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | Helpers
-    |--------------------------------------------------------------------------
-    */
+    /**
+     * Scope: exams belonging to given branches.
+     */
+    public function scopeForBranches($query, $branchIds)
+    {
+        return $query->whereIn('branch_id', $branchIds);
+    }
 
+    /**
+     * Scope: exams belonging to a specific branch.
+     */
+    public function scopeForBranch($query, int $branchId)
+    {
+        return $query->where('branch_id', $branchId);
+    }
+
+    /**
+     * Cancel this exam.
+     */
     public function cancel($userId, $reason = null)
     {
         return $this->update([
@@ -111,31 +150,43 @@ class Exam extends Model
         ]);
     }
 
+    /**
+     * Check whether this exam has results.
+     */
     public function hasResults(): bool
     {
         return $this->results()->exists();
     }
 
+    /**
+     * Number of result records for this exam.
+     */
     public function totalStudents(): int
     {
         return $this->results()->count();
     }
 
+    /**
+     * Average marks.
+     */
     public function averageMarks(): float
     {
-        return (float) $this->results()
-            ->avg('marks');
+        return (float) $this->results()->avg('marks');
     }
 
+    /**
+     * Highest marks.
+     */
     public function highestMarks(): float
     {
-        return (float) $this->results()
-            ->max('marks');
+        return (float) $this->results()->max('marks');
     }
 
+    /**
+     * Lowest marks.
+     */
     public function lowestMarks(): float
     {
-        return (float) $this->results()
-            ->min('marks');
+        return (float) $this->results()->min('marks');
     }
 }

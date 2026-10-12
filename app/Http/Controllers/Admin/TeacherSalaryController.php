@@ -13,7 +13,7 @@ use Carbon\Carbon;
 
 class TeacherSalaryController extends Controller
 {
-    protected TeacherSalaryService $teacherSalaryService;
+    protected $teacherSalaryService;
 
     public function __construct(TeacherSalaryService $teacherSalaryService)
     {
@@ -161,8 +161,8 @@ class TeacherSalaryController extends Controller
                 // =====================================================
                 // SAFE SUBJECT + GRADE NAME (FIX UNKNOWN ISSUE)
                 // =====================================================
-                $subject = $class?->subject?->subject_name ?? 'Unknown Subject';
-                $grade = $class?->grade?->grade_name ?? 'Unknown Grade';
+                $subject = optional(optional($class)->subject)->subject_name ?: 'Unknown Subject';
+                $grade = optional(optional($class)->grade)->grade_name ?: 'Unknown Grade';
 
                 $className = "{$subject} - Grade {$grade}";
 
@@ -252,6 +252,7 @@ class TeacherSalaryController extends Controller
                 'status' => 'success',
 
                 'teacher_id' => $teacher->id,
+                'teacher_custom_id' => $teacher->custom_id,
                 'teacher_name' => $teacher->full_name,
 
                 'month_year_display' =>
@@ -349,7 +350,7 @@ class TeacherSalaryController extends Controller
             'payments_list' => $data['payments_list'] ?? $data['payments'],
             'totals' => $data['totals'],
             'salary_status' => $data['salary_status'],
-            'salary_record' => $data['salary_record'] ?? null,
+            'salary_record' => $data['teacher_salary'] ?? ($data['salary_record'] ?? null),
             'has_salary_record' => $data['has_salary_record'],
             'has_any_payments' => $data['has_any_payments'],
         ]);
@@ -395,7 +396,6 @@ class TeacherSalaryController extends Controller
                     'month' => $month,
                 ]
             );
-            try { $data = $this->studentClassEnrollmentService ->classCategoryWisePaymentStudent( (int) $class, (int) $classCategoryFee, (int) $validated['year'], (int) $validated['month'] ); return view('student-class-enrollments.category-wise-payment', [ 'success' => true, 'data' => $data ]); } catch (Throwable $e) { Log::error('Class Category Wise Payment Student Error', [ 'message' => $e->getMessage(), 'file' => $e->getFile(), 'line' => $e->getLine(), 'class' => $class, 'class_category_fee' => $classCategoryFee, 'year' => $year, 'month' => $month, ]); return redirect()->back()->with([ 'success' => false, 'error' => 'Something went wrong while fetching data.' ]); }
         } catch (\Throwable $e) {
 
             logger()->error(

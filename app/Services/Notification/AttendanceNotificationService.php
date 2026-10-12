@@ -5,19 +5,21 @@ namespace App\Services\Notification;
 use App\Models\Student;
 use App\Models\StudentAttendance;
 use App\Models\StudentClassEnrollment;
-use App\Models\Notification;
-use App\Models\FcmToken;
 use App\Enums\NotificationType;
-use App\Enums\NotificationStatus;
-use App\Jobs\SendNotificationJob;
 use App\Jobs\SendAttendanceSuccessSmsJob;
-use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 
 class AttendanceNotificationService
 {
+    public function __construct(
+        private  NotificationService $notificationService
+    ) {}
+
     /**
-     * Send attendance notification (SMS + FCM)
+     * Send attendance success notifications.
+     *
+     * FCM is queued through the central NotificationService.
+     * SMS can be enabled separately.
      */
     public function sendSuccess(
         Student $student,
@@ -25,72 +27,106 @@ class AttendanceNotificationService
         ?StudentClassEnrollment $enrollment = null
     ): void {
         try {
-            // Prepare attendance data
-            $data = $this->prepareData($student, $attendance, $enrollment);
+            $data = $this->prepareData(
+                $student,
+                $attendance,
+                $enrollment
+            );
 
-            // Send FCM Push Notification
-            $this->sendFcmNotification($student, $attendance, $data);
+            /*
+             * ---------------------------------------------------------
+             * FCM
+             * ---------------------------------------------------------
+             */
 
-            // Send SMS Notification
-            //$this->sendSmsNotification($student, $attendance, $enrollment, $data);
+            if ($this->hasActiveTokens($student)) {
+                $this->sendFcmNotification(
+                    $student,
+                    $attendance,
+                    $data
+                );
+            } else {
+                Log::info('Attendance FCM skipped - no active token', [
+                    'student_id' => $student->id,
+                    'attendance_id' => $attendance->id,
+                ]);
+            }
 
-            Log::info('Attendance notification sent successfully', [
-                'student_id' => $student->id,
-                'attendance_id' => $attendance->id,
-                'fcm_sent' => $this->hasActiveTokens($student->id),
-                'sms_sent' => (bool) $student->guardian_mobile,
-            ]);
+            /*
+             * ---------------------------------------------------------
+             * SMS
+             * ---------------------------------------------------------
+             *
+             * Enable this when SMS integration is required.
+             */
 
-        } catch (\Exception $e) {
+            // $this->sendSmsNotification(
+            //     $student,
+            //     $attendance,
+            //     $enrollment,
+            //     $data
+            // );
+
+        } catch (\Throwable $e) {
+
+            /*
+             * Do not hide unexpected notification errors.
+             *
+             * Attendance itself should NOT fail because notification
+             * failed, so we only log the error here.
+             */
+
             Log::error('Attendance notification failed', [
                 'student_id' => $student->id ?? null,
                 'attendance_id' => $attendance->id ?? null,
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
             ]);
         }
     }
 
     /**
-     * Send FCM push notification
+     * Queue FCM attendance notification.
      */
     private function sendFcmNotification(
         Student $student,
         StudentAttendance $attendance,
         array $data
     ): void {
-        // Check if student has active FCM tokens
-        if (!$this->hasActiveTokens($student->id)) {
-            Log::info('No active FCM tokens', ['student_id' => $student->id]);
-            return;
-        }
 
-        // Build notification message
         $message = $this->buildFcmMessage($data);
 
-        // Create notification record
-        $notification = Notification::create([
+        $notificationData = [
+            'attendance_id' => (string) $attendance->id,
+            'student_id' => (string) $student->id,
+            'student_name' => $data['student_name'],
+            'class_name' => $data['class_name'],
+            'grade' => $data['grade'],
+            'category' => $data['category'],
+            'date' => $data['date'],
+            'time' => $data['time'],
+            'mark_method' => $data['mark_method'],
+        ];
+
+        /*
+         * Use the central NotificationService.
+         *
+         * This keeps:
+         * - validation
+         * - notification creation
+         * - queue handling
+         * - retry
+         * - status handling
+         *
+         * in one place.
+         */
+        $notification = $this->notificationService->send([
             'student_id' => $student->id,
             'title' => 'Attendance Marked!',
-            'body' => $message,
+            'message' => $message,
             'type' => NotificationType::ATTENDANCE,
-            'data' => [
-                'attendance_id' => $attendance->id,
-                'student_id' => $student->id,
-                'student_name' => $data['student_name'],
-                'class_name' => $data['class_name'],
-                'grade' => $data['grade'],
-                'category' => $data['category'],
-                'date' => $data['date'],
-                'time' => $data['time'],
-                'mark_method' => $data['mark_method'],
-            ],
-            'status' => NotificationStatus::PENDING,
-            'created_by' => auth()->id(),
+            'data' => $notificationData,
+            'scheduled_at' => null,
         ]);
-
-        // Dispatch to queue
-        SendNotificationJob::dispatch($notification->id)->onQueue('notifications');
 
         Log::info('Attendance FCM queued', [
             'notification_id' => $notification->id,
@@ -100,7 +136,7 @@ class AttendanceNotificationService
     }
 
     /**
-     * Send SMS notification
+     * Send attendance SMS.
      */
     private function sendSmsNotification(
         Student $student,
@@ -108,49 +144,84 @@ class AttendanceNotificationService
         ?StudentClassEnrollment $enrollment,
         array $data
     ): void {
-        $guardianMobile = $student->guardian_mobile;
 
-        if (!$guardianMobile) {
-            Log::info('No guardian mobile', ['student_id' => $student->id]);
+        $guardianMobile = trim((string) $student->guardian_mobile);
+
+        if ($guardianMobile === '') {
+            Log::info('Attendance SMS skipped - no guardian mobile', [
+                'student_id' => $student->id,
+                'attendance_id' => $attendance->id,
+            ]);
+
             return;
         }
 
-        $message = $this->buildSmsMessage($student, $attendance, $enrollment, $data);
+        $message = $this->buildSmsMessage($data);
 
-        SendAttendanceSuccessSmsJob::dispatch($guardianMobile, $message);
+        SendAttendanceSuccessSmsJob::dispatch(
+            $guardianMobile,
+            $message
+        )->onQueue('sms');
 
         Log::info('Attendance SMS queued', [
             'student_id' => $student->id,
-            'mobile' => $guardianMobile,
+            'attendance_id' => $attendance->id,
         ]);
     }
 
     /**
-     * Prepare attendance data
+     * Prepare attendance notification data.
      */
     private function prepareData(
         Student $student,
         StudentAttendance $attendance,
         ?StudentClassEnrollment $enrollment
     ): array {
+
+        $attendedAt = $attendance->attended_at ?? now();
+
         return [
-            'student_name' => $student->initial_name ?? 'Student',
-            'class_name' => $enrollment?->studentClass?->class_name ?? 'N/A',
-            'grade' => $enrollment?->studentClass?->grade?->grade_name ?? 'N/A',
-            'category' => $enrollment?->classCategoryFee?->category?->category_name ?? 'N/A',
-            'date' => $attendance->attended_at?->format('Y-m-d') ?? now()->format('Y-m-d'),
-            'time' => $attendance->attended_at?->format('H:i') ?? now()->format('H:i'),
-            'mark_method' => $attendance->mark_method ?? 'manual',
+            'student_name' =>
+            $student->initial_name
+                ?: $student->full_name
+                ?: 'Student',
+
+            'class_name' =>
+            $enrollment?->studentClass?->class_name
+                ?? 'N/A',
+
+            'grade' =>
+            $enrollment?->studentClass?->grade?->grade_name
+                ?? 'N/A',
+
+            'category' =>
+            $enrollment?->classCategoryFee?->category?->category_name
+                ?? 'N/A',
+
+            'date' => $attendedAt->format('Y-m-d'),
+
+            'time' => $attendedAt->format('H:i'),
+
+            'mark_method' =>
+            $attendance->mark_method
+                ?? 'manual',
         ];
     }
 
     /**
-     * Build FCM message
+     * Build FCM notification body.
      */
     private function buildFcmMessage(array $data): string
     {
         return sprintf(
-            "Dear Parent,\n\nAttendance has been marked for %s.\n\n Class: %s\n Grade: %s\n Category: %s\n Date: %s\n Time: %s\n\nThank you!",
+            "Dear Parent,\n\n" .
+                "Attendance has been marked for %s.\n\n" .
+                "Class: %s\n" .
+                "Grade: %s\n" .
+                "Category: %s\n" .
+                "Date: %s\n" .
+                "Time: %s\n\n" .
+                "Thank you!",
             $data['student_name'],
             $data['class_name'],
             $data['grade'],
@@ -161,32 +232,30 @@ class AttendanceNotificationService
     }
 
     /**
-     * Build SMS message
+     * Build SMS notification body.
      */
-    private function buildSmsMessage(
-        Student $student,
-        StudentAttendance $attendance,
-        ?StudentClassEnrollment $enrollment,
-        array $data
-    ): string {
-        return sprintf(
-            'Attendance marked. Student: %s, Class: %s, Category: %s, Grade: %s, Date: %s, Time: %s. Thank you.',
-            $data['student_name'],
-            $data['class_name'],
-            $data['category'],
-            $data['grade'],
-            $data['date'],
-            $data['time']
-        );
-    }
-
-    /**
-     * Check if student has active FCM tokens
-     */
-    private function hasActiveTokens(int $studentId): bool
+    private function buildSmsMessage(array $data): string
     {
-        return FcmToken::where('student_id', $studentId)
-            ->where('is_active', true)
-            ->exists();
+        return sprintf(
+            'Attendance marked. Student: %s, Class: %s, ' .
+                'Category: %s, Grade: %s, Date: %s, Time: %s. Thank you.',
+            $data['student_name'],
+            $data['class_name'],
+            $data['category'],
+            $data['grade'],
+            $data['date'],
+            $data['time']
+        );
+    }
+
+    /**
+     * Check whether student has active FCM tokens.
+     *
+     * Uses the Student relationship instead of directly querying
+     * FcmToken from this service.
+     */
+    private function hasActiveTokens(Student $student): bool
+    {
+        return $student->activeFcmTokens()->exists();
     }
 }

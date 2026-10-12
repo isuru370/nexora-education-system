@@ -11,6 +11,10 @@ class CreateStudentClassesTable extends Migration
         Schema::create('student_classes', function (Blueprint $table) {
             $table->id();
 
+            $table->foreignId('branch_id')
+                ->constrained('branches')
+                ->restrictOnDelete();
+
             $table->string('class_name', 150);
 
             $table->enum('class_type', ['online', 'offline', 'hybrid'])

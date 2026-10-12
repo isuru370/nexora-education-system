@@ -107,9 +107,12 @@
             <option value="">Select User Type</option>
 
             @foreach ($userTypes as $userType)
-                <option value="{{ $userType->id }}" {{ old('user_type_id', $systemUser?->user?->user_type_id ?? '') == $userType->id ? 'selected' : '' }}>
-                    {{ $userType->name }}
-                </option>
+                @if ($userType->code !== 'SUPER_ADMIN')
+                    <option value="{{ $userType->id }}"
+                        {{ old('user_type_id', $systemUser?->user?->user_type_id ?? '') == $userType->id ? 'selected' : '' }}>
+                        {{ $userType->name }}
+                    </option>
+                @endif
             @endforeach
 
         </select>
@@ -121,15 +124,105 @@
         @enderror
     </div>
 
+    {{-- Branch Assignment --}}
+    <div class="col-12">
+        <div class="branch-assignment-box">
+
+            <div class="d-flex align-items-center justify-content-between mb-3">
+                <div>
+                    <label class="form-label mb-1">
+                        Branch Access
+                    </label>
+                    <div class="text-muted small">
+                        Select the branches this user can access.
+                    </div>
+                </div>
+
+                <span class="badge bg-primary-subtle text-primary">
+                    <i class="bi bi-diagram-3 me-1"></i>
+                    Branches
+                </span>
+            </div>
+
+            <div class="row g-3">
+
+                @forelse($branches as $branch)
+                    @php
+                        $selectedBranches = old(
+                            'branch_ids',
+                            $systemUser?->user?->branches?->pluck('id')->toArray() ?? [],
+                        );
+                    @endphp
+
+                    <div class="col-md-6 col-lg-4">
+
+                        <div class="branch-option">
+
+                            <input type="checkbox" name="branch_ids[]" value="{{ $branch->id }}"
+                                id="branch_{{ $branch->id }}" class="form-check-input branch-checkbox"
+                                {{ in_array($branch->id, $selectedBranches) ? 'checked' : '' }}>
+
+                            <label for="branch_{{ $branch->id }}" class="branch-option-label">
+
+                                <div class="branch-icon">
+                                    <i class="bi bi-building"></i>
+                                </div>
+
+                                <div class="flex-grow-1">
+                                    <div class="fw-semibold">
+                                        {{ $branch->name }}
+                                    </div>
+
+                                    <small class="text-muted">
+                                        {{ $branch->code }}
+                                    </small>
+                                </div>
+
+                                <i class="bi bi-check-circle-fill branch-check"></i>
+
+                            </label>
+
+                        </div>
+
+                    </div>
+
+                @empty
+
+                    <div class="col-12">
+                        <div class="alert alert-warning mb-0">
+                            <i class="bi bi-exclamation-triangle me-2"></i>
+                            No active branches available.
+                        </div>
+                    </div>
+                @endforelse
+
+            </div>
+
+            @error('branch_ids')
+                <div class="text-danger small mt-2">
+                    {{ $message }}
+                </div>
+            @enderror
+
+            @error('branch_ids.*')
+                <div class="text-danger small mt-2">
+                    {{ $message }}
+                </div>
+            @enderror
+
+        </div>
+    </div>
+
     <div class="col-lg-6">
         <label class="form-label">
             Password
-            @if(isset($systemUser))
+            @if (isset($systemUser))
                 <small class="text-muted">(leave blank to keep current password)</small>
             @endif
         </label>
-        <input type="password" name="password" class="form-control custom-input @error('password') is-invalid @enderror"
-            @if(!isset($systemUser)) required @endif>
+        <input type="password" name="password"
+            class="form-control custom-input @error('password') is-invalid @enderror"
+            @if (!isset($systemUser)) required @endif>
         @error('password')
             <div class="invalid-feedback d-block">{{ $message }}</div>
         @enderror
@@ -137,8 +230,7 @@
 
     <div class="col-12">
         <label class="form-label">Note</label>
-        <textarea name="note" rows="4"
-            class="form-control custom-input @error('note') is-invalid @enderror">{{ old('note', $systemUser?->note ?? '') }}</textarea>
+        <textarea name="note" rows="4" class="form-control custom-input @error('note') is-invalid @enderror">{{ old('note', $systemUser?->note ?? '') }}</textarea>
         @error('note')
             <div class="invalid-feedback d-block">{{ $message }}</div>
         @enderror

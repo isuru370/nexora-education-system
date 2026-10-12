@@ -24,16 +24,18 @@ class MobileSyncLog extends Model
 
     public function device()
     {
-        return $this->belongsTo(MobileDevice::class, 'mobile_device_id');
+        return $this->belongsTo(
+            MobileDevice::class,
+            'mobile_device_id'
+        );
     }
 
-    // 🔥 helpers
-    public function isCompleted()
+    public function isCompleted(): bool
     {
         return $this->status === 'completed';
     }
 
-    public function isFailed()
+    public function isFailed(): bool
     {
         return $this->status === 'failed';
     }

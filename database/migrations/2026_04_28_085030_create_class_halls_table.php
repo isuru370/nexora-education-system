@@ -4,14 +4,19 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateClassHallsTable extends Migration
+return new class extends Migration
 {
-    public function up()
+    public function up(): void
     {
         Schema::create('class_halls', function (Blueprint $table) {
             $table->id();
 
-            $table->string('code', 50)->unique(); // hall code
+            // 🔥 Branch ownership (hall එකක් එක branch එකකට)
+            $table->foreignId('branch_id')
+                ->constrained('branches')
+                ->restrictOnDelete();
+
+            $table->string('code', 50); // hall code (branch-scoped unique)
             $table->string('hall_name', 150);
 
             $table->string('hall_type', 50)->nullable(); // AC / Non-AC / Online etc
@@ -23,13 +28,27 @@ class CreateClassHallsTable extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->index('hall_name');
-            $table->index('is_active');
+            // 🔥 Branch-scoped unique: same code branch එකක් ඇතුලේ unique
+            $table->unique(
+                ['branch_id', 'code'],
+                'ch_branch_code_unique'
+            );
+
+            // 🔥 Composite indexes (branch-based queries fast)
+            $table->index(
+                ['branch_id', 'is_active'],
+                'ch_branch_active_idx'
+            );
+
+            $table->index(
+                ['branch_id', 'hall_name'],
+                'ch_branch_name_idx'
+            );
         });
     }
 
-    public function down()
+    public function down(): void
     {
         Schema::dropIfExists('class_halls');
     }
-}
+};

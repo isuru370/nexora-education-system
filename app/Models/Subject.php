@@ -18,6 +18,9 @@ class Subject extends Model
         'is_active' => 'boolean',
     ];
 
+    /**
+     * Classes using this subject.
+     */
     public function classes()
     {
         return $this->hasMany(StudentClass::class);

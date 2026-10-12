@@ -137,54 +137,79 @@
                     <thead>
                         <tr>
                             <th><i class="bi bi-person-badge me-1"></i> Student</th>
-                            <th><i class="bi bi-upc-scan me-1"></i> Enrollment ID</th>
+                            <th><i class="bi bi-upc-scan me-1"></i> Student ID</th>
                             <th><i class="bi bi-flag me-1"></i> Status</th>
                             <th><i class="bi bi-receipt me-1"></i> Attendance ID</th>
                             <th><i class="bi bi-chat-text me-1"></i> Note</th>
                         </tr>
                     </thead>
+
                     <tbody>
                         @forelse($students as $row)
                             <tr>
+
+                                {{-- Student --}}
                                 <td class="fw-semibold">
                                     <div class="d-flex align-items-center gap-2">
+
                                         <div class="student-avatar">
-                                            {{ strtoupper(substr($row['student']->full_name ?? $row['student']->name ?? 'S', 0, 1)) }}
+                                            {{ strtoupper(substr($row['student']->initial_name ?? 'S', 0, 1)) }}
                                         </div>
-                                        {{ $row['student']->full_name ?? $row['student']->name ?? '-' }}
+
+                                        {{ $row['student']->initial_name ?? '-' }}
+
                                     </div>
                                 </td>
+
+                                {{-- Student ID --}}
                                 <td>
-                                    <code class="enrollment-code">#{{ $row['enrollment']->id }}</code>
+                                    <code class="enrollment-code">
+                                        {{ $row['student']->custom_id ?? '-' }}
+                                    </code>
                                 </td>
+
+                                {{-- Status --}}
                                 <td>
-                                    @if($row['status'] === 'present')
+                                    @if ($row['status'] === 'present')
                                         <span class="badge-present">
-                                            <i class="bi bi-check-circle-fill me-1"></i> Present
+                                            <i class="bi bi-check-circle-fill me-1"></i>
+                                            Present
                                         </span>
                                     @else
                                         <span class="badge-absent">
-                                            <i class="bi bi-x-circle-fill me-1"></i> Absent
+                                            <i class="bi bi-x-circle-fill me-1"></i>
+                                            Absent
                                         </span>
                                     @endif
                                 </td>
+
+                                {{-- Attendance ID --}}
                                 <td>
-                                    @if($row['attendance']->id ?? false)
-                                        <code class="attendance-code">{{ $row['attendance']->id }}</code>
+                                    @if ($row['attendance']->id ?? false)
+                                        <code class="attendance-code">
+                                            {{ $row['attendance']->id }}
+                                        </code>
                                     @else
                                         <span class="text-muted">—</span>
                                     @endif
                                 </td>
+
+                                {{-- Note --}}
                                 <td>
                                     {{ $row['attendance']->note ?? '—' }}
                                 </td>
+
                             </tr>
+
                         @empty
+
                             <tr>
                                 <td colspan="5" class="empty-state">
                                     <i class="bi bi-inbox"></i>
                                     <h5>No Enrolled Students</h5>
-                                    <p class="text-muted">No enrolled students found for this schedule.</p>
+                                    <p class="text-muted">
+                                        No enrolled students found for this schedule.
+                                    </p>
                                 </td>
                             </tr>
                         @endforelse
@@ -193,7 +218,7 @@
             </div>
 
             {{-- NOT ENROLLED ATTENDANCES SECTION --}}
-            @if($notEnrolledCount > 0)
+            @if ($notEnrolledCount > 0)
                 <div class="mt-4 not-enrolled-section">
                     <div class="not-enrolled-header">
                         <h5 class="mb-0">
@@ -213,7 +238,7 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach($notEnrolledAttendances as $attendance)
+                                @foreach ($notEnrolledAttendances as $attendance)
                                     <tr>
                                         <td>
                                             <code class="attendance-code">{{ $attendance->id }}</code>
@@ -547,9 +572,9 @@
             background: #f1f5f9;
             padding: 0.2rem 0.5rem;
             border-radius: 6px;
-            font-size: 0.75rem;
+            font-size: 0.95rem;
             font-family: monospace;
-            color: #475569;
+            color: #13161a;
         }
 
         /* Empty State */

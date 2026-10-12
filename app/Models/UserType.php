@@ -20,16 +20,16 @@ class UserType extends Model
         'is_active' => 'boolean',
     ];
 
+    /**
+     * Users belonging to this user type.
+     */
     public function users()
     {
         return $this->hasMany(User::class);
     }
-
-    public function permissions()
-    {
-        return $this->hasMany(Permission::class);
-    }
-
+    /**
+     * Scope: Get active user types only.
+     */
     public function scopeActive($query)
     {
         return $query->where('is_active', true);

@@ -4,7 +4,11 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>{{ $title }} - {{ config('app.name', 'EDU NEXORA') }}</title>
+
+    <title>
+        {{ $title ?? 'Teacher Daily Collection Report' }}
+        - {{ config('app.name', 'EDU NEXORA') }}
+    </title>
 
     <style>
         * {
@@ -21,7 +25,10 @@
             line-height: 1.4;
         }
 
-        /* Header */
+        /* =========================
+           Header
+        ========================== */
+
         .header {
             text-align: center;
             margin-bottom: 20px;
@@ -42,7 +49,10 @@
             margin-top: 5px;
         }
 
-        /* Company Info */
+        /* =========================
+           Company Info
+        ========================== */
+
         .company-info {
             text-align: center;
             margin-bottom: 20px;
@@ -55,21 +65,27 @@
             letter-spacing: 0.5px;
         }
 
-        /* Teacher Info Card */
+        /* =========================
+           Teacher Info Card
+        ========================== */
+
         .info-card {
             background: #f8fafc;
             border: 1px solid #e2e8f0;
             border-radius: 12px;
             padding: 12px 15px;
             margin-bottom: 20px;
-            display: flex;
-            flex-wrap: wrap;
-            gap: 15px;
         }
 
-        .info-item {
-            flex: 1;
-            min-width: 120px;
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .info-table td {
+            width: 25%;
+            vertical-align: top;
+            padding-right: 10px;
         }
 
         .info-label {
@@ -87,18 +103,34 @@
             color: #0f172a;
         }
 
-        /* Summary Card */
+        /* =========================
+           Summary Card
+        ========================== */
+
         .summary-card {
             background: #eff6ff;
             border: 1px solid #bfdbfe;
             border-radius: 10px;
             padding: 10px 15px;
             margin-bottom: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 10px;
+        }
+
+        .summary-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .summary-table td {
+            vertical-align: middle;
+        }
+
+        .summary-left {
+            width: 70%;
+        }
+
+        .summary-right {
+            width: 30%;
+            text-align: right;
         }
 
         .summary-label {
@@ -124,29 +156,35 @@
             color: #1e40af;
         }
 
-        /* Table */
+        /* =========================
+           Table
+        ========================== */
+
         .data-table {
             width: 100%;
             border-collapse: collapse;
             margin-top: 10px;
+            table-layout: fixed;
         }
 
         .data-table th {
             background: #0f172a;
             color: white;
-            padding: 8px 6px;
+            padding: 8px 5px;
             font-size: 7px;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.3px;
             border: 1px solid #334155;
+            vertical-align: middle;
         }
 
         .data-table td {
-            padding: 8px 6px;
-            font-size: 8px;
+            padding: 7px 5px;
+            font-size: 7.5px;
             border: 1px solid #e2e8f0;
             vertical-align: top;
+            word-wrap: break-word;
         }
 
         .data-table tr:nth-child(even) {
@@ -170,7 +208,25 @@
             color: #166534;
         }
 
-        /* Payment Method Badges */
+        /* =========================
+           Fee Option
+        ========================== */
+
+        .fee-option {
+            font-weight: 700;
+            color: #1e40af;
+        }
+
+        .fee-value {
+            font-weight: 700;
+            color: #475569;
+            white-space: nowrap;
+        }
+
+        /* =========================
+           Payment Method Badges
+        ========================== */
+
         .method-badge {
             display: inline-block;
             padding: 2px 6px;
@@ -199,7 +255,10 @@
             color: #3730a3;
         }
 
-        /* Footer */
+        /* =========================
+           Footer
+        ========================== */
+
         .footer {
             margin-top: 20px;
             text-align: center;
@@ -213,109 +272,500 @@
 
 <body>
 
-    {{-- Header --}}
+    @php
+        /*
+        |--------------------------------------------------------------------------
+        | Safe PDF Variables
+        |--------------------------------------------------------------------------
+        */
+
+        $reportTitle = $title ?? 'Teacher Daily Collection Report';
+        $reportDate = $date ?? now()->format('Y-m-d');
+
+        $teacherIdValue = $teacher_id ?? '-';
+
+        $reportRows = is_array($rows ?? null)
+            ? $rows
+            : [];
+
+        $totalPaid = (float) ($summary_value ?? 0);
+
+        $totalRecords = count($reportRows);
+    @endphp
+
+
+    {{-- =========================================================
+         HEADER
+    ========================================================== --}}
+
     <div class="header">
-        <h1>{{ $title }}</h1>
-        <div class="date">Generated on: {{ now()->format('d F Y, h:i A') }}</div>
+
+        <h1>
+            {{ $reportTitle }}
+        </h1>
+
+        <div class="date">
+            Generated on:
+            {{ now()->format('d F Y, h:i A') }}
+        </div>
+
     </div>
 
-    {{-- Company --}}
+
+    {{-- =========================================================
+         COMPANY
+    ========================================================== --}}
+
     <div class="company-info">
-        <div class="company-name">{{ config('app.name', 'EDU NEXORA') }}</div>
+
+        <div class="company-name">
+            {{ config('app.name', 'EDU NEXORA') }}
+        </div>
+
     </div>
 
-    {{-- Teacher Information --}}
+
+    {{-- =========================================================
+         TEACHER INFORMATION
+    ========================================================== --}}
+
     <div class="info-card">
-        <div class="info-item">
-            <div class="info-label">Teacher ID</div>
-            <div class="info-value">{{ $teacher_id ?? '-' }}</div>
-        </div>
-        <div class="info-item">
-            <div class="info-label">Report Date</div>
-            <div class="info-value">{{ $date ?? now()->format('d M Y') }}</div>
-        </div>
-        <div class="info-item">
-            <div class="info-label">Total Records</div>
-            <div class="info-value">{{ count($rows) }}</div>
-        </div>
-        <div class="info-item">
-            <div class="info-label">Total Paid</div>
-            <div class="info-value" style="color: #166534;">Rs. {{ number_format($summary_value, 2) }}</div>
-        </div>
-    </div>
 
-    {{-- Summary Card --}}
-    <div class="summary-card">
-        <div>
-            <div class="summary-label">TOTAL PAYMENT AMOUNT</div>
-            <div class="summary-value">Rs. {{ number_format($summary_value, 2) }}</div>
-        </div>
-        <div>
-            <span class="summary-count">📊 {{ count($rows) }} Transactions</span>
-        </div>
-    </div>
+        <table class="info-table">
 
-    {{-- Payments Table --}}
-    <table class="data-table">
-        <thead>
             <tr>
-                <th style="width: 8%;">Class</th>
-                <th style="width: 6%;">Grade</th>
-                <th style="width: 10%;">Category</th>
-                <th style="width: 8%;">Student Code</th>
-                <th style="width: 12%;">Student Name</th>
-                <th style="width: 10%;">Guardian Mobile</th>
-                <th style="width: 6%;">Payment ID</th>
-                <th style="width: 8%;">Paid At</th>
-                <th style="width: 8%;" class="text-right">Amount</th>
-                <th style="width: 8%;">Method</th>
+
+                <td>
+
+                    <div class="info-label">
+                        Teacher ID
+                    </div>
+
+                    <div class="info-value">
+                        {{ $teacherIdValue }}
+                    </div>
+
+                </td>
+
+
+                <td>
+
+                    <div class="info-label">
+                        Report Date
+                    </div>
+
+                    <div class="info-value">
+                        {{ \Carbon\Carbon::parse($reportDate)->format('d M Y') }}
+                    </div>
+
+                </td>
+
+
+                <td>
+
+                    <div class="info-label">
+                        Total Records
+                    </div>
+
+                    <div class="info-value">
+                        {{ $totalRecords }}
+                    </div>
+
+                </td>
+
+
+                <td>
+
+                    <div class="info-label">
+                        Total Paid
+                    </div>
+
+                    <div
+                        class="info-value"
+                        style="color: #166534;"
+                    >
+                        Rs. {{ number_format($totalPaid, 2) }}
+                    </div>
+
+                </td>
+
             </tr>
+
+        </table>
+
+    </div>
+
+
+    {{-- =========================================================
+         SUMMARY
+    ========================================================== --}}
+
+    <div class="summary-card">
+
+        <table class="summary-table">
+
+            <tr>
+
+                <td class="summary-left">
+
+                    <div class="summary-label">
+                        TOTAL PAYMENT AMOUNT
+                    </div>
+
+                    <div class="summary-value">
+                        Rs. {{ number_format($totalPaid, 2) }}
+                    </div>
+
+                </td>
+
+
+                <td class="summary-right">
+
+                    <span class="summary-count">
+                        {{ $totalRecords }} Transactions
+                    </span>
+
+                </td>
+
+            </tr>
+
+        </table>
+
+    </div>
+
+
+    {{-- =========================================================
+         PAYMENTS TABLE
+    ========================================================== --}}
+
+    <table class="data-table">
+
+        <thead>
+
+            <tr>
+
+                <th style="width: 8%;">
+                    Class
+                </th>
+
+                <th style="width: 6%;">
+                    Grade
+                </th>
+
+                <th style="width: 9%;">
+                    Category
+                </th>
+
+                <th style="width: 11%;">
+                    Fee Option
+                </th>
+
+                <th style="width: 6%;" class="text-right">
+                    Fee
+                </th>
+
+                <th style="width: 8%;">
+                    Student Code
+                </th>
+
+                <th style="width: 11%;">
+                    Student Name
+                </th>
+
+                <th style="width: 9%;">
+                    Guardian Mobile
+                </th>
+
+                <th style="width: 6%;">
+                    Payment ID
+                </th>
+
+                <th style="width: 8%;">
+                    Paid At
+                </th>
+
+                <th style="width: 8%;" class="text-right">
+                    Amount
+                </th>
+
+                <th style="width: 8%;">
+                    Method
+                </th>
+
+            </tr>
+
         </thead>
+
+
         <tbody>
-            @forelse($rows as $row)
+
+            @forelse($reportRows as $row)
+
+                @php
+                    $paymentMethod = strtolower(
+                        $row['payment_method'] ?? 'cash'
+                    );
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | PHP 7.4 Compatible Payment Method Class
+                    |--------------------------------------------------------------------------
+                    */
+
+                    if ($paymentMethod === 'cash') {
+
+                        $methodClass = 'method-cash';
+
+                    } elseif ($paymentMethod === 'card') {
+
+                        $methodClass = 'method-card';
+
+                    } elseif (
+                        $paymentMethod === 'bank_transfer' ||
+                        $paymentMethod === 'bank'
+                    ) {
+
+                        $methodClass = 'method-bank';
+
+                    } elseif ($paymentMethod === 'online') {
+
+                        $methodClass = 'method-online';
+
+                    } else {
+
+                        $methodClass = 'method-cash';
+                    }
+
+
+                    $paymentMethodLabel = $row['payment_method'] ?? 'Cash';
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | Fee Option
+                    |--------------------------------------------------------------------------
+                    */
+
+                    $feeOption = $row['fee_option'] ?? '-';
+
+                    $feeOptionFee = (float) (
+                        $row['fee_option_fee'] ?? 0
+                    );
+
+
+                    /*
+                    |--------------------------------------------------------------------------
+                    | Paid Date
+                    |--------------------------------------------------------------------------
+                    */
+
+                    $paidAt = $row['paid_at'] ?? null;
+
+                    if ($paidAt) {
+
+                        try {
+
+                            $paidAtFormatted = \Carbon\Carbon::parse(
+                                $paidAt
+                            )->format('d M Y');
+
+                        } catch (\Throwable $e) {
+
+                            $paidAtFormatted = '-';
+                        }
+
+                    } else {
+
+                        $paidAtFormatted = '-';
+                    }
+                @endphp
+
+
                 <tr>
-                    <td>{{ \Illuminate\Support\Str::limit($row['class_name'] ?? '-', 12) }}</td>
-                    <td>{{ $row['grade_name'] ?? '-' }}</td>
-                    <td>{{ \Illuminate\Support\Str::limit($row['category_name'] ?? '-', 12) }}</td>
-                    <td><strong>{{ $row['student_code'] ?? '-' }}</strong></td>
-                    <td>{{ \Illuminate\Support\Str::limit($row['student_name'] ?? '-', 15) }}</td>
-                    <td>{{ $row['guardian_mobile'] ?? '-' }}</td>
-                    <td><code>{{ $row['payment_id'] ?? '-' }}</code></td>
-                    <td>{{ \Carbon\Carbon::parse($row['paid_at'])->format('d M Y') }}</td>
-                    <td class="text-right amount amount-income">Rs. {{ number_format($row['amount'] ?? 0, 2) }}</td>
+
+                    {{-- Class --}}
                     <td>
-                        @php
-                            $method = strtolower($row['payment_method'] ?? 'cash');
-                            $methodClass = match ($method) {
-                                'cash' => 'method-cash',
-                                'card' => 'method-card',
-                                'bank_transfer', 'bank' => 'method-bank',
-                                'online' => 'method-online',
-                                default => 'method-cash'
-                            };
-                        @endphp
-                        <span class="method-badge {{ $methodClass }}">{{ ucfirst($row['payment_method'] ?? 'Cash') }}</span>
+                        {{ \Illuminate\Support\Str::limit(
+                            $row['class_name'] ?? '-',
+                            12
+                        ) }}
                     </td>
+
+
+                    {{-- Grade --}}
+                    <td>
+                        {{ $row['grade_name'] ?? '-' }}
+                    </td>
+
+
+                    {{-- Category --}}
+                    <td>
+                        {{ \Illuminate\Support\Str::limit(
+                            $row['category_name'] ?? '-',
+                            12
+                        ) }}
+                    </td>
+
+
+                    {{-- Fee Option --}}
+                    <td class="fee-option">
+                        {{ \Illuminate\Support\Str::limit(
+                            $feeOption,
+                            18
+                        ) }}
+                    </td>
+
+
+                    {{-- Fee --}}
+                    <td class="text-right fee-value">
+                        Rs. {{ number_format($feeOptionFee, 2) }}
+                    </td>
+
+
+                    {{-- Student Code --}}
+                    <td>
+                        <strong>
+                            {{ $row['student_code'] ?? '-' }}
+                        </strong>
+                    </td>
+
+
+                    {{-- Student Name --}}
+                    <td>
+                        {{ \Illuminate\Support\Str::limit(
+                            $row['student_name'] ?? '-',
+                            18
+                        ) }}
+                    </td>
+
+
+                    {{-- Guardian Mobile --}}
+                    <td>
+                        {{ $row['guardian_mobile'] ?? '-' }}
+                    </td>
+
+
+                    {{-- Payment ID --}}
+                    <td>
+                        <code>
+                            {{ $row['payment_id'] ?? '-' }}
+                        </code>
+                    </td>
+
+
+                    {{-- Paid At --}}
+                    <td>
+                        {{ $paidAtFormatted }}
+                    </td>
+
+
+                    {{-- Amount --}}
+                    <td class="text-right amount amount-income">
+
+                        Rs.
+                        {{ number_format(
+                            (float) ($row['amount'] ?? 0),
+                            2
+                        ) }}
+
+                    </td>
+
+
+                    {{-- Method --}}
+                    <td>
+
+                        <span class="method-badge {{ $methodClass }}">
+                            {{ ucfirst(
+                                str_replace(
+                                    '_',
+                                    ' ',
+                                    $paymentMethodLabel
+                                )
+                            ) }}
+                        </span>
+
+                    </td>
+
                 </tr>
+
             @empty
+
                 <tr>
-                    <td colspan="10" class="text-center">No records found.</td>
+
+                    <td
+                        colspan="12"
+                        class="text-center"
+                    >
+                        No records found.
+                    </td>
+
                 </tr>
+
             @endforelse
+
         </tbody>
+
+
+        {{-- =====================================================
+             TABLE FOOTER
+        ====================================================== --}}
+
         <tfoot>
-            <tr style="background: #eff6ff; font-weight: 800;">
-                <td colspan="8" class="text-right"><strong>Total</strong></td>
-                <td class="text-right amount"><strong>Rs. {{ number_format($summary_value, 2) }}</strong></td>
+
+            <tr
+                style="
+                    background: #eff6ff;
+                    font-weight: 800;
+                "
+            >
+
+                <td
+                    colspan="10"
+                    class="text-right"
+                >
+                    <strong>
+                        Total
+                    </strong>
+                </td>
+
+
+                <td
+                    class="text-right amount"
+                >
+
+                    <strong>
+                        Rs.
+                        {{ number_format(
+                            $totalPaid,
+                            2
+                        ) }}
+                    </strong>
+
+                </td>
+
+
                 <td></td>
+
             </tr>
+
         </tfoot>
+
     </table>
 
-    {{-- Footer --}}
+
+    {{-- =========================================================
+         FOOTER
+    ========================================================== --}}
+
     <div class="footer">
-        Generated by {{ config('app.name', 'EDU NEXORA') }} System on {{ now()->format('d M Y, h:i A') }}
+
+        Generated by
+        {{ config('app.name', 'EDU NEXORA') }}
+        System on
+        {{ now()->format('d M Y, h:i A') }}
+
     </div>
+
 
 </body>
 

@@ -21,9 +21,9 @@ use Throwable;
 
 class StudentPaymentController extends Controller
 {
-     protected PaymentNotificationService $paymentNotification;
+    protected PaymentNotificationService $paymentNotification;
 
-     public function __construct(PaymentNotificationService $paymentNotification)
+    public function __construct(PaymentNotificationService $paymentNotification)
     {
         $this->paymentNotification = $paymentNotification;
     }
@@ -36,17 +36,25 @@ class StudentPaymentController extends Controller
             'page' => ['nullable', 'integer', 'min:1'],
         ]);
 
-        $search = $validated['search'] ?? null;
-        $date = $validated['date'] ?? today()->toDateString();
-        $perPage = (int) ($validated['per_page'] ?? 10);
+        $search = isset($validated['search']) ? $validated['search'] : null;
+        $date = isset($validated['date']) ? $validated['date'] : today()->toDateString();
+        $perPage = isset($validated['per_page']) ? (int) $validated['per_page'] : 10;
 
         $baseQuery = StudentClassEnrollment::with([
             'student',
             'studentClass.teacher',
             'studentClass.grade',
+
+            // Category
             'classCategoryFee.category',
+
+            // Selected Fee Option
+            'classCategoryFeeOption',
+
+            // Today's payments
             'payments' => function ($query) use ($date) {
-                $query->whereDate('created_at', $date)->latest();
+                $query->whereDate('created_at', $date)
+                    ->latest();
             },
         ])
             ->whereHas('payments', function ($query) use ($date) {
@@ -54,6 +62,7 @@ class StudentPaymentController extends Controller
             })
             ->when($search, function ($q) use ($search) {
                 $q->where(function ($subQuery) use ($search) {
+
                     $subQuery->whereHas('student', function ($studentQuery) use ($search) {
                         $studentQuery->where('initial_name', 'like', "%{$search}%")
                             ->orWhere('custom_id', 'like', "%{$search}%")
@@ -61,6 +70,7 @@ class StudentPaymentController extends Controller
                             ->orWhere('mobile', 'like', "%{$search}%")
                             ->orWhere('guardian_mobile', 'like', "%{$search}%");
                     })
+
                         ->orWhereHas('studentClass', function ($classQuery) use ($search) {
                             $classQuery->where('class_name', 'like', "%{$search}%")
                                 ->orWhereHas('teacher', function ($teacherQuery) use ($search) {
@@ -71,72 +81,199 @@ class StudentPaymentController extends Controller
                                     $gradeQuery->where('grade_name', 'like', "%{$search}%");
                                 });
                         })
+
                         ->orWhereHas('classCategoryFee.category', function ($categoryQuery) use ($search) {
                             $categoryQuery->where('category_name', 'like', "%{$search}%");
+                        })
+
+                        // Search by Fee Option label
+                        ->orWhereHas('classCategoryFeeOption', function ($feeOptionQuery) use ($search) {
+                            $feeOptionQuery->where('label', 'like', "%{$search}%");
                         });
                 });
             })
             ->latest();
 
+        /*
+    |--------------------------------------------------------------------------
+    | SUMMARY
+    |--------------------------------------------------------------------------
+    */
+
         $summaryRows = (clone $baseQuery)->get();
 
         $summary = [
             'enrollments' => $summaryRows->count(),
-            'payment_count' => $summaryRows->sum(fn($enrollment) => $enrollment->payments->count()),
-            'total_amount' => $summaryRows->sum(fn($enrollment) => $enrollment->payments->sum('amount')),
+
+            'payment_count' => $summaryRows->sum(function ($enrollment) {
+                return $enrollment->payments->count();
+            }),
+
+            'total_amount' => $summaryRows->sum(function ($enrollment) {
+                return $enrollment->payments->sum('amount');
+            }),
         ];
 
-        $paginated = (clone $baseQuery)->paginate($perPage)->appends($request->query());
+        /*
+    |--------------------------------------------------------------------------
+    | PAGINATION
+    |--------------------------------------------------------------------------
+    */
 
-        $data = collect($paginated->items())->map(function ($enrollment) {
-            $student = $enrollment->student;
-            $todayPayments = $enrollment->payments;
+        $paginated = (clone $baseQuery)
+            ->paginate($perPage)
+            ->appends($request->query());
 
-            return [
-                'enrollment_id' => $enrollment->id,
-                'student_id' => $student?->id,
-                'initial_name' => $student?->initial_name,
-                'mobile' => $student?->mobile,
-                'guardian_mobile' => $student?->guardian_mobile,
-                'qr_code' => $student?->permanent_qr_active == 1
-                    ? $student?->custom_id
-                    : $student?->temporary_qr_code,
-                'student_class_id' => $enrollment->studentClass?->id,
-                'class_name' => $enrollment->studentClass?->class_name,
-                'teacher_custom_id' => $enrollment->studentClass?->teacher?->custom_id,
-                'teacher_name' => $enrollment->studentClass?->teacher?->initials,
-                'grade_name' => $enrollment->studentClass?->grade?->grade_name,
-                'category_name' => $enrollment->classCategoryFee?->category?->category_name,
-                'is_free_card' => $enrollment->is_free_card,
-                'final_fee' => $enrollment->final_fee,
-                'payment_status' => $enrollment->payment_status,
-                'balance' => $enrollment->balance,
-                'today_payment_count' => $todayPayments->count(),
-                'today_payment_total' => $todayPayments->sum('amount'),
-                'today_payments' => $todayPayments->map(function ($payment) {
-                    return [
-                        'id' => $payment->id,
-                        'amount' => $payment->amount,
-                        'paid_at' => $payment->paid_at,
-                        'payment_month' => $payment->payment_month,
-                        'payment_method' => $payment->payment_method,
-                        'status' => $payment->status,
-                        'receipt_number' => $payment->receipt_number,
-                        'note' => $payment->note,
-                    ];
-                })->values(),
-            ];
-        })->values();
+        /*
+    |--------------------------------------------------------------------------
+    | RESPONSE DATA
+    |--------------------------------------------------------------------------
+    */
+
+        $data = collect($paginated->items())
+            ->map(function ($enrollment) {
+
+                $student = $enrollment->student;
+                $studentClass = $enrollment->studentClass;
+                $teacher = $studentClass ? $studentClass->teacher : null;
+                $grade = $studentClass ? $studentClass->grade : null;
+
+                $categoryFee = $enrollment->classCategoryFee;
+                $category = $categoryFee ? $categoryFee->category : null;
+
+                $feeOption = $enrollment->classCategoryFeeOption;
+
+                $todayPayments = $enrollment->payments;
+
+                return [
+                    'enrollment_id' => $enrollment->id,
+
+                    /*
+                |--------------------------------------------------------------------------
+                | Student
+                |--------------------------------------------------------------------------
+                */
+
+                    'student_id' => $student ? $student->id : null,
+                    'initial_name' => $student ? $student->initial_name : null,
+                    'mobile' => $student ? $student->mobile : null,
+                    'guardian_mobile' => $student ? $student->guardian_mobile : null,
+
+                    'qr_code' => $student
+                        ? (
+                            $student->permanent_qr_active == 1
+                            ? $student->custom_id
+                            : $student->temporary_qr_code
+                        )
+                        : null,
+
+                    /*
+                |--------------------------------------------------------------------------
+                | Class
+                |--------------------------------------------------------------------------
+                */
+
+                    'student_class_id' => $studentClass ? $studentClass->id : null,
+                    'class_name' => $studentClass ? $studentClass->class_name : null,
+
+                    'teacher_custom_id' => $teacher ? $teacher->custom_id : null,
+                    'teacher_name' => $teacher ? $teacher->initials : null,
+
+                    'grade_name' => $grade ? $grade->grade_name : null,
+
+                    /*
+                |--------------------------------------------------------------------------
+                | Category
+                |--------------------------------------------------------------------------
+                */
+
+                    'category_name' => $category
+                        ? $category->category_name
+                        : null,
+
+                    /*
+                |--------------------------------------------------------------------------
+                | Selected Fee Option
+                |--------------------------------------------------------------------------
+                */
+
+                    'class_category_fee_id' => $categoryFee
+                        ? $categoryFee->id
+                        : null,
+
+                    'class_category_fee_option_id' => $feeOption
+                        ? $feeOption->id
+                        : null,
+
+                    'fee_option' => $feeOption
+                        ? [
+                            'id' => $feeOption->id,
+                            'label' => $feeOption->label,
+                            'fee' => (float) $feeOption->fee,
+                        ]
+                        : null,
+
+                    /*
+                |--------------------------------------------------------------------------
+                | Payment
+                |--------------------------------------------------------------------------
+                */
+
+                    'is_free_card' => (bool) $enrollment->is_free_card,
+
+                    'final_fee' => (float) $enrollment->final_fee,
+
+                    'payment_status' => $enrollment->payment_status,
+
+                    'balance' => (float) $enrollment->balance,
+
+                    'today_payment_count' => $todayPayments->count(),
+
+                    'today_payment_total' => (float) $todayPayments->sum('amount'),
+
+                    /*
+                |--------------------------------------------------------------------------
+                | Today's Payments
+                |--------------------------------------------------------------------------
+                */
+
+                    'today_payments' => $todayPayments
+                        ->map(function ($payment) {
+                            return [
+                                'id' => $payment->id,
+                                'amount' => (float) $payment->amount,
+                                'paid_at' => $payment->paid_at,
+                                'payment_month' => $payment->payment_month,
+                                'payment_method' => $payment->payment_method,
+                                'status' => $payment->status,
+                                'receipt_number' => $payment->receipt_number,
+                                'note' => $payment->note,
+                            ];
+                        })
+                        ->values(),
+                ];
+            })
+            ->values();
+
+        /*
+    |--------------------------------------------------------------------------
+    | RESPONSE
+    |--------------------------------------------------------------------------
+    */
 
         return response()->json([
             'success' => true,
+
             'data' => $data,
+
             'summary' => $summary,
+
             'filters' => [
                 'date' => $date,
                 'search' => $search,
                 'per_page' => $perPage,
             ],
+
             'meta' => [
                 'current_page' => $paginated->currentPage(),
                 'last_page' => $paginated->lastPage(),
@@ -147,158 +284,59 @@ class StudentPaymentController extends Controller
             ],
         ]);
     }
-     public function store(Request $request): JsonResponse
-    {
-        $validated = $request->validate([
-            'payments' => ['required', 'array', 'min:1'],
-            'payments.*.student_id' => ['required', 'exists:students,id'],
-            'payments.*.student_class_enrollment_id' => ['required', 'exists:student_class_enrollments,id'],
-            'payments.*.amount' => ['required', 'numeric', 'min:0'],
-            'payments.*.discount_amount' => ['nullable', 'numeric', 'min:0'],
-            'payments.*.payment_month' => ['required', 'date_format:Y-m'],
-            'payments.*.paid_at' => ['nullable', 'date'],
-            'payments.*.mark_method' => ['required', 'string'],
-            'payments.*.note' => ['nullable', 'string'],
-        ]);
-
-        try {
-            $createdPayments = DB::transaction(function () use ($validated) {
-                $results = [];
-
-                foreach ($validated['payments'] as $item) {
-                    $enrollment = StudentClassEnrollment::query()
-                        ->where('id', $item['student_class_enrollment_id'])
-                        ->where('student_id', $item['student_id'])
-                        ->where('is_active', true)
-                        ->firstOrFail();
-
-                    $paymentMonth = Carbon::createFromFormat('Y-m-d', $item['payment_month'] . '-01');
-
-                    $payment = Payment::create([
-                        'student_id' => $item['student_id'],
-                        'student_class_enrollment_id' => $enrollment->id,
-                        'user_id' => auth()->id(),
-                        'mark_method' => $item['mark_method'],
-                        'amount' => $item['amount'],
-                        'discount_amount' => $item['discount_amount'] ?? 0,
-                        'paid_at' => $item['paid_at'] ?? now(),
-                        'payment_month' => $paymentMonth->toDateString(),
-                        'payment_method' => 'cash',
-                        'status' => 'completed',
-                        'receipt_number' => ReceiptNumberService::generate(),
-                        'reference_number' => $this->generateReferenceNumber(),
-                        'is_synced' => true,
-                        'note' => $item['note'] ?? $paymentMonth->format('F Y') . ' month paid',
-                    ]);
-
-                    $payment->loadMissing([
-                        'student',
-                        'enrollment.studentClass.grade',
-                        'enrollment.classCategoryFee.category',
-                    ]);
-
-                    $results[] = $payment;
-                }
-
-                return $results;
-            });
-
-            // ============================================
-            // 🚀 SEND NOTIFICATION FOR EACH PAYMENT
-            // ============================================
-            foreach ($createdPayments as $payment) {
-                $this->paymentNotification->sendSuccess($payment);
-            }
-
-            return response()->json([
-                'status' => 'success',
-                'message' => 'Payments saved successfully',
-                'data' => [
-                    'student' => [
-                        'id' => $createdPayments[0]->student?->id,
-                        'name' => $createdPayments[0]->student?->initial_name,
-                        'guardian_mobile' => $createdPayments[0]->student?->guardian_mobile,
-                    ],
-                    'receipt' => [
-                        'payment_month' => Carbon::parse($createdPayments[0]->payment_month)->format('Y-m'),
-                        'total_fee' => (float) collect($createdPayments)->sum('amount'),
-                        'discount_amount' => (float) collect($createdPayments)->sum('discount_amount'),
-                        'payable_total' => (float) collect($createdPayments)->sum('amount'),
-                        'items' => collect($createdPayments)->map(function ($payment) {
-                            return [
-                                'payment_id' => $payment->id,
-                                'receipt_number' => $payment->receipt_number,
-                                'reference_number' => $payment->reference_number,
-                                'class_name' => $payment->enrollment?->studentClass?->class_name,
-                                'grade' => $payment->enrollment?->studentClass?->grade?->grade_name,
-                                'category_name' => $payment->enrollment?->classCategoryFee?->category?->category_name,
-                                'amount' => (float) $payment->amount,
-                                'discount_amount' => (float) $payment->discount_amount,
-                                'paid_at' => $payment->paid_at?->format('Y-m-d H:i:s'),
-                            ];
-                        })->values(),
-                    ],
-                    'count' => count($createdPayments),
-                ],
-            ], 201);
-
-        } catch (Throwable $e) {
-            Log::error('Bulk payment store failed', [
-                'message' => $e->getMessage(),
-                'file' => $e->getFile(),
-                'line' => $e->getLine(),
-            ]);
-
-            return response()->json([
-                'status' => 'error',
-                'message' => 'Something went wrong while saving payments',
-                'data' => [],
-            ], 500);
-        }
-    }
-
     public function destroy(int $paymentId): JsonResponse
     {
-        DB::beginTransaction();
-
         try {
             $payment = Payment::with('splitSnapshot')
                 ->findOrFail($paymentId);
 
-            // allow delete only within 14 days
+            // Allow delete only within 14 days
             if ($payment->created_at->lt(now()->subDays(14))) {
-
                 return response()->json([
                     'success' => false,
-                    'message' => 'This payment can only be deleted within 14 days.'
+                    'message' => 'This payment can only be deleted within 14 days.',
                 ], 403);
             }
-            // delete split snapshot
-            $payment->splitSnapshot()?->forceDelete();
-            $payment->forceDelete();
 
-            // laravel log
-            Log::info('Payment deleted successfully.', [
-                'payment_id' => $paymentId,
-                'deleted_by' =>  auth()->id(),
-                'deleted_at' => now(),
-            ]);
+            DB::beginTransaction();
 
-            DB::commit();
-            return response()->json([
-                'success' => true,
-                'message' => 'Payment deleted successfully.'
-            ]);
+            try {
+                // Delete payment split snapshot first
+                if ($payment->splitSnapshot) {
+                    $payment->splitSnapshot->forceDelete();
+                }
+
+                // Delete payment permanently
+                $payment->forceDelete();
+
+                DB::commit();
+
+                // Laravel log
+                Log::info('Payment deleted successfully.', [
+                    'payment_id' => $paymentId,
+                    'deleted_by' => auth()->id(),
+                    'deleted_at' => now(),
+                ]);
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Payment deleted successfully.',
+                ]);
+            } catch (\Exception $exception) {
+                DB::rollBack();
+
+                throw $exception;
+            }
         } catch (\Exception $exception) {
-            DB::rollBack();
-            // error log
+
             Log::error('Payment delete failed.', [
                 'payment_id' => $paymentId,
-                'user_id' =>  auth()->id(),
+                'user_id' => auth()->id(),
                 'message' => $exception->getMessage(),
                 'file' => $exception->getFile(),
                 'line' => $exception->getLine(),
             ]);
+
             return response()->json([
                 'success' => false,
                 'message' => 'Something went wrong while deleting payment.',
@@ -307,267 +345,524 @@ class StudentPaymentController extends Controller
         }
     }
 
-    private function validateRequest(Request $request): array
+    public function todayPayments(Request $request): JsonResponse
     {
-        return $request->validate([
-            'student_id' => ['required', 'exists:students,id'],
-            'student_class_enrollment_id' => ['required', 'exists:student_class_enrollments,id'],
-            'amount' => ['required', 'numeric', 'min:0'],
-            'discount_amount' => ['nullable', 'numeric', 'min:0'],
-            'payment_month' => ['required', 'date_format:Y-m'],
-            'paid_at' => ['nullable', 'date'],
+        $validated = $request->validate([
+            'search' => ['nullable', 'string', 'max:255'],
+            'date' => ['nullable', 'date_format:Y-m-d'],
         ]);
-    }
 
-    private function createPayment(array $validated): Payment
-    {
-        $enrollment = $this->findEnrollment($validated);
+        $search = $validated['search'] ?? null;
+        $date = $validated['date'] ?? today()->toDateString();
 
-        $paymentMonth = $this->makePaymentMonth(
-            $validated['payment_month']
-        );
-
-        return Payment::create([
-            'student_id' => $validated['student_id'],
-            'student_class_enrollment_id' => $enrollment->id,
-            'user_id' => auth()->id(),
-            'amount' => $validated['amount'],
-            'discount_amount' => $validated['discount_amount'] ?? 0,
-            'paid_at' => $validated['paid_at'] ?? now(),
-            'payment_month' => $paymentMonth->toDateString(),
-            'payment_method' => 'cash',
-            'status' => 'completed',
-            'receipt_number' => $this->generateReceiptNumber(),
-            'reference_number' => $this->generateReferenceNumber(),
-            'is_synced' => true,
-            'note' => $this->generatePaymentNote($paymentMonth),
-        ]);
-    }
-
-    private function findEnrollment(array $validated): StudentClassEnrollment
-    {
-        return StudentClassEnrollment::query()
-            ->where('id', $validated['student_class_enrollment_id'])
-            ->where('student_id', $validated['student_id'])
-            ->where('is_active', true)
-            ->firstOrFail();
-    }
-
-    private function makePaymentMonth(string $month): Carbon
-    {
-        return Carbon::createFromFormat(
-            'Y-m-d',
-            $month . '-01'
-        );
-    }
-
-    private function generatePaymentNote(Carbon $paymentMonth): string
-    {
-        return $paymentMonth->format('F Y') . ' month paid';
-    }
-
-    private function sendPaymentSmsIfAvailable(Payment $payment): void
-    {
-        $guardianMobile = $payment->student?->guardian_mobile;
-
-        if (! $guardianMobile) {
-            return;
-        }
-
-        $smsMessage = $this->buildSmsMessage($payment);
-
-        SendPaymentSms::dispatch(
-            $guardianMobile,
-            $smsMessage
-        );
-    }
-
-    private function buildSmsMessage(Payment $payment): string
-    {
-        return sprintf(
-            'Payment received. Student: %s, Class: %s, Category: %s, Grade: %s, Amount: Rs. %s, Month: %s, Receipt: %s. Thank you.',
-            $payment->student?->initial_name ?? 'Student',
-            $payment->enrollment?->studentClass?->class_name ?? 'N/A',
-            $payment->enrollment?->classCategoryFee?->category?->category_name ?? 'N/A',
-            $payment->enrollment?->studentClass?->grade?->grade_name ?? 'N/A',
-            number_format((float) $payment->amount, 2),
-            Carbon::parse($payment->payment_month)->format('Y-m') ?? '-',
-            $payment->receipt_number ?? '-'
-        );
-    }
-
-    private function successResponse(Payment $payment): JsonResponse
-    {
-        $guardianMobile = $payment->student?->guardian_mobile;
-
-        return response()->json([
-            'status' => 'success',
-            'message' => 'Payment saved successfully',
-            'data' => [
-                'payment_id' => $payment->id,
-                'receipt_number' => $payment->receipt_number,
-                'reference_number' => $payment->reference_number,
-                'payment_method' => $payment->payment_method,
-                'payment_month' => Carbon::parse($payment->payment_month)->format('Y-m'),
-                'paid_at' => $payment->paid_at?->format('Y-m-d H:i:s'),
-                'note' => $payment->note,
-                'guardian_mobile' => $guardianMobile,
-                'sms_queued' => (bool) $guardianMobile,
-            ],
-        ], 201);
-    }
-
-    private function errorResponse(string $message): JsonResponse
-    {
-        return response()->json([
-            'status' => 'error',
-            'message' => $message,
-            'data' => [],
-        ], 500);
-    }
-
-    private function logStoreError(Throwable $e): void
-    {
-        Log::error('Payment store failed', [
-            'message' => $e->getMessage(),
-            'file' => $e->getFile(),
-            'line' => $e->getLine(),
-        ]);
-    }
-
-    private function logDeleteError(
-        Payment $payment,
-        Throwable $e
-    ): void {
-        Log::error('Payment delete failed', [
-            'payment_id' => $payment->id,
-            'message' => $e->getMessage(),
-        ]);
-    }
-
-    /*
+        /*
     |--------------------------------------------------------------------------
-    | Generate Reference Number
+    | Base Query - Payment
+    |--------------------------------------------------------------------------
+    |
+    | One payment = one record.
+    |
+    */
+
+        $baseQuery = Payment::query()
+            ->with([
+                'student',
+
+                'enrollment.studentClass.teacher',
+                'enrollment.studentClass.grade',
+
+                'enrollment.classCategoryFee.category',
+
+                'enrollment.classCategoryFeeOption',
+            ])
+            ->whereDate('paid_at', $date)
+            ->where('status', 'completed');
+
+        /*
+    |--------------------------------------------------------------------------
+    | Search
     |--------------------------------------------------------------------------
     */
-    private function generateReferenceNumber(): string
-    {
-        do {
 
-            $number = 'PAY-' .
-                now()->format('YmdHis') .
-                '-' .
-                random_int(1000, 9999);
-        } while (
-            Payment::where('reference_number', $number)->exists()
-        );
+        $baseQuery
+            ->when($search, function ($q) use ($search) {
 
-        return $number;
-    }
+                $q->where(function ($subQuery) use ($search) {
 
-    public function todayPayments(Request $request)
-    {
-        try {
-            $request->validate([
-                'date' => 'required|date',
-            ]);
+                    /*
+                |--------------------------------------------------------------------------
+                | Student Search
+                |--------------------------------------------------------------------------
+                */
 
-            $date = Carbon::parse($request->date);
+                    $subQuery->whereHas(
+                        'student',
+                        function ($studentQuery) use ($search) {
 
-            $payments = Payment::query()
-                ->select([
-                    'id',
-                    'student_id',
-                    'student_class_enrollment_id',
-                    'mark_method',
-                    'amount',
-                    'discount_amount',
-                    'paid_at',
-                    'payment_month',
-                    'receipt_number',
-                ])
-                ->with([
-                    'student:id,custom_id,temporary_qr_code,initial_name,guardian_mobile,img_url,permanent_qr_active',
-                    'enrollment:id,student_class_id,class_category_fee_id', // Add class_category_fee_id
-                    'enrollment.studentClass:id,class_name,grade_id,subject_id,teacher_id',
-                    'enrollment.studentClass.grade:id,grade_name',
-                    'enrollment.studentClass.subject:id,subject_name',
-                    'enrollment.studentClass.teacher:id,initials',
-                    'enrollment.classCategoryFee:id,class_category_id,fee', // Load through enrollment
-                    'enrollment.classCategoryFee.category:id,category_name,code', // Load category
-                ])
-                ->where('status', 'completed')
-                ->whereDate('paid_at', $date->toDateString())
-                ->orderByDesc('paid_at')
-                ->get()
-                ->map(function ($payment) {
-                    // Get category from enrollment's classCategoryFee
-                    $category = $payment->enrollment?->classCategoryFee?->category;
+                            $studentQuery
+                                ->where(
+                                    'initial_name',
+                                    'like',
+                                    "%{$search}%"
+                                )
+                                ->orWhere(
+                                    'custom_id',
+                                    'like',
+                                    "%{$search}%"
+                                )
+                                ->orWhere(
+                                    'temporary_qr_code',
+                                    'like',
+                                    "%{$search}%"
+                                )
+                                ->orWhere(
+                                    'mobile',
+                                    'like',
+                                    "%{$search}%"
+                                )
+                                ->orWhere(
+                                    'guardian_mobile',
+                                    'like',
+                                    "%{$search}%"
+                                );
+                        }
+                    );
 
-                    return [
-                        'payment' => [
-                            'id' => $payment->id,
-                            'mark_method' => $payment->mark_method,
-                            'amount' => $payment->amount,
-                            'discount_amount' => $payment->discount_amount,
-                            'paid_at' => optional($payment->paid_at)?->toDateTimeString(),
-                            'payment_month' => optional($payment->payment_month)?->toDateString(),
-                            'receipt_number' => $payment->receipt_number,
-                        ],
-                        'student' => [
-                            'id' => $payment->student?->id,
-                            'custom_id' => $payment->student?->permanent_qr_active == 1
-                                ? $payment->student?->custom_id
-                                : $payment->student?->temporary_qr_code,
-                            'initial_name' => $payment->student?->initial_name,
-                            'guardian_mobile' => $payment->student?->guardian_mobile,
-                            'img_url' => $payment->student?->img_url,
-                        ],
-                        'student_class_enrollment' => [
-                            'id' => $payment->enrollment?->id,
-                        ],
-                        'student_class' => [
-                            'id' => $payment->enrollment?->studentClass?->id,
-                            'class_name' => $payment->enrollment?->studentClass?->class_name,
-                            'grade' => [
-                                'grade_name' => $payment->enrollment?->studentClass?->grade?->grade_name,
-                            ],
-                            'subject' => [
-                                'subject_name' => $payment->enrollment?->studentClass?->subject?->subject_name,
-                            ],
-                            'teacher' => [
-                                'id' => $payment->enrollment?->studentClass?->teacher?->id,
-                                'initials' => $payment->enrollment?->studentClass?->teacher?->initials,
-                            ],
-                            'category' => [
-                                'id' => $category?->id,
-                                'category_name' => $category?->category_name,
-                                'code' => $category?->code,
-                            ],
-                        ],
-                    ];
+                    /*
+                |--------------------------------------------------------------------------
+                | Class Search
+                |--------------------------------------------------------------------------
+                */
+
+                    $subQuery->orWhereHas(
+                        'enrollment.studentClass',
+                        function ($classQuery) use ($search) {
+
+                            $classQuery
+                                ->where(
+                                    'class_name',
+                                    'like',
+                                    "%{$search}%"
+                                )
+
+                                /*
+                            |--------------------------------------------------------------------------
+                            | Teacher Search
+                            |--------------------------------------------------------------------------
+                            */
+
+                                ->orWhereHas(
+                                    'teacher',
+                                    function ($teacherQuery) use ($search) {
+
+                                        $teacherQuery
+                                            ->where(
+                                                'initials',
+                                                'like',
+                                                "%{$search}%"
+                                            )
+                                            ->orWhere(
+                                                'custom_id',
+                                                'like',
+                                                "%{$search}%"
+                                            );
+                                    }
+                                )
+
+                                /*
+                            |--------------------------------------------------------------------------
+                            | Grade Search
+                            |--------------------------------------------------------------------------
+                            */
+
+                                ->orWhereHas(
+                                    'grade',
+                                    function ($gradeQuery) use ($search) {
+
+                                        $gradeQuery->where(
+                                            'grade_name',
+                                            'like',
+                                            "%{$search}%"
+                                        );
+                                    }
+                                );
+                        }
+                    );
+
+                    /*
+                |--------------------------------------------------------------------------
+                | Category Search
+                |--------------------------------------------------------------------------
+                */
+
+                    $subQuery->orWhereHas(
+                        'enrollment.classCategoryFee.category',
+                        function ($categoryQuery) use ($search) {
+
+                            $categoryQuery->where(
+                                'category_name',
+                                'like',
+                                "%{$search}%"
+                            );
+                        }
+                    );
+
+                    /*
+                |--------------------------------------------------------------------------
+                | Fee Option Search
+                |--------------------------------------------------------------------------
+                */
+
+                    $subQuery->orWhereHas(
+                        'enrollment.classCategoryFeeOption',
+                        function ($feeOptionQuery) use ($search) {
+
+                            $feeOptionQuery->where(
+                                'label',
+                                'like',
+                                "%{$search}%"
+                            );
+                        }
+                    );
+
+                    /*
+                |--------------------------------------------------------------------------
+                | Receipt Search
+                |--------------------------------------------------------------------------
+                */
+
+                    $subQuery->orWhere(
+                        'receipt_number',
+                        'like',
+                        "%{$search}%"
+                    );
                 });
+            })
+            ->latest('paid_at');
 
-            return response()->json([
-                'success' => true,
-                'date' => $date->toDateString(),
-                'count' => $payments->count(),
-                'data' => $payments,
-            ]);
-        } catch (Throwable $e) {
-            Log::error('Today Payments Fetch Error', [
-                'message' => $e->getMessage(),
-                'line' => $e->getLine(),
-                'file' => $e->getFile(),
-                'trace' => $e->getTraceAsString(),
-                'request' => $request->all(),
-            ]);
+        /*
+    |--------------------------------------------------------------------------
+    | Summary
+    |--------------------------------------------------------------------------
+    */
 
-            return response()->json([
-                'success' => false,
-                'message' => 'Something went wrong while fetching today payments.',
-            ], 500);
-        }
+        $summaryRows = (clone $baseQuery)->get();
+
+        $summary = [
+            'payment_count' => $summaryRows->count(),
+
+            'total_amount' => $summaryRows->sum('amount'),
+
+            'total_discount' => $summaryRows->sum('discount_amount'),
+        ];
+
+        /*
+    |--------------------------------------------------------------------------
+    | Get Payments
+    |--------------------------------------------------------------------------
+    */
+
+        $payments = (clone $baseQuery)->get();
+
+        /*
+    |--------------------------------------------------------------------------
+    | Transform
+    |--------------------------------------------------------------------------
+    */
+
+        $data = $payments
+            ->map(function ($payment) {
+
+                $student = $payment->student;
+
+                /*
+            |--------------------------------------------------------------------------
+            | Payment -> Enrollment
+            |--------------------------------------------------------------------------
+            |
+            | Payment model relationship is:
+            |
+            | enrollment()
+            |
+            */
+
+                $enrollment = $payment->enrollment;
+
+                $studentClass = $enrollment
+                    ? $enrollment->studentClass
+                    : null;
+
+                /*
+            |--------------------------------------------------------------------------
+            | Category
+            |--------------------------------------------------------------------------
+            */
+
+                $category = null;
+
+                if ($enrollment && $enrollment->classCategoryFee) {
+                    $category = $enrollment->classCategoryFee->category;
+                }
+
+                /*
+            |--------------------------------------------------------------------------
+            | Fee Option
+            |--------------------------------------------------------------------------
+            */
+
+                $feeOption = $enrollment
+                    ? $enrollment->classCategoryFeeOption
+                    : null;
+
+                /*
+            |--------------------------------------------------------------------------
+            | Teacher
+            |--------------------------------------------------------------------------
+            */
+
+                $teacher = $studentClass
+                    ? $studentClass->teacher
+                    : null;
+
+                /*
+            |--------------------------------------------------------------------------
+            | Grade
+            |--------------------------------------------------------------------------
+            */
+
+                $grade = $studentClass
+                    ? $studentClass->grade
+                    : null;
+
+                return [
+
+                    /*
+                |--------------------------------------------------------------------------
+                | Payment Details
+                |--------------------------------------------------------------------------
+                */
+
+                    'payment_id' => $payment->id,
+
+                    'receipt_number' => $payment->receipt_number,
+
+                    'amount' => (float) $payment->amount,
+
+                    'discount_amount' => (float) $payment->discount_amount,
+
+                    'paid_at' => $payment->paid_at,
+
+                    'payment_month' => $payment->payment_month,
+
+                    'payment_method' => $payment->payment_method,
+
+                    'status' => $payment->status,
+
+                    'reference_number' => $payment->reference_number,
+
+                    'mark_method' => $payment->mark_method,
+
+                    'note' => $payment->note,
+
+                    /*
+                |--------------------------------------------------------------------------
+                | Student Details
+                |--------------------------------------------------------------------------
+                */
+
+                    'student' => [
+
+                        'id' => $student
+                            ? $student->id
+                            : null,
+
+                        'custom_id' => $student
+                            ? $student->custom_id
+                            : null,
+
+                        'initial_name' => $student
+                            ? $student->initial_name
+                            : null,
+
+                        'mobile' => $student
+                            ? $student->mobile
+                            : null,
+
+                        'guardian_mobile' => $student
+                            ? $student->guardian_mobile
+                            : null,
+
+                        'img_url' => $student
+                            ? $student->img_url
+                            : null,
+
+                        'qr_code' => $student
+                            ? (
+                                $student->permanent_qr_active == 1
+                                ? $student->custom_id
+                                : $student->temporary_qr_code
+                            )
+                            : null,
+                    ],
+
+                    /*
+                |--------------------------------------------------------------------------
+                | Class Details
+                |--------------------------------------------------------------------------
+                */
+
+                    'class' => [
+
+                        'id' => $studentClass
+                            ? $studentClass->id
+                            : null,
+
+                        'class_name' => $studentClass
+                            ? $studentClass->class_name
+                            : null,
+                    ],
+
+                    /*
+                |--------------------------------------------------------------------------
+                | Category
+                |--------------------------------------------------------------------------
+                */
+
+                    'category' => [
+
+                        'id' => $category
+                            ? $category->id
+                            : null,
+
+                        'name' => $category
+                            ? $category->category_name
+                            : null,
+                    ],
+
+                    /*
+                |--------------------------------------------------------------------------
+                | Grade
+                |--------------------------------------------------------------------------
+                */
+
+                    'grade' => [
+
+                        'id' => $grade
+                            ? $grade->id
+                            : null,
+
+                        'name' => $grade
+                            ? $grade->grade_name
+                            : null,
+                    ],
+
+                    /*
+                |--------------------------------------------------------------------------
+                | Teacher
+                |--------------------------------------------------------------------------
+                */
+
+                    'teacher' => [
+
+                        'id' => $teacher
+                            ? $teacher->id
+                            : null,
+
+                        'custom_id' => $teacher
+                            ? $teacher->custom_id
+                            : null,
+
+                        'name' => $teacher
+                            ? $teacher->initials
+                            : null,
+                    ],
+
+                    /*
+                |--------------------------------------------------------------------------
+                | Fee Option
+                |--------------------------------------------------------------------------
+                */
+
+                    'fee_option' => [
+
+                        'id' => $feeOption
+                            ? $feeOption->id
+                            : null,
+
+                        'name' => $feeOption
+                            ? $feeOption->label
+                            : null,
+
+                        'fee' => $feeOption
+                            ? (float) $feeOption->fee
+                            : 0,
+                    ],
+
+                    /*
+                |--------------------------------------------------------------------------
+                | Enrollment Details
+                |--------------------------------------------------------------------------
+                */
+
+                    'enrollment' => [
+
+                        'id' => $enrollment
+                            ? $enrollment->id
+                            : null,
+
+                        'is_free_card' => $enrollment
+                            ? (bool) $enrollment->is_free_card
+                            : false,
+
+                        'final_fee' => $enrollment
+                            ? (float) $enrollment->final_fee
+                            : 0,
+
+                        'balance' => $enrollment
+                            ? (float) $enrollment->balance
+                            : 0,
+
+                        'payment_status' => $enrollment
+                            ? $enrollment->payment_status
+                            : null,
+                    ],
+                ];
+            })
+            ->values();
+
+        /*
+    |--------------------------------------------------------------------------
+    | Response
+    |--------------------------------------------------------------------------
+    */
+
+        return response()->json([
+
+            'success' => true,
+
+            'data' => $data,
+
+            'summary' => [
+
+                'payment_count' => (int) $summary['payment_count'],
+
+                'total_amount' => (float) $summary['total_amount'],
+
+                'total_discount' => (float) $summary['total_discount'],
+            ],
+
+            'filters' => [
+
+                'date' => $date,
+
+                'search' => $search,
+            ],
+
+            'meta' => [
+
+                'total' => $data->count(),
+            ],
+        ]);
     }
 
 
@@ -589,7 +884,10 @@ class StudentPaymentController extends Controller
                     'status',
                 ])
                 ->where('student_id', $studentId)
-                ->where('student_class_enrollment_id', $enrolledId)
+                ->where(
+                    'student_class_enrollment_id',
+                    $enrolledId
+                )
                 ->where('status', 'completed')
                 ->orderByDesc('paid_at')
                 ->get();
@@ -597,31 +895,59 @@ class StudentPaymentController extends Controller
             $monthWiseSummary = $payments
                 ->groupBy(function ($payment) {
                     return $payment->payment_month
-                        ? Carbon::parse($payment->payment_month)->format('Y-m')
+                        ? Carbon::parse(
+                            $payment->payment_month
+                        )->format('Y-m')
                         : 'unknown';
                 })
                 ->map(function ($items, $monthKey) {
                     return [
                         'month' => $monthKey,
+
                         'month_name' => $monthKey !== 'unknown'
-                            ? Carbon::createFromFormat('Y-m', $monthKey)->format('F Y')
+                            ? Carbon::createFromFormat(
+                                'Y-m',
+                                $monthKey
+                            )->format('F Y')
                             : 'Unknown',
+
                         'count' => $items->count(),
-                        'total_amount' => (float) $items->sum('amount'),
-                        'total_discount_amount' => (float) $items->sum('discount_amount'),
-                        'payments' => $items->map(function ($payment) {
-                            return [
-                                'id' => $payment->id,
-                                'mark_method' => $payment->mark_method,
-                                'amount' => (float) $payment->amount,
-                                'discount_amount' => (float) $payment->discount_amount,
-                                'note' => $payment->note,
-                                'paid_at' => optional($payment->paid_at)->toDateTimeString(),
-                                'payment_month' => optional($payment->payment_month)->toDateString(),
-                                'receipt_number' => $payment->receipt_number,
-                                'status' => $payment->status,
-                            ];
-                        })->values(),
+
+                        'total_amount' => (float) $items->sum(
+                            'amount'
+                        ),
+
+                        'total_discount_amount' => (float) $items->sum(
+                            'discount_amount'
+                        ),
+
+                        'payments' => $items
+                            ->map(function ($payment) {
+                                return [
+                                    'id' => $payment->id,
+
+                                    'mark_method' => $payment->mark_method,
+
+                                    'amount' => (float) $payment->amount,
+
+                                    'discount_amount' => (float) $payment->discount_amount,
+
+                                    'note' => $payment->note,
+
+                                    'paid_at' => optional(
+                                        $payment->paid_at
+                                    )->toDateTimeString(),
+
+                                    'payment_month' => optional(
+                                        $payment->payment_month
+                                    )->toDateString(),
+
+                                    'receipt_number' => $payment->receipt_number,
+
+                                    'status' => $payment->status,
+                                ];
+                            })
+                            ->values(),
                     ];
                 })
                 ->sortByDesc('month')
@@ -629,17 +955,22 @@ class StudentPaymentController extends Controller
 
             return response()->json([
                 'success' => true,
+
                 'count' => $payments->count(),
+
                 'data' => $monthWiseSummary,
             ]);
         } catch (Throwable $e) {
-            Log::error('Fetch Student All Payment Error', [
-                'student_id' => $studentId,
-                'message' => $e->getMessage(),
-                'line' => $e->getLine(),
-                'file' => $e->getFile(),
-                'trace' => $e->getTraceAsString(),
-            ]);
+            Log::error(
+                'Fetch Student All Payment Error',
+                [
+                    'student_id' => $studentId,
+                    'message' => $e->getMessage(),
+                    'line' => $e->getLine(),
+                    'file' => $e->getFile(),
+                    'trace' => $e->getTraceAsString(),
+                ]
+            );
 
             return response()->json([
                 'success' => false,

@@ -24,14 +24,22 @@ class ExamResultsExport implements FromCollection, WithHeadings
             ->map(function ($result) {
 
                 return [
-                    'student'    => $result->student->full_name ?? 'N/A',
-                    'marks'      => $result->marks,
-                    'max_marks'  => $result->max_marks,
+                    'student' => optional($result->student)->full_name
+                        ?: 'N/A',
+
+                    'marks' => $result->marks,
+
+                    'max_marks' => $result->max_marks,
+
                     'percentage' => $result->percentage,
-                    'grade'      => $result->grade,
-                    'rank'       => $result->rank,
-                    'status'     => ucfirst($result->status),
-                    'remark'     => $result->remark,
+
+                    'grade' => $result->grade,
+
+                    'rank' => $result->rank,
+
+                    'status' => ucfirst((string) $result->status),
+
+                    'remark' => $result->remark,
                 ];
             });
     }

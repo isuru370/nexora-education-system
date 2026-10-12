@@ -4,12 +4,14 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class TeacherPayment extends Model
 {
     use SoftDeletes;
 
     protected $fillable = [
+        'branch_id',
         'teacher_id',
         'user_id',
         'payment_type',
@@ -26,17 +28,28 @@ class TeacherPayment extends Model
         'payment_date' => 'date',
     ];
 
-    public function teacher()
+    /*
+    |--------------------------------------------------------------------------
+    | Relationships
+    |--------------------------------------------------------------------------
+    */
+
+    public function branch(): BelongsTo
+    {
+        return $this->belongsTo(Branch::class);
+    }
+
+    public function teacher(): BelongsTo
     {
         return $this->belongsTo(Teacher::class);
     }
 
-    public function createdBy()
+    public function createdBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'user_id');
     }
 
-    public function paymentReason()
+    public function paymentReason(): BelongsTo
     {
         return $this->belongsTo(
             PaymentReason::class,
@@ -45,19 +58,49 @@ class TeacherPayment extends Model
         );
     }
 
-    // 🔥 helpers
+    /*
+    |--------------------------------------------------------------------------
+    | Scopes
+    |--------------------------------------------------------------------------
+    */
 
-    public function isAdvance()
+    public function scopeForBranches($query, $branchIds)
+    {
+        return $query->whereIn('branch_id', $branchIds);
+    }
+
+    public function scopeForBranch($query, int $branchId)
+    {
+        return $query->where('branch_id', $branchId);
+    }
+
+    public function scopePaid($query)
+    {
+        return $query->where('status', 'paid');
+    }
+
+    public function scopePending($query)
+    {
+        return $query->where('status', 'pending');
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Helpers
+    |--------------------------------------------------------------------------
+    */
+
+    public function isAdvance(): bool
     {
         return $this->payment_type === 'advance';
     }
 
-    public function isDeduction()
+    public function isDeduction(): bool
     {
         return $this->payment_type === 'deduction';
     }
 
-    public function isOther()
+    public function isOther(): bool
     {
         return $this->payment_type === 'other';
     }

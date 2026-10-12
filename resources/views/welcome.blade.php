@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SAVIDYA · Higher Education Institute</title>
+    <title>{{ config('app.name') }} · Higher Education Institute</title>
 
     <!-- Google Font -->
     <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,400;0,14..32,500;0,14..32,600;0,14..32,700;0,14..32,800;1,14..32,300&display=swap" rel="stylesheet">
@@ -417,7 +417,7 @@
             <div class="topbar">
                 <div class="brand-chip">
                     <i class="fas fa-layer-group"></i>
-                    Premium dashboard · Savidya
+                    Premium dashboard · {{ config('app.name') }}
                 </div>
                 <div class="status-group">
                     <div class="status-pill"><i class="fas fa-shield-halved"></i> Secure portal</div>
@@ -426,22 +426,24 @@
             </div>
 
             <div class="logo-container">
-                <img src="{{ asset('storage/logo/logo.png') }}" alt="Savidya Higher Education Institute logo" class="logo"
-                    onerror="this.src='https://placehold.co/320x120/0f766e/ffffff?text=SAVIDYA+INSTITUTE&font=inter';">
+                <img src="{{ asset('storage/' . env('INSTITUTE_LOGO', 'logo/logo.png')) }}"
+                     alt="{{ config('app.name') }}"
+                     class="logo"
+                     onerror="this.src='https://placehold.co/320x120/0f766e/ffffff?text={{ urlencode(config('app.name')) }}&font=inter';">
             </div>
 
             <div class="hero">
                 <h1>
-                    Welcome to <span class="accent">Savidya Higher Education Institute</span>
+                    Welcome to <span class="accent">{{ config('app.name') }}</span>
                 </h1>
 
                 <p class="subline">
-                    A modern, secure, and premium learning environment designed for excellence, growth, and future-ready education.
+                    {{ config('app.name') }} — a premier higher education institute dedicated to academic excellence, innovation, and student success.
                 </p>
 
                 <p class="tagline">
                     <i class="fas fa-quote-left" style="font-size:0.9rem; opacity:0.65; margin-right:6px;"></i>
-                    Empowering minds, shaping futures through excellence in education
+                    {{ env('INSTITUTE_TAGLINE', 'Empowering minds, shaping futures through excellence in education') }}
                     <i class="fas fa-quote-right" style="font-size:0.9rem; opacity:0.65; margin-left:6px;"></i>
                 </p>
 

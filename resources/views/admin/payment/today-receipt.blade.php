@@ -134,6 +134,7 @@
                                 <th>Teacher</th>
                                 <th>Grade</th>
                                 <th>Category</th>
+                                <th>Fee Option</th>
                                 <th>Fee</th>
                                 <th>Today Payments</th>
                                 <th>Total</th>
@@ -141,7 +142,7 @@
                         </thead>
                         <tbody id="receiptTableBody">
                             <tr>
-                                <td colspan="10" class="text-center text-muted py-4">Loading...</td>
+                                <td colspan="11" class="text-center text-muted py-4">Loading...</td>
                             </tr>
                         </tbody>
                     </table>
@@ -376,7 +377,7 @@
 
 @push('scripts')
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             'use strict';
 
             const todayReceiptApiUrl = @json(route('api.student-payments.today-receipt'));
@@ -408,12 +409,12 @@
 
             loadTodayReceipts();
 
-            filterBtn.addEventListener('click', function () {
+            filterBtn.addEventListener('click', function() {
                 currentPage = 1;
                 loadTodayReceipts();
             });
 
-            searchInput.addEventListener('keydown', function (event) {
+            searchInput.addEventListener('keydown', function(event) {
                 if (event.key === 'Enter') {
                     event.preventDefault();
                     currentPage = 1;
@@ -421,24 +422,24 @@
                 }
             });
 
-            dateInput.addEventListener('change', function () {
+            dateInput.addEventListener('change', function() {
                 currentPage = 1;
                 loadTodayReceipts();
             });
 
-            perPageInput.addEventListener('change', function () {
+            perPageInput.addEventListener('change', function() {
                 currentPage = 1;
                 loadTodayReceipts();
             });
 
-            prevPageBtn.addEventListener('click', function () {
+            prevPageBtn.addEventListener('click', function() {
                 if (currentPage > 1) {
                     currentPage--;
                     loadTodayReceipts();
                 }
             });
 
-            nextPageBtn.addEventListener('click', function () {
+            nextPageBtn.addEventListener('click', function() {
                 currentPage++;
                 loadTodayReceipts();
             });
@@ -475,13 +476,14 @@
 
                     renderSummary(result.summary || {});
                     renderTable(result.data || []);
-                    renderPagination(result.pagination || {});
+                    renderPagination(result.meta || {});
 
-                    selectedDateLabel.textContent = result.filters?.date || date || '{{ now()->format('Y-m-d') }}';
+                    selectedDateLabel.textContent = result.filters?.date || date ||
+                        '{{ now()->format('Y-m-d') }}';
 
                     if ((result.data || []).length > 0) {
                         tableState.classList.remove('d-none');
-                        resultBadge.textContent = `${result.pagination?.total || result.data.length} Records`;
+                        resultBadge.textContent = `${result.meta?.total || result.data.length} Records`;
                     } else {
                         emptyState.classList.remove('d-none');
                         resultBadge.textContent = 'No Data';
@@ -496,16 +498,33 @@
             }
 
             function renderSummary(summary) {
-                summaryEnrollments.textContent = summary.enrollment_count || 0;
+                summaryEnrollments.textContent = summary.enrollments || summary.enrollment_count || 0;
                 summaryPaymentCount.textContent = summary.payment_count || 0;
                 summaryTotalAmount.textContent = formatMoney(summary.total_amount || 0);
+            }
+
+            function formatPaymentMonth(dateString) {
+                if (!dateString) {
+                    return '';
+                }
+
+                const date = new Date(dateString);
+
+                if (isNaN(date.getTime())) {
+                    return '';
+                }
+
+                return date.toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long'
+                });
             }
 
             function renderTable(data) {
                 if (!data.length) {
                     receiptTableBody.innerHTML = `
                                     <tr>
-                                        <td colspan="10" class="text-center text-muted py-4">
+                                        <td colspan="11" class="text-center text-muted py-4">
                                             No payments found for this date.
                                         </td>
                                     </tr>
@@ -541,7 +560,14 @@
                                         </td>
 
                                         <td>${escapeHtml(item.grade_name || '-')}</td>
-                                        <td>${escapeHtml(item.category_name || '-')}</td>
+
+                                        <td>
+                                            ${item.fee_option
+                            ? `<div class="fw-semibold">${escapeHtml(item.fee_option.label || '-')}</div>
+                                       <small class="text-muted">${formatMoney(item.fee_option.fee || 0)}</small>`
+                            : '<span class="text-muted">-</span>'
+                        }
+                                        </td>
 
                                         <td>
                                             ${Number(item.is_free_card) === 1 || item.is_free_card === true
@@ -553,39 +579,41 @@
                                         <td>
                                             <div class="receipt-list">
                                                 ${payments.map(payment => `
-                                                    <div class="receipt-item">
-                                                        <div class="top-line">
-                                                            <span class="fw-bold">${escapeHtml(payment.receipt_number || 'N/A')}</span>
+                                                                <div class="receipt-item">
+                                                                    <div class="top-line">
+                                                                        <span class="fw-bold">
+            ${escapeHtml(payment.payment_month ? formatPaymentMonth(payment.payment_month) + ' - ' : '')}${escapeHtml(payment.receipt_number || 'N/A')}
+        </span>
 
-                                                            <div class="d-flex align-items-center gap-2">
-                                                                <span class="badge bg-primary-subtle text-primary custom-badge">
-                                                                    ${formatMoney(payment.amount || 0)}
-                                                                </span>
+                                                                        <div class="d-flex align-items-center gap-2">
+                                                                            <span class="badge bg-primary-subtle text-primary custom-badge">
+                                                                                ${formatMoney(payment.amount || 0)}
+                                                                            </span>
 
-                                                                <button
-                                                                    type="button"
-                                                                    class="btn btn-sm btn-outline-danger delete-payment-btn"
-                                                                    data-payment-id="${payment.id}">
-                                                                    <i class="bi bi-trash"></i>
-                                                                </button>
-                                                            </div>
-                                                        </div>
+                                                                            <button
+                                                                                type="button"
+                                                                                class="btn btn-sm btn-outline-danger delete-payment-btn"
+                                                                                data-payment-id="${payment.id}">
+                                                                                <i class="bi bi-trash"></i>
+                                                                            </button>
+                                                                        </div>
+                                                                    </div>
 
-                                                        <div class="sub-line">
-                                                        Paid Date: ${payment.paid_at
-                                ? new Date(payment.paid_at)
-                                    .toLocaleString('sv-SE', {
-                                        hour12: false
-                                    })
-                                    .slice(0, 16)
-                                : '-'
-                            }
-                                                            <br>
-                                                            Method: ${escapeHtml(payment.payment_method || '-')}
-                                                            ${payment.note ? `<br>Note: ${escapeHtml(payment.note)}` : ''}
-                                                        </div>
-                                                    </div>
-                                                `).join('')}
+                                                                    <div class="sub-line">
+                                                                    Paid Date: ${payment.paid_at
+                                            ? new Date(payment.paid_at)
+                                                .toLocaleString('sv-SE', {
+                                                    hour12: false
+                                                })
+                                                .slice(0, 16)
+                                            : '-'
+                                        }
+                                                                        <br>
+                                                                        Method: ${escapeHtml(payment.payment_method || '-')}
+                                                                        ${payment.note ? `<br>Note: ${escapeHtml(payment.note)}` : ''}
+                                                                    </div>
+                                                                </div>
+                                                            `).join('')}
                                             </div>
                                         </td>
 
@@ -647,7 +675,7 @@
                 }
             }
 
-            document.addEventListener('click', function (event) {
+            document.addEventListener('click', function(event) {
                 const deleteBtn = event.target.closest('.delete-payment-btn');
 
                 if (!deleteBtn) return;
