@@ -1,36 +1,36 @@
 <?php
 
-use App\Http\Controllers\API\AdmissionPaymentController;
-use App\Http\Controllers\API\AttendanceReportController;
-use App\Http\Controllers\API\AttendanceScheduleController;
+use App\Http\Controllers\Api\Admission\AdmissionPaymentController;
+use App\Http\Controllers\Api\Attendance\AttendanceReportController;
+use App\Http\Controllers\Api\Attendance\AttendanceScheduleController;
 use App\Http\Controllers\API\StudentCardAssignmentController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\API\Auth\LoginController;
-use App\Http\Controllers\API\ClassScheduleController;
-use App\Http\Controllers\API\GradeController;
-use App\Http\Controllers\API\InstituteHallController;
-use App\Http\Controllers\API\MobileDashboardController;
+use App\Http\Controllers\Api\Auth\LoginController;
+use App\Http\Controllers\Api\ClassSchedule\ClassScheduleController;
+use App\Http\Controllers\Api\StudentClass\GradeController;
+use App\Http\Controllers\Api\ClassHall\InstituteHallController;
+use App\Http\Controllers\Api\Dashboard\MobileDashboardController;
 use App\Http\Controllers\API\NewAttendance\AttendanceController;
 use App\Http\Controllers\API\NewPayment\PaymentController;
-use App\Http\Controllers\API\Notification\NotificationController;
-use App\Http\Controllers\API\QuickPhotoController;
-use App\Http\Controllers\API\StudentAttendanceController;
-use App\Http\Controllers\API\StudentAttendanceReadController;
-use App\Http\Controllers\API\StudentAttendanceScanController;
+use App\Http\Controllers\Api\Notification\NotificationController;
+use App\Http\Controllers\Api\StudentImage\QuickPhotoController;
+use App\Http\Controllers\Api\Attendance\StudentAttendanceController;
+use App\Http\Controllers\Api\Attendance\StudentAttendanceReadController;
+use App\Http\Controllers\Api\Attendance\StudentAttendanceScanController;
 use App\Http\Controllers\API\StudentCardRegisterController;
-use App\Http\Controllers\API\StudentClassController;
-use App\Http\Controllers\API\StudentClassEnrollmentController;
+use App\Http\Controllers\Api\StudentClass\StudentClassController;
+use App\Http\Controllers\Api\StudentClassEnrollment\StudentClassEnrollmentController;
 use App\Http\Controllers\API\StudentController;
-use App\Http\Controllers\API\StudentImageController;
-use App\Http\Controllers\API\StudentPaymentController;
-use App\Http\Controllers\API\StudentPaymentReadController;
+use App\Http\Controllers\Api\StudentImage\StudentImageController;
+use App\Http\Controllers\Api\Payment\StudentPaymentController;
+use App\Http\Controllers\Api\Payment\StudentPaymentReadController;
 use App\Http\Controllers\API\StudentRegisterController;
-use App\Http\Controllers\API\StudentTuteController;
-use App\Http\Controllers\API\Teacher\MyStudentsController;
-use App\Http\Controllers\API\Teacher\TeacherClassesController;
+use App\Http\Controllers\Api\StudentTute\StudentTuteController;
+use App\Http\Controllers\Api\Teacher\MyStudentsController;
+use App\Http\Controllers\Api\Teacher\TeacherClassesController;
 use App\Http\Controllers\Api\Teacher\TeacherDashboardController;
-use App\Http\Controllers\API\Teacher\TeacherProfileController;
-use App\Http\Controllers\API\Teacher\TeacherTimetableController;
+use App\Http\Controllers\Api\Teacher\TeacherProfileController;
+use App\Http\Controllers\Api\Teacher\TeacherTimetableController;
 
 /*
 |--------------------------------------------------------------------------
