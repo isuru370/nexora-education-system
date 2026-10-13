@@ -4,7 +4,7 @@
 @section('page-title', 'Edit Exam')
 
 @section('content')
-    @include('admin.exams.partials.form', [
+    @include('exams.partials.form', [
         'exam' => $exam,
         'classes' => $classes,
         'halls' => $halls,

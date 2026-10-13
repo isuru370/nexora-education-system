@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Web\Exam;
 
-use App\Exports\ExamResultsExport;
-use App\Exports\ExamsExport;
+use App\Exports\Web\Exam\ExamResultsExport;
+use App\Exports\Web\Exam\ExamsExport;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\StoreExamRequest;
-use App\Http\Requests\Admin\CancelExamRequest;
-use App\Http\Requests\Admin\UpdateExamRequest;
-use App\Services\ExamService;
+use App\Http\Requests\Web\Exam\StoreExamRequest;
+use App\Http\Requests\Web\Exam\CancelExamRequest;
+use App\Http\Requests\Web\Exam\UpdateExamRequest;
+use App\Services\Web\Exam\ExamService;
 use App\Models\Exam;
 use App\Models\StudentClass;
 use App\Models\StudentResult;
@@ -56,7 +56,7 @@ class ExamController extends Controller
             ->getUpcomingExams(5);
 
         return view(
-            'admin.exams.index',
+            'exams.index',
             compact(
                 'exams',
                 'stats',
@@ -86,7 +86,7 @@ class ExamController extends Controller
         $categories = collect();
 
         return view(
-            'admin.exams.create',
+            'exams.create',
             compact(
                 'classes',
                 'categories',
@@ -120,7 +120,7 @@ class ExamController extends Controller
             ->getHalls();
 
         return view(
-            'admin.exams.edit',
+            'exams.edit',
             compact(
                 'exam',
                 'classes',
@@ -267,7 +267,7 @@ class ExamController extends Controller
         }
 
         return view(
-            'admin.exams.show',
+            'exams.show',
             compact('exam')
         );
     }
@@ -583,7 +583,7 @@ class ExamController extends Controller
             ->getUpcomingExams(10);
 
         return view(
-            'admin.exams.upcoming',
+            'exams.upcoming',
             [
                 'exams' => $exams,
                 'stats' => $stats,
@@ -680,7 +680,7 @@ class ExamController extends Controller
             ->getExamStudents($id);
 
         return view(
-            'admin.exams.mark-entry',
+            'exams.mark-entry',
             compact(
                 'exam',
                 'students'
@@ -795,7 +795,7 @@ class ExamController extends Controller
             ->get();
 
         return view(
-            'admin.exams.results',
+            'exams.results',
             compact(
                 'exam',
                 'results'
@@ -928,7 +928,7 @@ class ExamController extends Controller
         ])->get();
 
         $pdf = Pdf::loadView(
-            'admin.pdf.exam.index',
+            'pdf.exam.index',
             compact('exams')
         );
 
@@ -958,7 +958,7 @@ class ExamController extends Controller
             ->get();
 
         $pdf = Pdf::loadView(
-            'admin.pdf.exam.results',
+            'pdf.exam.results',
             compact(
                 'exam',
                 'results'

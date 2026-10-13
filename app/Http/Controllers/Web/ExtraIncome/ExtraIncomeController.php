@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Web\ExtraIncome;
 
 use App\Http\Controllers\Controller;
 use App\Models\ExtraIncome;
@@ -76,7 +76,7 @@ class ExtraIncomeController extends Controller
             ->orderByDesc('year')
             ->pluck('year');
 
-        return view('admin.extra-incomes.index', compact(
+        return view('extra-incomes.index', compact(
             'extraIncomes',
             'years',
             'selectedYear',
@@ -92,7 +92,7 @@ class ExtraIncomeController extends Controller
      */
     public function create()
     {
-        return view('admin.extra-incomes.create');
+        return view('extra-incomes.create');
     }
 
     /**
@@ -180,7 +180,7 @@ class ExtraIncomeController extends Controller
     {
         $extraIncome->load('createdBy');
 
-        return view('admin.extra-incomes.show', compact(
+        return view('extra-incomes.show', compact(
             'extraIncome'
         ));
     }
@@ -190,7 +190,7 @@ class ExtraIncomeController extends Controller
      */
     public function edit(ExtraIncome $extraIncome)
     {
-        return view('admin.extra-incomes.edit', compact(
+        return view('extra-incomes.edit', compact(
             'extraIncome'
         ));
     }

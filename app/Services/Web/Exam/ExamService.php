@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Web\Exam;
 
 use App\Models\Exam;
 use App\Models\StudentClass;

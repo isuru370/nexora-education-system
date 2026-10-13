@@ -4,7 +4,7 @@
 
 use App\Http\Controllers\Admin\ActivityLogController;
 
-use App\Http\Controllers\Admin\OrganizerPaymentController;
+use App\Http\Controllers\Web\OrganizerPayment\OrganizerPaymentController;
 
 use App\Http\Controllers\Admin\SystemUserController;
 
@@ -13,9 +13,9 @@ use App\Http\Controllers\Auth\LoginController;
 
 use App\Http\Controllers\Admin\DatabaseBackupController;
 
-use App\Http\Controllers\Admin\ExamController;
+use App\Http\Controllers\Web\Exam\ExamController;
 
-use App\Http\Controllers\Admin\ExtraIncomeController;
+use App\Http\Controllers\Web\ExtraIncome\ExtraIncomeController;
 
 use App\Http\Controllers\Admin\FcmTokenController;
 
@@ -23,7 +23,7 @@ use App\Http\Controllers\Admin\ForgotPasswordController;
 
 use App\Http\Controllers\Admin\ImageUploadController;
 
-use App\Http\Controllers\Admin\InstituteExpenseController;
+use App\Http\Controllers\Web\InstituteExpense\InstituteExpenseController;
 
 
 

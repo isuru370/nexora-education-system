@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Admin;
+namespace App\Http\Requests\Web\Exam;
 
 use App\Models\Exam;
 use Illuminate\Foundation\Http\FormRequest;

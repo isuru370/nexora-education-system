@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Web\InstituteExpense;
 
 use App\Http\Controllers\Controller;
 use App\Models\InstitutePayment;
@@ -222,7 +222,7 @@ class InstituteExpenseController extends Controller
         )->get();
 
         return view(
-            'admin.institute-expenses.index',
+            'institute-expenses.index',
             compact(
                 'expenses',
                 'users',
@@ -241,7 +241,7 @@ class InstituteExpenseController extends Controller
         )->get();
 
         return view(
-            'admin.institute-expenses.create',
+            'institute-expenses.create',
             compact('reasons')
         );
     }
@@ -343,7 +343,7 @@ class InstituteExpenseController extends Controller
         ]);
 
         return view(
-            'admin.institute-expenses.show',
+            'institute-expenses.show',
             compact('instituteExpense')
         );
     }
@@ -386,7 +386,7 @@ class InstituteExpenseController extends Controller
         )->get();
 
         return view(
-            'admin.institute-expenses.edit',
+            'institute-expenses.edit',
             compact(
                 'instituteExpense',
                 'reasons'

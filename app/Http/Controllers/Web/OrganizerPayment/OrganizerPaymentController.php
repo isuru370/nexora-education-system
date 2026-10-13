@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Web\OrganizerPayment;
 
 use App\Http\Controllers\Controller;
 use App\Models\Organizer;
@@ -73,7 +73,7 @@ class OrganizerPaymentController extends Controller
             ];
         });
 
-        return view('admin.organizer-payments.index', [
+        return view('organizer-payments.index', [
             'year' => $year,
             'month' => $month,
             'organizerRows' => $organizerRows,
@@ -95,7 +95,7 @@ class OrganizerPaymentController extends Controller
 
         $data = $this->calculateOrganizerSalary($organizer, $year, $month);
 
-        return view('admin.organizer-payments.pay', array_merge($data, [
+        return view('organizer-payments.pay', array_merge($data, [
             'organizer' => $organizer,
             'year' => $year,
             'month' => $month,
@@ -291,7 +291,7 @@ class OrganizerPaymentController extends Controller
                 ->with('error', 'Salary payment record not found.');
         }
 
-        return view('admin.organizer-payments.salary-slip', array_merge($data, [
+        return view('organizer-payments.salary-slip', array_merge($data, [
             'organizer' => $organizer,
             'year' => $year,
             'month' => $month,

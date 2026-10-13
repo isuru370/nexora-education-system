@@ -35,7 +35,7 @@
                 @csrf
                 @method('PUT')
 
-                @include('admin.extra-incomes.partials.form', [
+                @include('extra-incomes.partials.form', [
                     'extraIncome' => $extraIncome,
                     'buttonText' => 'Update Income'
                 ])

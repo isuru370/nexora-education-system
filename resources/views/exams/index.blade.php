@@ -8,7 +8,7 @@
     <div class="exams-page">
 
         <!-- TOP STATS -->
-        @include('admin.exams.partials.stats')
+        @include('exams.partials.stats')
 
         <!-- MAIN CARD -->
         <div class="main-card">
@@ -265,7 +265,7 @@
 
                                 <td class="text-end">
 
-                                    @include('admin.exams.partials.actions', [
+                                    @include('exams.partials.actions', [
                                         'exam' => $exam,
                                         'showEdit' => $showEdit,
                                         'showDelete' => $showDelete,

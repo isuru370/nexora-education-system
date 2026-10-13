@@ -26,7 +26,7 @@
             <form method="POST" action="{{ route('admin.extra-incomes.store') }}">
                 @csrf
 
-                @include('admin.extra-incomes.partials.form', [
+                @include('extra-incomes.partials.form', [
                     'extraIncome' => null,
                     'buttonText' => 'Save Income'
                 ])
