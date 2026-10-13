@@ -56,14 +56,14 @@
             </div>
         </div>
 
-        <form action="{{ route('admin.admission-payments.store') }}" method="POST">
+        <form action="{{ route('admission-payments.store') }}" method="POST">
             @csrf
 
-            @include('admin.admission_payments.partials.form', ['admissionPayment' => null])
+            @include('admission_payments.partials.form', ['admissionPayment' => null])
 
             <div class="form-footer">
                 <div class="btn-group-inline">
-                    <a href="{{ route('admin.admission-payments.index') }}" class="btn btn-light border custom-btn">
+                    <a href="{{ route('admission-payments.index') }}" class="btn btn-light border custom-btn">
                         <i class="bi bi-arrow-left"></i>
                         Cancel
                     </a>

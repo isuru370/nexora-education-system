@@ -213,7 +213,7 @@
                     <span class="qa-text"><span class="qa-title">Reminders</span><span class="qa-desc">Unpaid fees</span></span>
                 </a>
 
-                <a href="{{ route('admin.monthly-report.index') }}" class="quick-action-btn">
+                <a href="{{ route('monthly-report.index') }}" class="quick-action-btn">
                     <span class="qa-icon"><i class="bi bi-file-earmark-bar-graph"></i></span>
                     <span class="qa-text"><span class="qa-title">Reports</span><span class="qa-desc">Monthly report</span></span>
                 </a>

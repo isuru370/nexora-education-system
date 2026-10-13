@@ -60,15 +60,15 @@
             </div>
         </div>
 
-        <form action="{{ route('admin.admission-payments.update', $admissionPayment) }}" method="POST">
+        <form action="{{ route('admission-payments.update', $admissionPayment) }}" method="POST">
             @csrf
             @method('PUT')
 
-            @include('admin.admission_payments.partials.form', ['admissionPayment' => $admissionPayment])
+            @include('admission_payments.partials.form', ['admissionPayment' => $admissionPayment])
 
             <div class="form-footer">
                 <div class="btn-group-inline">
-                    <a href="{{ route('admin.admission-payments.index') }}" class="btn btn-light border custom-btn">
+                    <a href="{{ route('admission-payments.index') }}" class="btn btn-light border custom-btn">
                         <i class="bi bi-arrow-left"></i>
                         Cancel
                     </a>

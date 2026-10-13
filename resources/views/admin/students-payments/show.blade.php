@@ -19,7 +19,7 @@
                             <p>Complete payment transaction details</p>
                         </div>
                         <div class="header-actions">
-                            <a href="{{ route('admin.receipts.index') }}" class="btn-back">
+                            <a href="{{ route('receipts.index') }}" class="btn-back">
                                 <i class="bi bi-arrow-left"></i> Back to Receipts
                             </a>
                         </div>

@@ -708,7 +708,7 @@
 
                 @if ($teacherId)
                     <div class="d-flex gap-2 flex-wrap">
-                        <a href="{{ route('teacher-expense-report.excel', [
+                        <a href="{{ route('admin.teacher-expense-report.excel', [
                             'teacher_id' => $teacherId,
                             'year' => $year,
                             'month' => $month,
@@ -718,7 +718,7 @@
                             Download Excel
                         </a>
 
-                        <a href="{{ route('teacher-expense-report.pdf', [
+                        <a href="{{ route('admin.teacher-expense-report.pdf', [
                             'teacher_id' => $teacherId,
                             'year' => $year,
                             'month' => $month,
