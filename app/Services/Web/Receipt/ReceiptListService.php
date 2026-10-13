@@ -141,7 +141,7 @@ class ReceiptListService
                 'deleted_at' => $item->deleted_at,
                 'deleted_by' => optional($item->deletedBy)->name,
                 'delete_reason' => $item->delete_reason,
-                'url' => $item->deleted_at ? null : $this->safeRoute('students-payments.show', $item->id),
+                'url' => $this->safeRoute('payments.show', $item->id),
             ]);
         });
     }

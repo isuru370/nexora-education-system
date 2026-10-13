@@ -24,7 +24,7 @@
             Fast Payment
         </span>
 
-        <a href="{{ route('admin.payments.today-receipt') }}"
+        <a href="{{ route('payments.index') }}"
            class="btn btn-light border custom-btn">
             <i class="bi bi-receipt me-1"></i>
             Today's Receipts

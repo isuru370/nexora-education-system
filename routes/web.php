@@ -65,6 +65,7 @@ use App\Http\Controllers\Web\Report\TeacherCollectionReportController;
 use App\Http\Controllers\Web\PaymentReminder\PaymentReminderController;
 use App\Http\Controllers\Web\Organizer\OrganizerController;
 use App\Http\Controllers\Web\Payment\PaymentController;
+use App\Http\Controllers\Web\Payment\PaymentHistoryController;
 use App\Http\Controllers\Web\Receipt\ReceiptController;
 use App\Http\Controllers\Web\Student\StudentCardRegistrationController;
 use App\Http\Controllers\Web\Student\StudentController;
@@ -441,29 +442,6 @@ Route::middleware([
         )->name('upload.delete')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
 
 
-        /*
-
-        |--------------------------------------------------------------------------
-
-        | Payments
-
-        |--------------------------------------------------------------------------
-
-        */
-
-
-
-        Route::get('/payments', function () {
-
-            return view('admin.payment.index');
-        })->name('payments.index')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
-
-
-
-        Route::get('/payments/today-receipt', function () {
-
-            return view('admin.payment.today-receipt');
-        })->name('payments.today-receipt')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
 
         /*
 
@@ -2514,7 +2492,7 @@ Route::middleware([
 Route::prefix('new-payment')
     ->name('new-payment.')
     ->controller(PaymentController::class)
-    ->middleware(['auth'])
+    ->middleware(['auth', 'user.active', 'role:ADMIN,BRANCH_ADMIN,USER'])
     ->group(function () {
 
         // Show New Payment page
@@ -2532,6 +2510,30 @@ Route::prefix('new-payment')
         // Store multiple payments
         Route::post('bulk-pay', 'bulkPay')
             ->name('bulk-pay');
+    });
+
+/*
+|--------------------------------------------------------------------------
+| Payments History (class fee payments)
+|--------------------------------------------------------------------------
+| List, details, receipt reprint and delete (soft delete with a reason).
+| (old: admin/payments/today-receipt + mobile API delete)
+*/
+Route::prefix('payments')
+    ->name('payments.')
+    ->controller(PaymentHistoryController::class)
+    ->middleware(['auth', 'user.active', 'role:ADMIN,BRANCH_ADMIN,USER'])
+    ->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('/export/{format}', 'export')
+            ->where('format', 'excel|pdf')
+            ->name('export');
+        Route::get('/{payment}', 'show')->where('payment', '[0-9]+')->name('show');
+        Route::get('/{payment}/receipt', 'receipt')->where('payment', '[0-9]+')->name('receipt');
+        Route::delete('/{payment}', 'destroy')
+            ->where('payment', '[0-9]+')
+            ->middleware('throttle:30,1')
+            ->name('destroy');
     });
 
 /*

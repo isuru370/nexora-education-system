@@ -807,7 +807,7 @@
 
 
 
-                            <a href="{{ route('admin.payments.index') }}"
+                            <a href="{{ route('new-payment.index') }}"
                                 class="text-decoration-none">
 
 

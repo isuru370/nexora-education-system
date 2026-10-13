@@ -457,11 +457,11 @@
 
 
                 {{-- Payments --}}
-                @if(\App\Services\Web\Common\RouteAccess::can('admin.payments.index'))
+                @if(\App\Services\Web\Common\RouteAccess::can('new-payment.index'))
 
                     <div class="col-md-4 col-lg-3">
 
-                        <a href="{{ route('admin.payments.index') }}"
+                        <a href="{{ route('new-payment.index') }}"
                            class="text-decoration-none">
 
                             <div class="border rounded-4 p-3 h-100">
