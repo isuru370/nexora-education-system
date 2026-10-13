@@ -99,7 +99,6 @@
             $canDailyReport = $isUser;
             $canMonthlyReport = $isUser;
             $canTeacherReport = $isBranchAdmin;
-            $canInstituteReports = $isAdmin;
             $canMonthlyClassAttendanceReport = $isUser;
             $canPaymentCollectionReport = $isAdmin;
             $canActivityLogs = $isAdmin;
@@ -686,9 +685,9 @@
                 <div class="nav-item">
 
                     <button type="button"
-                        class="nav-link-custom {{ request()->routeIs('admin.institute-income.monthly-report') ? 'active' : '' }}"
-                        data-route="admin.institute-income.monthly-report"
-                        data-href="{{ route('admin.institute-income.monthly-report') }}">
+                        class="nav-link-custom {{ request()->routeIs('reports.institute-income.*') ? 'active' : '' }}"
+                        data-route="reports.institute-income.index"
+                        data-href="{{ route('reports.institute-income.index') }}">
 
                         <i class="bi bi-bar-chart-line-fill"></i>
 
@@ -787,25 +786,6 @@
 
                 </div>
             @endif
-
-
-            @if ($canInstituteReports)
-                <div class="nav-item">
-
-                    <button type="button"
-                        class="nav-link-custom {{ request()->routeIs('admin.institute-reports.*') ? 'active' : '' }}"
-                        data-route="admin.institute-reports.index"
-                        data-href="{{ route('admin.institute-reports.index') }}">
-
-                        <i class="bi bi-file-earmark-person"></i>
-
-                        <span>Institute Payment Report</span>
-
-                    </button>
-
-                </div>
-            @endif
-
 
 
             @if ($canMonthlyClassAttendanceReport)

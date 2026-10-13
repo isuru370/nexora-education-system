@@ -1317,7 +1317,7 @@
             'use strict';
 
             const DAILY_INCOME = @json($dailyIncome);
-            const YEARLY_URL = @json(route('admin.institute-yearly-report'));
+            const YEARLY_URL = @json(route('reports.institute-income.yearly'));
 
             const COLORS = {
                 blue: '#2563eb',
