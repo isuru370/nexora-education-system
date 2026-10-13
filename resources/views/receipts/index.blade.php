@@ -216,7 +216,7 @@
                                         <div class="receipt-number">
                                             <i class="bi bi-receipt-cutoff"></i>
 
-                                            @if ($isActive && $receipt['url'])
+                                            @if ($receipt['url'])
                                                 <a href="{{ $receipt['url'] }}" class="receipt-link">
                                                     {{ $receipt['receipt_number'] ?: '-' }}
                                                 </a>
@@ -298,7 +298,7 @@
 
                                     <td>
                                         <div class="action-buttons">
-                                            @if ($isActive && $receipt['url'])
+                                            @if ($receipt['url'])
                                                 <a href="{{ $receipt['url'] }}" class="action-btn view-btn" title="View receipt">
                                                     <i class="bi bi-eye"></i>
                                                 </a>

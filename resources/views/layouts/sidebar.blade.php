@@ -229,9 +229,9 @@
                 <div class="nav-item">
 
                     <button type="button"
-                        class="nav-link-custom {{ request()->routeIs('admin.payments.today-receipt') ? 'active' : '' }}"
-                        data-route="admin.payments.today-receipt"
-                        data-href="{{ route('admin.payments.today-receipt') }}">
+                        class="nav-link-custom {{ request()->routeIs('payments.*') ? 'active' : '' }}"
+                        data-route="payments.index"
+                        data-href="{{ route('payments.index') }}">
 
                         <i class="bi bi-piggy-bank-fill"></i>
 
