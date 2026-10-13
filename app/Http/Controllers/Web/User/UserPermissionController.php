@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Web\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\Page;
@@ -28,7 +28,7 @@ class UserPermissionController extends Controller
             ->keyBy('page_id');
 
         return view(
-            'admin.user-permissions.index',
+            'user-permissions.index',
             compact(
                 'systemUser',
                 'user',

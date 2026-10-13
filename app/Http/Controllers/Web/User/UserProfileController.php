@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Web\User;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Profile\ChangePasswordRequest;
-use App\Http\Requests\Profile\UpdateProfileRequest;
+use App\Http\Requests\Web\User\ChangePasswordRequest;
+use App\Http\Requests\Web\User\UpdateProfileRequest;
 use App\Models\User;
 use App\Models\SystemUser;
 use Illuminate\Support\Facades\DB;
@@ -22,7 +22,7 @@ class UserProfileController extends Controller
                 'userType'
             ])->findOrFail(auth()->id());
 
-            return view('admin.user-profile.index', compact('user'));
+            return view('user-profile.index', compact('user'));
         } catch (Throwable $e) {
 
             Log::error('User profile load failed', [

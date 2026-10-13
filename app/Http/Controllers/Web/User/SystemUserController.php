@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Web\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\SystemUser;
@@ -10,7 +10,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\DB;
-use App\Exports\SystemUserExport;
+use App\Exports\Web\User\SystemUserExport;
 use App\Models\Branch;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Maatwebsite\Excel\Facades\Excel;
@@ -34,7 +34,7 @@ class SystemUserController extends Controller
             ->latest()
             ->paginate(10);
 
-        return view('admin.system-users.index', compact('systemUsers'));
+        return view('system-users.index', compact('systemUsers'));
     }
     public function create(): View
     {
@@ -47,7 +47,7 @@ class SystemUserController extends Controller
             ->get();
 
         return view(
-            'admin.system-users.create',
+            'system-users.create',
             compact('userTypes', 'branches')
         );
     }
@@ -222,7 +222,7 @@ class SystemUserController extends Controller
         $systemUser->load('user.branches');
 
         return view(
-            'admin.system-users.edit',
+            'system-users.edit',
             compact(
                 'systemUser',
                 'userTypes',
@@ -386,7 +386,7 @@ class SystemUserController extends Controller
     public function show(SystemUser $systemUser): View
     {
         return view(
-            'admin.system-users.show',
+            'system-users.show',
             compact('systemUser')
         );
     }
@@ -454,7 +454,7 @@ class SystemUserController extends Controller
 
         $systemUsers = $query->latest()->get();
 
-        $pdf = Pdf::loadView('admin.system-users.pdf', compact('systemUsers'))
+        $pdf = Pdf::loadView('system-users.pdf', compact('systemUsers'))
             ->setPaper('a4', 'landscape');
 
         return $pdf->download('system_users_' . date('Y-m-d_H-i-s') . '.pdf');

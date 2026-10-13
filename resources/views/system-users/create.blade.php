@@ -1,12 +1,12 @@
-{{-- resources/views/admin/system-users/edit.blade.php --}}
+{{-- resources/views/admin/system-users/create.blade.php --}}
 @extends('layouts.app')
 
-@section('title', 'Edit System User')
-@section('page-title', 'Edit System User')
+@section('title', 'Create System User')
+@section('page-title', 'Create System User')
 
 @section('content')
     @php
-        $isEdit = true;
+        $isEdit = false;
     @endphp
 
     <div class="system-user-form-page">
@@ -17,16 +17,16 @@
                     <div class="d-flex align-items-start justify-content-between flex-wrap gap-3">
                         <div>
                             <div class="hero-icon">
-                                <i class="bi bi-pencil-square"></i>
+                                <i class="bi bi-person-plus-fill"></i>
                             </div>
-                            <h3>Edit System User</h3>
+                            <h3>Create System User</h3>
                             <p>
-                                Update profile, contact, login, and status details for this user.
+                                Add a new system user account with profile, contact, and access details.
                             </p>
                         </div>
 
-                        <div class="hero-badge edit">
-                            Editing
+                        <div class="hero-badge new">
+                            New Record
                         </div>
                     </div>
                 </div>
@@ -34,18 +34,18 @@
 
             <div class="col-lg-4">
                 <div class="quick-summary-card">
-                    <h6 class="mb-3">Current User</h6>
+                    <h6 class="mb-3">Quick Notes</h6>
                     <div class="summary-item">
-                        <i class="bi bi-person-badge"></i>
-                        <span>{{ $systemUser->full_name }}</span>
+                        <i class="bi bi-shield-check"></i>
+                        <span>Required fields are marked with *</span>
                     </div>
                     <div class="summary-item">
-                        <i class="bi bi-envelope"></i>
-                        <span>{{ $systemUser->user?->email ?? 'No email' }}</span>
+                        <i class="bi bi-envelope-check"></i>
+                        <span>Email will be used for login access</span>
                     </div>
                     <div class="summary-item">
-                        <i class="bi bi-info-circle"></i>
-                        <span>{{ $systemUser->is_active ? 'Active user' : 'Inactive user' }}</span>
+                        <i class="bi bi-toggle-on"></i>
+                        <span>User is active by default</span>
                     </div>
                 </div>
             </div>
@@ -56,15 +56,14 @@
             <div class="main-form-header">
                 <div>
                     <h4>User Details</h4>
-                    <p>Update the fields below and save the changes</p>
+                    <p>Fill in the information below to create the account</p>
                 </div>
             </div>
 
-            <form action="{{ route('admin.system-users.update', $systemUser) }}" method="POST">
+            <form action="{{ route('admin.system-users.store') }}" method="POST">
                 @csrf
-                @method('PUT')
 
-                @include('admin.system-users.partials.form', ['systemUser' => $systemUser])
+                @include('system-users.partials.form', ['systemUser' => null])
 
                 <div class="form-footer">
                     <div class="d-flex gap-2 ms-auto">
@@ -108,7 +107,7 @@
             width: 58px;
             height: 58px;
             border-radius: 18px;
-            background: linear-gradient(135deg, #f59e0b, #ef4444);
+            background: linear-gradient(135deg, #2563eb, #7c3aed);
             color: #fff;
             display: flex;
             align-items: center;
@@ -135,10 +134,10 @@
             white-space: nowrap;
         }
 
-        .hero-badge.edit {
-            background: #fff7ed;
-            color: #c2410c;
-            border: 1px solid #fed7aa;
+        .hero-badge.new {
+            background: #eff6ff;
+            color: #2563eb;
+            border: 1px solid #dbeafe;
         }
 
         .quick-summary-card {
@@ -166,7 +165,7 @@
         }
 
         .summary-item i {
-            color: #f59e0b;
+            color: #2563eb;
             font-size: 1.05rem;
             flex-shrink: 0;
         }
@@ -236,6 +235,10 @@
         .readonly-box {
             background: #f1f5f9;
             color: #64748b;
+        }
+
+        .form-check {
+            padding: 1rem 1rem 0 0;
         }
 
         .form-footer {

@@ -6,9 +6,9 @@ use App\Http\Controllers\Admin\ActivityLogController;
 
 use App\Http\Controllers\Web\OrganizerPayment\OrganizerPaymentController;
 
-use App\Http\Controllers\Admin\SystemUserController;
+use App\Http\Controllers\Web\User\SystemUserController;
 
-use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Web\Auth\LoginController;
 
 
 use App\Http\Controllers\Admin\DatabaseBackupController;
@@ -19,7 +19,7 @@ use App\Http\Controllers\Web\ExtraIncome\ExtraIncomeController;
 
 use App\Http\Controllers\Admin\FcmTokenController;
 
-use App\Http\Controllers\Admin\ForgotPasswordController;
+use App\Http\Controllers\Web\Auth\ForgotPasswordController;
 
 use App\Http\Controllers\Admin\ImageUploadController;
 
@@ -41,10 +41,10 @@ use App\Http\Controllers\Admin\StudentImageController;
 
 use App\Http\Controllers\Admin\TodayAttendanceController;
 
-use App\Http\Controllers\Admin\UserController;
+use App\Http\Controllers\Web\User\UserController;
 
 
-use App\Http\Controllers\Admin\UserProfileController;
+use App\Http\Controllers\Web\User\UserProfileController;
 use App\Http\Controllers\Web\Admission\AdmissionController;
 use App\Http\Controllers\Web\Admission\AdmissionPaymentController;
 use App\Http\Controllers\Web\Attendance\AttendanceController;

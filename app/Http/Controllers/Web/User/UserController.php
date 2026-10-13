@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Web\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
@@ -78,7 +78,7 @@ class UserController extends Controller
             'deleted' => User::onlyTrashed()->where('user_type_id', '!=', $superAdminTypeId)->count(),
         ];
 
-        return view('admin.users.index', compact('users', 'userTypes', 'stats'));
+        return view('users.index', compact('users', 'userTypes', 'stats'));
     }
 
     /**
@@ -98,7 +98,7 @@ class UserController extends Controller
         // Get teachers that don't have a user account yet
         $teachers = Teacher::whereDoesntHave('user')->get();
         
-        return view('admin.users.create', compact('userTypes', 'systemUsers', 'teachers'));
+        return view('users.create', compact('userTypes', 'systemUsers', 'teachers'));
     }
 
     /**
@@ -193,7 +193,7 @@ class UserController extends Controller
             'total_amount' => $user->payments()->sum('amount'),
         ];
 
-        return view('admin.users.show', compact('user', 'stats'));
+        return view('users.show', compact('user', 'stats'));
     }
 
     /**
@@ -223,7 +223,7 @@ class UserController extends Controller
             ->orWhere('user_id', $user->id)
             ->get();
         
-        return view('admin.users.edit', compact('user', 'userTypes', 'systemUsers', 'teachers'));
+        return view('users.edit', compact('user', 'userTypes', 'systemUsers', 'teachers'));
     }
 
     /**
