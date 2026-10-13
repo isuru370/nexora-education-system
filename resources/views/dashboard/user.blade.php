@@ -57,9 +57,9 @@
 
                     </div>
 
-                    @if(hasPermission('students.index'))
+                    @if(\App\Services\Web\Common\RouteAccess::can('students.index'))
                         <div class="mt-3">
-                            <a href="{{ route('admin.students.index') }}"
+                            <a href="{{ route('students.index') }}"
                                class="text-decoration-none small">
                                 View Students
                                 <i class="bi bi-arrow-right ms-1"></i>
@@ -99,9 +99,9 @@
 
                     </div>
 
-                    @if(hasPermission('student-classes.index'))
+                    @if(\App\Services\Web\Common\RouteAccess::can('student-classes.index'))
                         <div class="mt-3">
-                            <a href="{{ route('admin.student-classes.index') }}"
+                            <a href="{{ route('student-classes.index') }}"
                                class="text-decoration-none small">
                                 View Classes
                                 <i class="bi bi-arrow-right ms-1"></i>
@@ -364,11 +364,11 @@
             <div class="row g-3">
 
                 {{-- Students --}}
-                @if(hasPermission('students.index'))
+                @if(\App\Services\Web\Common\RouteAccess::can('students.index'))
 
                     <div class="col-md-4 col-lg-3">
 
-                        <a href="{{ route('admin.students.index') }}"
+                        <a href="{{ route('students.index') }}"
                            class="text-decoration-none">
 
                             <div class="border rounded-4 p-3 h-100">
@@ -395,11 +395,11 @@
 
 
                 {{-- Classes --}}
-                @if(hasPermission('student-classes.index'))
+                @if(\App\Services\Web\Common\RouteAccess::can('student-classes.index'))
 
                     <div class="col-md-4 col-lg-3">
 
-                        <a href="{{ route('admin.student-classes.index') }}"
+                        <a href="{{ route('student-classes.index') }}"
                            class="text-decoration-none">
 
                             <div class="border rounded-4 p-3 h-100">
@@ -426,7 +426,7 @@
 
 
                 {{-- Attendance --}}
-                @if(hasPermission('attendance.index'))
+                @if(\App\Services\Web\Common\RouteAccess::can('admin.attendance.index'))
 
                     <div class="col-md-4 col-lg-3">
 
@@ -457,7 +457,7 @@
 
 
                 {{-- Payments --}}
-                @if(hasPermission('payments.index'))
+                @if(\App\Services\Web\Common\RouteAccess::can('admin.payments.index'))
 
                     <div class="col-md-4 col-lg-3">
 
@@ -488,7 +488,7 @@
 
 
                 {{-- Exams --}}
-                @if(hasPermission('exams.index'))
+                @if(\App\Services\Web\Common\RouteAccess::can('admin.exams.index'))
 
                     <div class="col-md-4 col-lg-3">
 
@@ -519,11 +519,11 @@
 
 
                 {{-- Timetable --}}
-                @if(hasPermission('weekly-timetable'))
+                @if(\App\Services\Web\Common\RouteAccess::can('class-time-table.weekly'))
 
                     <div class="col-md-4 col-lg-3">
 
-                        <a href="{{ route('admin.weekly-timetable') }}"
+                        <a href="{{ route('class-time-table.weekly') }}"
                            class="text-decoration-none">
 
                             <div class="border rounded-4 p-3 h-100">
@@ -550,7 +550,7 @@
 
 
                 {{-- Student Images --}}
-                @if(hasPermission('student-images.index'))
+                @if(\App\Services\Web\Common\RouteAccess::can('admin.student-images.index'))
 
                     <div class="col-md-4 col-lg-3">
 
@@ -581,7 +581,7 @@
 
 
                 {{-- Notifications --}}
-                @if(hasPermission('notification.view'))
+                @if(\App\Services\Web\Common\RouteAccess::can('admin.notifications.index'))
 
                     <div class="col-md-4 col-lg-3">
 

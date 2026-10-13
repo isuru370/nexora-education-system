@@ -57,10 +57,10 @@
 
                         </div>
 
-                        @if (hasPermission('student-classes.index'))
+                        @if (\App\Services\Web\Common\RouteAccess::can('student-classes.index'))
                             <div class="mt-3">
 
-                                <a href="{{ route('admin.student-classes.index') }}" class="text-decoration-none small">
+                                <a href="{{ route('student-classes.index') }}" class="text-decoration-none small">
 
                                     View Classes
 
@@ -105,10 +105,10 @@
 
                         </div>
 
-                        @if (hasPermission('student-classes.index'))
+                        @if (\App\Services\Web\Common\RouteAccess::can('student-classes.index'))
                             <div class="mt-3">
 
-                                <a href="{{ route('admin.student-classes.index') }}" class="text-decoration-none small">
+                                <a href="{{ route('student-classes.index') }}" class="text-decoration-none small">
 
                                     View Students
 
@@ -153,10 +153,10 @@
 
                         </div>
 
-                        @if (hasPermission('class-schedules.index'))
+                        @if (\App\Services\Web\Common\RouteAccess::can('class-schedules.index'))
                             <div class="mt-3">
 
-                                <a href="{{ route('admin.class-schedules.index') }}" class="text-decoration-none small">
+                                <a href="{{ route('class-schedules.index') }}" class="text-decoration-none small">
 
                                     View Timetable
 
@@ -201,7 +201,7 @@
 
                         </div>
 
-                        @if (hasPermission('exams.index'))
+                        @if (\App\Services\Web\Common\RouteAccess::can('admin.exams.index'))
                             <div class="mt-3">
 
                                 <a href="{{ route('admin.exams.index') }}" class="text-decoration-none small">
@@ -248,8 +248,8 @@
 
                             </div>
 
-                            @if (hasPermission('class-schedules.index'))
-                                <a href="{{ route('admin.class-schedules.index') }}" class="btn btn-sm btn-light">
+                            @if (\App\Services\Web\Common\RouteAccess::can('class-schedules.index'))
+                                <a href="{{ route('class-schedules.index') }}" class="btn btn-sm btn-light">
 
                                     View All
 
@@ -462,10 +462,10 @@
 
 
                     {{-- My Classes --}}
-                    @if (hasPermission('student-classes.index'))
+                    @if (\App\Services\Web\Common\RouteAccess::can('student-classes.index'))
                         <div class="col-md-4 col-lg-3">
 
-                            <a href="{{ route('admin.student-classes.index') }}" class="text-decoration-none">
+                            <a href="{{ route('student-classes.index') }}" class="text-decoration-none">
 
                                 <div class="border rounded-4 p-3 h-100">
 
@@ -492,10 +492,10 @@
 
 
                     {{-- Timetable --}}
-                    @if (hasPermission('class-schedules.index'))
+                    @if (\App\Services\Web\Common\RouteAccess::can('class-schedules.index'))
                         <div class="col-md-4 col-lg-3">
 
-                            <a href="{{ route('admin.class-schedules.index') }}" class="text-decoration-none">
+                            <a href="{{ route('class-schedules.index') }}" class="text-decoration-none">
 
                                 <div class="border rounded-4 p-3 h-100">
 
@@ -522,7 +522,7 @@
 
 
                     {{-- Attendance --}}
-                    @if (hasPermission('attendance.index'))
+                    @if (\App\Services\Web\Common\RouteAccess::can('admin.attendance.index'))
                         <div class="col-md-4 col-lg-3">
 
                             <a href="{{ route('admin.attendance.index') }}" class="text-decoration-none">
@@ -552,7 +552,7 @@
 
 
                     {{-- Exams --}}
-                    @if (hasPermission('exams.index'))
+                    @if (\App\Services\Web\Common\RouteAccess::can('admin.exams.index'))
                         <div class="col-md-4 col-lg-3">
 
                             <a href="{{ route('admin.exams.index') }}" class="text-decoration-none">
@@ -582,7 +582,7 @@
 
 
                     {{-- Student Images --}}
-                    @if (hasPermission('student-images.index'))
+                    @if (\App\Services\Web\Common\RouteAccess::can('admin.student-images.index'))
                         <div class="col-md-4 col-lg-3">
 
                             <a href="{{ route('admin.student-images.index') }}" class="text-decoration-none">
@@ -612,10 +612,10 @@
 
 
                     {{-- Weekly Timetable --}}
-                    @if (hasPermission('weekly-timetable'))
+                    @if (\App\Services\Web\Common\RouteAccess::can('class-time-table.weekly'))
                         <div class="col-md-4 col-lg-3">
 
-                            <a href="{{ route('admin.weekly-timetable') }}" class="text-decoration-none">
+                            <a href="{{ route('class-time-table.weekly') }}" class="text-decoration-none">
 
                                 <div class="border rounded-4 p-3 h-100">
 
