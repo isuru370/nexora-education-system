@@ -144,6 +144,54 @@ class ClassSchedule extends Model
     }
 
     /**
+     * Whether the class start time has passed.
+     */
+    public function hasStarted(): bool
+    {
+        if (!$this->class_date || !$this->start_time) {
+            return false;
+        }
+
+        $start = $this->class_date
+            ->copy()
+            ->setTimeFromTimeString($this->start_time);
+
+        return now()->gte($start);
+    }
+
+    /**
+     * Whether this schedule can still be cancelled.
+     *
+     * - Future class            : yes
+     * - Today, before start time: yes (e.g. teacher is sick)
+     * - Today, after start time : no
+     * - Past class              : no
+     * - Ongoing / completed / cancelled: no
+     */
+    public function isCancellable(): bool
+    {
+        if (in_array($this->status, ['cancelled', 'ongoing', 'completed'], true)) {
+            return false;
+        }
+
+        if (!$this->class_date) {
+            return false;
+        }
+
+        $classDate = $this->class_date->copy()->startOfDay();
+
+        if ($classDate->lt(today())) {
+            return false;
+        }
+
+        if ($classDate->isToday()) {
+            return !$this->hasStarted();
+        }
+
+        return true;
+    }
+
+    /**
      * Cancel this schedule.
      */
     public function cancel($userId, $reason = null)

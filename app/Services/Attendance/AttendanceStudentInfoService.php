@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Attendance;
+namespace App\Services\Web\Attendance;
 
 use App\Models\ClassSchedule;
 use App\Models\StudentAttendance;

@@ -1,12 +1,17 @@
 <?php
 
-namespace App\Services\Attendance;
+namespace App\Services\Web\Attendance;
 
 use App\Models\ClassSchedule;
 use App\Models\Student;
 use App\Models\StudentClassEnrollment;
 use Illuminate\Support\Collection;
 
+/**
+ * Plain data object passed between attendance services.
+ *
+ * Not a model and not stored in the database.
+ */
 class AttendanceContext
 {
     /**
@@ -37,6 +42,17 @@ class AttendanceContext
      */
     public Collection $todaySchedules;
 
+    /**
+     * Branch of the current class.
+     *
+     * Taken from the schedule (class_schedules.branch_id).
+     * Falls back to the enrollment's branch if the schedule
+     * was loaded without the branch_id column.
+     *
+     * @var int|null
+     */
+    public ?int $branchId;
+
 
     /**
      * Create Context
@@ -56,5 +72,11 @@ class AttendanceContext
         $this->enrollment = $enrollment;
         $this->schedule = $schedule;
         $this->todaySchedules = $todaySchedules;
+
+        $branchId = $schedule->branch_id ?? $enrollment->branch_id;
+
+        $this->branchId = $branchId !== null
+            ? (int) $branchId
+            : null;
     }
 }

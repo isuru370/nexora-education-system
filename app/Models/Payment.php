@@ -21,6 +21,7 @@ class Payment extends Model
         'discount_amount',
         'paid_at',
         'payment_month',
+        'active_month_lock',
         'payment_method',
         'status',
         'receipt_number',
@@ -34,6 +35,7 @@ class Payment extends Model
         'discount_amount' => 'decimal:2',
         'paid_at' => 'datetime',
         'payment_month' => 'date',
+        'active_month_lock' => 'boolean',
         'is_synced' => 'boolean',
     ];
 
@@ -118,5 +120,9 @@ class Payment extends Model
     public function getIsFullyPaidAttribute()
     {
         return (float) $this->amount >= (float) $this->total_expected_amount;
+    }
+        public function deletedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'deleted_by');
     }
 }

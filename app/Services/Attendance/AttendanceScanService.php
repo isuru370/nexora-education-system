@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Attendance;
+namespace App\Services\Web\Attendance;
 
 use App\Models\ClassSchedule;
 use App\Models\Student;
@@ -239,6 +239,9 @@ class AttendanceScanService
                     'schedule' => [
 
                         'id' => $schedule->id,
+
+                        'branch_id' =>
+                            $context->branchId,
 
                         'class_date' =>
                             $schedule->class_date
@@ -496,6 +499,7 @@ class AttendanceScanService
 
             ->select([
                 'id',
+                'branch_id',
                 'student_class_id',
                 'class_category_fee_id',
                 'class_hall_id',

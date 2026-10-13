@@ -41,11 +41,11 @@
 
                 <div class="hero-actions">
                     <a href="{{ route('class-schedules.create', [
-        'type' => 'single',
-        'student_class_id' => $studentClass->id,
-        'class_category_id' => $category->id,
-        'class_category_fee_id' => $categoryFee->id,
-    ]) }}" class="btn btn-primary custom-btn">
+                        'type' => 'single',
+                        'student_class_id' => $studentClass->id,
+                        'class_category_id' => $category->id,
+                        'class_category_fee_id' => $categoryFee->id,
+                    ]) }}" class="btn btn-primary custom-btn">
                         <i class="bi bi-calendar-plus me-1"></i>
                         Add New Day
                     </a>
@@ -132,9 +132,9 @@
 
                     <div class="col-md-2 d-grid">
                         <a href="{{ route('class-schedules.categorySchedules', [
-        'student_class_id' => $studentClass->id,
-        'class_category_fee_id' => $categoryFee->id,
-    ]) }}" class="btn btn-outline-secondary search-btn">
+                            'student_class_id' => $studentClass->id,
+                            'class_category_fee_id' => $categoryFee->id,
+                        ]) }}" class="btn btn-outline-secondary search-btn">
                             Reset
                         </a>
                     </div>
@@ -206,13 +206,19 @@
                                     $statusClass = 'bg-danger';
                                 }
 
+                                // Today and past schedules: no edit / no active toggle.
                                 $isLocked = $scheduleDate ? $scheduleDate->lte(today()) : false;
-                                $isCancelable = !$isLocked
-                                    && !$schedule->is_active
-                                    && !in_array($schedule->status, ['cancelled', 'completed']);
+                                $isToday = $scheduleDate ? $scheduleDate->isToday() : false;
+
+                                // Future: must be set inactive first (same as before).
+                                // Today: can cancel until the class starts.
+                                $isCancelable = $schedule->isCancellable()
+                                    && ($isToday || !$schedule->is_active);
+
                                 $isEditable = !$isLocked
                                     && $schedule->is_active
                                     && !in_array($schedule->status, ['cancelled', 'completed']);
+
                                 $canToggleActive = !$isLocked
                                     && !in_array($schedule->status, ['cancelled', 'completed']);
                             @endphp
@@ -257,17 +263,17 @@
                                             <i class="bi bi-eye"></i>
                                         </a>
 
-                                        @if($isLocked)
+                                        @if($isLocked && !$isCancelable)
                                             <span class="badge bg-dark custom-badge align-self-center">Locked</span>
                                         @else
-                                            @if($isEditable)
+                                            @if(!$isLocked && $isEditable)
                                                 <a href="{{ route('class-schedules.edit', $schedule) }}"
                                                     class="btn btn-sm btn-outline-warning icon-btn" title="Edit schedule">
                                                     <i class="bi bi-pencil-square"></i>
                                                 </a>
                                             @endif
 
-                                            @if($canToggleActive)
+                                            @if(!$isLocked && $canToggleActive)
                                                 <form method="POST"
                                                     action="{{ route('class-schedules.toggleActive', $schedule) }}"
                                                     class="d-inline" onsubmit="return confirm('Change active status?')">
@@ -321,10 +327,11 @@
                 ? \Carbon\Carbon::parse($schedule->class_date)
                 : null;
 
-            $isLocked = $scheduleDate ? $scheduleDate->lte(today()) : false;
-            $isCancelable = !$isLocked
-                && !$schedule->is_active
-                && !in_array($schedule->status, ['cancelled', 'completed']);
+            $isToday = $scheduleDate ? $scheduleDate->isToday() : false;
+
+            // Must match the table row rule above.
+            $isCancelable = $schedule->isCancellable()
+                && ($isToday || !$schedule->is_active);
         @endphp
 
         @if($isCancelable)
@@ -349,6 +356,13 @@
                                     {{ \Carbon\Carbon::parse($schedule->start_time)->format('h:i A') }}
                                     - {{ \Carbon\Carbon::parse($schedule->end_time)->format('h:i A') }}
                                 </p>
+
+                                @if($isToday)
+                                    <div class="alert alert-warning py-2 small">
+                                        <i class="bi bi-exclamation-triangle me-1"></i>
+                                        This is today's class. Parents will be notified by SMS.
+                                    </div>
+                                @endif
 
                                 <label class="form-label fw-semibold">Cancel Reason *</label>
                                 <textarea name="cancel_reason" class="form-control custom-input" rows="3" required

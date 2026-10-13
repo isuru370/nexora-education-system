@@ -4,10 +4,6 @@
 
 use App\Http\Controllers\Admin\ActivityLogController;
 
-use App\Http\Controllers\Admin\AdmissionController;
-
-use App\Http\Controllers\Admin\AdmissionPaymentController;
-
 use App\Http\Controllers\Admin\OrganizerPaymentController;
 
 use App\Http\Controllers\Admin\SystemUserController;
@@ -26,8 +22,6 @@ use App\Http\Controllers\Admin\FcmTokenController;
 
 use App\Http\Controllers\Admin\ForgotPasswordController;
 
-use App\Http\Controllers\Admin\GradeController;
-
 use App\Http\Controllers\Admin\ImageUploadController;
 
 use App\Http\Controllers\Admin\InstituteExpenseController;
@@ -44,15 +38,11 @@ use App\Http\Controllers\Admin\MonthlyClassAttendanceReportController;
 
 use App\Http\Controllers\Admin\MonthlyReportController;
 
-use App\Http\Controllers\Admin\NewAttendance\AttendanceController;
-
 use App\Http\Controllers\Admin\NotificationController;
 
 use App\Http\Controllers\Admin\PaymentCollectionReportController;
 
 use App\Http\Controllers\Admin\PaymentReminderController;
-
-use App\Http\Controllers\Admin\ReceiptController;
 
 use App\Http\Controllers\Admin\StudentImageController;
 
@@ -67,6 +57,9 @@ use App\Http\Controllers\Admin\UserController;
 
 
 use App\Http\Controllers\Admin\UserProfileController;
+use App\Http\Controllers\Web\Admission\AdmissionController;
+use App\Http\Controllers\Web\Admission\AdmissionPaymentController;
+use App\Http\Controllers\Web\Attendance\AttendanceController;
 use App\Http\Controllers\Web\Branch\BranchController;
 use App\Http\Controllers\Web\ClassCategory\ClassCategoryController;
 use App\Http\Controllers\Web\ClassCategoryFee\ClassCategoryFeeController;
@@ -78,6 +71,7 @@ use App\Http\Controllers\Web\Dashboard\DashboardController;
 use App\Http\Controllers\Web\GenerateStudentId\GenerateStudentIdController;
 use App\Http\Controllers\Web\Organizer\OrganizerController;
 use App\Http\Controllers\Web\Payment\PaymentController;
+use App\Http\Controllers\Web\Receipt\ReceiptController;
 use App\Http\Controllers\Web\Student\StudentCardRegistrationController;
 use App\Http\Controllers\Web\Student\StudentController;
 use App\Http\Controllers\Web\Student\StudentTemporaryRegistrationController;
@@ -370,40 +364,6 @@ Route::middleware([
 
     ->group(function () {
 
-
-
-        Route::get(
-
-            '/receipts',
-
-            [ReceiptController::class, 'index']
-
-        )->name('receipts.index')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
-
-
-
-        Route::get(
-
-            '/receipts/export/excel',
-
-            [ReceiptController::class, 'exportExcel']
-
-        )->name('receipts.export.excel')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
-
-
-
-        Route::get(
-
-            '/receipts/export/pdf',
-
-            [ReceiptController::class, 'exportPdf']
-
-        )->name('receipts.export.pdf')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
-
-
-
-
-
         Route::get('/profile', [UserProfileController::class, 'index'])
 
             ->name('profile.index')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
@@ -494,56 +454,6 @@ Route::middleware([
         )->name('upload.delete')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        /*
-
-|--------------------------------------------------------------------------
-
-| Grade Management
-
-|--------------------------------------------------------------------------
-
-*/
-
-
-
-        Route::middleware('role:ADMIN,BRANCH_ADMIN,USER')->group(function () {
-
-            Route::resource(
-
-                'grades',
-
-                GradeController::class
-
-            );
-        });
-
-
-
-        Route::patch(
-
-            'grades/{grade}/toggle-active',
-
-            [GradeController::class, 'toggleActive']
-
-        )->name('grades.toggleActive')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
-
         /*
 
         |--------------------------------------------------------------------------
@@ -568,38 +478,6 @@ Route::middleware([
             return view('admin.payment.today-receipt');
         })->name('payments.today-receipt')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
 
-
-
-
-
-
-
-        Route::middleware('role:ADMIN,BRANCH_ADMIN,USER')->group(function () {
-
-            Route::resource(
-
-                'admissions',
-
-                AdmissionController::class
-
-            );
-        });
-
-
-
-        Route::middleware('role:ADMIN,BRANCH_ADMIN,USER')->group(function () {
-
-            Route::resource(
-
-                'admission-payments',
-
-                AdmissionPaymentController::class
-
-            );
-        });
-
-
-
         /*
 
         |--------------------------------------------------------------------------
@@ -617,82 +495,6 @@ Route::middleware([
             return view('admin.attendance.index');
         })->name('attendance.index')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
 
-
-
-
-
-        /*
-
-|--------------------------------------------------------------------------
-
-| New Attendance
-
-|--------------------------------------------------------------------------
-
-*/
-
-
-
-        Route::prefix('new-attendance')
-
-            ->name('new-attendance.')
-
-            ->middleware('role:ADMIN,BRANCH_ADMIN,USER')
-
-            ->controller(AttendanceController::class)
-
-            ->group(function () {
-
-
-
-                /*
-
-        |--------------------------------------------------------------------------
-
-        | Attendance Screen
-
-        |--------------------------------------------------------------------------
-
-        */
-
-
-
-                Route::get('/', 'index')
-
-                    ->name('index')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
-
-
-
-                /*
-
-        |--------------------------------------------------------------------------
-
-        | Scan Student
-
-        |--------------------------------------------------------------------------
-
-        |
-
-        | QR Web:
-
-        |     qr_web
-
-        |
-
-        | Manual Web:
-
-        |     manual_web
-
-        |
-
-        */
-
-
-
-                Route::post('/scan', 'scan')
-
-                    ->name('scan')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
-            });
 
         /*
 
@@ -1910,7 +1712,6 @@ Route::prefix('student-cards')
         Route::get('/', [StudentCardController::class, 'index'])
             ->name('index')->middleware([
                 'auth',
-                'user.active',
                 'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
             ]);
 
@@ -2530,7 +2331,7 @@ Route::prefix('student-classes')
             ->middleware('role:ADMIN,BRANCH_ADMIN');
     });
 
-    /*
+/*
 |--------------------------------------------------------------------------
 | Student Class Management Routes
 |--------------------------------------------------------------------------
@@ -2595,7 +2396,7 @@ Route::prefix('student-class-management')
             ->name('category-fees');
     });
 
-    /*
+/*
 |--------------------------------------------------------------------------
 | Class Time Table Routes
 |--------------------------------------------------------------------------
@@ -3056,7 +2857,7 @@ Route::middleware([
     });
 
 
-    /*
+/*
 |--------------------------------------------------------------------------
 | Web Payment Routes
 |--------------------------------------------------------------------------
@@ -3083,4 +2884,125 @@ Route::prefix('new-payment')
         // Store multiple payments
         Route::post('bulk-pay', 'bulkPay')
             ->name('bulk-pay');
+    });
+
+/*
+|--------------------------------------------------------------------------
+| Receipts
+|--------------------------------------------------------------------------
+|
+| URL  : /receipts
+| Name : receipts.*
+|
+*/
+
+Route::prefix('receipts')
+    ->name('receipts.')
+    ->controller(ReceiptController::class)
+    ->middleware([
+        'auth',
+        'user.active',
+        'role:ADMIN,BRANCH_ADMIN,USER',
+    ])
+    ->group(function () {
+
+        Route::get('/', 'index')->name('index');
+
+        Route::get('/export/excel', 'exportExcel')->name('export.excel');
+
+        Route::get('/export/pdf', 'exportPdf')->name('export.pdf');
+    });
+
+/*
+|--------------------------------------------------------------------------
+| Admissions (admission types)
+|--------------------------------------------------------------------------
+|
+| URL  : admissions
+| Name : admissions.*  (used by controllers, views and sidebar)
+|
+*/
+
+Route::prefix('admissions')
+    ->name('admissions.')
+    ->controller(AdmissionController::class)
+    ->middleware([
+        'auth',
+        'user.active',
+        'role:ADMIN,BRANCH_ADMIN,USER',
+    ])
+    ->group(function () {
+
+        Route::get('/', 'index')->name('index');
+        Route::get('/create', 'create')->name('create');
+        Route::post('/', 'store')->name('store');
+
+        Route::get('/{admission}', 'show')->name('show');
+        Route::get('/{admission}/edit', 'edit')->name('edit');
+        Route::match(['put', 'patch'], '/{admission}', 'update')->name('update');
+        Route::delete('/{admission}', 'destroy')->name('destroy');
+    });
+
+/*
+|--------------------------------------------------------------------------
+| Admission Payments
+|--------------------------------------------------------------------------
+|
+| URL  : admission-payments
+| Name : admission-payments.*
+|
+*/
+
+Route::prefix('admission-payments')
+    ->name('admission-payments.')
+    ->controller(AdmissionPaymentController::class)
+    ->middleware([
+        'auth',
+        'user.active',
+        'role:ADMIN,BRANCH_ADMIN,USER',
+    ])
+    ->group(function () {
+
+        Route::get('/', 'index')->name('index');
+        Route::get('/create', 'create')->name('create');
+        Route::post('/', 'store')->name('store');
+
+        Route::get('/{admissionPayment}', 'show')->name('show');
+        Route::get('/{admissionPayment}/edit', 'edit')->name('edit');
+        Route::match(['put', 'patch'], '/{admissionPayment}', 'update')->name('update');
+        Route::delete('/{admissionPayment}', 'destroy')->name('destroy');
+    });
+
+Route::prefix('new-attendance')
+    ->name('new-attendance.')
+    ->controller(AttendanceController::class)
+    ->middleware([
+        'auth',
+        'user.active',
+        'role:ADMIN,BRANCH_ADMIN,USER',
+    ])
+    ->group(function () {
+
+        Route::get('/', 'index')
+            ->name('index');
+
+        Route::post('/scan', 'scan')
+            ->name('scan');
+    });
+
+Route::prefix('new-attendance')
+    ->name('new-attendance.')
+    ->controller(AttendanceController::class)
+    ->middleware([
+        'auth',
+        'user.active',
+        'role:ADMIN,BRANCH_ADMIN,USER',
+    ])
+    ->group(function () {
+
+        Route::get('/', 'index')
+            ->name('index');
+
+        Route::post('/scan', 'scan')
+            ->name('scan');
     });

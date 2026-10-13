@@ -48,19 +48,28 @@ class ReceiptService
             ? (float) $paymentData['fee']['class_fee']
             : 0;
 
+        $classRow = $this->buildClassRow(
+            $paymentData,
+            $payment
+        );
+
         return [
             'student_details' => $this->buildStudentDetails(
                 $payment->student
             ),
 
             'classes' => [
-                $this->buildClassRow(
-                    $paymentData,
-                    $payment
-                ),
+                $classRow,
             ],
 
             'total' => round($classFee, 2),
+
+            /*
+            | Extra fields for the web receipt (mobile ignores them).
+            */
+            'payment_date' => $this->formatDate($payment->paid_at),
+            'payment_time' => $this->formatTime($payment->paid_at),
+            'summary' => $this->buildSummary([$classRow]),
 
             'payment_method' => $payment->payment_method,
         ];
@@ -236,6 +245,13 @@ class ReceiptService
 
             'total' => round($total, 2),
 
+            /*
+            | Extra fields for the web receipt (mobile ignores them).
+            */
+            'payment_date' => $this->formatDate($firstPayment->paid_at),
+            'payment_time' => $this->formatTime($firstPayment->paid_at),
+            'summary' => $this->buildSummary($classRows),
+
             'payment_method' => $paymentMethod,
 
             'payment_count' => $payments->count(),
@@ -245,6 +261,24 @@ class ReceiptService
     /**
      * Build student details for receipt.
      */
+    /**
+     * Totals for the receipt footer (class fee, hall fee, paid).
+     */
+    private function buildSummary(array $classRows): array
+    {
+        $sum = function (string $key) use ($classRows): float {
+            return round(array_sum(array_column($classRows, $key)), 2);
+        };
+
+        return [
+            'total_class_fee' => $sum('class_fee'),
+            'total_hall_fee' => $sum('hall_fee'),
+            'total_final_fee' => $sum('total_fee'),
+            'total_discount' => $sum('discount_amount'),
+            'total_paid' => $sum('paid_amount'),
+        ];
+    }
+
     private function buildStudentDetails($student): array
     {
         return [
@@ -367,6 +401,17 @@ class ReceiptService
             'class_fee' => round($classFee, 2),
 
             'receipt_no' => $receiptNo,
+
+            /*
+            | Extra fields for the web receipt (mobile ignores them).
+            */
+            'hall_fee' => round((float) ($paymentData['fee']['hall_fee'] ?? 0), 2),
+            'total_fee' => round((float) ($paymentData['fee']['total_fee'] ?? $classFee), 2),
+            'discount_amount' => round((float) ($paymentData['fee']['discount_amount'] ?? 0), 2),
+            'paid_amount' => round((float) ($paymentData['fee']['paid_amount'] ?? $payment->amount), 2),
+            'payment_month' => $payment->payment_month
+                ? \Illuminate\Support\Carbon::parse($payment->payment_month)->format('Y F')
+                : null,
         ];
     }
 

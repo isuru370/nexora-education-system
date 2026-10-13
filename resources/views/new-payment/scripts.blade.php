@@ -840,8 +840,9 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function buildReceiptHtml(receipt) {
 
-        const student = receipt?.student || {};
-        const rows    = receipt?.payments || [];
+        // Server (ReceiptService) sends: student_details, classes, summary
+        const student = receipt?.student_details || receipt?.student || {};
+        const rows    = receipt?.classes || receipt?.payments || [];
 
         let html = `
             <div id="receipt-print-area" class="receipt-paper">
@@ -851,7 +852,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 </div>
                 <div class="receipt-line"></div>
                 Student ID: ${escapeHtml(student.custom_id || '-')}<br>
-                Student: ${escapeHtml(student.initial_name || student.full_name || '-')}<br>
+                Student: ${escapeHtml(student.name || student.initial_name || student.full_name || '-')}<br>
                 Date: ${escapeHtml(receipt.payment_date || '-')}<br>
                 Time: ${escapeHtml(receipt.payment_time || '-')}
                 <div class="receipt-line"></div>
@@ -861,20 +862,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const classFee = Number(row.class_fee ?? row.final_fee ?? 0);
             const hallFee  = Number(row.hall_fee || 0);
-            const totalFee = Number(row.total_fee ?? (classFee + hallFee));
 
             html += `
                 <div class="receipt-item">
                     <strong>${escapeHtml(row.class_name || '-')}</strong><br>
-                    Category: ${escapeHtml(row.category || '-')}<br>
+                    Category: ${escapeHtml(row.category_name || row.category || '-')}<br>
                     Grade: ${escapeHtml(row.grade || '-')}<br>
-                    Teacher: ${escapeHtml(row.teacher || '-')}<br>
+                    Teacher: ${escapeHtml(row.teacher_name || row.teacher || '-')}<br>
                     Month: ${escapeHtml(row.payment_month || '-')}<br>
-                    Receipt: ${escapeHtml(row.receipt_number || '-')}<br>
+                    Receipt: ${escapeHtml(row.receipt_no || row.receipt_number || '-')}<br>
                     Class Fee: Rs. ${formatMoney(classFee)}<br>
                     ${hallFee > 0 ? `Hall Fee: Rs. ${formatMoney(hallFee)}<br>` : ''}
-                    Total Fee: Rs. ${formatMoney(totalFee)}<br>
-                    Paid: Rs. ${formatMoney(row.paid_amount)}
                 </div>
                 <div class="receipt-line"></div>
             `;
@@ -883,14 +881,11 @@ document.addEventListener('DOMContentLoaded', function () {
         const totalClassFee = Number(receipt.summary?.total_class_fee || 0);
         const totalHallFee  = Number(receipt.summary?.total_hall_fee || 0);
         const totalFee      = Number(receipt.summary?.total_final_fee ?? (totalClassFee + totalHallFee));
-        const totalPaid     = Number(receipt.summary?.total_paid || 0);
 
         html += `
                 <div class="receipt-summary">
-                    Class Fee: Rs. ${formatMoney(totalClassFee)}<br>
                     ${totalHallFee > 0 ? `Hall Fee: Rs. ${formatMoney(totalHallFee)}<br>` : ''}
-                    <strong>TOTAL FEE: Rs. ${formatMoney(totalFee)}</strong><br>
-                    <strong>TOTAL PAID: Rs. ${formatMoney(totalPaid)}</strong>
+                    <strong>TOTAL FEE: Rs. ${formatMoney(totalFee)}</strong>
                 </div>
                 <div class="receipt-line"></div>
                 Payment: ${escapeHtml(receipt.payment_method || '-')}<br><br>

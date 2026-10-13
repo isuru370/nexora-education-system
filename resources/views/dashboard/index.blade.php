@@ -4,306 +4,288 @@
 @section('page-title', 'Dashboard')
 
 @php
-    $greeting = 'Good Evening';
-    if (now()->hour < 12) {
-        $greeting = 'Good Morning';
-    } elseif (now()->hour < 17) {
-        $greeting = 'Good Afternoon';
-    }
+    $hour = now()->hour;
+    $greeting = $hour < 12 ? 'Good Morning' : ($hour < 17 ? 'Good Afternoon' : 'Good Evening');
+
+    $stats = $stats ?? [];
+    $todayClassSummary = $todayClassSummary ?? [];
+    $unpaid = $unpaid ?? [];
+    $todayClasses = $todayClasses ?? collect();
+    $paymentMethods = $paymentMethods ?? collect();
+    $branchSummary = $branchSummary ?? collect();
+    $recentPayments = $recentPayments ?? collect();
+    $dailyIncome = $dailyIncome ?? ['labels' => [], 'values' => []];
+
+    $money = fn ($value) => 'Rs. ' . number_format((float) $value, 2);
+
+    // [css class, text] for a % change badge
+    $change = function ($value) {
+        if ($value === null) {
+            return ['neutral', '—'];
+        }
+
+        return $value >= 0
+            ? ['up', '+' . number_format($value, 1) . '%']
+            : ['down', number_format($value, 1) . '%'];
+    };
+
+    [$todayChangeClass, $todayChangeText] = $change($stats['todayChangePercent'] ?? null);
+    [$monthChangeClass, $monthChangeText] = $change($stats['monthlyChangePercent'] ?? null);
+
+    $expected = (int) ($todayClassSummary['expected_students'] ?? 0);
+    $present = (int) ($todayClassSummary['present_students'] ?? 0);
+    $todayAttendancePercent = $expected > 0 ? (int) round(($present / $expected) * 100) : 0;
+
+    $methodsTotal = (float) $paymentMethods->sum('total');
+
+    $statusBadge = [
+        'scheduled' => 'nx-badge-blue',
+        'ongoing' => 'nx-badge-amber',
+        'completed' => 'nx-badge-green',
+        'cancelled' => 'nx-badge-red',
+    ];
 @endphp
 
 @section('content')
-<div class="dashboard-page">
+    <div class="dashboard-page">
 
-    {{-- HERO SECTION --}}
-    <div class="hero-section mb-4">
-        <div class="hero-content">
-            <div class="hero-left">
-                <div class="hero-greeting">
+        {{-- ===================================================== --}}
+        {{-- HERO --}}
+        {{-- ===================================================== --}}
+        <div class="hero-section mb-4">
+            <div class="hero-content">
+                <div class="hero-left">
                     <span class="greeting-badge">{{ $greeting }}</span>
-                    <h1 class="hero-title">
-                        Welcome Back, {{ auth()->user()->name ?? 'Administrator' }}
-                    </h1>
-                    <p class="hero-subtitle">
-                        Manage students, payments, attendance, classes, and ID cards from one dashboard.
-                    </p>
-                </div>
-                <div class="hero-stats-mini">
-                    <div class="mini-stat">
-                        <span class="mini-stat-value">{{ $studentsCount ?? 0 }}</span>
-                        <span class="mini-stat-label">Students</span>
-                    </div>
-                    <div class="mini-stat-divider"></div>
-                    <div class="mini-stat">
-                        <span class="mini-stat-value">{{ $teachersCount ?? 0 }}</span>
-                        <span class="mini-stat-label">Teachers</span>
-                    </div>
-                    <div class="mini-stat-divider"></div>
-                    <div class="mini-stat">
-                        <span class="mini-stat-value">{{ $classesCount ?? 0 }}</span>
-                        <span class="mini-stat-label">Classes</span>
-                    </div>
-                </div>
-            </div>
-            <div class="hero-right">
-                <div class="hero-date-time">
-                    <div class="date-box">
-                        <i class="bi bi-calendar-event"></i>
-                        <span>{{ now()->format('d M Y') }}</span>
-                    </div>
-                    <div class="time-box">
-                        <i class="bi bi-clock"></i>
-                        <span id="liveTime">{{ now()->format('h:i A') }}</span>
+                    <h1 class="hero-title">Welcome back, {{ auth()->user()->name ?? 'Administrator' }}</h1>
+                    <p class="hero-subtitle">Here is what is happening at the institute today.</p>
+
+                    <div class="hero-stats-mini">
+                        <div class="mini-stat">
+                            <span class="mini-stat-value">{{ number_format($stats['activeStudents'] ?? $studentsCount ?? 0) }}</span>
+                            <span class="mini-stat-label">Active Students</span>
+                        </div>
+                        <div class="mini-stat-divider"></div>
+                        <div class="mini-stat">
+                            <span class="mini-stat-value">{{ $todayClassSummary['total'] ?? 0 }}</span>
+                            <span class="mini-stat-label">Classes Today</span>
+                        </div>
+                        <div class="mini-stat-divider"></div>
+                        <div class="mini-stat">
+                            <span class="mini-stat-value">{{ number_format($stats['todayAttendance'] ?? 0) }}</span>
+                            <span class="mini-stat-label">Attendance Today</span>
+                        </div>
+                        <div class="mini-stat-divider"></div>
+                        <div class="mini-stat">
+                            <span class="mini-stat-value">{{ number_format($stats['todayPaymentsCount'] ?? 0) }}</span>
+                            <span class="mini-stat-label">Payments Today</span>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
 
-    {{-- ALERT --}}
-    @if ($showStudentCardWarning ?? false)
-        <div class="alert alert-dismissible fade show alert-card mb-4" role="alert">
-            <div class="alert-icon">
-                <i class="bi bi-exclamation-triangle-fill"></i>
-            </div>
-            <div class="alert-content">
-                <strong>Warning!</strong> Student cards are running low.
-                Remaining stock: <span class="alert-highlight">{{ $availableStudentCardCount ?? 0 }}</span>
-            </div>
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-        </div>
-    @endif
-
-    {{-- STATS CARDS --}}
-    <div class="stats-grid">
-        <div class="nx-card stat-card">
-            <div class="stat-icon-wrapper"><i class="bi bi-mortarboard-fill"></i></div>
-            <div class="stat-info">
-                <span class="stat-label">Total Students</span>
-                <h2 class="stat-number">{{ $studentsCount ?? 0 }}</h2>
-            </div>
-        </div>
-
-        <div class="nx-card stat-card">
-            <div class="stat-icon-wrapper"><i class="bi bi-person-workspace"></i></div>
-            <div class="stat-info">
-                <span class="stat-label">Total Teachers</span>
-                <h2 class="stat-number">{{ $teachersCount ?? 0 }}</h2>
-            </div>
-        </div>
-
-        <div class="nx-card stat-card">
-            <div class="stat-icon-wrapper"><i class="bi bi-building"></i></div>
-            <div class="stat-info">
-                <span class="stat-label">Running Classes</span>
-                <h2 class="stat-number">{{ $classesCount ?? 0 }}</h2>
-            </div>
-        </div>
-
-        <div class="nx-card stat-card stat-card-income">
-            <div class="stat-icon-wrapper"><i class="bi bi-cash-stack"></i></div>
-            <div class="stat-info">
-                <span class="stat-label">Today's Income</span>
-                <h2 class="stat-number">Rs. {{ number_format($todayIncome ?? 0, 2) }}</h2>
-            </div>
-        </div>
-    </div>
-
-    {{-- QUICK ACTIONS --}}
-    <div class="quick-actions-section mb-4">
-        <div class="quick-actions-header">
-            <div>
-                <h5 class="section-title">
-                    <i class="bi bi-lightning-fill text-warning"></i> Quick Actions
-                </h5>
-                <p class="section-subtitle">Quickly access frequently used functions</p>
-            </div>
-            <span class="badge-actions">⚡ 5 Actions</span>
-        </div>
-
-        <div class="quick-actions-grid">
-            @if (auth()->check())
-                <button type="button" class="quick-action-btn qa-primary" data-href="{{ route('student-card-registration.create') }}">
-                    <div class="qa-icon"><i class="bi bi-person-plus-fill"></i></div>
-                    <div class="qa-text">
-                        <span class="qa-title">Add Student</span>
-                        <span class="qa-desc">New enrollment</span>
-                    </div>
-                </button>
-
-                <button type="button" class="quick-action-btn qa-success" data-href="{{ route('admin.new-payment.index') }}">
-                    <div class="qa-icon"><i class="bi bi-credit-card-2-front-fill"></i></div>
-                    <div class="qa-text">
-                        <span class="qa-title">Add Payment</span>
-                        <span class="qa-desc">Record payment</span>
-                    </div>
-                </button>
-
-                <button type="button" class="quick-action-btn qa-warning" data-href="{{ route('student-classes.create') }}">
-                    <div class="qa-icon"><i class="bi bi-calendar-plus-fill"></i></div>
-                    <div class="qa-text">
-                        <span class="qa-title">Create Class</span>
-                        <span class="qa-desc">New class setup</span>
-                    </div>
-                </button>
-
-                <button type="button" class="quick-action-btn qa-info" data-href="{{ route('student-class-management.index') }}">
-                    <div class="qa-icon"><i class="bi bi-person-workspace"></i></div>
-                    <div class="qa-text">
-                        <span class="qa-title">Class Mgmt</span>
-                        <span class="qa-desc">Manage enrollments</span>
-                    </div>
-                </button>
-
-                <button type="button" class="quick-action-btn qa-dark" data-href="{{ route('admin.monthly-report.index') }}">
-                    <div class="qa-icon"><i class="bi bi-file-earmark-bar-graph"></i></div>
-                    <div class="qa-text">
-                        <span class="qa-title">Reports</span>
-                        <span class="qa-desc">View analytics</span>
-                    </div>
-                </button>
-            @endif
-        </div>
-    </div>
-
-    {{-- CHART + INVENTORY ROW --}}
-    <div class="row g-4 mb-4">
-        <div class="col-xl-9">
-            <div class="chart-premium-card">
-                <div class="chart-premium-header">
-                    <div>
-                        <h5 class="chart-premium-title">
-                            <i class="bi bi-graph-up-arrow text-primary"></i>
-                            Institute Yearly Payment Report
-                        </h5>
-                        <p class="chart-premium-subtitle">Monthly payment analytics with dual dataset comparison</p>
-                    </div>
-                    <div class="chart-controls">
-                        <div class="chart-legend">
-                            <span class="legend-item"><span class="legend-dot blue"></span> Total Payments</span>
-                            <span class="legend-item"><span class="legend-dot green"></span> Institute Income</span>
+                <div class="hero-right">
+                    <div class="hero-date-time">
+                        <div class="date-box">
+                            <i class="bi bi-calendar-event"></i>
+                            <span>{{ now()->format('D, d M Y') }}</span>
                         </div>
-                        <select id="yearSelector" class="year-selector-premium">
-                            @for ($y = 2022; $y <= now()->year; $y++)
-                                <option value="{{ $y }}" {{ $y == now()->year ? 'selected' : '' }}>{{ $y }}</option>
-                            @endfor
-                        </select>
-                    </div>
-                </div>
-                <div class="chart-premium-body">
-                    <div class="chart-container-premium">
-                        <canvas id="yearlyPaymentChart"></canvas>
-                        <div id="chartLoading" class="chart-loading-premium" style="display: none;">
-                            <div class="spinner-premium"></div>
+                        <div class="time-box">
+                            <i class="bi bi-clock"></i>
+                            <span id="liveTime">{{ now()->format('h:i A') }}</span>
                         </div>
                     </div>
-                    <div class="chart-premium-stats">
-                        <div class="premium-stat-item">
-                            <span class="premium-stat-label">Total Revenue</span>
-                            <span class="premium-stat-value total" id="totalRevenue">Rs. 0.00</span>
-                        </div>
-                        <div class="premium-stat-divider"></div>
-                        <div class="premium-stat-item">
-                            <span class="premium-stat-label">Institute Income</span>
-                            <span class="premium-stat-value total" id="instituteIncome">Rs. 0.00</span>
-                        </div>
-                        <div class="premium-stat-divider"></div>
-                        <div class="premium-stat-item">
-                            <span class="premium-stat-label">Best Month</span>
-                            <span class="premium-stat-value" id="bestMonth">-</span>
-                        </div>
-                        <div class="premium-stat-divider"></div>
-                        <div class="premium-stat-item">
-                            <span class="premium-stat-label">Annual Growth</span>
-                            <span class="premium-stat-value" id="growthRate">0%</span>
-                        </div>
-                    </div>
+                    <small class="hero-updated">Updated {{ $generatedAt ?? now()->format('h:i A') }}</small>
                 </div>
             </div>
         </div>
 
-        {{-- Student Cards Stock --}}
-        <div class="col-xl-3">
-            <div class="card-stock-premium">
-                <div class="card-stock-header">
-                    <div>
-                        <span class="card-stock-label">Available Student Cards</span>
-                        <h2 class="card-stock-number">{{ $availableStudentCardCount ?? 0 }}</h2>
-                    </div>
-                    <div class="card-stock-icon"><i class="bi bi-person-vcard-fill"></i></div>
-                </div>
-                <div class="card-stock-status">
-                    @if ($showStudentCardWarning ?? false)
-                        <span class="status-badge warning">
-                            <i class="bi bi-exclamation-triangle"></i> Low Stock
-                        </span>
-                    @else
-                        <span class="status-badge success">
-                            <i class="bi bi-check-circle"></i> Enough Stock
-                        </span>
-                    @endif
-                </div>
-                @if (($availableStudentCardCount ?? 0) < 20)
-                    <div class="card-stock-progress">
-                        <div class="stock-progress">
-                            <div class="stock-progress-fill" style="width: {{ min(100, (($availableStudentCardCount ?? 0) / 50) * 100) }}%;"></div>
-                        </div>
-                        <span class="stock-progress-label">Reorder when stock reaches 20</span>
-                    </div>
+        {{-- ===================================================== --}}
+        {{-- ALERTS --}}
+        {{-- ===================================================== --}}
+        @if (($showStudentCardWarning ?? false) || ($expiringStudentsCount ?? 0) > 0 || ($incompleteRegistrationCount ?? 0) > 0)
+            <div class="alerts-row mb-4">
+                @if ($showStudentCardWarning ?? false)
+                    <a href="{{ route('student-cards.index') }}" class="nx-alert nx-alert-amber">
+                        <i class="bi bi-person-vcard"></i>
+                        <span>Student cards are running low: <strong>{{ $availableStudentCardCount ?? 0 }}</strong> left</span>
+                        <i class="bi bi-chevron-right ms-auto"></i>
+                    </a>
+                @endif
+
+                @if (($expiringStudentsCount ?? 0) > 0)
+                    <a href="{{ route('temporary_id_cards.index') }}" class="nx-alert nx-alert-red">
+                        <i class="bi bi-qr-code"></i>
+                        <span><strong>{{ $expiringStudentsCount }}</strong> temporary QR codes expire within 10 days</span>
+                        <i class="bi bi-chevron-right ms-auto"></i>
+                    </a>
+                @endif
+
+                @if (($incompleteRegistrationCount ?? 0) > 0)
+                    <a href="#incomplete-registrations" class="nx-alert nx-alert-blue">
+                        <i class="bi bi-hourglass-split"></i>
+                        <span><strong>{{ $incompleteRegistrationCount }}</strong> incomplete student registrations</span>
+                        <i class="bi bi-chevron-right ms-auto"></i>
+                    </a>
                 @endif
             </div>
-        </div>
-    </div>
+        @endif
 
-    {{-- BOTTOM SECTION --}}
-    <div class="row g-4">
-        {{-- Incomplete Registrations --}}
-        <div class="col-xl-7">
-            <div class="table-premium-card">
-                <div class="table-premium-header">
-                    <div>
-                        <h5 class="table-premium-title">
-                            <i class="bi bi-hourglass-split text-warning"></i> Incomplete Registrations
-                        </h5>
-                        <span class="table-premium-badge">
-                            <i class="bi bi-hourglass-split"></i>
-                            {{ $incompleteRegistrationCount ?? 0 }} Pending
-                        </span>
-                    </div>
+        {{-- ===================================================== --}}
+        {{-- KPI CARDS --}}
+        {{-- ===================================================== --}}
+        <div class="stats-grid mb-4">
+
+            <div class="nx-card stat-card">
+                <div class="stat-icon-wrapper icon-green"><i class="bi bi-cash-stack"></i></div>
+                <div class="stat-info">
+                    <span class="stat-label">Today's Income</span>
+                    <h2 class="stat-number">{{ $money($stats['todayIncome'] ?? $todayIncome ?? 0) }}</h2>
+                    <span class="stat-change {{ $todayChangeClass }}">
+                        {{ $todayChangeText }} <span class="stat-change-note">vs yesterday</span>
+                    </span>
                 </div>
-                <div class="table-premium-body">
+            </div>
+
+            <div class="nx-card stat-card">
+                <div class="stat-icon-wrapper icon-blue"><i class="bi bi-graph-up-arrow"></i></div>
+                <div class="stat-info">
+                    <span class="stat-label">{{ now()->format('F') }} Income</span>
+                    <h2 class="stat-number">{{ $money($stats['monthlyIncome'] ?? $monthlyIncome ?? 0) }}</h2>
+                    <span class="stat-change {{ $monthChangeClass }}">
+                        {{ $monthChangeText }} <span class="stat-change-note">vs same days last month</span>
+                    </span>
+                </div>
+            </div>
+
+            <div class="nx-card stat-card">
+                <div class="stat-icon-wrapper icon-violet"><i class="bi bi-mortarboard-fill"></i></div>
+                <div class="stat-info">
+                    <span class="stat-label">Active Students</span>
+                    <h2 class="stat-number">{{ number_format($stats['activeStudents'] ?? $studentsCount ?? 0) }}</h2>
+                    <span class="stat-change neutral">
+                        +{{ number_format($stats['newStudentsThisMonth'] ?? 0) }}
+                        <span class="stat-change-note">new this month · {{ number_format($stats['activeEnrollments'] ?? 0) }} enrollments</span>
+                    </span>
+                </div>
+            </div>
+
+            <div class="nx-card stat-card">
+                <div class="stat-icon-wrapper icon-amber"><i class="bi bi-receipt-cutoff"></i></div>
+                <div class="stat-info">
+                    <span class="stat-label">Fee Collection · {{ $unpaid['month'] ?? now()->format('F Y') }}</span>
+                    <h2 class="stat-number">{{ $unpaid['paid_percent'] ?? 0 }}%</h2>
+                    <div class="nx-progress mt-1">
+                        <div class="nx-progress-fill bg-amber" style="width: {{ $unpaid['paid_percent'] ?? 0 }}%"></div>
+                    </div>
+                    <span class="stat-change-note">
+                        {{ number_format($unpaid['unpaid_count'] ?? 0) }} of {{ number_format($unpaid['payable_count'] ?? 0) }} not paid yet
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        {{-- ===================================================== --}}
+        {{-- QUICK ACTIONS --}}
+        {{-- ===================================================== --}}
+        <div class="quick-actions-section mb-4">
+            <div class="quick-actions-grid">
+                <a href="{{ route('student-card-registration.create') }}" class="quick-action-btn">
+                    <span class="qa-icon"><i class="bi bi-person-plus-fill"></i></span>
+                    <span class="qa-text"><span class="qa-title">Add Student</span><span class="qa-desc">New registration</span></span>
+                </a>
+
+                <a href="{{ route('new-payment.index') }}" class="quick-action-btn">
+                    <span class="qa-icon"><i class="bi bi-credit-card-2-front-fill"></i></span>
+                    <span class="qa-text"><span class="qa-title">Add Payment</span><span class="qa-desc">Record a fee</span></span>
+                </a>
+
+                <a href="{{ route('class-schedules.todayClasses') }}" class="quick-action-btn">
+                    <span class="qa-icon"><i class="bi bi-calendar-day"></i></span>
+                    <span class="qa-text"><span class="qa-title">Today's Classes</span><span class="qa-desc">Live schedule</span></span>
+                </a>
+
+                <a href="{{ route('student-class-management.index') }}" class="quick-action-btn">
+                    <span class="qa-icon"><i class="bi bi-person-workspace"></i></span>
+                    <span class="qa-text"><span class="qa-title">Class Mgmt</span><span class="qa-desc">Enrollments</span></span>
+                </a>
+
+                <a href="{{ route('admin.payment-reminder.index') }}" class="quick-action-btn">
+                    <span class="qa-icon"><i class="bi bi-bell-fill"></i></span>
+                    <span class="qa-text"><span class="qa-title">Reminders</span><span class="qa-desc">Unpaid fees</span></span>
+                </a>
+
+                <a href="{{ route('admin.monthly-report.index') }}" class="quick-action-btn">
+                    <span class="qa-icon"><i class="bi bi-file-earmark-bar-graph"></i></span>
+                    <span class="qa-text"><span class="qa-title">Reports</span><span class="qa-desc">Monthly report</span></span>
+                </a>
+            </div>
+        </div>
+
+        {{-- ===================================================== --}}
+        {{-- TODAY: CLASSES + SUMMARY --}}
+        {{-- ===================================================== --}}
+        <div class="row g-4 mb-4">
+
+            {{-- Today's Classes --}}
+            <div class="col-xl-8">
+                <div class="nx-card h-100">
+                    <div class="nx-card-header">
+                        <div>
+                            <h5 class="nx-card-title"><i class="bi bi-calendar-day text-primary"></i> Today's Classes</h5>
+                            <p class="nx-card-subtitle">{{ now()->format('l, d M') }} · attendance vs enrolled</p>
+                        </div>
+                        <a href="{{ route('class-schedules.todayClasses') }}" class="nx-link">View all <i class="bi bi-arrow-right"></i></a>
+                    </div>
+
                     <div class="table-responsive">
-                        <table class="table premium-table">
+                        <table class="table premium-table mb-0">
                             <thead>
                                 <tr>
-                                    <th>ID</th>
-                                    <th>Name</th>
-                                    <th>Guardian Mobile</th>
-                                    <th class="text-end">Action</th>
+                                    <th>Time</th>
+                                    <th>Class</th>
+                                    <th>Hall</th>
+                                    <th>Status</th>
+                                    <th class="attendance-col">Attendance</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($incompleteRegistrations ?? [] as $student)
-                                    <tr>
-                                        <td><span class="id-badge">{{ $student->custom_id ?? '-' }}</span></td>
-                                        <td>
-                                            <div class="student-name-cell">
-                                                <span class="avatar-xs">{{ strtoupper(substr($student->initial_name ?? 'N', 0, 1)) }}</span>
-                                                {{ $student->initial_name ?? '-' }}
-                                            </div>
+                                @forelse ($todayClasses as $class)
+                                    <tr class="{{ $class['status'] === 'cancelled' ? 'row-muted' : '' }}">
+                                        <td class="text-nowrap">
+                                            <strong>{{ $class['start_time'] }}</strong>
+                                            <div class="cell-sub">{{ $class['end_time'] }}</div>
                                         </td>
-                                        <td>{{ $student->guardian_mobile ?? '-' }}</td>
-                                        <td class="text-end">
-                                            <a href="{{ route('admin.students.edit', $student->id) }}" class="btn-complete">
-                                                <i class="bi bi-check2-circle"></i> Complete
-                                            </a>
+                                        <td>
+                                            <a href="{{ route('class-schedules.show', $class['id']) }}" class="cell-title">{{ $class['class_name'] }}</a>
+                                            <div class="cell-sub">{{ $class['category'] }} · {{ $class['teacher'] }}</div>
+                                        </td>
+                                        <td>{{ $class['hall'] }}</td>
+                                        <td>
+                                            <span class="nx-badge {{ $statusBadge[$class['status']] ?? 'nx-badge-gray' }}">
+                                                {{ ucfirst($class['status']) }}
+                                            </span>
+                                            @if ($class['is_live'])
+                                                <span class="live-dot" title="Running now"></span>
+                                            @endif
+                                        </td>
+                                        <td class="attendance-col">
+                                            @if ($class['status'] === 'cancelled')
+                                                <span class="cell-sub">—</span>
+                                            @else
+                                                <div class="d-flex justify-content-between small">
+                                                    <span>{{ $class['present'] }} / {{ $class['enrolled'] }}</span>
+                                                    <span class="cell-sub">{{ $class['attendance_percent'] }}%</span>
+                                                </div>
+                                                <div class="nx-progress">
+                                                    <div class="nx-progress-fill bg-blue" style="width: {{ min(100, $class['attendance_percent']) }}%"></div>
+                                                </div>
+                                            @endif
                                         </td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="4" class="text-center empty-table">
-                                            <i class="bi bi-check-circle fs-2 d-block mb-2 text-success"></i>
-                                            No incomplete registrations found.
+                                        <td colspan="5" class="empty-table">
+                                            <i class="bi bi-calendar-x fs-2 d-block mb-2"></i>
+                                            No classes scheduled for today.
                                         </td>
                                     </tr>
                                 @endforelse
@@ -312,53 +294,318 @@
                     </div>
                 </div>
             </div>
-        </div>
 
-        {{-- Latest Students --}}
-        <div class="col-xl-5">
-            <div class="table-premium-card">
-                <div class="table-premium-header">
-                    <div>
-                        <h5 class="table-premium-title">
-                            <i class="bi bi-clock-history text-info"></i> Latest Students
-                        </h5>
-                        <span class="table-premium-badge primary">
-                            <i class="bi bi-clock"></i> Recent
-                        </span>
+            {{-- Today Summary + Unpaid --}}
+            <div class="col-xl-4">
+                <div class="d-flex flex-column gap-4 h-100">
+
+                    <div class="nx-card p-3">
+                        <h5 class="nx-card-title mb-3"><i class="bi bi-activity text-success"></i> Today at a Glance</h5>
+
+                        <div class="glance-grid">
+                            <div class="glance-item">
+                                <span class="glance-value">{{ $todayClassSummary['scheduled'] ?? 0 }}</span>
+                                <span class="glance-label">Upcoming</span>
+                            </div>
+                            <div class="glance-item">
+                                <span class="glance-value text-amber">{{ $todayClassSummary['ongoing'] ?? 0 }}</span>
+                                <span class="glance-label">Ongoing</span>
+                            </div>
+                            <div class="glance-item">
+                                <span class="glance-value text-green">{{ $todayClassSummary['completed'] ?? 0 }}</span>
+                                <span class="glance-label">Completed</span>
+                            </div>
+                            <div class="glance-item">
+                                <span class="glance-value text-red">{{ $todayClassSummary['cancelled'] ?? 0 }}</span>
+                                <span class="glance-label">Cancelled</span>
+                            </div>
+                        </div>
+
+                        <div class="mt-3">
+                            <div class="d-flex justify-content-between small mb-1">
+                                <span>Students present</span>
+                                <strong>{{ $present }} / {{ $expected }} ({{ $todayAttendancePercent }}%)</strong>
+                            </div>
+                            <div class="nx-progress nx-progress-lg">
+                                <div class="nx-progress-fill bg-green" style="width: {{ min(100, $todayAttendancePercent) }}%"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="nx-card p-3 flex-grow-1">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <div>
+                                <h5 class="nx-card-title"><i class="bi bi-exclamation-circle text-danger"></i> Not Paid This Month</h5>
+                                <p class="nx-card-subtitle">Classes with the most unpaid students</p>
+                            </div>
+                            <span class="nx-badge nx-badge-red">{{ number_format($unpaid['unpaid_count'] ?? 0) }}</span>
+                        </div>
+
+                        @forelse ($unpaid['top_classes'] ?? [] as $row)
+                            <div class="unpaid-row">
+                                <span class="text-truncate">{{ $row['class_name'] }}</span>
+                                <strong>{{ $row['unpaid_count'] }}</strong>
+                            </div>
+                        @empty
+                            <p class="cell-sub mb-0"><i class="bi bi-check-circle text-success"></i> Everyone has paid this month.</p>
+                        @endforelse
+
+                        <a href="{{ route('admin.payment-reminder.index') }}" class="nx-link d-inline-block mt-3">
+                            Send reminders <i class="bi bi-arrow-right"></i>
+                        </a>
                     </div>
                 </div>
-                <div class="table-premium-body">
+            </div>
+        </div>
+
+        {{-- ===================================================== --}}
+        {{-- INCOME: LAST 14 DAYS + PAYMENT METHODS --}}
+        {{-- ===================================================== --}}
+        <div class="row g-4 mb-4">
+            <div class="col-xl-8">
+                <div class="nx-card h-100">
+                    <div class="nx-card-header">
+                        <div>
+                            <h5 class="nx-card-title"><i class="bi bi-bar-chart-fill text-primary"></i> Daily Income</h5>
+                            <p class="nx-card-subtitle">Last 14 days · completed payments</p>
+                        </div>
+                        <strong>{{ $money(array_sum($dailyIncome['values'] ?? [])) }}</strong>
+                    </div>
+                    <div class="chart-box">
+                        <canvas id="dailyIncomeChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-4">
+                <div class="nx-card h-100 p-3">
+                    <h5 class="nx-card-title"><i class="bi bi-wallet2 text-success"></i> Payment Methods</h5>
+                    <p class="nx-card-subtitle mb-3">{{ now()->format('F Y') }}</p>
+
+                    @forelse ($paymentMethods as $method)
+                        @php
+                            $share = $methodsTotal > 0 ? round(($method['total'] / $methodsTotal) * 100) : 0;
+                        @endphp
+                        <div class="method-row">
+                            <div class="d-flex justify-content-between small">
+                                <span>{{ $method['label'] }} <span class="cell-sub">({{ $method['payments'] }})</span></span>
+                                <strong>{{ $money($method['total']) }}</strong>
+                            </div>
+                            <div class="nx-progress">
+                                <div class="nx-progress-fill bg-blue" style="width: {{ $share }}%"></div>
+                            </div>
+                        </div>
+                    @empty
+                        <p class="cell-sub mb-0">No payments this month yet.</p>
+                    @endforelse
+
+                    @if (($stats['monthlyDiscount'] ?? 0) > 0)
+                        <div class="discount-note">
+                            <i class="bi bi-tag"></i>
+                            Discounts given this month: <strong>{{ $money($stats['monthlyDiscount']) }}</strong>
+                        </div>
+                    @endif
+                </div>
+            </div>
+        </div>
+
+        {{-- ===================================================== --}}
+        {{-- YEARLY CHART + CARD STOCK --}}
+        {{-- ===================================================== --}}
+        <div class="row g-4 mb-4">
+            <div class="col-xl-9">
+                <div class="nx-card h-100">
+                    <div class="nx-card-header">
+                        <div>
+                            <h5 class="nx-card-title"><i class="bi bi-graph-up-arrow text-primary"></i> Yearly Payment Report</h5>
+                            <p class="nx-card-subtitle">Total payments vs institute income by month</p>
+                        </div>
+                        <div class="chart-controls">
+                            <span class="legend-item"><span class="legend-dot bg-blue"></span> Total Payments</span>
+                            <span class="legend-item"><span class="legend-dot bg-green"></span> Institute Income</span>
+                            <select id="yearSelector" class="year-selector" aria-label="Select year">
+                                @for ($y = now()->year; $y >= 2022; $y--)
+                                    <option value="{{ $y }}">{{ $y }}</option>
+                                @endfor
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="chart-box chart-box-lg">
+                        <canvas id="yearlyPaymentChart"></canvas>
+                        <div id="chartLoading" class="chart-loading d-none"><div class="spinner"></div></div>
+                    </div>
+
+                    <div class="chart-stats">
+                        <div class="chart-stat">
+                            <span class="chart-stat-label">Total Revenue</span>
+                            <span class="chart-stat-value" id="totalRevenue">Rs. 0.00</span>
+                        </div>
+                        <div class="chart-stat">
+                            <span class="chart-stat-label">Institute Income</span>
+                            <span class="chart-stat-value" id="instituteIncome">Rs. 0.00</span>
+                        </div>
+                        <div class="chart-stat">
+                            <span class="chart-stat-label">Best Month</span>
+                            <span class="chart-stat-value" id="bestMonth">-</span>
+                        </div>
+                        <div class="chart-stat">
+                            <span class="chart-stat-label">H2 vs H1</span>
+                            <span class="chart-stat-value" id="growthRate">-</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-3">
+                <div class="nx-card h-100 p-3 d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <span class="stat-label text-uppercase">Available Student Cards</span>
+                        <div class="stat-icon-wrapper icon-amber"><i class="bi bi-person-vcard-fill"></i></div>
+                    </div>
+
+                    <h2 class="card-stock-number">{{ $availableStudentCardCount ?? 0 }}</h2>
+
+                    <div class="my-2">
+                        @if ($showStudentCardWarning ?? false)
+                            <span class="nx-badge nx-badge-amber"><i class="bi bi-exclamation-triangle"></i> Low stock</span>
+                        @else
+                            <span class="nx-badge nx-badge-green"><i class="bi bi-check-circle"></i> Enough stock</span>
+                        @endif
+                    </div>
+
+                    <div class="mt-auto">
+                        <div class="nx-progress">
+                            <div class="nx-progress-fill bg-amber" style="width: {{ min(100, (($availableStudentCardCount ?? 0) / 50) * 100) }}%"></div>
+                        </div>
+                        <span class="cell-sub d-block mt-1">Reorder when stock reaches 20</span>
+                        <a href="{{ route('student-cards.index') }}" class="nx-link d-inline-block mt-2">Manage cards <i class="bi bi-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- ===================================================== --}}
+        {{-- BRANCH SUMMARY (only when there is more than one branch) --}}
+        {{-- ===================================================== --}}
+        @if ($branchSummary->isNotEmpty())
+            <div class="nx-card mb-4">
+                <div class="nx-card-header">
+                    <h5 class="nx-card-title"><i class="bi bi-diagram-3 text-primary"></i> Branches</h5>
+                </div>
+                <div class="table-responsive">
+                    <table class="table premium-table mb-0">
+                        <thead>
+                            <tr>
+                                <th>Branch</th>
+                                <th class="text-end">Active Students</th>
+                                <th class="text-end">Classes Today</th>
+                                <th class="text-end">Today's Income</th>
+                                <th class="text-end">{{ now()->format('F') }} Income</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($branchSummary as $branch)
+                                <tr>
+                                    <td class="cell-title">{{ $branch['name'] }}</td>
+                                    <td class="text-end">{{ number_format($branch['active_students']) }}</td>
+                                    <td class="text-end">{{ $branch['today_classes'] }}</td>
+                                    <td class="text-end">{{ $money($branch['today_income']) }}</td>
+                                    <td class="text-end"><strong>{{ $money($branch['month_income']) }}</strong></td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        @endif
+
+        {{-- ===================================================== --}}
+        {{-- RECENT PAYMENTS + LATEST STUDENTS --}}
+        {{-- ===================================================== --}}
+        <div class="row g-4 mb-4">
+            <div class="col-xl-7">
+                <div class="nx-card h-100">
+                    <div class="nx-card-header">
+                        <h5 class="nx-card-title"><i class="bi bi-receipt text-success"></i> Recent Payments</h5>
+                        <a href="{{ route('receipts.index') }}" class="nx-link">All receipts <i class="bi bi-arrow-right"></i></a>
+                    </div>
                     <div class="table-responsive">
-                        <table class="table premium-table">
+                        <table class="table premium-table mb-0">
                             <thead>
                                 <tr>
-                                    <th>ID</th>
-                                    <th>Name</th>
-                                    <th>Guardian Mobile</th>
-                                    <th>Joined</th>
-                                    <th class="text-end">Status</th>
+                                    <th>Student</th>
+                                    <th>Class</th>
+                                    <th>Month</th>
+                                    <th class="text-end">Amount</th>
+                                    <th class="text-end">Time</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @forelse($latestStudents ?? [] as $student)
+                                @forelse ($recentPayments as $payment)
                                     <tr>
-                                        <td><span class="id-badge">{{ $student->custom_id ?? '-' }}</span></td>
                                         <td>
-                                            <div class="student-name-cell">
-                                                <span class="avatar-xs">{{ strtoupper(substr($student->initial_name ?? 'N', 0, 1)) }}</span>
-                                                {{ $student->initial_name ?? '-' }}
-                                            </div>
+                                            <span class="cell-title">{{ $payment['student_name'] }}</span>
+                                            <div class="cell-sub"><span class="id-badge">{{ $payment['student_code'] }}</span></div>
                                         </td>
-                                        <td>{{ $student->guardian_mobile ?? '-' }}</td>
-                                        <td>{{ optional($student->created_at)->format('d M Y') }}</td>
+                                        <td>
+                                            {{ $payment['class_name'] }}
+                                            <div class="cell-sub">{{ $payment['receipt_number'] }} · {{ $payment['collected_by'] }}</div>
+                                        </td>
+                                        <td>{{ $payment['payment_month'] }}</td>
                                         <td class="text-end">
-                                            <span class="status-dot active"></span> Active
+                                            <strong>{{ $money($payment['amount']) }}</strong>
+                                            <div class="cell-sub">{{ $payment['payment_method'] }}</div>
                                         </td>
+                                        <td class="text-end cell-sub" title="{{ $payment['paid_at'] }}">{{ $payment['paid_at_human'] }}</td>
                                     </tr>
                                 @empty
                                     <tr>
-                                        <td colspan="5" class="text-center empty-table">
-                                            <i class="bi bi-inbox fs-2 d-block mb-2 text-muted"></i>
+                                        <td colspan="5" class="empty-table">
+                                            <i class="bi bi-inbox fs-2 d-block mb-2"></i>
+                                            No payments yet.
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-5">
+                <div class="nx-card h-100">
+                    <div class="nx-card-header">
+                        <h5 class="nx-card-title"><i class="bi bi-clock-history text-info"></i> Latest Students</h5>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table premium-table mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Student</th>
+                                    <th>Guardian</th>
+                                    <th class="text-end">Joined</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse ($latestStudents ?? [] as $student)
+                                    <tr>
+                                        <td>
+                                            <a href="{{ route('students.show', $student->id) }}" class="student-name-cell">
+                                                <span class="avatar-xs">{{ strtoupper(substr($student->initial_name ?? 'N', 0, 1)) }}</span>
+                                                <span>
+                                                    <span class="cell-title">{{ $student->initial_name ?? '-' }}</span>
+                                                    <span class="cell-sub d-block">{{ $student->custom_id ?? '-' }}</span>
+                                                </span>
+                                            </a>
+                                        </td>
+                                        <td>{{ $student->guardian_mobile ?? '-' }}</td>
+                                        <td class="text-end cell-sub">{{ optional($student->created_at)->diffForHumans() }}</td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="3" class="empty-table">
+                                            <i class="bi bi-inbox fs-2 d-block mb-2"></i>
                                             No students found.
                                         </td>
                                     </tr>
@@ -369,463 +616,928 @@
                 </div>
             </div>
         </div>
+
+        {{-- ===================================================== --}}
+        {{-- INCOMPLETE REGISTRATIONS + EXPIRING QR --}}
+        {{-- ===================================================== --}}
+        <div class="row g-4">
+            <div class="col-xl-7" id="incomplete-registrations">
+                <div class="nx-card h-100">
+                    <div class="nx-card-header">
+                        <h5 class="nx-card-title"><i class="bi bi-hourglass-split text-warning"></i> Incomplete Registrations</h5>
+                        <span class="nx-badge nx-badge-amber">{{ $incompleteRegistrationCount ?? 0 }} pending</span>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table premium-table mb-0">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Guardian Mobile</th>
+                                    <th class="text-end">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse ($incompleteRegistrations ?? [] as $student)
+                                    <tr>
+                                        <td><span class="id-badge">{{ $student->custom_id ?? '-' }}</span></td>
+                                        <td>{{ $student->initial_name ?? '-' }}</td>
+                                        <td>{{ $student->guardian_mobile ?? '-' }}</td>
+                                        <td class="text-end">
+                                            <a href="{{ route('students.edit', $student->id) }}" class="nx-link">
+                                                <i class="bi bi-check2-circle"></i> Complete
+                                            </a>
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="4" class="empty-table">
+                                            <i class="bi bi-check-circle fs-2 d-block mb-2 text-success"></i>
+                                            No incomplete registrations.
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-5">
+                <div class="nx-card h-100">
+                    <div class="nx-card-header">
+                        <h5 class="nx-card-title"><i class="bi bi-qr-code text-danger"></i> Temporary QR Expiring</h5>
+                        <span class="nx-badge nx-badge-red">{{ $expiringStudentsCount ?? 0 }}</span>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="table premium-table mb-0">
+                            <thead>
+                                <tr>
+                                    <th>Student</th>
+                                    <th>Guardian</th>
+                                    <th class="text-end">Expires</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse (($expiringStudents ?? collect())->take(6) as $student)
+                                    @php
+                                        $expiresAt = $student->temporary_qr_code_expire_date
+                                            ? \Carbon\Carbon::parse($student->temporary_qr_code_expire_date)
+                                            : null;
+                                        $daysLeft = $expiresAt ? today()->diffInDays($expiresAt, false) : null;
+                                    @endphp
+                                    <tr>
+                                        <td>
+                                            <span class="cell-title">{{ $student->initial_name ?? '-' }}</span>
+                                            <div class="cell-sub">{{ $student->temporary_qr_code ?? '-' }}</div>
+                                        </td>
+                                        <td>{{ $student->guardian_mobile ?? '-' }}</td>
+                                        <td class="text-end">
+                                            @if ($daysLeft === 0)
+                                                <span class="nx-badge nx-badge-red">Today</span>
+                                            @elseif ($daysLeft !== null && $daysLeft <= 3)
+                                                <span class="nx-badge nx-badge-amber">{{ $daysLeft }}d</span>
+                                            @else
+                                                <span class="cell-sub">{{ optional($expiresAt)->format('d M') }}</span>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @empty
+                                    <tr>
+                                        <td colspan="3" class="empty-table">
+                                            <i class="bi bi-check-circle fs-2 d-block mb-2 text-success"></i>
+                                            No QR codes expiring soon.
+                                        </td>
+                                    </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
-</div>
-
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script>
-(function() {
-    // Navigation handler
-    document.querySelectorAll('button[data-href]').forEach(btn => {
-        btn.addEventListener('click', function() {
-            const href = this.getAttribute('data-href');
-            if (href && href !== '#') window.location.href = href;
-        });
-    });
-
-    // Live time update
-    function updateTime() {
-        const now = new Date();
-        const timeStr = now.toLocaleString('en-US', {
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: true
-        });
-        const el = document.getElementById('liveTime');
-        if (el) el.textContent = timeStr;
-    }
-    updateTime();
-    setInterval(updateTime, 30000);
-
-    // Chart logic
-    let yearlyChart = null;
-
-    function formatCurrency(amount) {
-        return 'Rs. ' + parseFloat(amount).toLocaleString('en-LK', {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2
-        });
-    }
-
-    function showLoading(show) {
-        const loader = document.getElementById('chartLoading');
-        if (loader) loader.style.display = show ? 'flex' : 'none';
-    }
-
-    function updateStats(totalData, instituteData, labels) {
-        const totalRevenue = totalData.reduce((a, b) => a + b, 0);
-        const instituteRevenue = instituteData.reduce((a, b) => a + b, 0);
-
-        let maxTotal = 0, maxIndex = 0;
-        for (let i = 0; i < totalData.length; i++) {
-            if (totalData[i] > maxTotal) {
-                maxTotal = totalData[i];
-                maxIndex = i;
-            }
-        }
-
-        const firstHalf = totalData.slice(0, 6).reduce((a, b) => a + b, 0);
-        const secondHalf = totalData.slice(6, 12).reduce((a, b) => a + b, 0);
-        const growthRate = firstHalf > 0 ? ((secondHalf - firstHalf) / firstHalf * 100).toFixed(1) : 0;
-
-        const totalEl = document.getElementById('totalRevenue');
-        const instituteEl = document.getElementById('instituteIncome');
-        const bestEl = document.getElementById('bestMonth');
-        const growthEl = document.getElementById('growthRate');
-
-        if (totalEl) totalEl.innerHTML = formatCurrency(totalRevenue);
-        if (instituteEl) instituteEl.innerHTML = formatCurrency(instituteRevenue);
-        if (bestEl) bestEl.innerHTML = `${labels[maxIndex]} (${formatCurrency(maxTotal)})`;
-        if (growthEl) {
-            growthEl.innerHTML = (growthRate >= 0 ? '+' : '') + growthRate + '%';
-            growthEl.style.color = growthRate >= 0 ? '#10a37f' : '#dc2626';
-        }
-    }
-
-    function loadYearlyReport(year) {
-        showLoading(true);
-        const url = `{{ route('admin.institute-yearly-report') }}?year=${year}`;
-
-        fetch(url)
-            .then(response => response.json())
-            .then(result => {
-                if (!result.success) throw new Error(result.message);
-
-                const canvas = document.getElementById('yearlyPaymentChart');
-                if (!canvas) return;
-                const ctx = canvas.getContext('2d');
-                if (yearlyChart) yearlyChart.destroy();
-
-                const gradientTotal = ctx.createLinearGradient(0, 0, 0, 300);
-                gradientTotal.addColorStop(0, 'rgba(37,99,235,0.18)');
-                gradientTotal.addColorStop(1, 'rgba(37,99,235,0)');
-
-                const gradientInstitute = ctx.createLinearGradient(0, 0, 0, 300);
-                gradientInstitute.addColorStop(0, 'rgba(16,163,127,0.18)');
-                gradientInstitute.addColorStop(1, 'rgba(16,163,127,0)');
-
-                yearlyChart = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: result.labels,
-                        datasets: [
-                            {
-                                label: 'Total Payments',
-                                data: result.total_payments,
-                                borderColor: '#2563eb',
-                                backgroundColor: gradientTotal,
-                                borderWidth: 2,
-                                fill: true,
-                                tension: 0.35,
-                                pointRadius: 0,
-                                pointHoverRadius: 4,
-                            },
-                            {
-                                label: 'Institute Income',
-                                data: result.institution_payments,
-                                borderColor: '#10a37f',
-                                backgroundColor: gradientInstitute,
-                                borderWidth: 2,
-                                fill: true,
-                                tension: 0.35,
-                                pointRadius: 0,
-                                pointHoverRadius: 4,
-                            }
-                        ]
-                    },
-                    options: {
-                        responsive: true,
-                        maintainAspectRatio: false,
-                        interaction: { intersect: false, mode: 'index' },
-                        plugins: {
-                            legend: { display: false },
-                            tooltip: {
-                                backgroundColor: '#0f172a',
-                                titleColor: '#f8fafc',
-                                bodyColor: '#f8fafc',
-                                padding: 12,
-                                cornerRadius: 12,
-                                callbacks: {
-                                    label: (ctx) =>
-                                        `${ctx.dataset.label}: Rs. ${ctx.raw.toLocaleString('en-LK', { minimumFractionDigits: 2 })}`
-                                }
-                            }
-                        },
-                        scales: {
-                            y: {
-                                beginAtZero: true,
-                                grid: { color: '#eef1f6' },
-                                ticks: {
-                                    color: '#6b7590',
-                                    font: { size: 12 },
-                                    callback: (val) => 'Rs. ' + val.toLocaleString()
-                                }
-                            },
-                            x: { grid: { display: false } }
-                        }
-                    }
-                });
-
-                updateStats(result.total_payments, result.institution_payments, result.labels);
-                showLoading(false);
-            })
-            .catch(() => showLoading(false));
-    }
-
-    const yearSelector = document.getElementById('yearSelector');
-    if (yearSelector) {
-        loadYearlyReport(yearSelector.value);
-        yearSelector.addEventListener('change', () => loadYearlyReport(yearSelector.value));
-    }
-})();
-</script>
 @endsection
 
+
 @push('styles')
-<style>
-    :root{
-        --nx-navy:#141c3a; --nx-blue:#2563eb; --nx-blue-soft:#eef3ff;
-        --nx-green:#10a37f; --nx-green-soft:#e9f8f2;
-        --nx-amber:#b7791f; --nx-amber-soft:#fef6e4;
-        --nx-bg:#f8fafc; --nx-card:#fff; --nx-border:#e5e9f0;
-        --nx-text:#1e2640; --nx-muted:#6b7590; --nx-radius:12px;
-    }
+    <style>
+        .dashboard-page {
+            --nx-navy: #141c3a;
+            --nx-blue: #2563eb;
+            --nx-blue-soft: #eef3ff;
+            --nx-green: #10a37f;
+            --nx-green-soft: #e9f8f2;
+            --nx-amber: #b7791f;
+            --nx-amber-soft: #fef6e4;
+            --nx-red: #dc2626;
+            --nx-red-soft: #fdecec;
+            --nx-violet: #7c3aed;
+            --nx-violet-soft: #f3edff;
+            --nx-bg: #f8fafc;
+            --nx-border: #e5e9f0;
+            --nx-text: #1e2640;
+            --nx-muted: #6b7590;
+            --nx-radius: 12px;
 
-    .dashboard-page{
-        font-family:Inter,system-ui,sans-serif;
-        color:var(--nx-text);
-        background:var(--nx-bg);
-        padding:1.5rem;
-        max-width:1440px;
-        margin:0 auto;
-        min-height:100vh;
-    }
-    .dashboard-page h1,.dashboard-page h2,.stat-number{font-family:Poppins,Inter,sans-serif}
+            color: var(--nx-text);
+            background: var(--nx-bg);
+            padding: 1.5rem;
+            max-width: 1440px;
+            margin: 0 auto;
+        }
 
-    .nx-card{
-        background:var(--nx-card);
-        border:1px solid var(--nx-border);
-        border-radius:var(--nx-radius);
-        box-shadow:0 1px 2px rgba(20,28,58,.04);
-    }
+        /* ---------- Cards ---------- */
+        .nx-card {
+            background: #fff;
+            border: 1px solid var(--nx-border);
+            border-radius: var(--nx-radius);
+            box-shadow: 0 1px 2px rgba(20, 28, 58, .04);
+            overflow: hidden;
+        }
 
-    @keyframes spin{to{transform:rotate(360deg)}}
+        .nx-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: .75rem;
+            flex-wrap: wrap;
+            padding: 1rem 1.25rem;
+            border-bottom: 1px solid var(--nx-border);
+        }
 
-    /* HERO */
-    .hero-section{
-        background:var(--nx-navy) radial-gradient(circle at 100% 0,rgba(37,99,235,.35),transparent 45%);
-        color:#f1f4fb;
-        border-radius:var(--nx-radius);
-        padding:1.75rem;
-        box-shadow:none;
-        position:relative;
-        overflow:hidden;
-    }
-    .hero-content{display:flex;justify-content:space-between;align-items:flex-start;gap:1.5rem;flex-wrap:wrap;position:relative;z-index:2}
-    .hero-left{flex:1;min-width:280px}
-    .hero-greeting{display:flex;flex-direction:column;gap:.25rem}
-    .greeting-badge{background:none;padding:0;font-size:.75rem;text-transform:uppercase;letter-spacing:.06em;opacity:.7;color:#f1f4fb}
-    .hero-title{font-size:1.7rem;font-weight:600;margin:.25rem 0;color:#fff;line-height:1.2}
-    .hero-subtitle{font-size:.875rem;opacity:.7;margin:0}
-    .hero-stats-mini{display:flex;align-items:center;gap:1.5rem;margin-top:1rem}
-    .mini-stat{display:flex;flex-direction:column}
-    .mini-stat-value{font-size:1.125rem;font-weight:600}
-    .mini-stat-label{font-size:.75rem;opacity:.6}
-    .mini-stat-divider{width:1px;height:28px;background:rgba(255,255,255,.15)}
-    .hero-right{display:flex;flex-direction:column;align-items:flex-end;gap:.75rem;flex-shrink:0}
-    .hero-date-time{display:flex;align-items:center;gap:.5rem}
-    .date-box,.time-box{
-        background:rgba(255,255,255,.1);
-        border-radius:8px;
-        padding:.5rem .75rem;
-        font-size:.875rem;
-        display:flex;align-items:center;gap:.4rem;
-    }
+        .nx-card-title {
+            font-size: .95rem;
+            font-weight: 600;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: .4rem;
+        }
 
-    /* ALERT */
-    .alert-card{
-        display:flex;gap:.75rem;align-items:center;
-        background:var(--nx-amber-soft);
-        border:1px solid rgba(183,121,31,.3);
-        border-radius:8px;
-        padding:.75rem 1rem;
-        font-size:.875rem;
-    }
-    .alert-icon{color:var(--nx-amber);font-size:1.1rem;flex-shrink:0}
-    .alert-content{flex:1;color:#7a5010}
-    .alert-highlight{font-weight:600;color:var(--nx-amber)}
-    .alert-card .btn-close{font-size:.7rem;opacity:.5}
-    .alert-card .btn-close:hover{opacity:1}
+        .nx-card-subtitle {
+            font-size: .75rem;
+            color: var(--nx-muted);
+            margin: 0;
+        }
 
-    /* STATS GRID */
-    .stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1rem;margin-bottom:1.25rem}
-    .stat-card{display:flex;gap:.75rem;align-items:center;padding:1rem}
-    .stat-icon-wrapper{
-        width:40px;height:40px;border-radius:8px;
-        display:grid;place-items:center;
-        background:var(--nx-blue-soft);color:var(--nx-blue);
-        font-size:1.15rem;flex-shrink:0;
-    }
-    .stat-card-income .stat-icon-wrapper{background:var(--nx-green-soft);color:var(--nx-green)}
-    .stat-info{flex:1;min-width:0}
-    .stat-label{font-size:.75rem;color:var(--nx-muted);display:block}
-    .stat-number{font-size:1.25rem;font-weight:600;margin:0;color:var(--nx-text);line-height:1.3}
+        .nx-link {
+            font-size: .8rem;
+            font-weight: 500;
+            color: var(--nx-blue);
+            text-decoration: none;
+        }
 
-    /* QUICK ACTIONS */
-    .quick-actions-section{
-        background:#fff;
-        border:1px solid var(--nx-border);
-        border-radius:var(--nx-radius);
-        padding:1.25rem;
-        margin-bottom:1.25rem;
-    }
-    .quick-actions-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem;flex-wrap:wrap;gap:.5rem}
-    .section-title{font-weight:600;margin:0;color:var(--nx-text);font-size:1rem;display:flex;align-items:center;gap:.4rem}
-    .section-subtitle{font-size:.8rem;color:var(--nx-muted);margin:0}
-    .badge-actions{font-size:.7rem;font-weight:500;padding:.2rem .6rem;border-radius:6px;background:#f1f5f9;color:var(--nx-muted)}
-    .quick-actions-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:.5rem}
-    .quick-action-btn{
-        display:flex;align-items:center;gap:.6rem;
-        border:1px solid var(--nx-border);
-        background:#fff;
-        border-radius:8px;
-        padding:.6rem .75rem;
-        font-size:.875rem;font-weight:500;color:var(--nx-text);
-        text-align:left;cursor:pointer;transition:all .15s ease;
-    }
-    .quick-action-btn .qa-icon{
-        width:32px;height:32px;border-radius:6px;
-        display:grid;place-items:center;
-        background:var(--nx-blue-soft);color:var(--nx-blue);
-        font-size:.95rem;flex-shrink:0;
-    }
-    .quick-action-btn .qa-text{flex:1;min-width:0}
-    .quick-action-btn .qa-title{display:block;font-weight:500;font-size:.85rem}
-    .quick-action-btn .qa-desc{display:block;font-size:.7rem;color:var(--nx-muted)}
-    .quick-action-btn .qa-arrow{display:none}
-    .quick-action-btn:hover{border-color:rgba(37,99,235,.4);background:var(--nx-blue-soft)}
+        .nx-link:hover {
+            text-decoration: underline;
+        }
 
-    /* CHART */
-    .chart-premium-card{
-        background:#fff;
-        border:1px solid var(--nx-border);
-        border-radius:var(--nx-radius);
-        box-shadow:none;
-        height:100%;
-        overflow:hidden;
-    }
-    .chart-premium-header{
-        display:flex;flex-wrap:wrap;justify-content:space-between;gap:.75rem;
-        padding:1rem 1.25rem;border-bottom:1px solid var(--nx-border);
-    }
-    .chart-premium-title{font-size:.9rem;font-weight:600;margin:0;color:var(--nx-text)}
-    .chart-premium-subtitle{font-size:.75rem;color:var(--nx-muted);margin:0}
-    .chart-controls{display:flex;align-items:center;gap:1rem;flex-wrap:wrap}
-    .chart-legend{display:flex;align-items:center;gap:.75rem}
-    .legend-item{display:flex;align-items:center;gap:.35rem;font-size:.75rem;color:var(--nx-muted)}
-    .legend-dot{width:10px;height:10px;border-radius:3px;display:inline-block}
-    .legend-dot.blue{background:var(--nx-blue)}
-    .legend-dot.green{background:var(--nx-green)}
-    .year-selector-premium{border:1px solid var(--nx-border);border-radius:6px;padding:.3rem .5rem;font-size:.875rem;background:#fff}
-    .chart-premium-body{padding:0}
-    .chart-container-premium{height:288px;padding:1rem .5rem 0;position:relative}
-    .chart-loading-premium{position:absolute;inset:0;background:rgba(255,255,255,.9);display:flex;align-items:center;justify-content:center;z-index:10}
-    .spinner-premium{width:32px;height:32px;border:3px solid #e2e8f0;border-top-color:var(--nx-blue);border-radius:50%;animation:spin .8s linear infinite}
-    .chart-premium-stats{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--nx-border)}
-    .premium-stat-divider{display:none}
-    .premium-stat-item{padding:.75rem 1.25rem;border-right:1px solid var(--nx-border)}
-    .premium-stat-item:last-child{border-right:0}
-    .premium-stat-label{display:block;font-size:.75rem;color:var(--nx-muted)}
-    .premium-stat-value{font-size:.875rem;font-weight:600;color:var(--nx-text)}
-    .premium-stat-value.total{color:var(--nx-text)}
+        /* ---------- Hero ---------- */
+        .hero-section {
+            background: var(--nx-navy) radial-gradient(circle at 100% 0, rgba(37, 99, 235, .35), transparent 45%);
+            color: #f1f4fb;
+            border-radius: var(--nx-radius);
+            padding: 1.75rem;
+        }
 
-    /* STOCK CARD */
-    .card-stock-premium{
-        background:#fff;
-        border:1px solid var(--nx-border);
-        border-radius:var(--nx-radius);
-        padding:1.25rem;
-        height:100%;
-        display:flex;flex-direction:column;
-    }
-    .card-stock-header{display:flex;justify-content:space-between;align-items:flex-start}
-    .card-stock-label{font-size:.75rem;color:var(--nx-muted);text-transform:uppercase;letter-spacing:.05em}
-    .card-stock-number{font-size:2.25rem;font-weight:600;margin:1.25rem 0 0;color:var(--nx-text);line-height:1.1}
-    .card-stock-icon{
-        width:40px;height:40px;border-radius:8px;
-        background:var(--nx-amber-soft);color:var(--nx-amber);
-        display:grid;place-items:center;font-size:1.1rem;
-    }
-    .card-stock-status{margin:.5rem 0 .75rem}
-    .status-badge{display:inline-flex;align-items:center;gap:.35rem;padding:.2rem .6rem;border-radius:6px;font-size:.7rem;font-weight:500}
-    .status-badge.success{background:var(--nx-green-soft);color:var(--nx-green)}
-    .status-badge.warning{background:var(--nx-amber-soft);color:var(--nx-amber)}
-    .card-stock-progress{margin-top:auto}
-    .stock-progress{height:6px;background:#eef1f6;border-radius:99px;overflow:hidden}
-    .stock-progress-fill{height:100%;background:var(--nx-amber);transition:width .8s ease}
-    .stock-progress-label{display:block;font-size:.7rem;color:var(--nx-muted);margin-top:.4rem}
+        .hero-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+        }
 
-    /* TABLES */
-    .table-premium-card{
-        background:#fff;
-        border:1px solid var(--nx-border);
-        border-radius:var(--nx-radius);
-        overflow:hidden;
-        height:100%;
-    }
-    .table-premium-header{
-        padding:1rem 1.25rem;
-        display:flex;justify-content:space-between;align-items:center;
-        border-bottom:1px solid var(--nx-border);
-    }
-    .table-premium-title{font-size:.9rem;font-weight:600;margin:0;color:var(--nx-text)}
-    .table-premium-badge{
-        font-size:.75rem;padding:.15rem .5rem;border-radius:4px;
-        background:var(--nx-amber-soft);color:var(--nx-amber);
-        display:inline-flex;align-items:center;gap:.3rem;
-        margin-left:.5rem;
-    }
-    .table-premium-badge.primary{background:var(--nx-blue-soft);color:var(--nx-blue)}
-    .table-premium-body{padding:0}
-    .premium-table{margin:0;font-size:.875rem}
-    .premium-table thead th{
-        background:#f4f6fa;
-        color:var(--nx-muted);
-        font-size:.75rem;font-weight:500;
-        padding:.5rem 1.25rem;border:0;
-        text-transform:uppercase;letter-spacing:.03em;
-    }
-    .premium-table tbody td{
-        padding:.75rem 1.25rem;
-        border-top:1px solid var(--nx-border);
-        white-space:nowrap;
-        vertical-align:middle;
-        color:var(--nx-text);
-    }
-    .premium-table tbody tr:last-child td{border-bottom:none}
-    .premium-table tbody tr:hover{background:#fafbfd}
-    .id-badge{
-        font-family:ui-monospace,SFMono-Regular,Menlo,monospace;
-        font-size:.75rem;
-        background:#f1f3f7;
-        padding:.1rem .35rem;
-        border-radius:4px;
-        color:var(--nx-text);
-    }
-    .student-name-cell{display:flex;align-items:center}
-    .avatar-xs{
-        width:24px;height:24px;border-radius:50%;
-        background:var(--nx-blue-soft);color:var(--nx-blue);
-        font-size:11px;font-weight:600;
-        display:inline-grid;place-items:center;
-        margin-right:.5rem;flex-shrink:0;
-    }
-    .btn-complete{
-        font-size:.75rem;font-weight:500;
-        color:var(--nx-blue);text-decoration:none;
-        display:inline-flex;align-items:center;gap:.25rem;
-    }
-    .btn-complete:hover{text-decoration:underline;color:var(--nx-blue)}
-    .status-dot{
-        width:6px;height:6px;border-radius:50%;
-        background:var(--nx-green);
-        display:inline-block;margin-right:.35rem;
-    }
-    .empty-table{padding:2.5rem 1rem !important;color:var(--nx-muted)}
+        .hero-left {
+            flex: 1;
+            min-width: 280px;
+        }
 
-    /* RESPONSIVE */
-    @media(max-width:1200px){
-        .quick-actions-grid{grid-template-columns:repeat(3,1fr)}
-    }
-    @media(max-width:992px){
-        .stats-grid{grid-template-columns:repeat(2,1fr)}
-        .quick-actions-grid{grid-template-columns:repeat(3,1fr)}
-    }
-    @media(max-width:768px){
-        .dashboard-page{padding:1rem}
-        .hero-section{padding:1.25rem}
-        .hero-title{font-size:1.35rem}
-        .hero-content{flex-direction:column}
-        .hero-right{align-items:flex-start;width:100%}
-        .hero-date-time{flex-wrap:wrap}
-        .stats-grid{grid-template-columns:repeat(2,1fr);gap:.75rem}
-        .stat-card{padding:.75rem}
-        .stat-icon-wrapper{width:36px;height:36px;font-size:1rem}
-        .stat-number{font-size:1.05rem}
-        .chart-premium-stats{grid-template-columns:1fr 1fr}
-        .premium-stat-item{border-right:1px solid var(--nx-border);border-bottom:1px solid var(--nx-border)}
-        .premium-stat-item:nth-child(2n){border-right:0}
-        .premium-stat-item:nth-child(3),
-        .premium-stat-item:nth-child(4){border-bottom:0}
-        .chart-container-premium{height:240px}
-        .premium-table thead th,
-        .premium-table tbody td{padding:.5rem .6rem;font-size:.75rem}
-    }
-    @media(max-width:576px){
-        .quick-actions-grid{grid-template-columns:repeat(2,1fr)}
-        .stats-grid{grid-template-columns:1fr}
-        .hero-stats-mini{gap:1rem;flex-wrap:wrap}
-        .mini-stat-divider{display:none}
-    }
-</style>
+        .greeting-badge {
+            font-size: .75rem;
+            text-transform: uppercase;
+            letter-spacing: .06em;
+            opacity: .7;
+        }
+
+        .hero-title {
+            font-size: 1.7rem;
+            font-weight: 600;
+            margin: .25rem 0;
+            color: #fff;
+        }
+
+        .hero-subtitle {
+            font-size: .875rem;
+            opacity: .7;
+            margin: 0;
+        }
+
+        .hero-stats-mini {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            margin-top: 1.1rem;
+            flex-wrap: wrap;
+        }
+
+        .mini-stat {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .mini-stat-value {
+            font-size: 1.15rem;
+            font-weight: 600;
+        }
+
+        .mini-stat-label {
+            font-size: .75rem;
+            opacity: .6;
+        }
+
+        .mini-stat-divider {
+            width: 1px;
+            height: 28px;
+            background: rgba(255, 255, 255, .15);
+        }
+
+        .hero-right {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: .5rem;
+        }
+
+        .hero-date-time {
+            display: flex;
+            gap: .5rem;
+            flex-wrap: wrap;
+        }
+
+        .date-box,
+        .time-box {
+            background: rgba(255, 255, 255, .1);
+            border-radius: 8px;
+            padding: .5rem .75rem;
+            font-size: .875rem;
+            display: flex;
+            align-items: center;
+            gap: .4rem;
+        }
+
+        .hero-updated {
+            font-size: .7rem;
+            opacity: .55;
+        }
+
+        /* ---------- Alerts ---------- */
+        .alerts-row {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: .75rem;
+        }
+
+        .nx-alert {
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+            padding: .7rem 1rem;
+            border-radius: 10px;
+            font-size: .85rem;
+            text-decoration: none;
+            border: 1px solid transparent;
+        }
+
+        .nx-alert-amber { background: var(--nx-amber-soft); color: #7a5010; border-color: rgba(183, 121, 31, .25); }
+        .nx-alert-red { background: var(--nx-red-soft); color: #8f1d1d; border-color: rgba(220, 38, 38, .2); }
+        .nx-alert-blue { background: var(--nx-blue-soft); color: #1e40af; border-color: rgba(37, 99, 235, .2); }
+        .nx-alert:hover { filter: brightness(.97); }
+
+        /* ---------- KPI ---------- */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+        }
+
+        .stat-card {
+            display: flex;
+            gap: .85rem;
+            align-items: flex-start;
+            padding: 1.1rem;
+        }
+
+        .stat-icon-wrapper {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            display: grid;
+            place-items: center;
+            font-size: 1.15rem;
+            flex-shrink: 0;
+        }
+
+        .icon-blue { background: var(--nx-blue-soft); color: var(--nx-blue); }
+        .icon-green { background: var(--nx-green-soft); color: var(--nx-green); }
+        .icon-amber { background: var(--nx-amber-soft); color: var(--nx-amber); }
+        .icon-violet { background: var(--nx-violet-soft); color: var(--nx-violet); }
+
+        .stat-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .stat-label {
+            font-size: .75rem;
+            color: var(--nx-muted);
+            display: block;
+        }
+
+        .stat-number {
+            font-size: 1.35rem;
+            font-weight: 700;
+            margin: .15rem 0;
+            line-height: 1.25;
+        }
+
+        .stat-change {
+            font-size: .75rem;
+            font-weight: 600;
+        }
+
+        .stat-change.up { color: var(--nx-green); }
+        .stat-change.down { color: var(--nx-red); }
+        .stat-change.neutral { color: var(--nx-muted); }
+
+        .stat-change-note {
+            font-size: .72rem;
+            font-weight: 400;
+            color: var(--nx-muted);
+        }
+
+        /* ---------- Progress ---------- */
+        .nx-progress {
+            height: 6px;
+            background: #eef1f6;
+            border-radius: 99px;
+            overflow: hidden;
+        }
+
+        .nx-progress-lg { height: 9px; }
+
+        .nx-progress-fill {
+            height: 100%;
+            border-radius: 99px;
+            transition: width .6s ease;
+        }
+
+        .bg-blue { background: var(--nx-blue); }
+        .bg-green { background: var(--nx-green); }
+        .bg-amber { background: var(--nx-amber); }
+
+        .text-amber { color: var(--nx-amber); }
+        .text-green { color: var(--nx-green); }
+        .text-red { color: var(--nx-red); }
+
+        /* ---------- Badges ---------- */
+        .nx-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: .3rem;
+            padding: .2rem .55rem;
+            border-radius: 6px;
+            font-size: .72rem;
+            font-weight: 600;
+        }
+
+        .nx-badge-blue { background: var(--nx-blue-soft); color: var(--nx-blue); }
+        .nx-badge-green { background: var(--nx-green-soft); color: var(--nx-green); }
+        .nx-badge-amber { background: var(--nx-amber-soft); color: var(--nx-amber); }
+        .nx-badge-red { background: var(--nx-red-soft); color: var(--nx-red); }
+        .nx-badge-gray { background: #f1f3f7; color: var(--nx-muted); }
+
+        .live-dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            margin-left: .3rem;
+            border-radius: 50%;
+            background: var(--nx-green);
+            box-shadow: 0 0 0 0 rgba(16, 163, 127, .6);
+            animation: nx-pulse 1.6s infinite;
+            vertical-align: middle;
+        }
+
+        @keyframes nx-pulse {
+            70% { box-shadow: 0 0 0 7px rgba(16, 163, 127, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(16, 163, 127, 0); }
+        }
+
+        /* ---------- Quick Actions ---------- */
+        .quick-actions-grid {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: .6rem;
+        }
+
+        .quick-action-btn {
+            display: flex;
+            align-items: center;
+            gap: .6rem;
+            border: 1px solid var(--nx-border);
+            background: #fff;
+            border-radius: 10px;
+            padding: .65rem .75rem;
+            color: var(--nx-text);
+            text-decoration: none;
+            transition: all .15s ease;
+        }
+
+        .quick-action-btn:hover {
+            border-color: rgba(37, 99, 235, .4);
+            background: var(--nx-blue-soft);
+            color: var(--nx-text);
+        }
+
+        .qa-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 8px;
+            display: grid;
+            place-items: center;
+            background: var(--nx-blue-soft);
+            color: var(--nx-blue);
+            flex-shrink: 0;
+        }
+
+        .qa-text { min-width: 0; }
+        .qa-title { display: block; font-weight: 600; font-size: .83rem; }
+        .qa-desc { display: block; font-size: .7rem; color: var(--nx-muted); }
+
+        /* ---------- Today ---------- */
+        .glance-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: .5rem;
+            text-align: center;
+        }
+
+        .glance-item {
+            background: var(--nx-bg);
+            border-radius: 10px;
+            padding: .6rem .25rem;
+        }
+
+        .glance-value {
+            display: block;
+            font-size: 1.3rem;
+            font-weight: 700;
+        }
+
+        .glance-label {
+            font-size: .68rem;
+            color: var(--nx-muted);
+        }
+
+        .unpaid-row {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            padding: .45rem 0;
+            border-bottom: 1px dashed var(--nx-border);
+            font-size: .85rem;
+        }
+
+        .unpaid-row:last-of-type { border-bottom: 0; }
+
+        .method-row { margin-bottom: .85rem; }
+        .method-row .nx-progress { margin-top: .3rem; }
+
+        .discount-note {
+            margin-top: 1rem;
+            padding: .6rem .75rem;
+            border-radius: 8px;
+            background: var(--nx-amber-soft);
+            color: #7a5010;
+            font-size: .8rem;
+        }
+
+        /* ---------- Charts ---------- */
+        .chart-box {
+            position: relative;
+            height: 260px;
+            padding: 1rem .75rem .5rem;
+        }
+
+        .chart-box-lg { height: 300px; }
+
+        .chart-controls {
+            display: flex;
+            align-items: center;
+            gap: .9rem;
+            flex-wrap: wrap;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: .35rem;
+            font-size: .75rem;
+            color: var(--nx-muted);
+        }
+
+        .legend-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 3px;
+        }
+
+        .year-selector {
+            border: 1px solid var(--nx-border);
+            border-radius: 6px;
+            padding: .3rem .5rem;
+            font-size: .85rem;
+            background: #fff;
+        }
+
+        .chart-loading {
+            position: absolute;
+            inset: 0;
+            background: rgba(255, 255, 255, .85);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .spinner {
+            width: 30px;
+            height: 30px;
+            border: 3px solid #e2e8f0;
+            border-top-color: var(--nx-blue);
+            border-radius: 50%;
+            animation: nx-spin .8s linear infinite;
+        }
+
+        @keyframes nx-spin { to { transform: rotate(360deg); } }
+
+        .chart-stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            border-top: 1px solid var(--nx-border);
+        }
+
+        .chart-stat {
+            padding: .75rem 1.25rem;
+            border-right: 1px solid var(--nx-border);
+        }
+
+        .chart-stat:last-child { border-right: 0; }
+        .chart-stat-label { display: block; font-size: .72rem; color: var(--nx-muted); }
+        .chart-stat-value { font-size: .9rem; font-weight: 600; }
+
+        .card-stock-number {
+            font-size: 2.4rem;
+            font-weight: 700;
+            margin: 1rem 0 0;
+        }
+
+        /* ---------- Tables ---------- */
+        .premium-table { font-size: .85rem; }
+
+        .premium-table thead th {
+            background: #f4f6fa;
+            color: var(--nx-muted);
+            font-size: .72rem;
+            font-weight: 600;
+            padding: .55rem 1.25rem;
+            border: 0;
+            text-transform: uppercase;
+            letter-spacing: .03em;
+            white-space: nowrap;
+        }
+
+        .premium-table tbody td {
+            padding: .7rem 1.25rem;
+            border-top: 1px solid var(--nx-border);
+            vertical-align: middle;
+        }
+
+        .premium-table tbody tr:hover { background: #fafbfd; }
+        .row-muted td { opacity: .55; }
+
+        .attendance-col { min-width: 150px; }
+
+        .cell-title {
+            font-weight: 600;
+            color: var(--nx-text);
+            text-decoration: none;
+        }
+
+        a.cell-title:hover { color: var(--nx-blue); }
+
+        .cell-sub {
+            font-size: .74rem;
+            color: var(--nx-muted);
+        }
+
+        .id-badge {
+            font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+            font-size: .72rem;
+            background: #f1f3f7;
+            padding: .05rem .35rem;
+            border-radius: 4px;
+        }
+
+        .student-name-cell {
+            display: flex;
+            align-items: center;
+            gap: .5rem;
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .avatar-xs {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--nx-blue-soft);
+            color: var(--nx-blue);
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-grid;
+            place-items: center;
+            flex-shrink: 0;
+        }
+
+        .empty-table {
+            text-align: center;
+            padding: 2.25rem 1rem !important;
+            color: var(--nx-muted);
+        }
+
+        /* ---------- Responsive ---------- */
+        @media (max-width: 1200px) {
+            .quick-actions-grid { grid-template-columns: repeat(3, 1fr); }
+        }
+
+        @media (max-width: 992px) {
+            .stats-grid { grid-template-columns: repeat(2, 1fr); }
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-page { padding: 1rem; }
+            .hero-section { padding: 1.25rem; }
+            .hero-title { font-size: 1.35rem; }
+            .hero-right { align-items: flex-start; width: 100%; }
+            .chart-stats { grid-template-columns: 1fr 1fr; }
+            .chart-stat:nth-child(2) { border-right: 0; }
+            .chart-stat:nth-child(-n+2) { border-bottom: 1px solid var(--nx-border); }
+            .chart-box, .chart-box-lg { height: 230px; }
+            .premium-table thead th,
+            .premium-table tbody td { padding: .5rem .6rem; }
+        }
+
+        @media (max-width: 576px) {
+            .stats-grid { grid-template-columns: 1fr; }
+            .quick-actions-grid { grid-template-columns: repeat(2, 1fr); }
+            .glance-grid { grid-template-columns: repeat(2, 1fr); }
+            .mini-stat-divider { display: none; }
+        }
+    </style>
+@endpush
+
+
+@push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+
+    <script>
+        (function () {
+            'use strict';
+
+            const DAILY_INCOME = @json($dailyIncome);
+            const YEARLY_URL = @json(route('admin.institute-yearly-report'));
+
+            const COLORS = {
+                blue: '#2563eb',
+                green: '#10a37f',
+                grid: '#eef1f6',
+                tick: '#6b7590',
+            };
+
+            /* ---------------------------------------------------------------
+             | Helpers
+             * ------------------------------------------------------------- */
+
+            function money(value) {
+                return 'Rs. ' + Number(value || 0).toLocaleString('en-LK', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                });
+            }
+
+            function shortMoney(value) {
+                const n = Number(value || 0);
+
+                if (n >= 1000000) return 'Rs. ' + (n / 1000000).toFixed(1) + 'M';
+                if (n >= 1000) return 'Rs. ' + (n / 1000).toFixed(0) + 'K';
+
+                return 'Rs. ' + n;
+            }
+
+            const baseOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                interaction: { intersect: false, mode: 'index' },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        backgroundColor: '#0f172a',
+                        padding: 10,
+                        cornerRadius: 8,
+                        callbacks: {
+                            label: (ctx) => `${ctx.dataset.label}: ${money(ctx.raw)}`,
+                        },
+                    },
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: { color: COLORS.grid },
+                        ticks: { color: COLORS.tick, callback: shortMoney },
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: COLORS.tick },
+                    },
+                },
+            };
+
+            /* ---------------------------------------------------------------
+             | Live clock
+             * ------------------------------------------------------------- */
+
+            const timeEl = document.getElementById('liveTime');
+
+            function updateTime() {
+                if (timeEl) {
+                    timeEl.textContent = new Date().toLocaleTimeString('en-US', {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        hour12: true,
+                    });
+                }
+            }
+
+            updateTime();
+            setInterval(updateTime, 30000);
+
+            if (typeof Chart === 'undefined') {
+                return; // Chart.js failed to load; the rest of the page still works.
+            }
+
+            /* ---------------------------------------------------------------
+             | Daily income (last 14 days)
+             * ------------------------------------------------------------- */
+
+            const dailyCanvas = document.getElementById('dailyIncomeChart');
+
+            if (dailyCanvas) {
+                const lastIndex = DAILY_INCOME.values.length - 1;
+
+                new Chart(dailyCanvas, {
+                    type: 'bar',
+                    data: {
+                        labels: DAILY_INCOME.labels,
+                        datasets: [{
+                            label: 'Income',
+                            data: DAILY_INCOME.values,
+                            // Highlight today
+                            backgroundColor: DAILY_INCOME.values.map((_, i) => i === lastIndex ? COLORS.green : COLORS.blue),
+                            borderRadius: 6,
+                            maxBarThickness: 32,
+                        }],
+                    },
+                    options: baseOptions,
+                });
+            }
+
+            /* ---------------------------------------------------------------
+             | Yearly report (existing endpoint)
+             * ------------------------------------------------------------- */
+
+            const yearlyCanvas = document.getElementById('yearlyPaymentChart');
+            const yearSelector = document.getElementById('yearSelector');
+            const loader = document.getElementById('chartLoading');
+            let yearlyChart = null;
+
+            function setText(id, text, color) {
+                const el = document.getElementById(id);
+
+                if (el) {
+                    el.textContent = text;
+                    el.style.color = color || '';
+                }
+            }
+
+            function updateYearStats(total, institute, labels) {
+                const sum = (arr) => arr.reduce((a, b) => a + Number(b || 0), 0);
+
+                const totalRevenue = sum(total);
+                let best = 0;
+
+                total.forEach((value, i) => {
+                    if (Number(value) > Number(total[best])) best = i;
+                });
+
+                const firstHalf = sum(total.slice(0, 6));
+                const secondHalf = sum(total.slice(6, 12));
+
+                setText('totalRevenue', money(totalRevenue));
+                setText('instituteIncome', money(sum(institute)));
+                setText('bestMonth', totalRevenue > 0 ? `${labels[best]} (${money(total[best])})` : '-');
+
+                if (firstHalf > 0) {
+                    const growth = ((secondHalf - firstHalf) / firstHalf) * 100;
+                    setText('growthRate', (growth >= 0 ? '+' : '') + growth.toFixed(1) + '%', growth >= 0 ? COLORS.green : '#dc2626');
+                } else {
+                    setText('growthRate', '-');
+                }
+            }
+
+            async function loadYearlyReport(year) {
+                if (!yearlyCanvas) return;
+
+                loader.classList.remove('d-none');
+
+                try {
+                    const response = await fetch(`${YEARLY_URL}?year=${encodeURIComponent(year)}`, {
+                        headers: { 'Accept': 'application/json' },
+                        credentials: 'same-origin',
+                    });
+
+                    const result = await response.json();
+
+                    if (!response.ok || !result.success) {
+                        throw new Error(result.message || 'Failed to load report.');
+                    }
+
+                    const ctx = yearlyCanvas.getContext('2d');
+
+                    const gradient = (color) => {
+                        const g = ctx.createLinearGradient(0, 0, 0, 300);
+                        g.addColorStop(0, color + '2e');
+                        g.addColorStop(1, color + '00');
+                        return g;
+                    };
+
+                    if (yearlyChart) yearlyChart.destroy();
+
+                    yearlyChart = new Chart(ctx, {
+                        type: 'line',
+                        data: {
+                            labels: result.labels,
+                            datasets: [
+                                {
+                                    label: 'Total Payments',
+                                    data: result.total_payments,
+                                    borderColor: COLORS.blue,
+                                    backgroundColor: gradient(COLORS.blue),
+                                    borderWidth: 2,
+                                    fill: true,
+                                    tension: 0.35,
+                                    pointRadius: 0,
+                                    pointHoverRadius: 4,
+                                },
+                                {
+                                    label: 'Institute Income',
+                                    data: result.institution_payments,
+                                    borderColor: COLORS.green,
+                                    backgroundColor: gradient(COLORS.green),
+                                    borderWidth: 2,
+                                    fill: true,
+                                    tension: 0.35,
+                                    pointRadius: 0,
+                                    pointHoverRadius: 4,
+                                },
+                            ],
+                        },
+                        options: baseOptions,
+                    });
+
+                    updateYearStats(result.total_payments || [], result.institution_payments || [], result.labels || []);
+                } catch (error) {
+                    setText('bestMonth', 'Could not load report');
+                } finally {
+                    loader.classList.add('d-none');
+                }
+            }
+
+            if (yearSelector) {
+                loadYearlyReport(yearSelector.value);
+                yearSelector.addEventListener('change', () => loadYearlyReport(yearSelector.value));
+            }
+        })();
+    </script>
 @endpush

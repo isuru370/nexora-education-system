@@ -196,8 +196,8 @@
                 <div class="nav-item">
 
                     <button type="button"
-                        class="nav-link-custom {{ request()->routeIs('admin.new-attendance.index') ? 'active' : '' }}"
-                        data-route="admin.new-attendance.index" data-href="{{ route('admin.new-attendance.index') }}">
+                        class="nav-link-custom {{ request()->routeIs('new-attendance.index') ? 'active' : '' }}"
+                        data-route="new-attendance.index" data-href="{{ route('new-attendance.index') }}">
 
                         <i class="bi bi-calendar2-check-fill"></i>
 
@@ -547,8 +547,8 @@
                 <div class="nav-item">
 
                     <button type="button"
-                        class="nav-link-custom {{ request()->routeIs('admin.admissions.*') ? 'active' : '' }}"
-                        data-route="admin.admissions.index" data-href="{{ route('admin.admissions.index') }}">
+                        class="nav-link-custom {{ request()->routeIs('admissions.*') ? 'active' : '' }}"
+                        data-route="admissions.index" data-href="{{ route('admissions.index') }}">
 
                         <i class="bi bi-credit-card-fill"></i>
 
@@ -564,9 +564,9 @@
                 <div class="nav-item">
 
                     <button type="button"
-                        class="nav-link-custom {{ request()->routeIs('admin.admission-payments.*') ? 'active' : '' }}"
-                        data-route="admin.admission-payments.index"
-                        data-href="{{ route('admin.admission-payments.index') }}">
+                        class="nav-link-custom {{ request()->routeIs('admission-payments.*') ? 'active' : '' }}"
+                        data-route="admission-payments.index"
+                        data-href="{{ route('admission-payments.index') }}">
 
                         <i class="bi bi-credit-card-fill"></i>
 
@@ -730,8 +730,8 @@
                 <div class="nav-item">
 
                     <button type="button"
-                        class="nav-link-custom {{ request()->routeIs('admin.receipts.*') ? 'active' : '' }}"
-                        data-route="admin.receipts.index" data-href="{{ route('admin.receipts.index') }}">
+                        class="nav-link-custom {{ request()->routeIs('receipts.*') ? 'active' : '' }}"
+                        data-route="receipts.index" data-href="{{ route('receipts.index') }}">
 
                         <i class="bi bi-file-earmark-person"></i>
 
