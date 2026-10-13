@@ -73,6 +73,8 @@ class NotificationService
             );
 
             $notification = Notification::create([
+                'branch_id' => $student->branch_id,
+
                 'student_id' => $student->id,
 
                 'title' => trim($data['title']),
@@ -196,6 +198,8 @@ class NotificationService
             }
 
             return Notification::create([
+                'branch_id' => $student->branch_id,
+
                 'student_id' => $student->id,
 
                 'title' => trim($data['title']),
@@ -310,6 +314,8 @@ class NotificationService
 
                         $notification =
                             Notification::create([
+                                'branch_id' => $student->branch_id,
+
                                 'student_id' => $student->id,
 
                                 'title' =>

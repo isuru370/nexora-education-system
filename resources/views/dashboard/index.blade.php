@@ -208,7 +208,7 @@
                     <span class="qa-text"><span class="qa-title">Class Mgmt</span><span class="qa-desc">Enrollments</span></span>
                 </a>
 
-                <a href="{{ route('admin.payment-reminder.index') }}" class="quick-action-btn">
+                <a href="{{ route('payment-reminder.index') }}" class="quick-action-btn">
                     <span class="qa-icon"><i class="bi bi-bell-fill"></i></span>
                     <span class="qa-text"><span class="qa-title">Reminders</span><span class="qa-desc">Unpaid fees</span></span>
                 </a>
@@ -343,14 +343,14 @@
 
                         @forelse ($unpaid['top_classes'] ?? [] as $row)
                             <div class="unpaid-row">
-                                <span class="text-truncate">{{ $row['class_name'] }}</span>
+                                <a href="{{ route('payment-reminder.index', ['class_id' => $row['student_class_id']]) }}" class="text-truncate text-reset">{{ $row['class_name'] }}</a>
                                 <strong>{{ $row['unpaid_count'] }}</strong>
                             </div>
                         @empty
                             <p class="cell-sub mb-0"><i class="bi bi-check-circle text-success"></i> Everyone has paid this month.</p>
                         @endforelse
 
-                        <a href="{{ route('admin.payment-reminder.index') }}" class="nx-link d-inline-block mt-3">
+                        <a href="{{ route('payment-reminder.index') }}" class="nx-link d-inline-block mt-3">
                             Send reminders <i class="bi bi-arrow-right"></i>
                         </a>
                     </div>

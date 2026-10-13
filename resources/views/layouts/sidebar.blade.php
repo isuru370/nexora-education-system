@@ -586,29 +586,13 @@
                 <div class="nav-item">
 
                     <button type="button"
-                        class="nav-link-custom {{ request()->routeIs('admin.payment-reminder.*') ? 'active' : '' }}"
-                        data-route="admin.payment-reminder.index"
-                        data-href="{{ route('admin.payment-reminder.index') }}">
+                        class="nav-link-custom {{ request()->routeIs('payment-reminder.*') ? 'active' : '' }}"
+                        data-route="payment-reminder.index"
+                        data-href="{{ route('payment-reminder.index') }}">
 
                         <i class="bi bi-bell-fill"></i>
 
                         <span>Payment Reminder</span>
-
-                        @php
-
-                            // Optional: Show count of unpaid students
-
-                            // This is just a visual indicator - you can implement logic
-
-                            $unpaidCount = 0;
-
-                            // You can add logic here to count unpaid students
-
-                        @endphp
-
-                        @if ($unpaidCount > 0)
-                            <span class="badge badge-danger ml-auto">{{ $unpaidCount }}</span>
-                        @endif
 
                     </button>
 
