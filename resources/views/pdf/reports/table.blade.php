@@ -110,6 +110,7 @@
 <body>
     @php
         $money = $table['money'] ?? [];
+        $noTotal = $table['no_total'] ?? [];
         $rows = collect($rows);
     @endphp
 
@@ -165,7 +166,7 @@
                     @foreach ($table['columns'] as $index => $column)
                         @if ($index === 0)
                             <td>Total ({{ $rows->count() }})</td>
-                        @elseif (in_array($column, $money, true))
+                        @elseif (in_array($column, $money, true) && !in_array($column, $noTotal, true))
                             <td class="right">{{ number_format($rows->sum($column), 2) }}</td>
                         @else
                             <td></td>

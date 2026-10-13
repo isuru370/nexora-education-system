@@ -4,6 +4,7 @@ namespace App\Services\Web\MonthlyReport;
 
 use App\Models\StudentClass;
 use App\Models\Teacher;
+use App\Models\TeacherPayment;
 use App\Models\User;
 use App\Services\Branch\BranchAccessService;
 use App\Services\Web\TeacherSalary\TeacherSalaryCalculator;
@@ -272,6 +273,77 @@ class MonthlyReportService
             ],
             'summary' => $summary,
             'classes' => $reportClasses,
+        ];
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Teacher expenses (advance / deduction / other) for a month
+    |--------------------------------------------------------------------------
+    | (Replaces Admin\TeacherReportController teacher expense report.)
+    | Cancelled records are listed for audit but not counted in the totals.
+    */
+
+    /**
+     * @throws DomainException
+     */
+    public function teacherExpenseReport(int $teacherId, int $year, int $month): array
+    {
+        $this->assertTeacherAccess($teacherId);
+
+        $teacher = Teacher::withTrashed()
+            ->select('id', 'custom_id', 'initials', 'full_name')
+            ->findOrFail($teacherId);
+
+        [$start, $end] = $this->calculator->monthRange($year, $month);
+
+        $payments = TeacherPayment::query()
+            ->with(['createdBy:id,name', 'branch:id,name'])
+            ->where('teacher_id', $teacherId)
+            ->whereIn('branch_id', $this->branchAccessService->getBranchIds())
+            ->whereBetween('payment_date', [$start->toDateString(), $end->toDateString()])
+            ->orderBy('payment_date')
+            ->orderBy('id')
+            ->get();
+
+        $rows = $payments->map(fn (TeacherPayment $payment) => [
+            'payment_date' => optional($payment->payment_date)->format('Y-m-d'),
+            'branch' => optional($payment->branch)->name,
+            'payment_type' => ucfirst($payment->payment_type),
+            'reason' => $payment->reason,
+            'note' => $payment->note,
+            'status' => ucfirst($payment->status),
+            'created_by' => optional($payment->createdBy)->name,
+            // Cancelled rows show their amount but count as 0 in the total column
+            'amount' => (float) $payment->amount,
+            'counted_amount' => $payment->status === 'cancelled' ? 0.0 : (float) $payment->amount,
+        ]);
+
+        $counted = $payments->where('status', '!=', 'cancelled');
+
+        return [
+            'teacher' => $teacher,
+            'month_label' => $start->format('F Y'),
+            'rows' => $rows,
+            'summary' => [
+                'advance' => round((float) $counted->where('payment_type', 'advance')->sum('amount'), 2),
+                'deduction' => round((float) $counted->where('payment_type', 'deduction')->sum('amount'), 2),
+                'other' => round((float) $counted->where('payment_type', 'other')->sum('amount'), 2),
+                'total' => round((float) $counted->sum('amount'), 2),
+                'cancelled' => $payments->where('status', 'cancelled')->count(),
+            ],
+        ];
+    }
+
+    public function teacherExpenseTable(): array
+    {
+        return [
+            'headings' => ['Date', 'Branch', 'Type', 'Reason', 'Note', 'Status', 'Added By', 'Amount (Rs.)', 'Counted (Rs.)'],
+            'columns' => ['payment_date', 'branch', 'payment_type', 'reason', 'note', 'status', 'created_by', 'amount', 'counted_amount'],
+            'money' => ['amount', 'counted_amount'],
+            'total' => 'counted_amount',
+            // "Amount" includes cancelled rows, so only "Counted" is totalled
+            'no_total' => ['amount'],
         ];
     }
 

@@ -5,6 +5,7 @@
 --}}
 @php
     $money = $table['money'] ?? [];
+        $noTotal = $table['no_total'] ?? [];
     $items = $rows instanceof \Illuminate\Contracts\Pagination\Paginator ? $rows->getCollection() : collect($rows);
     $isPaginated = $rows instanceof \Illuminate\Contracts\Pagination\LengthAwarePaginator;
 @endphp
@@ -46,7 +47,7 @@
                     @foreach ($table['columns'] as $index => $column)
                         @if ($index === 0)
                             <td class="fw-bold">{{ $isPaginated ? 'Page total' : 'Total' }}</td>
-                        @elseif (in_array($column, $money, true))
+                        @elseif (in_array($column, $money, true) && !in_array($column, $noTotal, true))
                             <td class="text-end amount fw-bold">{{ number_format($items->sum($column), 2) }}</td>
                         @else
                             <td></td>

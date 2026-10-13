@@ -791,13 +791,13 @@
                 <div class="nav-item">
 
                     <button type="button"
-                        class="nav-link-custom {{ request()->routeIs('admin.teacher-report.*') ? 'active' : '' }}"
-                        data-route="admin.teacher-report.index"
-                        data-href="{{ route('admin.teacher-report.index') }}">
+                        class="nav-link-custom {{ request()->routeIs('reports.teacher-collection.*') ? 'active' : '' }}"
+                        data-route="reports.teacher-collection.index"
+                        data-href="{{ route('reports.teacher-collection.index') }}">
 
                         <i class="bi bi-file-earmark-person"></i>
 
-                        <span>Teacher Daily Report</span>
+                        <span>Teacher Collection</span>
 
                     </button>
 

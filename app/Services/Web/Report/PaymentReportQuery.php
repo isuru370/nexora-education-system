@@ -131,6 +131,23 @@ class PaymentReportQuery
             ->when($filter->paymentMethod, fn ($query, $method) => $query->where('payment_method', $method));
     }
 
+    /**
+     * Completed class fee payments of one teacher's classes.
+     * Uses the teacher saved on the payment's split snapshot (the teacher at
+     * payment time); payments without a snapshot fall back to the class teacher.
+     */
+    public function teacherStudentPayments(ReportFilter $filter, int $teacherId): Builder
+    {
+        return $this->studentPayments($filter)
+            ->where(function ($query) use ($teacherId) {
+                $query->whereHas('splitSnapshot', fn ($snapshot) => $snapshot->where('teacher_id', $teacherId))
+                    ->orWhere(function ($fallback) use ($teacherId) {
+                        $fallback->whereDoesntHave('splitSnapshot')
+                            ->whereHas('enrollment.studentClass', fn ($class) => $class->withTrashed()->where('teacher_id', $teacherId));
+                    });
+            });
+    }
+
     /** Paid admission fees, by paid_at */
     public function admissionPayments(ReportFilter $filter): Builder
     {
