@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests\Notification;
+namespace App\Http\Requests\Api\Notification;
 
 use App\Enums\NotificationType;
 use Illuminate\Foundation\Http\FormRequest;

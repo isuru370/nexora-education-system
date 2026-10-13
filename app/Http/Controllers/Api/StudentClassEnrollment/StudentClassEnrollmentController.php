@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Student;
 use App\Models\StudentClassEnrollment;
 use App\Services\StudentClassEnrollmentService;
-use App\Services\StudentQRService;
+use App\Services\Api\Student\StudentQRService;
 use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;

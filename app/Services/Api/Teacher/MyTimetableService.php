@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Teacher;
+namespace App\Services\Api\Teacher;
 
 use App\Models\ClassSchedule;
 use Carbon\Carbon;

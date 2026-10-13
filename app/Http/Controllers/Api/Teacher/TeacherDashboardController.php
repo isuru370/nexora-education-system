@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api\Teacher;
 
 use App\Http\Controllers\Controller;
-use App\Services\Teacher\DashboardService;
+use App\Services\Api\Teacher\DashboardService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Log;
 use Throwable;

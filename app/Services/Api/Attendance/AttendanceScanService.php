@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Services\Web\Attendance;
+namespace App\Services\Api\Attendance;
 
 use App\Models\ClassSchedule;
 use App\Models\Student;
 use App\Models\StudentAttendance;
-use App\Services\StudentQRService;
+use App\Services\Api\Student\StudentQRService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Throwable;

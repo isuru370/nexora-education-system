@@ -10,7 +10,7 @@ use App\Models\StudentAttendance;
 use App\Models\StudentClass;
 use App\Models\StudentClassEnrollment;
 use App\Models\StudentTute;
-use App\Services\StudentQRService;
+use App\Services\Api\Student\StudentQRService;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;

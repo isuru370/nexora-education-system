@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api\ClassSchedule;
 
 use App\Http\Controllers\Controller;
-use App\Services\Api\ClassScheduleApiService;
+use App\Services\Api\ClassSchedule\ClassScheduleApiService;
 use Illuminate\Http\Request;
 use Throwable;
 

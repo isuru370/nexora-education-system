@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Teacher;
+namespace App\Services\Api\Teacher;
 
 use App\Models\StudentClass;
 use Illuminate\Support\Collection;

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Api;
+namespace App\Services\Api\ClassSchedule;
 
 use App\Models\ClassCategoryFee;
 use App\Models\ClassSchedule;

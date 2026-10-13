@@ -12,7 +12,7 @@ use Laravel\Sanctum\PersonalAccessToken;
 /**
  * Mobile app login (Sanctum token based).
  *
- * Web login is handled by App\Http\Controllers\Auth\LoginController (session based).
+ * Web login is handled by App\Http\Controllers\Web\Auth\LoginController (session based).
  * The API has no session, so AuthService::login() cannot be used here.
  */
 class LoginController extends Controller

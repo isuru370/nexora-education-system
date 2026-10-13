@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Api\Notification;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Notification\SendNotificationRequest;
-use App\Http\Requests\Notification\BulkNotificationRequest;
+use App\Http\Requests\Api\Notification\SendNotificationRequest;
+use App\Http\Requests\Api\Notification\BulkNotificationRequest;
 use App\Models\Notification;
 use App\Services\Notification\NotificationService;
 use Illuminate\Http\JsonResponse;
@@ -437,7 +437,7 @@ class NotificationController extends Controller
     /**
      * Get notifications with filters
      */
-    public function index(\App\Http\Requests\Notification\NotificationFilterRequest $request): JsonResponse
+    public function index(\App\Http\Requests\Api\Notification\NotificationFilterRequest $request): JsonResponse
     {
         try {
             $notifications = $this->notificationService->getNotifications(

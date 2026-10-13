@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Web\Attendance;
+namespace App\Services\Api\Attendance;
 
 use App\Models\ClassSchedule;
 use App\Models\Payment;

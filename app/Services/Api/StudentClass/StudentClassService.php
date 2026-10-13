@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Api;
+namespace App\Services\Api\StudentClass;
 
 use App\Models\Grade;
 use App\Models\StudentClass;

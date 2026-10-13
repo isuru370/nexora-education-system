@@ -5,7 +5,7 @@ namespace App\Services\Api\Student;
 use App\Models\QuickPhoto;
 use App\Models\Student;
 use App\Services\Branch\BranchAccessService;
-use App\Services\StudentQRService;
+use App\Services\Api\Student\StudentQRService;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Support\Collection;
