@@ -23,8 +23,8 @@
 
                 <div>
 
-                    <a href="{{ route('admin.teacher-salaries.show', [$teacherId, $year, $month]) }}"
-                       class="btn btn-outline-secondary custom-btn mb-3">
+                    <a href="{{ route('teacher-salaries.show', ['teacher' => $teacherId, 'year' => $year, 'month' => $month, 'branch_id' => $branchId]) }}"
+                        class="btn btn-outline-secondary custom-btn mb-3">
 
                         <i class="bi bi-arrow-left me-1"></i>
 
@@ -49,8 +49,7 @@
 
                 <div class="hero-actions">
 
-                    <button onclick="window.print()"
-                            class="btn btn-primary custom-btn">
+                    <button onclick="window.print()" class="btn btn-primary custom-btn">
 
                         <i class="bi bi-printer me-1"></i>
 
@@ -235,14 +234,12 @@
 
 
                                     @if (!empty($class['grade_name']))
-
                                         <div class="text-muted fw-semibold">
 
                                             Grade:
                                             {{ $class['grade_name'] }}
 
                                         </div>
-
                                     @endif
 
 
@@ -270,7 +267,6 @@
                             <!-- CATEGORIES -->
 
                             @if (!empty($class['categories']) && count($class['categories']) > 0)
-
                                 <div class="mb-3">
 
                                     <small class="text-muted d-block mb-2 fw-semibold">
@@ -282,8 +278,7 @@
 
                                     <div class="row g-2">
 
-                                        @foreach($class['categories'] as $category)
-
+                                        @foreach ($class['categories'] as $category)
                                             @php
 
                                                 /*
@@ -298,9 +293,8 @@
 
                                                 $categoryTotal = (float) ($category['category_total'] ?? 0);
 
-                                                $collectedPercent = $expectedTotal > 0
-                                                    ? ($categoryTotal / $expectedTotal) * 100
-                                                    : 0;
+                                                $collectedPercent =
+                                                    $expectedTotal > 0 ? ($categoryTotal / $expectedTotal) * 100 : 0;
 
                                                 if ($collectedPercent > 100) {
                                                     $collectedPercent = 100;
@@ -341,7 +335,6 @@
 
 
                                                         @if (($category['paid_students'] ?? 0) > 0)
-
                                                             <span class="badge bg-success custom-badge">
 
                                                                 <i class="bi bi-check-circle-fill me-1"></i>
@@ -350,12 +343,10 @@
                                                                 {{ $category['paid_students'] }}
 
                                                             </span>
-
                                                         @endif
 
 
                                                         @if (($category['partial_students'] ?? 0) > 0)
-
                                                             <span class="badge bg-warning text-dark custom-badge">
 
                                                                 <i class="bi bi-exclamation-triangle-fill me-1"></i>
@@ -364,12 +355,10 @@
                                                                 {{ $category['partial_students'] }}
 
                                                             </span>
-
                                                         @endif
 
 
                                                         @if (($category['free_card_students'] ?? 0) > 0)
-
                                                             <span class="badge bg-info custom-badge">
 
                                                                 <i class="bi bi-gift-fill me-1"></i>
@@ -378,12 +367,10 @@
                                                                 {{ $category['free_card_students'] }}
 
                                                             </span>
-
                                                         @endif
 
 
                                                         @if (($category['unpaid_students'] ?? 0) > 0)
-
                                                             <span class="badge bg-danger custom-badge">
 
                                                                 <i class="bi bi-x-circle-fill me-1"></i>
@@ -392,7 +379,6 @@
                                                                 {{ $category['unpaid_students'] }}
 
                                                             </span>
-
                                                         @endif
 
                                                     </div>
@@ -401,7 +387,6 @@
                                                     <!-- FEE OPTIONS -->
 
                                                     @if (count($feeOptions) > 0)
-
                                                         <div class="fee-options-box mb-2">
 
                                                             <div class="small text-muted fw-semibold mb-2">
@@ -411,8 +396,7 @@
                                                             </div>
 
 
-                                                            @foreach($feeOptions as $option)
-
+                                                            @foreach ($feeOptions as $option)
                                                                 <div class="fee-option-row">
 
                                                                     <span>
@@ -430,13 +414,10 @@
                                                                     </strong>
 
                                                                 </div>
-
                                                             @endforeach
 
                                                         </div>
-
                                                     @else
-
                                                         <div class="alert alert-warning py-2 px-3 mb-2">
 
                                                             <small>
@@ -446,7 +427,6 @@
                                                             </small>
 
                                                         </div>
-
                                                     @endif
 
 
@@ -474,12 +454,10 @@
 
                                                     <!-- PROGRESS -->
 
-                                                    <div class="progress mt-2"
-                                                         style="height: 6px;">
+                                                    <div class="progress mt-2" style="height: 6px;">
 
-                                                        <div class="progress-bar bg-success"
-                                                             role="progressbar"
-                                                             style="width: {{ $collectedPercent }}%">
+                                                        <div class="progress-bar bg-success" role="progressbar"
+                                                            style="width: {{ $collectedPercent }}%">
 
                                                         </div>
 
@@ -490,13 +468,13 @@
 
                                                     <div class="mt-3">
 
-                                                        <a href="{{ route('admin.student-class-enrollments.category-wise-payment', [
+                                                        <a href="{{ route('student-class-enrollments.category-wise-payment', [
                                                             'class' => $class['class_id'],
                                                             'classCategoryFee' => $category['category_fee_id'],
                                                             'year' => $year,
-                                                            'month' => $month
+                                                            'month' => $month,
                                                         ]) }}"
-                                                           class="btn btn-outline-info btn-sm w-100 custom-btn">
+                                                            class="btn btn-outline-info btn-sm w-100 custom-btn">
 
                                                             <i class="bi bi-eye me-1"></i>
 
@@ -512,15 +490,12 @@
                                                 </div>
 
                                             </div>
-
                                         @endforeach
 
                                     </div>
 
                                 </div>
-
                             @else
-
                                 <div class="alert alert-light text-center py-3 mb-3">
 
                                     <i class="bi bi-folder2-open me-1"></i>
@@ -532,7 +507,6 @@
                                     </small>
 
                                 </div>
-
                             @endif
 
 
@@ -540,26 +514,20 @@
 
                             @php
 
-                                $totalPaid = collect($class['categories'] ?? [])
-                                    ->sum('paid_students');
+                                $totalPaid = collect($class['categories'] ?? [])->sum('paid_students');
 
-                                $totalPartial = collect($class['categories'] ?? [])
-                                    ->sum('partial_students');
+                                $totalPartial = collect($class['categories'] ?? [])->sum('partial_students');
 
-                                $totalWithPayment =
-                                    $totalPaid + $totalPartial;
+                                $totalWithPayment = $totalPaid + $totalPartial;
 
-                                $classStudentCount =
-                                    (int) ($class['total_students'] ?? 0);
+                                $classStudentCount = (int) ($class['total_students'] ?? 0);
 
-                                $paidPercent = $classStudentCount > 0
-                                    ? ($totalWithPayment / $classStudentCount) * 100
-                                    : 0;
+                                $paidPercent =
+                                    $classStudentCount > 0 ? ($totalWithPayment / $classStudentCount) * 100 : 0;
 
                                 if ($paidPercent > 100) {
                                     $paidPercent = 100;
                                 }
-
                             @endphp
 
 
@@ -583,12 +551,10 @@
                                 </div>
 
 
-                                <div class="progress"
-                                     style="height: 8px;">
+                                <div class="progress" style="height: 8px;">
 
-                                    <div class="progress-bar bg-success"
-                                         role="progressbar"
-                                         style="width: {{ $paidPercent }}%">
+                                    <div class="progress-bar bg-success" role="progressbar"
+                                        style="width: {{ $paidPercent }}%">
 
                                     </div>
 
@@ -658,7 +624,6 @@
                         </div>
 
                     </div>
-
                 @endforelse
 
             </div>
@@ -763,329 +728,325 @@
 
 
 @push('styles')
-
-<style>
-
-    .class-payment-summary-page {
-        animation: fadeIn .4s ease;
-    }
-
-
-    .hero-card,
-    .main-card,
-    .empty-card {
-        background: #fff;
-        border-radius: 28px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, .05);
-        border: 1px solid #eef2f7;
-        padding: 1.35rem 1.5rem;
-    }
-
-
-    .hero-content {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 1rem;
-        flex-wrap: wrap;
-    }
-
-
-    .hero-actions {
-        display: flex;
-        gap: .7rem;
-        flex-wrap: wrap;
-    }
-
-
-    .custom-btn {
-        border-radius: 14px;
-        padding: .7rem 1.15rem;
-        font-weight: 600;
-        transition: .2s ease;
-    }
-
-
-    .custom-btn:hover {
-        transform: translateY(-2px);
-    }
-
-
-    .summary-card {
-        border-radius: 24px;
-        overflow: hidden;
-        color: #fff;
-        position: relative;
-        min-height: 145px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, .06);
-        border: none;
-    }
-
-
-    .summary-card .card-body {
-        padding: 1.4rem;
-        position: relative;
-    }
-
-
-    .summary-card h6 {
-        opacity: .9;
-        margin-bottom: .6rem;
-    }
-
-
-    .summary-card h3 {
-        margin: 0;
-        font-weight: 800;
-        word-break: break-word;
-    }
-
-
-    .summary-sub {
-        opacity: .85;
-    }
-
-
-    .summary-icon {
-        position: absolute;
-        right: 18px;
-        top: 18px;
-        font-size: 2rem;
-        opacity: .18;
-    }
-
-
-    .summary-blue {
-        background: linear-gradient(135deg, #0f172a, #334155);
-    }
-
-
-    .summary-green {
-        background: linear-gradient(135deg, #10b981, #34d399);
-    }
-
-
-    .summary-orange {
-        background: linear-gradient(135deg, #ea580c, #f97316);
-    }
-
-
-    .summary-primary {
-        background: linear-gradient(135deg, #2563eb, #3b82f6);
-    }
-
-
-    .main-card {
-        padding: 1.5rem;
-    }
-
-
-    .main-card-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 1rem;
-        margin-bottom: 1.5rem;
-        flex-wrap: wrap;
-    }
-
-
-    .main-card-header h4 {
-        margin: 0;
-        font-weight: 700;
-    }
-
-
-    .main-card-header p {
-        margin: 0;
-        color: #64748b;
-    }
-
-
-    .header-badge {
-        display: inline-flex;
-        align-items: center;
-        padding: .55rem .9rem;
-        border-radius: 999px;
-        background: #eff6ff;
-        color: #2563eb;
-        font-weight: 700;
-    }
-
-
-    .class-card {
-        background: #fff;
-        border-radius: 24px;
-        border: 1px solid #eef2f7;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, .04);
-        transition: .2s ease;
-        padding: 1.25rem;
-        height: 100%;
-    }
-
-
-    .class-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, .08);
-    }
-
-
-    .class-card-header {
-        display: flex;
-        justify-content: space-between;
-        gap: 1rem;
-        align-items: flex-start;
-        margin-bottom: 1rem;
-    }
-
-
-    .category-item {
-        transition: all 0.2s ease;
-        background-color: #f8fafc;
-        border: 1px solid #e2e8f0;
-        border-radius: 18px;
-        padding: .85rem;
-    }
-
-
-    .category-item:hover {
-        background-color: #eef2f7;
-        transform: translateX(2px);
-    }
-
-
-    /* NEW FEE OPTION UI */
-
-    .fee-options-box {
-        background: #ffffff;
-        border: 1px solid #e2e8f0;
-        border-radius: 12px;
-        padding: .65rem .75rem;
-    }
-
-
-    .fee-option-row {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: .75rem;
-        padding: .45rem .5rem;
-        border-bottom: 1px dashed #e2e8f0;
-        font-size: .8rem;
-    }
-
-
-    .fee-option-row:last-child {
-        border-bottom: none;
-    }
-
-
-    .fee-option-row strong {
-        white-space: nowrap;
-    }
-
-
-    .progress {
-        background-color: #e9ecef;
-        border-radius: 10px;
-        overflow: hidden;
-    }
-
-
-    .progress-bar {
-        border-radius: 10px;
-        transition: width 0.5s ease;
-    }
-
-
-    .custom-badge {
-        border-radius: 10px;
-        padding: .5rem .7rem;
-        font-size: .75rem;
-        font-weight: 600;
-    }
-
-
-    .class-footer {
-        margin-top: 1rem;
-        padding-top: 1rem;
-        border-top: 1px solid #eef2f7;
-    }
-
-
-    .empty-card {
-        text-align: center;
-        padding: 4rem 1rem;
-    }
-
-
-    .empty-card i {
-        font-size: 4rem;
-        color: #cbd5e1;
-        margin-bottom: 1rem;
-    }
-
-
-    .empty-card h5 {
-        font-weight: 700;
-    }
-
-
-    .custom-alert {
-        border-radius: 18px;
-    }
-
-
-    @media (max-width: 768px) {
-
-        .hero-content {
-            flex-direction: column;
-            align-items: stretch;
-        }
-
-
-        .hero-actions {
-            width: 100%;
-        }
-
-
-        .hero-actions .btn {
-            flex: 1;
-        }
-
-
-        .class-card-header {
-            flex-direction: column;
-            align-items: stretch;
-        }
-
-    }
-
-
-    @media print {
-
-        .btn,
-        .alert,
-        .sidebar,
-        .navbar {
-            display: none !important;
-        }
-
-
-        body {
-            background: #fff !important;
+    <style>
+        .class-payment-summary-page {
+            animation: fadeIn .4s ease;
         }
 
 
         .hero-card,
         .main-card,
-        .class-card,
         .empty-card {
-            box-shadow: none !important;
+            background: #fff;
+            border-radius: 28px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, .05);
+            border: 1px solid #eef2f7;
+            padding: 1.35rem 1.5rem;
         }
 
-    }
 
-</style>
+        .hero-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
 
+
+        .hero-actions {
+            display: flex;
+            gap: .7rem;
+            flex-wrap: wrap;
+        }
+
+
+        .custom-btn {
+            border-radius: 14px;
+            padding: .7rem 1.15rem;
+            font-weight: 600;
+            transition: .2s ease;
+        }
+
+
+        .custom-btn:hover {
+            transform: translateY(-2px);
+        }
+
+
+        .summary-card {
+            border-radius: 24px;
+            overflow: hidden;
+            color: #fff;
+            position: relative;
+            min-height: 145px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, .06);
+            border: none;
+        }
+
+
+        .summary-card .card-body {
+            padding: 1.4rem;
+            position: relative;
+        }
+
+
+        .summary-card h6 {
+            opacity: .9;
+            margin-bottom: .6rem;
+        }
+
+
+        .summary-card h3 {
+            margin: 0;
+            font-weight: 800;
+            word-break: break-word;
+        }
+
+
+        .summary-sub {
+            opacity: .85;
+        }
+
+
+        .summary-icon {
+            position: absolute;
+            right: 18px;
+            top: 18px;
+            font-size: 2rem;
+            opacity: .18;
+        }
+
+
+        .summary-blue {
+            background: linear-gradient(135deg, #0f172a, #334155);
+        }
+
+
+        .summary-green {
+            background: linear-gradient(135deg, #10b981, #34d399);
+        }
+
+
+        .summary-orange {
+            background: linear-gradient(135deg, #ea580c, #f97316);
+        }
+
+
+        .summary-primary {
+            background: linear-gradient(135deg, #2563eb, #3b82f6);
+        }
+
+
+        .main-card {
+            padding: 1.5rem;
+        }
+
+
+        .main-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+
+        .main-card-header h4 {
+            margin: 0;
+            font-weight: 700;
+        }
+
+
+        .main-card-header p {
+            margin: 0;
+            color: #64748b;
+        }
+
+
+        .header-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: .55rem .9rem;
+            border-radius: 999px;
+            background: #eff6ff;
+            color: #2563eb;
+            font-weight: 700;
+        }
+
+
+        .class-card {
+            background: #fff;
+            border-radius: 24px;
+            border: 1px solid #eef2f7;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, .04);
+            transition: .2s ease;
+            padding: 1.25rem;
+            height: 100%;
+        }
+
+
+        .class-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, .08);
+        }
+
+
+        .class-card-header {
+            display: flex;
+            justify-content: space-between;
+            gap: 1rem;
+            align-items: flex-start;
+            margin-bottom: 1rem;
+        }
+
+
+        .category-item {
+            transition: all 0.2s ease;
+            background-color: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 18px;
+            padding: .85rem;
+        }
+
+
+        .category-item:hover {
+            background-color: #eef2f7;
+            transform: translateX(2px);
+        }
+
+
+        /* NEW FEE OPTION UI */
+
+        .fee-options-box {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: .65rem .75rem;
+        }
+
+
+        .fee-option-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: .75rem;
+            padding: .45rem .5rem;
+            border-bottom: 1px dashed #e2e8f0;
+            font-size: .8rem;
+        }
+
+
+        .fee-option-row:last-child {
+            border-bottom: none;
+        }
+
+
+        .fee-option-row strong {
+            white-space: nowrap;
+        }
+
+
+        .progress {
+            background-color: #e9ecef;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+
+        .progress-bar {
+            border-radius: 10px;
+            transition: width 0.5s ease;
+        }
+
+
+        .custom-badge {
+            border-radius: 10px;
+            padding: .5rem .7rem;
+            font-size: .75rem;
+            font-weight: 600;
+        }
+
+
+        .class-footer {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid #eef2f7;
+        }
+
+
+        .empty-card {
+            text-align: center;
+            padding: 4rem 1rem;
+        }
+
+
+        .empty-card i {
+            font-size: 4rem;
+            color: #cbd5e1;
+            margin-bottom: 1rem;
+        }
+
+
+        .empty-card h5 {
+            font-weight: 700;
+        }
+
+
+        .custom-alert {
+            border-radius: 18px;
+        }
+
+
+        @media (max-width: 768px) {
+
+            .hero-content {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+
+            .hero-actions {
+                width: 100%;
+            }
+
+
+            .hero-actions .btn {
+                flex: 1;
+            }
+
+
+            .class-card-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+        }
+
+
+        @media print {
+
+            .btn,
+            .alert,
+            .sidebar,
+            .navbar {
+                display: none !important;
+            }
+
+
+            body {
+                background: #fff !important;
+            }
+
+
+            .hero-card,
+            .main-card,
+            .class-card,
+            .empty-card {
+                box-shadow: none !important;
+            }
+
+        }
+    </style>
 @endpush

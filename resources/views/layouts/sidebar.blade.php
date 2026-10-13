@@ -631,9 +631,9 @@
                 <div class="nav-item">
 
                     <button type="button"
-                        class="nav-link-custom {{ request()->routeIs('admin.teacher-salaries.*') ? 'active' : '' }}"
-                        data-route="admin.teacher-salaries.index"
-                        data-href="{{ route('admin.teacher-salaries.index') }}">
+                        class="nav-link-custom {{ request()->routeIs('teacher-salaries.*') ? 'active' : '' }}"
+                        data-route="teacher-salaries.index"
+                        data-href="{{ route('teacher-salaries.index') }}">
 
                         <i class="bi bi-cash-stack"></i>
 
@@ -773,9 +773,9 @@
                 <div class="nav-item">
 
                     <button type="button"
-                        class="nav-link-custom {{ request()->routeIs('admin.monthly-report.*') ? 'active' : '' }}"
-                        data-route="admin.monthly-report.index"
-                        data-href="{{ route('admin.monthly-report.index') }}">
+                        class="nav-link-custom {{ request()->routeIs('monthly-report.*') ? 'active' : '' }}"
+                        data-route="monthly-report.index"
+                        data-href="{{ route('monthly-report.index') }}">
 
                         <i class="bi bi-file-earmark-bar-graph"></i>
 

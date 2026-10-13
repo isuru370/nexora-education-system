@@ -394,12 +394,14 @@ class ReceiptListService
     }
 
     /**
-     * First route name that exists. A missing route must not
-     * break the whole receipts page.
+     * Build a URL for the first route name that exists.
+     *
+     * @param  string|array<int, string>  $names
+     * @param  mixed  $parameter
      */
-    protected function safeRoute(array $names, $parameter): ?string
+    protected function safeRoute(string|array $names, $parameter): ?string
     {
-        foreach ($names as $name) {
+        foreach ((array) $names as $name) {
             if (Route::has($name)) {
                 return route($name, $parameter);
             }

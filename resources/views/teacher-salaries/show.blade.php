@@ -9,11 +9,19 @@
         $teacher = $data['teacher'];
         $selectedYear = $year;
         $selectedMonth = $month;
+        $monthLabel = \Carbon\Carbon::create($selectedYear, $selectedMonth, 1)->format('F Y');
 
-        $isCurrentMonth = ($selectedYear == now()->year && $selectedMonth == now()->month);
-        $isLastFiveDays = $isCurrentMonth && \Carbon\Carbon::now()->endOfMonth()->diffInDays(\Carbon\Carbon::now()) <= 5;
-        $canShowPayButton = (($data['salary_status'] ?? 'pending') !== 'paid') && ($isLastFiveDays || !$isCurrentMonth);
-        $deductionTotal = ($data['advance'] ?? 0) + ($data['deduction'] ?? 0) + ($data['other'] ?? 0);
+        $isPaid = ($data['salary_status'] ?? 'pending') === 'paid';
+        $deductionTotal = $data['total_deductions'] ?? 0;
+        $availableLimit = (float) ($data['available_limit'] ?? 0);
+
+        // Same route parameters for every link on this page
+        $routeParams = [
+            'teacher' => $teacher->id,
+            'year' => $selectedYear,
+            'month' => $selectedMonth,
+            'branch_id' => $branchId,
+        ];
     @endphp
 
     <div class="salary-details-page">
@@ -32,19 +40,22 @@
                             {{ $teacher->full_name }}
                         </h3>
                         <p class="mb-0 text-muted">
-                            Salary Report • {{ \Carbon\Carbon::create($selectedYear, $selectedMonth, 1)->format('F Y') }}
+                            Salary Report • {{ $monthLabel }}
+                            @if ($data['branch'])
+                                • <i class="bi bi-building"></i> {{ $data['branch']->name }}
+                            @endif
                         </p>
                     </div>
                 </div>
 
                 <div class="hero-actions">
-                    <a href="{{ route('admin.teacher-salaries.index', ['year' => $selectedYear, 'month' => $selectedMonth]) }}"
+                    <a href="{{ route('teacher-salaries.index', ['year' => $selectedYear, 'month' => $selectedMonth, 'branch_id' => $branchId]) }}"
                         class="btn btn-outline-secondary custom-btn">
                         <i class="bi bi-arrow-left me-1"></i>
                         Back
                     </a>
 
-                    <a href="{{ route('admin.teacher-salaries.index', ['year' => $selectedYear, 'month' => $selectedMonth]) }}"
+                    <a href="{{ route('teacher-salaries.show', $routeParams) }}"
                         class="btn btn-primary custom-btn">
                         <i class="bi bi-arrow-clockwise me-1"></i>
                         Refresh
@@ -57,8 +68,23 @@
         <!-- FILTER CARD -->
         <div class="filter-card mb-4">
             <form method="GET"
-                action="{{ route('admin.teacher-salaries.show', ['teacher' => $teacher->id, 'year' => $selectedYear, 'month' => $selectedMonth]) }}"
+                action="{{ route('teacher-salaries.show', ['teacher' => $teacher->id, 'year' => $selectedYear, 'month' => $selectedMonth]) }}"
                 class="row g-3 align-items-end">
+
+                @if ($branches->count() > 1)
+                    <div class="col-lg-3 col-md-6">
+                        <label class="form-label fw-semibold">Branch</label>
+                        <select name="branch_id" class="form-select custom-input">
+                            @foreach ($branches as $branchOption)
+                                <option value="{{ $branchOption->id }}" {{ (int) $branchId === (int) $branchOption->id ? 'selected' : '' }}>
+                                    {{ $branchOption->name }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+                @else
+                    <input type="hidden" name="branch_id" value="{{ $branchId }}">
+                @endif
 
                 <div class="col-lg-3 col-md-6">
                     <label class="form-label fw-semibold">Year</label>
@@ -90,6 +116,19 @@
                 </div>
             </form>
         </div>
+
+        <!-- VALIDATION ERRORS -->
+        @if ($errors->any())
+            <div class="alert alert-danger custom-alert mb-4">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                <strong>Please fix the following:</strong>
+                <ul class="mb-0 mt-2">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
 
         <!-- SUMMARY -->
         <div class="row g-4 mb-4">
@@ -150,10 +189,15 @@
                 <div>
                     <h5 class="mb-1 fw-bold">Payment Status</h5>
 
-                    @if(($data['salary_status'] ?? 'pending') === 'paid')
+                    @if($isPaid)
                         <span class="badge bg-success custom-badge">Paid</span>
                         <div class="mt-2 text-success fw-semibold">
                             Paid Amount: LKR {{ number_format($data['salary_paid'] ?? 0, 2) }}
+                            @if ($data['paid_at'])
+                                <span class="text-muted fw-normal">
+                                    on {{ $data['paid_at']->format('d M Y, h:i A') }}
+                                </span>
+                            @endif
                         </div>
                     @else
                         <span class="badge bg-warning text-dark custom-badge">Pending</span>
@@ -161,7 +205,7 @@
                 </div>
 
                 <div class="small text-muted">
-                    {{ \Carbon\Carbon::create($selectedYear, $selectedMonth, 1)->format('F Y') }}
+                    {{ $monthLabel }}
                 </div>
             </div>
         </div>
@@ -175,59 +219,45 @@
                 </div>
 
                 <div class="header-badge">
-                    @if(($data['salary_status'] ?? 'pending') === 'paid')
-                        PAID
-                    @else
-                        PENDING
-                    @endif
+                    {{ $isPaid ? 'PAID' : 'PENDING' }}
                 </div>
             </div>
 
             <div class="row g-3 align-items-stretch">
 
+                <!-- PAY -->
                 <div class="col-lg-3 col-md-6">
-                    @if(($data['salary_status'] ?? 'pending') !== 'paid')
-                        @if($canShowPayButton)
-                            <form method="POST" action="{{ route('admin.teacher-salaries.pay', $teacher->id) }}">
-                                @csrf
-                                <input type="hidden" name="year" value="{{ $selectedYear }}">
-                                <input type="hidden" name="month" value="{{ $selectedMonth }}">
-                                <input type="hidden" name="amount" value="{{ $data['net_payable'] }}">
-
-                                <button type="submit" class="btn btn-success action-btn-full">
-                                    <i class="bi bi-cash-coin me-1"></i>
-                                    Pay Salary
-                                    @if(($data['net_payable'] ?? 0) > 0)
-                                        (LKR {{ number_format($data['net_payable'], 2) }})
-                                    @else
-                                        (LKR 0.00)
-                                    @endif
-                                </button>
-                            </form>
-                        @else
-                            @if($isCurrentMonth && !$isLastFiveDays)
-                                <button class="btn btn-secondary action-btn-full" disabled>
-                                    <i class="bi bi-lock-fill me-1"></i>
-                                    Pay Available in Last 5 Days
-                                </button>
-                            @else
-                                <button class="btn btn-secondary action-btn-full" disabled>
-                                    <i class="bi bi-lock-fill me-1"></i>
-                                    Payment Unavailable
-                                </button>
-                            @endif
-                        @endif
-                    @else
+                    @if($isPaid)
                         <button class="btn btn-outline-success action-btn-full" disabled>
                             <i class="bi bi-check-circle-fill me-1"></i>
                             Salary Paid
                         </button>
+                    @elseif($data['can_pay'])
+                        <form method="POST" action="{{ route('teacher-salaries.pay', $teacher->id) }}"
+                            onsubmit="return confirm('Pay LKR {{ number_format($data['net_payable'], 2) }} to {{ addslashes($teacher->full_name) }} for {{ $monthLabel }}?');">
+                            @csrf
+                            <input type="hidden" name="branch_id" value="{{ $branchId }}">
+                            <input type="hidden" name="year" value="{{ $selectedYear }}">
+                            <input type="hidden" name="month" value="{{ $selectedMonth }}">
+                            <input type="hidden" name="amount" value="{{ $data['net_payable'] }}">
+
+                            <button type="submit" class="btn btn-success action-btn-full">
+                                <i class="bi bi-cash-coin me-1"></i>
+                                Pay Salary (LKR {{ number_format($data['net_payable'], 2) }})
+                            </button>
+                        </form>
+                    @else
+                        <button class="btn btn-secondary action-btn-full" disabled title="{{ $data['pay_block_reason'] }}">
+                            <i class="bi bi-lock-fill me-1"></i>
+                            Payment Unavailable
+                        </button>
                     @endif
                 </div>
 
+                <!-- SLIP -->
                 <div class="col-lg-3 col-md-6">
-                    @if(($data['salary_status'] ?? 'pending') === 'paid')
-                        <a href="{{ route('admin.teacher-salaries.slip', [$teacher->id, $selectedYear, $selectedMonth]) }}?autoPrint=true"
+                    @if($isPaid)
+                        <a href="{{ route('teacher-salaries.slip', $routeParams + ['autoPrint' => 'true']) }}"
                             target="_blank" class="btn btn-primary action-btn-full">
                             <i class="bi bi-printer-fill me-1"></i>
                             Print Salary Slip
@@ -240,27 +270,26 @@
                     @endif
                 </div>
 
+                <!-- ADVANCE / DEDUCTION -->
                 <div class="col-lg-3 col-md-6">
-                    @if($isCurrentMonth)
+                    @if($data['can_add_payment'])
                         <button class="btn btn-warning action-btn-full" data-bs-toggle="modal" data-bs-target="#advanceModal">
                             <i class="bi bi-wallet2 me-1"></i>
                             Advance / Deduction
                         </button>
                     @else
                         <button class="btn btn-outline-secondary action-btn-full" disabled
-                            title="Advance/Deduction only available for current month">
+                            title="{{ $data['payment_block_reason'] }}">
                             <i class="bi bi-lock-fill me-1"></i>
-                            Current Month Only
+                            Advance / Deduction Locked
                         </button>
                     @endif
                 </div>
 
+                <!-- EXPENSES -->
                 <div class="col-lg-3 col-md-6">
-                    <a href="{{ route('admin.teacher-salaries.payment-details', [
-        'teacher' => $teacher->id,
-        'year' => $selectedYear,
-        'month' => $selectedMonth
-    ]) }}" class="btn btn-outline-danger action-btn-full">
+                    <a href="{{ route('teacher-salaries.payment-details', $routeParams) }}"
+                        class="btn btn-outline-danger action-btn-full">
                         <i class="bi bi-graph-down me-1"></i>
                         Expenses
                     </a>
@@ -270,11 +299,8 @@
 
             <div class="row g-3 mt-1">
                 <div class="col-lg-3 col-md-6">
-                    <a href="{{ route('admin.teacher-salaries.payment-summary', [
-        'teacher' => $teacher->id,
-        'year' => $selectedYear,
-        'month' => $selectedMonth
-    ]) }}" class="btn btn-outline-info action-btn-full">
+                    <a href="{{ route('teacher-salaries.payment-summary', $routeParams) }}"
+                        class="btn btn-outline-info action-btn-full">
                         <i class="bi bi-eye me-1"></i>
                         Details
                     </a>
@@ -282,30 +308,24 @@
             </div>
 
             <div class="mt-4">
-                @if(($data['salary_status'] ?? 'pending') === 'paid')
+                @if($isPaid)
                     <div class="alert alert-success custom-alert mb-0">
                         <i class="bi bi-check-circle-fill me-2"></i>
-                        Salary has been paid. Slip will open automatically.
+                        Salary has been paid. Advances and deductions for {{ $monthLabel }} are locked.
                     </div>
-                @else
-                    @if($isCurrentMonth && !$isLastFiveDays)
-                        <div class="alert alert-info custom-alert mb-0">
-                            <i class="bi bi-info-circle-fill me-2"></i>
-                            <strong>Payment will be available in the last 5 days of
-                                {{ \Carbon\Carbon::create($selectedYear, $selectedMonth, 1)->format('F') }}.</strong><br>
-                            You can still add advances and deductions during this time.
-                        </div>
-                    @elseif($isCurrentMonth && $isLastFiveDays)
-                        <div class="alert alert-success custom-alert mb-0">
-                            <i class="bi bi-check-circle-fill me-2"></i>
-                            Payment is now available. Please process the salary before month end.
-                        </div>
-                    @elseif(!$isCurrentMonth && ($data['salary_status'] ?? 'pending') !== 'paid')
-                        <div class="alert alert-warning custom-alert mb-0">
-                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                            This is a past month's pending salary. Payment can still be completed.
-                        </div>
-                    @endif
+                @elseif($data['can_pay'])
+                    <div class="alert alert-success custom-alert mb-0">
+                        <i class="bi bi-check-circle-fill me-2"></i>
+                        Payment is available. Please check the amounts before paying.
+                    </div>
+                @elseif($data['pay_block_reason'])
+                    <div class="alert alert-info custom-alert mb-0">
+                        <i class="bi bi-info-circle-fill me-2"></i>
+                        <strong>{{ $data['pay_block_reason'] }}</strong>
+                        @if($data['can_add_payment'])
+                            <br>You can still add advances and deductions for this month.
+                        @endif
+                    </div>
                 @endif
             </div>
         </div>
@@ -314,9 +334,10 @@
         <div class="modal fade" id="advanceModal" tabindex="-1" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content border-0 shadow-lg rounded-4">
-                    <form method="POST" action="{{ route('admin.teacher-salaries.payment.store', $teacher->id) }}"
+                    <form method="POST" action="{{ route('teacher-salaries.payment.store', $teacher->id) }}"
                         id="advanceForm">
                         @csrf
+                        <input type="hidden" name="branch_id" value="{{ $branchId }}">
 
                         <div class="modal-header border-0">
                             <div>
@@ -331,29 +352,26 @@
 
                         <div class="modal-body pt-0">
 
-                            <input type="hidden" name="teacher_id" value="{{ $teacher->id }}">
-                            <input type="hidden" name="year" value="{{ $selectedYear }}">
-                            <input type="hidden" name="month" value="{{ $selectedMonth }}">
-
                             <div class="mb-3">
                                 <label class="form-label fw-semibold">Transaction Type</label>
                                 <select name="payment_type" class="form-select custom-input" required>
-                                    <option value="advance">Advance</option>
-                                    <option value="deduction">Deduction</option>
-                                    <option value="other">Other</option>
+                                    @foreach (['advance' => 'Advance', 'deduction' => 'Deduction', 'other' => 'Other'] as $typeValue => $typeLabel)
+                                        <option value="{{ $typeValue }}" {{ old('payment_type') === $typeValue ? 'selected' : '' }}>
+                                            {{ $typeLabel }}
+                                        </option>
+                                    @endforeach
                                 </select>
                             </div>
 
                             <div class="mb-3">
                                 <label class="form-label fw-semibold">Amount (LKR)</label>
                                 <input type="number" name="amount" step="0.01" class="form-control custom-input" required
-                                    id="advanceAmount" min="0.01" placeholder="Enter amount">
+                                    id="advanceAmount" min="0.01" max="{{ $availableLimit }}" value="{{ old('amount') }}"
+                                    placeholder="Enter amount">
 
-                                @if(($data['net_payable'] ?? 0) > 0)
-                                    <small class="text-muted d-block mt-1">
-                                        Maximum allowed: LKR {{ number_format($data['net_payable'], 2) }}
-                                    </small>
-                                @endif
+                                <small class="text-muted d-block mt-1">
+                                    Maximum allowed: LKR {{ number_format($availableLimit, 2) }}
+                                </small>
 
                                 <div class="text-danger small mt-2 d-none" id="amountWarning"></div>
                             </div>
@@ -361,19 +379,23 @@
                             <div class="mb-3">
                                 <label class="form-label fw-semibold">Payment Date</label>
                                 <input type="date" name="payment_date" class="form-control custom-input"
-                                    value="{{ date('Y-m-d') }}" required>
+                                    min="{{ $data['month_start'] }}" max="{{ $data['month_end'] }}"
+                                    value="{{ old('payment_date', min(now()->toDateString(), $data['month_end'])) }}" required>
+                                <small class="text-muted d-block mt-1">
+                                    Must be a date in {{ $monthLabel }}.
+                                </small>
                             </div>
 
                             <div class="mb-3">
                                 <label class="form-label fw-semibold">Reason / Description</label>
-                                <input type="text" name="reason" class="form-control custom-input"
-                                    placeholder="Optional: Specify reason for this transaction">
+                                <input type="text" name="reason" class="form-control custom-input" maxlength="150"
+                                    value="{{ old('reason') }}" placeholder="Optional: Specify reason for this transaction">
                             </div>
 
                             <div class="mb-0">
                                 <label class="form-label fw-semibold">Additional Notes</label>
-                                <textarea name="note" class="form-control custom-input" rows="3"
-                                    placeholder="Optional: Any additional information"></textarea>
+                                <textarea name="note" class="form-control custom-input" rows="3" maxlength="1000"
+                                    placeholder="Optional: Any additional information">{{ old('note') }}</textarea>
                             </div>
                         </div>
 
@@ -397,7 +419,13 @@
         @if(session()->has('slip_open'))
             <script>
                 window.addEventListener('load', function () {
-                    const url = "{{ route('admin.teacher-salaries.slip', [session('slip_teacher'), session('slip_year'), session('slip_month')]) }}?autoPrint=true";
+                    const url = "{!! route('teacher-salaries.slip', [
+                        'teacher' => session('slip_teacher'),
+                        'year' => session('slip_year'),
+                        'month' => session('slip_month'),
+                        'branch_id' => session('slip_branch'),
+                        'autoPrint' => 'true',
+                    ]) !!}";
                     setTimeout(() => {
                         window.open(url, '_blank');
                     }, 500);
@@ -599,17 +627,25 @@
 @push('scripts')
     <script>
         document.addEventListener('DOMContentLoaded', function () {
+            // Re-open the modal when the form came back with errors
+            @if ($errors->any() && old('payment_type'))
+                const advanceModal = document.getElementById('advanceModal');
+                if (advanceModal && window.bootstrap) {
+                    bootstrap.Modal.getOrCreateInstance(advanceModal).show();
+                }
+            @endif
+
             const amountInput = document.getElementById('advanceAmount');
             const form = document.getElementById('advanceForm');
             const warningDiv = document.getElementById('amountWarning');
-            const netPayable = {{ (float) ($data['net_payable'] ?? 0) }};
+            const availableLimit = {{ $availableLimit }};
 
-            if (amountInput && form && warningDiv && netPayable > 0) {
+            if (amountInput && form && warningDiv) {
                 amountInput.addEventListener('input', function () {
                     const value = parseFloat(this.value || '0');
 
-                    if (value > netPayable) {
-                        warningDiv.textContent = 'Amount cannot exceed Net Payable (LKR ' + netPayable.toFixed(2) + ')';
+                    if (value > availableLimit) {
+                        warningDiv.textContent = 'Amount cannot exceed the available limit (LKR ' + availableLimit.toFixed(2) + ')';
                         warningDiv.classList.remove('d-none');
                         this.classList.add('is-invalid');
                     } else {
@@ -622,9 +658,9 @@
                 form.addEventListener('submit', function (e) {
                     const value = parseFloat(amountInput.value || '0');
 
-                    if (value > netPayable) {
+                    if (value > availableLimit) {
                         e.preventDefault();
-                        warningDiv.textContent = 'Amount cannot exceed Net Payable (LKR ' + netPayable.toFixed(2) + ')';
+                        warningDiv.textContent = 'Amount cannot exceed the available limit (LKR ' + availableLimit.toFixed(2) + ')';
                         warningDiv.classList.remove('d-none');
                         amountInput.classList.add('is-invalid');
                     }

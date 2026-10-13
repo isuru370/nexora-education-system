@@ -36,8 +36,6 @@ use App\Http\Controllers\Admin\LogController;
 
 use App\Http\Controllers\Admin\MonthlyClassAttendanceReportController;
 
-use App\Http\Controllers\Admin\MonthlyReportController;
-
 use App\Http\Controllers\Admin\NotificationController;
 
 use App\Http\Controllers\Admin\PaymentCollectionReportController;
@@ -47,9 +45,6 @@ use App\Http\Controllers\Admin\PaymentReminderController;
 use App\Http\Controllers\Admin\StudentImageController;
 
 use App\Http\Controllers\Admin\TeacherReportController;
-
-use App\Http\Controllers\Admin\TeacherSalaryController;
-
 
 use App\Http\Controllers\Admin\TodayAttendanceController;
 
@@ -69,6 +64,7 @@ use App\Http\Controllers\Web\ClassSchedule\ClassScheduleController;
 use App\Http\Controllers\Web\ClassSchedule\ClassTimeTableController;
 use App\Http\Controllers\Web\Dashboard\DashboardController;
 use App\Http\Controllers\Web\GenerateStudentId\GenerateStudentIdController;
+use App\Http\Controllers\Web\MonthlyReport\MonthlyReportController;
 use App\Http\Controllers\Web\Organizer\OrganizerController;
 use App\Http\Controllers\Web\Payment\PaymentController;
 use App\Http\Controllers\Web\Receipt\ReceiptController;
@@ -80,6 +76,7 @@ use App\Http\Controllers\Web\StudentClass\StudentClassController;
 use App\Http\Controllers\Web\StudentClass\StudentClassManagementController;
 use App\Http\Controllers\Web\StudentClassEnrollment\StudentClassEnrollmentController;
 use App\Http\Controllers\Web\Teacher\TeacherController;
+use App\Http\Controllers\Web\TeacherSalary\TeacherSalaryController;
 use App\Http\Controllers\Web\TemporaryCard\TemporaryIDCardController;
 use Illuminate\Http\Request;
 
@@ -799,103 +796,7 @@ Route::middleware([
 
         ])->name('organizer-payments.adjustment-store')->middleware('role:ADMIN,BRANCH_ADMIN');
 
-
-
-        /*
-
-        |--------------------------------------------------------------------------
-
-        | Teacher Salary Management
-
-        |--------------------------------------------------------------------------
-
-        */
-
-
-
-        Route::get('/teacher-salaries', [
-
-            TeacherSalaryController::class,
-
-            'index'
-
-        ])->name('teacher-salaries.index')->middleware('role:ADMIN,BRANCH_ADMIN');
-
-
-
-        Route::get('/teacher-salaries/{teacher}/{year}/{month}', [
-
-            TeacherSalaryController::class,
-
-            'show'
-
-        ])->name('teacher-salaries.show')->middleware('role:ADMIN,BRANCH_ADMIN');
-
-
-
-        Route::post('/teacher-salaries/{teacher}/pay', [
-
-            TeacherSalaryController::class,
-
-            'teacherSalaryPaid'
-
-        ])->name('teacher-salaries.pay')->middleware('role:ADMIN,BRANCH_ADMIN');
-
-
-
-        Route::get('/teacher-salaries/{teacher}/{year}/{month}/slip', [
-
-            TeacherSalaryController::class,
-
-            'printSalarySlip'
-
-        ])->name('teacher-salaries.slip')->middleware('role:ADMIN,BRANCH_ADMIN');
-
-
-
-
-
-        Route::post(
-
-            '/teacher-salaries/{teacher}/payment',
-
-            [TeacherSalaryController::class, 'teacherPaymentStore']
-
-        )->name('teacher-salaries.payment.store')->middleware('role:ADMIN,BRANCH_ADMIN');
-
-
-
-        Route::get('/teacher-salaries/{teacher}/{year}/{month}/details', [
-
-            TeacherSalaryController::class,
-
-            'paymentDetailsView'
-
-        ])->name('teacher-salaries.payment-details')->middleware('role:ADMIN,BRANCH_ADMIN');
-
-
-
-        Route::delete('/teacher-salaries/{paymentId}', [
-
-            TeacherSalaryController::class,
-
-            'paymentDelete'
-
-        ])->name('teacher-salaries.payment-delete')->middleware('role:ADMIN,BRANCH_ADMIN');
-
-
-
-        Route::get('/teacher-salaries/{teacher}/{year}/{month}/summary', [
-
-            TeacherSalaryController::class,
-
-            'teacherPaymentAndClassSummery'
-
-        ])->name('teacher-salaries.payment-summary')->middleware('role:ADMIN,BRANCH_ADMIN');
-
-
-
-        /*&#x20;
+        /*;
 
         |--------------------------------------------------------------------------
 
@@ -994,39 +895,6 @@ Route::middleware([
         Route::get('/teacher-report/expense/excel', [TeacherReportController::class, 'teacherExpenseReportExcel'])->name('teacher-expense-report.excel')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
 
         Route::get('/teacher-report/expense/pdf', [TeacherReportController::class, 'teacherExpenseReportPdf'])->name('teacher-expense-report.pdf')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
-
-
-
-        Route::get('/monthly-report', [MonthlyReportController::class, 'index'])
-
-            ->name('monthly-report.index')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
-
-
-
-        // Excel
-
-        Route::get(
-
-            '/excel/teacher/teacher-salary-report/excel',
-
-            [MonthlyReportController::class, 'TeacherSalaryReportExcel']
-
-        )->name('teacher.salary.report.excel')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
-
-
-
-        // PDF
-
-        Route::get(
-
-            '/pdf/teacher/teacher-salary-report/pdf',
-
-            [MonthlyReportController::class, 'TeacherSalaryReportPdf']
-
-        )->name('teacher.salary.report.pdf')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
-
-
-
 
 
         Route::get('/student-images', [StudentImageController::class, 'index'])
@@ -3005,4 +2873,86 @@ Route::prefix('new-attendance')
 
         Route::post('/scan', 'scan')
             ->name('scan');
+    });
+
+    /*
+|--------------------------------------------------------------------------
+| Teacher Salaries
+|--------------------------------------------------------------------------
+| Branch is passed as ?branch_id= on GET pages and as a hidden field on forms.
+| When it is missing, the first branch of the teacher the user can access is used.
+*/
+
+Route::prefix('teacher-salaries')
+    ->name('teacher-salaries.')
+    ->controller(TeacherSalaryController::class)
+    ->middleware(['auth', 'user.active', 'role:ADMIN,BRANCH_ADMIN'])
+    ->group(function () {
+
+        Route::get('/', 'index')->name('index');
+
+        Route::post('/{teacher}/pay', 'teacherSalaryPaid')
+            ->where('teacher', '[0-9]+')
+            ->name('pay');
+
+        Route::post('/{teacher}/payment', 'teacherPaymentStore')
+            ->where('teacher', '[0-9]+')
+            ->name('payment.store');
+
+        Route::delete('/payments/{paymentId}', 'paymentDelete')
+            ->where('paymentId', '[0-9]+')
+            ->name('payment-delete');
+
+        Route::get('/{teacher}/{year}/{month}', 'show')
+            ->where(['teacher' => '[0-9]+', 'year' => '[0-9]{4}', 'month' => '[0-9]{1,2}'])
+            ->name('show');
+
+        Route::get('/{teacher}/{year}/{month}/slip', 'printSalarySlip')
+            ->where(['teacher' => '[0-9]+', 'year' => '[0-9]{4}', 'month' => '[0-9]{1,2}'])
+            ->name('slip');
+
+        Route::get('/{teacher}/{year}/{month}/details', 'paymentDetailsView')
+            ->where(['teacher' => '[0-9]+', 'year' => '[0-9]{4}', 'month' => '[0-9]{1,2}'])
+            ->name('payment-details');
+
+        Route::get('/{teacher}/{year}/{month}/summary', 'teacherPaymentAndClassSummery')
+            ->where(['teacher' => '[0-9]+', 'year' => '[0-9]{4}', 'month' => '[0-9]{1,2}'])
+            ->name('payment-summary');
+    });
+
+    /*
+|--------------------------------------------------------------------------
+| Monthly Reports
+|--------------------------------------------------------------------------
+| {basis}: fee-month = by payments.payment_month
+|          paid-date = by payments.paid_at (collection date)
+*/
+
+Route::prefix('monthly-report')
+    ->name('monthly-report.')
+    ->controller(MonthlyReportController::class)
+    ->middleware(['auth', 'user.active'])
+    ->group(function () {
+
+        Route::middleware('role:ADMIN,BRANCH_ADMIN,USER')->group(function () {
+
+            Route::get('/', 'index')->name('index');
+
+            Route::get('/teacher-salary/excel', 'teacherSalaryExcel')
+                ->name('teacher-salary.excel');
+
+            Route::get('/teacher-salary/pdf', 'teacherSalaryPdf')
+                ->name('teacher-salary.pdf');
+        });
+
+        Route::middleware('role:ADMIN,BRANCH_ADMIN,USER,TEACHER')->group(function () {
+
+            Route::get('/student-payments/{basis}/excel', 'studentPaymentExcel')
+                ->where('basis', 'fee-month|paid-date')
+                ->name('student-payments.excel');
+
+            Route::get('/student-payments/{basis}/pdf', 'studentPaymentPdf')
+                ->where('basis', 'fee-month|paid-date')
+                ->name('student-payments.pdf');
+        });
     });

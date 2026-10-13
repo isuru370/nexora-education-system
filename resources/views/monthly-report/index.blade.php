@@ -287,6 +287,15 @@
             </div>
         </div>
 
+        @if ($errors->any())
+            <div class="alert alert-danger mb-4" style="border-radius: 18px;">
+                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                @foreach ($errors->all() as $error)
+                    <div>{{ $error }}</div>
+                @endforeach
+            </div>
+        @endif
+
         {{-- ========================================= --}}
         {{-- TEACHER SALARY REPORT SECTION --}}
         {{-- ========================================= --}}
@@ -299,13 +308,28 @@
                 <div class="report-subtitle">View and download the monthly salary summary for all teachers</div>
             </div>
             <div class="report-body">
-                <form method="GET" action="{{ route('admin.monthly-report.index') }}">
+                <form method="GET" action="{{ route('monthly-report.index') }}">
                     <div class="row g-3 align-items-end">
+                        @if ($branches->count() > 1)
+                            <div class="col-md-3">
+                                <label class="form-label-custom">Branch</label>
+                                <select name="branch_id" class="form-select-custom">
+                                    @foreach ($branches as $branchOption)
+                                        <option value="{{ $branchOption->id }}"
+                                            {{ (int) $branchId === (int) $branchOption->id ? 'selected' : '' }}>
+                                            {{ $branchOption->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        @else
+                            <input type="hidden" name="branch_id" value="{{ $branchId }}">
+                        @endif
                         <div class="col-md-3">
                             <label class="form-label-custom">Year</label>
                             <select name="year" class="form-select-custom">
                                 @for ($y = now()->year; $y >= 2020; $y--)
-                                    <option value="{{ $y }}" {{ request('year', now()->year) == $y ? 'selected' : '' }}>
+                                    <option value="{{ $y }}" {{ (int) $year === $y ? 'selected' : '' }}>
                                         {{ $y }}
                                     </option>
                                 @endfor
@@ -315,7 +339,7 @@
                             <label class="form-label-custom">Month</label>
                             <select name="month" class="form-select-custom">
                                 @for ($m = 1; $m <= 12; $m++)
-                                    <option value="{{ $m }}" {{ request('month', now()->month) == $m ? 'selected' : '' }}>
+                                    <option value="{{ $m }}" {{ (int) $month === $m ? 'selected' : '' }}>
                                         {{ \Carbon\Carbon::create()->month($m)->format('F') }}
                                     </option>
                                 @endfor
@@ -332,16 +356,20 @@
                 <div class="divider"></div>
 
                 <div class="d-flex gap-2 flex-wrap">
-                    <a href="{{ route('admin.teacher.salary.report.excel', [
-        'year' => request('year', now()->year),
-        'month' => request('month', now()->month),
-    ]) }}" class="btn-excel">
+                    <a href="{{ route('monthly-report.teacher-salary.excel', [
+                        'year' => $year,
+                        'month' => $month,
+                        'branch_id' => $branchId,
+                    ]) }}"
+                        class="btn-excel">
                         <i class="bi bi-file-earmark-spreadsheet"></i> Download Excel
                     </a>
-                    <a href="{{ route('admin.teacher.salary.report.pdf', [
-        'year' => request('year', now()->year),
-        'month' => request('month', now()->month),
-    ]) }}" class="btn-pdf">
+                    <a href="{{ route('monthly-report.teacher-salary.pdf', [
+                        'year' => $year,
+                        'month' => $month,
+                        'branch_id' => $branchId,
+                    ]) }}"
+                        class="btn-pdf">
                         <i class="bi bi-filetype-pdf"></i> Download PDF
                     </a>
                 </div>
@@ -349,7 +377,8 @@
                 <div class="info-box">
                     <i class="bi bi-info-circle-fill"></i>
                     <div class="info-box-text">
-                        Shows each teacher’s earnings, deductions, and net salary for the selected month.
+                        Shows each teacher’s earnings, deductions, and net salary for the selected branch and month.
+                        The numbers are the same as the Teacher Salary page.
                     </div>
                 </div>
             </div>
@@ -367,13 +396,14 @@
                 <div class="report-subtitle">Select a teacher and month to view or print the individual salary slip</div>
             </div>
             <div class="report-body">
-                <form method="GET" action="{{ route('admin.monthly-report.index') }}">
+                <form method="GET" action="{{ route('monthly-report.index') }}">
+                    <input type="hidden" name="branch_id" value="{{ $branchId }}">
                     <div class="row g-3 align-items-end">
                         <div class="col-md-3">
                             <label class="form-label-custom">Year</label>
                             <select name="year" class="form-select-custom">
                                 @for ($y = now()->year; $y >= 2020; $y--)
-                                    <option value="{{ $y }}" {{ request('year', now()->year) == $y ? 'selected' : '' }}>
+                                    <option value="{{ $y }}" {{ (int) $year === $y ? 'selected' : '' }}>
                                         {{ $y }}
                                     </option>
                                 @endfor
@@ -383,7 +413,7 @@
                             <label class="form-label-custom">Month</label>
                             <select name="month" class="form-select-custom">
                                 @for ($m = 1; $m <= 12; $m++)
-                                    <option value="{{ $m }}" {{ request('month', now()->month) == $m ? 'selected' : '' }}>
+                                    <option value="{{ $m }}" {{ (int) $month === $m ? 'selected' : '' }}>
                                         {{ \Carbon\Carbon::create()->month($m)->format('F') }}
                                     </option>
                                 @endfor
@@ -394,7 +424,8 @@
                             <select name="teacher_id" class="form-select-custom">
                                 <option value="">-- Select Teacher --</option>
                                 @foreach ($teachers as $teacherItem)
-                                    <option value="{{ $teacherItem->id }}" {{ request('teacher_id') == $teacherItem->id ? 'selected' : '' }}>
+                                    <option value="{{ $teacherItem->id }}"
+                                        {{ (int) $teacherId === (int) $teacherItem->id ? 'selected' : '' }}>
                                         {{ $teacherItem->custom_id }} - {{ $teacherItem->initials }}
                                     </option>
                                 @endforeach
@@ -411,20 +442,17 @@
                 <div class="divider"></div>
 
                 <div class="d-flex gap-2 flex-wrap">
-                    @php
-                        $teacherId = request('teacher_id');
-                        $year = request('year', now()->year);
-                        $month = request('month', now()->month);
-                    @endphp
-
-                    @if($teacherId)
-                                    <a href="{{ route('admin.teacher-salaries.slip', [
+                    @if ($teacherId)
+                        <a href="{{ route('teacher-salaries.slip', [
                             'teacher' => $teacherId,
                             'year' => $year,
                             'month' => $month,
-                        ]) }}?autoPrint=true" target="_blank" class="btn-print">
-                                        <i class="bi bi-printer"></i> Print Salary Slip
-                                    </a>
+                            'branch_id' => $branchId,
+                            'autoPrint' => 'true',
+                        ]) }}"
+                            target="_blank" class="btn-print">
+                            <i class="bi bi-printer"></i> Print Salary Slip
+                        </a>
                     @else
                         <div class="info-box" style="background: #fef3c7;">
                             <i class="bi bi-exclamation-triangle-fill" style="color: #f59e0b;"></i>
@@ -449,13 +477,14 @@
                 <div class="report-subtitle">Shows students whose payments are assigned to the selected fee month.</div>
             </div>
             <div class="report-body">
-                <form method="GET" action="{{ route('admin.monthly-report.index') }}">
+                <form method="GET" action="{{ route('monthly-report.index') }}">
+                    <input type="hidden" name="branch_id" value="{{ $branchId }}">
                     <div class="row g-3 align-items-end">
                         <div class="col-md-3">
                             <label class="form-label-custom">Year</label>
                             <select name="year" class="form-select-custom">
                                 @for ($y = now()->year; $y >= 2020; $y--)
-                                    <option value="{{ $y }}" {{ request('year', now()->year) == $y ? 'selected' : '' }}>
+                                    <option value="{{ $y }}" {{ (int) $year === $y ? 'selected' : '' }}>
                                         {{ $y }}
                                     </option>
                                 @endfor
@@ -465,7 +494,7 @@
                             <label class="form-label-custom">Month</label>
                             <select name="month" class="form-select-custom">
                                 @for ($m = 1; $m <= 12; $m++)
-                                    <option value="{{ $m }}" {{ request('month', now()->month) == $m ? 'selected' : '' }}>
+                                    <option value="{{ $m }}" {{ (int) $month === $m ? 'selected' : '' }}>
                                         {{ \Carbon\Carbon::create()->month($m)->format('F') }}
                                     </option>
                                 @endfor
@@ -476,7 +505,8 @@
                             <select name="teacher_id" class="form-select-custom">
                                 <option value="">-- Select Teacher --</option>
                                 @foreach ($teachers as $teacherItem)
-                                    <option value="{{ $teacherItem->id }}" {{ request('teacher_id') == $teacherItem->id ? 'selected' : '' }}>
+                                    <option value="{{ $teacherItem->id }}"
+                                        {{ (int) $teacherId === (int) $teacherItem->id ? 'selected' : '' }}>
                                         {{ $teacherItem->custom_id }} - {{ $teacherItem->initials }}
                                     </option>
                                 @endforeach
@@ -493,18 +523,12 @@
                 <div class="divider"></div>
 
                 <div class="d-flex gap-2 flex-wrap">
-                    @php
-                        $teacherId = request('teacher_id');
-                        $year = request('year', now()->year);
-                        $month = request('month', now()->month);
-                    @endphp
-
-                    @if($teacherId)
-                        <a href="{{ url('/admin/reports/teacher-student-payment-excel?teacher_id=' . $teacherId . '&year=' . $year . '&month=' . $month) }}"
+                    @if ($teacherId)
+                        <a href="{{ route('monthly-report.student-payments.excel', ['basis' => 'fee-month', 'teacher_id' => $teacherId, 'year' => $year, 'month' => $month]) }}"
                             class="btn-excel">
                             <i class="bi bi-file-earmark-spreadsheet"></i> Download Excel
                         </a>
-                        <a href="{{ url('/admin/reports/teacher-student-payment-pdf?teacher_id=' . $teacherId . '&year=' . $year . '&month=' . $month) }}"
+                        <a href="{{ route('monthly-report.student-payments.pdf', ['basis' => 'fee-month', 'teacher_id' => $teacherId, 'year' => $year, 'month' => $month]) }}"
                             target="_blank" class="btn-pdf">
                             <i class="bi bi-filetype-pdf"></i> Download PDF
                         </a>
@@ -539,16 +563,18 @@
                     <i class="bi bi-people-fill"></i>
                     Student Payments by Collection Date
                 </div>
-                <div class="report-subtitle">Shows students who actually made a payment during the selected year and month.</div>
+                <div class="report-subtitle">Shows students who actually made a payment during the selected year and month.
+                </div>
             </div>
             <div class="report-body">
-                <form method="GET" action="{{ route('admin.monthly-report.index') }}">
+                <form method="GET" action="{{ route('monthly-report.index') }}">
+                    <input type="hidden" name="branch_id" value="{{ $branchId }}">
                     <div class="row g-3 align-items-end">
                         <div class="col-md-3">
                             <label class="form-label-custom">Year</label>
                             <select name="year" class="form-select-custom">
                                 @for ($y = now()->year; $y >= 2020; $y--)
-                                    <option value="{{ $y }}" {{ request('year', now()->year) == $y ? 'selected' : '' }}>
+                                    <option value="{{ $y }}" {{ (int) $year === $y ? 'selected' : '' }}>
                                         {{ $y }}
                                     </option>
                                 @endfor
@@ -558,7 +584,7 @@
                             <label class="form-label-custom">Month</label>
                             <select name="month" class="form-select-custom">
                                 @for ($m = 1; $m <= 12; $m++)
-                                    <option value="{{ $m }}" {{ request('month', now()->month) == $m ? 'selected' : '' }}>
+                                    <option value="{{ $m }}" {{ (int) $month === $m ? 'selected' : '' }}>
                                         {{ \Carbon\Carbon::create()->month($m)->format('F') }}
                                     </option>
                                 @endfor
@@ -569,7 +595,8 @@
                             <select name="teacher_id" class="form-select-custom">
                                 <option value="">-- Select Teacher --</option>
                                 @foreach ($teachers as $teacherItem)
-                                    <option value="{{ $teacherItem->id }}" {{ request('teacher_id') == $teacherItem->id ? 'selected' : '' }}>
+                                    <option value="{{ $teacherItem->id }}"
+                                        {{ (int) $teacherId === (int) $teacherItem->id ? 'selected' : '' }}>
                                         {{ $teacherItem->custom_id }} - {{ $teacherItem->initials }}
                                     </option>
                                 @endforeach
@@ -586,18 +613,12 @@
                 <div class="divider"></div>
 
                 <div class="d-flex gap-2 flex-wrap">
-                    @php
-                        $teacherId = request('teacher_id');
-                        $year = request('year', now()->year);
-                        $month = request('month', now()->month);
-                    @endphp
-
-                    @if($teacherId)
-                        <a href="{{ url('/admin/reports/teacher-student-payment-date-excel?teacher_id=' . $teacherId . '&year=' . $year . '&month=' . $month) }}"
+                    @if ($teacherId)
+                        <a href="{{ route('monthly-report.student-payments.excel', ['basis' => 'paid-date', 'teacher_id' => $teacherId, 'year' => $year, 'month' => $month]) }}"
                             class="btn-excel">
                             <i class="bi bi-file-earmark-spreadsheet"></i> Download Excel
                         </a>
-                        <a href="{{ url('/admin/reports/teacher-student-payment-date-pdf?teacher_id=' . $teacherId . '&year=' . $year . '&month=' . $month) }}"
+                        <a href="{{ route('monthly-report.student-payments.pdf', ['basis' => 'paid-date', 'teacher_id' => $teacherId, 'year' => $year, 'month' => $month]) }}"
                             target="_blank" class="btn-pdf">
                             <i class="bi bi-filetype-pdf"></i> Download PDF
                         </a>
@@ -637,13 +658,14 @@
             </div>
 
             <div class="report-body">
-                <form method="GET" action="{{ route('admin.monthly-report.index') }}">
+                <form method="GET" action="{{ route('monthly-report.index') }}">
+                    <input type="hidden" name="branch_id" value="{{ $branchId }}">
                     <div class="row g-3 align-items-end">
                         <div class="col-md-3">
                             <label class="form-label-custom">Year</label>
                             <select name="year" class="form-select-custom">
                                 @for ($y = now()->year; $y >= 2020; $y--)
-                                    <option value="{{ $y }}" {{ request('year', now()->year) == $y ? 'selected' : '' }}>
+                                    <option value="{{ $y }}" {{ (int) $year === $y ? 'selected' : '' }}>
                                         {{ $y }}
                                     </option>
                                 @endfor
@@ -654,7 +676,7 @@
                             <label class="form-label-custom">Month</label>
                             <select name="month" class="form-select-custom">
                                 @for ($m = 1; $m <= 12; $m++)
-                                    <option value="{{ $m }}" {{ request('month', now()->month) == $m ? 'selected' : '' }}>
+                                    <option value="{{ $m }}" {{ (int) $month === $m ? 'selected' : '' }}>
                                         {{ \Carbon\Carbon::create()->month($m)->format('F') }}
                                     </option>
                                 @endfor
@@ -666,7 +688,8 @@
                             <select name="teacher_id" class="form-select-custom">
                                 <option value="">-- Select Teacher --</option>
                                 @foreach ($teachers as $teacherItem)
-                                    <option value="{{ $teacherItem->id }}" {{ request('teacher_id') == $teacherItem->id ? 'selected' : '' }}>
+                                    <option value="{{ $teacherItem->id }}"
+                                        {{ (int) $teacherId === (int) $teacherItem->id ? 'selected' : '' }}>
                                         {{ $teacherItem->custom_id }} - {{ $teacherItem->initials }}
                                     </option>
                                 @endforeach
@@ -683,32 +706,28 @@
 
                 <div class="divider"></div>
 
-                @php
-                    $teacherId = request('teacher_id');
-                    $year = request('year', now()->year);
-                    $month = request('month', now()->month);
-                @endphp
+                @if ($teacherId)
+                    <div class="d-flex gap-2 flex-wrap">
+                        <a href="{{ route('teacher-expense-report.excel', [
+                            'teacher_id' => $teacherId,
+                            'year' => $year,
+                            'month' => $month,
+                        ]) }}"
+                            class="btn-excel">
+                            <i class="bi bi-file-earmark-spreadsheet"></i>
+                            Download Excel
+                        </a>
 
-                @if($teacherId)
-                            <div class="d-flex gap-2 flex-wrap">
-                                <a href="{{ route('admin.teacher-expense-report.excel', [
-                        'teacher_id' => $teacherId,
-                        'year' => $year,
-                        'month' => $month,
-                    ]) }}" class="btn-excel">
-                                    <i class="bi bi-file-earmark-spreadsheet"></i>
-                                    Download Excel
-                                </a>
-
-                                <a href="{{ route('admin.teacher-expense-report.pdf', [
-                        'teacher_id' => $teacherId,
-                        'year' => $year,
-                        'month' => $month,
-                    ]) }}" target="_blank" class="btn-pdf">
-                                    <i class="bi bi-filetype-pdf"></i>
-                                    Download PDF
-                                </a>
-                            </div>
+                        <a href="{{ route('teacher-expense-report.pdf', [
+                            'teacher_id' => $teacherId,
+                            'year' => $year,
+                            'month' => $month,
+                        ]) }}"
+                            target="_blank" class="btn-pdf">
+                            <i class="bi bi-filetype-pdf"></i>
+                            Download PDF
+                        </a>
+                    </div>
                 @else
                     <div class="info-box" style="background: #fef3c7;">
                         <i class="bi bi-exclamation-triangle-fill" style="color: #f59e0b;"></i>
@@ -737,25 +756,25 @@
 
     </div>
 
-<script>
-(function () {
-    function blockTeacherSelectAutoSubmit(event) {
-        var target = event.target;
+    <script>
+        (function() {
+            function blockTeacherSelectAutoSubmit(event) {
+                var target = event.target;
 
-        if (
-            target &&
-            target.tagName &&
-            target.tagName.toLowerCase() === 'select' &&
-            target.name === 'teacher_id'
-        ) {
-            event.stopPropagation();
-            event.stopImmediatePropagation();
-        }
-    }
+                if (
+                    target &&
+                    target.tagName &&
+                    target.tagName.toLowerCase() === 'select' &&
+                    target.name === 'teacher_id'
+                ) {
+                    event.stopPropagation();
+                    event.stopImmediatePropagation();
+                }
+            }
 
-    // Capture phase: runs before normal/bubbling change handlers.
-    document.addEventListener('change', blockTeacherSelectAutoSubmit, true);
-})();
-</script>
+            // Capture phase: runs before normal/bubbling change handlers.
+            document.addEventListener('change', blockTeacherSelectAutoSubmit, true);
+        })();
+    </script>
 
 @endsection

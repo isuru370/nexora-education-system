@@ -29,7 +29,7 @@
 
             <div class="d-flex gap-2">
 
-                <a href="{{ route('admin.class-schedules.index') }}" class="btn btn-outline-secondary">
+                <a href="{{ route('class-schedules.index') }}" class="btn btn-outline-secondary">
                     <i class="bi bi-journal-bookmark"></i>
                     Class Schedules
                 </a>
@@ -346,7 +346,7 @@
                                         <div class="d-flex justify-content-center gap-1">
 
                                             @if ($canSchedule)
-                                                <a href="{{ route('admin.class-schedules.create', [
+                                                <a href="{{ route('class-schedules.create', [
                                                     'student_class_id' => $fee->student_class_id,
                                                     'class_category_id' => $fee->class_category_id,
                                                 ]) }}"
@@ -361,7 +361,7 @@
                                             @endif
 
 
-                                            <a href="{{ route('admin.class-schedules.index', [
+                                            <a href="{{ route('class-schedules.index', [
                                                 'student_class_id' => $fee->student_class_id,
                                                 'class_category_id' => $fee->class_category_id,
                                             ]) }}"

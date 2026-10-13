@@ -20,29 +20,23 @@
 
                     <p class="text-muted mb-0">
                         {{ $monthName }} {{ $year }}
+                        @if ($branch)
+                            • <i class="bi bi-building"></i> {{ $branch->name }}
+                        @endif
                     </p>
 
                 </div>
 
                 <div class="hero-actions">
 
-                    <a href="{{ route('admin.teacher-salaries.index', [
-        'year' => $year,
-        'month' => $month
-    ]) }}" class="btn btn-outline-secondary custom-btn">
+                    <a href="{{ route('teacher-salaries.index', [
+                        'year' => $year,
+                        'month' => $month,
+                        'branch_id' => $branchId,
+                    ]) }}" class="btn btn-outline-secondary custom-btn">
 
                         <i class="bi bi-arrow-clockwise me-1"></i>
                         Refresh
-
-                    </a>
-
-                    <a href="{{ route('admin.teacher-salaries.index', [
-        'year' => $year,
-        'month' => $month
-    ]) }}" class="btn btn-danger custom-btn">
-
-                        <i class="bi bi-file-earmark-pdf me-1"></i>
-                        PDF Export
 
                     </a>
 
@@ -55,7 +49,29 @@
         <!-- FILTER -->
         <div class="filter-card mb-4">
 
-            <form method="GET" class="row g-3 align-items-end">
+            <form method="GET" action="{{ route('teacher-salaries.index') }}" class="row g-3 align-items-end">
+
+                @if ($branches->count() > 1)
+                    <div class="col-lg-3 col-md-6">
+
+                        <label class="form-label fw-semibold">
+                            Branch
+                        </label>
+
+                        <select name="branch_id" class="form-select custom-input">
+
+                            @foreach ($branches as $branchOption)
+                                <option value="{{ $branchOption->id }}" {{ (int) $branchId === (int) $branchOption->id ? 'selected' : '' }}>
+                                    {{ $branchOption->name }}
+                                </option>
+                            @endforeach
+
+                        </select>
+
+                    </div>
+                @else
+                    <input type="hidden" name="branch_id" value="{{ $branchId }}">
+                @endif
 
                 <div class="col-lg-3 col-md-6">
 
@@ -307,29 +323,29 @@
 
                                                 <td>
 
-                                                    @if(($row['status'] ?? 'pending') === 'paid')
+                                                    @php
+                                                        $status = $row['status'] ?? 'pending';
+                                                        $statusClass = [
+                                                            'paid' => 'bg-success',
+                                                            'approved' => 'bg-info text-dark',
+                                                            'cancelled' => 'bg-secondary',
+                                                        ][$status] ?? 'bg-warning text-dark';
+                                                    @endphp
 
-                                                        <span class="badge bg-success custom-badge">
-                                                            Paid
-                                                        </span>
-
-                                                    @else
-
-                                                        <span class="badge bg-warning text-dark custom-badge">
-                                                            Pending
-                                                        </span>
-
-                                                    @endif
+                                                    <span class="badge {{ $statusClass }} custom-badge">
+                                                        {{ ucfirst($status) }}
+                                                    </span>
 
                                                 </td>
 
                                                 <td class="text-center">
 
-                                                    <a href="{{ route('admin.teacher-salaries.show', [
-                                'teacher' => $row['teacher_id'],
-                                'year' => $year,
-                                'month' => $month
-                            ]) }}" class="action-btn view-btn">
+                                                    <a href="{{ route('teacher-salaries.show', [
+                                                        'teacher' => $row['teacher_id'],
+                                                        'year' => $year,
+                                                        'month' => $month,
+                                                        'branch_id' => $branchId,
+                                                    ]) }}" class="action-btn view-btn" title="View salary">
 
                                                         <i class="bi bi-eye-fill"></i>
 
@@ -354,7 +370,7 @@
                                         </h5>
 
                                         <p>
-                                            Try changing the selected month or year
+                                            Try changing the selected branch, month or year
                                         </p>
 
                                     </div>

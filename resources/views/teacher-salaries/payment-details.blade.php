@@ -10,6 +10,7 @@
         $periodLabel = $monthName . ' ' . $year;
 
         $isPaid = isset($salary_status) && $salary_status === 'paid';
+        $data = $data ?? [];
         $totalPayments = $payments_count ?? 0;
         $totalAll = $totals['all'] ?? 0;
         $totalAdvance = $totals['advance'] ?? 0;
@@ -32,12 +33,20 @@
                         <h3 class="mb-1 fw-bold">{{ $teacher->full_name }}</h3>
                         <p class="mb-0 text-muted">
                             Payment Details • {{ $periodLabel }}
+                            @if ($branch)
+                                • <i class="bi bi-building"></i> {{ $branch->name }}
+                            @endif
                         </p>
                     </div>
                 </div>
 
                 <div class="hero-actions">
-                    <a href="{{ route('admin.teacher-salaries.show', [$teacher->id, $year, $month]) }}"
+                    <a href="{{ route('teacher-salaries.show', [
+                        'teacher' => $teacher->id,
+                        'year' => $year,
+                        'month' => $month,
+                        'branch_id' => $branch_id,
+                    ]) }}"
                         class="btn btn-outline-secondary custom-btn">
                         <i class="bi bi-arrow-left me-1"></i>
                         Back to Salary Details
@@ -131,7 +140,7 @@
                     <div class="info-box">
                         <small class="text-muted d-block">Salary Status</small>
                         <div>
-                            @if($isPaid)
+                            @if ($isPaid)
                                 <span class="badge bg-success custom-badge">Paid</span>
                             @else
                                 <span class="badge bg-warning text-dark custom-badge">Pending</span>
@@ -223,7 +232,7 @@
                                 </td>
 
                                 <td>
-                                    @if($payment->payment_type == 'advance')
+                                    @if ($payment->payment_type == 'advance')
                                         <span class="badge bg-warning text-dark custom-badge">
                                             <i class="bi bi-arrow-up-circle me-1"></i>
                                             Advance
@@ -242,7 +251,7 @@
                                 </td>
 
                                 <td class="fw-semibold">
-                                    @if($payment->payment_type == 'advance')
+                                    @if ($payment->payment_type == 'advance')
                                         <span class="text-warning">+ LKR {{ number_format($payment->amount, 2) }}</span>
                                     @elseif($payment->payment_type == 'deduction')
                                         <span class="text-danger">- LKR {{ number_format($payment->amount, 2) }}</span>
@@ -256,7 +265,7 @@
                                 </td>
 
                                 <td>
-                                    @if($payment->note)
+                                    @if ($payment->note)
                                         <span class="note-icon" data-bs-toggle="tooltip" title="{{ $payment->note }}">
                                             <i class="bi bi-info-circle-fill text-muted"></i>
                                         </span>
@@ -266,7 +275,7 @@
                                 </td>
 
                                 <td class="text-center">
-                                    @if($isPaid)
+                                    @if ($isPaid)
                                         <button class="btn btn-sm btn-secondary action-btn" disabled
                                             title="Record is locked because salary is paid">
                                             <i class="bi bi-lock-fill me-1"></i>
@@ -274,7 +283,7 @@
                                         </button>
                                     @else
                                         <form method="POST"
-                                            action="{{ route('admin.teacher-salaries.payment-delete', $payment->id) }}"
+                                            action="{{ route('teacher-salaries.payment-delete', $payment->id) }}"
                                             class="d-inline"
                                             onsubmit="return confirm('Are you sure you want to delete this payment record? This action cannot be undone.');">
                                             @csrf
@@ -302,7 +311,7 @@
                         @endforelse
                     </tbody>
 
-                    @if($totalPayments > 0)
+                    @if ($totalPayments > 0)
                         <tfoot>
                             <tr class="table-light">
                                 <td colspan="3" class="text-end fw-bold">Total:</td>
@@ -342,10 +351,11 @@
 
         <!-- STATUS ALERT -->
         <div class="mt-4">
-            @if($isPaid)
+            @if ($isPaid)
                 <div class="alert alert-secondary custom-alert mb-0">
                     <i class="bi bi-lock-fill me-2"></i>
-                    <strong>Records Locked:</strong> This salary has been paid. Payment records cannot be modified or deleted.
+                    <strong>Records Locked:</strong> This salary has been paid. Payment records cannot be modified or
+                    deleted.
                 </div>
             @else
                 <div class="alert alert-info custom-alert mb-0">
@@ -635,9 +645,9 @@
 
 @push('scripts')
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-            tooltipTriggerList.map(function (tooltipTriggerEl) {
+            tooltipTriggerList.map(function(tooltipTriggerEl) {
                 return new bootstrap.Tooltip(tooltipTriggerEl);
             });
         });
