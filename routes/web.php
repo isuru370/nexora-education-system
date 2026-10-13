@@ -38,7 +38,6 @@ use App\Http\Controllers\Admin\MonthlyClassAttendanceReportController;
 use App\Http\Controllers\Admin\NotificationController;
 
 
-use App\Http\Controllers\Admin\PaymentReminderController;
 
 use App\Http\Controllers\Admin\StudentImageController;
 
@@ -65,6 +64,7 @@ use App\Http\Controllers\Web\MonthlyReport\MonthlyReportController;
 use App\Http\Controllers\Web\Report\DailyCollectionReportController;
 use App\Http\Controllers\Web\Report\MonthlyCollectionReportController;
 use App\Http\Controllers\Web\Report\TeacherCollectionReportController;
+use App\Http\Controllers\Web\PaymentReminder\PaymentReminderController;
 use App\Http\Controllers\Web\Organizer\OrganizerController;
 use App\Http\Controllers\Web\Payment\PaymentController;
 use App\Http\Controllers\Web\Receipt\ReceiptController;
@@ -1397,76 +1397,7 @@ Route::middleware([
 
 
 
-        /*
-
-        |--------------------------------------------------------------------------
-
-        | Payment Reminder
-
-        |--------------------------------------------------------------------------
-
-        */
-
-
-
-        Route::prefix('payment-reminder')
-
-            ->name('payment-reminder.')
-
-            ->controller(PaymentReminderController::class)
-
-            ->middleware(['auth', 'user.active', 'role:ADMIN,BRANCH_ADMIN,USER'])
-
-            ->group(function () {
-
-
-
-                Route::get('/', 'index')
-
-                    ->name('index')->middleware('role:ADMIN');
-
-
-
-                Route::get('/categories', 'getCategories')
-
-                    ->name('categories')->middleware('role:ADMIN');
-
-
-
-                Route::get('/unpaid', 'getUnpaid')
-
-                    ->name('unpaid')->middleware('role:ADMIN');
-
-
-
-                Route::get('/paid', 'getPaid')
-
-                    ->name('paid')->middleware('role:ADMIN');
-
-
-
-                Route::get('/summary', 'getSummary')
-
-                    ->name('summary')->middleware('role:ADMIN');
-
-
-
-                Route::post('/send', 'sendReminder')
-
-                    ->name('send')->middleware('role:ADMIN');
-
-
-
-                Route::get('/export-unpaid', 'exportUnpaid')
-
-                    ->name('export-unpaid')->middleware('role:ADMIN');
-
-
-
-                Route::get('/export-all', 'exportAll')
-
-                    ->name('export-all')->middleware('role:ADMIN');
-            });
+        
 
 
 
@@ -2937,4 +2868,25 @@ Route::prefix('reports')
                     ->where('format', 'excel|pdf')
                     ->name('export');
             });
+    });
+
+/*
+|--------------------------------------------------------------------------
+| Payment Reminder
+|--------------------------------------------------------------------------
+| Unpaid students of a class + category for a fee month, SMS / app reminders.
+| (old: admin/payment-reminder)
+*/
+Route::prefix('payment-reminder')
+    ->name('payment-reminder.')
+    ->controller(PaymentReminderController::class)
+    ->middleware(['auth', 'user.active', 'role:ADMIN,BRANCH_ADMIN,USER'])
+    ->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('/send', 'send')
+            ->middleware('throttle:20,1')
+            ->name('send');
+        Route::get('/export/{format}', 'export')
+            ->where('format', 'excel|pdf')
+            ->name('export');
     });
