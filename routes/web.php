@@ -25,11 +25,8 @@ use App\Http\Controllers\Admin\ImageUploadController;
 
 use App\Http\Controllers\Admin\InstituteExpenseController;
 
-use App\Http\Controllers\Admin\InstituteIncomeController;
 
-use App\Http\Controllers\Admin\InstitutePaymentReportController;
 
-use App\Http\Controllers\Admin\InstituteReportController;
 
 use App\Http\Controllers\Admin\LogController;
 
@@ -62,6 +59,7 @@ use App\Http\Controllers\Web\Dashboard\DashboardController;
 use App\Http\Controllers\Web\GenerateStudentId\GenerateStudentIdController;
 use App\Http\Controllers\Web\MonthlyReport\MonthlyReportController;
 use App\Http\Controllers\Web\Report\DailyCollectionReportController;
+use App\Http\Controllers\Web\Report\InstituteIncomeReportController;
 use App\Http\Controllers\Web\Report\MonthlyCollectionReportController;
 use App\Http\Controllers\Web\Report\TeacherCollectionReportController;
 use App\Http\Controllers\Web\PaymentReminder\PaymentReminderController;
@@ -401,14 +399,6 @@ Route::middleware([
         Route::get('system-users/export/pdf', [SystemUserController::class, 'exportPdf'])
 
             ->name('system-users.export.pdf')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
-        Route::get(
-
-            'institute-yearly-report',
-
-            [InstitutePaymentReportController::class, 'yearlyPaymentReport']
-
-        )->name('institute-yearly-report')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
-
 
         /*
 
@@ -796,36 +786,6 @@ Route::middleware([
 
         ])->name('organizer-payments.adjustment-store')->middleware('role:ADMIN,BRANCH_ADMIN');
 
-        /*;
-
-        |--------------------------------------------------------------------------
-
-        | Institute Income Report
-
-        |--------------------------------------------------------------------------&#x20;
-
-        */
-
-        // Institute Income - Monthly Report
-
-        Route::get(
-
-            '/institute-income/monthly-report',
-
-            [InstituteIncomeController::class, 'monthlyIncomeReport']
-
-        )->name('institute-income.monthly-report')->middleware('role:ADMIN');
-
-
-
-        Route::get(
-
-            '/institute-income/monthly/excel',
-
-            [InstituteIncomeController::class, 'monthlyIncomeReportExcel']
-
-        )->name('institute-income.monthly.excel')->middleware('role:ADMIN');
-
         /*
 
         |--------------------------------------------------------------------------
@@ -969,40 +929,6 @@ Route::middleware([
         )->name('teacher.student.payment.report.pdf')->middleware('role:ADMIN,BRANCH_ADMIN,USER,TEACHER');
 
 
-
-        // Institute Reports
-
-        Route::get(
-
-            '/institute-reports',
-
-            [InstituteReportController::class, 'index']
-
-        )->name('institute-reports.index')->middleware('role:ADMIN');
-
-
-
-        // Institute Financial Report - PDF
-
-        Route::get(
-
-            '/institute-reports/pdf',
-
-            [InstituteReportController::class, 'institutePaymentReportPdf']
-
-        )->name('institute-reports.pdf')->middleware('role:ADMIN');
-
-
-
-        // Institute Financial Report - Excel
-
-        Route::get(
-
-            '/institute-reports/excel',
-
-            [InstituteReportController::class, 'institutePaymentReportExcel']
-
-        )->name('institute-reports.excel')->middleware('role:ADMIN');
 
 
 
@@ -2853,6 +2779,22 @@ Route::prefix('reports')
 
                 Route::get('/export/{format}', 'export')
                     ->where('format', 'excel|pdf')
+                    ->name('export');
+            });
+
+        // Institute income / expenses / net (old: admin/institute-reports + admin/institute-income)
+        Route::controller(InstituteIncomeReportController::class)
+            ->prefix('institute-income')
+            ->name('institute-income.')
+            ->middleware('role:ADMIN')
+            ->group(function () {
+                // Dashboard chart (JSON)
+                Route::get('/yearly', 'yearly')->name('yearly');
+                Route::get('/{tab?}', 'index')
+                    ->where('tab', 'summary|classes|teachers|organizers|extra-income|expenses')
+                    ->name('index');
+                Route::get('/{tab}/export/{format}', 'export')
+                    ->where(['tab' => 'summary|classes|teachers|organizers|extra-income|expenses', 'format' => 'excel|pdf'])
                     ->name('export');
             });
 
