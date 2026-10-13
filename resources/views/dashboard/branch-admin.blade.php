@@ -132,7 +132,7 @@
 
                         <div class="mt-3">
 
-                            <a href="{{ route('admin.students.index') }}"
+                            <a href="{{ route('students.index') }}"
                                 class="text-decoration-none small">
 
                                 View Students
@@ -203,7 +203,7 @@
 
                         <div class="mt-3">
 
-                            <a href="{{ route('admin.teachers.index') }}"
+                            <a href="{{ route('teachers.index') }}"
                                 class="text-decoration-none small">
 
                                 View Teachers
@@ -274,7 +274,7 @@
 
                         <div class="mt-3">
 
-                            <a href="{{ route('admin.student-classes.index') }}"
+                            <a href="{{ route('student-classes.index') }}"
                                 class="text-decoration-none small">
 
                                 View Classes
@@ -645,7 +645,7 @@
 
 
 
-                            <a href="{{ route('admin.students.index') }}"
+                            <a href="{{ route('students.index') }}"
                                 class="text-decoration-none">
 
 
@@ -699,7 +699,7 @@
 
 
 
-                            <a href="{{ route('admin.student-classes.index') }}"
+                            <a href="{{ route('student-classes.index') }}"
                                 class="text-decoration-none">
 
 
