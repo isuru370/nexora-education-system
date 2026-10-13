@@ -756,12 +756,12 @@
                 <div class="nav-item">
 
                     <button type="button"
-                        class="nav-link-custom {{ request()->routeIs('admin.daily-report.*') ? 'active' : '' }}"
-                        data-route="admin.daily-report.index" data-href="{{ route('admin.daily-report.index') }}">
+                        class="nav-link-custom {{ request()->routeIs('reports.daily-collection.*') ? 'active' : '' }}"
+                        data-route="reports.daily-collection.index" data-href="{{ route('reports.daily-collection.index') }}">
 
                         <i class="bi bi-file-earmark-bar-graph"></i>
 
-                        <span>Daily Report</span>
+                        <span>Collection Report</span>
 
                     </button>
 
@@ -849,15 +849,15 @@
                 <div class="nav-item">
 
                     <button type="button"
-                        class="nav-link-custom {{ request()->routeIs('admin.payment-collection-report.*') ? 'active' : '' }}"
-                        data-route="admin.payment-collection-report.index"
-                        data-href="{{ route('admin.payment-collection-report.index') }}">
+                        class="nav-link-custom {{ request()->routeIs('reports.monthly-collection.*') ? 'active' : '' }}"
+                        data-route="reports.monthly-collection.index"
+                        data-href="{{ route('reports.monthly-collection.index') }}">
 
 
                         <i class="bi bi-cash-stack"></i>
 
 
-                        <span>Payment Collection Report</span>
+                        <span>Monthly Collection</span>
 
 
                     </button>
