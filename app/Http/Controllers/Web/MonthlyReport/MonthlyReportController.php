@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Web\MonthlyReport;
 
 use App\Exports\Web\MonthlyReport\TeacherSalaryReportExport;
 use App\Exports\Web\MonthlyReport\TeacherStudentPaymentReportExport;
+use App\Exports\Web\Report\TableReportExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Web\MonthlyReport\MonthlyReportFilterRequest;
 use App\Http\Requests\Web\MonthlyReport\TeacherStudentPaymentReportRequest;
@@ -144,6 +145,63 @@ class MonthlyReportController extends Controller
             report($e);
 
             return $this->failed('Failed to generate the student payment PDF.');
+        }
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Teacher expenses (advance / deduction / other)
+    |--------------------------------------------------------------------------
+    */
+
+    public function teacherExpenseExport(TeacherStudentPaymentReportRequest $request, string $format)
+    {
+        abort_unless(in_array($format, ['excel', 'pdf'], true), 404);
+
+        [$teacherId, $year, $month] = $this->studentReportInput($request);
+
+        try {
+            $report = $this->reportService->teacherExpenseReport($teacherId, $year, $month);
+
+            $teacher = $report['teacher'];
+            $title = 'Teacher Expenses - ' . $teacher->custom_id . ' ' . $teacher->full_name . ' - ' . $report['month_label'];
+            $table = $this->reportService->teacherExpenseTable();
+            $summary = $report['summary'];
+            $fileName = "teacher-expenses-{$teacher->custom_id}-{$year}-{$month}";
+
+            $info = [
+                'Month: ' . $report['month_label'],
+                'Advance: Rs. ' . number_format($summary['advance'], 2),
+                'Deduction: Rs. ' . number_format($summary['deduction'], 2),
+                'Other: Rs. ' . number_format($summary['other'], 2),
+                'Total: Rs. ' . number_format($summary['total'], 2),
+            ];
+
+            if ($summary['cancelled'] > 0) {
+                $info[] = $summary['cancelled'] . ' cancelled (not counted)';
+            }
+
+            if ($format === 'excel') {
+                return Excel::download(
+                    new TableReportExport($title, $info, $table, $report['rows'], 'Teacher Expenses'),
+                    $fileName . '.xlsx'
+                );
+            }
+
+            return Pdf::loadView('pdf.reports.table', [
+                'title' => $title,
+                'infoLines' => $info,
+                'table' => $table,
+                'rows' => $report['rows'],
+            ])
+                ->setPaper('a4', 'landscape')
+                ->download($fileName . '.pdf');
+        } catch (DomainException $e) {
+            return $this->failed($e->getMessage());
+        } catch (Throwable $e) {
+            report($e);
+
+            return $this->failed('Failed to generate the teacher expense report.');
         }
     }
 

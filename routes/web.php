@@ -42,7 +42,6 @@ use App\Http\Controllers\Admin\PaymentReminderController;
 
 use App\Http\Controllers\Admin\StudentImageController;
 
-use App\Http\Controllers\Admin\TeacherReportController;
 
 use App\Http\Controllers\Admin\TodayAttendanceController;
 
@@ -65,6 +64,7 @@ use App\Http\Controllers\Web\GenerateStudentId\GenerateStudentIdController;
 use App\Http\Controllers\Web\MonthlyReport\MonthlyReportController;
 use App\Http\Controllers\Web\Report\DailyCollectionReportController;
 use App\Http\Controllers\Web\Report\MonthlyCollectionReportController;
+use App\Http\Controllers\Web\Report\TeacherCollectionReportController;
 use App\Http\Controllers\Web\Organizer\OrganizerController;
 use App\Http\Controllers\Web\Payment\PaymentController;
 use App\Http\Controllers\Web\Receipt\ReceiptController;
@@ -850,33 +850,9 @@ Route::middleware([
         });
 
 
-        /*
-
-|--------------------------------------------------------------------------
-
-| Daily Reports
-
-|--------------------------------------------------------------------------
-
-*/
 
 
 
-        // Teacher Report Routes
-
-        Route::get('/teacher-report', [TeacherReportController::class, 'index'])->name('teacher-report.index')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
-
-        Route::get('/teacher-report/pdf', [TeacherReportController::class, 'downloadTeacherWithStudentPaymentsPdf'])->name('teacher-report.pdf')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
-
-        Route::get('/teacher-report/excel', [TeacherReportController::class, 'downloadTeacherWithStudentPaymentsExcel'])->name('teacher-report.excel')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
-
-        // Teacher Expense Report
-
-        Route::get('/teacher-report/expense', [TeacherReportController::class, 'teacherExpenseReport'])->name('teacher-expense-report')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
-
-        Route::get('/teacher-report/expense/excel', [TeacherReportController::class, 'teacherExpenseReportExcel'])->name('teacher-expense-report.excel')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
-
-        Route::get('/teacher-report/expense/pdf', [TeacherReportController::class, 'teacherExpenseReportPdf'])->name('teacher-expense-report.pdf')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
 
 
         Route::get('/student-images', [StudentImageController::class, 'index'])
@@ -2890,6 +2866,10 @@ Route::prefix('monthly-report')
 
             Route::get('/teacher-salary/pdf', 'teacherSalaryPdf')
                 ->name('teacher-salary.pdf');
+
+            Route::get('/teacher-expenses/{format}', 'teacherExpenseExport')
+                ->where('format', 'excel|pdf')
+                ->name('teacher-expense.export');
         });
 
         Route::middleware('role:ADMIN,BRANCH_ADMIN,USER,TEACHER')->group(function () {
@@ -2929,6 +2909,19 @@ Route::prefix('reports')
 
                 Route::get('/{tab}/export/{format}', 'export')
                     ->where(['tab' => 'summary|students|admissions|fee-split|expenses', 'format' => 'excel|pdf'])
+                    ->name('export');
+            });
+
+        // One teacher's class fee collection (old: admin/teacher-report)
+        Route::controller(TeacherCollectionReportController::class)
+            ->prefix('teacher-collection')
+            ->name('teacher-collection.')
+            ->middleware('role:ADMIN,BRANCH_ADMIN,USER')
+            ->group(function () {
+                Route::get('/', 'index')->name('index');
+
+                Route::get('/export/{format}', 'export')
+                    ->where('format', 'excel|pdf')
                     ->name('export');
             });
 

@@ -16,7 +16,8 @@ use PhpOffice\PhpSpreadsheet\Style\NumberFormat;
 /**
  * One Excel export for every table report.
  *
- * $table = ['headings' => [...], 'columns' => [...], 'money' => [...], 'total' => 'column'|null]
+ * $table = ['headings' => [...], 'columns' => [...], 'money' => [...], 'total' => 'column'|null,
+ *          'no_total' => [...] (optional: money columns left out of the total row)]
  *
  * Adds: title + filter lines on top, bold header, money format, auto filter,
  * frozen header and a total row (SUM formulas) for every money column.
@@ -108,7 +109,7 @@ class TableReportExport implements
                     $sheet->getStyle($letter . $firstDataRow . ':' . $letter . $totalRow)
                         ->getNumberFormat()->setFormatCode($moneyFormat);
 
-                    if (!empty($this->table['total'])) {
+                    if (!empty($this->table['total']) && !in_array($column, $this->table['no_total'] ?? [], true)) {
                         $sheet->setCellValue(
                             $letter . $totalRow,
                             '=SUM(' . $letter . $firstDataRow . ':' . $letter . $lastDataRow . ')'
