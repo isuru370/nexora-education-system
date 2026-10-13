@@ -10,7 +10,6 @@ use App\Http\Controllers\Admin\SystemUserController;
 
 use App\Http\Controllers\Auth\LoginController;
 
-use App\Http\Controllers\Admin\DailyReportController;
 
 use App\Http\Controllers\Admin\DatabaseBackupController;
 
@@ -38,7 +37,6 @@ use App\Http\Controllers\Admin\MonthlyClassAttendanceReportController;
 
 use App\Http\Controllers\Admin\NotificationController;
 
-use App\Http\Controllers\Admin\PaymentCollectionReportController;
 
 use App\Http\Controllers\Admin\PaymentReminderController;
 
@@ -65,6 +63,8 @@ use App\Http\Controllers\Web\ClassSchedule\ClassTimeTableController;
 use App\Http\Controllers\Web\Dashboard\DashboardController;
 use App\Http\Controllers\Web\GenerateStudentId\GenerateStudentIdController;
 use App\Http\Controllers\Web\MonthlyReport\MonthlyReportController;
+use App\Http\Controllers\Web\Report\DailyCollectionReportController;
+use App\Http\Controllers\Web\Report\MonthlyCollectionReportController;
 use App\Http\Controllers\Web\Organizer\OrganizerController;
 use App\Http\Controllers\Web\Payment\PaymentController;
 use App\Http\Controllers\Web\Receipt\ReceiptController;
@@ -862,24 +862,6 @@ Route::middleware([
 
 
 
-        // Daily Report Routes
-
-        Route::get('daily-report', [DailyReportController::class, 'index'])->name('daily-report.index')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
-
-        Route::get('daily-report/{type}/pdf', [DailyReportController::class, 'downloadPdf'])->name('daily-report.pdf')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
-
-        Route::get('daily-report/{type}/excel', [DailyReportController::class, 'downloadExcel'])->name('daily-report.excel')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
-
-
-
-        // Summary Report Download Routes (for generateDailyReport)
-
-        Route::get('daily-report/summary/pdf', [DailyReportController::class, 'downloadSummaryPdf'])->name('daily-report.summary.pdf')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
-
-        Route::get('daily-report/summary/excel', [DailyReportController::class, 'downloadSummaryExcel'])->name('daily-report.summary.excel')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
-
-
-
         // Teacher Report Routes
 
         Route::get('/teacher-report', [TeacherReportController::class, 'index'])->name('teacher-report.index')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
@@ -1509,41 +1491,6 @@ Route::middleware([
 
                     ->name('export-all')->middleware('role:ADMIN');
             });
-
-
-
-        /*
-
-|--------------------------------------------------------------------------
-
-| Payment Collection Report
-
-|--------------------------------------------------------------------------
-
-*/
-
-
-
-        Route::middleware('role:ADMIN')->group(function () {
-
-
-
-            Route::get(
-
-                '/payment-collection-report',
-
-                [PaymentCollectionReportController::class, 'index']
-
-            )->name('payment-collection-report.index')->middleware('role:ADMIN');
-
-            Route::get(
-
-                '/payment-collection-report/export',
-
-                [PaymentCollectionReportController::class, 'export']
-
-            )->name('payment-collection-report.export')->middleware('role:ADMIN');
-        });
 
 
 
@@ -2955,4 +2902,46 @@ Route::prefix('monthly-report')
                 ->where('basis', 'fee-month|paid-date')
                 ->name('student-payments.pdf');
         });
+    });
+
+/*
+|--------------------------------------------------------------------------
+| Payment Reports
+|--------------------------------------------------------------------------
+| All payment reports use App\Services\Web\Report\PaymentReportQuery,
+| so totals are the same on every report.
+*/
+
+Route::prefix('reports')
+    ->name('reports.')
+    ->middleware(['auth', 'user.active'])
+    ->group(function () {
+
+        // Daily / date-range collection (old: admin/daily-report)
+        Route::controller(DailyCollectionReportController::class)
+            ->prefix('daily-collection')
+            ->name('daily-collection.')
+            ->middleware('role:ADMIN,BRANCH_ADMIN,USER')
+            ->group(function () {
+                Route::get('/{tab?}', 'index')
+                    ->where('tab', 'summary|students|admissions|fee-split|expenses')
+                    ->name('index');
+
+                Route::get('/{tab}/export/{format}', 'export')
+                    ->where(['tab' => 'summary|students|admissions|fee-split|expenses', 'format' => 'excel|pdf'])
+                    ->name('export');
+            });
+
+        // Monthly expected vs collected (old: admin/payment-collection-report)
+        Route::controller(MonthlyCollectionReportController::class)
+            ->prefix('monthly-collection')
+            ->name('monthly-collection.')
+            ->middleware('role:ADMIN')
+            ->group(function () {
+                Route::get('/', 'index')->name('index');
+
+                Route::get('/export/{format}', 'export')
+                    ->where('format', 'excel|pdf')
+                    ->name('export');
+            });
     });
