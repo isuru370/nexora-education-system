@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services;
+namespace App\Services\Web\Attendance;
 
 use App\Models\StudentClass;
 use App\Models\StudentClassEnrollment;

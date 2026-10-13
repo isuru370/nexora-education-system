@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Web\Log;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -190,7 +190,7 @@ class LogController extends Controller
             */
             if (!$path || !File::exists($path)) {
 
-                return view('admin.logs.index', [
+                return view('logs.index', [
                     'content' => '',
                     'logLines' => [],
                     'files' => $files,
@@ -239,7 +239,7 @@ class LogController extends Controller
                 ];
             }
 
-            return view('admin.logs.index', [
+            return view('logs.index', [
                 'content' => implode('', $lines),
                 'logLines' => $lines,
                 'files' => $files,
@@ -257,7 +257,7 @@ class LogController extends Controller
                 'line' => $e->getLine(),
             ]);
 
-            return view('admin.logs.index', [
+            return view('logs.index', [
                 'content' => '',
                 'logLines' => [],
                 'files' => [],

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Web\Notification;
 
 use App\Http\Controllers\Controller;
 use App\Models\FcmToken;
@@ -63,7 +63,7 @@ class FcmTokenController extends Controller
             'unique_students' => FcmToken::distinct('student_id')->count('student_id'),
         ];
 
-        return view('admin.fcm-tokens.index', compact('tokens', 'stats'));
+        return view('fcm-tokens.index', compact('tokens', 'stats'));
     }
 
     /**
@@ -73,7 +73,7 @@ class FcmTokenController extends Controller
     {
         $token = FcmToken::with('student')->findOrFail($id);
 
-        return view('admin.fcm-tokens.show', compact('token'));
+        return view('fcm-tokens.show', compact('token'));
     }
 
     /**
@@ -86,7 +86,7 @@ class FcmTokenController extends Controller
             ->orderBy('created_at', 'desc')
             ->get();
 
-        return view('admin.fcm-tokens.student', compact('student', 'tokens'));
+        return view('fcm-tokens.student', compact('student', 'tokens'));
     }
 
     /**

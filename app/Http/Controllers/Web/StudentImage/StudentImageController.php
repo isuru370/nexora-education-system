@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Web\StudentImage;
 
 use App\Http\Controllers\Controller;
 use App\Models\QuickPhoto;
@@ -50,7 +50,7 @@ class StudentImageController extends Controller
                 return $item;
             });
 
-        return view('admin.student-image.index', compact('quickPhotos', 'search'));
+        return view('student-image.index', compact('quickPhotos', 'search'));
     }
 
     public function assign(Request $request, QuickPhoto $quickPhoto)

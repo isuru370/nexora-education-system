@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Web\Attendance;
 
 use App\Http\Controllers\Controller;
-use App\Exports\MonthlyClassAttendanceReportExport;
-use App\Services\MonthlyClassAttendanceReportService;
+use App\Exports\Web\Attendance\MonthlyClassAttendanceReportExport;
+use App\Services\Web\Attendance\MonthlyClassAttendanceReportService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
@@ -80,7 +80,7 @@ class MonthlyClassAttendanceReportController extends Controller
         }
 
         return view(
-            'admin.monthly-class-attendance-report.index',
+            'monthly-class-attendance-report.index',
             compact(
                 'report',
                 'month',

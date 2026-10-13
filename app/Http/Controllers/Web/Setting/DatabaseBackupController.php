@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Web\Setting;
 
 use App\Http\Controllers\Controller;
 use App\Models\BackupLog;
@@ -18,7 +18,7 @@ class DatabaseBackupController extends Controller
     public function index()
     {
         $logs = BackupLog::latest()->paginate(20);
-        return view('admin.setting.index', compact('logs'));
+        return view('setting.index', compact('logs'));
     }
 
     public function export(Request $request)

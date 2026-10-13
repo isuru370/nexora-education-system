@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Web\Notification;
 
 use App\Http\Controllers\Controller;
 use App\Models\Notification;
@@ -79,7 +79,7 @@ class NotificationController extends Controller
         $statuses = NotificationStatus::all();
         $types = NotificationType::all();
 
-        return view('admin.notifications.index', compact(
+        return view('notifications.index', compact(
             'notifications',
             'stats',
             'statuses',
@@ -96,7 +96,7 @@ class NotificationController extends Controller
             ->findOrFail($id);
 
 
-        return view('admin.notifications.show', compact('notification'));
+        return view('notifications.show', compact('notification'));
     }
 
     /**
@@ -111,7 +111,7 @@ class NotificationController extends Controller
         $types = NotificationType::all();
         $statuses = NotificationStatus::all();
 
-        return view('admin.notifications.create', compact('students', 'types', 'statuses'));
+        return view('notifications.create', compact('students', 'types', 'statuses'));
     }
 
     /**

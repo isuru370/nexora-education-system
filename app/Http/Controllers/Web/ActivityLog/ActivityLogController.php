@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Web\ActivityLog;
 
 use App\Http\Controllers\Controller;
 use App\Models\ActivityLog;
@@ -62,7 +62,7 @@ class ActivityLogController extends Controller
             // Get actions for filter dropdown
             $actions = ['created', 'updated', 'deleted', 'force_deleted'];
 
-            return view('admin.activity-logs.index', compact('logs', 'tables', 'users', 'actions'));
+            return view('activity-logs.index', compact('logs', 'tables', 'users', 'actions'));
         } catch (Throwable $e) {
             Log::error('Activity logs load failed', [
                 'user_id' => auth()->id(),

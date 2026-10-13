@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Exports;
+namespace App\Exports\Web\Attendance;
 
-use App\Services\MonthlyClassAttendanceReportService;
+use App\Services\Web\Attendance\MonthlyClassAttendanceReportService;
 use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\FromArray;
 use Maatwebsite\Excel\Concerns\WithStyles;

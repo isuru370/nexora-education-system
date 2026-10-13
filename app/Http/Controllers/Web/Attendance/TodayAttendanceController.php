@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Web\Attendance;
 
 use App\Http\Controllers\Controller;
 use App\Models\ClassSchedule;
@@ -53,7 +53,7 @@ class TodayAttendanceController extends Controller
 
         $notEnrolledAttendances = $todayAttendances->whereNull('student_class_enrollment_id');
 
-        return view('admin.today_attendance.index', compact(
+        return view('today_attendance.index', compact(
             'schedule',
             'students',
             'today',

@@ -1,10 +1,10 @@
 <?php
 
-namespace App\Http\Requests\Branch;
+namespace App\Http\Requests\Web\Branch;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateBranchRequest extends FormRequest
+class StoreBranchRequest extends FormRequest
 {
     public function authorize(): bool
     {
