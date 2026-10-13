@@ -9,6 +9,7 @@ use App\Models\Teacher;
 use App\Models\TeacherPayment;
 use App\Models\TeacherSalary;
 use App\Services\Branch\BranchAccessService;
+use App\Services\Web\Common\AmountInWords;
 use DomainException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -47,7 +48,7 @@ class TeacherSalaryService
         $teacherBranchIds = $this->teacherBranchIds($teacherId);
 
         return $branches
-            ->filter(fn (Branch $branch) => $teacherBranchIds->contains((int) $branch->id))
+            ->filter(fn(Branch $branch) => $teacherBranchIds->contains((int) $branch->id))
             ->values();
     }
 
@@ -61,7 +62,7 @@ class TeacherSalaryService
     {
         $allowedIds = $this->branchAccessService
             ->getBranchIds()
-            ->map(fn ($id) => (int) $id);
+            ->map(fn($id) => (int) $id);
 
         if ($branchId !== null) {
             if (!$allowedIds->contains($branchId)) {
@@ -103,7 +104,7 @@ class TeacherSalaryService
         return DB::table('teacher_branches')
             ->where('teacher_id', $teacherId)
             ->pluck('branch_id')
-            ->map(fn ($id) => (int) $id);
+            ->map(fn($id) => (int) $id);
     }
 
     /*
@@ -139,7 +140,7 @@ class TeacherSalaryService
             ->merge($grossByTeacher->keys())
             ->merge($deductionsByTeacher->keys())
             ->merge($salaryRecords->keys())
-            ->map(fn ($id) => (int) $id)
+            ->map(fn($id) => (int) $id)
             ->unique()
             ->values();
 
@@ -210,7 +211,7 @@ class TeacherSalaryService
         return [
             'data' => $rows,
             'summary' => array_map(
-                fn ($value) => is_float($value) ? round($value, 2) : $value,
+                fn($value) => is_float($value) ? round($value, 2) : $value,
                 $summary
             ),
             'month_name' => $start->format('F'),
@@ -249,7 +250,7 @@ class TeacherSalaryService
 
         $paymentDetails = $this->paymentsQuery($teacherId, $branchId, $year, $month)
             ->get()
-            ->map(fn (TeacherPayment $payment) => [
+            ->map(fn(TeacherPayment $payment) => [
                 'id' => $payment->id,
                 'type' => $payment->payment_type,
                 'amount' => (float) $payment->amount,
@@ -363,7 +364,7 @@ class TeacherSalaryService
 
         $snapshots = PaymentSplitSnapshot::query()
             ->with([
-                'studentClass' => fn ($query) => $query->withTrashed(),
+                'studentClass' => fn($query) => $query->withTrashed(),
                 'studentClass.subject:id,subject_name',
                 'studentClass.grade:id,grade_name',
             ])
@@ -442,7 +443,8 @@ class TeacherSalaryService
             'branch_name' => optional(Branch::query()->find($branchId))->name,
 
             'month_year_display' => $start->format('F Y'),
-            'date_generated' => now()->format('Y-m-d'),
+            'date_generated' => now()->format('d M Y, h:i A'),
+            'paid_at' => $isPaid && $record->paid_at ? $record->paid_at->format('d M Y') : null,
 
             'total_class_amount' => round($totalClassAmount, 2),
             'total_teacher_earnings' => $totalAddition,
@@ -452,6 +454,7 @@ class TeacherSalaryService
             'total_addition' => $totalAddition,
             'total_deductions' => $totalDeductions,
             'net_salary' => $netSalary,
+            'net_salary_words' => AmountInWords::rupees($netSalary),
 
             'is_salary_paid' => $isPaid,
 
@@ -554,7 +557,7 @@ class TeacherSalaryService
                     'category_name' => optional($categoryFee->category)->category_name,
                     'fee' => null,
                     'fee_options' => $categoryFee->feeOptions
-                        ->map(fn ($option) => [
+                        ->map(fn($option) => [
                             'id' => $option->id,
                             'label' => $option->label,
                             'fee' => (float) $option->fee,
@@ -563,7 +566,7 @@ class TeacherSalaryService
                         ->values()
                         ->all(),
                     'expected_total' => round(
-                        $enrollments->sum(fn ($enrollment) => $enrollment->is_free_card ? 0 : (float) $enrollment->final_fee),
+                        $enrollments->sum(fn($enrollment) => $enrollment->is_free_card ? 0 : (float) $enrollment->final_fee),
                         2
                     ),
                     'student_count' => $enrollments->count(),

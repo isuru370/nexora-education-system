@@ -3,10 +3,15 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-    <title>Salary Slip - {{ $data['teacher_name'] ?? 'Teacher' }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Salary Slip - {{ $data['teacher_name'] ?? 'Teacher' }} - {{ $data['month_year_display'] ?? '' }}</title>
 
     <style>
+        @page {
+            size: A4;
+            margin: 12mm;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -15,262 +20,305 @@
 
         body {
             font-family: 'DejaVu Sans', Arial, Helvetica, sans-serif;
-            font-size: 10px;
+            font-size: 12px;
             color: #1e293b;
             background: #f1f5f9;
-            padding: 30px;
-            line-height: 1.4;
+            padding: 24px;
+            line-height: 1.45;
         }
 
-        /* Salary Slip Container */
-        .slip-container {
-            max-width: 900px;
+        .toolbar {
+            max-width: 820px;
+            margin: 0 auto 14px;
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+        }
+
+        .toolbar button {
+            border: none;
+            border-radius: 10px;
+            padding: 9px 16px;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            background: #2563eb;
+            color: #fff;
+        }
+
+        .toolbar button.secondary {
+            background: #e2e8f0;
+            color: #0f172a;
+        }
+
+        .slip {
+            position: relative;
+            max-width: 820px;
             margin: 0 auto;
             background: #fff;
-            border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            border: 1px solid #e2e8f0;
+            border-radius: 14px;
             overflow: hidden;
+            box-shadow: 0 10px 30px rgba(15, 23, 42, .08);
         }
 
         /* Header */
         .slip-header {
-            background: linear-gradient(135deg, #2563eb, #1d4ed8);
-            padding: 20px 25px;
-            text-align: center;
-            color: white;
+            background: #1e40af;
+            color: #fff;
+            padding: 20px 26px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
         }
 
         .slip-header h1 {
             font-size: 20px;
             font-weight: 800;
-            margin-bottom: 5px;
+            letter-spacing: .5px;
+        }
+
+        .slip-header .contact {
+            font-size: 11px;
+            opacity: .85;
+            margin-top: 2px;
+        }
+
+        .slip-header .doc-title {
+            text-align: right;
+        }
+
+        .slip-header .doc-title .label {
+            font-size: 15px;
+            font-weight: 800;
             letter-spacing: 1px;
         }
 
-        .slip-header .institution {
-            font-size: 11px;
-            opacity: 0.9;
-            margin-bottom: 3px;
-        }
-
-        .slip-header .address {
-            font-size: 9px;
-            opacity: 0.8;
-        }
-
-        .slip-header .slip-title {
+        .slip-header .doc-title .period {
             font-size: 12px;
-            font-weight: 600;
-            margin-top: 8px;
-            padding-top: 5px;
-            border-top: 1px solid rgba(255, 255, 255, 0.3);
-            display: inline-block;
+            opacity: .9;
         }
 
-        /* Body */
         .slip-body {
-            padding: 25px;
+            padding: 22px 26px;
         }
 
-        /* Info Grid */
-        .info-grid {
-            display: flex;
-            flex-wrap: wrap;
-            margin-bottom: 25px;
-            background: #f8fafc;
-            border-radius: 12px;
-            padding: 15px;
+        /* Draft banner */
+        .draft-banner {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+            border-radius: 10px;
+            padding: 9px 12px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            text-align: center;
+        }
+
+        .watermark {
+            position: absolute;
+            top: 45%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-25deg);
+            font-size: 90px;
+            font-weight: 900;
+            color: rgba(220, 38, 38, .08);
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+        /* Info */
+        .info-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 18px;
+        }
+
+        .info-table td {
+            width: 33.33%;
+            padding: 8px 10px;
             border: 1px solid #e2e8f0;
-        }
-
-        .info-item {
-            flex: 1;
-            min-width: 150px;
-            padding: 5px 10px;
+            background: #f8fafc;
+            vertical-align: top;
         }
 
         .info-label {
-            font-size: 7px;
+            font-size: 9px;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
+            letter-spacing: .5px;
             font-weight: 700;
             color: #64748b;
-            margin-bottom: 4px;
         }
 
         .info-value {
-            font-size: 11px;
+            font-size: 13px;
             font-weight: 700;
             color: #0f172a;
         }
 
         .info-value.paid {
-            color: #10b981;
+            color: #15803d;
         }
 
         .info-value.unpaid {
-            color: #ef4444;
+            color: #dc2626;
         }
 
-        /* Earnings & Deductions Table */
+        /* Salary table */
         .salary-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 25px;
+            margin-bottom: 18px;
         }
 
         .salary-table th {
             background: #0f172a;
-            color: white;
-            padding: 10px 12px;
-            font-size: 9px;
+            color: #fff;
+            padding: 9px 10px;
+            font-size: 10px;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 0.5px;
-            border: 1px solid #334155;
+            letter-spacing: .4px;
+            text-align: left;
         }
 
         .salary-table td {
-            padding: 10px 12px;
-            font-size: 9px;
-            border: 1px solid #e2e8f0;
+            padding: 9px 10px;
+            border-bottom: 1px solid #e2e8f0;
             vertical-align: top;
         }
 
-        .salary-table tr:nth-child(even) {
-            background: #f8fafc;
-        }
-
-        .salary-table .total-row {
-            background: #eff6ff !important;
-            font-weight: 800;
+        .salary-table td.split {
+            border-left: 2px solid #e2e8f0;
         }
 
         .salary-table .total-row td {
-            font-size: 10px;
+            background: #eff6ff;
             font-weight: 800;
-            color: #1e40af;
+            color: #1e3a8a;
+            border-top: 2px solid #bfdbfe;
+        }
+
+        .salary-table .net-row td {
+            background: #1e40af;
+            color: #fff;
+            font-size: 14px;
+            font-weight: 800;
         }
 
         .text-right {
             text-align: right;
         }
 
-        .text-center {
-            text-align: center;
-        }
-
         .amount {
+            font-family: 'DejaVu Sans Mono', Consolas, monospace;
             font-weight: 700;
-            font-family: monospace;
+            white-space: nowrap;
         }
 
-        .amount-income {
+        .income {
             color: #166534;
         }
 
-        .amount-deduction {
+        .deduction {
             color: #991b1b;
         }
 
-        .small-text {
-            font-size: 7px;
+        .muted {
+            font-size: 10px;
             color: #64748b;
-            margin-top: 4px;
+            margin-top: 3px;
         }
 
-        /* Summary Table */
-        .summary-table {
+        /* Words */
+        .words {
+            padding: 10px 12px;
+            background: #f8fafc;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            margin-bottom: 18px;
+        }
+
+        .words .info-label {
+            margin-bottom: 2px;
+        }
+
+        .words .text {
+            font-weight: 700;
+        }
+
+        /* Breakdown */
+        .breakdown-table {
             width: 100%;
             border-collapse: collapse;
-            margin-bottom: 25px;
+            margin-bottom: 24px;
         }
 
-        .summary-table th {
-            background: #f1f5f9;
-            padding: 8px 10px;
-            font-size: 8px;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-            color: #475569;
+        .breakdown-table th,
+        .breakdown-table td {
             border: 1px solid #e2e8f0;
+            padding: 7px 10px;
+        }
+
+        .breakdown-table th {
+            background: #f1f5f9;
+            font-size: 10px;
+            text-transform: uppercase;
+            color: #475569;
+            text-align: left;
             width: 25%;
         }
 
-        .summary-table td {
-            padding: 8px 10px;
-            font-size: 9px;
-            border: 1px solid #e2e8f0;
-        }
-
-        /* Signature Section */
-        .signature-section {
+        /* Signatures */
+        .signatures {
             display: flex;
             justify-content: space-between;
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 1px dashed #cbd5e1;
+            gap: 40px;
+            margin-top: 40px;
         }
 
-        .signature-box {
+        .signature {
+            flex: 1;
             text-align: center;
-            width: 45%;
-        }
-
-        .signature-line {
-            margin-top: 30px;
-            padding-top: 5px;
             border-top: 1px solid #94a3b8;
-            width: 100%;
-            font-size: 8px;
-            color: #64748b;
+            padding-top: 6px;
+            font-size: 11px;
+            color: #475569;
         }
 
-        /* Footer */
         .slip-footer {
             background: #f8fafc;
+            border-top: 1px solid #e2e8f0;
             padding: 10px 20px;
             text-align: center;
-            font-size: 7px;
+            font-size: 10px;
             color: #94a3b8;
-            border-top: 1px solid #e2e8f0;
         }
 
-        /* Error Message */
-        .error-message {
-            text-align: center;
-            padding: 50px;
-            background: #fff;
-            border-radius: 16px;
-            max-width: 500px;
-            margin: 50px auto;
-        }
-
-        .error-message h2 {
-            color: #ef4444;
-            margin-bottom: 10px;
-        }
-
-        /* Print Styles */
+        /* Print */
         @media print {
             body {
-                background: white;
+                background: #fff;
                 padding: 0;
-                margin: 0;
             }
 
-            .slip-container {
+            .toolbar {
+                display: none;
+            }
+
+            .slip {
                 box-shadow: none;
+                border: none;
                 border-radius: 0;
+                max-width: none;
             }
 
-            .slip-header {
-                -webkit-print-color-adjust: exact;
-                print-color-adjust: exact;
-            }
-
-            .salary-table th {
+            .slip-header,
+            .salary-table th,
+            .salary-table .total-row td,
+            .salary-table .net-row td,
+            .draft-banner {
                 -webkit-print-color-adjust: exact;
                 print-color-adjust: exact;
             }
@@ -282,271 +330,206 @@
 
     @php
         $data = $data ?? [];
-        $isSuccess = ($data['status'] ?? '') === 'success';
-        $teacherId = $data['teacher_custom_id'] ?? '';
-        $teacherName = $data['teacher_name'] ?? '';
-        $monthYearDisplay = $data['month_year_display'] ?? '';
-        $dateGenerated = $data['date_generated'] ?? now()->format('d M Y, h:i A');
-        $isSalaryPaid = $data['is_salary_paid'] ?? false;
+
         $earnings = $data['earnings'] ?? [];
         $deductions = $data['deductions'] ?? [];
-        $totalClassAmount = $data['total_class_amount'] ?? 0;
-        $totalTeacherEarnings = $data['total_teacher_earnings'] ?? 0;
-        $totalOrganizeCut = $data['total_organize_cut'] ?? 0;
-        $totalInstitutionCut = $data['total_institution_cut'] ?? 0;
-        $totalAddition = $data['total_addition'] ?? 0;
-        $totalDeductions = $data['total_deductions'] ?? 0;
-        $netSalary = $data['net_salary'] ?? 0;
-        $paymentMethod = $data['payment_method'] ?? 'Cash';
+        $rowCount = max(count($earnings), count($deductions), 1);
+
+        $isPaid = (bool) ($data['is_salary_paid'] ?? false);
+        $money = fn ($value) => number_format((float) $value, 2);
     @endphp
 
-    @if (!$isSuccess)
+    <div class="toolbar">
+        <button type="button" class="secondary" onclick="window.close()">Close</button>
+        <button type="button" onclick="window.print()">Print</button>
+    </div>
 
-        <div class="error-message">
-            <h2>⚠️ Salary Slip Load Failed</h2>
-            <p>{{ $data['message'] ?? 'Unknown error occurred.' }}</p>
-        </div>
-    @else
-        <div class="slip-container">
+    <div class="slip">
 
-            {{-- Header --}}
-            <div class="slip-header">
+        @unless ($isPaid)
+            <div class="watermark">DRAFT</div>
+        @endunless
+
+        {{-- Header --}}
+        <div class="slip-header">
+            <div>
                 <h1>{{ config('institution.name') }}</h1>
-
-                <div class="institution">
+                <div class="contact">
                     {{ config('institution.location') }}
+                    @if ($data['branch_name'] ?? null)
+                        • {{ $data['branch_name'] }} Branch
+                    @endif
                 </div>
-
-                <div class="address">
+                <div class="contact">
                     @if (config('institution.phone'))
-                        📞 {{ config('institution.phone') }}
+                        Tel: {{ config('institution.phone') }}
                     @endif
-
                     @if (config('institution.email'))
-                        | ✉ {{ config('institution.email') }}
+                        &nbsp;|&nbsp; {{ config('institution.email') }}
                     @endif
                 </div>
-
-                <div class="slip-title">
-                    TEACHER SALARY SLIP
-                </div>
             </div>
 
-            {{-- Body --}}
-            <div class="slip-body">
+            <div class="doc-title">
+                <div class="label">SALARY SLIP</div>
+                <div class="period">{{ $data['month_year_display'] ?? '' }}</div>
+            </div>
+        </div>
 
-                {{-- Teacher Information Grid --}}
-                <div class="info-grid">
-                    <div class="info-item">
+        <div class="slip-body">
+
+            @unless ($isPaid)
+                <div class="draft-banner">
+                    DRAFT — this salary has not been paid yet. Amounts may still change.
+                </div>
+            @endunless
+
+            {{-- Teacher information --}}
+            <table class="info-table">
+                <tr>
+                    <td>
                         <div class="info-label">Teacher Code</div>
-                        <div class="info-value">{{ $teacherId }}</div>
-                    </div>
-                    <div class="info-item">
+                        <div class="info-value">{{ $data['teacher_custom_id'] ?? '-' }}</div>
+                    </td>
+                    <td>
                         <div class="info-label">Teacher Name</div>
-                        <div class="info-value">{{ $teacherName }}</div>
-                    </div>
-                    <div class="info-item">
+                        <div class="info-value">{{ $data['teacher_name'] ?? '-' }}</div>
+                    </td>
+                    <td>
                         <div class="info-label">Salary Period</div>
-                        <div class="info-value">{{ $monthYearDisplay }}</div>
-                    </div>
-                    <div class="info-item">
+                        <div class="info-value">{{ $data['month_year_display'] ?? '-' }}</div>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
                         <div class="info-label">Payment Status</div>
-                        <div class="info-value {{ $isSalaryPaid ? 'paid' : 'unpaid' }}">
-                            {{ $isSalaryPaid ? '✓ PAID' : '✗ UNPAID' }}
+                        <div class="info-value {{ $isPaid ? 'paid' : 'unpaid' }}">
+                            {{ $isPaid ? 'PAID' : 'NOT PAID' }}
                         </div>
-                    </div>
-                    <div class="info-item">
+                    </td>
+                    <td>
+                        <div class="info-label">Paid On</div>
+                        <div class="info-value">{{ $data['paid_at'] ?? '-' }}</div>
+                    </td>
+                    <td>
                         <div class="info-label">Payment Method</div>
-                        <div class="info-value">{{ $paymentMethod }}</div>
-                    </div>
-                    <div class="info-item">
-                        <div class="info-label">Generated Date</div>
-                        <div class="info-value">{{ $dateGenerated }}</div>
-                    </div>
-                </div>
+                        <div class="info-value">{{ $data['payment_method'] ?? '-' }}</div>
+                    </td>
+                </tr>
+            </table>
 
-                {{-- Earnings & Deductions Table --}}
-                <table class="salary-table">
-                    <thead>
-                        <tr>
-                            <th style="width: 40%;">Earnings</th>
-                            <th style="width: 15%;" class="text-right">Amount (Rs.)</th>
-                            <th style="width: 30%;">Deductions</th>
-                            <th style="width: 15%;" class="text-right">Amount (Rs.)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+            {{-- Earnings & deductions --}}
+            <table class="salary-table">
+                <thead>
+                    <tr>
+                        <th style="width: 38%;">Earnings</th>
+                        <th style="width: 16%;" class="text-right">Amount (Rs.)</th>
+                        <th style="width: 30%;">Deductions</th>
+                        <th style="width: 16%;" class="text-right">Amount (Rs.)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @for ($i = 0; $i < $rowCount; $i++)
                         @php
-                            $maxRows = max(count($earnings), count($deductions));
+                            $earning = $earnings[$i] ?? null;
+                            $deduction = $deductions[$i] ?? null;
                         @endphp
-
-                        @for ($i = 0; $i < $maxRows; $i++)
-                            <tr>
-                                {{-- Earnings --}}
-                                @if (isset($earnings[$i]))
-                                    <td>
-                                        <strong>{{ $earnings[$i]['description'] ?? '' }}</strong>
-                                        @if (isset($earnings[$i]['class_total']))
-                                            <div class="small-text">
-                                                Class Total: Rs.
-                                                {{ number_format($earnings[$i]['class_total'], 2) }}<br>
-                                                Teacher ({{ $earnings[$i]['teacher_percentage'] ?? 0 }}%): Rs.
-                                                {{ number_format($earnings[$i]['teacher_share'] ?? 0, 2) }}
-                                            </div>
-                                        @endif
-                                    </td>
-                                    <td class="text-right amount amount-income">Rs.
-                                        {{ number_format($earnings[$i]['amount'] ?? 0, 2) }}</td>
-                                @else
-                                    <td></td>
-                                    <td class="text-right"></td>
+                        <tr>
+                            <td>
+                                @if ($earning)
+                                    <strong>{{ $earning['description'] ?? '' }}</strong>
+                                    @isset($earning['class_total'])
+                                        <div class="muted">
+                                            Class collection: Rs. {{ $money($earning['class_total']) }}
+                                            • Teacher share {{ rtrim(rtrim(number_format((float) ($earning['teacher_percentage'] ?? 0), 2), '0'), '.') }}%
+                                        </div>
+                                    @endisset
+                                @elseif ($i === 0)
+                                    <span class="muted">No class earnings for this month</span>
                                 @endif
-
-                                {{-- Deductions --}}
-                                @if (isset($deductions[$i]))
-                                    <td>{{ $deductions[$i]['description'] ?? '' }}</td>
-                                    <td class="text-right amount amount-deduction">- Rs.
-                                        {{ number_format($deductions[$i]['amount'] ?? 0, 2) }}</td>
-                                @else
-                                    <td></td>
-                                    <td class="text-right"></td>
+                            </td>
+                            <td class="text-right">
+                                @if ($earning)
+                                    <span class="amount income">{{ $money($earning['amount'] ?? 0) }}</span>
                                 @endif
-                            </tr>
-                        @endfor
-
-                        {{-- Totals Row --}}
-                        <tr class="total-row">
-                            <td><strong>Total Earnings</strong></td>
-                            <td class="text-right amount amount-income"><strong>Rs.
-                                    {{ number_format($totalAddition, 2) }}</strong></td>
-                            <td><strong>Total Deductions</strong></td>
-                            <td class="text-right amount amount-deduction"><strong>- Rs.
-                                    {{ number_format($totalDeductions, 2) }}</strong></td>
+                            </td>
+                            <td class="split">
+                                @if ($deduction)
+                                    {{ $deduction['description'] ?? '' }}
+                                @elseif ($i === 0)
+                                    <span class="muted">No deductions</span>
+                                @endif
+                            </td>
+                            <td class="text-right">
+                                @if ($deduction)
+                                    <span class="amount deduction">{{ $money($deduction['amount'] ?? 0) }}</span>
+                                @endif
+                            </td>
                         </tr>
+                    @endfor
 
-                        {{-- Net Salary Row --}}
-                        <tr class="total-row">
-                            <td colspan="3"><strong>NET SALARY</strong></td>
-                            <td class="text-right"><strong>Rs. {{ number_format($netSalary, 2) }}</strong></td>
-                        </tr>
-                    </tbody>
-                </table>
-
-                {{-- Summary Table --}}
-                <table class="summary-table">
-                    <tr>
-                        <th>Total Class Income</th>
-                        <td>Rs. {{ number_format($totalClassAmount, 2) }}</td>
-                        <th>Total Teacher Earnings</th>
-                        <td>Rs. {{ number_format($totalTeacherEarnings, 2) }}</td>
+                    <tr class="total-row">
+                        <td>Total Earnings</td>
+                        <td class="text-right amount">{{ $money($data['total_addition'] ?? 0) }}</td>
+                        <td class="split">Total Deductions</td>
+                        <td class="text-right amount">{{ $money($data['total_deductions'] ?? 0) }}</td>
                     </tr>
-                    <tr>
-                        <th>Total Organizer Cut</th>
-                        <td>Rs. {{ number_format($totalOrganizeCut, 2) }}</td>
-                        <th>Total Institute Cut</th>
-                        <td>Rs. {{ number_format($totalInstitutionCut, 2) }}</td>
+
+                    <tr class="net-row">
+                        <td colspan="3">NET SALARY</td>
+                        <td class="text-right amount">Rs. {{ $money($data['net_salary'] ?? 0) }}</td>
                     </tr>
-                </table>
+                </tbody>
+            </table>
 
-                {{-- Amount in Words --}}
-                <div style="margin-bottom: 20px; padding: 8px 12px; background: #f8fafc; border-radius: 8px;">
-                    <span style="font-size: 8px; color: #64748b;">AMOUNT IN WORDS:</span>
-                    <span style="font-size: 9px; font-weight: 600; margin-left: 8px;">
-                        {{ ucwords(convertNumberToWords($netSalary)) }} Rupees Only
-                    </span>
-                </div>
-
-                {{-- Signature Section --}}
-                <div class="signature-section">
-                    <div class="signature-box">
-                        <div class="signature-line">Teacher Signature</div>
-                    </div>
-                    <div class="signature-box">
-                        <div class="signature-line">Authorized Signature</div>
-                    </div>
-                </div>
-
+            {{-- Amount in words --}}
+            <div class="words">
+                <div class="info-label">Amount in words</div>
+                <div class="text">{{ $data['net_salary_words'] ?? '' }}</div>
             </div>
 
-            {{-- Footer --}}
-            <div class="slip-footer">
-                This is a system-generated salary slip and does not require a physical signature.
-                <br>For any discrepancies, please contact the accounts department.
+            {{-- Class income breakdown --}}
+            <table class="breakdown-table">
+                <tr>
+                    <th>Total Class Collection</th>
+                    <td class="text-right amount">Rs. {{ $money($data['total_class_amount'] ?? 0) }}</td>
+                    <th>Teacher Earnings</th>
+                    <td class="text-right amount">Rs. {{ $money($data['total_teacher_earnings'] ?? 0) }}</td>
+                </tr>
+                <tr>
+                    <th>Organizer Share</th>
+                    <td class="text-right amount">Rs. {{ $money($data['total_organize_cut'] ?? 0) }}</td>
+                    <th>Institute Share</th>
+                    <td class="text-right amount">Rs. {{ $money($data['total_institution_cut'] ?? 0) }}</td>
+                </tr>
+            </table>
+
+            {{-- Signatures --}}
+            <div class="signatures">
+                <div class="signature">Teacher Signature</div>
+                <div class="signature">Authorized Signature</div>
             </div>
 
         </div>
 
-    @endif
+        <div class="slip-footer">
+            Generated on {{ $data['date_generated'] ?? now()->format('d M Y, h:i A') }}
+            by {{ config('institution.name') }}.
+            For any questions about this slip, please contact the office.
+        </div>
+
+    </div>
 
     <script>
-        window.addEventListener('load', function() {
-            const urlParams = new URLSearchParams(window.location.search);
-            if (urlParams.get('autoPrint') === 'true') {
-                setTimeout(() => {
+        window.addEventListener('load', function () {
+            const params = new URLSearchParams(window.location.search);
+
+            if (params.get('autoPrint') === 'true') {
+                setTimeout(function () {
                     window.print();
-                }, 800);
+                }, 600);
             }
         });
-
-        @php
-            function convertNumberToWords($number)
-            {
-                $words = [
-                    0 => 'Zero',
-                    1 => 'One',
-                    2 => 'Two',
-                    3 => 'Three',
-                    4 => 'Four',
-                    5 => 'Five',
-                    6 => 'Six',
-                    7 => 'Seven',
-                    8 => 'Eight',
-                    9 => 'Nine',
-                    10 => 'Ten',
-                    11 => 'Eleven',
-                    12 => 'Twelve',
-                    13 => 'Thirteen',
-                    14 => 'Fourteen',
-                    15 => 'Fifteen',
-                    16 => 'Sixteen',
-                    17 => 'Seventeen',
-                    18 => 'Eighteen',
-                    19 => 'Nineteen',
-                    20 => 'Twenty',
-                    30 => 'Thirty',
-                    40 => 'Forty',
-                    50 => 'Fifty',
-                    60 => 'Sixty',
-                    70 => 'Seventy',
-                    80 => 'Eighty',
-                    90 => 'Ninety',
-                ];
-
-                if ($number < 20) {
-                    return $words[$number] ?? '';
-                } elseif ($number < 100) {
-                    $tens = floor($number / 10) * 10;
-                    $units = $number % 10;
-                    return $words[$tens] . ($units ? ' ' . $words[$units] : '');
-                } elseif ($number < 1000) {
-                    $hundreds = floor($number / 100);
-                    $remainder = $number % 100;
-                    return $words[$hundreds] . ' Hundred' . ($remainder ? ' and ' . convertNumberToWords($remainder) : '');
-                } elseif ($number < 100000) {
-                    $thousands = floor($number / 1000);
-                    $remainder = $number % 1000;
-                    return convertNumberToWords($thousands) . ' Thousand' . ($remainder ? ' ' . convertNumberToWords($remainder) : '');
-                } elseif ($number < 10000000) {
-                    $lakhs = floor($number / 100000);
-                    $remainder = $number % 100000;
-                    return convertNumberToWords($lakhs) . ' Lakh' . ($remainder ? ' ' . convertNumberToWords($remainder) : '');
-                } else {
-                    $crores = floor($number / 10000000);
-                    $remainder = $number % 10000000;
-                    return convertNumberToWords($crores) . ' Crore' . ($remainder ? ' ' . convertNumberToWords($remainder) : '');
-                }
-            }
-        @endphp
     </script>
 
 </body>
