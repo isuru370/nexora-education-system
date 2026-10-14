@@ -1,17 +1,17 @@
 <?php
 
 
-use App\Http\Controllers\API\Parent\Attendance\StudentAttendanceController;
+use App\Http\Controllers\Api\Parent\Attendance\StudentAttendanceController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\API\Parent\Auth\ParentAuthController;
-use App\Http\Controllers\API\Parent\ClassSchedule\ClassScheduleController;
-use App\Http\Controllers\API\Parent\Dashboard\DashboardController;
-use App\Http\Controllers\API\Parent\Exam\ExamController;
-use App\Http\Controllers\API\Parent\FCM\FcmTokenController;
-use App\Http\Controllers\API\Parent\Notification\ParentNotificationController;
-use App\Http\Controllers\API\Parent\Payment\StudentPaymentController;
-use App\Http\Controllers\API\Parent\Result\ResultController;
-use App\Http\Controllers\API\Parent\Teacher\TeacherController;
+use App\Http\Controllers\Api\Parent\Auth\ParentAuthController;
+use App\Http\Controllers\Api\Parent\ClassSchedule\ClassScheduleController;
+use App\Http\Controllers\Api\Parent\Dashboard\DashboardController;
+use App\Http\Controllers\Api\Parent\Exam\ExamController;
+use App\Http\Controllers\Api\Parent\FCM\FcmTokenController;
+use App\Http\Controllers\Api\Parent\Notification\ParentNotificationController;
+use App\Http\Controllers\Api\Parent\Payment\StudentPaymentController;
+use App\Http\Controllers\Api\Parent\Result\ResultController;
+use App\Http\Controllers\Api\Parent\Teacher\TeacherController;
 
 Route::prefix('v1')->group(function () {
 
