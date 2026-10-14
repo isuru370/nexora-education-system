@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Imports;
+namespace App\Imports\Web\Student;
 
 use App\Models\Student;
 use App\Models\Grade;
