@@ -11,6 +11,7 @@ use App\Services\Web\Report\DailyCollectionReportService;
 use App\Services\Web\Report\PaymentReportQuery;
 use App\Services\Web\Report\ReportFilter;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 use DomainException;
 use Maatwebsite\Excel\Facades\Excel;
 use Throwable;
@@ -37,7 +38,8 @@ class DailyCollectionReportController extends Controller
 
         $rows = $this->reportService->rows($tab, $filter, $tab === 'summary' ? null : self::PER_PAGE);
 
-        if ($tab !== 'summary') {
+        // Only the detail tabs are paginated (summary and branches are short lists)
+        if ($rows instanceof LengthAwarePaginator) {
             $rows->appends($filter->toQuery());
         }
 
@@ -52,7 +54,7 @@ class DailyCollectionReportController extends Controller
             'collectors' => $this->reportQuery->collectorOptions($filter->branchIds),
             'paymentMethods' => PaymentReportQuery::PAYMENT_METHODS,
             'branchName' => $this->reportService->branchName($filter),
-            'methodLabel' => fn ($method) => $this->reportService->methodLabel($method),
+            'methodLabel' => fn($method) => $this->reportService->methodLabel($method),
         ]);
     }
 
@@ -64,7 +66,7 @@ class DailyCollectionReportController extends Controller
         try {
             $filter = $this->makeFilter($request);
             $rows = $this->reportService->rows($tab, $filter);
-            $table = $this->reportService->table($tab);
+                        $table = $this->reportService->table($tab, $filter);
             $title = 'Collection Report - ' . DailyCollectionReportService::TABS[$tab];
             $info = $this->infoLines($filter);
             $fileName = 'collection-' . $tab . '-' . $filter->from->format('Ymd') . '-' . $filter->to->format('Ymd');

@@ -74,6 +74,8 @@
             $canTeacherReport = $isBranchAdmin;
             $canMonthlyClassAttendanceReport = $isUser;
             $canPaymentCollectionReport = $isAdmin;
+            $canBranchCollectionReport = $isBranchAdmin;
+            $canAnnualReport = $isBranchAdmin;
             $canActivityLogs = $isAdmin;
         @endphp
 
@@ -157,8 +159,7 @@
                 <div class="nav-item">
                     <button type="button"
                         class="nav-link-custom {{ request()->routeIs('payments.*') ? 'active' : '' }}"
-                        data-route="payments.index"
-                        data-href="{{ route('payments.index') }}">
+                        data-route="payments.index" data-href="{{ route('payments.index') }}">
                         <i class="bi bi-piggy-bank-fill"></i>
                         <span>Payments History</span>
                     </button>
@@ -365,8 +366,7 @@
                 <div class="nav-item">
                     <button type="button"
                         class="nav-link-custom {{ request()->routeIs('admission-payments.*') ? 'active' : '' }}"
-                        data-route="admission-payments.index"
-                        data-href="{{ route('admission-payments.index') }}">
+                        data-route="admission-payments.index" data-href="{{ route('admission-payments.index') }}">
                         <i class="bi bi-credit-card-fill"></i>
                         <span>Admissions Payments</span>
                     </button>
@@ -377,8 +377,7 @@
                 <div class="nav-item">
                     <button type="button"
                         class="nav-link-custom {{ request()->routeIs('payment-reminder.*') ? 'active' : '' }}"
-                        data-route="payment-reminder.index"
-                        data-href="{{ route('payment-reminder.index') }}">
+                        data-route="payment-reminder.index" data-href="{{ route('payment-reminder.index') }}">
                         <i class="bi bi-bell-fill"></i>
                         <span>Payment Reminder</span>
                     </button>
@@ -395,8 +394,7 @@
                 <div class="nav-item">
                     <button type="button"
                         class="nav-link-custom {{ request()->routeIs('teacher-salaries.*') ? 'active' : '' }}"
-                        data-route="teacher-salaries.index"
-                        data-href="{{ route('teacher-salaries.index') }}">
+                        data-route="teacher-salaries.index" data-href="{{ route('teacher-salaries.index') }}">
                         <i class="bi bi-cash-stack"></i>
                         <span>Teacher Salaries</span>
                     </button>
@@ -477,7 +475,8 @@
                 <div class="nav-item">
                     <button type="button"
                         class="nav-link-custom {{ request()->routeIs('reports.daily-collection.*') ? 'active' : '' }}"
-                        data-route="reports.daily-collection.index" data-href="{{ route('reports.daily-collection.index') }}">
+                        data-route="reports.daily-collection.index"
+                        data-href="{{ route('reports.daily-collection.index') }}">
                         <i class="bi bi-file-earmark-bar-graph"></i>
                         <span>Collection Report</span>
                     </button>
@@ -488,8 +487,7 @@
                 <div class="nav-item">
                     <button type="button"
                         class="nav-link-custom {{ request()->routeIs('monthly-report.*') ? 'active' : '' }}"
-                        data-route="monthly-report.index"
-                        data-href="{{ route('monthly-report.index') }}">
+                        data-route="monthly-report.index" data-href="{{ route('monthly-report.index') }}">
                         <i class="bi bi-file-earmark-bar-graph"></i>
                         <span>Monthly Report</span>
                     </button>
@@ -528,6 +526,27 @@
                         data-href="{{ route('reports.monthly-collection.index') }}">
                         <i class="bi bi-cash-stack"></i>
                         <span>Monthly Collection</span>
+                    </button>
+                </div>
+            @endif
+            @if ($canBranchCollectionReport)
+                <div class="nav-item">
+                    <button type="button"
+                        class="nav-link-custom {{ request()->routeIs('reports.branch-collection.*') ? 'active' : '' }}"
+                        data-route="reports.branch-collection.index"
+                        data-href="{{ route('reports.branch-collection.index') }}">
+                        <i class="bi bi-diagram-3"></i>
+                        <span>Branch-wise Collection</span>
+                    </button>
+                </div>
+            @endif
+            @if ($canAnnualReport)
+                <div class="nav-item">
+                    <button type="button"
+                        class="nav-link-custom {{ request()->routeIs('reports.annual.*') ? 'active' : '' }}"
+                        data-route="reports.annual.index" data-href="{{ route('reports.annual.index') }}">
+                        <i class="bi bi-calendar-range"></i>
+                        <span>Annual Report</span>
                     </button>
                 </div>
             @endif
@@ -589,12 +608,10 @@
     .sidebar {
         width: 280px;
 
-        background: linear-gradient(
-            180deg,
-            var(--nx-sidebar-bg-start) 0%,
-            var(--nx-sidebar-bg-mid) 50%,
-            var(--nx-sidebar-bg-end) 100%
-        );
+        background: linear-gradient(180deg,
+                var(--nx-sidebar-bg-start) 0%,
+                var(--nx-sidebar-bg-mid) 50%,
+                var(--nx-sidebar-bg-end) 100%);
 
         position: fixed;
         top: 0;

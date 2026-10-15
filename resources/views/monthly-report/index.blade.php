@@ -3,780 +3,302 @@
 @section('title', 'Monthly Financial Reports')
 @section('page-title', 'Monthly Financial Reports')
 
-@push('styles')
-    <style>
-        .monthly-report-page {
-            animation: fadeIn .4s ease;
-        }
-
-        /* Hero Card */
-        .hero-card {
-            position: relative;
-            overflow: hidden;
-            border-radius: 32px;
-            padding: 2rem;
-            background: linear-gradient(135deg, #2563eb, #1d4ed8, #1e40af);
-            box-shadow: 0 20px 45px rgba(37, 99, 235, .25);
-            color: #fff;
-            margin-bottom: 1.5rem;
-        }
-
-        .hero-card::before {
-            content: '';
-            position: absolute;
-            width: 280px;
-            height: 280px;
-            background: rgba(255, 255, 255, .08);
-            border-radius: 50%;
-            top: -100px;
-            right: -80px;
-        }
-
-        .hero-card::after {
-            content: '';
-            position: absolute;
-            width: 180px;
-            height: 180px;
-            background: rgba(255, 255, 255, .06);
-            border-radius: 50%;
-            bottom: -60px;
-            left: -40px;
-        }
-
-        .hero-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: .5rem;
-            padding: .7rem 1rem;
-            border-radius: 14px;
-            background: rgba(255, 255, 255, .12);
-            border: 1px solid rgba(255, 255, 255, .08);
-            backdrop-filter: blur(10px);
-            font-size: .85rem;
-            font-weight: 600;
-        }
-
-        .text-light-soft {
-            color: rgba(255, 255, 255, .78);
-        }
-
-        /* Report Cards */
-        .report-card {
-            background: #fff;
-            border-radius: 28px;
-            border: 1px solid #eef2f7;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(15, 23, 42, .05);
-            transition: all .25s ease;
-            margin-bottom: 1.5rem;
-        }
-
-        .report-card:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 20px 35px rgba(15, 23, 42, .1);
-        }
-
-        .report-header {
-            padding: 1.25rem 1.5rem;
-            background: linear-gradient(135deg, #f8fafc, #ffffff);
-            border-bottom: 1px solid #eef2f7;
-        }
-
-        .report-title {
-            font-size: 1rem;
-            font-weight: 800;
-            color: #0f172a;
-            margin: 0;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .report-title i {
-            color: #2563eb;
-            font-size: 1.2rem;
-        }
-
-        .report-subtitle {
-            font-size: 0.8rem;
-            color: #64748b;
-            margin-top: 0.25rem;
-        }
-
-        .report-body {
-            padding: 1.5rem;
-        }
-
-        /* Form Elements */
-        .form-label-custom {
-            font-size: 0.7rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.05em;
-            color: #64748b;
-            margin-bottom: 0.5rem;
-            display: block;
-        }
-
-        .form-control-custom,
-        .form-select-custom {
-            border-radius: 12px;
-            border: 1px solid #e2e8f0;
-            padding: 0.6rem 1rem;
-            font-size: 0.9rem;
-            width: 100%;
-            transition: all 0.2s ease;
-        }
-
-        .form-control-custom:focus,
-        .form-select-custom:focus {
-            border-color: #2563eb;
-            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-            outline: none;
-        }
-
-        .btn-primary-custom {
-            background: linear-gradient(135deg, #2563eb, #1d4ed8);
-            border: none;
-            border-radius: 12px;
-            padding: 0.6rem 1.5rem;
-            font-weight: 600;
-            color: white;
-            transition: all 0.2s ease;
-        }
-
-        .btn-primary-custom:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 18px rgba(37, 99, 235, 0.25);
-        }
-
-        .btn-excel {
-            background: #059669;
-            border: none;
-            border-radius: 12px;
-            padding: 0.6rem 1.25rem;
-            font-weight: 600;
-            color: white;
-            transition: all 0.2s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .btn-excel:hover {
-            background: #047857;
-            transform: translateY(-2px);
-            color: white;
-        }
-
-        .btn-pdf {
-            background: #dc2626;
-            border: none;
-            border-radius: 12px;
-            padding: 0.6rem 1.25rem;
-            font-weight: 600;
-            color: white;
-            transition: all 0.2s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .btn-pdf:hover {
-            background: #b91c1c;
-            transform: translateY(-2px);
-            color: white;
-        }
-
-        .btn-print {
-            background: #0ea5e9;
-            border: none;
-            border-radius: 12px;
-            padding: 0.6rem 1.25rem;
-            font-weight: 600;
-            color: white;
-            transition: all 0.2s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .btn-print:hover {
-            background: #0284c7;
-            transform: translateY(-2px);
-            color: white;
-        }
-
-        .divider {
-            border-top: 1px solid #eef2f7;
-            margin: 1.25rem 0;
-        }
-
-        /* Info Box */
-        .info-box {
-            background: #f8fafc;
-            border-radius: 16px;
-            padding: 1rem;
-            margin-top: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-
-        .info-box i {
-            font-size: 1.2rem;
-            color: #2563eb;
-        }
-
-        .info-box-text {
-            font-size: 0.8rem;
-            color: #475569;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .hero-card {
-                padding: 1.5rem;
-            }
-
-            .report-header {
-                flex-direction: column;
-                align-items: flex-start;
-            }
-
-            .btn-excel,
-            .btn-pdf,
-            .btn-print {
-                width: 100%;
-                justify-content: center;
-            }
-
-            .report-body .d-flex {
-                flex-direction: column;
-            }
-        }
-    </style>
-@endpush
-
 @section('content')
-    <div class="monthly-report-page">
+    @php
+        $period = \Carbon\Carbon::create($year, $month, 1);
+        $periodLabel = $period->format('F Y');
 
-        {{-- HERO CARD --}}
-        <div class="hero-card">
-            <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 position-relative">
-                <div>
-                    <div class="hero-badge mb-3">
-                        <i class="bi bi-graph-up"></i>
-                        Financial Reports
-                    </div>
-                    <h2 class="fw-bold mb-2">Monthly Financial Reports</h2>
-                    <p class="mb-0 text-light-soft">
-                        Generate and download financial, salary, student payment, and expense reports.
+        $selectedTeacher = $teacherId ? $teachers->firstWhere('id', $teacherId) : null;
+        $selectedBranch = $branches->firstWhere('id', $branchId);
+
+        // Query strings used by the download buttons
+        $branchQuery = ['year' => $year, 'month' => $month, 'branch_id' => $branchId];
+        $teacherQuery = ['teacher_id' => $teacherId, 'year' => $year, 'month' => $month];
+
+        // Reports that need a teacher
+        $teacherReports = [
+            [
+                'icon' => 'bi-people',
+                'color' => 'icon-green',
+                'title' => 'Student Payments by Fee Month',
+                'text' => 'Students whose payment is for the selected month, whatever day they paid.',
+                'excel' => route('monthly-report.student-payments.excel', ['basis' => 'fee-month'] + $teacherQuery),
+                'pdf' => route('monthly-report.student-payments.pdf', ['basis' => 'fee-month'] + $teacherQuery),
+            ],
+            [
+                'icon' => 'bi-calendar-check',
+                'color' => 'icon-amber',
+                'title' => 'Student Payments by Collection Date',
+                'text' => 'Students who actually paid during the selected month, whatever fee month it was for.',
+                'excel' => route('monthly-report.student-payments.excel', ['basis' => 'paid-date'] + $teacherQuery),
+                'pdf' => route('monthly-report.student-payments.pdf', ['basis' => 'paid-date'] + $teacherQuery),
+            ],
+            [
+                'icon' => 'bi-wallet2',
+                'color' => 'icon-red',
+                'title' => 'Teacher Expense Summary',
+                'text' => 'All advances and other payments recorded for the teacher in the selected month.',
+                'excel' => route('monthly-report.teacher-expense.export', ['format' => 'excel'] + $teacherQuery),
+                'pdf' => route('monthly-report.teacher-expense.export', ['format' => 'pdf'] + $teacherQuery),
+            ],
+        ];
+    @endphp
+
+    <div class="dashboard-page">
+
+        {{-- HERO --}}
+        <div class="hero-section mb-4">
+            <div class="hero-content">
+                <div class="hero-left">
+                    <span class="greeting-badge">nexoraEDU</span>
+                    <h1 class="hero-title">Monthly Financial Reports</h1>
+                    <p class="hero-subtitle">
+                        Salary, student payment and expense reports • {{ $periodLabel }}
+                        @if ($selectedBranch)
+                            • {{ $selectedBranch->name }}
+                        @endif
                     </p>
-                </div>
-                <div class="text-end">
-                    <div class="hero-badge mb-2">
-                        <i class="bi bi-calendar-event-fill"></i>
-                        {{ now()->format('d M Y') }}
-                    </div>
-                    <div class="hero-badge">
-                        <i class="bi bi-clock-fill"></i>
-                        {{ now()->format('h:i A') }}
-                    </div>
                 </div>
             </div>
         </div>
 
+        {{-- ALERTS --}}
+        @if (session('error'))
+            <div class="nx-alert nx-alert-red mb-4"><i class="bi bi-exclamation-triangle-fill"></i><span>{{ session('error') }}</span></div>
+        @endif
         @if ($errors->any())
-            <div class="alert alert-danger mb-4" style="border-radius: 18px;">
-                <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                @foreach ($errors->all() as $error)
-                    <div>{{ $error }}</div>
-                @endforeach
+            <div class="nx-alert nx-alert-red mb-4">
+                <div>
+                    @foreach ($errors->all() as $error)
+                        <div><i class="bi bi-exclamation-circle-fill me-1"></i>{{ $error }}</div>
+                    @endforeach
+                </div>
             </div>
         @endif
 
-        {{-- ========================================= --}}
-        {{-- TEACHER SALARY REPORT SECTION --}}
-        {{-- ========================================= --}}
-        <div class="report-card">
-            <div class="report-header">
-                <div class="report-title">
-                    <i class="bi bi-cash-stack"></i>
-                    Teacher Salary Summary
+        {{-- ONE FILTER FOR EVERY REPORT --}}
+        <div class="nx-card mb-4">
+            <div class="nx-card-header">
+                <div>
+                    <h5 class="nx-card-title"><i class="bi bi-funnel text-primary"></i> Report Month</h5>
+                    <p class="nx-card-subtitle">Choose the month once - every download below uses it</p>
                 </div>
-                <div class="report-subtitle">View and download the monthly salary summary for all teachers</div>
             </div>
-            <div class="report-body">
-                <form method="GET" action="{{ route('monthly-report.index') }}">
-                    <div class="row g-3 align-items-end">
-                        @if ($branches->count() > 1)
-                            <div class="col-md-3">
-                                <label class="form-label-custom">Branch</label>
-                                <select name="branch_id" class="form-select-custom">
-                                    @foreach ($branches as $branchOption)
-                                        <option value="{{ $branchOption->id }}"
-                                            {{ (int) $branchId === (int) $branchOption->id ? 'selected' : '' }}>
-                                            {{ $branchOption->name }}
-                                        </option>
-                                    @endforeach
-                                </select>
-                            </div>
-                        @else
-                            <input type="hidden" name="branch_id" value="{{ $branchId }}">
-                        @endif
-                        <div class="col-md-3">
-                            <label class="form-label-custom">Year</label>
-                            <select name="year" class="form-select-custom">
-                                @for ($y = now()->year; $y >= 2020; $y--)
-                                    <option value="{{ $y }}" {{ (int) $year === $y ? 'selected' : '' }}>
-                                        {{ $y }}
+            <div class="p-3">
+                <form method="GET" action="{{ route('monthly-report.index') }}" class="row g-3 align-items-end" id="monthlyReportFilter">
+                    @if ($branches->count() > 1)
+                        <div class="col-lg-3 col-md-6">
+                            <label class="nx-label">Branch</label>
+                            <select name="branch_id" class="form-select nx-input">
+                                @foreach ($branches as $branchOption)
+                                    <option value="{{ $branchOption->id }}" {{ (int) $branchId === (int) $branchOption->id ? 'selected' : '' }}>
+                                        {{ $branchOption->name }}
                                     </option>
-                                @endfor
+                                @endforeach
                             </select>
                         </div>
-                        <div class="col-md-3">
-                            <label class="form-label-custom">Month</label>
-                            <select name="month" class="form-select-custom">
-                                @for ($m = 1; $m <= 12; $m++)
-                                    <option value="{{ $m }}" {{ (int) $month === $m ? 'selected' : '' }}>
-                                        {{ \Carbon\Carbon::create()->month($m)->format('F') }}
-                                    </option>
-                                @endfor
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                            <button type="submit" class="btn-primary-custom w-100">
-                                <i class="bi bi-funnel-fill me-1"></i> Filter
-                            </button>
-                        </div>
+                    @else
+                        <input type="hidden" name="branch_id" value="{{ $branchId }}">
+                    @endif
+
+                    <div class="col-lg-2 col-md-3">
+                        <label class="nx-label">Year</label>
+                        <select name="year" class="form-select nx-input">
+                            @for ($y = now()->year; $y >= 2020; $y--)
+                                <option value="{{ $y }}" {{ (int) $year === $y ? 'selected' : '' }}>{{ $y }}</option>
+                            @endfor
+                        </select>
+                    </div>
+
+                    <div class="col-lg-2 col-md-3">
+                        <label class="nx-label">Month</label>
+                        <select name="month" class="form-select nx-input">
+                            @for ($m = 1; $m <= 12; $m++)
+                                <option value="{{ $m }}" {{ (int) $month === $m ? 'selected' : '' }}>
+                                    {{ \Carbon\Carbon::create(null, $m, 1)->format('F') }}
+                                </option>
+                            @endfor
+                        </select>
+                    </div>
+
+                    <div class="col-lg-3 col-md-8">
+                        <label class="nx-label">Teacher <span class="text-muted fw-normal text-lowercase">(for teacher reports)</span></label>
+                        <select name="teacher_id" class="form-select nx-input">
+                            <option value="">-- Select teacher --</option>
+                            @foreach ($teachers as $teacherItem)
+                                <option value="{{ $teacherItem->id }}" {{ (int) $teacherId === (int) $teacherItem->id ? 'selected' : '' }}>
+                                    {{ $teacherItem->custom_id }} - {{ $teacherItem->initials }}
+                                </option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="col-lg-2 col-md-4">
+                        <button type="submit" class="nx-btn nx-btn-primary w-100"><i class="bi bi-check2-circle"></i> Apply</button>
                     </div>
                 </form>
+            </div>
+        </div>
 
-                <div class="divider"></div>
+        {{-- BRANCH REPORT --}}
+        <div class="section-heading mb-3">
+            <h6 class="mb-0"><i class="bi bi-building text-primary"></i> Branch report</h6>
+            <small class="cell-sub">{{ $selectedBranch->name ?? 'Branch' }} · {{ $periodLabel }}</small>
+        </div>
 
-                <div class="d-flex gap-2 flex-wrap">
-                    <a href="{{ route('monthly-report.teacher-salary.excel', [
-                        'year' => $year,
-                        'month' => $month,
-                        'branch_id' => $branchId,
-                    ]) }}"
-                        class="btn-excel">
-                        <i class="bi bi-file-earmark-spreadsheet"></i> Download Excel
+        <div class="nx-card report-tile mb-4">
+            <div class="report-tile-body">
+                <div class="stat-icon-wrapper icon-blue"><i class="bi bi-cash-stack"></i></div>
+                <div class="flex-grow-1">
+                    <h5 class="nx-card-title mb-1">Teacher Salary Summary</h5>
+                    <p class="nx-card-subtitle mb-0">
+                        Earnings, deductions and net salary of every teacher in the branch.
+                        Same numbers as the Teacher Salary page.
+                    </p>
+                </div>
+                <div class="report-tile-actions">
+                    <a href="{{ route('monthly-report.teacher-salary.excel', $branchQuery) }}" class="nx-btn nx-btn-success">
+                        <i class="bi bi-file-earmark-spreadsheet"></i> Excel
                     </a>
-                    <a href="{{ route('monthly-report.teacher-salary.pdf', [
-                        'year' => $year,
-                        'month' => $month,
-                        'branch_id' => $branchId,
-                    ]) }}"
-                        class="btn-pdf">
-                        <i class="bi bi-filetype-pdf"></i> Download PDF
+                    <a href="{{ route('monthly-report.teacher-salary.pdf', $branchQuery) }}" class="nx-btn nx-btn-danger">
+                        <i class="bi bi-filetype-pdf"></i> PDF
                     </a>
                 </div>
-
-                <div class="info-box">
-                    <i class="bi bi-info-circle-fill"></i>
-                    <div class="info-box-text">
-                        Shows each teacher’s earnings, deductions, and net salary for the selected branch and month.
-                        The numbers are the same as the Teacher Salary page.
-                    </div>
-                </div>
             </div>
         </div>
 
-        {{-- ========================================= --}}
-        {{-- TEACHER SALARY SLIP SECTION --}}
-        {{-- ========================================= --}}
-        <div class="report-card">
-            <div class="report-header">
-                <div class="report-title">
-                    <i class="bi bi-receipt"></i>
-                    Individual Teacher Salary Slip
-                </div>
-                <div class="report-subtitle">Select a teacher and month to view or print the individual salary slip</div>
-            </div>
-            <div class="report-body">
-                <form method="GET" action="{{ route('monthly-report.index') }}">
-                    <input type="hidden" name="branch_id" value="{{ $branchId }}">
-                    <div class="row g-3 align-items-end">
-                        <div class="col-md-3">
-                            <label class="form-label-custom">Year</label>
-                            <select name="year" class="form-select-custom">
-                                @for ($y = now()->year; $y >= 2020; $y--)
-                                    <option value="{{ $y }}" {{ (int) $year === $y ? 'selected' : '' }}>
-                                        {{ $y }}
-                                    </option>
-                                @endfor
-                            </select>
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label-custom">Month</label>
-                            <select name="month" class="form-select-custom">
-                                @for ($m = 1; $m <= 12; $m++)
-                                    <option value="{{ $m }}" {{ (int) $month === $m ? 'selected' : '' }}>
-                                        {{ \Carbon\Carbon::create()->month($m)->format('F') }}
-                                    </option>
-                                @endfor
-                            </select>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label-custom">Select Teacher</label>
-                            <select name="teacher_id" class="form-select-custom">
-                                <option value="">-- Select Teacher --</option>
-                                @foreach ($teachers as $teacherItem)
-                                    <option value="{{ $teacherItem->id }}"
-                                        {{ (int) $teacherId === (int) $teacherItem->id ? 'selected' : '' }}>
-                                        {{ $teacherItem->custom_id }} - {{ $teacherItem->initials }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                            <button type="submit" class="btn-primary-custom w-100">
-                                <i class="bi bi-search me-1"></i> Filter
-                            </button>
-                        </div>
-                    </div>
-                </form>
-
-                <div class="divider"></div>
-
-                <div class="d-flex gap-2 flex-wrap">
-                    @if ($teacherId)
-                        <a href="{{ route('teacher-salaries.slip', [
-                            'teacher' => $teacherId,
-                            'year' => $year,
-                            'month' => $month,
-                            'branch_id' => $branchId,
-                            'autoPrint' => 'true',
-                        ]) }}"
-                            target="_blank" class="btn-print">
-                            <i class="bi bi-printer"></i> Print Salary Slip
-                        </a>
-                    @else
-                        <div class="info-box" style="background: #fef3c7;">
-                            <i class="bi bi-exclamation-triangle-fill" style="color: #f59e0b;"></i>
-                            <div class="info-box-text">
-                                Select a teacher, year, and month to generate the salary slip.
-                            </div>
-                        </div>
-                    @endif
-                </div>
-            </div>
-        </div>
-
-        {{-- ========================================= --}}
-        {{-- TEACHER WITH STUDENT PAYMENT MONTH REPORT SECTION --}}
-        {{-- ========================================= --}}
-        <div class="report-card">
-            <div class="report-header">
-                <div class="report-title">
-                    <i class="bi bi-people-fill"></i>
-                    Student Payments by Fee Month
-                </div>
-                <div class="report-subtitle">Shows students whose payments are assigned to the selected fee month.</div>
-            </div>
-            <div class="report-body">
-                <form method="GET" action="{{ route('monthly-report.index') }}">
-                    <input type="hidden" name="branch_id" value="{{ $branchId }}">
-                    <div class="row g-3 align-items-end">
-                        <div class="col-md-3">
-                            <label class="form-label-custom">Year</label>
-                            <select name="year" class="form-select-custom">
-                                @for ($y = now()->year; $y >= 2020; $y--)
-                                    <option value="{{ $y }}" {{ (int) $year === $y ? 'selected' : '' }}>
-                                        {{ $y }}
-                                    </option>
-                                @endfor
-                            </select>
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label-custom">Month</label>
-                            <select name="month" class="form-select-custom">
-                                @for ($m = 1; $m <= 12; $m++)
-                                    <option value="{{ $m }}" {{ (int) $month === $m ? 'selected' : '' }}>
-                                        {{ \Carbon\Carbon::create()->month($m)->format('F') }}
-                                    </option>
-                                @endfor
-                            </select>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label-custom">Select Teacher</label>
-                            <select name="teacher_id" class="form-select-custom">
-                                <option value="">-- Select Teacher --</option>
-                                @foreach ($teachers as $teacherItem)
-                                    <option value="{{ $teacherItem->id }}"
-                                        {{ (int) $teacherId === (int) $teacherItem->id ? 'selected' : '' }}>
-                                        {{ $teacherItem->custom_id }} - {{ $teacherItem->initials }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                            <button type="submit" class="btn-primary-custom w-100">
-                                <i class="bi bi-search me-1"></i> Filter
-                            </button>
-                        </div>
-                    </div>
-                </form>
-
-                <div class="divider"></div>
-
-                <div class="d-flex gap-2 flex-wrap">
-                    @if ($teacherId)
-                        <a href="{{ route('monthly-report.student-payments.excel', ['basis' => 'fee-month', 'teacher_id' => $teacherId, 'year' => $year, 'month' => $month]) }}"
-                            class="btn-excel">
-                            <i class="bi bi-file-earmark-spreadsheet"></i> Download Excel
-                        </a>
-                        <a href="{{ route('monthly-report.student-payments.pdf', ['basis' => 'fee-month', 'teacher_id' => $teacherId, 'year' => $year, 'month' => $month]) }}"
-                            target="_blank" class="btn-pdf">
-                            <i class="bi bi-filetype-pdf"></i> Download PDF
-                        </a>
-                    @else
-                        <div class="info-box" style="background: #fef3c7;">
-                            <i class="bi bi-exclamation-triangle-fill" style="color: #f59e0b;"></i>
-                            <div class="info-box-text">
-                                Select a teacher, year, and month to generate the student payment report.
-                            </div>
-                        </div>
-                    @endif
-                </div>
-
-                <div class="info-box mt-3">
-                    <i class="bi bi-info-circle-fill"></i>
-                    <div class="info-box-text">
-                        <strong>Fee Month:</strong>
-                        This report shows students whose payment month matches the selected year and month.
-                        The payment can be made on any date, but the student is included when the
-                        payment month matches the selected year and month.
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        {{-- ========================================= --}}
-        {{-- TEACHER WITH STUDENT PAYMENT DATE REPORT SECTION --}}
-        {{-- ========================================= --}}
-        <div class="report-card">
-            <div class="report-header">
-                <div class="report-title">
-                    <i class="bi bi-people-fill"></i>
-                    Student Payments by Collection Date
-                </div>
-                <div class="report-subtitle">Shows students who actually made a payment during the selected year and month.
-                </div>
-            </div>
-            <div class="report-body">
-                <form method="GET" action="{{ route('monthly-report.index') }}">
-                    <input type="hidden" name="branch_id" value="{{ $branchId }}">
-                    <div class="row g-3 align-items-end">
-                        <div class="col-md-3">
-                            <label class="form-label-custom">Year</label>
-                            <select name="year" class="form-select-custom">
-                                @for ($y = now()->year; $y >= 2020; $y--)
-                                    <option value="{{ $y }}" {{ (int) $year === $y ? 'selected' : '' }}>
-                                        {{ $y }}
-                                    </option>
-                                @endfor
-                            </select>
-                        </div>
-                        <div class="col-md-3">
-                            <label class="form-label-custom">Month</label>
-                            <select name="month" class="form-select-custom">
-                                @for ($m = 1; $m <= 12; $m++)
-                                    <option value="{{ $m }}" {{ (int) $month === $m ? 'selected' : '' }}>
-                                        {{ \Carbon\Carbon::create()->month($m)->format('F') }}
-                                    </option>
-                                @endfor
-                            </select>
-                        </div>
-                        <div class="col-md-4">
-                            <label class="form-label-custom">Select Teacher</label>
-                            <select name="teacher_id" class="form-select-custom">
-                                <option value="">-- Select Teacher --</option>
-                                @foreach ($teachers as $teacherItem)
-                                    <option value="{{ $teacherItem->id }}"
-                                        {{ (int) $teacherId === (int) $teacherItem->id ? 'selected' : '' }}>
-                                        {{ $teacherItem->custom_id }} - {{ $teacherItem->initials }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-                        <div class="col-md-2">
-                            <button type="submit" class="btn-primary-custom w-100">
-                                <i class="bi bi-search me-1"></i> Filter
-                            </button>
-                        </div>
-                    </div>
-                </form>
-
-                <div class="divider"></div>
-
-                <div class="d-flex gap-2 flex-wrap">
-                    @if ($teacherId)
-                        <a href="{{ route('monthly-report.student-payments.excel', ['basis' => 'paid-date', 'teacher_id' => $teacherId, 'year' => $year, 'month' => $month]) }}"
-                            class="btn-excel">
-                            <i class="bi bi-file-earmark-spreadsheet"></i> Download Excel
-                        </a>
-                        <a href="{{ route('monthly-report.student-payments.pdf', ['basis' => 'paid-date', 'teacher_id' => $teacherId, 'year' => $year, 'month' => $month]) }}"
-                            target="_blank" class="btn-pdf">
-                            <i class="bi bi-filetype-pdf"></i> Download PDF
-                        </a>
-                    @else
-                        <div class="info-box" style="background: #fef3c7;">
-                            <i class="bi bi-exclamation-triangle-fill" style="color: #f59e0b;"></i>
-                            <div class="info-box-text">
-                                Select a teacher, year, and month to generate the student payment report.
-                            </div>
-                        </div>
-                    @endif
-                </div>
-
-                <div class="info-box mt-3">
-                    <i class="bi bi-info-circle-fill"></i>
-                    <div class="info-box-text">
-                        <strong>Collection Date:</strong>
-                        This report shows students who actually made payments during the selected year and month,
-                        regardless of which fee month the payment was assigned to.
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        {{-- ========================================= --}}
-        {{-- TEACHER EXPENSE REPORT SECTION --}}
-        {{-- ========================================= --}}
-        <div class="report-card">
-            <div class="report-header">
-                <div class="report-title">
-                    <i class="bi bi-wallet2"></i>
-                    Teacher Expense Summary
-                </div>
-                <div class="report-subtitle">
-                    Select a teacher, year, and month to view and download expense details
-                </div>
-            </div>
-
-            <div class="report-body">
-                <form method="GET" action="{{ route('monthly-report.index') }}">
-                    <input type="hidden" name="branch_id" value="{{ $branchId }}">
-                    <div class="row g-3 align-items-end">
-                        <div class="col-md-3">
-                            <label class="form-label-custom">Year</label>
-                            <select name="year" class="form-select-custom">
-                                @for ($y = now()->year; $y >= 2020; $y--)
-                                    <option value="{{ $y }}" {{ (int) $year === $y ? 'selected' : '' }}>
-                                        {{ $y }}
-                                    </option>
-                                @endfor
-                            </select>
-                        </div>
-
-                        <div class="col-md-3">
-                            <label class="form-label-custom">Month</label>
-                            <select name="month" class="form-select-custom">
-                                @for ($m = 1; $m <= 12; $m++)
-                                    <option value="{{ $m }}" {{ (int) $month === $m ? 'selected' : '' }}>
-                                        {{ \Carbon\Carbon::create()->month($m)->format('F') }}
-                                    </option>
-                                @endfor
-                            </select>
-                        </div>
-
-                        <div class="col-md-4">
-                            <label class="form-label-custom">Select Teacher</label>
-                            <select name="teacher_id" class="form-select-custom">
-                                <option value="">-- Select Teacher --</option>
-                                @foreach ($teachers as $teacherItem)
-                                    <option value="{{ $teacherItem->id }}"
-                                        {{ (int) $teacherId === (int) $teacherItem->id ? 'selected' : '' }}>
-                                        {{ $teacherItem->custom_id }} - {{ $teacherItem->initials }}
-                                    </option>
-                                @endforeach
-                            </select>
-                        </div>
-
-                        <div class="col-md-2">
-                            <button type="submit" class="btn-primary-custom w-100">
-                                <i class="bi bi-search me-1"></i> Filter
-                            </button>
-                        </div>
-                    </div>
-                </form>
-
-                <div class="divider"></div>
-
-                @if ($teacherId)
-                    <div class="d-flex gap-2 flex-wrap">
-                        <a href="{{ route('monthly-report.teacher-expense.export', [
-                            'format' => 'excel',
-                            'teacher_id' => $teacherId,
-                            'year' => $year,
-                            'month' => $month,
-                        ]) }}"
-                            class="btn-excel">
-                            <i class="bi bi-file-earmark-spreadsheet"></i>
-                            Download Excel
-                        </a>
-
-                        <a href="{{ route('monthly-report.teacher-expense.export', [
-                            'format' => 'pdf',
-                            'teacher_id' => $teacherId,
-                            'year' => $year,
-                            'month' => $month,
-                        ]) }}"
-                            target="_blank" class="btn-pdf">
-                            <i class="bi bi-filetype-pdf"></i>
-                            Download PDF
-                        </a>
-                    </div>
+        {{-- TEACHER REPORTS --}}
+        <div class="section-heading mb-3">
+            <h6 class="mb-0"><i class="bi bi-person-badge text-primary"></i> Teacher reports</h6>
+            <small class="cell-sub">
+                @if ($selectedTeacher)
+                    {{ $selectedTeacher->custom_id }} - {{ $selectedTeacher->initials }} · {{ $periodLabel }}
                 @else
-                    <div class="info-box" style="background: #fef3c7;">
-                        <i class="bi bi-exclamation-triangle-fill" style="color: #f59e0b;"></i>
-                        <div class="info-box-text">
-                            Select a teacher, year, and month to generate the expense report.
-                        </div>
-                    </div>
+                    Select a teacher in the filter above
                 @endif
-
-                <div class="info-box mt-3">
-                    <i class="bi bi-info-circle-fill"></i>
-                    <div class="info-box-text">
-                        Shows all recorded teacher expenses for the selected
-                        month and year.
-                    </div>
-                </div>
-            </div>
-        </div>
-
-        {{-- FOOTER NOTE --}}
-        <div class="text-center mt-3">
-            <small class="text-muted">
-                <i class="bi bi-printer"></i> Reports generated on {{ now()->format('d M Y, h:i A') }}
             </small>
         </div>
 
+        @if (!$teacherId)
+            <div class="nx-alert nx-alert-amber mb-4">
+                <i class="bi bi-info-circle-fill"></i>
+                <span>Select a teacher above and click <strong>Apply</strong> to enable the teacher reports.</span>
+            </div>
+        @endif
+
+        <div class="row g-3 mb-4">
+            {{-- Salary slip --}}
+            <div class="col-lg-6">
+                <div class="nx-card report-tile h-100 {{ $teacherId ? '' : 'is-disabled' }}">
+                    <div class="report-tile-body">
+                        <div class="stat-icon-wrapper icon-violet"><i class="bi bi-receipt"></i></div>
+                        <div class="flex-grow-1">
+                            <h5 class="nx-card-title mb-1">Salary Slip</h5>
+                            <p class="nx-card-subtitle mb-0">Print the teacher's salary slip for the month.</p>
+                        </div>
+                    </div>
+                    <div class="report-tile-footer">
+                        @if ($teacherId)
+                            <a href="{{ route('teacher-salaries.slip', ['teacher' => $teacherId] + $branchQuery + ['autoPrint' => 'true']) }}"
+                                target="_blank" rel="noopener" class="nx-btn nx-btn-primary">
+                                <i class="bi bi-printer"></i> Print Slip
+                            </a>
+                        @else
+                            <span class="nx-btn nx-btn-light disabled"><i class="bi bi-printer"></i> Print Slip</span>
+                        @endif
+                    </div>
+                </div>
+            </div>
+
+            @foreach ($teacherReports as $item)
+                <div class="col-lg-6">
+                    <div class="nx-card report-tile h-100 {{ $teacherId ? '' : 'is-disabled' }}">
+                        <div class="report-tile-body">
+                            <div class="stat-icon-wrapper {{ $item['color'] }}"><i class="bi {{ $item['icon'] }}"></i></div>
+                            <div class="flex-grow-1">
+                                <h5 class="nx-card-title mb-1">{{ $item['title'] }}</h5>
+                                <p class="nx-card-subtitle mb-0">{{ $item['text'] }}</p>
+                            </div>
+                        </div>
+                        <div class="report-tile-footer">
+                            @if ($teacherId)
+                                <a href="{{ $item['excel'] }}" class="nx-btn nx-btn-success">
+                                    <i class="bi bi-file-earmark-spreadsheet"></i> Excel
+                                </a>
+                                <a href="{{ $item['pdf'] }}" target="_blank" rel="noopener" class="nx-btn nx-btn-danger">
+                                    <i class="bi bi-filetype-pdf"></i> PDF
+                                </a>
+                            @else
+                                <span class="nx-btn nx-btn-light disabled"><i class="bi bi-file-earmark-spreadsheet"></i> Excel</span>
+                                <span class="nx-btn nx-btn-light disabled"><i class="bi bi-filetype-pdf"></i> PDF</span>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+
+        <p class="text-center cell-sub mb-0">
+            <i class="bi bi-info-circle"></i>
+            <strong>Fee month</strong> = the month a payment is for.
+            <strong>Collection date</strong> = the day the money was received.
+        </p>
+
     </div>
-
-    <script>
-        (function() {
-            function blockTeacherSelectAutoSubmit(event) {
-                var target = event.target;
-
-                if (
-                    target &&
-                    target.tagName &&
-                    target.tagName.toLowerCase() === 'select' &&
-                    target.name === 'teacher_id'
-                ) {
-                    event.stopPropagation();
-                    event.stopImmediatePropagation();
-                }
-            }
-
-            // Capture phase: runs before normal/bubbling change handlers.
-            document.addEventListener('change', blockTeacherSelectAutoSubmit, true);
-        })();
-    </script>
-
 @endsection
+
+@push('styles')
+<style>
+    /* Monthly Financial Reports — page-specific styles only */
+    .dashboard-page .section-heading {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: .25rem 1rem;
+    }
+    .dashboard-page .section-heading h6 { font-weight: 700; }
+    .dashboard-page .report-tile { display: flex; flex-direction: column; }
+    .dashboard-page .report-tile-body {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1.1rem 1.25rem;
+        flex: 1 1 auto;
+    }
+    .dashboard-page .report-tile-body > .flex-grow-1 { min-width: 0; }
+    .dashboard-page .report-tile-body .stat-icon-wrapper { flex-shrink: 0; }
+    .dashboard-page .report-tile-actions { display: flex; gap: .5rem; flex-wrap: wrap; flex-shrink: 0; }
+    .dashboard-page .report-tile-footer {
+        display: flex;
+        gap: .5rem;
+        flex-wrap: wrap;
+        padding: .85rem 1.25rem;
+        border-top: 1px solid var(--nx-border);
+        background: var(--nx-head-bg);
+    }
+    .dashboard-page .report-tile.is-disabled .report-tile-body { opacity: .55; }
+    .dashboard-page .nx-btn.disabled { pointer-events: none; opacity: .6; }
+    @media (max-width: 576px) {
+        .dashboard-page .report-tile-body { flex-wrap: wrap; }
+        .dashboard-page .report-tile-actions,
+        .dashboard-page .report-tile-actions .nx-btn,
+        .dashboard-page .report-tile-footer .nx-btn { width: 100%; justify-content: center; }
+    }
+</style>
+@endpush
+
+@push('scripts')
+<script>
+    // Some pages auto-submit filter selects on change. Here the teacher is
+    // applied with the Apply button, so stop the auto-submit for that select.
+    document.addEventListener('change', function (event) {
+        var target = event.target;
+
+        if (target && target.name === 'teacher_id' && target.closest('#monthlyReportFilter')) {
+            event.stopPropagation();
+            event.stopImmediatePropagation();
+        }
+    }, true);
+</script>
+@endpush

@@ -17,7 +17,8 @@ use Illuminate\Support\Collection;
  * (Replaces the old Admin\DailyReportController + DailyReportService report pages.)
  *
  * Tabs:
- *  - summary       income, expenses, net, by payment method, by collector, fee split
+ *  - summary       income, expenses, net, by branch, by payment method, by collector, fee split
+ *  - branches      income, expenses and net for each branch
  *  - students      class fee payments
  *  - admissions    admission fees
  *  - fee-split     teacher / organizer / institute share of every class fee payment
@@ -27,14 +28,25 @@ class DailyCollectionReportService
 {
     public const TABS = [
         'summary' => 'Summary',
+        'branches' => 'By Branch',
         'students' => 'Class Fee Payments',
         'admissions' => 'Admission Fees',
         'fee-split' => 'Fee Split',
         'expenses' => 'Expenses',
     ];
 
+    /** Expense columns of a branch row (hidden while a collector / method filter is used) */
+    protected const BRANCH_EXPENSE_COLUMNS = [
+        'teacher_salaries',
+        'teacher_advances',
+        'organizer_payments',
+        'institute_expenses',
+        'total_expenses',
+    ];
+
     public function __construct(
-        protected PaymentReportQuery $query
+        protected PaymentReportQuery $query,
+        protected BranchCollectionReportService $branchReport
     ) {}
 
     /*
@@ -93,6 +105,7 @@ class DailyCollectionReportService
             'student_payment_count' => $this->query->studentPayments($filter)->count(),
             'admission_count' => $this->query->admissionPayments($filter)->count(),
 
+            'by_branch' => $this->branchRows($filter),
             'by_method' => $this->byMethod($filter),
             'by_collector' => $this->byCollector($filter),
 
@@ -127,6 +140,12 @@ class DailyCollectionReportService
             $rows[] = ['section' => 'Net', 'item' => 'Net balance', 'amount' => $summary['net']];
         }
 
+        if ($summary['by_branch']->count() > 1) {
+            foreach ($summary['by_branch'] as $row) {
+                $rows[] = ['section' => 'By branch (income)', 'item' => $row['branch'], 'amount' => $row['total_income']];
+            }
+        }
+
         foreach ($summary['by_method'] as $row) {
             $rows[] = ['section' => 'By payment method', 'item' => $row['label'], 'amount' => $row['amount']];
         }
@@ -151,8 +170,12 @@ class DailyCollectionReportService
     /**
      * Table definition for a tab: headings, money columns and a row builder.
      */
-    public function table(string $tab): array
+    public function table(string $tab, ?ReportFilter $filter = null): array
     {
+        if ($tab === 'branches') {
+            return $this->branchTable($filter !== null && $this->collectorFilterActive($filter));
+        }
+
         return match ($tab) {
             'summary' => [
                 'headings' => ['Section', 'Item', 'Amount (Rs.)'],
@@ -199,6 +222,10 @@ class DailyCollectionReportService
             return collect($this->summaryRows($filter));
         }
 
+        if ($tab === 'branches') {
+            return $this->branchRows($filter);
+        }
+
         if ($tab === 'expenses') {
             $rows = $this->collectorFilterActive($filter) ? collect() : $this->expenseRows($filter);
 
@@ -206,19 +233,89 @@ class DailyCollectionReportService
         }
 
         [$query, $mapper] = match ($tab) {
-            'students' => [$this->studentPaymentQuery($filter), fn ($payment) => $this->studentPaymentRow($payment)],
-            'admissions' => [$this->admissionQuery($filter), fn ($payment) => $this->admissionRow($payment)],
-            'fee-split' => [$this->splitQuery($filter), fn ($snapshot) => $this->splitRow($snapshot)],
+            'students' => [$this->studentPaymentQuery($filter), fn($payment) => $this->studentPaymentRow($payment)],
+            'admissions' => [$this->admissionQuery($filter), fn($payment) => $this->admissionRow($payment)],
+            'fee-split' => [$this->splitQuery($filter), fn($snapshot) => $this->splitRow($snapshot)],
         };
 
         if ($perPage) {
+            /** @var Paginator $paginator */
             $paginator = $query->paginate($perPage);
-            $paginator->setCollection($paginator->getCollection()->map($mapper));
 
-            return $paginator;
+            // Map each model on this page to a report row (keeps the page links)
+            return $paginator->through($mapper);
         }
 
         return $query->get()->map($mapper);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | By branch
+    |--------------------------------------------------------------------------
+    */
+
+    /**
+     * One row per branch (same numbers as the Branch-wise Collection report).
+     * While a collector / payment method filter is used, only fee collections
+     * are counted, so extra income and expenses are set to 0 - the same rule
+     * as the summary.
+     */
+    public function branchRows(ReportFilter $filter): Collection
+    {
+        $rows = $this->branchReport->generate($filter)['rows'];
+
+        if (!$this->collectorFilterActive($filter)) {
+            return $rows;
+        }
+
+        return $rows
+            ->map(function (array $row) {
+                $row['extra_income'] = 0.0;
+
+                foreach (self::BRANCH_EXPENSE_COLUMNS as $column) {
+                    $row[$column] = 0.0;
+                }
+
+                $row['total_income'] = round($row['class_fees'] + $row['admission_fees'], 2);
+                $row['net'] = $row['total_income'];
+
+                return $row;
+            })
+            // A shared (no branch) row with nothing left in it is dropped
+            ->reject(fn(array $row) => $row['key'] === BranchCollectionReportService::SHARED && $row['total_income'] == 0)
+            ->values();
+    }
+
+    protected function branchTable(bool $feesOnly): array
+    {
+        $columns = [
+            'branch' => 'Branch',
+            'payments' => 'Payments',
+            'students' => 'Students',
+            'class_fees' => 'Class Fees (Rs.)',
+            'admission_fees' => 'Admission Fees (Rs.)',
+            'extra_income' => 'Extra Income (Rs.)',
+            'total_income' => 'Total Income (Rs.)',
+            'teacher_salaries' => 'Teacher Salaries (Rs.)',
+            'teacher_advances' => 'Teacher Advances (Rs.)',
+            'organizer_payments' => 'Organizer Payments (Rs.)',
+            'institute_expenses' => 'Institute Expenses (Rs.)',
+            'total_expenses' => 'Total Expenses (Rs.)',
+            'net' => 'Net (Rs.)',
+        ];
+
+        if ($feesOnly) {
+            $hidden = array_merge(['extra_income', 'net'], self::BRANCH_EXPENSE_COLUMNS);
+            $columns = array_diff_key($columns, array_flip($hidden));
+        }
+
+        return [
+            'headings' => array_values($columns),
+            'columns' => array_keys($columns),
+            'money' => array_values(array_diff(array_keys($columns), ['branch', 'payments', 'students'])),
+            'total' => 'total_income',
+        ];
     }
 
     /*
@@ -231,10 +328,10 @@ class DailyCollectionReportService
     {
         return $this->query->studentPayments($filter)
             ->with([
-                'student' => fn ($query) => $query->withTrashed()->select('id', 'custom_id', 'permanent_qr_active', 'temporary_qr_code', 'initial_name'),
+                'student' => fn($query) => $query->withTrashed()->select('id', 'custom_id', 'permanent_qr_active', 'temporary_qr_code', 'initial_name'),
                 'collectedBy:id,name',
-                'enrollment' => fn ($query) => $query->withTrashed()->select('id', 'student_class_id', 'class_category_fee_id'),
-                'enrollment.studentClass' => fn ($query) => $query->withTrashed()->select('id', 'class_name', 'grade_id'),
+                'enrollment' => fn($query) => $query->withTrashed()->select('id', 'student_class_id', 'class_category_fee_id'),
+                'enrollment.studentClass' => fn($query) => $query->withTrashed()->select('id', 'class_name', 'grade_id'),
                 'enrollment.studentClass.grade:id,grade_name',
                 'enrollment.classCategoryFee:id,class_category_id',
                 'enrollment.classCategoryFee.category:id,category_name',
@@ -265,7 +362,7 @@ class DailyCollectionReportService
     {
         return $this->query->admissionPayments($filter)
             ->with([
-                'student' => fn ($query) => $query->withTrashed()->select('id', 'custom_id', 'permanent_qr_active', 'temporary_qr_code', 'initial_name'),
+                'student' => fn($query) => $query->withTrashed()->select('id', 'custom_id', 'permanent_qr_active', 'temporary_qr_code', 'initial_name'),
                 'collectedBy:id,name',
             ])
             ->orderBy('paid_at');
@@ -288,11 +385,11 @@ class DailyCollectionReportService
     {
         return $this->query->splitSnapshots($filter)
             ->with([
-                'teacher' => fn ($query) => $query->withTrashed()->select('id', 'full_name'),
-                'organizer' => fn ($query) => $query->withTrashed()->select('id', 'name'),
-                'studentClass' => fn ($query) => $query->withTrashed()->select('id', 'class_name'),
-                'enrollment' => fn ($query) => $query->withTrashed()->select('id', 'student_id'),
-                'enrollment.student' => fn ($query) => $query->withTrashed()->select('id', 'initial_name'),
+                'teacher' => fn($query) => $query->withTrashed()->select('id', 'full_name'),
+                'organizer' => fn($query) => $query->withTrashed()->select('id', 'name'),
+                'studentClass' => fn($query) => $query->withTrashed()->select('id', 'class_name'),
+                'enrollment' => fn($query) => $query->withTrashed()->select('id', 'student_id'),
+                'enrollment.student' => fn($query) => $query->withTrashed()->select('id', 'initial_name'),
             ])
             ->orderBy('payment_date');
     }
@@ -314,7 +411,7 @@ class DailyCollectionReportService
 
     protected function expenseRows(ReportFilter $filter): Collection
     {
-        $teacherNames = fn (Collection $ids) => Teacher::withTrashed()->whereIn('id', $ids)->pluck('full_name', 'id');
+        $teacherNames = fn(Collection $ids) => Teacher::withTrashed()->whereIn('id', $ids)->pluck('full_name', 'id');
 
         $teacherCash = $this->query->teacherCashPayments($filter)->get();
         $salaries = $this->query->teacherSalaries($filter)->get();
@@ -342,7 +439,7 @@ class DailyCollectionReportService
             ]);
         }
 
-        foreach ($this->query->organizerPayments($filter)->with(['organizer' => fn ($query) => $query->withTrashed()->select('id', 'name')])->get() as $payment) {
+        foreach ($this->query->organizerPayments($filter)->with(['organizer' => fn($query) => $query->withTrashed()->select('id', 'name')])->get() as $payment) {
             $rows->push([
                 'date' => optional($payment->payment_date)->format('Y-m-d'),
                 'type' => 'Organizer ' . $payment->payment_type,
@@ -388,7 +485,7 @@ class DailyCollectionReportService
         }
 
         return collect($totals)
-            ->map(fn ($value, $method) => ['label' => $this->methodLabel($method)] + $value)
+            ->map(fn($value, $method) => ['label' => $this->methodLabel($method)] + $value)
             ->sortByDesc('amount')
             ->values()
             ->all();
@@ -413,7 +510,7 @@ class DailyCollectionReportService
         $names = User::query()->whereIn('id', array_keys($totals))->pluck('name', 'id');
 
         return collect($totals)
-            ->map(fn ($value, $userId) => ['name' => $names->get($userId, 'Unknown')] + $value)
+            ->map(fn($value, $userId) => ['name' => $names->get($userId, 'Unknown')] + $value)
             ->sortByDesc('amount')
             ->values()
             ->all();

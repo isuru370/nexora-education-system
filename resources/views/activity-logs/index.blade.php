@@ -4,97 +4,132 @@
 @section('page-title', 'Activity Logs')
 
 @section('content')
+    <div class="dashboard-page">
 
-    <div class="activity-logs-page">
+        {{-- ===================================================== --}}
+        {{-- HERO --}}
+        {{-- ===================================================== --}}
+        <div class="hero-section mb-4">
+            <div class="hero-content">
+                <div class="hero-left">
+                    <span class="greeting-badge">nexoraEDU</span>
+                    <h1 class="hero-title">Activity Logs</h1>
+                    <p class="hero-subtitle">Track and monitor all system activities and changes.</p>
 
-        {{-- Alerts --}}
-        @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show rounded-3 shadow-sm">
-                <i class="bi bi-check-circle-fill me-2"></i>
-                {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        @endif
-
-        @if(session('error'))
-            <div class="alert alert-danger alert-dismissible fade show rounded-3 shadow-sm">
-                <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                {{ session('error') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-            </div>
-        @endif
-
-        {{-- Stats Cards --}}
-        <div class="row g-4 mb-4">
-            <div class="col-xl-3 col-md-6">
-                <div class="stats-card">
-                    <div class="stats-icon blue">
-                        <i class="bi bi-activity"></i>
-                    </div>
-                    <div>
-                        <h3>{{ $logs->total() }}</h3>
-                        <p>Total Activities</p>
+                    <div class="hero-stats-mini">
+                        <div class="mini-stat">
+                            <span class="mini-stat-value">{{ $logs->total() }}</span>
+                            <span class="mini-stat-label">Total Activities</span>
+                        </div>
+                        <div class="mini-stat-divider"></div>
+                        <div class="mini-stat">
+                            <span class="mini-stat-value">{{ $logs->where('action', 'created')->count() }}</span>
+                            <span class="mini-stat-label">Created</span>
+                        </div>
+                        <div class="mini-stat-divider"></div>
+                        <div class="mini-stat">
+                            <span class="mini-stat-value">{{ $logs->where('action', 'updated')->count() }}</span>
+                            <span class="mini-stat-label">Updated</span>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="col-xl-3 col-md-6">
-                <div class="stats-card">
-                    <div class="stats-icon green">
-                        <i class="bi bi-plus-circle"></i>
+                <div class="hero-right">
+                    <div class="hero-actions">
+                        <button type="button" class="nx-btn nx-btn-light" onclick="window.location.reload()">
+                            <i class="bi bi-arrow-repeat"></i> Refresh
+                        </button>
                     </div>
-                    <div>
-                        <h3>{{ $logs->where('action', 'created')->count() }}</h3>
-                        <p>Created</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-xl-3 col-md-6">
-                <div class="stats-card">
-                    <div class="stats-icon primary">
-                        <i class="bi bi-pencil-square"></i>
-                    </div>
-                    <div>
-                        <h3>{{ $logs->where('action', 'updated')->count() }}</h3>
-                        <p>Updated</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-xl-3 col-md-6">
-                <div class="stats-card">
-                    <div class="stats-icon red">
-                        <i class="bi bi-trash"></i>
-                    </div>
-                    <div>
-                        <h3>{{ $logs->where('action', 'deleted')->count() + $logs->where('action', 'force_deleted')->count() }}
-                        </h3>
-                        <p>Deleted</p>
-                    </div>
+                    <small class="hero-updated">{{ now()->format('D, d M Y') }}</small>
                 </div>
             </div>
         </div>
 
-        {{-- Main Card --}}
-        <div class="logs-card">
-            <div class="logs-card-header">
-                <div>
-                    <h4>
-                        <i class="bi bi-clock-history me-2"></i>
-                        Activity Logs
-                    </h4>
-                    <p>Track and monitor all system activities and changes</p>
+        {{-- ===================================================== --}}
+        {{-- ALERTS --}}
+        {{-- ===================================================== --}}
+        @if (session('success'))
+            <div class="nx-alert nx-alert-green mb-4">
+                <i class="bi bi-check-circle-fill"></i>
+                <span>{{ session('success') }}</span>
+            </div>
+        @endif
+
+        @if (session('error'))
+            <div class="nx-alert nx-alert-red mb-4">
+                <i class="bi bi-exclamation-triangle-fill"></i>
+                <span>{{ session('error') }}</span>
+            </div>
+        @endif
+
+        {{-- ===================================================== --}}
+        {{-- KPI CARDS --}}
+        {{-- ===================================================== --}}
+        <div class="stats-grid mb-4">
+
+            <div class="nx-card stat-card">
+                <div class="stat-icon-wrapper icon-blue"><i class="bi bi-activity"></i></div>
+                <div class="stat-info">
+                    <span class="stat-label">Total Activities</span>
+                    <h2 class="stat-number">{{ $logs->total() }}</h2>
+                    <span class="stat-change neutral">All <span class="stat-change-note">activity logs</span></span>
                 </div>
-                <div class="header-actions">
-                    <button class="btn btn-refresh" onclick="window.location.reload()">
-                        <i class="bi bi-arrow-repeat me-2"></i> Refresh
+            </div>
+
+            <div class="nx-card stat-card">
+                <div class="stat-icon-wrapper icon-green"><i class="bi bi-plus-circle-fill"></i></div>
+                <div class="stat-info">
+                    <span class="stat-label">Created</span>
+                    <h2 class="stat-number">{{ $logs->where('action', 'created')->count() }}</h2>
+                    <span class="stat-change up">New <span class="stat-change-note">records</span></span>
+                </div>
+            </div>
+
+            <div class="nx-card stat-card">
+                <div class="stat-icon-wrapper icon-violet"><i class="bi bi-pencil-square"></i></div>
+                <div class="stat-info">
+                    <span class="stat-label">Updated</span>
+                    <h2 class="stat-number">{{ $logs->where('action', 'updated')->count() }}</h2>
+                    <span class="stat-change neutral">Modified <span class="stat-change-note">records</span></span>
+                </div>
+            </div>
+
+            <div class="nx-card stat-card">
+                <div class="stat-icon-wrapper icon-red"><i class="bi bi-trash-fill"></i></div>
+                <div class="stat-info">
+                    <span class="stat-label">Deleted</span>
+                    <h2 class="stat-number">
+                        {{ $logs->where('action', 'deleted')->count() + $logs->where('action', 'force_deleted')->count() }}
+                    </h2>
+                    <span class="stat-change down">Removed <span class="stat-change-note">records</span></span>
+                </div>
+            </div>
+        </div>
+
+        {{-- ===================================================== --}}
+        {{-- MAIN CARD --}}
+        {{-- ===================================================== --}}
+        <div class="nx-card mb-4">
+
+            <div class="nx-card-header">
+                <div>
+                    <h5 class="nx-card-title"><i class="bi bi-clock-history text-primary"></i> Activity Logs</h5>
+                    <p class="nx-card-subtitle">Track and monitor all system activities and changes</p>
+                </div>
+
+                <div class="header-buttons">
+                    <a href="{{ route('admin.activity-logs.export', request()->query()) }}" class="nx-btn nx-btn-success">
+                        <i class="bi bi-download"></i> Export CSV
+                    </a>
+                    <button type="button" class="nx-btn nx-btn-danger"
+                        data-bs-toggle="modal" data-bs-target="#clearLogsModal">
+                        <i class="bi bi-trash-fill"></i> Clear Old
                     </button>
                 </div>
             </div>
 
-            {{-- Search & Filter Section --}}
-            <div class="filter-section">
+            {{-- FILTER --}}
+            <div class="nx-search">
                 <form method="GET" action="{{ route('admin.activity-logs.index') }}" id="filterForm">
                     <div class="row g-3">
                         <div class="col-lg-3">
@@ -108,7 +143,7 @@
                         <div class="col-lg-2">
                             <select name="action" class="form-select custom-input">
                                 <option value="">All Actions</option>
-                                @foreach($actions as $action)
+                                @foreach ($actions as $action)
                                     <option value="{{ $action }}" {{ request('action') == $action ? 'selected' : '' }}>
                                         {{ ucfirst(str_replace('_', ' ', $action)) }}
                                     </option>
@@ -119,7 +154,7 @@
                         <div class="col-lg-2">
                             <select name="table_name" class="form-select custom-input">
                                 <option value="">All Tables</option>
-                                @foreach($tables as $table)
+                                @foreach ($tables as $table)
                                     <option value="{{ $table }}" {{ request('table_name') == $table ? 'selected' : '' }}>
                                         {{ ucfirst(str_replace('_', ' ', $table)) }}
                                     </option>
@@ -130,7 +165,7 @@
                         <div class="col-lg-2">
                             <select name="user_id" class="form-select custom-input">
                                 <option value="">All Users</option>
-                                @foreach($users as $user)
+                                @foreach ($users as $user)
                                     <option value="{{ $user->id }}" {{ request('user_id') == $user->id ? 'selected' : '' }}>
                                         {{ $user->name }}
                                     </option>
@@ -139,150 +174,138 @@
                         </div>
 
                         <div class="col-lg-2">
-                            <input type="date" name="date_from" class="form-control custom-input" placeholder="From Date"
-                                value="{{ request('date_from') }}">
+                            <input type="date" name="date_from" class="form-control custom-input"
+                                placeholder="From Date" value="{{ request('date_from') }}">
                         </div>
 
-                        <div class="col-lg-2">
-                            <input type="date" name="date_to" class="form-control custom-input" placeholder="To Date"
-                                value="{{ request('date_to') }}">
+                        <div class="col-lg-1">
+                            <input type="date" name="date_to" class="form-control custom-input"
+                                placeholder="To Date" value="{{ request('date_to') }}">
                         </div>
 
                         <div class="col-lg-12">
-                            <div class="filter-actions">
-                                <button type="submit" class="btn btn-primary">
-                                    <i class="bi bi-search me-1"></i> Apply Filters
+                            <div class="d-flex gap-2 flex-wrap">
+                                <button type="submit" class="nx-btn nx-btn-primary">
+                                    <i class="bi bi-funnel"></i> Apply Filters
                                 </button>
-                                <a href="{{ route('admin.activity-logs.index') }}" class="btn btn-light border">
-                                    <i class="bi bi-arrow-repeat me-1"></i> Reset
+                                <a href="{{ route('admin.activity-logs.index') }}" class="nx-btn nx-btn-light">
+                                    <i class="bi bi-arrow-repeat"></i> Reset
                                 </a>
-                                <a href="{{ route('admin.activity-logs.export', request()->query()) }}"
-                                    class="btn btn-success">
-                                    <i class="bi bi-download me-1"></i> Export CSV
-                                </a>
-                                <button type="button" class="btn btn-danger" data-bs-toggle="modal"
-                                    data-bs-target="#clearLogsModal">
-                                    <i class="bi bi-trash me-1"></i> Clear Old
-                                </button>
                             </div>
                         </div>
                     </div>
                 </form>
             </div>
 
-            <div class="logs-card-body">
-                <div class="table-responsive">
-                    <table class="logs-table">
-                        <thead>
+            {{-- TABLE --}}
+            <div class="table-responsive">
+                <table class="table premium-table mb-0">
+                    <thead>
+                        <tr>
+                            <th style="width: 160px;">Date &amp; Time</th>
+                            <th style="width: 180px;">User</th>
+                            <th style="width: 130px;">Action</th>
+                            <th>Table</th>
+                            <th style="width: 90px;">Record ID</th>
+                            <th style="width: 100px;" class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        @forelse ($logs as $log)
                             <tr>
-                                <th style="width: 160px;">Date & Time</th>
-                                <th style="width: 180px;">User</th>
-                                <th style="width: 110px;">Action</th>
-                                <th>Table</th>
-                                <th style="width: 80px;">Record ID</th>
-                                <th style="width: 100px;">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            @forelse($logs as $log)
-                                <tr>
-                                    <td>
-                                        <div class="date-time-cell">
-                                            <div class="date">
-                                                <i class="bi bi-calendar3"></i>
-                                                <span>{{ $log->created_at?->format('Y-m-d') }}</span>
-                                            </div>
-                                            <div class="time">
-                                                <i class="bi bi-clock"></i>
-                                                <span>{{ $log->created_at?->format('h:i A') }}</span>
-                                            </div>
+                                <td>
+                                    <div class="cell-title">
+                                        <i class="bi bi-calendar3 me-1 text-muted"></i>
+                                        {{ $log->created_at?->format('Y-m-d') }}
+                                    </div>
+                                    <small class="cell-sub">
+                                        <i class="bi bi-clock"></i>
+                                        {{ $log->created_at?->format('h:i A') }}
+                                    </small>
+                                </td>
+
+                                <td>
+                                    <div class="d-flex align-items-center gap-2">
+                                        <div class="log-avatar">
+                                            {{ strtoupper(substr($log->user?->name ?? 'S', 0, 1)) }}
                                         </div>
-                                    </td>
-
-                                    <td>
-                                        <div class="user-info">
-                                            <div class="user-avatar">
-                                                {{ strtoupper(substr($log->user?->name ?? 'S', 0, 1)) }}
-                                            </div>
-                                            <div>
-                                                <div class="user-name">
-                                                    {{ $log->user?->name ?? 'System' }}
-                                                </div>
-                                                <small class="text-muted">
-                                                    ID: {{ $log->user_id ?? '-' }}
-                                                </small>
-                                            </div>
+                                        <div>
+                                            <div class="cell-title">{{ $log->user?->name ?? 'System' }}</div>
+                                            <small class="cell-sub">ID: {{ $log->user_id ?? '-' }}</small>
                                         </div>
-                                    </td>
+                                    </div>
+                                </td>
 
-                                    <td>
-                                        @php
-                                            $actionColors = [
-                                                'created' => ['class' => 'action-created', 'icon' => 'bi-plus-circle', 'label' => 'CREATED'],
-                                                'updated' => ['class' => 'action-updated', 'icon' => 'bi-pencil-square', 'label' => 'UPDATED'],
-                                                'deleted' => ['class' => 'action-deleted', 'icon' => 'bi-trash', 'label' => 'DELETED'],
-                                                'force_deleted' => ['class' => 'action-force-deleted', 'icon' => 'bi-trash3', 'label' => 'FORCE DELETED'],
-                                            ];
-                                            $action = strtolower($log->action);
-                                            $actionStyle = $actionColors[$action] ?? ['class' => 'action-default', 'icon' => 'bi-record-circle', 'label' => strtoupper($action)];
-                                        @endphp
-                                        <span class="action-badge {{ $actionStyle['class'] }}">
-                                            <i class="bi {{ $actionStyle['icon'] }} me-1"></i>
-                                            {{ $actionStyle['label'] }}
-                                        </span>
-                                    </td>
+                                <td>
+                                    @php
+                                        $actionColors = [
+                                            'created'       => ['class' => 'nx-badge-green',  'icon' => 'bi-plus-circle-fill', 'label' => 'CREATED'],
+                                            'updated'       => ['class' => 'nx-badge-blue',   'icon' => 'bi-pencil-square',    'label' => 'UPDATED'],
+                                            'deleted'       => ['class' => 'nx-badge-red',    'icon' => 'bi-trash-fill',       'label' => 'DELETED'],
+                                            'force_deleted' => ['class' => 'nx-badge-amber',  'icon' => 'bi-trash3-fill',      'label' => 'FORCE DELETED'],
+                                        ];
+                                        $action = strtolower($log->action);
+                                        $actionStyle = $actionColors[$action] ?? ['class' => 'nx-badge-gray', 'icon' => 'bi-record-circle', 'label' => strtoupper($action)];
+                                    @endphp
+                                    <span class="nx-badge {{ $actionStyle['class'] }}">
+                                        <i class="bi {{ $actionStyle['icon'] }}"></i>
+                                        {{ $actionStyle['label'] }}
+                                    </span>
+                                </td>
 
-                                    <td>
-                                        <div class="table-name">
-                                            <i class="bi bi-table me-1"></i>
-                                            {{ $log->table_name }}
-                                        </div>
-                                    </td>
+                                <td>
+                                    <span class="id-badge">
+                                        <i class="bi bi-table"></i>
+                                        {{ $log->table_name }}
+                                    </span>
+                                </td>
 
-                                    <td>
-                                        <span class="record-id">
-                                            #{{ $log->record_id }}
-                                        </span>
-                                    </td>
+                                <td>
+                                    <span class="id-badge">#{{ $log->record_id }}</span>
+                                </td>
 
-                                    <td>
-                                        <button type="button" class="btn-view" data-bs-toggle="modal"
+                                <td class="text-end">
+                                    <div class="action-buttons">
+                                        <button type="button" class="action-btn" data-bs-toggle="modal"
                                             data-bs-target="#logDetailsModal" data-id="{{ $log->id }}"
                                             data-date="{{ $log->created_at?->format('Y-m-d h:i A') }}"
                                             data-user="{{ $log->user?->name ?? 'System' }}"
                                             data-userid="{{ $log->user_id ?? '-' }}" data-action="{{ $log->action }}"
                                             data-table="{{ $log->table_name }}" data-record="{{ $log->record_id }}"
                                             data-old='@json($log->old_values, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)'
-                                            data-new='@json($log->new_values, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)'>
-                                            <i class="bi bi-eye"></i> View
+                                            data-new='@json($log->new_values, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES)'
+                                            title="View details" aria-label="View details">
+                                            <i class="bi bi-eye-fill"></i>
                                         </button>
-                                    </td>
-                                </tr>
-                            @empty
-                                <tr>
-                                    <td colspan="6" class="text-center py-5">
-                                        <div class="empty-state">
-                                            <i class="bi bi-inbox"></i>
-                                            <h5>No Activity Logs Found</h5>
-                                            <p>Try adjusting your search filters</p>
-                                        </div>
-                                    </td>
-                                </tr>
-                            @endforelse
-                        </tbody>
-                        </tr>
-                </div>
-
-                @if($logs->hasPages())
-                    <div class="logs-pagination">
-                        {{ $logs->links() }}
-                    </div>
-                @endif
+                                    </div>
+                                </td>
+                            </tr>
+                        @empty
+                            <tr>
+                                <td colspan="6" class="empty-table">
+                                    <i class="bi bi-inbox fs-2 d-block mb-2"></i>
+                                    <strong class="d-block">No Activity Logs Found</strong>
+                                    <span class="cell-sub">Try adjusting your search filters</span>
+                                </td>
+                            </tr>
+                        @endforelse
+                    </tbody>
+                </table>
             </div>
+
+            @if ($logs->hasPages())
+                <div class="p-3 border-top">
+                    {{ $logs->links() }}
+                </div>
+            @endif
         </div>
+
     </div>
 
-    {{-- Clear Logs Modal --}}
+    {{-- ===================================================== --}}
+    {{-- CLEAR LOGS MODAL --}}
+    {{-- ===================================================== --}}
     <div class="modal fade" id="clearLogsModal" tabindex="-1" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered">
             <div class="modal-content">
@@ -293,6 +316,7 @@
                     </h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
+
                 <form action="{{ route('admin.activity-logs.clear') }}" method="POST">
                     @csrf
                     <div class="modal-body">
@@ -304,9 +328,9 @@
                             <option value="180">180 days</option>
                             <option value="365">1 year</option>
                         </select>
-                        <div class="alert alert-warning mt-3 mb-0">
-                            <i class="bi bi-info-circle me-1"></i>
-                            This action cannot be undone.
+                        <div class="alert alert-warning mt-3 mb-0 d-flex align-items-center gap-2">
+                            <i class="bi bi-info-circle-fill"></i>
+                            <span>This action cannot be undone.</span>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -318,7 +342,9 @@
         </div>
     </div>
 
-    {{-- Modal for Log Details - Terminal/Code Viewer Style --}}
+    {{-- ===================================================== --}}
+    {{-- LOG DETAILS MODAL — Terminal/Code Viewer --}}
+    {{-- ===================================================== --}}
     <div class="modal fade" id="logDetailsModal" tabindex="-1" aria-labelledby="logDetailsModalLabel" aria-hidden="true">
         <div class="modal-dialog modal-xl modal-dialog-scrollable">
             <div class="modal-content">
@@ -334,29 +360,33 @@
                 </div>
 
                 <div class="modal-body">
+
+                    {{-- INFO CARDS --}}
                     <div class="row g-3 mb-4">
                         <div class="col-md-6">
-                            <div class="info-card">
-                                <div class="info-icon">
-                                    <i class="bi bi-person"></i>
+                            <div class="log-info-card">
+                                <div class="log-info-icon">
+                                    <i class="bi bi-person-fill"></i>
                                 </div>
-                                <div class="info-content">
-                                    <span class="info-label">User</span>
-                                    <span class="info-value" id="modalUser"></span>
-                                    <span class="info-sub">User ID: <span id="modalUserId"></span></span>
+                                <div class="log-info-content">
+                                    <span class="log-info-label">User</span>
+                                    <span class="log-info-value" id="modalUser"></span>
+                                    <span class="log-info-sub">
+                                        User ID: <span id="modalUserId"></span>
+                                    </span>
                                 </div>
                             </div>
                         </div>
 
                         <div class="col-md-6">
-                            <div class="info-card">
-                                <div class="info-icon action-info-icon">
-                                    <i class="bi bi-lightning-charge"></i>
+                            <div class="log-info-card">
+                                <div class="log-info-icon log-info-icon-warning">
+                                    <i class="bi bi-lightning-charge-fill"></i>
                                 </div>
-                                <div class="info-content">
-                                    <span class="info-label">Action Details</span>
-                                    <span class="info-value" id="modalAction"></span>
-                                    <span class="info-sub">
+                                <div class="log-info-content">
+                                    <span class="log-info-label">Action Details</span>
+                                    <span class="log-info-value" id="modalAction"></span>
+                                    <span class="log-info-sub">
                                         Table: <span id="modalTable"></span> |
                                         Record ID: <span id="modalRecord"></span>
                                     </span>
@@ -365,19 +395,19 @@
                         </div>
                     </div>
 
+                    {{-- CODE VIEWERS --}}
                     <div class="row g-3">
                         <div class="col-md-6">
                             <div class="code-card">
                                 <div class="code-card-header">
                                     <div class="code-header-left">
-                                        <i class="bi bi-archive"></i>
+                                        <i class="bi bi-archive-fill"></i>
                                         <span>Old Values</span>
                                         <span class="json-badge">JSON</span>
                                     </div>
                                     <div class="code-header-right">
                                         <button class="copy-btn" data-target="modalOldValues">
-                                            <i class="bi bi-clipboard"></i>
-                                            Copy
+                                            <i class="bi bi-clipboard"></i> Copy
                                         </button>
                                         <span class="line-count"></span>
                                     </div>
@@ -392,14 +422,13 @@
                             <div class="code-card">
                                 <div class="code-card-header">
                                     <div class="code-header-left">
-                                        <i class="bi bi-file-text"></i>
+                                        <i class="bi bi-file-text-fill"></i>
                                         <span>New Values</span>
                                         <span class="json-badge json-badge-new">JSON</span>
                                     </div>
                                     <div class="code-header-right">
                                         <button class="copy-btn" data-target="modalNewValues">
-                                            <i class="bi bi-clipboard"></i>
-                                            Copy
+                                            <i class="bi bi-clipboard"></i> Copy
                                         </button>
                                         <span class="line-count"></span>
                                     </div>
@@ -410,11 +439,12 @@
                             </div>
                         </div>
                     </div>
+
                 </div>
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                        <i class="bi bi-x-circle me-1"></i> Close
+                        <i class="bi bi-x-lg me-1"></i> Close
                     </button>
                 </div>
             </div>
@@ -423,875 +453,478 @@
 
 @endsection
 
+
 @push('styles')
-    <style>
-        .activity-logs-page {
-            animation: fadeInUp 0.5s ease;
-        }
+<style>
+    /* ============================================================
+       Activity Logs — page-specific styles.
+       Shared nx-* theme comes from layouts/partials/nexora-theme.
+       ============================================================ */
 
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(20px);
-            }
+    /* Log row avatar */
+    .dashboard-page .log-avatar {
+        width: 34px;
+        height: 34px;
+        border-radius: 8px;
+        background: var(--nx-violet-soft);
+        color: var(--nx-violet);
+        display: grid;
+        place-items: center;
+        font-weight: 700;
+        font-size: .82rem;
+        flex-shrink: 0;
+    }
 
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+    /* ============================================================
+       ✅ MODAL STYLES — scoped to IDs
+       (Bootstrap teleports .modal to <body>, outside .dashboard-page,
+        so we can't use .dashboard-page scope here.)
+       ============================================================ */
 
-        /* Stats Cards */
-        .stats-card {
-            background: #ffffff;
-            border-radius: 24px;
-            padding: 1.5rem;
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
-            border: 1px solid #eef2f7;
-            transition: all 0.3s ease;
-        }
+    /* ---------- Modal container ---------- */
+    #clearLogsModal .modal-content,
+    #logDetailsModal .modal-content {
+        border: 0;
+        border-radius: 12px;
+        box-shadow: 0 10px 40px rgba(15, 23, 42, .15);
+        overflow: hidden;
+    }
 
-        .stats-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 20px 35px rgba(0, 0, 0, 0.08);
-        }
+    #clearLogsModal .modal-header,
+    #logDetailsModal .modal-header {
+        border-bottom: 1px solid #d1d8e3;
+        padding: 1rem 1.25rem;
+        background: #fafbfd;
+    }
 
-        .stats-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            font-size: 1.8rem;
-        }
+    #clearLogsModal .modal-title,
+    #logDetailsModal .modal-title {
+        font-weight: 700;
+        font-size: .95rem;
+        color: #0f172a;
+    }
 
-        .stats-icon.blue {
-            background: linear-gradient(135deg, #2563eb, #3b82f6);
-        }
+    #clearLogsModal .modal-body,
+    #logDetailsModal .modal-body {
+        padding: 1.25rem;
+        background: #f4f6fa;
+    }
 
-        .stats-icon.green {
-            background: linear-gradient(135deg, #10b981, #34d399);
-        }
+    #clearLogsModal .modal-footer,
+    #logDetailsModal .modal-footer {
+        border-top: 1px solid #d1d8e3;
+        padding: .85rem 1.25rem;
+        background: #fafbfd;
+    }
 
-        .stats-icon.primary {
-            background: linear-gradient(135deg, #8b5cf6, #a78bfa);
-        }
+    /* ---------- Modal XL width ---------- */
+    #logDetailsModal .modal-dialog {
+        max-width: 1140px;
+    }
 
-        .stats-icon.red {
-            background: linear-gradient(135deg, #ef4444, #f87171);
-        }
+    /* Prevent grid columns from blowing out */
+    #logDetailsModal .modal-body .row > [class*="col-"] {
+        min-width: 0;
+    }
 
-        .stats-card h3 {
-            margin: 0;
-            font-size: 1.8rem;
-            font-weight: 700;
-            color: #1e293b;
-        }
+    /* ---------- Info cards ---------- */
+    #logDetailsModal .log-info-card {
+        background: #fff;
+        border: 1px solid #d1d8e3;
+        border-radius: 10px;
+        padding: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        height: 100%;
+    }
 
-        .stats-card p {
-            margin: 0;
-            color: #64748b;
-            font-weight: 500;
-        }
+    #logDetailsModal .log-info-icon {
+        width: 46px;
+        height: 46px;
+        border-radius: 10px;
+        background: #dbe6ff;
+        color: #1d4ed8;
+        display: grid;
+        place-items: center;
+        font-size: 1.2rem;
+        flex-shrink: 0;
+    }
 
-        /* Logs Card */
-        .logs-card {
-            background: #ffffff;
-            border-radius: 28px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-            overflow: hidden;
-        }
+    #logDetailsModal .log-info-icon-warning {
+        background: #fef3c7;
+        color: #b45309;
+    }
 
-        .logs-card-header {
-            padding: 1.5rem 2rem;
-            background: linear-gradient(135deg, #f8fafc, #ffffff);
-            border-bottom: 2px solid #e2e8f0;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 1rem;
-        }
+    #logDetailsModal .log-info-content {
+        flex: 1;
+        min-width: 0;
+        display: flex;
+        flex-direction: column;
+    }
 
-        .logs-card-header h4 {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: #1e293b;
-            margin: 0;
-        }
+    #logDetailsModal .log-info-label {
+        font-size: .7rem;
+        text-transform: uppercase;
+        letter-spacing: .5px;
+        color: #475569;
+        font-weight: 700;
+    }
 
-        .logs-card-header p {
-            margin: 0;
-            color: #64748b;
-            font-size: 0.8rem;
-            margin-top: 4px;
-        }
+    #logDetailsModal .log-info-value {
+        font-size: .95rem;
+        font-weight: 700;
+        color: #0f172a;
+        margin-top: .1rem;
+        word-break: break-word;
+    }
 
-        .header-actions {
-            display: flex;
-            gap: 0.8rem;
-        }
+    #logDetailsModal .log-info-sub {
+        font-size: .72rem;
+        color: #475569;
+        margin-top: 2px;
+        word-break: break-word;
+    }
 
-        .btn-refresh {
-            background: #f1f5f9;
-            color: #475569;
-            border: none;
-            padding: 0.6rem 1.2rem;
-            border-radius: 12px;
-            font-weight: 600;
-            transition: all 0.2s ease;
-            display: inline-flex;
-            align-items: center;
-        }
+    /* ---------- Code card / terminal ---------- */
+    #logDetailsModal .code-card {
+        background: #1e1e2e;
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 4px 12px rgba(15, 23, 42, .15);
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        max-height: 520px;
+    }
 
-        .btn-refresh:hover {
-            background: #e2e8f0;
-            transform: translateY(-2px);
-        }
+    #logDetailsModal .code-card-header {
+        background: #181825;
+        padding: .7rem 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 1px solid #313244;
+        gap: .5rem;
+        flex-wrap: wrap;
+        flex-shrink: 0;
+    }
 
-        /* Filter Section */
-        .filter-section {
-            padding: 1.5rem 2rem;
-            background: #f8fafc;
-            border-bottom: 1px solid #e2e8f0;
-        }
+    #logDetailsModal .code-header-left {
+        display: flex;
+        align-items: center;
+        gap: .5rem;
+        font-size: .78rem;
+        font-weight: 600;
+        color: #cdd6f4;
+    }
 
-        .search-input-wrapper {
-            position: relative;
-        }
+    #logDetailsModal .code-header-left i {
+        color: #89b4fa;
+        font-size: .95rem;
+    }
 
-        .search-input-wrapper i {
-            position: absolute;
-            top: 50%;
-            left: 15px;
-            transform: translateY(-50%);
-            color: #64748b;
-            font-size: 1rem;
-        }
+    #logDetailsModal .json-badge {
+        background: #89b41e;
+        color: #1e1e2e;
+        padding: .15rem .45rem;
+        border-radius: 4px;
+        font-size: .6rem;
+        font-weight: 700;
+        letter-spacing: .5px;
+    }
 
-        .custom-input {
-            border-radius: 12px !important;
-            border: 1px solid #e2e8f0;
-            min-height: 44px;
-            padding-left: 42px;
-            transition: all 0.2s ease;
-        }
+    #logDetailsModal .json-badge-new {
+        background: #f9e2af;
+        color: #1e1e2e;
+    }
 
-        .custom-input:focus {
-            border-color: #4f46e5;
-            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
-        }
+    #logDetailsModal .code-header-right {
+        display: flex;
+        align-items: center;
+        gap: .5rem;
+    }
 
-        select.custom-input {
-            padding-left: 42px;
-            cursor: pointer;
-        }
+    #logDetailsModal .copy-btn {
+        background: #313244;
+        color: #cdd6f4;
+        border: none;
+        padding: .25rem .6rem;
+        border-radius: 6px;
+        font-size: .68rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: .3rem;
+        cursor: pointer;
+        transition: all .2s ease;
+    }
 
-        .filter-actions {
-            display: flex;
-            gap: 0.8rem;
-            flex-wrap: wrap;
-        }
+    #logDetailsModal .copy-btn:hover {
+        background: #45475a;
+        transform: translateY(-1px);
+    }
 
-        .filter-actions .btn {
-            padding: 0.5rem 1.2rem;
-            border-radius: 10px;
-            font-weight: 600;
-        }
+    #logDetailsModal .copy-btn.copied {
+        background: #89b41e;
+        color: #1e1e2e;
+    }
 
-        /* Table Styles */
-        .logs-card-body {
-            padding: 0;
-        }
+    #logDetailsModal .line-count {
+        font-size: .62rem;
+        color: #6c7086;
+        font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    }
 
-        .logs-table {
+    /* ✅ Code container — fixed max-height + proper wrapping */
+    #logDetailsModal .code-container {
+        position: relative;
+        flex: 1;
+        min-height: 0;
+        max-height: 420px;
+        overflow: auto;
+        background: #1e1e2e;
+    }
+
+    #logDetailsModal .code-content {
+        margin: 0;
+        padding: 1rem;
+        font-family: 'Fira Code', 'Monaco', 'Menlo', 'Cascadia Code', 'Consolas', ui-monospace, monospace;
+        font-size: .72rem;
+        line-height: 1.55;
+        color: #cdd6f4;
+        background: #1e1e2e;
+
+        /* ✅ Critical: force wrapping */
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        word-break: break-word;
+        overflow-wrap: anywhere;
+        max-width: 100%;
+    }
+
+    /* ✅ Child spans inherit wrapping */
+    #logDetailsModal .code-content span {
+        white-space: pre-wrap;
+        word-break: break-word;
+        overflow-wrap: anywhere;
+    }
+
+    /* JSON syntax colors */
+    #logDetailsModal .code-content .json-key     { color: #89b4fa; }
+    #logDetailsModal .code-content .json-string  { color: #a6e3a1; }
+    #logDetailsModal .code-content .json-number  { color: #fab387; }
+    #logDetailsModal .code-content .json-boolean { color: #cba6f7; }
+    #logDetailsModal .code-content .json-null    { color: #f38ba8; }
+
+    /* Scrollbar inside code viewer */
+    #logDetailsModal .code-container::-webkit-scrollbar { width: 8px; height: 8px; }
+    #logDetailsModal .code-container::-webkit-scrollbar-track { background: #181825; }
+    #logDetailsModal .code-container::-webkit-scrollbar-thumb {
+        background: #45475a;
+        border-radius: 4px;
+    }
+    #logDetailsModal .code-container::-webkit-scrollbar-thumb:hover { background: #6c7086; }
+
+    /* ============================================================
+       RESPONSIVE
+       ============================================================ */
+    @media (max-width: 768px) {
+        .dashboard-page .premium-table { min-width: 900px; }
+
+        .dashboard-page .header-buttons {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
             width: 100%;
-            border-collapse: collapse;
         }
 
-        .logs-table thead th {
-            background: #f8fafc;
-            padding: 1rem 1.2rem;
-            font-size: 0.7rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: #475569;
-            border-bottom: 2px solid #e2e8f0;
+        #logDetailsModal .modal-dialog {
+            max-width: calc(100% - 1rem);
+            margin: .5rem auto;
         }
-
-        .logs-table tbody tr {
-            border-bottom: 1px solid #f1f5f9;
-            transition: all 0.2s ease;
-        }
-
-        .logs-table tbody tr:hover {
-            background: #f8fafc;
-        }
-
-        .logs-table tbody td {
-            padding: 1rem 1.2rem;
-            font-size: 0.85rem;
-            color: #334155;
-            vertical-align: middle;
-        }
-
-        /* Date Time Cell */
-        .date-time-cell {
-            display: flex;
-            flex-direction: column;
-            gap: 0.25rem;
-        }
-
-        .date,
-        .time {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.8rem;
-        }
-
-        .date i,
-        .time i {
-            color: #64748b;
-            font-size: 0.8rem;
-        }
-
-        /* User Info */
-        .user-info {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-        }
-
-        .user-avatar {
-            width: 42px;
-            height: 42px;
-            border-radius: 12px;
-            background: linear-gradient(135deg, #4f46e5, #7c3aed);
-            color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 700;
-            font-size: 1rem;
-            box-shadow: 0 8px 18px rgba(79, 70, 229, 0.2);
-        }
-
-        .user-name {
-            font-weight: 700;
-            color: #1e293b;
-            margin-bottom: 0.2rem;
-        }
-
-        /* Action Badges */
-        .action-badge {
-            display: inline-flex;
-            align-items: center;
-            padding: 0.4rem 0.8rem;
-            border-radius: 10px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            gap: 0.3rem;
-        }
-
-        .action-created {
-            background: #d1fae5;
-            color: #059669;
-        }
-
-        .action-updated {
-            background: #e0e7ff;
-            color: #4338ca;
-        }
-
-        .action-deleted {
-            background: #fee2e2;
-            color: #dc2626;
-        }
-
-        .action-force-deleted {
-            background: #fef3c7;
-            color: #d97706;
-        }
-
-        .action-default {
-            background: #f3f4f6;
-            color: #4b5563;
-        }
-
-        /* Table Name */
-        .table-name {
-            font-family: monospace;
-            font-size: 0.8rem;
-            background: #f1f5f9;
-            padding: 0.3rem 0.6rem;
-            border-radius: 8px;
-            display: inline-block;
-        }
-
-        /* Record ID */
-        .record-id {
-            font-family: monospace;
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: #4f46e5;
-            background: #eff6ff;
-            padding: 0.3rem 0.6rem;
-            border-radius: 8px;
-            display: inline-block;
-        }
-
-        /* View Button */
-        .btn-view {
-            background: linear-gradient(135deg, #4f46e5, #7c3aed);
-            color: white;
-            border: none;
-            padding: 0.4rem 1rem;
-            border-radius: 10px;
-            font-size: 0.75rem;
-            font-weight: 600;
-            transition: all 0.2s ease;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.3rem;
-        }
-
-        .btn-view:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.4);
-            color: white;
-        }
-
-        /* Empty State */
-        .empty-state {
-            text-align: center;
-            padding: 3rem;
-        }
-
-        .empty-state i {
-            font-size: 4rem;
-            color: #cbd5e1;
-            margin-bottom: 1rem;
-        }
-
-        .empty-state h5 {
-            font-weight: 700;
-            color: #64748b;
-            margin-bottom: 0.5rem;
-        }
-
-        .empty-state p {
-            color: #94a3b8;
-        }
-
-        /* Pagination */
-        .logs-pagination {
-            padding: 1rem 1.5rem;
-            border-top: 1px solid #e2e8f0;
-            background: #f8fafc;
-        }
-
-        .logs-pagination .pagination {
-            justify-content: center;
-            margin: 0;
-        }
-
-        .logs-pagination .page-link {
-            border-radius: 10px;
-            margin: 0 2px;
-            border: 1px solid #e2e8f0;
-            color: #475569;
-            transition: all 0.2s ease;
-        }
-
-        .logs-pagination .page-link:hover {
-            background: #eff6ff;
-            border-color: #4f46e5;
-            color: #1e40af;
-            transform: translateY(-2px);
-        }
-
-        .logs-pagination .active .page-link {
-            background: linear-gradient(135deg, #4f46e5, #7c3aed);
-            border-color: #4f46e5;
-            color: white;
-        }
-
-        /* Info Cards */
-        .info-card {
-            background: #f8fafc;
-            border-radius: 16px;
-            padding: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .info-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 14px;
-            background: linear-gradient(135deg, #4f46e5, #7c3aed);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.3rem;
-        }
-
-        .action-info-icon {
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-        }
-
-        .info-content {
-            flex: 1;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .info-label {
-            font-size: 0.7rem;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            color: #64748b;
-        }
-
-        .info-value {
-            font-size: 1rem;
-            font-weight: 700;
-            color: #1e293b;
-        }
-
-        .info-sub {
-            font-size: 0.7rem;
-            color: #94a3b8;
-            margin-top: 4px;
-        }
-
-        /* Code Card Styles - Terminal/Code Viewer */
-        .code-card {
-            background: #1e1e2e;
-            border-radius: 12px;
-            overflow: hidden;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-            transition: all 0.2s ease;
-        }
-
-        .code-card:hover {
-            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
-        }
-
-        .code-card-header {
-            background: #181825;
-            padding: 0.75rem 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid #313244;
-        }
-
-        .code-header-left {
-            display: flex;
-            align-items: center;
-            gap: 0.6rem;
-            font-size: 0.8rem;
-            font-weight: 600;
-            color: #cdd6f4;
-        }
-
-        .code-header-left i {
-            color: #89b4fa;
-            font-size: 1rem;
-        }
-
-        .json-badge {
-            background: #89b41e;
-            color: #1e1e2e;
-            padding: 0.2rem 0.5rem;
-            border-radius: 6px;
-            font-size: 0.6rem;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-        }
-
-        .json-badge-new {
-            background: #f9e2af;
-            color: #1e1e2e;
-        }
-
-        .code-header-right {
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-        }
-
-        .copy-btn {
-            background: #313244;
-            color: #cdd6f4;
-            border: none;
-            padding: 0.25rem 0.6rem;
-            border-radius: 6px;
-            font-size: 0.65rem;
-            font-weight: 600;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.3rem;
-            transition: all 0.2s ease;
-            cursor: pointer;
-        }
-
-        .copy-btn:hover {
-            background: #45475a;
-            transform: translateY(-1px);
-        }
-
-        .copy-btn.copied {
-            background: #89b41e;
-            color: #1e1e2e;
-        }
-
-        .line-count {
-            font-size: 0.6rem;
-            color: #6c7086;
-            font-family: monospace;
-        }
-
-        .code-container {
-            position: relative;
-            max-height: 400px;
-            overflow: auto;
-        }
-
-        .code-content {
-            margin: 0;
-            padding: 1rem;
-            font-family: 'Fira Code', 'Monaco', 'Menlo', 'Cascadia Code', 'Consolas', monospace;
-            font-size: 0.7rem;
-            line-height: 1.5;
-            color: #cdd6f4;
-            background: #1e1e2e;
-            white-space: pre-wrap;
-            word-break: break-word;
-            tab-size: 2;
-        }
-
-        /* Syntax highlighting for JSON */
-        .code-content .json-key {
-            color: #89b4fa;
-        }
-
-        .code-content .json-string {
-            color: #a6e3a1;
-        }
-
-        .code-content .json-number {
-            color: #fab387;
-        }
-
-        .code-content .json-boolean {
-            color: #cba6f7;
-        }
-
-        .code-content .json-null {
-            color: #f38ba8;
-        }
-
-        /* Custom Scrollbar for Code Container */
-        .code-container::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-
-        .code-container::-webkit-scrollbar-track {
-            background: #181825;
-        }
-
-        .code-container::-webkit-scrollbar-thumb {
-            background: #45475a;
-            border-radius: 4px;
-        }
-
-        .code-container::-webkit-scrollbar-thumb:hover {
-            background: #6c7086;
-        }
-
-        /* Modal Styles */
-        .modal-content {
-            border-radius: 24px;
-            border: none;
-            overflow: hidden;
-        }
-
-        .modal-header {
-            background: linear-gradient(135deg, #f8fafc, #ffffff);
-            border-bottom: 2px solid #e2e8f0;
-            padding: 1.2rem 1.5rem;
-        }
-
-        .modal-header .modal-title {
-            font-weight: 700;
-            color: #1e293b;
-        }
-
-        .modal-body {
-            padding: 1.5rem;
-            background: #f8fafc;
-        }
-
-        .modal-footer {
-            border-top: 1px solid #e2e8f0;
-            padding: 1rem 1.5rem;
-            background: #f8fafc;
-        }
-
-        /* Alerts */
-        .alert {
-            border: none;
-            border-radius: 16px;
-            padding: 1rem 1.25rem;
-            margin-bottom: 1.5rem;
-        }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .logs-card-header {
-                padding: 1rem;
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .filter-section {
-                padding: 1rem;
-            }
-
-            .stats-card {
-                padding: 1rem;
-            }
-
-            .stats-icon {
-                width: 45px;
-                height: 45px;
-                font-size: 1.2rem;
-            }
-
-            .stats-card h3 {
-                font-size: 1.3rem;
-            }
-
-            .logs-table {
-                font-size: 0.75rem;
-            }
-
-            .logs-table tbody td {
-                padding: 0.75rem;
-            }
-
-            .user-avatar {
-                width: 35px;
-                height: 35px;
-                font-size: 0.8rem;
-            }
-
-            .btn-view {
-                padding: 0.3rem 0.8rem;
-                font-size: 0.7rem;
-            }
-
-            .filter-actions {
-                flex-direction: column;
-            }
-
-            .filter-actions .btn {
-                width: 100%;
-                justify-content: center;
-            }
-        }
-    </style>
+        #logDetailsModal .code-card { max-height: 380px; }
+        #logDetailsModal .code-container { max-height: 280px; }
+        #logDetailsModal .log-info-card { flex-direction: row; }
+    }
+</style>
 @endpush
 
+
 @push('scripts')
-    <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const modal = document.getElementById('logDetailsModal');
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const modal = document.getElementById('logDetailsModal');
+        if (!modal) return;
 
-            // Syntax highlighting for JSON
-            function syntaxHighlight(json) {
-                if (json === 'No old values available' || json === 'No new values available' || json === '-') {
-                    return json;
-                }
+        /* -----------------------------------------------------------
+         | JSON syntax highlighter
+         * --------------------------------------------------------- */
+        function syntaxHighlight(json) {
+            if (json === 'No old values available' || json === 'No new values available' || json === '-') {
+                return json;
+            }
 
-                try {
-                    let obj = typeof json === 'string' ? JSON.parse(json) : json;
-                    let jsonStr = JSON.stringify(obj, null, 2);
+            try {
+                const obj = typeof json === 'string' ? JSON.parse(json) : json;
+                let jsonStr = JSON.stringify(obj, null, 2);
 
-                    jsonStr = jsonStr.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+                jsonStr = jsonStr
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;');
 
-                    return jsonStr.replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, function (match) {
+                return jsonStr.replace(
+                    /("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g,
+                    function (match) {
                         let cls = 'json-number';
+
                         if (/^"/.test(match)) {
                             if (/:$/.test(match)) {
                                 cls = 'json-key';
                                 match = match.replace(/:/g, '');
                                 return '<span class="' + cls + '">' + match + '</span>:';
-                            } else {
-                                cls = 'json-string';
                             }
+                            cls = 'json-string';
                         } else if (/true|false/.test(match)) {
                             cls = 'json-boolean';
                         } else if (/null/.test(match)) {
                             cls = 'json-null';
                         }
+
                         return '<span class="' + cls + '">' + match + '</span>';
-                    });
-                } catch (e) {
-                    return json;
+                    }
+                );
+            } catch (e) {
+                return json;
+            }
+        }
+
+        /* -----------------------------------------------------------
+         | Copy to clipboard
+         * --------------------------------------------------------- */
+        function copyToClipboard(text, button) {
+            navigator.clipboard.writeText(text).then(function () {
+                const originalHtml = button.innerHTML;
+                button.innerHTML = '<i class="bi bi-check-lg"></i> Copied!';
+                button.classList.add('copied');
+
+                setTimeout(function () {
+                    button.innerHTML = originalHtml;
+                    button.classList.remove('copied');
+                }, 2000);
+            }).catch(function () {
+                button.innerHTML = '<i class="bi bi-exclamation-triangle"></i> Failed!';
+                setTimeout(function () {
+                    button.innerHTML = '<i class="bi bi-clipboard"></i> Copy';
+                    button.classList.remove('copied');
+                }, 2000);
+            });
+        }
+
+        /* -----------------------------------------------------------
+         | Line count
+         * --------------------------------------------------------- */
+        function countLines(text) {
+            if (!text || text === '-') return 0;
+            return text.split(/\r\n|\r|\n/).length;
+        }
+
+        function updateLineCount(element, targetId) {
+            const text = element.textContent;
+            const lines = countLines(text);
+            const btn = document.querySelector(`.copy-btn[data-target="${targetId}"]`);
+
+            if (btn) {
+                const header = btn.closest('.code-card-header');
+                const lineCountSpan = header.querySelector('.line-count');
+                if (lineCountSpan) {
+                    lineCountSpan.textContent = lines > 0 ? `${lines} lines` : '';
                 }
             }
+        }
 
-            // Copy to clipboard function
-            function copyToClipboard(text, button) {
-                navigator.clipboard.writeText(text).then(function () {
-                    const originalHtml = button.innerHTML;
-                    button.innerHTML = '<i class="bi bi-check-lg"></i> Copied!';
-                    button.classList.add('copied');
+        /* -----------------------------------------------------------
+         | Modal open — populate details
+         * --------------------------------------------------------- */
+        modal.addEventListener('show.bs.modal', function (event) {
+            const button = event.relatedTarget;
 
-                    setTimeout(function () {
-                        button.innerHTML = originalHtml;
-                        button.classList.remove('copied');
-                    }, 2000);
-                }).catch(function () {
-                    button.innerHTML = '<i class="bi bi-exclamation-triangle"></i> Failed!';
-                    setTimeout(function () {
-                        button.innerHTML = '<i class="bi bi-clipboard"></i> Copy';
-                        button.classList.remove('copied');
-                    }, 2000);
-                });
+            const date   = button.getAttribute('data-date') || '-';
+            const user   = button.getAttribute('data-user') || '-';
+            const userId = button.getAttribute('data-userid') || '-';
+            let action   = button.getAttribute('data-action') || '-';
+            const table  = button.getAttribute('data-table') || '-';
+            const record = button.getAttribute('data-record') || '-';
+
+            let oldValues = button.getAttribute('data-old') || '{}';
+            let newValues = button.getAttribute('data-new') || '{}';
+
+            switch (action.toLowerCase()) {
+                case 'created':       action = 'CREATED';       break;
+                case 'updated':       action = 'UPDATED';       break;
+                case 'deleted':       action = 'DELETED';       break;
+                case 'force_deleted': action = 'FORCE DELETED'; break;
+                default:              action = action.toUpperCase();
             }
 
-            // Count lines function
-            function countLines(text) {
-                if (!text || text === '-') return 0;
-                return text.split(/\r\n|\r|\n/).length;
+            try {
+                const oldParsed = JSON.parse(oldValues);
+                oldValues = (Object.keys(oldParsed).length === 0 || !oldParsed)
+                    ? 'No old values available'
+                    : JSON.stringify(oldParsed, null, 2);
+            } catch (e) {
+                oldValues = oldValues || 'No old values available';
             }
 
-            // Update line count display
-            function updateLineCount(element, targetId) {
-                const text = element.textContent;
-                const lines = countLines(text);
-                const btn = document.querySelector(`.copy-btn[data-target="${targetId}"]`);
-                if (btn) {
-                    const header = btn.closest('.code-card-header');
-                    const lineCountSpan = header.querySelector('.line-count');
-                    if (lineCountSpan) {
-                        lineCountSpan.textContent = lines > 0 ? `${lines} lines` : '';
-                    }
-                }
+            try {
+                const newParsed = JSON.parse(newValues);
+                newValues = (Object.keys(newParsed).length === 0 || !newParsed)
+                    ? 'No new values available'
+                    : JSON.stringify(newParsed, null, 2);
+            } catch (e) {
+                newValues = newValues || 'No new values available';
             }
 
-            if (modal) {
-                modal.addEventListener('show.bs.modal', function (event) {
-                    const button = event.relatedTarget;
+            document.getElementById('modalLogDate').textContent = date;
+            document.getElementById('modalUser').textContent    = user;
+            document.getElementById('modalUserId').textContent  = userId;
+            document.getElementById('modalAction').textContent  = action;
+            document.getElementById('modalTable').textContent   = table;
+            document.getElementById('modalRecord').textContent  = record;
 
-                    const date = button.getAttribute('data-date') || '-';
-                    const user = button.getAttribute('data-user') || '-';
-                    const userId = button.getAttribute('data-userid') || '-';
-                    let action = button.getAttribute('data-action') || '-';
-                    const table = button.getAttribute('data-table') || '-';
-                    const record = button.getAttribute('data-record') || '-';
-
-                    let oldValues = button.getAttribute('data-old') || '{}';
-                    let newValues = button.getAttribute('data-new') || '{}';
-
-                    // Format action display
-                    switch (action.toLowerCase()) {
-                        case 'created':
-                            action = 'CREATED';
-                            break;
-                        case 'updated':
-                            action = 'UPDATED';
-                            break;
-                        case 'deleted':
-                            action = 'DELETED';
-                            break;
-                        case 'force_deleted':
-                            action = 'FORCE DELETED';
-                            break;
-                        default:
-                            action = action.toUpperCase();
-                    }
-
-                    // Parse and format old values
-                    try {
-                        const oldParsed = JSON.parse(oldValues);
-                        if (Object.keys(oldParsed).length === 0 || !oldParsed) {
-                            oldValues = 'No old values available';
-                        } else {
-                            oldValues = JSON.stringify(oldParsed, null, 2);
-                        }
-                    } catch (e) {
-                        oldValues = oldValues || 'No old values available';
-                    }
-
-                    // Parse and format new values
-                    try {
-                        const newParsed = JSON.parse(newValues);
-                        if (Object.keys(newParsed).length === 0 || !newParsed) {
-                            newValues = 'No new values available';
-                        } else {
-                            newValues = JSON.stringify(newParsed, null, 2);
-                        }
-                    } catch (e) {
-                        newValues = newValues || 'No new values available';
-                    }
-
-                    // Set modal header
-                    document.getElementById('modalLogDate').textContent = date;
-                    document.getElementById('modalUser').textContent = user;
-                    document.getElementById('modalUserId').textContent = userId;
-                    document.getElementById('modalAction').textContent = action;
-                    document.getElementById('modalTable').textContent = table;
-                    document.getElementById('modalRecord').textContent = record;
-
-                    // Set and highlight old values
-                    const oldElement = document.getElementById('modalOldValues');
-                    if (oldValues !== 'No old values available') {
-                        oldElement.innerHTML = syntaxHighlight(oldValues);
-                    } else {
-                        oldElement.textContent = oldValues;
-                    }
-                    updateLineCount(oldElement, 'modalOldValues');
-
-                    // Set and highlight new values
-                    const newElement = document.getElementById('modalNewValues');
-                    if (newValues !== 'No new values available') {
-                        newElement.innerHTML = syntaxHighlight(newValues);
-                    } else {
-                        newElement.textContent = newValues;
-                    }
-                    updateLineCount(newElement, 'modalNewValues');
-                });
-
-                // Copy button functionality
-                document.querySelectorAll('.copy-btn').forEach(btn => {
-                    btn.addEventListener('click', function () {
-                        const targetId = this.getAttribute('data-target');
-                        const targetElement = document.getElementById(targetId);
-                        let textToCopy = targetElement.textContent;
-
-                        if (textToCopy === 'No old values available' || textToCopy === 'No new values available') {
-                            textToCopy = '';
-                        }
-
-                        copyToClipboard(textToCopy, this);
-                    });
-                });
+            const oldElement = document.getElementById('modalOldValues');
+            if (oldValues !== 'No old values available') {
+                oldElement.innerHTML = syntaxHighlight(oldValues);
+            } else {
+                oldElement.textContent = oldValues;
             }
+            updateLineCount(oldElement, 'modalOldValues');
+
+            const newElement = document.getElementById('modalNewValues');
+            if (newValues !== 'No new values available') {
+                newElement.innerHTML = syntaxHighlight(newValues);
+            } else {
+                newElement.textContent = newValues;
+            }
+            updateLineCount(newElement, 'modalNewValues');
         });
-    </script>
+
+        /* -----------------------------------------------------------
+         | Copy buttons
+         * --------------------------------------------------------- */
+        document.querySelectorAll('.copy-btn').forEach(btn => {
+            btn.addEventListener('click', function () {
+                const targetId = this.getAttribute('data-target');
+                const targetElement = document.getElementById(targetId);
+                let textToCopy = targetElement.textContent;
+
+                if (textToCopy === 'No old values available' || textToCopy === 'No new values available') {
+                    textToCopy = '';
+                }
+
+                copyToClipboard(textToCopy, this);
+            });
+        });
+    });
+</script>
 @endpush

@@ -34,12 +34,17 @@ class MonthlyCollectionReportController extends Controller
         return view('reports.monthly-collection', [
             'report' => $this->reportService->generate($filter, $month),
             'table' => $this->reportService->table(),
+            'daily' => $this->reportService->dailyBreakdown($filter),
             'filter' => $filter,
             'month' => $month,
             'branches' => $this->branchAccessService->getAccessibleBranches(),
         ]);
     }
 
+    /**
+     * ?table=classes (default) - expected vs collected per class (by fee month)
+     * ?table=daily             - day by day income / expenses (by date paid)
+     */
     public function export(MonthlyCollectionReportRequest $request, string $format)
     {
         abort_unless(in_array($format, ['excel', 'pdf'], true), 404);
@@ -47,23 +52,45 @@ class MonthlyCollectionReportController extends Controller
         try {
             [$filter, $month] = $this->makeFilter($request);
 
-            $report = $this->reportService->generate($filter, $month);
-            $table = $this->reportService->table();
-            $title = 'Monthly Collection Report - ' . $report['month_label'];
-            $fileName = 'monthly-collection-' . $report['month'];
+            $branchName = $filter->branchId ? optional(Branch::query()->find($filter->branchId))->name : 'All branches';
+            $monthLabel = $month->format('F Y');
 
-            $info = [
-                'Fee month: ' . $report['month_label'],
-                'Branch: ' . ($filter->branchId ? optional(Branch::query()->find($filter->branchId))->name : 'All branches'),
-                'Expected: Rs. ' . number_format($report['summary']['expected'], 2),
-                'Collected: Rs. ' . number_format($report['summary']['collected'], 2)
-                    . ' (' . $report['summary']['collection_percentage'] . '%)',
-                'Due: Rs. ' . number_format($report['summary']['due'], 2),
-            ];
+            if (($request->validated()['table'] ?? 'classes') === 'daily') {
+                // Day by day: money received / paid out on each day of the month
+                $daily = $this->reportService->dailyBreakdown($filter);
+                $rows = $daily['rows'];
+                $table = $this->reportService->dailyTable();
+                $title = 'Day-by-day Collection - ' . $monthLabel;
+                $fileName = 'monthly-daily-' . $month->format('Y-m');
+
+                $info = [
+                    'Month: ' . $monthLabel . ' (by date paid)',
+                    'Branch: ' . $branchName,
+                    'Total income: Rs. ' . number_format($daily['totals']['total_income'], 2),
+                    'Total expenses: Rs. ' . number_format($daily['totals']['total_expenses'], 2),
+                    'Net: Rs. ' . number_format($daily['totals']['net'], 2),
+                ];
+            } else {
+                // Expected vs collected per class (by fee month)
+                $report = $this->reportService->generate($filter, $month);
+                $rows = $report['rows'];
+                $table = $this->reportService->table();
+                $title = 'Monthly Collection Report - ' . $monthLabel;
+                $fileName = 'monthly-collection-' . $month->format('Y-m');
+
+                $info = [
+                    'Fee month: ' . $monthLabel,
+                    'Branch: ' . $branchName,
+                    'Expected: Rs. ' . number_format($report['summary']['expected'], 2),
+                    'Collected: Rs. ' . number_format($report['summary']['collected'], 2)
+                        . ' (' . $report['summary']['collection_percentage'] . '%)',
+                    'Due: Rs. ' . number_format($report['summary']['due'], 2),
+                ];
+            }
 
             if ($format === 'excel') {
                 return Excel::download(
-                    new TableReportExport($title, $info, $table, $report['rows'], $report['month_label']),
+                    new TableReportExport($title, $info, $table, $rows, $monthLabel),
                     $fileName . '.xlsx'
                 );
             }
@@ -72,7 +99,7 @@ class MonthlyCollectionReportController extends Controller
                 'title' => $title,
                 'infoLines' => $info,
                 'table' => $table,
-                'rows' => $report['rows'],
+                'rows' => $rows,
             ])
                 ->setPaper('a4', 'landscape')
                 ->download($fileName . '.pdf');

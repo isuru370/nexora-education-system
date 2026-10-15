@@ -67,6 +67,8 @@ use App\Http\Controllers\Web\Organizer\OrganizerController;
 use App\Http\Controllers\Web\Payment\PaymentController;
 use App\Http\Controllers\Web\Payment\PaymentHistoryController;
 use App\Http\Controllers\Web\Receipt\ReceiptController;
+use App\Http\Controllers\Web\Report\AnnualReportController;
+use App\Http\Controllers\Web\Report\BranchCollectionReportController;
 use App\Http\Controllers\Web\Student\StudentCardRegistrationController;
 use App\Http\Controllers\Web\Student\StudentController;
 use App\Http\Controllers\Web\Student\StudentTemporaryRegistrationController;
@@ -2763,11 +2765,37 @@ Route::prefix('reports')
             ->middleware('role:ADMIN,BRANCH_ADMIN,USER')
             ->group(function () {
                 Route::get('/{tab?}', 'index')
-                    ->where('tab', 'summary|students|admissions|fee-split|expenses')
+                    ->where('tab', 'summary|branches|students|admissions|fee-split|expenses')
                     ->name('index');
 
                 Route::get('/{tab}/export/{format}', 'export')
-                    ->where(['tab' => 'summary|students|admissions|fee-split|expenses', 'format' => 'excel|pdf'])
+                    ->where(['tab' => 'summary|branches|students|admissions|fee-split|expenses', 'format' => 'excel|pdf'])
+                    ->name('export');
+            });
+
+                // Branch-wise income, expenses and net for a date range
+        Route::controller(BranchCollectionReportController::class)
+            ->prefix('branch-collection')
+            ->name('branch-collection.')
+            ->middleware('role:ADMIN,BRANCH_ADMIN')
+            ->group(function () {
+                Route::get('/', 'index')->name('index');
+
+                Route::get('/export/{format}', 'export')
+                    ->where('format', 'excel|pdf')
+                    ->name('export');
+            });
+
+                // Annual report: 12 months of income, expenses and net for a year
+        Route::controller(AnnualReportController::class)
+            ->prefix('annual')
+            ->name('annual.')
+            ->middleware('role:ADMIN,BRANCH_ADMIN')
+            ->group(function () {
+                Route::get('/', 'index')->name('index');
+
+                Route::get('/export/{format}', 'export')
+                    ->where('format', 'excel|pdf')
                     ->name('export');
             });
 
