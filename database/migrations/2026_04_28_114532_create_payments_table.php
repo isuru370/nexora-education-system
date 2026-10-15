@@ -11,47 +11,46 @@ return new class extends Migration
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
 
-            // 🔥 Branch ownership (denormalized from enrollment → class)
+            // Branch ownership
             $table->foreignId('branch_id')
                 ->constrained('branches')
                 ->restrictOnDelete();
 
-            // 🔥 Offline support
+            // Offline support
             $table->uuid('local_uuid')->nullable()->unique();
 
-            // 🔹 Student
+            // Student
             $table->foreignId('student_id')
                 ->constrained('students')
                 ->cascadeOnDelete();
 
-            // 🔹 Enrollment (category-level enrollment)
+            // Enrollment
             $table->foreignId('student_class_enrollment_id')
                 ->constrained('student_class_enrollments')
                 ->cascadeOnDelete();
 
-            // 🔹 Collected by
+            // Collected by
             $table->foreignId('user_id')
                 ->nullable()
                 ->constrained('users')
                 ->nullOnDelete();
 
+            // Payment marking method
             $table->enum('mark_method', [
                 'qr_mobile',
                 'qr_web',
                 'manual_mobile',
-                'manual_web'
+                'manual_web',
             ])->default('qr_mobile');
 
-            // 💰 Paid amount only
+            // Payment amounts
             $table->decimal('amount', 10, 2);
-
-            // Optional discount tracking
             $table->decimal('discount_amount', 10, 2)->default(0);
 
             // Payment time
             $table->dateTime('paid_at');
 
-            // 🔥 Monthly control (IMPORTANT)
+            // Monthly control
             $table->date('payment_month');
 
             // Payment method
@@ -61,15 +60,15 @@ return new class extends Migration
                 'bank_transfer',
                 'online',
                 'cheque',
-                'other'
+                'other',
             ])->default('cash');
 
-            // Status
+            // Payment status
             $table->enum('status', [
                 'completed',
                 'pending',
                 'failed',
-                'cancelled'
+                'cancelled',
             ])->default('completed');
 
             // Receipt
@@ -82,17 +81,42 @@ return new class extends Migration
             // Notes
             $table->text('note')->nullable();
 
+            // Soft delete
             $table->timestamps();
             $table->softDeletes();
 
-            // 🔥 IMPORTANT BUSINESS RULE
-            // same enrollment + same month = only one payment
-            $table->unique([
-                'student_class_enrollment_id',
-                'payment_month',
-            ], 'unique_enrollment_month_payment');
+            // Deletion audit
+            $table->foreignId('deleted_by')
+                ->nullable()
+                ->constrained('users')
+                ->nullOnDelete();
 
-            // 🔥 Branch-scoped indexes (NEW)
+            $table->string('delete_reason', 500)->nullable();
+
+            // Only active completed payments lock the enrollment + month.
+            // Deleted, cancelled, pending and failed payments return NULL.
+            $table->unsignedTinyInteger('active_month_lock')
+                ->nullable()
+                ->storedAs(
+                    "CASE
+                        WHEN deleted_at IS NULL
+                        AND status = 'completed'
+                        THEN 1
+                        ELSE NULL
+                    END"
+                );
+
+            // One active completed payment per enrollment + month
+            $table->unique(
+                [
+                    'student_class_enrollment_id',
+                    'payment_month',
+                    'active_month_lock',
+                ],
+                'unique_enrollment_month_payment_active'
+            );
+
+            // Branch-scoped indexes
             $table->index(
                 ['branch_id', 'paid_at'],
                 'pay_branch_paid_idx'
@@ -108,11 +132,26 @@ return new class extends Migration
                 'pay_branch_student_idx'
             );
 
-            // පරණ indexes (still useful)
-            $table->index(['student_id', 'paid_at'], 'pay_student_paid_idx');
-            $table->index(['student_class_enrollment_id', 'paid_at'], 'pay_enrollment_paid_idx');
-            $table->index(['status', 'paid_at'], 'pay_status_paid_idx');
-            $table->index(['payment_month', 'status'], 'pay_month_status_idx');
+            // Existing indexes
+            $table->index(
+                ['student_id', 'paid_at'],
+                'pay_student_paid_idx'
+            );
+
+            $table->index(
+                ['student_class_enrollment_id', 'paid_at'],
+                'pay_enrollment_paid_idx'
+            );
+
+            $table->index(
+                ['status', 'paid_at'],
+                'pay_status_paid_idx'
+            );
+
+            $table->index(
+                ['payment_month', 'status'],
+                'pay_month_status_idx'
+            );
         });
     }
 

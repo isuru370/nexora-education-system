@@ -28,7 +28,7 @@ class OrganizerService
     {
         return $this->branchAccessService
             ->getBranchIds()
-            ->map(fn ($id) => (int) $id)
+            ->map(fn($id) => (int) $id)
             ->values()
             ->all();
     }
@@ -93,21 +93,63 @@ class OrganizerService
     /**
      * Get organizers with search and filters.
      */
+
     public function getIndexData(Request $request): array
     {
+        // Apply search, status and branch filters to the listing.
         $query = $this->applyFilters(
             $this->baseQuery(),
             $request
         );
 
+        $organizers = $query
+            ->latest('organizers.id')
+            ->paginate(10)
+            ->appends($request->query());
+
+        // Statistics are restricted to branches accessible by the user.
+        $statsQuery = $this->baseQuery();
+
+        // If a branch is selected, calculate statistics for that branch.
+        if ($request->filled('branch_id')) {
+            $branchId = (int) $request->branch_id;
+
+            if (!in_array(
+                $branchId,
+                $this->accessibleBranchIds(),
+                true
+            )) {
+                abort(403, 'You do not have access to this branch.');
+            }
+
+            $statsQuery->whereHas('branches', function ($query) use ($branchId) {
+                $query->where('branches.id', $branchId);
+            });
+        }
+
+        $stats = [
+            'total' => $organizers->total(),
+
+            'active' => (clone $statsQuery)
+                ->where('organizers.is_active', 1)
+                ->count(),
+
+            'inactive' => (clone $statsQuery)
+                ->where('organizers.is_active', 0)
+                ->count(),
+
+            'registered_codes' => (clone $statsQuery)
+                ->whereNotNull('organizers.code')
+                ->count(),
+        ];
+
         return [
-            'organizers' => $query
-                ->latest('organizers.id')
-                ->paginate(10)
-                ->appends($request->query()),
+            'organizers' => $organizers,
 
             'branches' => $this->branchAccessService
                 ->getAccessibleBranches(),
+
+            'stats' => $stats,
         ];
     }
 
@@ -219,7 +261,7 @@ class OrganizerService
             // Preserve branch assignments outside the user's access.
             $existingBranchIds = $organizer->branches()
                 ->pluck('branches.id')
-                ->map(fn ($id) => (int) $id)
+                ->map(fn($id) => (int) $id)
                 ->all();
 
             $preservedBranchIds = array_diff(
@@ -268,7 +310,7 @@ class OrganizerService
         if ($hasActiveClasses) {
             throw ValidationException::withMessages([
                 'organizer' =>
-                    'Cannot delete organizer while active classes are assigned.',
+                'Cannot delete organizer while active classes are assigned.',
             ]);
         }
 
@@ -307,7 +349,7 @@ class OrganizerService
             if ($hasActiveClasses) {
                 throw ValidationException::withMessages([
                     'organizer' =>
-                        'Cannot deactivate organizer while active classes are assigned.',
+                    'Cannot deactivate organizer while active classes are assigned.',
                 ]);
             }
         }

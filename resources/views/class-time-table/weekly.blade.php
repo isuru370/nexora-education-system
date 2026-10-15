@@ -4,812 +4,377 @@
 @section('page-title', 'Weekly Timetable')
 
 @section('content')
+<div class="dashboard-page">
 
-    <div class="weekly-timetable-page">
+    {{-- HERO --}}
+    <div class="hero-section mb-4">
+        <div class="hero-content">
+            <div class="hero-left">
+                <span class="greeting-badge">nexoraEDU</span>
+                <h1 class="hero-title">Weekly Timetable</h1>
+                <p class="hero-subtitle">View and manage class timetable for the selected week.</p>
 
-        {{-- ============================================= --}}
-        {{-- STATS CARDS --}}
-        {{-- ============================================= --}}
-        <div class="row g-4 mb-4">
-
-            <div class="col-xl-3 col-md-6">
-                <div class="stats-card">
-                    <div class="stats-icon blue">
-                        <i class="bi bi-calendar-week"></i>
+                <div class="hero-stats-mini">
+                    <div class="mini-stat">
+                        <span class="mini-stat-value">{{ $stats['total'] ?? 0 }}</span>
+                        <span class="mini-stat-label">Total Classes</span>
                     </div>
-                    <div>
-                        <h3>{{ $schedules->count() }}</h3>
-                        <p>Total Classes</p>
+                    <div class="mini-stat-divider"></div>
+                    <div class="mini-stat">
+                        <span class="mini-stat-value">{{ $stats['completed'] ?? 0 }}</span>
+                        <span class="mini-stat-label">Completed</span>
                     </div>
-                </div>
-            </div>
-
-            <div class="col-xl-3 col-md-6">
-                <div class="stats-card">
-                    <div class="stats-icon green">
-                        <i class="bi bi-check-circle-fill"></i>
+                    <div class="mini-stat-divider"></div>
+                    <div class="mini-stat">
+                        <span class="mini-stat-value">{{ $stats['scheduled'] ?? 0 }}</span>
+                        <span class="mini-stat-label">Scheduled</span>
                     </div>
-                    <div>
-                        <h3>{{ $schedules->where('status', 'completed')->count() }}</h3>
-                        <p>Completed</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-xl-3 col-md-6">
-                <div class="stats-card">
-                    <div class="stats-icon orange">
-                        <i class="bi bi-hourglass-split"></i>
-                    </div>
-                    <div>
-                        <h3>{{ $schedules->where('status', 'scheduled')->count() }}</h3>
-                        <p>Scheduled</p>
+                    <div class="mini-stat-divider"></div>
+                    <div class="mini-stat">
+                        <span class="mini-stat-value">{{ $stats['ongoing'] ?? 0 }}</span>
+                        <span class="mini-stat-label">Ongoing</span>
                     </div>
                 </div>
             </div>
 
-            <div class="col-xl-3 col-md-6">
-                <div class="stats-card">
-                    <div class="stats-icon purple">
-                        <i class="bi bi-play-circle-fill"></i>
-                    </div>
-                    <div>
-                        <h3>{{ $schedules->where('status', 'ongoing')->count() }}</h3>
-                        <p>Ongoing</p>
-                    </div>
-                </div>
-            </div>
-
-        </div>
-
-
-        {{-- ============================================= --}}
-        {{-- MAIN CARD --}}
-        {{-- ============================================= --}}
-        <div class="main-card">
-
-            {{-- HEADER --}}
-            <div class="main-card-header">
-
-                <div>
-                    <h4>Weekly Class Schedule</h4>
-                    <p>View and manage class timetable for the selected week</p>
-                </div>
-
-                <div class="header-buttons">
-
-                    @if (isset($startOfWeek, $endOfWeek))
-                        <div class="week-info">
+            <div class="hero-right">
+                @if (isset($startOfWeek, $endOfWeek))
+                    <div class="hero-date-time">
+                        <div class="date-box">
                             <i class="bi bi-calendar-range"></i>
                             <span>
-                                {{ $startOfWeek->format('d M Y') }}
-                                -
-                                {{ $endOfWeek->format('d M Y') }}
+                                {{ $startOfWeek->format('d M') }} – {{ $endOfWeek->format('d M Y') }}
                             </span>
                         </div>
-                    @endif
-
-                    {{-- ✅ PDF Route --}}
-                    <a href="{{ route('class-time-table.weekly.pdf', ['week_date' => $selectedDate ?? now()->toDateString()]) }}"
-                       class="btn btn-danger custom-btn">
-                        <i class="bi bi-file-pdf"></i>
-                        PDF
-                    </a>
-
-                    {{-- ✅ Excel Route --}}
-                    <a href="{{ route('class-time-table.weekly.excel', ['week_date' => $selectedDate ?? now()->toDateString()]) }}"
-                       class="btn btn-success custom-btn">
-                        <i class="bi bi-file-excel"></i>
-                        Excel
-                    </a>
-
-                </div>
-
-            </div>
-
-
-            {{-- SEARCH & FILTER --}}
-            <div class="search-card">
-
-                <form method="GET" action="{{ route('class-time-table.weekly') }}">
-                    <div class="row g-3 align-items-end">
-
-                        {{-- Week Date --}}
-                        <div class="col-lg-4">
-                            <label class="form-label fw-semibold mb-2">Select Week</label>
-                            <div class="search-input-wrapper">
-                                <i class="bi bi-calendar-date"></i>
-                                <input type="date"
-                                       name="week_date"
-                                       class="form-control custom-input"
-                                       value="{{ old('week_date', $selectedDate ?? now()->toDateString()) }}">
-                            </div>
-                        </div>
-
-                        {{-- Status Filter --}}
-                        <div class="col-lg-3">
-                            <label class="form-label fw-semibold mb-2">Status</label>
-                            <select name="status" class="form-select custom-input">
-                                <option value="">All Status</option>
-                                <option value="scheduled" {{ request('status') == 'scheduled' ? 'selected' : '' }}>
-                                    Scheduled
-                                </option>
-                                <option value="ongoing" {{ request('status') == 'ongoing' ? 'selected' : '' }}>
-                                    Ongoing
-                                </option>
-                                <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>
-                                    Completed
-                                </option>
-                                <option value="cancelled" {{ request('status') == 'cancelled' ? 'selected' : '' }}>
-                                    Cancelled
-                                </option>
-                            </select>
-                        </div>
-
-                        {{-- Buttons --}}
-                        <div class="col-lg-3">
-                            <div class="d-flex gap-2">
-                                <button class="btn btn-primary flex-grow-1 custom-btn" type="submit">
-                                    <i class="bi bi-search"></i>
-                                    Search
-                                </button>
-
-                                <a href="{{ route('class-time-table.weekly') }}"
-                                   class="btn btn-light border flex-grow-1 custom-btn">
-                                    <i class="bi bi-arrow-repeat"></i>
-                                    Reset
-                                </a>
-                            </div>
-                        </div>
-
-                    </div>
-                </form>
-
-                @if (session('error'))
-                    <div class="alert alert-danger mt-3 mb-0 rounded-3 d-flex align-items-center">
-                        <i class="bi bi-exclamation-triangle-fill me-2 fs-5"></i>
-                        {{ session('error') }}
                     </div>
                 @endif
-
-                @error('week_date')
-                    <div class="alert alert-danger mt-3 mb-0 rounded-3 d-flex align-items-center">
-                        <i class="bi bi-exclamation-circle-fill me-2 fs-5"></i>
-                        {{ $message }}
-                    </div>
-                @enderror
-
+                <small class="hero-updated">{{ now()->format('D, d M Y') }}</small>
             </div>
-
-
-            {{-- TABLE --}}
-            <div class="table-responsive">
-                <table class="table custom-table align-middle">
-
-                    <thead>
-                        <tr>
-                            <th style="width: 4%">#</th>
-                            <th style="width: 18%">Date & Time</th>
-                            <th style="width: 22%">Class Details</th>
-                            <th style="width: 12%">Branch</th>
-                            <th style="width: 10%">Grade</th>
-                            <th style="width: 14%">Category</th>
-                            <th style="width: 15%">Fee Options</th>
-                            <th style="width: 10%">Status</th>
-                        </tr>
-                    </thead>
-
-                    <tbody>
-                        @forelse ($schedules as $schedule)
-
-                            @php
-                                $classDate = $schedule->class_date;
-                                $startTime = $schedule->start_time;
-                                $endTime = $schedule->end_time;
-
-                                /* Status Colors */
-                                $statusColors = [
-                                    'scheduled' => ['bg' => '#E0E7FF', 'color' => '#4338CA', 'icon' => 'bi-calendar-check'],
-                                    'ongoing'   => ['bg' => '#FEF3C7', 'color' => '#D97706', 'icon' => 'bi-play-circle-fill'],
-                                    'completed' => ['bg' => '#D1FAE5', 'color' => '#059669', 'icon' => 'bi-check-circle-fill'],
-                                    'cancelled' => ['bg' => '#FEE2E2', 'color' => '#DC2626', 'icon' => 'bi-x-circle-fill'],
-                                ];
-
-                                $status = strtolower($schedule->status ?? 'scheduled');
-                                $statusStyle = $statusColors[$status] ?? [
-                                    'bg' => '#F3F4F6',
-                                    'color' => '#6B7280',
-                                    'icon' => 'bi-question-circle',
-                                ];
-
-                                /* Fee Options */
-                                $feeOptions = $schedule->classCategoryFee?->activeFeeOptions ?? collect();
-                            @endphp
-
-                            <tr>
-
-                                {{-- # --}}
-                                <td class="fw-semibold">{{ $loop->iteration }}</td>
-
-
-                                {{-- DATE & TIME --}}
-                                <td>
-                                    <div class="date-time-cell">
-                                        <div class="date">
-                                            <i class="bi bi-calendar3"></i>
-                                            <span>
-                                                {{ $classDate ? $classDate->format('d M Y') : '-' }}
-                                            </span>
-                                        </div>
-                                        <div class="time">
-                                            <i class="bi bi-clock"></i>
-                                            <span>
-                                                {{ $startTime ? \Carbon\Carbon::parse($startTime)->format('h:i A') : '-' }}
-                                                -
-                                                {{ $endTime ? \Carbon\Carbon::parse($endTime)->format('h:i A') : '-' }}
-                                            </span>
-                                        </div>
-                                        <div class="day">
-                                            {{ $classDate ? $classDate->format('l') : '' }}
-                                        </div>
-                                    </div>
-                                </td>
-
-
-                                {{-- CLASS DETAILS --}}
-                                <td>
-                                    <div class="class-info">
-                                        <div class="class-avatar">
-                                            {{ strtoupper(substr($schedule->studentClass?->class_name ?? 'C', 0, 1)) }}
-                                        </div>
-                                        <div>
-                                            <div class="class-name">
-                                                {{ $schedule->studentClass?->class_name ?? '-' }}
-                                            </div>
-                                            <small class="text-muted">
-                                                <i class="bi bi-easel"></i>
-                                                {{ $schedule->hall?->hall_name ?? 'No Hall Assigned' }}
-                                            </small>
-                                        </div>
-                                    </div>
-                                </td>
-
-
-                                {{-- BRANCH --}}
-                                <td>
-                                    @if($schedule->branch)
-                                        <span class="branch-badge">
-                                            <i class="bi bi-building"></i>
-                                            {{ $schedule->branch->name }}
-                                        </span>
-                                    @else
-                                        <span class="text-muted">-</span>
-                                    @endif
-                                </td>
-
-
-                                {{-- GRADE --}}
-                                <td>
-                                    @php
-                                        $gradeColors = [
-                                            '1' => 'grade-1', '2' => 'grade-2', '3' => 'grade-3',
-                                            '4' => 'grade-4', '5' => 'grade-5', '6' => 'grade-6',
-                                        ];
-                                        $gradeName = $schedule->studentClass?->grade?->grade_name ?? '-';
-                                        $gradeNum = preg_replace('/[^0-9]/', '', $gradeName);
-                                        $gradeClass = $gradeColors[$gradeNum] ?? 'grade-default';
-                                    @endphp
-                                    <span class="grade-badge {{ $gradeClass }}">
-                                        <i class="bi bi-star-fill"></i>
-                                        {{ $gradeName }}
-                                    </span>
-                                </td>
-
-
-                                {{-- CATEGORY --}}
-                                <td>
-                                    <span class="category-badge">
-                                        <i class="bi bi-tag-fill"></i>
-                                        {{ $schedule->classCategoryFee?->category?->category_name ?? '-' }}
-                                    </span>
-                                </td>
-
-
-                                {{-- FEE OPTIONS --}}
-                                <td>
-                                    @if ($feeOptions->count() > 0)
-                                        <div class="fee-options-list">
-                                            @foreach ($feeOptions as $feeOption)
-                                                <div class="fee-option-item">
-                                                    <div class="fee-option-label">
-                                                        {{ $feeOption->label }}
-                                                        @if ($feeOption->is_default)
-                                                            <span class="default-fee-badge">Default</span>
-                                                        @endif
-                                                    </div>
-                                                    <div class="fee-option-price">
-                                                        <span class="currency">LKR</span>
-                                                        {{ number_format((float) $feeOption->fee, 2) }}
-                                                    </div>
-                                                </div>
-                                            @endforeach
-                                        </div>
-                                    @else
-                                        <span class="free-badge">
-                                            <i class="bi bi-gift-fill"></i>
-                                            No Fee Options
-                                        </span>
-                                    @endif
-                                </td>
-
-
-                                {{-- STATUS --}}
-                                <td>
-                                    <span class="status-badge"
-                                          style="background-color: {{ $statusStyle['bg'] }}; color: {{ $statusStyle['color'] }};">
-                                        <i class="bi {{ $statusStyle['icon'] }} me-1"></i>
-                                        {{ ucfirst($schedule->status ?? '-') }}
-                                    </span>
-                                </td>
-
-                            </tr>
-
-                        @empty
-
-                            <tr>
-                                <td colspan="8" class="text-center py-5">
-                                    <div class="empty-state">
-                                        <i class="bi bi-calendar-x"></i>
-                                        <h5>No Classes Found</h5>
-                                        <p>No timetable records found for this week</p>
-                                        <small class="text-muted">Try selecting a different week</small>
-                                    </div>
-                                </td>
-                            </tr>
-
-                        @endforelse
-                    </tbody>
-
-                </table>
-            </div>
-
         </div>
-
     </div>
 
+    {{-- KPI CARDS --}}
+    <div class="stats-grid mb-4">
+
+        <div class="nx-card stat-card">
+            <div class="stat-icon-wrapper icon-blue"><i class="bi bi-calendar-week"></i></div>
+            <div class="stat-info">
+                <span class="stat-label">Total Classes</span>
+                <h2 class="stat-number">{{ $stats['total'] ?? 0 }}</h2>
+                <span class="stat-change neutral">This <span class="stat-change-note">week</span></span>
+            </div>
+        </div>
+
+        <div class="nx-card stat-card">
+            <div class="stat-icon-wrapper icon-green"><i class="bi bi-check-circle-fill"></i></div>
+            <div class="stat-info">
+                <span class="stat-label">Completed</span>
+                <h2 class="stat-number">{{ $stats['completed'] ?? 0 }}</h2>
+                <span class="stat-change up">Finished <span class="stat-change-note">classes</span></span>
+            </div>
+        </div>
+
+        <div class="nx-card stat-card">
+            <div class="stat-icon-wrapper icon-amber"><i class="bi bi-hourglass-split"></i></div>
+            <div class="stat-info">
+                <span class="stat-label">Scheduled</span>
+                <h2 class="stat-number">{{ $stats['scheduled'] ?? 0 }}</h2>
+                <span class="stat-change neutral">Upcoming <span class="stat-change-note">classes</span></span>
+            </div>
+        </div>
+
+        <div class="nx-card stat-card">
+            <div class="stat-icon-wrapper icon-violet"><i class="bi bi-play-circle-fill"></i></div>
+            <div class="stat-info">
+                <span class="stat-label">Ongoing</span>
+                <h2 class="stat-number">{{ $stats['ongoing'] ?? 0 }}</h2>
+                <span class="stat-change up">Running <span class="stat-change-note">now</span></span>
+            </div>
+        </div>
+    </div>
+
+    {{-- MAIN CARD --}}
+    <div class="nx-card mb-4">
+
+        <div class="nx-card-header">
+            <div>
+                <h5 class="nx-card-title"><i class="bi bi-calendar-week text-primary"></i> Weekly Class Schedule</h5>
+                <p class="nx-card-subtitle">View and manage class timetable for the selected week</p>
+            </div>
+
+            <div class="header-buttons">
+                <a href="{{ route('class-time-table.weekly.pdf', ['week_date' => $selectedDate ?? now()->toDateString()]) }}"
+                    class="nx-btn nx-btn-danger">
+                    <i class="bi bi-file-earmark-pdf-fill"></i> PDF
+                </a>
+                <a href="{{ route('class-time-table.weekly.excel', ['week_date' => $selectedDate ?? now()->toDateString()]) }}"
+                    class="nx-btn nx-btn-success">
+                    <i class="bi bi-file-earmark-excel-fill"></i> Excel
+                </a>
+            </div>
+        </div>
+
+        {{-- SEARCH --}}
+        <div class="nx-search">
+            <form method="GET" action="{{ route('class-time-table.weekly') }}">
+                <div class="row g-3 align-items-end">
+                    <div class="col-lg-4">
+                        <label class="nx-label">Select Week</label>
+                        <div class="search-input-wrapper">
+                            <i class="bi bi-calendar-date"></i>
+                            <input type="date" name="week_date" class="form-control custom-input"
+                                value="{{ old('week_date', $selectedDate ?? now()->toDateString()) }}">
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3">
+                        <label class="nx-label">Status</label>
+                        <select name="status" class="form-select custom-input">
+                            <option value="">All Status</option>
+                            <option value="scheduled" {{ request('status') == 'scheduled' ? 'selected' : '' }}>Scheduled</option>
+                            <option value="ongoing" {{ request('status') == 'ongoing' ? 'selected' : '' }}>Ongoing</option>
+                            <option value="completed" {{ request('status') == 'completed' ? 'selected' : '' }}>Completed</option>
+                            <option value="cancelled" {{ request('status') == 'cancelled' ? 'selected' : '' }}>Cancelled</option>
+                        </select>
+                    </div>
+
+                    <div class="col-lg-3">
+                        <div class="d-flex gap-2">
+                            <button class="nx-btn nx-btn-primary flex-grow-1" type="submit">
+                                <i class="bi bi-search"></i> Search
+                            </button>
+                            <a href="{{ route('class-time-table.weekly') }}" class="nx-btn nx-btn-light flex-grow-1">
+                                <i class="bi bi-arrow-repeat"></i> Reset
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+
+            @if (session('error'))
+                <div class="nx-alert nx-alert-red mt-3">
+                    <i class="bi bi-exclamation-triangle-fill"></i>
+                    <span>{{ session('error') }}</span>
+                </div>
+            @endif
+
+            @error('week_date')
+                <div class="nx-alert nx-alert-red mt-3">
+                    <i class="bi bi-exclamation-circle-fill"></i>
+                    <span>{{ $message }}</span>
+                </div>
+            @enderror
+        </div>
+
+        {{-- TABLE --}}
+        <div class="table-responsive">
+            <table class="table premium-table mb-0">
+                <thead>
+                    <tr>
+                        <th style="width: 4%">#</th>
+                        <th style="width: 18%">Date & Time</th>
+                        <th style="width: 22%">Class Details</th>
+                        <th style="width: 12%">Branch</th>
+                        <th style="width: 10%">Grade</th>
+                        <th style="width: 14%">Category</th>
+                        <th style="width: 15%">Fee Options</th>
+                        <th style="width: 10%">Status</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    @forelse ($schedules as $schedule)
+                        @php
+                            $classDate = $schedule->class_date;
+                            $startTime = $schedule->start_time;
+                            $endTime = $schedule->end_time;
+
+                            $statusMap = [
+                                'scheduled' => 'nx-badge-blue',
+                                'ongoing'   => 'nx-badge-amber',
+                                'completed' => 'nx-badge-green',
+                                'cancelled' => 'nx-badge-red',
+                            ];
+                            $status = strtolower($schedule->status ?? 'scheduled');
+                            $statusClass = $statusMap[$status] ?? 'nx-badge-gray';
+
+                            $feeOptions = $schedule->classCategoryFee?->activeFeeOptions ?? collect();
+                        @endphp
+
+                        <tr>
+                            <td class="row-number">{{ $loop->iteration }}</td>
+
+                            <td>
+                                <div class="cell-title">
+                                    <i class="bi bi-calendar3 text-muted me-1"></i>
+                                    {{ $classDate ? $classDate->format('d M Y') : '-' }}
+                                </div>
+                                <small class="cell-sub d-block">
+                                    <i class="bi bi-clock"></i>
+                                    {{ $startTime ? \Carbon\Carbon::parse($startTime)->format('h:i A') : '-' }}
+                                    –
+                                    {{ $endTime ? \Carbon\Carbon::parse($endTime)->format('h:i A') : '-' }}
+                                </small>
+                                <small class="cell-sub">{{ $classDate ? $classDate->format('l') : '' }}</small>
+                            </td>
+
+                            <td>
+                                <div class="d-flex align-items-center gap-3">
+                                    <div class="class-avatar">
+                                        {{ strtoupper(substr($schedule->studentClass?->class_name ?? 'C', 0, 1)) }}
+                                    </div>
+                                    <div>
+                                        <div class="cell-title">{{ $schedule->studentClass?->class_name ?? '-' }}</div>
+                                        <small class="cell-sub">
+                                            <i class="bi bi-easel"></i>
+                                            {{ $schedule->hall?->hall_name ?? 'No Hall Assigned' }}
+                                        </small>
+                                    </div>
+                                </div>
+                            </td>
+
+                            <td>
+                                @if ($schedule->branch)
+                                    <span class="nx-badge nx-badge-blue">
+                                        <i class="bi bi-building"></i> {{ $schedule->branch->name }}
+                                    </span>
+                                @else
+                                    <span class="cell-sub">—</span>
+                                @endif
+                            </td>
+
+                            <td>
+                                @php
+                                    $gradeName = $schedule->studentClass?->grade?->grade_name ?? '-';
+                                @endphp
+                                <span class="nx-badge nx-badge-gray">
+                                    <i class="bi bi-star-fill"></i> {{ $gradeName }}
+                                </span>
+                            </td>
+
+                            <td>
+                                <span class="nx-badge nx-badge-violet">
+                                    <i class="bi bi-tag-fill"></i>
+                                    {{ $schedule->classCategoryFee?->category?->category_name ?? '-' }}
+                                </span>
+                            </td>
+
+                            <td>
+                                @if ($feeOptions->count() > 0)
+                                    <div class="fee-options-list">
+                                        @foreach ($feeOptions as $feeOption)
+                                            <div class="fee-option-item">
+                                                <div class="fee-option-label">
+                                                    {{ $feeOption->label }}
+                                                    @if ($feeOption->is_default)
+                                                        <span class="default-fee-badge">Default</span>
+                                                    @endif
+                                                </div>
+                                                <div class="fee-option-price">
+                                                    <span class="currency">LKR</span>
+                                                    {{ number_format((float) $feeOption->fee, 2) }}
+                                                </div>
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                @else
+                                    <span class="nx-badge nx-badge-green">
+                                        <i class="bi bi-gift-fill"></i> No Fee Options
+                                    </span>
+                                @endif
+                            </td>
+
+                            <td>
+                                <span class="nx-badge {{ $statusClass }}">
+                                    {{ ucfirst($schedule->status ?? '-') }}
+                                </span>
+                            </td>
+                        </tr>
+                    @empty
+                        <tr>
+                            <td colspan="8" class="empty-table">
+                                <i class="bi bi-calendar-x fs-2 d-block mb-2"></i>
+                                <strong class="d-block">No Classes Found</strong>
+                                <span class="cell-sub">No timetable records found for this week</span>
+                                <small class="cell-sub d-block mt-1">Try selecting a different week</small>
+                            </td>
+                        </tr>
+                    @endforelse
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
 @endsection
 
 
 @push('styles')
 <style>
-    .weekly-timetable-page {
-        animation: fadeIn 0.4s ease;
-    }
+    /* ============================================================
+       Weekly Timetable — page-specific styles only.
+       ============================================================ */
 
-    @keyframes fadeIn {
-        from { opacity: 0; transform: translateY(10px); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* Stats Cards */
-    .stats-card {
-        background: #fff;
-        border-radius: 24px;
-        padding: 1.5rem;
-        display: flex;
-        gap: 1rem;
-        align-items: center;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, .04);
-        border: 1px solid #eef2f7;
-        transition: all 0.3s ease;
-    }
-
-    .stats-card:hover {
-        transform: translateY(-4px);
-        box-shadow: 0 20px 35px rgba(0, 0, 0, .08);
-    }
-
-    .stats-icon {
-        width: 60px;
-        height: 60px;
-        border-radius: 18px;
+    .dashboard-page .class-avatar {
+        width: 38px;
+        height: 38px;
+        border-radius: 10px;
+        background: var(--nx-violet-soft);
+        color: var(--nx-violet);
         display: flex;
         align-items: center;
         justify-content: center;
-        color: #fff;
-        font-size: 1.8rem;
-    }
-
-    .stats-icon.blue { background: linear-gradient(135deg, #2563eb, #3b82f6); }
-    .stats-icon.green { background: linear-gradient(135deg, #10b981, #34d399); }
-    .stats-icon.orange { background: linear-gradient(135deg, #f59e0b, #fbbf24); }
-    .stats-icon.purple { background: linear-gradient(135deg, #8b5cf6, #a78bfa); }
-
-    .stats-card h3 {
-        margin: 0;
-        font-size: 1.8rem;
-        font-weight: 700;
-        color: #1e293b;
-    }
-
-    .stats-card p {
-        margin: 0;
-        color: #64748b;
-        font-weight: 500;
-    }
-
-    /* Main Card */
-    .main-card {
-        background: #fff;
-        border-radius: 28px;
-        padding: 1.8rem;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, .05);
-    }
-
-    .main-card-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 1.8rem;
-        flex-wrap: wrap;
-        gap: 1rem;
-    }
-
-    .main-card-header h4 {
-        margin: 0;
-        font-weight: 700;
-        color: #1e293b;
-    }
-
-    .main-card-header p {
-        margin: 0;
-        color: #64748b;
-        margin-top: 4px;
-    }
-
-    .week-info {
-        background: linear-gradient(135deg, #eff6ff, #e0e7ff);
-        padding: 0.6rem 1.2rem;
-        border-radius: 16px;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.6rem;
-        color: #1e40af;
         font-weight: 600;
-    }
-
-    .header-buttons {
-        display: flex;
-        gap: 0.8rem;
-        flex-wrap: wrap;
-        align-items: center;
-    }
-
-    .custom-btn {
-        border-radius: 14px;
-        padding: 0.7rem 1.2rem;
-        font-weight: 600;
-        transition: all 0.2s ease;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .custom-btn:hover {
-        transform: translateY(-2px);
-        filter: brightness(1.05);
-    }
-
-    /* Search Card */
-    .search-card {
-        background: #f8fafc;
-        border-radius: 20px;
-        padding: 1.5rem;
-        margin-bottom: 1.8rem;
-    }
-
-    .search-input-wrapper {
-        position: relative;
-    }
-
-    .search-input-wrapper i {
-        position: absolute;
-        top: 50%;
-        left: 15px;
-        transform: translateY(-50%);
-        color: #64748b;
-        font-size: 1rem;
-    }
-
-    .custom-input {
-        border-radius: 14px !important;
-        border: 1px solid #e2e8f0;
-        min-height: 48px;
-        transition: all 0.2s ease;
-    }
-
-    .custom-input:focus {
-        border-color: #2563eb;
-        box-shadow: 0 0 0 4px rgba(37, 99, 235, .10);
-    }
-
-    input.custom-input {
-        padding-left: 42px;
-    }
-
-    select.custom-input {
-        padding-left: 1rem;
-        cursor: pointer;
-    }
-
-    /* Table Styles */
-    .custom-table thead th {
-        border: none;
-        background: #f8fafc;
-        color: #475569;
-        font-size: 0.82rem;
-        text-transform: uppercase;
-        padding: 1rem;
-        font-weight: 700;
-        letter-spacing: 0.5px;
-    }
-
-    .custom-table tbody tr {
-        transition: all 0.2s ease;
-        border-bottom: 1px solid #f1f5f9;
-    }
-
-    .custom-table tbody tr:hover {
-        background: #f8fafc;
-    }
-
-    .custom-table tbody td {
-        padding: 1.2rem 1rem;
-        border: none;
-        vertical-align: middle;
-    }
-
-    /* Date & Time Cell */
-    .date-time-cell {
-        display: flex;
-        flex-direction: column;
-        gap: 0.3rem;
-    }
-
-    .date, .time {
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        font-size: 0.85rem;
-    }
-
-    .date i, .time i {
-        color: #64748b;
-        font-size: 0.85rem;
-    }
-
-    .date span, .time span {
-        color: #334155;
-    }
-
-    .day {
-        font-size: 0.7rem;
-        color: #94a3b8;
-        margin-top: 0.2rem;
-        font-weight: 500;
-    }
-
-    /* Class Info */
-    .class-info {
-        display: flex;
-        align-items: center;
-        gap: 0.8rem;
-    }
-
-    .class-avatar {
-        width: 45px;
-        height: 45px;
-        border-radius: 12px;
-        background: linear-gradient(135deg, #4f46e5, #7c3aed);
-        color: white;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-weight: 700;
-        font-size: 1.1rem;
-        box-shadow: 0 8px 18px rgba(79, 70, 229, .20);
+        font-size: .9rem;
         flex-shrink: 0;
     }
 
-    .class-name {
-        font-weight: 700;
-        color: #1e293b;
-        margin-bottom: 0.2rem;
-        font-size: 0.9rem;
-    }
-
-    /* Branch Badge */
-    .branch-badge {
-        background: #e0f2fe;
-        color: #0369a1;
-        padding: 0.4rem 0.75rem;
-        border-radius: 10px;
-        font-size: 0.72rem;
-        font-weight: 600;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.35rem;
-        white-space: nowrap;
-    }
-
-    /* Grade Badges */
-    .grade-badge {
-        padding: 0.45rem 0.85rem;
-        border-radius: 10px;
-        font-size: 0.75rem;
-        font-weight: 600;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.4rem;
-        white-space: nowrap;
-    }
-
-    .grade-1 { background: #dbeafe; color: #1e40af; }
-    .grade-2 { background: #e0e7ff; color: #4338ca; }
-    .grade-3 { background: #cffafe; color: #0e7490; }
-    .grade-4 { background: #fef3c7; color: #b45309; }
-    .grade-5 { background: #e0f2fe; color: #0369a1; }
-    .grade-6 { background: #fce7f3; color: #be185d; }
-    .grade-default { background: #f3f4f6; color: #4b5563; }
-
-    /* Category Badge */
-    .category-badge {
-        background: #f3e8ff;
-        color: #6b21a5;
-        padding: 0.45rem 0.85rem;
-        border-radius: 10px;
-        font-size: 0.75rem;
-        font-weight: 600;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.4rem;
-        white-space: nowrap;
-    }
-
-    /* Fee Options */
-    .fee-options-list {
+    .dashboard-page .fee-options-list {
         display: flex;
         flex-direction: column;
-        gap: 0.45rem;
+        gap: .35rem;
         min-width: 140px;
     }
 
-    .fee-option-item {
-        background: #f8fafc;
-        border: 1px solid #e2e8f0;
-        border-radius: 10px;
-        padding: 0.5rem 0.65rem;
+    .dashboard-page .fee-option-item {
+        background: #fafbfd;
+        border: 1px solid var(--nx-border);
+        border-radius: 8px;
+        padding: .4rem .55rem;
     }
 
-    .fee-option-label {
-        color: #334155;
-        font-size: 0.72rem;
+    .dashboard-page .fee-option-label {
+        color: var(--nx-text);
+        font-size: .72rem;
         font-weight: 600;
-        margin-bottom: 0.15rem;
+        margin-bottom: .1rem;
     }
 
-    .fee-option-price {
-        color: #1e293b;
-        font-size: 0.78rem;
+    .dashboard-page .fee-option-price {
+        color: var(--nx-text);
+        font-size: .78rem;
         font-weight: 700;
     }
 
-    .fee-option-price .currency {
-        color: #64748b;
-        font-size: 0.65rem;
+    .dashboard-page .fee-option-price .currency {
+        color: var(--nx-muted);
+        font-size: .65rem;
         margin-right: 2px;
     }
 
-    .default-fee-badge {
+    .dashboard-page .default-fee-badge {
         display: inline-block;
         margin-left: 4px;
-        padding: 2px 5px;
-        border-radius: 5px;
-        background: #dbeafe;
-        color: #1d4ed8;
-        font-size: 0.58rem;
+        padding: 1px 5px;
+        border-radius: 4px;
+        background: var(--nx-blue-soft);
+        color: var(--nx-blue);
+        font-size: .58rem;
         font-weight: 700;
-    }
-
-    .free-badge {
-        background: #d1fae5;
-        color: #065f46;
-        padding: 0.35rem 0.7rem;
-        border-radius: 8px;
-        font-size: 0.7rem;
-        font-weight: 600;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.3rem;
-        white-space: nowrap;
-    }
-
-    /* Status Badge */
-    .status-badge {
-        padding: 0.45rem 0.9rem;
-        border-radius: 10px;
-        font-size: 0.75rem;
-        font-weight: 600;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.4rem;
-        white-space: nowrap;
-    }
-
-    /* Empty State */
-    .empty-state {
-        text-align: center;
-        padding: 3rem;
-    }
-
-    .empty-state i {
-        font-size: 4rem;
-        color: #cbd5e1;
-        margin-bottom: 1rem;
-    }
-
-    .empty-state h5 {
-        font-weight: 700;
-        color: #64748b;
-        margin-bottom: 0.5rem;
-    }
-
-    .empty-state p {
-        color: #94a3b8;
-    }
-
-    /* Alert Styles */
-    .alert {
-        border: none;
-        border-radius: 16px;
-        padding: 1rem;
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-        .main-card-header {
-            flex-direction: column;
-            align-items: stretch;
-        }
-
-        .header-buttons {
-            width: 100%;
-            justify-content: space-between;
-        }
-
-        .stats-card {
-            padding: 1rem;
-        }
-
-        .stats-icon {
-            width: 45px;
-            height: 45px;
-            font-size: 1.2rem;
-        }
-
-        .stats-card h3 {
-            font-size: 1.3rem;
-        }
     }
 
     @media (max-width: 992px) {
-        .table-responsive {
-            overflow-x: auto;
-        }
-
-        .custom-table {
-            min-width: 800px;
-        }
+        .dashboard-page .premium-table { min-width: 900px; }
     }
 </style>
 @endpush

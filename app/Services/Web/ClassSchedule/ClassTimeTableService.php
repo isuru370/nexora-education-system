@@ -128,6 +128,39 @@ class ClassTimeTableService
     }
 
 
+    public function getWeeklyScheduleStats(
+        Carbon $startOfWeek,
+        Carbon $endOfWeek
+    ): array {
+        $accessibleBranchIds = $this->branchAccessService
+            ->getBranchIds();
+
+        $stats = ClassSchedule::query()
+            ->whereIn('branch_id', $accessibleBranchIds)
+            ->whereBetween('class_date', [
+                $startOfWeek->toDateString(),
+                $endOfWeek->toDateString(),
+            ])
+            ->selectRaw('COUNT(*) as total')
+            ->selectRaw(
+                "SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END) as completed"
+            )
+            ->selectRaw(
+                "SUM(CASE WHEN status = 'scheduled' THEN 1 ELSE 0 END) as scheduled"
+            )
+            ->selectRaw(
+                "SUM(CASE WHEN status = 'ongoing' THEN 1 ELSE 0 END) as ongoing"
+            )
+            ->first();
+
+        return [
+            'total' => (int) ($stats->total ?? 0),
+            'completed' => (int) ($stats->completed ?? 0),
+            'scheduled' => (int) ($stats->scheduled ?? 0),
+            'ongoing' => (int) ($stats->ongoing ?? 0),
+        ];
+    }
+
     /*
     |--------------------------------------------------------------------------
     | Export Dataset
@@ -196,7 +229,7 @@ class ClassTimeTableService
     {
         return $schedules
             ->values()
-            ->map(fn (ClassSchedule $schedule, int $index) => $this->mapSchedule($schedule, $index + 1));
+            ->map(fn(ClassSchedule $schedule, int $index) => $this->mapSchedule($schedule, $index + 1));
     }
 
 

@@ -19,23 +19,56 @@ use Illuminate\Support\Facades\Log;
 class SystemUserController extends Controller
 {
     public function index(): View
-    {
-        $query = SystemUser::with(['user.userType']);
+{
+    $query = SystemUser::with(['user.userType']);
 
-        // SUPER_ADMIN නොවන user කෙනෙක් නම් SUPER_ADMIN users hide කරන්න
-        if (auth()->user()->userType->code !== 'SUPER_ADMIN') {
+    // SUPER_ADMIN නොවන user කෙනෙක් නම් SUPER_ADMIN users hide කරන්න
+    $isSuperAdmin = auth()->user()->userType->code === 'SUPER_ADMIN';
 
-            $query->whereHas('user.userType', function ($q) {
-                $q->where('code', '!=', 'SUPER_ADMIN');
-            });
-        }
-
-        $systemUsers = $query
-            ->latest()
-            ->paginate(10);
-
-        return view('system-users.index', compact('systemUsers'));
+    if (!$isSuperAdmin) {
+        $query->whereHas('user.userType', function ($q) {
+            $q->where('code', '!=', 'SUPER_ADMIN');
+        });
     }
+
+    $systemUsers = $query
+        ->latest()
+        ->paginate(10);
+
+    /*
+    |--------------------------------------------------------------------------
+    | Stats — FULL dataset, not just current page
+    |--------------------------------------------------------------------------
+    | Uses separate COUNT queries so pagination doesn't affect the numbers.
+    | Respects the same SUPER_ADMIN visibility rule as the list.
+    */
+
+    $statsQuery = SystemUser::query();
+
+    if (!$isSuperAdmin) {
+        $statsQuery->whereHas('user.userType', function ($q) {
+            $q->where('code', '!=', 'SUPER_ADMIN');
+        });
+    }
+
+    $stats = [
+        'total' => (clone $statsQuery)->count(),
+
+        'active' => (clone $statsQuery)
+            ->where('is_active', 1)
+            ->count(),
+
+        'inactive' => (clone $statsQuery)
+            ->where('is_active', 0)
+            ->count(),
+
+        'linked' => (clone $statsQuery)
+            ->whereHas('user')
+            ->count(),
+    ];
+
+    return view('system-users.index', compact('systemUsers', 'stats'));
+}
     public function create(): View
     {
         $userTypes = UserType::where('is_active', true)

@@ -12,9 +12,7 @@
 
     $isActiveInput = old('is_active', optional($feeData)->is_active ?? true);
 
-    $formAction = $feeData
-        ? route('class-category-fees.update', $feeData->id)
-        : route('class-category-fees.store');
+    $formAction = $feeData ? route('class-category-fees.update', $feeData->id) : route('class-category-fees.store');
 @endphp
 
 <form method="POST" action="{{ $formAction }}">
@@ -30,41 +28,34 @@
 
         {{-- Student Class --}}
         <div class="col-md-6">
-
             <label for="student_class_id" class="form-label">
                 Class
             </label>
 
             <select name="student_class_id" id="student_class_id"
-                class="form-select @error('student_class_id') is-invalid @enderror" required>
-
-                <option value="">
-                    Select Class
-                </option>
+                class="form-select @error('student_class_id') is-invalid @enderror" required
+                {{ $feeData ? 'disabled' : '' }}>
+                <option value="">Select Class</option>
 
                 @foreach ($classes as $class)
                     <option value="{{ $class->id }}"
                         {{ (string) $selectedStudentClassId === (string) $class->id ? 'selected' : '' }}>
-
                         {{ $class->class_name }}
-
-                        | Grade:
-                        {{ optional($class->grade)->grade_name ?? 'N/A' }}
-
-                        | Subject:
-                        {{ optional($class->subject)->subject_name ?? 'N/A' }}
-
+                        | Grade: {{ optional($class->grade)->grade_name ?? 'N/A' }}
+                        | Subject: {{ optional($class->subject)->subject_name ?? 'N/A' }}
                     </option>
                 @endforeach
-
             </select>
+
+            @if ($feeData)
+                <input type="hidden" name="student_class_id" value="{{ $selectedStudentClassId }}">
+            @endif
 
             @error('student_class_id')
                 <div class="invalid-feedback">
                     {{ $message }}
                 </div>
             @enderror
-
         </div>
 
 

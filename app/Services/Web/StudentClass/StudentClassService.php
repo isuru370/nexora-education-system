@@ -192,78 +192,78 @@ class StudentClassService
      * Get one class and its details.
      */
     public function getDetails(StudentClass $studentClass): array
-{
-    $this->ensureClassAccess($studentClass);
+    {
+        $this->ensureClassAccess($studentClass);
 
-    $studentClass->load([
-        'branch',
-        'teacher',
-        'subject',
-        'grade',
-        'paymentConfig.organizer',
-        'paymentConfig.createdBy',
-        'paymentConfig.updatedBy',
-    ]);
+        $studentClass->load([
+            'branch',
+            'teacher',
+            'subject',
+            'grade',
+            'paymentConfig.organizer',
+            'paymentConfig.createdBy',
+            'paymentConfig.updatedBy',
+        ]);
 
-    $categoryFees = ClassCategoryFee::with([
-        'category',
-        'feeOptions',          
-        'activeFeeOptions',    
-    ])
-        ->where('student_class_id', $studentClass->id)
-        ->whereNull('deleted_at')
-        ->orderByDesc('is_active')
-        ->latest()
-        ->get();
+        $categoryFees = ClassCategoryFee::with([
+            'category',
+            'feeOptions',
+            'activeFeeOptions',
+        ])
+            ->where('student_class_id', $studentClass->id)
+            ->whereNull('deleted_at')
+            ->orderByDesc('is_active')
+            ->latest()
+            ->get();
 
-    return compact('studentClass', 'categoryFees');
-}
+        return compact('studentClass', 'categoryFees');
+    }
 
     /**
      * Update a class and its payment configuration.
      */
     public function update(
-    StudentClass $studentClass,
-    array $data
-): StudentClass {
-    $this->ensureClassAccess($studentClass);
+        StudentClass $studentClass,
+        array $data
+    ): StudentClass {
+        $this->ensureClassAccess($studentClass);
 
-    $branchId = (int) ($data['branch_id'] ?? $studentClass->branch_id);
+        $branchId = (int) ($data['branch_id'] ?? $studentClass->branch_id);
 
-    $this->ensureBranchAccess($branchId);
+        $this->ensureBranchAccess($branchId);
 
-    // Prevent moving a class to another branch.
-    if ($branchId !== (int) $studentClass->branch_id) {
-        throw ValidationException::withMessages([
-            'branch_id' => 'Changing the branch of an existing class is not allowed.',
-        ]);
+        // Prevent moving a class to another branch.
+        if ($branchId !== (int) $studentClass->branch_id) {
+            throw ValidationException::withMessages([
+                'branch_id' => 'Changing the branch of an existing class is not allowed.',
+            ]);
+        }
+
+        return DB::transaction(function () use ($studentClass, $data) {
+            $gradeId = $this->resolveGradeId($data);
+            $subjectId = $this->resolveSubjectId($data);
+
+            // Update student class.
+            $studentClass->update([
+                'class_name' => $data['class_name'],
+                'class_type' => $data['class_type'],
+                'medium' => $data['medium'],
+                'teacher_id' => $data['teacher_id'],
+                'subject_id' => $subjectId,
+                'grade_id' => $gradeId,
+                'is_active' => $data['is_active'] ?? false,
+                'is_ongoing' => $data['is_ongoing'] ?? false,
+            ]);
+
+            // Update payment configuration through its service.
+            $this->classPaymentConfigService->updateForClass(
+                $studentClass,
+                $data
+            );
+
+            return $studentClass->fresh();
+        });
     }
-
-    return DB::transaction(function () use ($studentClass, $data) {
-        $gradeId = $this->resolveGradeId($data);
-        $subjectId = $this->resolveSubjectId($data);
-
-        // Update student class.
-        $studentClass->update([
-            'class_name' => $data['class_name'],
-            'class_type' => $data['class_type'],
-            'medium' => $data['medium'],
-            'teacher_id' => $data['teacher_id'],
-            'subject_id' => $subjectId,
-            'grade_id' => $gradeId,
-            'is_active' => $data['is_active'] ?? false,
-            'is_ongoing' => $data['is_ongoing'] ?? false,
-        ]);
-
-        // Update payment configuration through its service.
-        $this->classPaymentConfigService->updateForClass(
-            $studentClass,
-            $data
-        );
-
-        return $studentClass->fresh();
-    });
-}
 
     /**
      * Delete an inactive, non-ongoing class.
@@ -324,6 +324,13 @@ class StudentClassService
     public function toggleOngoing(StudentClass $studentClass): StudentClass
     {
         $this->ensureClassAccess($studentClass);
+
+        // Only active classes can be marked as ongoing
+        if (!$studentClass->is_active) {
+            throw ValidationException::withMessages([
+                'is_ongoing' => 'Only active classes can be marked as ongoing.',
+            ]);
+        }
 
         $studentClass->update([
             'is_ongoing' => !$studentClass->is_ongoing,

@@ -43,10 +43,16 @@ class ClassTimeTableController extends Controller
                 $dateData['endOfWeek']
             );
 
+            $stats = $this->timeTableService->getWeeklyScheduleStats(
+                $dateData['startOfWeek'],
+                $dateData['endOfWeek']
+            );
+
             return view(
                 'class-time-table.weekly',
                 [
                     'schedules' => $schedules,
+                    'stats' => $stats,
                     'selectedDate' => $dateData['selectedDate'],
                     'startOfWeek' => $dateData['startOfWeek'],
                     'endOfWeek' => $dateData['endOfWeek'],

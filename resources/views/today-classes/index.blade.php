@@ -11,108 +11,107 @@
         $searchValue = request('search', '');
     @endphp
 
-    <div class="today-classes-page">
+    <div class="dashboard-page">
 
-        {{-- ============================================= --}}
-        {{-- HERO SECTION --}}
-        {{-- ============================================= --}}
-        <div class="hero-card mb-4">
+        {{-- HERO --}}
+        <div class="hero-section mb-4">
             <div class="hero-content">
-                <div>
-                    <h3 class="fw-bold mb-1">Today's Classes</h3>
-                    <p class="text-muted mb-0">
-                        {{ $todayDate->format('Y-m-d') }}
-                        <span class="mx-1">|</span>
-                        {{ ucfirst($dayName) }}
+                <div class="hero-left">
+                    <span class="greeting-badge">nexoraEDU</span>
+                    <h1 class="hero-title">Today's Classes</h1>
+                    <p class="hero-subtitle">
+                        {{ $todayDate->format('Y-m-d') }} · {{ ucfirst($dayName) }}
                     </p>
+
+                    <div class="hero-stats-mini">
+                        <div class="mini-stat">
+                            <span class="mini-stat-value">{{ $stats['total'] ?? 0 }}</span>
+                            <span class="mini-stat-label">Classes Today</span>
+                        </div>
+                        <div class="mini-stat-divider"></div>
+                        <div class="mini-stat">
+                            <span class="mini-stat-value">{{ $stats['scheduled'] ?? 0 }}</span>
+                            <span class="mini-stat-label">Scheduled</span>
+                        </div>
+                        <div class="mini-stat-divider"></div>
+                        <div class="mini-stat">
+                            <span class="mini-stat-value">{{ $stats['ongoing'] ?? 0 }}</span>
+                            <span class="mini-stat-label">Ongoing</span>
+                        </div>
+                    </div>
                 </div>
 
-                <div class="hero-actions">
-                    <button type="button" class="btn btn-light border custom-btn" disabled>
-                        <i class="bi bi-printer"></i>
-                        Print
-                    </button>
-
-                    <button type="button" class="btn btn-light border custom-btn" disabled>
-                        <i class="bi bi-file-earmark-excel-fill"></i>
-                        Export
-                    </button>
+                <div class="hero-right">
+                    <div class="hero-date-time">
+                        <div class="date-box">
+                            <i class="bi bi-calendar-day"></i>
+                            <span>{{ ucfirst($dayName) }}</span>
+                        </div>
+                    </div>
+                    <div class="hero-actions">
+                        <button type="button" class="nx-btn nx-btn-light" disabled>
+                            <i class="bi bi-printer"></i> Print
+                        </button>
+                        <button type="button" class="nx-btn nx-btn-light" disabled>
+                            <i class="bi bi-file-earmark-excel-fill"></i> Export
+                        </button>
+                    </div>
                 </div>
             </div>
         </div>
 
+        {{-- KPI CARDS --}}
+        <div class="stats-grid mb-4">
 
-        {{-- ============================================= --}}
-        {{-- STATS SECTION --}}
-        {{-- ============================================= --}}
-        <div class="row g-4 mb-4">
-
-            {{-- Total Classes Today --}}
-            <div class="col-xl-3 col-md-6">
-                <div class="stats-card">
-                    <div class="stats-icon blue">
-                        <i class="bi bi-calendar2-week-fill"></i>
-                    </div>
-                    <div>
-                        <h3>{{ $classes->count() }}</h3>
-                        <p>Classes Today</p>
-                    </div>
+            <div class="nx-card stat-card">
+                <div class="stat-icon-wrapper icon-blue"><i class="bi bi-calendar2-week-fill"></i></div>
+                <div class="stat-info">
+                    <span class="stat-label">Classes Today</span>
+                    <h2 class="stat-number">{{ $stats['total'] ?? 0 }}</h2>
+                    <span class="stat-change neutral">All <span class="stat-change-note">scheduled classes</span></span>
                 </div>
             </div>
 
-            {{-- Scheduled --}}
-            <div class="col-xl-3 col-md-6">
-                <div class="stats-card">
-                    <div class="stats-icon green">
-                        <i class="bi bi-clock-history"></i>
-                    </div>
-                    <div>
-                        <h3>{{ $classes->filter(fn($row) => ($row['schedule']['status'] ?? null) === 'scheduled')->count() }}
-                        </h3>
-                        <p>Scheduled</p>
-                    </div>
+            <div class="nx-card stat-card">
+                <div class="stat-icon-wrapper icon-green"><i class="bi bi-clock-history"></i></div>
+                <div class="stat-info">
+                    <span class="stat-label">Scheduled</span>
+                    <h2 class="stat-number">{{ $stats['scheduled'] ?? 0 }}</h2>
+                    <span class="stat-change neutral">Upcoming <span class="stat-change-note">classes</span></span>
                 </div>
             </div>
 
-            {{-- Ongoing --}}
-            <div class="col-xl-3 col-md-6">
-                <div class="stats-card">
-                    <div class="stats-icon orange">
-                        <i class="bi bi-play-circle-fill"></i>
-                    </div>
-                    <div>
-                        <h3>{{ $classes->filter(fn($row) => ($row['schedule']['status'] ?? null) === 'ongoing')->count() }}
-                        </h3>
-                        <p>Ongoing</p>
-                    </div>
+            <div class="nx-card stat-card">
+                <div class="stat-icon-wrapper icon-amber"><i class="bi bi-play-circle-fill"></i></div>
+                <div class="stat-info">
+                    <span class="stat-label">Ongoing</span>
+                    <h2 class="stat-number">{{ $stats['ongoing'] ?? 0 }}</h2>
+                    <span class="stat-change up">Running <span class="stat-change-note">now</span></span>
                 </div>
             </div>
 
-            {{-- Unique Branches --}}
-            <div class="col-xl-3 col-md-6">
-                <div class="stats-card">
-                    <div class="stats-icon red">
-                        <i class="bi bi-building"></i>
-                    </div>
-                    <div>
-                        <h3>
-                            {{ $classes->pluck('student_class.branch.id')->filter()->unique()->count() }}
-                        </h3>
-                        <p>Branches</p>
-                    </div>
+            <div class="nx-card stat-card">
+                <div class="stat-icon-wrapper icon-violet"><i class="bi bi-journal-bookmark-fill"></i></div>
+                <div class="stat-info">
+                    <span class="stat-label">Unique Classes</span>
+                    <h2 class="stat-number">{{ $stats['unique_classes'] ?? 0 }}</h2>
+                    <span class="stat-change neutral">Distinct <span class="stat-change-note">classes</span></span>
                 </div>
             </div>
-
         </div>
 
-
-        {{-- ============================================= --}}
         {{-- MAIN CARD --}}
-        {{-- ============================================= --}}
-        <div class="main-card">
+        <div class="nx-card mb-4">
 
-            {{-- SEARCH SECTION --}}
-            <div class="search-card">
+            <div class="nx-card-header">
+                <div>
+                    <h5 class="nx-card-title"><i class="bi bi-calendar-day text-primary"></i> Today's Schedule</h5>
+                    <p class="nx-card-subtitle">{{ $todayDate->format('l, d M Y') }}</p>
+                </div>
+            </div>
+
+            {{-- SEARCH --}}
+            <div class="nx-search">
                 <form method="GET" action="{{ url()->current() }}">
                     <div class="row g-3">
                         <div class="col-lg-10">
@@ -124,27 +123,24 @@
                             </div>
                         </div>
                         <div class="col-lg-2">
-                            <button type="submit" class="btn btn-primary w-100 custom-btn">
-                                <i class="bi bi-search"></i>
-                                Search
+                            <button type="submit" class="nx-btn nx-btn-primary w-100">
+                                <i class="bi bi-search"></i> Search
                             </button>
                         </div>
                     </div>
 
                     @if ($searchValue !== '')
                         <div class="mt-3">
-                            <a href="{{ url()->current() }}" class="btn btn-sm btn-outline-secondary">
-                                <i class="bi bi-x-circle"></i>
-                                Clear Search
+                            <a href="{{ url()->current() }}" class="nx-btn nx-btn-light">
+                                <i class="bi bi-x-circle"></i> Clear Search
                             </a>
                         </div>
                     @endif
                 </form>
             </div>
 
-
             {{-- CLASSES LIST --}}
-            @forelse($classes as $classItem)
+            @forelse ($classes as $classItem)
 
                 @php
                     $studentClass = $classItem['student_class'];
@@ -153,52 +149,50 @@
 
                     $branch = $studentClass['branch'] ?? null;
                     $feeOptions = $categoryFee['fee_options'] ?? [];
+
+                    $statusMap = [
+                        'scheduled' => 'nx-badge-blue',
+                        'ongoing'   => 'nx-badge-amber',
+                        'completed' => 'nx-badge-green',
+                        'cancelled' => 'nx-badge-red',
+                    ];
+                    $statusKey = strtolower($schedule['status'] ?? 'scheduled');
+                    $statusClass = $statusMap[$statusKey] ?? 'nx-badge-gray';
                 @endphp
 
-                <div class="class-card mb-4">
+                <div class="class-card">
 
-                    {{-- ============================================= --}}
-                    {{-- CLASS HEADER --}}
-                    {{-- ============================================= --}}
                     <div class="class-card-header">
-
                         <div>
-                            <h5 class="mb-1 fw-bold">
+                            <h5 class="class-card-title">
                                 {{ $studentClass['class_name'] }}
 
-                                {{-- Branch Badge --}}
                                 @if ($branch)
-                                    <span class="badge bg-info text-dark ms-2">
-                                        <i class="bi bi-building me-1"></i>
-                                        {{ $branch['name'] }}
+                                    <span class="nx-badge nx-badge-blue ms-2">
+                                        <i class="bi bi-building"></i> {{ $branch['name'] }}
                                     </span>
                                 @endif
                             </h5>
 
-                            <div class="meta-line">
+                            <div class="class-meta">
                                 Grade: {{ $studentClass['grade']['grade_name'] ?? '-' }}
-                                <span class="meta-separator">|</span>
+                                <span class="meta-sep">|</span>
                                 Subject: {{ $studentClass['subject']['subject_name'] ?? '-' }}
-                                <span class="meta-separator">|</span>
+                                <span class="meta-sep">|</span>
                                 Teacher: {{ $studentClass['teacher']['full_name'] ?? '-' }}
                             </div>
                         </div>
 
                         <div class="class-badges">
-                            <span class="badge bg-primary custom-badge">
-                                <i class="bi bi-clock me-1"></i>
+                            <span class="nx-badge {{ $statusClass }}">
+                                <i class="bi bi-clock"></i>
                                 {{ ucfirst($schedule['status'] ?? 'scheduled') }}
                             </span>
                         </div>
-
                     </div>
 
-
-                    {{-- ============================================= --}}
-                    {{-- TABLE --}}
-                    {{-- ============================================= --}}
                     <div class="table-responsive">
-                        <table class="table custom-table align-middle mb-0">
+                        <table class="table premium-table mb-0">
                             <thead>
                                 <tr>
                                     <th>Time</th>
@@ -212,29 +206,23 @@
 
                             <tbody>
                                 <tr>
-
-                                    {{-- TIME --}}
                                     <td>
-                                        <div class="fw-semibold">
+                                        <div class="cell-title">
                                             {{ $schedule['start_time'] ? \Carbon\Carbon::parse($schedule['start_time'])->format('h:i A') : '-' }}
-                                            -
+                                            –
                                             {{ $schedule['end_time'] ? \Carbon\Carbon::parse($schedule['end_time'])->format('h:i A') : '-' }}
                                         </div>
                                     </td>
 
-                                    {{-- CLASS --}}
                                     <td>
-                                        <div class="fw-bold">
-                                            {{ $studentClass['class_name'] }}
-                                        </div>
-                                        <small class="text-muted">
+                                        <div class="cell-title">{{ $studentClass['class_name'] }}</div>
+                                        <small class="cell-sub">
                                             {{ $studentClass['grade']['grade_name'] ?? '-' }}
                                             /
                                             {{ $studentClass['subject']['subject_name'] ?? '-' }}
                                         </small>
                                     </td>
 
-                                    {{-- CATEGORY & FEES --}}
                                     <td>
                                         @if ($categoryFee && !empty($categoryFee['category']))
                                             <div class="category-name mb-2">
@@ -248,11 +236,8 @@
                                                         <div class="fee-option-item">
                                                             <div class="fee-option-label">
                                                                 {{ $feeOption['label'] }}
-
                                                                 @if (!empty($feeOption['is_default']))
-                                                                    <span class="default-fee-badge">
-                                                                        Default
-                                                                    </span>
+                                                                    <span class="default-fee-badge">Default</span>
                                                                 @endif
                                                             </div>
                                                             <div class="fee-option-price">
@@ -263,57 +248,34 @@
                                                     @endforeach
                                                 </div>
                                             @else
-                                                <span class="text-muted">
-                                                    No fee options configured
-                                                </span>
+                                                <span class="cell-sub">No fee options configured</span>
                                             @endif
                                         @else
-                                            <span class="text-muted">
-                                                No fee configured
-                                            </span>
+                                            <span class="cell-sub">No fee configured</span>
                                         @endif
                                     </td>
 
-                                    {{-- TEACHER --}}
-                                    <td>
-                                        {{ $studentClass['teacher']['full_name'] ?? '-' }}
-                                    </td>
+                                    <td>{{ $studentClass['teacher']['full_name'] ?? '-' }}</td>
 
-                                    {{-- HALL --}}
                                     <td>
                                         @if (!empty($schedule['hall']))
-                                            <span class="badge bg-light text-dark border">
-                                                <i class="bi bi-easel me-1"></i>
+                                            <span class="nx-badge nx-badge-gray">
+                                                <i class="bi bi-easel"></i>
                                                 {{ $schedule['hall']['hall_name'] }}
                                             </span>
                                         @else
-                                            <span class="text-muted">-</span>
+                                            <span class="cell-sub">—</span>
                                         @endif
                                     </td>
 
-                                    {{-- ACTIONS --}}
-                                    <td>
+                                    <td class="text-end">
                                         <div class="action-buttons">
-
-                                            {{-- Today Attendance --}}
-                                            <a href="{{ route('today-classes.attendance', [
-                                                'class_schedule_id' => $schedule['id'],
-                                                'student_class_id' => $studentClass['id'],
-                                                'class_category_fee_id' => $categoryFee['id'] ?? 0,
-                                            ]) }}"
-                                                class="action-btn today-attendance-btn" title="Take Attendance">
-                                                <i class="bi bi-check2-square"></i>
-                                            </a>
-
-                                            {{-- View --}}
                                             <a href="{{ route('class-schedules.show', $schedule['id']) }}"
-                                                class="action-btn view-btn" title="View Schedule">
-                                                <i class="bi bi-eye"></i>
+                                                class="action-btn" title="View Schedule" aria-label="View Schedule">
+                                                <i class="bi bi-eye-fill"></i>
                                             </a>
-
                                         </div>
                                     </td>
-
                                 </tr>
                             </tbody>
                         </table>
@@ -323,9 +285,10 @@
 
             @empty
 
-                <div class="alert alert-info border-0 shadow-sm">
-                    <i class="bi bi-info-circle-fill me-2"></i>
-                    No classes scheduled for today.
+                <div class="empty-table">
+                    <i class="bi bi-info-circle fs-2 d-block mb-2"></i>
+                    <strong class="d-block">No classes scheduled for today.</strong>
+                    <span class="cell-sub">Check back later or try a different date.</span>
                 </div>
 
             @endforelse
@@ -333,366 +296,102 @@
         </div>
 
     </div>
-
 @endsection
 
 
 @push('styles')
-    <style>
-        .today-classes-page {
-            animation: fadeIn .4s ease;
-        }
+<style>
+    /* ============================================================
+       Today's Classes — page-specific styles only.
+       ============================================================ */
 
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(10px);
-            }
+    .dashboard-page .class-card {
+        padding: 1.25rem;
+        border-bottom: 1px solid var(--nx-border);
+    }
 
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
+    .dashboard-page .class-card:last-child { border-bottom: 0; }
 
-        /* =========================================
-           CARDS
-        ========================================= */
-        .hero-card,
-        .main-card,
-        .stats-card,
-        .class-card {
-            background: #fff;
-            border-radius: 24px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, .04);
-            border: 1px solid #eef2f7;
-        }
+    .dashboard-page .class-card-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 1rem;
+        flex-wrap: wrap;
+        margin-bottom: 1rem;
+    }
 
-        .hero-card,
-        .main-card {
-            padding: 1.5rem;
-        }
+    .dashboard-page .class-card-title {
+        font-size: .95rem;
+        font-weight: 700;
+        margin: 0 0 .25rem;
+        color: var(--nx-text);
+    }
 
-        .hero-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
+    .dashboard-page .class-meta {
+        color: var(--nx-muted);
+        font-size: .82rem;
+    }
 
-        .hero-actions {
-            display: flex;
-            gap: .7rem;
-            flex-wrap: wrap;
-        }
+    .dashboard-page .meta-sep { margin: 0 .35rem; }
 
-        /* =========================================
-           STATS
-        ========================================= */
-        .stats-card {
-            padding: 1.5rem;
-            display: flex;
-            gap: 1rem;
-            align-items: center;
-        }
+    .dashboard-page .class-badges {
+        display: flex; gap: .5rem; flex-wrap: wrap;
+    }
 
-        .stats-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: #fff;
-            font-size: 1.5rem;
-            flex-shrink: 0;
-        }
+    .dashboard-page .category-name {
+        font-weight: 700;
+        color: var(--nx-text);
+        font-size: .82rem;
+    }
 
-        .stats-icon.blue {
-            background: linear-gradient(135deg, #2563eb, #3b82f6);
-        }
+    /* Fee options shared with Weekly Timetable */
+    .dashboard-page .fee-options-list {
+        display: flex;
+        flex-direction: column;
+        gap: .35rem;
+        min-width: 140px;
+    }
 
-        .stats-icon.green {
-            background: linear-gradient(135deg, #10b981, #34d399);
-        }
+    .dashboard-page .fee-option-item {
+        background: #fafbfd;
+        border: 1px solid var(--nx-border);
+        border-radius: 8px;
+        padding: .4rem .55rem;
+    }
 
-        .stats-icon.orange {
-            background: linear-gradient(135deg, #f59e0b, #fbbf24);
-        }
+    .dashboard-page .fee-option-label {
+        color: var(--nx-text);
+        font-size: .72rem;
+        font-weight: 600;
+        margin-bottom: .1rem;
+    }
 
-        .stats-icon.red {
-            background: linear-gradient(135deg, #ef4444, #f87171);
-        }
+    .dashboard-page .fee-option-price {
+        color: var(--nx-text);
+        font-size: .78rem;
+        font-weight: 700;
+    }
 
-        .stats-card h3 {
-            margin: 0;
-            font-size: 1.6rem;
-            font-weight: 700;
-        }
+    .dashboard-page .fee-option-price .currency {
+        color: var(--nx-muted);
+        font-size: .65rem;
+        margin-right: 2px;
+    }
 
-        .stats-card p {
-            margin: 0;
-            color: #64748b;
-        }
+    .dashboard-page .default-fee-badge {
+        display: inline-block;
+        margin-left: 4px;
+        padding: 1px 5px;
+        border-radius: 4px;
+        background: var(--nx-blue-soft);
+        color: var(--nx-blue);
+        font-size: .58rem;
+        font-weight: 700;
+    }
 
-        /* =========================================
-           BUTTONS
-        ========================================= */
-        .custom-btn {
-            border-radius: 14px;
-            padding: .7rem 1.2rem;
-            font-weight: 600;
-            border: none;
-            transition: .2s ease;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .custom-btn:hover:not(:disabled) {
-            transform: translateY(-2px);
-        }
-
-        .custom-btn:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
-
-        /* =========================================
-           SEARCH
-        ========================================= */
-        .search-card {
-            background: #f8fafc;
-            border-radius: 20px;
-            padding: 1rem;
-            margin-bottom: 1.5rem;
-        }
-
-        .search-input-wrapper {
-            position: relative;
-        }
-
-        .search-input-wrapper i {
-            position: absolute;
-            top: 50%;
-            left: 15px;
-            transform: translateY(-50%);
-            color: #64748b;
-        }
-
-        .custom-input {
-            border-radius: 14px !important;
-            border: 1px solid #e2e8f0;
-            min-height: 48px;
-            padding-left: 42px;
-        }
-
-        .custom-input:focus {
-            border-color: #2563eb;
-            box-shadow: 0 0 0 4px rgba(37, 99, 235, .10);
-            outline: none;
-        }
-
-        /* =========================================
-           CLASS CARD
-        ========================================= */
-        .class-card {
-            padding: 1.25rem;
-        }
-
-        .class-card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 1rem;
-            flex-wrap: wrap;
-            margin-bottom: 1rem;
-        }
-
-        .meta-line {
-            color: #64748b;
-            font-size: .92rem;
-        }
-
-        .meta-separator {
-            margin: 0 .35rem;
-        }
-
-        .class-badges {
-            display: flex;
-            gap: .5rem;
-            flex-wrap: wrap;
-        }
-
-        /* =========================================
-           TABLE
-        ========================================= */
-        .custom-table thead th {
-            border: none;
-            background: #f8fafc;
-            color: #475569;
-            font-size: .82rem;
-            text-transform: uppercase;
-            padding: 1rem;
-            white-space: nowrap;
-            font-weight: 600;
-        }
-
-        .custom-table tbody tr {
-            transition: .2s ease;
-        }
-
-        .custom-table tbody tr:hover {
-            background: #f8fafc;
-        }
-
-        .custom-table tbody td {
-            padding: 1rem;
-            border-color: #f1f5f9;
-            vertical-align: middle;
-        }
-
-        /* =========================================
-           BADGES
-        ========================================= */
-        .badge {
-            border-radius: 10px;
-            padding: .5rem .7rem;
-            font-size: .75rem;
-        }
-
-        .custom-badge {
-            border-radius: 10px;
-            padding: .5rem .7rem;
-            font-size: .75rem;
-        }
-
-        /* =========================================
-           FEE OPTIONS
-        ========================================= */
-        .category-name {
-            font-weight: 700;
-            color: #1e293b;
-            font-size: .85rem;
-        }
-
-        .fee-options-list {
-            display: flex;
-            flex-direction: column;
-            gap: .45rem;
-            min-width: 150px;
-        }
-
-        .fee-option-item {
-            background: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 10px;
-            padding: .5rem .65rem;
-        }
-
-        .fee-option-label {
-            color: #334155;
-            font-size: .72rem;
-            font-weight: 600;
-            margin-bottom: .15rem;
-        }
-
-        .fee-option-price {
-            color: #1e293b;
-            font-size: .78rem;
-            font-weight: 700;
-        }
-
-        .fee-option-price .currency {
-            color: #64748b;
-            font-size: .65rem;
-            margin-right: 2px;
-        }
-
-        .default-fee-badge {
-            display: inline-block;
-            margin-left: 4px;
-            padding: 2px 5px;
-            border-radius: 5px;
-            background: #dbeafe;
-            color: #1d4ed8;
-            font-size: .58rem;
-            font-weight: 700;
-        }
-
-        /* =========================================
-           ACTIONS
-        ========================================= */
-        .action-buttons {
-            display: flex;
-            justify-content: flex-end;
-            gap: .5rem;
-            flex-wrap: wrap;
-        }
-
-        .action-btn {
-            width: 38px;
-            height: 38px;
-            border-radius: 12px;
-            border: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none;
-            transition: .2s ease;
-            cursor: pointer;
-        }
-
-        .action-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-
-        .view-btn {
-            background: #eff6ff;
-            color: #2563eb;
-        }
-
-        .view-btn:hover {
-            background: #2563eb;
-            color: #fff;
-        }
-
-        .today-attendance-btn {
-            background: #fef3c7;
-            color: #d97706;
-        }
-
-        .today-attendance-btn:hover {
-            background: #d97706;
-            color: #fff;
-        }
-
-        /* =========================================
-           RESPONSIVE
-        ========================================= */
-        @media (max-width: 768px) {
-
-            .hero-content,
-            .class-card-header {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .hero-actions,
-            .class-badges {
-                width: 100%;
-            }
-
-            .hero-actions .btn {
-                flex: 1;
-            }
-
-            .action-buttons {
-                justify-content: flex-start;
-            }
-        }
-    </style>
+    @media (max-width: 768px) {
+        .dashboard-page .class-card-header { flex-direction: column; align-items: stretch; }
+    }
+</style>
 @endpush

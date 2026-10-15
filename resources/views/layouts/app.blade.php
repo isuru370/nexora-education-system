@@ -454,6 +454,12 @@
         }
     </style>
 
+    {{-- ============================================================
+         Shared nexoraEDU theme (nx-* design system)
+         Used by all pages via `dashboard-page` wrapper + nx-* classes.
+         ============================================================ --}}
+    @include('layouts.partials.nexora-theme')
+
     @stack('styles')
 
 </head>

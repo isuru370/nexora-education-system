@@ -4,76 +4,50 @@
 @section('page-title', 'Class Schedules')
 
 @section('content')
+<div class="dashboard-page">
 
-    <div class="schedule-dashboard">
-
-        <div class="hero-card mb-4">
-
-            <div class="hero-content">
-
-                <div>
-
-                    <h3 class="fw-bold mb-1">
-                        Class Schedules
-                    </h3>
-
-                    <p class="text-muted mb-0">
-                        Manage ongoing classes and category-wise scheduling
-                    </p>
-
-                </div>
-
-
-                <div class="hero-actions">
-
-                    <a
-                        href="{{ route('class-category-fees.index') }}"
-                        class="btn btn-outline-secondary custom-btn">
-
-                        <i class="bi bi-cash-stack me-1"></i>
-
-                        Class Category Options
-
-                    </a>
-
-
-                    <button
-                        type="button"
-                        class="btn btn-outline-dark custom-btn"
-                        disabled>
-
-                        <i class="bi bi-download me-1"></i>
-
-                        Export
-
-                    </button>
-
-                </div>
-
+    {{-- ===================================================== --}}
+    {{-- HERO --}}
+    {{-- ===================================================== --}}
+    <div class="hero-section mb-4">
+        <div class="hero-content">
+            <div class="hero-left">
+                <span class="greeting-badge">nexoraEDU</span>
+                <h1 class="hero-title">Class Schedules</h1>
+                <p class="hero-subtitle">Manage ongoing classes and category-wise scheduling.</p>
             </div>
 
+            <div class="hero-right">
+                <div class="hero-actions">
+                    <a href="{{ route('class-category-fees.index') }}" class="nx-btn nx-btn-light">
+                        <i class="bi bi-cash-stack"></i> Class Category Options
+                    </a>
+                    <button type="button" class="nx-btn nx-btn-light" disabled>
+                        <i class="bi bi-download"></i> Export
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {{-- ===================================================== --}}
+    {{-- FILTERS --}}
+    {{-- ===================================================== --}}
+    <div class="nx-card mb-4">
+        <div class="nx-card-header">
+            <div>
+                <h5 class="nx-card-title"><i class="bi bi-funnel text-primary"></i> Filters</h5>
+                <p class="nx-card-subtitle">Filter by branch, class or search</p>
+            </div>
         </div>
 
-
-        {{-- ========================================================= --}}
-        {{-- FILTERS (Branch + Class + Search + Per Page) --}}
-        {{-- ========================================================= --}}
-
-        <div class="filter-card mb-4">
+        <div class="p-3">
             <form method="GET" action="{{ route('class-schedules.index') }}">
                 <div class="row g-3 align-items-end">
-
-                    {{-- Branch filter --}}
                     <div class="col-md-3">
-                        <label class="form-label small fw-semibold">
-                            Branch
-                        </label>
-
-                        <select name="branch_id"
-                                id="branch_id"
-                                class="form-select custom-input">
+                        <label class="nx-label">Branch</label>
+                        <select name="branch_id" id="branch_id" class="form-select nx-input">
                             <option value="">All Branches</option>
-
                             @foreach ($branches as $branch)
                                 <option value="{{ $branch->id }}"
                                     {{ (string) request('branch_id') === (string) $branch->id ? 'selected' : '' }}>
@@ -83,17 +57,10 @@
                         </select>
                     </div>
 
-                    {{-- Class filter --}}
                     <div class="col-md-3">
-                        <label class="form-label small fw-semibold">
-                            Class
-                        </label>
-
-                        <select name="student_class_id"
-                                id="student_class_id"
-                                class="form-select custom-input">
+                        <label class="nx-label">Class</label>
+                        <select name="student_class_id" id="student_class_id" class="form-select nx-input">
                             <option value="">All Classes</option>
-
                             @foreach ($filterClasses as $filterClass)
                                 <option value="{{ $filterClass->id }}"
                                     data-branch-id="{{ $filterClass->branch_id }}"
@@ -104,26 +71,16 @@
                         </select>
                     </div>
 
-                    {{-- Search --}}
                     <div class="col-md-3">
-                        <label class="form-label small fw-semibold">
-                            Search
-                        </label>
-
-                        <input type="text"
-                               name="search"
-                               class="form-control custom-input"
-                               value="{{ request('search', '') }}"
-                               placeholder="Class, grade, subject, teacher...">
+                        <label class="nx-label">Search</label>
+                        <input type="text" name="search" class="form-control nx-input"
+                            value="{{ request('search', '') }}"
+                            placeholder="Class, grade, subject, teacher...">
                     </div>
 
-                    {{-- Per page --}}
                     <div class="col-md-1">
-                        <label class="form-label small fw-semibold">
-                            Show
-                        </label>
-
-                        <select name="per_page" class="form-select custom-input">
+                        <label class="nx-label">Show</label>
+                        <select name="per_page" class="form-select nx-input">
                             @foreach ([10, 25, 50, 100] as $count)
                                 <option value="{{ $count }}"
                                     {{ (int) request('per_page', 10) === $count ? 'selected' : '' }}>
@@ -133,497 +90,227 @@
                         </select>
                     </div>
 
-                    {{-- Buttons --}}
                     <div class="col-md-2">
-                        <button type="submit"
-                                class="btn btn-primary custom-btn w-100">
-                            <i class="bi bi-funnel me-1"></i>
-                            Filter
+                        <button type="submit" class="nx-btn nx-btn-primary w-100">
+                            <i class="bi bi-funnel"></i> Filter
                         </button>
-
-                        <a href="{{ route('class-schedules.index') }}"
-                           class="btn btn-outline-secondary custom-btn w-100 mt-2">
+                        <a href="{{ route('class-schedules.index') }}" class="nx-btn nx-btn-light w-100 mt-2">
                             Reset
                         </a>
                     </div>
-
                 </div>
             </form>
         </div>
+    </div>
 
-        <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            const branchSelect = document.getElementById('branch_id');
-            const classSelect = document.getElementById('student_class_id');
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const branchSelect = document.getElementById('branch_id');
+        const classSelect = document.getElementById('student_class_id');
 
-            function filterClasses() {
-                const branchId = branchSelect.value;
-                const selectedClass = classSelect.value;
+        function filterClasses() {
+            const branchId = branchSelect.value;
+            const selectedClass = classSelect.value;
 
-                Array.from(classSelect.options).forEach(function (option) {
-                    if (!option.value) {
-                        option.hidden = false;
-                        return;
-                    }
-
-                    option.hidden = branchId !== '' &&
-                        option.dataset.branchId !== branchId;
-                });
-
-                if (
-                    selectedClass &&
-                    classSelect.selectedOptions[0]?.hidden
-                ) {
-                    classSelect.value = '';
+            Array.from(classSelect.options).forEach(function (option) {
+                if (!option.value) {
+                    option.hidden = false;
+                    return;
                 }
+
+                option.hidden = branchId !== '' &&
+                    option.dataset.branchId !== branchId;
+            });
+
+            if (
+                selectedClass &&
+                classSelect.selectedOptions[0]?.hidden
+            ) {
+                classSelect.value = '';
             }
+        }
 
-            branchSelect.addEventListener('change', filterClasses);
-            filterClasses();
-        });
-        </script>
+        branchSelect.addEventListener('change', filterClasses);
+        filterClasses();
+    });
+    </script>
 
+    {{-- ===================================================== --}}
+    {{-- CLASSES --}}
+    {{-- ===================================================== --}}
+    <div class="row g-4">
 
-        {{-- ========================================================= --}}
-        {{-- CLASSES --}}
-        {{-- ========================================================= --}}
+        @forelse($classes as $class)
+            @php
+                $gradeName = optional($class->grade)->grade_name ?? 'N/A';
+                $subjectName = optional($class->subject)->subject_name ?? 'N/A';
+                $teacherName = optional($class->teacher)->full_name ?? 'N/A';
+            @endphp
 
-        <div class="row g-4">
+            <div class="col-12">
+                <div class="class-card">
 
-            @forelse($classes as $class)
-
-                @php
-
-                    $gradeName = optional($class->grade)->grade_name ?? 'N/A';
-
-                    $subjectName = optional($class->subject)->subject_name ?? 'N/A';
-
-                    $teacherName = optional($class->teacher)->full_name ?? 'N/A';
-
-                @endphp
-
-
-                <div class="col-12">
-
-                    <div class="class-card">
-
-                        {{-- ================================================= --}}
-                        {{-- CLASS HEADER --}}
-                        {{-- ================================================= --}}
-
-                        <div class="class-card-header">
-
-                            <div>
-
-                                <div class="d-flex align-items-center gap-2 flex-wrap mb-2">
-
-                                    <h5 class="mb-0 fw-bold">
-                                        {{ $class->class_name }}
-                                    </h5>
-
-
-                                    <span
-                                        class="badge bg-success-soft text-success rounded-pill px-3 py-2">
-
-                                        Ongoing
-
-                                    </span>
-
-                                </div>
-
-
-                                <div class="text-muted small">
-
-                                    Grade:
-                                    {{ $gradeName }}
-
-                                    •
-
-                                    Subject:
-                                    {{ $subjectName }}
-
-                                    •
-
-                                    Medium:
-                                    {{ $class->medium ?? 'N/A' }}
-
-                                </div>
-
-
-                                <div class="text-muted small">
-
-                                    Teacher:
-                                    {{ $teacherName }}
-
-                                </div>
-
+                    {{-- CLASS HEADER --}}
+                    <div class="class-card-header">
+                        <div>
+                            <div class="d-flex align-items-center gap-2 flex-wrap mb-2">
+                                <h5 class="class-card-title">{{ $class->class_name }}</h5>
+                                <span class="nx-badge nx-badge-green">Ongoing</span>
                             </div>
 
-
-                            <div class="class-stats">
-
-                                <div class="stat-box">
-
-                                    <div class="stat-value">
-                                        {{ $class->categoryFees->count() }}
-                                    </div>
-
-                                    <div class="stat-label">
-                                        Categories
-                                    </div>
-
-                                </div>
-
+                            <div class="class-meta">
+                                Grade: {{ $gradeName }}
+                                • Subject: {{ $subjectName }}
+                                • Medium: {{ $class->medium ?? 'N/A' }}
                             </div>
 
+                            <div class="class-meta">Teacher: {{ $teacherName }}</div>
                         </div>
 
+                        <div class="class-stats">
+                            <div class="stat-box">
+                                <div class="stat-value">{{ $class->categoryFees->count() }}</div>
+                                <div class="stat-label">Categories</div>
+                            </div>
+                        </div>
+                    </div>
 
-                        {{-- ================================================= --}}
-                        {{-- CLASS BODY --}}
-                        {{-- ================================================= --}}
+                    {{-- CLASS BODY --}}
+                    <div class="class-card-body">
+                        @if ($class->categoryFees->count())
+                            <div class="row g-3">
+                                @foreach ($class->categoryFees as $fee)
+                                    @php
+                                        $category = $fee->category;
+                                        $feeOptions = $fee->activeFeeOptions;
+                                    @endphp
 
-                        <div class="class-card-body">
+                                    <div class="col-xl-4 col-lg-6 col-md-6">
+                                        <div class="category-card">
 
-                            @if ($class->categoryFees->count())
-
-                                <div class="row g-3">
-
-                                    @foreach ($class->categoryFees as $fee)
-
-                                        @php
-
-                                            $category = $fee->category;
-
-                                            $feeOptions = $fee->activeFeeOptions;
-
-                                        @endphp
-
-
-                                        <div class="col-xl-4 col-lg-6 col-md-6">
-
-                                            <div class="category-card">
-
-                                                {{-- ========================================= --}}
-                                                {{-- CATEGORY --}}
-                                                {{-- ========================================= --}}
-
-                                                <div class="category-card-top">
-
-                                                    <div>
-
-                                                        <div class="category-name">
-
-                                                            {{ optional($category)->category_name ?? 'N/A' }}
-
-                                                        </div>
-
-
-                                                        <div class="category-code">
-
-                                                            @if (optional($category)->code)
-
-                                                                {{ $category->code }}
-
-                                                            @else
-
-                                                                No code
-
-                                                            @endif
-
-                                                        </div>
-
-                                                    </div>
-
-                                                </div>
-
-
-                                                {{-- ========================================= --}}
-                                                {{-- FEE OPTIONS --}}
-                                                {{-- ========================================= --}}
-
+                                            {{-- CATEGORY --}}
+                                            <div class="category-card-top">
                                                 <div>
+                                                    <div class="category-name">
+                                                        {{ optional($category)->category_name ?? 'N/A' }}
+                                                    </div>
+                                                    <div class="category-code">
+                                                        @if (optional($category)->code)
+                                                            {{ $category->code }}
+                                                        @else
+                                                            No code
+                                                        @endif
+                                                    </div>
+                                                </div>
+                                            </div>
 
-                                                    @if ($feeOptions->count())
-
-                                                        <div class="fee-options-list">
-
-                                                            @foreach ($feeOptions as $option)
-
-                                                                <div class="fee-option-item">
-
-                                                                    <div>
-
-                                                                        <div class="fee-option-label">
-
-                                                                            {{ $option->label }}
-
-                                                                        </div>
-
-
-                                                                        @if ($option->note)
-
-                                                                            <div class="fee-option-note">
-
-                                                                                {{ $option->note }}
-
-                                                                            </div>
-
-                                                                        @endif
-
-                                                                    </div>
-
-
-                                                                    <div class="fee-option-amount">
-
-                                                                        LKR
-                                                                        {{ number_format($option->fee, 2) }}
-
-
-                                                                        @if ($option->is_default)
-
-                                                                            <span class="badge bg-success ms-1">
-
-                                                                                Default
-
-                                                                            </span>
-
-                                                                        @endif
-
-                                                                    </div>
-
+                                            {{-- FEE OPTIONS --}}
+                                            <div>
+                                                @if ($feeOptions->count())
+                                                    <div class="fee-options-list">
+                                                        @foreach ($feeOptions as $option)
+                                                            <div class="fee-option-item">
+                                                                <div>
+                                                                    <div class="fee-option-label">{{ $option->label }}</div>
+                                                                    @if ($option->note)
+                                                                        <div class="fee-option-note">{{ $option->note }}</div>
+                                                                    @endif
                                                                 </div>
-
-                                                            @endforeach
-
-                                                        </div>
-
-                                                    @else
-
-                                                        <div class="text-muted small">
-
-                                                            No active fee options
-
-                                                        </div>
-
-                                                    @endif
-
-                                                </div>
-
-
-                                                {{-- ========================================= --}}
-                                                {{-- ACTIONS --}}
-                                                {{-- ========================================= --}}
-
-                                                <div class="category-card-bottom">
-
-                                                    <div class="text-muted small">
-
-                                                        Category schedule
-
+                                                                <div class="fee-option-amount">
+                                                                    LKR {{ number_format($option->fee, 2) }}
+                                                                    @if ($option->is_default)
+                                                                        <span class="fee-default-badge">Default</span>
+                                                                    @endif
+                                                                </div>
+                                                            </div>
+                                                        @endforeach
                                                     </div>
+                                                @else
+                                                    <div class="cell-sub">No active fee options</div>
+                                                @endif
+                                            </div>
 
+                                            {{-- ACTIONS --}}
+                                            <div class="category-card-bottom">
+                                                <div class="cell-sub">Category schedule</div>
 
-                                                    <div class="action-group">
+                                                <div class="action-group">
+                                                    <a href="{{ route('class-schedules.create', [
+                                                        'student_class_id' => $class->id,
+                                                        'class_category_fee_id' => $fee->id,
+                                                    ]) }}" class="icon-btn icon-btn-primary" title="Schedule this category" aria-label="Schedule this category">
+                                                        <i class="bi bi-calendar-plus"></i>
+                                                    </a>
 
-                                                        {{-- CREATE SCHEDULE --}}
+                                                    <a href="{{ route('class-schedules.categorySchedules', [
+                                                        'student_class_id' => $class->id,
+                                                        'class_category_fee_id' => $fee->id,
+                                                    ]) }}" class="icon-btn icon-btn-success" title="View schedules" aria-label="View schedules">
+                                                        <i class="bi bi-eye"></i>
+                                                    </a>
 
-                                                        <a
-                                                            href="{{ route('class-schedules.create', [
-                                                                'student_class_id' => $class->id,
-                                                                'class_category_fee_id' => $fee->id,
-                                                            ]) }}"
-                                                            class="btn btn-sm btn-primary icon-btn"
-                                                            title="Schedule this category">
-
-                                                            <i class="bi bi-calendar-plus"></i>
-
-                                                        </a>
-
-
-                                                        {{-- VIEW SCHEDULE --}}
-
-                                                        <a
-                                                            href="{{ route('class-schedules.categorySchedules', [
-                                                                'student_class_id' => $class->id,
-                                                                'class_category_fee_id' => $fee->id,
-                                                            ]) }}"
-                                                            class="btn btn-sm btn-outline-success icon-btn"
-                                                            title="View schedules">
-
-                                                            <i class="bi bi-eye"></i>
-
-                                                        </a>
-
-
-                                                        {{-- BULK UPDATE --}}
-
-                                                        <a
-                                                            href="{{ route('class-schedules.bulkEdit', [
-                                                                'student_class_id' => $class->id,
-                                                                'class_category_fee_id' => $fee->id,
-                                                            ]) }}"
-                                                            class="btn btn-sm btn-outline-warning icon-btn"
-                                                            title="Bulk Update Schedule">
-
-                                                            <i class="bi bi-pencil-square"></i>
-
-                                                        </a>
-
-                                                    </div>
-
+                                                    <a href="{{ route('class-schedules.bulkEdit', [
+                                                        'student_class_id' => $class->id,
+                                                        'class_category_fee_id' => $fee->id,
+                                                    ]) }}" class="icon-btn icon-btn-warning" title="Bulk Update Schedule" aria-label="Bulk Update Schedule">
+                                                        <i class="bi bi-pencil-square"></i>
+                                                    </a>
                                                 </div>
-
                                             </div>
 
                                         </div>
-
-                                    @endforeach
-
-                                </div>
-
-                            @else
-
-                                <div class="empty-box">
-
-                                    <i class="bi bi-folder-x fs-2 d-block mb-2"></i>
-
-                                    <div class="fw-semibold">
-                                        No categories found
                                     </div>
-
-                                    <div class="text-muted small">
-
-                                        This class does not have any assigned category yet.
-
-                                    </div>
-
-                                </div>
-
-                            @endif
-
-                        </div>
-
+                                @endforeach
+                            </div>
+                        @else
+                            <div class="empty-box">
+                                <i class="bi bi-folder-x fs-2 d-block mb-2"></i>
+                                <div class="cell-title">No categories found</div>
+                                <div class="cell-sub">This class does not have any assigned category yet.</div>
+                            </div>
+                        @endif
                     </div>
 
                 </div>
-
-            @empty
-
-                <div class="col-12">
-
-                    <div class="empty-box py-5">
-
-                        <i class="bi bi-calendar-x fs-1 d-block mb-3"></i>
-
-                        <div class="fw-semibold">
-                            No ongoing classes found
-                        </div>
-
-                        <div class="text-muted small">
-                            Try a different search term.
-                        </div>
-
-                    </div>
-
+            </div>
+        @empty
+            <div class="col-12">
+                <div class="empty-table">
+                    <i class="bi bi-calendar-x fs-1 d-block mb-3"></i>
+                    <strong class="d-block">No ongoing classes found</strong>
+                    <span class="cell-sub">Try a different search term.</span>
                 </div>
-
-            @endforelse
-
-        </div>
-
-
-        {{-- ========================================================= --}}
-        {{-- PAGINATION --}}
-        {{-- ========================================================= --}}
-
-        <div class="mt-4 d-flex justify-content-end">
-
-            {{ $classes->appends(request()->query())->links() }}
-
-        </div>
+            </div>
+        @endforelse
 
     </div>
 
+    {{-- PAGINATION --}}
+    <div class="p-3 border-top d-flex justify-content-end">
+        {{ $classes->appends(request()->query())->links() }}
+    </div>
+
+</div>
 @endsection
 
 
 @push('styles')
-
 <style>
+    /* ============================================================
+       Class Schedules — page-specific styles only.
+       ============================================================ */
 
-    .schedule-dashboard {
-        animation: fadeIn .4s ease;
-    }
-
-
-    .hero-card,
-    .filter-card,
-    .class-card,
-    .empty-box {
+    .dashboard-page .class-card {
         background: #fff;
-        border: 1px solid #eef2f7;
-        border-radius: 28px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, .05);
-    }
-
-
-    .hero-card,
-    .filter-card {
-        padding: 1.5rem;
-    }
-
-
-    .hero-content {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        gap: 1rem;
-        flex-wrap: wrap;
-    }
-
-
-    .hero-actions {
-        display: flex;
-        gap: .75rem;
-        flex-wrap: wrap;
-    }
-
-
-    .custom-btn {
-        border-radius: 14px;
-        padding: .75rem 1.15rem;
-        font-weight: 600;
-        transition: .2s ease;
-    }
-
-
-    .custom-btn:hover {
-        transform: translateY(-2px);
-    }
-
-
-    .custom-input {
-        border-radius: 14px !important;
-        min-height: 48px;
-        border: 1px solid #e2e8f0;
-    }
-
-
-    .custom-input:focus {
-        border-color: #2563eb;
-        box-shadow: 0 0 0 4px rgba(37, 99, 235, .10);
-    }
-
-
-    .class-card {
+        border: 1px solid var(--nx-border);
+        border-radius: var(--nx-radius);
+        box-shadow: 0 1px 2px rgba(20, 28, 58, .04);
         overflow: hidden;
     }
 
-
-    .class-card-header {
+    .dashboard-page .class-card-header {
         padding: 1.25rem 1.5rem;
-        border-bottom: 1px solid #eef2f7;
+        border-bottom: 1px solid var(--nx-border);
         display: flex;
         justify-content: space-between;
         align-items: center;
@@ -631,214 +318,194 @@
         flex-wrap: wrap;
     }
 
-
-    .class-card-body {
-        padding: 1.5rem;
+    .dashboard-page .class-card-title {
+        font-size: .98rem;
+        font-weight: 700;
+        margin: 0;
+        color: var(--nx-text);
     }
 
+    .dashboard-page .class-meta {
+        color: var(--nx-muted);
+        font-size: .82rem;
+        margin-bottom: .1rem;
+    }
 
-    .class-stats {
+    .dashboard-page .class-card-body { padding: 1.25rem; }
+
+    .dashboard-page .class-stats {
         display: flex;
         gap: .75rem;
         flex-wrap: wrap;
     }
 
-
-    .stat-box {
+    .dashboard-page .stat-box {
         min-width: 110px;
         padding: .9rem 1rem;
-        border-radius: 20px;
-        background: #f8fafc;
-        border: 1px solid #e2e8f0;
+        border-radius: 10px;
+        background: #fafbfd;
+        border: 1px solid var(--nx-border);
         text-align: center;
     }
-
-
-    .stat-value {
+    .dashboard-page .stat-value {
         font-size: 1.35rem;
         font-weight: 800;
-        color: #0f172a;
+        color: var(--nx-text);
         line-height: 1;
     }
-
-
-    .stat-label {
-        font-size: .78rem;
-        color: #64748b;
+    .dashboard-page .stat-label {
+        font-size: .75rem;
+        color: var(--nx-muted);
         margin-top: .25rem;
         font-weight: 600;
     }
 
-
-    .bg-success-soft {
-        background: rgba(34, 197, 94, .12);
-    }
-
-
-    .category-card {
-        background: linear-gradient(
-            180deg,
-            #ffffff 0%,
-            #f8fafc 100%
-        );
-
-        border: 1px solid #e8eef6;
-
-        border-radius: 22px;
-
+    /* Category card */
+    .dashboard-page .category-card {
+        background: #fafbfd;
+        border: 1px solid var(--nx-border);
+        border-radius: 10px;
         padding: 1rem;
-
-        box-shadow:
-            0 8px 20px rgba(15, 23, 42, .04);
-
         height: 100%;
-
         display: flex;
-
         flex-direction: column;
-
         justify-content: space-between;
-
         gap: 1rem;
-
-        transition: .2s ease;
+        transition: box-shadow .15s, border-color .15s;
+    }
+    .dashboard-page .category-card:hover {
+        border-color: var(--nx-blue);
+        box-shadow: 0 4px 12px rgba(37, 99, 235, .08);
     }
 
-
-    .category-card:hover {
-        transform: translateY(-3px);
-
-        box-shadow:
-            0 12px 28px rgba(15, 23, 42, .08);
-    }
-
-
-    .category-card-top {
+    .dashboard-page .category-card-top {
         display: flex;
         justify-content: space-between;
         gap: 1rem;
         align-items: flex-start;
     }
 
-
-    .category-name {
+    .dashboard-page .category-name {
         font-weight: 800;
-        font-size: 1rem;
-        color: #0f172a;
+        font-size: .95rem;
+        color: var(--nx-text);
     }
-
-
-    .category-code {
-        font-size: .82rem;
-        color: #64748b;
+    .dashboard-page .category-code {
+        font-size: .78rem;
+        color: var(--nx-muted);
         margin-top: .2rem;
     }
 
-
-    .fee-options-list {
+    /* Fee options */
+    .dashboard-page .fee-options-list {
         display: flex;
         flex-direction: column;
         gap: .5rem;
     }
-
-
-    .fee-option-item {
+    .dashboard-page .fee-option-item {
         display: flex;
         justify-content: space-between;
         align-items: center;
         gap: .75rem;
-
-        padding: .7rem .8rem;
-
-        border-radius: 14px;
-
-        background: #f8fafc;
-
-        border: 1px solid #e8eef6;
+        padding: .6rem .75rem;
+        border-radius: 8px;
+        background: #fff;
+        border: 1px solid var(--nx-border);
     }
-
-
-    .fee-option-label {
-        font-size: .85rem;
+    .dashboard-page .fee-option-label {
+        font-size: .82rem;
         font-weight: 700;
-        color: #334155;
+        color: var(--nx-text);
     }
-
-
-    .fee-option-note {
-        font-size: .72rem;
-        color: #94a3b8;
+    .dashboard-page .fee-option-note {
+        font-size: .7rem;
+        color: var(--nx-muted);
         margin-top: .15rem;
     }
-
-
-    .fee-option-amount {
-        font-size: .85rem;
+    .dashboard-page .fee-option-amount {
+        font-size: .82rem;
         font-weight: 800;
-        color: #2563eb;
+        color: var(--nx-blue);
         white-space: nowrap;
     }
+    .dashboard-page .fee-default-badge {
+        display: inline-block;
+        margin-left: 4px;
+        padding: 1px 5px;
+        border-radius: 4px;
+        background: var(--nx-green-soft);
+        color: var(--nx-green);
+        font-size: .6rem;
+        font-weight: 700;
+    }
 
-
-    .category-card-bottom {
+    /* Category card bottom */
+    .dashboard-page .category-card-bottom {
         display: flex;
         justify-content: space-between;
         align-items: center;
         gap: .75rem;
         flex-wrap: wrap;
     }
-
-
-    .action-group {
+    .dashboard-page .action-group {
         display: flex;
         gap: .5rem;
     }
 
-
-    .icon-btn {
-        width: 40px;
-        height: 40px;
-        border-radius: 12px;
+    .dashboard-page .icon-btn {
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
         display: inline-flex;
         align-items: center;
         justify-content: center;
+        border: 1px solid var(--nx-border);
+        background: #fff;
+        color: var(--nx-muted);
+        font-size: .85rem;
+        transition: all .15s ease;
+        text-decoration: none;
+    }
+    .dashboard-page .icon-btn:hover {
+        background: var(--nx-blue-soft);
+        color: var(--nx-blue);
+        border-color: var(--nx-blue);
+    }
+    .dashboard-page .icon-btn-primary {
+        background: var(--nx-blue); color: #fff; border-color: var(--nx-blue);
+    }
+    .dashboard-page .icon-btn-primary:hover {
+        background: #1d4ed8; color: #fff; border-color: #1d4ed8;
+    }
+    .dashboard-page .icon-btn-success { color: var(--nx-green); }
+    .dashboard-page .icon-btn-success:hover {
+        background: var(--nx-green-soft); color: var(--nx-green); border-color: var(--nx-green);
+    }
+    .dashboard-page .icon-btn-warning { color: var(--nx-amber); }
+    .dashboard-page .icon-btn-warning:hover {
+        background: var(--nx-amber-soft); color: var(--nx-amber); border-color: var(--nx-amber);
     }
 
-
-    .empty-box {
+    /* Empty box */
+    .dashboard-page .empty-box {
         padding: 2rem;
         text-align: center;
-        color: #64748b;
+        color: var(--nx-muted);
+        background: #fafbfd;
+        border: 1px dashed var(--nx-border);
+        border-radius: 8px;
     }
 
-
     @media (max-width: 768px) {
-
-        .hero-content,
-        .class-card-header {
+        .dashboard-page .class-card-header {
             flex-direction: column;
             align-items: stretch;
         }
-
-
-        .hero-actions {
-            width: 100%;
-        }
-
-
-        .hero-actions .btn {
-            flex: 1;
-        }
-
-
-        .category-card-top,
-        .category-card-bottom {
+        .dashboard-page .category-card-top,
+        .dashboard-page .category-card-bottom {
             flex-direction: column;
             align-items: flex-start;
         }
-
     }
-
 </style>
-
 @endpush
