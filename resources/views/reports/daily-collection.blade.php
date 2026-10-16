@@ -415,14 +415,16 @@
 
             {{-- OTHER TABS --}}
             <div class="nx-card">
-                @if ($tab === 'branches' && !$summary['show_expenses'])
-                    <div class="p-3">
+                                @if ($tab === 'branches' && !$summary['show_expenses'])
+                    <div class="p-3 pb-0">
                         <p class="cell-sub mb-0">
                             <i class="bi bi-info-circle"></i>
                             Only class fees and admission fees are shown while a collector or payment method filter is used.
                         </p>
                     </div>
-                @elseif ($tab === 'expenses' && !$summary['show_expenses'])
+                @endif
+
+                @if ($tab === 'expenses' && !$summary['show_expenses'])
                     <div class="p-3">
                         <p class="cell-sub mb-0">
                             Expenses are hidden while a collector or payment method filter is used.

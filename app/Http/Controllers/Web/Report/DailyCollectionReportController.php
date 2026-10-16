@@ -48,7 +48,7 @@ class DailyCollectionReportController extends Controller
             'tabs' => DailyCollectionReportService::TABS,
             'filter' => $filter,
             'summary' => $this->reportService->summary($filter),
-            'table' => $this->reportService->table($tab),
+                        'table' => $this->reportService->table($tab, $filter),
             'rows' => $rows,
             'branches' => $this->branchAccessService->getAccessibleBranches(),
             'collectors' => $this->reportQuery->collectorOptions($filter->branchIds),

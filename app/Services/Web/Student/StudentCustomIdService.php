@@ -4,6 +4,7 @@ namespace App\Services\Web\Student;
 
 use App\Models\Grade;
 use App\Models\Student;
+use App\Models\StudentPortalLogin;
 use Illuminate\Support\Facades\DB;
 
 class StudentCustomIdService
@@ -26,7 +27,9 @@ class StudentCustomIdService
                 $gradeId
             );
 
-            $lastStudent = Student::query()
+            // withTrashed: a deleted student's ID is still in the table
+            // (custom_id is unique), so it must never be given out again.
+            $lastStudent = Student::withTrashed()
                 ->where('grade_id', $gradeId)
                 ->where(
                     'custom_id',
@@ -62,9 +65,13 @@ class StudentCustomIdService
                         STR_PAD_LEFT
                     );
             } while (
-                Student::query()
-                ->where('custom_id', $customId)
-                ->exists()
+                Student::withTrashed()
+                    ->where('custom_id', $customId)
+                    ->exists()
+                // the portal username is the custom ID
+                || StudentPortalLogin::withTrashed()
+                    ->where('username', $customId)
+                    ->exists()
             );
 
             return $customId;

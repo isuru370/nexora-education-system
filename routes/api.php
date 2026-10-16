@@ -1,36 +1,32 @@
 <?php
 
 use App\Http\Controllers\Api\Admission\AdmissionPaymentController;
-use App\Http\Controllers\Api\Attendance\AttendanceReportController;
-use App\Http\Controllers\Api\Attendance\AttendanceScheduleController;
-use App\Http\Controllers\API\StudentCardAssignmentController;
+use App\Http\Controllers\Api\Dashboard\MobileDashboardController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\Auth\LoginController;
 use App\Http\Controllers\Api\ClassSchedule\ClassScheduleController;
 use App\Http\Controllers\Api\StudentClass\GradeController;
 use App\Http\Controllers\Api\ClassHall\InstituteHallController;
-use App\Http\Controllers\Api\Dashboard\MobileDashboardController;
-use App\Http\Controllers\API\NewAttendance\AttendanceController;
-use App\Http\Controllers\API\NewPayment\PaymentController;
 use App\Http\Controllers\Api\Notification\NotificationController;
 use App\Http\Controllers\Api\StudentImage\QuickPhotoController;
 use App\Http\Controllers\Api\Attendance\StudentAttendanceController;
 use App\Http\Controllers\Api\Attendance\StudentAttendanceReadController;
 use App\Http\Controllers\Api\Attendance\StudentAttendanceScanController;
-use App\Http\Controllers\API\StudentCardRegisterController;
 use App\Http\Controllers\Api\StudentClass\StudentClassController;
 use App\Http\Controllers\Api\StudentClassEnrollment\StudentClassEnrollmentController;
-use App\Http\Controllers\API\StudentController;
 use App\Http\Controllers\Api\StudentImage\StudentImageController;
 use App\Http\Controllers\Api\Payment\StudentPaymentController;
 use App\Http\Controllers\Api\Payment\StudentPaymentReadController;
-use App\Http\Controllers\API\StudentRegisterController;
 use App\Http\Controllers\Api\StudentTute\StudentTuteController;
 use App\Http\Controllers\Api\Teacher\MyStudentsController;
 use App\Http\Controllers\Api\Teacher\TeacherClassesController;
 use App\Http\Controllers\Api\Teacher\TeacherDashboardController;
 use App\Http\Controllers\Api\Teacher\TeacherProfileController;
 use App\Http\Controllers\Api\Teacher\TeacherTimetableController;
+use App\Http\Controllers\Api\Student\StudentController;
+use App\Http\Controllers\Api\Student\StudentPermanentRegistrationController;
+use App\Http\Controllers\Api\Student\StudentTemporaryRegistrationController;
+use App\Http\Controllers\Api\StudentCard\StudentCardController;
 
 /*
 |--------------------------------------------------------------------------
@@ -63,7 +59,7 @@ Route::post(
 Route::middleware([
     'auth:sanctum',
     'user.active',
-    'role:ADMIN,USER'
+    'role:ADMIN,BRANCH_ADMIN'
 ])->group(function () {
 
     /*
@@ -77,15 +73,23 @@ Route::middleware([
         [LoginController::class, 'logout']
     )->name('api.logout');
 
+    // Scan a permanent student card (available / already assigned + history)
     Route::post(
         '/qr-code',
-        [StudentCardRegisterController::class, 'searchQrcode']
+        [StudentCardController::class, 'searchQrcode']
     )->name('api.card.searchQrcode');
 
-    Route::post('/re-assign', [
-        StudentCardRegisterController::class,
-        'reAssign'
-    ])->name('api.card.reassign');
+    // Replace a student's card (lost / damaged / worn out)
+    Route::post(
+        '/re-assign',
+        [StudentCardController::class, 'reAssign']
+    )->name('api.card.reassign');
+
+
+        Route::get(
+        '/mobile-dashboard',
+        [MobileDashboardController::class, 'mobileDashboardDetails']
+    );
 
 
     /*
@@ -95,14 +99,16 @@ Route::middleware([
     */
 
 
+    // Register a student with a temporary ID card (TMP001...)
     Route::post(
         '/student',
-        [StudentRegisterController::class, 'QuickStudentStore']
+        [StudentTemporaryRegistrationController::class, 'store']
     )->name('api.QuickStudentStore');
 
+    // Register a student with a permanent student card
     Route::post(
         '/student-new',
-        [StudentCardRegisterController::class, 'store']
+        [StudentPermanentRegistrationController::class, 'store']
     )->name('api.student.store');
 
     Route::get(
@@ -115,10 +121,17 @@ Route::middleware([
         [StudentController::class, 'studentDetailsSearch']
     )->name('api.students.filter');
 
-    Route::get(
-        '/students/search',
-        [StudentController::class, 'searchStudent']
-    )->name('api.students.search');
+    // Register a student with a temporary ID card (TMP001...)
+    Route::post(
+        '/student',
+        [StudentTemporaryRegistrationController::class, 'store']
+    )->name('api.QuickStudentStore');
+
+    // Register a student with a permanent student card
+    Route::post(
+        '/student-new',
+        [StudentPermanentRegistrationController::class, 'store']
+    )->name('api.student.store');
 
     Route::post(
         '/students/update-image',
@@ -188,14 +201,6 @@ Route::middleware([
         [StudentPaymentController::class, 'fetchStudentAllPayment']
     );
 
-
-
-    Route::post(
-        '/student-payments',
-        [StudentPaymentController::class, 'store']
-    )->name('api.student-payments.store');
-
-
     /*
 |--------------------------------------------------------------------------
 | New Payment
@@ -206,59 +211,59 @@ Route::middleware([
 |
 */
 
-    Route::prefix('new-payment')
-        ->name('api.new-payment.')
-        ->group(function () {
+    // Route::prefix('new-payment')
+    //     ->name('api.new-payment.')
+    //     ->group(function () {
 
-            /*
-        |--------------------------------------------------------------------------
-        | Read Student Payment Information
-        |--------------------------------------------------------------------------
-        |
-        | QR / Student ID
-        |
-        */
+    //         /*
+    //     |--------------------------------------------------------------------------
+    //     | Read Student Payment Information
+    //     |--------------------------------------------------------------------------
+    //     |
+    //     | QR / Student ID
+    //     |
+    //     */
 
-            Route::post(
-                '/read',
-                [PaymentController::class, 'read']
-            )->name('read');
-
-
-            /*
-        |--------------------------------------------------------------------------
-        | Single Payment
-        |--------------------------------------------------------------------------
-        */
-
-            Route::post(
-                '/pay',
-                [PaymentController::class, 'pay']
-            )->name('pay');
+    //         Route::post(
+    //             '/read',
+    //             [PaymentController::class, 'read']
+    //         )->name('read');
 
 
-            /*
-        |--------------------------------------------------------------------------
-        | Bulk Payment
-        |--------------------------------------------------------------------------
-        |
-        | One or more payments can be sent.
-        | If only one payment is sent, it is also valid.
-        |
-        */
+    //         /*
+    //     |--------------------------------------------------------------------------
+    //     | Single Payment
+    //     |--------------------------------------------------------------------------
+    //     */
 
-            Route::post(
-                '/bulk-pay',
-                [PaymentController::class, 'bulkPay']
-            )->name('bulk-pay');
-        });
+    //         Route::post(
+    //             '/pay',
+    //             [PaymentController::class, 'pay']
+    //         )->name('pay');
 
 
-    /*
-    |--------------------------------------------------------------------------
-    | Student Admission Payment Delete
-    |--------------------------------------------------------------------------
-    */
+    //         /*
+    //     |--------------------------------------------------------------------------
+    //     | Bulk Payment
+    //     |--------------------------------------------------------------------------
+    //     |
+    //     | One or more payments can be sent.
+    //     | If only one payment is sent, it is also valid.
+    //     |
+    //     */
+
+    //         Route::post(
+    //             '/bulk-pay',
+    //             [PaymentController::class, 'bulkPay']
+    //         )->name('bulk-pay');
+    //     });
+
+
+    // /*
+    // |--------------------------------------------------------------------------
+    // | Student Admission Payment Delete
+    // |--------------------------------------------------------------------------
+    // */
 
     Route::get(
         '/admission',
@@ -310,10 +315,10 @@ Route::middleware([
 
     // New version of attendance scan
 
-    Route::post(
-        '/new-attendance/scan',
-        [AttendanceController::class, 'scan']
-    )->name('api.new-attendance.scan');
+    // Route::post(
+    //     '/new-attendance/scan',
+    //     [AttendanceController::class, 'scan']
+    // )->name('api.new-attendance.scan');
 
 
     Route::post(
@@ -326,20 +331,20 @@ Route::middleware([
         [StudentAttendanceController::class, 'studentAttendanceHistory']
     );
 
-    Route::delete(
-        '/student-attendances/{attendanceId}',
-        [StudentAttendanceController::class, 'deleteAttendance']
-    )->name('api.student-attendances.delete');
+    // Route::delete(
+    //     '/student-attendances/{attendanceId}',
+    //     [StudentAttendanceController::class, 'deleteAttendance']
+    // )->name('api.student-attendances.delete');
 
-    Route::post(
-        'attendance/schedules',
-        [AttendanceScheduleController::class, 'index']
-    );
+    // Route::post(
+    //     'attendance/schedules',
+    //     [AttendanceScheduleController::class, 'index']
+    // );
 
-    Route::post(
-        'attendance/report',
-        [AttendanceReportController::class, 'index']
-    );
+    // Route::post(
+    //     'attendance/report',
+    //     [AttendanceReportController::class, 'index']
+    // );
 
 
     Route::post(
@@ -447,12 +452,6 @@ Route::middleware([
         [InstituteHallController::class, 'fetchInstituteHall']
     );
 
-
-    Route::get(
-        '/mobile-dashboard',
-        [MobileDashboardController::class, 'mobileDashboardDetails']
-    );
-
     /*
     |--------------------------------------------------------------------------
     | Admin Notifications (Send, Manage)
@@ -490,25 +489,25 @@ Route::middleware([
 |--------------------------------------------------------------------------
 */
 
-    Route::prefix('student-card-assignment')
-        ->name('api.student-card-assignment.')
-        ->group(function () {
+    // Route::prefix('student-card-assignment')
+    //     ->name('api.student-card-assignment.')
+    //     ->group(function () {
 
-            Route::post(
-                '/search-student',
-                [StudentCardAssignmentController::class, 'searchStudent']
-            )->name('search-student');
+    //         Route::post(
+    //             '/search-student',
+    //             [StudentCardAssignmentController::class, 'searchStudent']
+    //         )->name('search-student');
 
-            Route::post(
-                '/search-card',
-                [StudentCardAssignmentController::class, 'searchAvailableCard']
-            )->name('search-card');
+    //         Route::post(
+    //             '/search-card',
+    //             [StudentCardAssignmentController::class, 'searchAvailableCard']
+    //         )->name('search-card');
 
-            Route::post(
-                '/assign',
-                [StudentCardAssignmentController::class, 'assignCard']
-            )->name('assign');
-        });
+    //         Route::post(
+    //             '/assign',
+    //             [StudentCardAssignmentController::class, 'assignCard']
+    //         )->name('assign');
+    //     });
 });
 
 

@@ -3,89 +3,66 @@
 namespace App\Http\Controllers\Api\Dashboard;
 
 use App\Http\Controllers\Controller;
-use App\Models\ClassSchedule;
-use App\Models\Payment;
-use App\Models\Student;
-use App\Models\StudentCard;
-use App\Models\StudentClass;
-use App\Models\Teacher;
-use App\Services\SmsService;
+use App\Services\Api\Dashboard\MobileDashboardService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
 use Throwable;
 
 class MobileDashboardController extends Controller
 {
-    protected SmsService $smsService;
+    public function __construct(
+        protected MobileDashboardService $dashboardService
+    ) {}
 
-    public function __construct(SmsService $smsService)
+    /**
+     * GET /api/mobile-dashboard?branch_id=3
+     *
+     * branch_id empty -> all branches the user can access
+     *                    (Branch Admin / User with one branch -> that branch)
+     */
+    public function mobileDashboardDetails(Request $request): JsonResponse
     {
-        $this->smsService = $smsService;
-    }
+        $validated = $request->validate([
+            'branch_id' => ['nullable', 'integer', 'min:1'],
+        ]);
 
-    public function mobileDashboardDetails(): JsonResponse
-    {
+        $branchId = isset($validated['branch_id']) ? (int) $validated['branch_id'] : null;
+
+        $branchIds = $this->dashboardService->resolveBranchIds($branchId);
+
+        if ($branchIds === null) {
+            return response()->json([
+                'success' => false,
+                'message' => 'You do not have access to this branch.',
+            ], 403);
+        }
+
+        if ($branchIds->isEmpty()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No branch is assigned to your account.',
+            ], 403);
+        }
+
+        // Only one branch -> show it as the selected branch
+        $selectedBranchId = $branchId ?? ($branchIds->count() === 1 ? $branchIds->first() : null);
+
         try {
-            $now = now();
-            $today = $now->toDateString();
-            $currentMonth = $now->month;
-            $currentYear = $now->year;
-
-            $smsBalance = $this->smsService->getBalance();
-
-            $totalStudent = Student::count();
-            $totalTeacher = Teacher::count();
-            $totalClasses = StudentClass::count();
-
-            $todayClassCount = ClassSchedule::whereDate('class_date', $today)->count();
-
-            $todayPaymentCollection = Payment::whereBetween('created_at', [
-                $now->copy()->startOfDay(),
-                $now->copy()->endOfDay(),
-            ])->sum('amount');
-
-            $currentMonthAdmissionCount = Student::whereMonth('created_at', $currentMonth)
-                ->whereYear('created_at', $currentYear)
-                ->count();
-
-            $currentMonthAdmissions = Student::whereMonth('created_at', $currentMonth)
-                ->whereYear('created_at', $currentYear)
-                ->latest()
-                ->take(5)
-                ->get([
-                    'id',
-                    'custom_id',
-                    'temporary_qr_code',
-                    'initial_name',
-                    'gender',
-                    'guardian_mobile',
-                ]);
-
-            $temporaryStudentCount = Student::where('permanent_qr_active', false)->count();
-            $permanentStudentCount = Student::where('permanent_qr_active', true)->count();
-            $availableQrCodes = StudentCard::where('status', 'available')->count();
-
             return response()->json([
                 'success' => true,
                 'message' => 'Dashboard details fetched successfully',
-                'data' => [
-                    'sms_balance' => $smsBalance,
-                    'total_student' => $totalStudent,
-                    'total_teacher' => $totalTeacher,
-                    'total_classes' => $totalClasses,
-                    'today_class_count' => $todayClassCount,
-                    'today_payment_collection' => $todayPaymentCollection,
-                    'current_month_admission_count' => $currentMonthAdmissionCount,
-                    'current_month_admissions' => $currentMonthAdmissions,
-                    'temporary_student_count' => $temporaryStudentCount,
-                    'permanent_student_count' => $permanentStudentCount,
-                    'available_id_card' => $availableQrCodes,
-                ]
+                'data' => $this->dashboardService->build(
+                    $request->user(),
+                    $branchIds,
+                    $selectedBranchId
+                ),
             ], 200);
         } catch (Throwable $e) {
+            report($e);
+
             return response()->json([
                 'success' => false,
-                'message' => 'Something went wrong',
-                'error' => $e->getMessage(),
+                'message' => 'Unable to load the dashboard. Please try again.',
             ], 500);
         }
     }
