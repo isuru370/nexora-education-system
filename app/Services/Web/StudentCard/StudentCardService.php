@@ -767,6 +767,8 @@ class StudentCardService
                     'card_number' => $card->card_number,
                     'qr_code'     => $card->qr_code,
                     'branch'      => $card->branch?->name,
+                    'branch_id'   => $card->branch_id,
+                    'branch_code' => $card->branch?->code,
                 ],
             ];
         }

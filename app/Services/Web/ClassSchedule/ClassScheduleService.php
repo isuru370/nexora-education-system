@@ -36,11 +36,12 @@ class ClassScheduleService
         return $this->accessService->getActivePattern($studentClassId);
     }
 
+    /** true when the class date is inside the pattern's start / end date */
     public function validatePatternDateRange(
         $pattern,
         string $classDate
-    ): void {
-        $this->accessService->validatePatternDateRange(
+    ): bool {
+        return $this->accessService->validatePatternDateRange(
             $pattern,
             $classDate
         );

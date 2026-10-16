@@ -8,9 +8,11 @@ use App\Models\StudentClassEnrollment;
 use Illuminate\Http\Request;
 use App\Models\StudentTute;
 use App\Services\Api\Student\StudentQRService;
+use App\Services\Branch\BranchAccessService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Validation\ValidationException;
 
 class StudentTuteController extends Controller
 {
@@ -116,6 +118,26 @@ class StudentTuteController extends Controller
                 'note' => 'nullable|string',
             ]);
 
+            // the enrollment decides the branch (student_tutes.branch_id is required)
+            $enrollment = StudentClassEnrollment::query()
+                ->where('id', $validated['student_class_enrollment_id'])
+                ->where('student_id', $validated['student_id'])
+                ->first();
+
+            if (!$enrollment) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'This class enrollment does not belong to the student.',
+                ], 422);
+            }
+
+            if (!app(BranchAccessService::class)->canAccessBranch((int) $enrollment->branch_id)) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'You do not have access to this branch.',
+                ], 403);
+            }
+
             // duplicate check
             $alreadyExists = StudentTute::where('student_id', $validated['student_id'])
                 ->where('student_class_enrollment_id', $validated['student_class_enrollment_id'])
@@ -131,6 +153,7 @@ class StudentTuteController extends Controller
 
             // create record
             $studentTute = StudentTute::create([
+                'branch_id' => $enrollment->branch_id,
                 'student_id' => $validated['student_id'],
                 'student_class_enrollment_id' => $validated['student_class_enrollment_id'],
                 'issued_month' => $validated['issued_month'],
@@ -145,6 +168,9 @@ class StudentTuteController extends Controller
                 'message' => 'Student tute created successfully',
                 'data' => $studentTute
             ], 201);
+        } catch (ValidationException $e) {
+            // let Laravel answer 422 with the field errors (not 500)
+            throw $e;
         } catch (\Exception $e) {
 
             Log::error('Student Tute Store Error', [

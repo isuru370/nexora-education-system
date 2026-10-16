@@ -74,9 +74,16 @@ class StudentController extends Controller
 
     /**
      * Search students.
+     *
+     * GET /students/search?search=S001  (web)
+     * GET /students/search/S001         (mobile app)
      */
-    public function searchStudent(Request $request): JsonResponse
+    public function searchStudent(Request $request, ?string $search = null): JsonResponse
     {
+        if ($search !== null && !$request->filled('search')) {
+            $request->merge(['search' => $search]);
+        }
+
         $validated = $request->validate([
             'search' => [
                 'required',

@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Web\ExtraIncome;
 
 use App\Http\Controllers\Controller;
 use App\Models\ExtraIncome;
-use App\Services\ReceiptNumberService;
+use App\Services\Web\Receipt\ReceiptNumberService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;

@@ -40,9 +40,10 @@ class ScanAttendanceRequest extends FormRequest
                 'max:255',
             ],
 
+            // web: qr_web / manual_web, mobile app: qr_mobile / manual_mobile
             'mark_method' => [
                 'required',
-                'in:qr_web,manual_web',
+                'in:qr_mobile,qr_web,manual_mobile,manual_web',
             ],
         ];
     }
