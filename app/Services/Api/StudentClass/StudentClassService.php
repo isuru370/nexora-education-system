@@ -4,13 +4,39 @@ namespace App\Services\Api\StudentClass;
 
 use App\Models\Grade;
 use App\Models\StudentClass;
+use App\Services\Branch\BranchAccessService;
+use Illuminate\Support\Collection;
 
 class StudentClassService
 {
+    public function __construct(
+        protected BranchAccessService $branchAccessService
+    ) {}
+
+    /**
+     * Branch IDs to list classes from.
+     *
+     * @return Collection|null  null = the user cannot access $branchId
+     */
+    public function resolveBranchIds(?int $branchId): ?Collection
+    {
+        $allowed = $this->branchAccessService->getBranchIds()->map(fn ($id) => (int) $id)->values();
+
+        if ($branchId === null) {
+            return $allowed;
+        }
+
+        return $allowed->contains($branchId) ? collect([$branchId]) : null;
+    }
+
     /**
      * Fetch active student classes for a grade.
+     *
+     * Only classes in the user's branches are returned (a student can only be
+     * enrolled in those - StudentClassEnrollmentService checks the same).
+     * $branchIds narrows it further (e.g. ?branch_id=3).
      */
-    public function fetchStudentClasses(int $gradeId): array
+    public function fetchStudentClasses(int $gradeId, ?Collection $branchIds = null): array
     {
         $grade = Grade::query()
             ->select([
@@ -30,9 +56,12 @@ class StudentClassService
                 'grade_id',
                 'is_active',
                 'is_ongoing',
+                'branch_id',
             ])
             ->with([
                 'teacher:id,full_name',
+
+                'branch:id,name,code',
 
                 'grade:id,grade_name',
 
@@ -67,6 +96,7 @@ class StudentClassService
             ])
             ->where('grade_id', $gradeId)
             ->where('is_active', true)
+            ->whereIn('branch_id', $branchIds ?? $this->resolveBranchIds(null))
             ->orderBy('class_name')
             ->get();
 
@@ -100,6 +130,12 @@ class StudentClassService
             'grade_id' => $class->grade_id,
 
             'grade_name' => $class->grade?->grade_name,
+
+            'branch_id' => $class->branch_id,
+
+            'branch_name' => $class->branch?->name,
+
+            'branch_code' => $class->branch?->code,
 
             'teacher_id' => $class->teacher?->id,
 

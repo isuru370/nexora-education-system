@@ -122,6 +122,11 @@ class StudentCardRegistrationService
 
             $image = $data['image'] ?? null;
 
+            // Photo taken earlier on the mobile app ("Capture Image")
+            $quickImageId = $data['quick_image_id'] ?? null;
+            // Photo taken earlier on the mobile app ("Capture Image")
+            $quickImageId = $data['quick_image_id'] ?? null;
+
             $admissionId = $data['admission_id'] ?? null;
 
             $hasAdmission = !empty($data['admission']);
@@ -135,6 +140,7 @@ class StudentCardRegistrationService
             unset(
                 $data['card_qr_code'],
                 $data['image'],
+                $data['quick_image_id'],
                 $data['admission_id']
             );
 
@@ -156,11 +162,24 @@ class StudentCardRegistrationService
             |--------------------------------------------------------------------------
             */
 
-            $data['img_url'] = $this->studentPhotoService
-                ->handleStudentImage(
-                    $image,
-                    $data['gender'] ?? null
-                );
+            if ($quickImageId) {
+                // Mobile: use the photo taken with "Capture Image" (QP-001 ...)
+                $data['img_url'] = $this->studentPhotoService
+                    ->assignQuickPhoto($quickImageId);
+
+                if (!$data['img_url']) {
+                    throw new RuntimeException(
+                        'Quick image is invalid or already used.'
+                    );
+                }
+            } else {
+                // Web upload, or the default male / female image
+                $data['img_url'] = $this->studentPhotoService
+                    ->handleStudentImage(
+                        $image,
+                        $data['gender'] ?? null
+                    );
+            }
 
             $data['last_image_update_at'] = now();
 

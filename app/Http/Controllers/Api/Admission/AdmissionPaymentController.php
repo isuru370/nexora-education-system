@@ -6,8 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\Admission;
 use App\Models\AdmissionPayment;
 use App\Models\Student;
+use App\Services\Web\Student\StudentAdmissionService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Symfony\Component\HttpKernel\Exception\HttpException;
 
 class AdmissionPaymentController extends Controller
 {
@@ -131,59 +133,62 @@ class AdmissionPaymentController extends Controller
         }
     }
 
-    public function storeAdmissionPayment(Request $request)
+    /**
+     * POST /api/admission-payments/store  { "student_id", "admission_id" }
+     *
+     * Uses the same StudentAdmissionService as student registration, so the
+     * payment gets the student's branch, the cashier, paid_at and a receipt number.
+     */
+    public function storeAdmissionPayment(Request $request, StudentAdmissionService $admissionService)
     {
+        $validated = $request->validate([
+            'student_id' => ['required', 'integer', 'exists:students,id'],
+            'admission_id' => ['required', 'integer', 'exists:admissions,id'],
+        ]);
+
+        $student = Student::query()->findOrFail($validated['student_id']);
+
+        $alreadyPaid = AdmissionPayment::query()
+            ->where('student_id', $student->id)
+            ->where('status', AdmissionPayment::STATUS_PAID)
+            ->exists();
+
+        if ($alreadyPaid) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Admission fee is already paid for this student.',
+            ], 422);
+        }
+
         try {
-
-            $request->validate([
-                'student_id'   => 'required|exists:students,id',
-                'admission_id' => 'required|exists:admissions,id',
-            ]);
-
-            $admission = Admission::active()
-                ->findOrFail($request->admission_id);
-
-            $payment = AdmissionPayment::create([
-                'student_id'   => $request->student_id,
-                'admission_id' => $admission->id,
-                'amount'       => $admission->amount,
-            ]);
-
-            Student::where('id', $request->student_id)
-                ->update([
-                    'admission' => true,
-                ]);
-
-            $student = Student::with('grade')
-                ->findOrFail($request->student_id);
-
-            $payment->load('admission');
+            $payment = $admissionService->createAdmissionPayment($student, (int) $validated['admission_id']);
 
             return response()->json([
                 'success' => true,
                 'message' => 'Admission payment recorded successfully.',
-
-                'student' => $student,
-
+                'student' => $student->fresh('grade'),
                 'admission_payment' => [
                     'id' => $payment->id,
                     'receipt_number' => $payment->receipt_number,
                     'amount' => $payment->amount,
                     'status' => $payment->status,
-                    'paid_at' => optional($payment->paid_at)
-                        ->toDateTimeString(),
+                    'paid_at' => optional($payment->paid_at)->toDateTimeString(),
                     'payment_method' => $payment->payment_method,
                     'admission_name' => optional($payment->admission)->name,
                     'note' => $payment->note,
                 ],
             ]);
+        } catch (HttpException $e) {
+            // e.g. 403 "You do not have access to this branch."
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+            ], $e->getStatusCode());
         } catch (\Throwable $e) {
-
             Log::error('Failed to store admission payment.', [
                 'message' => $e->getMessage(),
-                'file'    => $e->getFile(),
-                'line'    => $e->getLine(),
-                'trace'   => $e->getTraceAsString(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
             ]);
 
             return response()->json([

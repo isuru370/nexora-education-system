@@ -148,16 +148,18 @@ class StudentClassEnrollmentService
 
             /*
             |--------------------------------------------------------------------------
-            | Create New Enrollment
+            | Create New Enrollment (or bring back an old one)
             |--------------------------------------------------------------------------
+            |
+            | student + class + category fee + fee option is unique in the table
+            | (sce_student_class_fee_unique), active or not. A student who left
+            | this class (or used this fee option before) already has a row, so
+            | that row is re-activated instead of inserting a duplicate.
+            |
             */
 
-            $enrollment = StudentClassEnrollment::create([
+            $values = [
                 'branch_id' => $branchId,
-                'student_id' => $data['student_id'],
-                'student_class_id' => $studentClassId,
-                'class_category_fee_id' => $categoryFeeId,
-                'class_category_fee_option_id' => $feeOption->id,
                 'is_active' => true,
                 'is_free_card' => !empty($data['is_free_card']) ? true : false,
                 'enrolled_at' => !empty($data['enrolled_at'])
@@ -165,7 +167,32 @@ class StudentClassEnrollmentService
                     : now()->toDateString(),
                 'left_at' => null,
                 'note' => $data['note'] ?? null,
-            ]);
+            ];
+
+            $previousEnrollment = StudentClassEnrollment::withTrashed()
+                ->where('student_id', $data['student_id'])
+                ->where('student_class_id', $studentClassId)
+                ->where('class_category_fee_id', $categoryFeeId)
+                ->where('class_category_fee_option_id', $feeOption->id)
+                ->lockForUpdate()
+                ->first();
+
+            if ($previousEnrollment) {
+                if ($previousEnrollment->trashed()) {
+                    $previousEnrollment->restore();
+                }
+
+                $previousEnrollment->update($values);
+
+                $enrollment = $previousEnrollment;
+            } else {
+                $enrollment = StudentClassEnrollment::create($values + [
+                    'student_id' => $data['student_id'],
+                    'student_class_id' => $studentClassId,
+                    'class_category_fee_id' => $categoryFeeId,
+                    'class_category_fee_option_id' => $feeOption->id,
+                ]);
+            }
 
             /*
             |--------------------------------------------------------------------------

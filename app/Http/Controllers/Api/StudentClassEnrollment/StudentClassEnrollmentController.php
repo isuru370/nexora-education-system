@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api\StudentClassEnrollment;
 use App\Http\Controllers\Controller;
 use App\Models\Student;
 use App\Models\StudentClassEnrollment;
-use App\Services\StudentClassEnrollmentService;
+use App\Services\Web\StudentClassEnrollment\StudentClassEnrollmentService;
 use App\Services\Api\Student\StudentQRService;
 use Exception;
 use Illuminate\Http\JsonResponse;
