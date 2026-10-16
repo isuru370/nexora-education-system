@@ -508,7 +508,8 @@
                             </span>
 
                             <input type="email" name="email" class="form-control custom-input"
-                                placeholder="Enter your email" required>
+                                placeholder="Enter your email" required
+                                value="{{ old('email', request()->boolean('demo') ? config('demo.email') : '') }}">
 
                         </div>
 
@@ -528,7 +529,8 @@
                             </span>
 
                             <input type="password" name="password" id="password" class="form-control custom-input"
-                                placeholder="Enter your password" required>
+                                placeholder="Enter your password" required
+                                value="{{ request()->boolean('demo') ? config('demo.password') : '' }}">
 
                             <button type="button" class="toggle-password" onclick="togglePassword()">
 
