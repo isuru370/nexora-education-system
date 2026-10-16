@@ -5,7 +5,7 @@ namespace App\Services\Api\ClassSchedule;
 use App\Models\ClassCategoryFee;
 use App\Models\ClassSchedule;
 use App\Models\StudentClass;
-use App\Services\ClassScheduleService;
+use App\Services\Web\ClassSchedule\ClassScheduleService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -307,6 +307,7 @@ class ClassScheduleApiService
 
         return DB::transaction(function () use ($data, $pattern) {
             return ClassSchedule::create([
+                'branch_id' => $pattern->branch_id,
                 'class_schedule_pattern_id' => $pattern->id,
                 'student_class_id' => $data['student_class_id'],
                 'class_category_fee_id' => $data['class_category_fee_id'],

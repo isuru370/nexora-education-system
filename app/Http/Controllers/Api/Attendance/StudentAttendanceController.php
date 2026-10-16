@@ -209,6 +209,8 @@ class StudentAttendanceController extends Controller
         array $validated
     ): StudentAttendance {
         return StudentAttendance::create([
+            // the class schedule decides the branch (same as the scan flow)
+            'branch_id' => $schedule->branch_id ?? $enrollment?->branch_id,
             'local_uuid' => null,
             'student_id' => $student->id,
             'class_schedule_id' => $schedule->id,
@@ -227,6 +229,7 @@ class StudentAttendanceController extends Controller
         array $validated
     ): StudentTute {
         return StudentTute::create([
+            'branch_id' => $enrollment->branch_id,
             'student_id' => $student->id,
             'student_class_enrollment_id' => $enrollment->id,
             'issued_month' => now()->startOfMonth()->toDateString(),

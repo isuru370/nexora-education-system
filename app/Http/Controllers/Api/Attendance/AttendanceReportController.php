@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api\Attendance;
 
 use App\Http\Controllers\Controller;
-use App\Services\Attendance\AttendanceReportService;
+use App\Services\Api\Attendance\AttendanceReportService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Throwable;

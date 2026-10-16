@@ -8,6 +8,7 @@ use App\Http\Requests\Web\Payment\ReadPaymentRequest;
 use App\Http\Requests\Web\Payment\StorePaymentRequest;
 use App\Services\Web\Payment\PaymentService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Validation\ValidationException;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
@@ -83,6 +84,13 @@ class PaymentController extends Controller
                 'message' => 'Payment completed successfully.',
                 'data' => $data,
             ], 201);
+        } catch (ValidationException $e) {
+            // e.g. "No active payment configuration found for this class."
+            return response()->json([
+                'status' => 'error',
+                'message' => collect($e->errors())->flatten()->first() ?: $e->getMessage(),
+                'errors' => $e->errors(),
+            ], 422);
         } catch (\InvalidArgumentException $e) {
             return response()->json([
                 'status' => 'error',
@@ -131,6 +139,13 @@ class PaymentController extends Controller
                 'message' => 'Bulk payment completed successfully.',
                 'data' => $data,
             ], 201);
+        } catch (ValidationException $e) {
+            // e.g. "No active payment configuration found for this class."
+            return response()->json([
+                'status' => 'error',
+                'message' => collect($e->errors())->flatten()->first() ?: $e->getMessage(),
+                'errors' => $e->errors(),
+            ], 422);
         } catch (\InvalidArgumentException $e) {
             return response()->json([
                 'status' => 'error',

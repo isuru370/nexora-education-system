@@ -11,7 +11,7 @@ use App\Models\Notification;
 use App\Models\Payment;
 use App\Models\StudentClassEnrollment;
 use App\Services\Notification\PaymentNotificationService;
-use App\Services\ReceiptNumberService;
+use App\Services\Web\Receipt\ReceiptNumberService;
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;

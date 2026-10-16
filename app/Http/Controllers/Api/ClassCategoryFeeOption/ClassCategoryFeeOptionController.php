@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Api\ClassCategoryFeeOption;
 
 use App\Http\Controllers\Controller;
-use App\Services\ClassCategoryFeeOptionService;
+use App\Services\Web\ClassCategoryFeeOption\ClassCategoryFeeOptionService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;

@@ -124,8 +124,6 @@ class StudentCardRegistrationService
 
             // Photo taken earlier on the mobile app ("Capture Image")
             $quickImageId = $data['quick_image_id'] ?? null;
-            // Photo taken earlier on the mobile app ("Capture Image")
-            $quickImageId = $data['quick_image_id'] ?? null;
 
             $admissionId = $data['admission_id'] ?? null;
 
@@ -163,7 +161,6 @@ class StudentCardRegistrationService
             */
 
             if ($quickImageId) {
-                // Mobile: use the photo taken with "Capture Image" (QP-001 ...)
                 $data['img_url'] = $this->studentPhotoService
                     ->assignQuickPhoto($quickImageId);
 
@@ -173,7 +170,6 @@ class StudentCardRegistrationService
                     );
                 }
             } else {
-                // Web upload, or the default male / female image
                 $data['img_url'] = $this->studentPhotoService
                     ->handleStudentImage(
                         $image,
