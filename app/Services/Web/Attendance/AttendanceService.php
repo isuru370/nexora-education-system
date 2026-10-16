@@ -353,14 +353,36 @@ class AttendanceService
         |--------------------------------------------------------------------------
         */
 
+        // Only real (completed) payments - cancelled / refunded ones are ignored
         $lastPayment = Payment::query()
             ->where('student_id', $student->id)
             ->where(
                 'student_class_enrollment_id',
                 $enrollment->id
             )
+            ->where('status', 'completed')
             ->latest('paid_at')
+            ->latest('id')
             ->first();
+
+        /*
+        |--------------------------------------------------------------------------
+        | 5b. Paid For The Current Month
+        |--------------------------------------------------------------------------
+        */
+
+        $currentMonthPaid = (float) Payment::query()
+            ->where('student_id', $student->id)
+            ->where(
+                'student_class_enrollment_id',
+                $enrollment->id
+            )
+            ->where('status', 'completed')
+            ->whereBetween('payment_month', [
+                Carbon::now()->startOfMonth()->toDateString(),
+                Carbon::now()->endOfMonth()->toDateString(),
+            ])
+            ->sum('amount');
 
         /*
         |--------------------------------------------------------------------------
@@ -378,6 +400,8 @@ class AttendanceService
             'absent_days' => $absentDays,
 
             'attendance_percentage' => $attendancePercentage,
+
+            'current_month_paid' => $currentMonthPaid,
 
             'last_payment' => $lastPayment
                 ? [
@@ -407,6 +431,36 @@ class AttendanceService
                     $lastPayment->status,
                 ]
                 : null,
+        ];
+    }
+
+    /**
+     * Payment state of the current month for one enrollment.
+     */
+    protected function currentMonthPayment(
+        bool $isFreeCard,
+        float $finalFee,
+        float $paidAmount,
+        string $month
+    ): array {
+        if ($isFreeCard) {
+            $status = 'free';
+        } elseif ($paidAmount <= 0) {
+            $status = 'unpaid';
+        } elseif ($paidAmount + 0.009 >= $finalFee) {
+            $status = 'paid';
+        } else {
+            $status = 'partial';
+        }
+
+        return [
+            'month' => $month,
+            'month_name' => Carbon::parse($month . '-01')->format('F Y'),
+            'status' => $status,
+            'is_paid' => in_array($status, ['free', 'paid'], true),
+            'fee' => $finalFee,
+            'paid_amount' => round($paidAmount, 2),
+            'balance' => round(max($finalFee - $paidAmount, 0), 2),
         ];
     }
 
@@ -561,6 +615,22 @@ class AttendanceService
             */
 
             'last_payment' => $lastPayment,
+
+            /*
+            |--------------------------------------------------------------------------
+            | This Month's Payment
+            |--------------------------------------------------------------------------
+            |
+            | status: free | paid | partial | unpaid
+            |
+            */
+
+            'current_month_payment' => $this->currentMonthPayment(
+                (bool) $enrollment->is_free_card,
+                $finalFee,
+                (float) ($monthlySummary['current_month_paid'] ?? 0),
+                $monthlySummary['month']
+            ),
 
             /*
             |--------------------------------------------------------------------------
