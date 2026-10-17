@@ -7,125 +7,157 @@
     $summary = $summary ?? [];
 
     $statusBadges = [
-        'pending' => ['bg-warning text-dark', 'Pending'],
-        'paid' => ['bg-success', 'Paid'],
-        'cancelled' => ['bg-danger', 'Cancelled'],
-        'refunded' => ['bg-info text-dark', 'Refunded'],
+        'pending'   => ['nx-badge-amber', 'Pending'],
+        'paid'      => ['nx-badge-green', 'Paid'],
+        'cancelled' => ['nx-badge-red',   'Cancelled'],
+        'refunded'  => ['nx-badge-blue',  'Refunded'],
     ];
 
     $methodBadges = [
-        'cash' => ['bg-light text-dark', 'Cash'],
-        'card' => ['bg-primary-subtle text-primary', 'Card'],
-        'bank_transfer' => ['bg-info-subtle text-info', 'Bank Transfer'],
-        'online' => ['bg-success-subtle text-success', 'Online'],
-        'other' => ['bg-secondary-subtle text-secondary', 'Other'],
+        'cash'          => ['nx-badge-gray',   'Cash'],
+        'card'          => ['nx-badge-blue',   'Card'],
+        'bank_transfer' => ['nx-badge-blue',   'Bank Transfer'],
+        'online'        => ['nx-badge-green',  'Online'],
+        'other'         => ['nx-badge-gray',   'Other'],
     ];
 
     $hasFilters = request()->filled('search') || request()->filled('status');
 @endphp
 
 @section('content')
-    <div class="admission-payments-page">
+    <div class="dashboard-page">
 
-        {{-- STATS (all payments in your branches, not only this page) --}}
-        <div class="row g-4 mb-4">
-            <div class="col-xl-3 col-md-6">
-                <div class="stats-card">
-                    <div class="stats-icon blue">
-                        <i class="bi bi-receipt"></i>
-                    </div>
-                    <div>
-                        <h3>{{ number_format($summary['total'] ?? 0) }}</h3>
-                        <p>Total Payments</p>
+        {{-- ===================================================== --}}
+        {{-- HERO --}}
+        {{-- ===================================================== --}}
+        <div class="hero-section mb-4">
+            <div class="hero-content">
+                <div class="hero-left">
+                    <span class="greeting-badge">nexoraEDU</span>
+                    <h1 class="hero-title">Admission Payments</h1>
+                    <p class="hero-subtitle">Manage student admission payment records, status and payment details.</p>
+
+                    <div class="hero-stats-mini">
+                        <div class="mini-stat">
+                            <span class="mini-stat-value">{{ number_format($summary['total'] ?? 0) }}</span>
+                            <span class="mini-stat-label">Total Payments</span>
+                        </div>
+                        <div class="mini-stat-divider"></div>
+                        <div class="mini-stat">
+                            <span class="mini-stat-value">{{ number_format($summary['paid'] ?? 0) }}</span>
+                            <span class="mini-stat-label">Paid</span>
+                        </div>
+                        <div class="mini-stat-divider"></div>
+                        <div class="mini-stat">
+                            <span class="mini-stat-value">Rs. {{ number_format($summary['paid_amount'] ?? 0, 2) }}</span>
+                            <span class="mini-stat-label">Collected</span>
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <div class="col-xl-3 col-md-6">
-                <div class="stats-card">
-                    <div class="stats-icon green">
-                        <i class="bi bi-check-circle-fill"></i>
+                <div class="hero-right">
+                    <div class="hero-actions">
+                        <a href="{{ route('admission-payments.create') }}" class="nx-btn nx-btn-primary">
+                            <i class="bi bi-plus-lg"></i> Add Payment
+                        </a>
                     </div>
-                    <div>
-                        <h3>{{ number_format($summary['paid'] ?? 0) }}</h3>
-                        <p>Paid</p>
-                        @if (($summary['cancelled'] ?? 0) + ($summary['refunded'] ?? 0) > 0)
-                            <small class="text-muted">
-                                {{ $summary['cancelled'] ?? 0 }} cancelled · {{ $summary['refunded'] ?? 0 }} refunded
-                            </small>
-                        @endif
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-xl-3 col-md-6">
-                <div class="stats-card">
-                    <div class="stats-icon orange">
-                        <i class="bi bi-clock-fill"></i>
-                    </div>
-                    <div>
-                        <h3>{{ number_format($summary['pending'] ?? 0) }}</h3>
-                        <p>Pending</p>
-                        @if (($summary['pending_amount'] ?? 0) > 0)
-                            <small class="text-muted">Rs. {{ number_format($summary['pending_amount'], 2) }} due</small>
-                        @endif
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-xl-3 col-md-6">
-                <div class="stats-card">
-                    <div class="stats-icon red">
-                        <i class="bi bi-cash-coin"></i>
-                    </div>
-                    <div class="min-w-0">
-                        <h3>Rs. {{ number_format($summary['paid_amount'] ?? 0, 2) }}</h3>
-                        <p>Total Collected</p>
-                        <small class="text-muted">Today: Rs. {{ number_format($summary['today_paid_amount'] ?? 0, 2) }}</small>
-                    </div>
+                    <small class="hero-updated">{{ now()->format('D, d M Y') }}</small>
                 </div>
             </div>
         </div>
 
-        {{-- MAIN CARD --}}
-        <div class="main-card">
+        {{-- ===================================================== --}}
+        {{-- KPI CARDS --}}
+        {{-- ===================================================== --}}
+        <div class="stats-grid mb-4">
 
-            {{-- HEADER --}}
-            <div class="main-card-header">
-                <div>
-                    <h4>Admission Payments</h4>
-                    <p>Manage student admission payment records, status and payment details</p>
+            <div class="nx-card stat-card">
+                <div class="stat-icon-wrapper icon-blue"><i class="bi bi-receipt"></i></div>
+                <div class="stat-info">
+                    <span class="stat-label">Total Payments</span>
+                    <h2 class="stat-number">{{ number_format($summary['total'] ?? 0) }}</h2>
+                    <span class="stat-change neutral">All <span class="stat-change-note">payments</span></span>
                 </div>
+            </div>
 
-                <div class="header-buttons">
-                    <a href="{{ route('admission-payments.create') }}" class="btn btn-primary custom-btn">
-                        <i class="bi bi-plus-lg"></i>
-                        Add Payment
-                    </a>
+            <div class="nx-card stat-card">
+                <div class="stat-icon-wrapper icon-green"><i class="bi bi-check-circle-fill"></i></div>
+                <div class="stat-info">
+                    <span class="stat-label">Paid</span>
+                    <h2 class="stat-number">{{ number_format($summary['paid'] ?? 0) }}</h2>
+                    @if (($summary['cancelled'] ?? 0) + ($summary['refunded'] ?? 0) > 0)
+                        <span class="stat-change down">
+                            {{ $summary['cancelled'] ?? 0 }} cancelled · {{ $summary['refunded'] ?? 0 }} refunded
+                        </span>
+                    @else
+                        <span class="stat-change up">All <span class="stat-change-note">paid</span></span>
+                    @endif
+                </div>
+            </div>
+
+            <div class="nx-card stat-card">
+                <div class="stat-icon-wrapper icon-amber"><i class="bi bi-clock-fill"></i></div>
+                <div class="stat-info">
+                    <span class="stat-label">Pending</span>
+                    <h2 class="stat-number">{{ number_format($summary['pending'] ?? 0) }}</h2>
+                    @if (($summary['pending_amount'] ?? 0) > 0)
+                        <span class="stat-change down">
+                            Rs. {{ number_format($summary['pending_amount'], 2) }} <span class="stat-change-note">due</span>
+                        </span>
+                    @else
+                        <span class="stat-change neutral">No <span class="stat-change-note">pending</span></span>
+                    @endif
+                </div>
+            </div>
+
+            <div class="nx-card stat-card">
+                <div class="stat-icon-wrapper icon-red"><i class="bi bi-cash-coin"></i></div>
+                <div class="stat-info">
+                    <span class="stat-label">Total Collected</span>
+                    <h2 class="stat-number">Rs. {{ number_format($summary['paid_amount'] ?? 0, 2) }}</h2>
+                    <span class="stat-change up">
+                        Today: Rs. {{ number_format($summary['today_paid_amount'] ?? 0, 2) }}
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        {{-- ===================================================== --}}
+        {{-- MAIN CARD --}}
+        {{-- ===================================================== --}}
+        <div class="nx-card mb-4">
+
+            <div class="nx-card-header">
+                <div>
+                    <h5 class="nx-card-title"><i class="bi bi-receipt text-primary"></i> Admission Payments</h5>
+                    <p class="nx-card-subtitle">Manage student admission payment records, status and payment details</p>
                 </div>
             </div>
 
             {{-- ALERTS --}}
             @if (session('success'))
-                <div class="alert alert-success custom-alert alert-dismissible fade show" role="alert">
-                    <i class="bi bi-check-circle-fill me-2"></i>
-                    {{ session('success') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="p-3 pb-0">
+                    <div class="nx-alert nx-alert-green">
+                        <i class="bi bi-check-circle-fill"></i>
+                        <span>{{ session('success') }}</span>
+                    </div>
                 </div>
             @endif
 
             @if (session('error'))
-                <div class="alert alert-danger custom-alert custom-alert-danger alert-dismissible fade show" role="alert">
-                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
-                    {{ session('error') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                <div class="p-3 pb-0">
+                    <div class="nx-alert nx-alert-red">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                        <span>{{ session('error') }}</span>
+                    </div>
                 </div>
             @endif
 
             {{-- SEARCH / FILTER --}}
-            <div class="search-card">
+            <div class="nx-search">
                 <form method="GET" action="{{ route('admission-payments.index') }}">
                     <div class="row g-3 align-items-center">
+
                         <div class="col-lg-6">
                             <div class="search-input-wrapper">
                                 <i class="bi bi-search"></i>
@@ -145,14 +177,12 @@
                         </div>
 
                         <div class="col-lg-3 d-flex gap-2">
-                            <button class="btn btn-dark flex-grow-1 custom-btn justify-content-center" type="submit">
-                                <i class="bi bi-funnel-fill"></i>
-                                Search
+                            <button type="submit" class="nx-btn nx-btn-primary flex-grow-1">
+                                <i class="bi bi-funnel-fill"></i> Search
                             </button>
 
                             @if ($hasFilters)
-                                <a href="{{ route('admission-payments.index') }}" class="btn btn-outline-secondary custom-btn"
-                                    title="Clear filters">
+                                <a href="{{ route('admission-payments.index') }}" class="nx-btn nx-btn-light" title="Clear filters" aria-label="Clear filters">
                                     <i class="bi bi-x-lg"></i>
                                 </a>
                             @endif
@@ -163,15 +193,17 @@
 
             {{-- RESULT COUNT --}}
             @if ($payments->total() > 0)
-                <p class="result-count">
-                    Showing {{ $payments->firstItem() }}–{{ $payments->lastItem() }} of {{ number_format($payments->total()) }}
-                    {{ $hasFilters ? 'matching' : '' }} payments
-                </p>
+                <div class="p-3 pb-0">
+                    <p class="cell-sub mb-0">
+                        Showing {{ $payments->firstItem() }}–{{ $payments->lastItem() }} of {{ number_format($payments->total()) }}
+                        {{ $hasFilters ? 'matching' : '' }} payments
+                    </p>
+                </div>
             @endif
 
             {{-- TABLE --}}
             <div class="table-responsive">
-                <table class="table custom-table align-middle">
+                <table class="table premium-table mb-0">
                     <thead>
                         <tr>
                             <th>#</th>
@@ -188,56 +220,61 @@
                     <tbody>
                         @forelse ($payments as $payment)
                             @php
-                                [$statusClass, $statusLabel] = $statusBadges[$payment->status] ?? ['bg-secondary', 'Unknown'];
-                                [$methodClass, $methodLabel] = $methodBadges[$payment->payment_method] ?? ['bg-light text-dark', 'Unknown'];
+                                [$statusClass, $statusLabel] = $statusBadges[$payment->status] ?? ['nx-badge-gray', 'Unknown'];
+                                [$methodClass, $methodLabel] = $methodBadges[$payment->payment_method] ?? ['nx-badge-gray', 'Unknown'];
                                 $canDelete = $payment->status !== 'paid';
                             @endphp
 
                             <tr>
-                                <td>{{ $payments->firstItem() + $loop->index }}</td>
+                                <td class="row-number">{{ $payments->firstItem() + $loop->index }}</td>
 
+                                {{-- RECEIPT --}}
                                 <td>
-                                    <div class="fw-semibold">{{ $payment->receipt_number ?: '-' }}</div>
-                                    <small class="text-muted">
+                                    <div class="cell-title">{{ $payment->receipt_number ?: '-' }}</div>
+                                    <small class="cell-sub">
                                         {{ $payment->paid_at ? $payment->paid_at->format('d M Y, h:i A') : 'Not paid yet' }}
                                     </small>
                                 </td>
 
+                                {{-- STUDENT --}}
                                 <td>
-                                    <div class="fw-semibold">{{ optional($payment->student)->initial_name ?? '-' }}</div>
-                                    <small class="text-muted">{{ optional($payment->student)->custom_id ?? '-' }}</small>
+                                    <div class="cell-title">{{ optional($payment->student)->initial_name ?? '-' }}</div>
+                                    <small class="cell-sub">{{ optional($payment->student)->custom_id ?? '-' }}</small>
                                 </td>
 
+                                {{-- ADMISSION --}}
                                 <td>
-                                    <div class="fw-semibold">{{ optional($payment->admission)->name ?? '-' }}</div>
+                                    <div class="cell-title">{{ optional($payment->admission)->name ?? '-' }}</div>
                                     @if ($payment->collectedBy)
-                                        <small class="text-muted">by {{ $payment->collectedBy->name }}</small>
+                                        <small class="cell-sub">by {{ $payment->collectedBy->name }}</small>
                                     @endif
                                 </td>
 
+                                {{-- AMOUNT --}}
                                 <td>
                                     <div class="amount-text {{ in_array($payment->status, ['cancelled', 'refunded'], true) ? 'amount-void' : '' }}">
                                         Rs. {{ number_format((float) $payment->amount, 2) }}
                                     </div>
                                 </td>
 
+                                {{-- METHOD --}}
                                 <td>
-                                    <span class="badge custom-badge border {{ $methodClass }}">{{ $methodLabel }}</span>
+                                    <span class="nx-badge {{ $methodClass }}">{{ $methodLabel }}</span>
                                 </td>
 
+                                {{-- STATUS --}}
                                 <td>
-                                    <span class="badge custom-badge {{ $statusClass }}">{{ $statusLabel }}</span>
+                                    <span class="nx-badge {{ $statusClass }}">{{ $statusLabel }}</span>
                                 </td>
 
+                                {{-- ACTIONS --}}
                                 <td class="text-end">
                                     <div class="action-buttons">
-                                        <a href="{{ route('admission-payments.show', $payment) }}" class="action-btn view-btn"
-                                            title="View">
+                                        <a href="{{ route('admission-payments.show', $payment) }}" class="action-btn" title="View" aria-label="View">
                                             <i class="bi bi-eye-fill"></i>
                                         </a>
 
-                                        <a href="{{ route('admission-payments.edit', $payment) }}" class="action-btn edit-btn"
-                                            title="Edit">
+                                        <a href="{{ route('admission-payments.edit', $payment) }}" class="action-btn" title="Edit" aria-label="Edit">
                                             <i class="bi bi-pencil-fill"></i>
                                         </a>
 
@@ -247,13 +284,14 @@
                                                 @csrf
                                                 @method('DELETE')
 
-                                                <button type="submit" class="action-btn delete-btn" title="Delete">
+                                                <button type="submit" class="action-btn action-btn-danger" title="Delete" aria-label="Delete">
                                                     <i class="bi bi-trash-fill"></i>
                                                 </button>
                                             </form>
                                         @else
                                             <span class="action-btn locked-btn"
-                                                title="Paid payments cannot be deleted. Change the status to cancelled or refunded first.">
+                                                title="Paid payments cannot be deleted. Change the status to cancelled or refunded first."
+                                                aria-label="Locked">
                                                 <i class="bi bi-lock-fill"></i>
                                             </span>
                                         @endif
@@ -262,19 +300,24 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="8" class="text-center py-5 text-muted">
-                                    <div class="empty-state">
-                                        <i class="bi bi-receipt"></i>
-                                        <h5>No Payments Found</h5>
-                                        <p>
-                                            @if ($hasFilters)
-                                                No payments match your search.
-                                                <a href="{{ route('admission-payments.index') }}">Clear filters</a>
-                                            @else
-                                                Add the first admission payment to get started.
-                                            @endif
-                                        </p>
-                                    </div>
+                                <td colspan="8" class="empty-table">
+                                    <i class="bi bi-receipt fs-2 d-block mb-2"></i>
+                                    <strong class="d-block">No Payments Found</strong>
+                                    <span class="cell-sub">
+                                        @if ($hasFilters)
+                                            No payments match your search.
+                                        @else
+                                            Add the first admission payment to get started.
+                                        @endif
+                                    </span>
+
+                                    @if ($hasFilters)
+                                        <div class="mt-3">
+                                            <a href="{{ route('admission-payments.index') }}" class="nx-btn nx-btn-light">
+                                                <i class="bi bi-x-lg"></i> Clear filters
+                                            </a>
+                                        </div>
+                                    @endif
                                 </td>
                             </tr>
                         @endforelse
@@ -284,292 +327,48 @@
 
             {{-- PAGINATION --}}
             @if ($payments->hasPages())
-                <div class="mt-4 d-flex justify-content-center">
+                <div class="p-3 border-top d-flex justify-content-center">
                     {{ $payments->links() }}
                 </div>
             @endif
-
         </div>
+
     </div>
 @endsection
 
+
 @push('styles')
-    <style>
-        .admission-payments-page {
-            animation: fadeIn 0.4s ease;
-        }
+<style>
+    /* ============================================================
+       Admission Payments — page-specific styles only.
+       Shared nx-* theme from layouts/partials/nexora-theme.
+       ============================================================ */
 
-        .min-w-0 {
-            min-width: 0;
-        }
+    .dashboard-page .amount-text {
+        font-weight: 700;
+        color: var(--nx-text);
+        white-space: nowrap;
+    }
 
-        .stats-card {
-            background: #fff;
-            border-radius: 24px;
-            padding: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            height: 100%;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.04);
-            border: 1px solid #eef2f7;
-        }
+    .dashboard-page .amount-void {
+        color: var(--nx-muted);
+        text-decoration: line-through;
+    }
 
-        .stats-icon {
-            width: 60px;
-            height: 60px;
-            border-radius: 18px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.35rem;
-            color: #fff;
-            flex-shrink: 0;
-        }
+    .dashboard-page .locked-btn {
+        background: #f1f3f7;
+        color: var(--nx-muted);
+        cursor: not-allowed;
+        border-color: var(--nx-border);
+    }
+    .dashboard-page .locked-btn:hover {
+        background: #f1f3f7;
+        color: var(--nx-muted);
+        border-color: var(--nx-border);
+    }
 
-        .stats-icon.blue { background: linear-gradient(135deg, #2563eb, #3b82f6); }
-        .stats-icon.green { background: linear-gradient(135deg, #10b981, #34d399); }
-        .stats-icon.orange { background: linear-gradient(135deg, #f59e0b, #fbbf24); }
-        .stats-icon.red { background: linear-gradient(135deg, #ef4444, #f87171); }
-
-        .stats-card h3 {
-            margin: 0;
-            font-size: 1.45rem;
-            font-weight: 800;
-            line-height: 1.1;
-            word-break: break-word;
-        }
-
-        .stats-card p {
-            margin: 0;
-            color: #64748b;
-        }
-
-        .stats-card small {
-            font-size: .75rem;
-        }
-
-        .main-card {
-            background: #fff;
-            border-radius: 28px;
-            padding: 1.5rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-            border: 1px solid #eef2f7;
-        }
-
-        .main-card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 1rem;
-            flex-wrap: wrap;
-            margin-bottom: 1.25rem;
-        }
-
-        .main-card-header h4 {
-            margin: 0;
-            font-weight: 800;
-        }
-
-        .main-card-header p {
-            margin: .25rem 0 0 0;
-            color: #64748b;
-        }
-
-        .header-buttons {
-            display: flex;
-            gap: .7rem;
-            flex-wrap: wrap;
-        }
-
-        .custom-btn {
-            border-radius: 14px;
-            padding: .72rem 1.2rem;
-            font-weight: 700;
-            display: inline-flex;
-            align-items: center;
-            gap: .5rem;
-        }
-
-        .custom-alert {
-            border-radius: 16px;
-            border: 1px solid #bbf7d0;
-        }
-
-        .custom-alert-danger {
-            border-color: #fecaca;
-        }
-
-        .search-card {
-            background: #f8fafc;
-            border-radius: 20px;
-            padding: 1rem;
-            margin-bottom: 1rem;
-            border: 1px solid #eef2f7;
-        }
-
-        .search-input-wrapper {
-            position: relative;
-        }
-
-        .search-input-wrapper i {
-            position: absolute;
-            top: 50%;
-            left: 15px;
-            transform: translateY(-50%);
-            color: #64748b;
-            pointer-events: none;
-        }
-
-        .custom-input {
-            min-height: 48px;
-            border-radius: 14px !important;
-            border: 1px solid #e2e8f0;
-            box-shadow: none !important;
-            padding-left: 42px;
-        }
-
-        select.custom-input {
-            padding-left: 16px;
-        }
-
-        .result-count {
-            font-size: .82rem;
-            color: #64748b;
-            margin-bottom: .75rem;
-        }
-
-        .custom-table thead th {
-            border: none;
-            background: #f8fafc;
-            color: #475569;
-            font-size: .82rem;
-            text-transform: uppercase;
-            letter-spacing: .03em;
-            padding: 1rem;
-            white-space: nowrap;
-        }
-
-        .custom-table tbody tr {
-            transition: .2s ease;
-        }
-
-        .custom-table tbody tr:hover {
-            background: #f8fafc;
-        }
-
-        .custom-table tbody td {
-            padding: 1rem;
-            border-color: #f1f5f9;
-            vertical-align: middle;
-        }
-
-        .amount-text {
-            font-weight: 800;
-            color: #0f172a;
-            white-space: nowrap;
-        }
-
-        .amount-void {
-            color: #94a3b8;
-            text-decoration: line-through;
-        }
-
-        .custom-badge {
-            border-radius: 10px;
-            padding: .5rem .7rem;
-            font-size: .75rem;
-            font-weight: 700;
-        }
-
-        .action-buttons {
-            display: flex;
-            justify-content: flex-end;
-            gap: .5rem;
-            flex-wrap: wrap;
-        }
-
-        .action-btn {
-            width: 38px;
-            height: 38px;
-            border-radius: 12px;
-            border: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-decoration: none;
-            transition: .2s ease;
-        }
-
-        .action-btn:hover {
-            transform: translateY(-2px);
-        }
-
-        .view-btn {
-            background: #eff6ff;
-            color: #2563eb;
-        }
-
-        .edit-btn {
-            background: #fef3c7;
-            color: #d97706;
-        }
-
-        .delete-btn {
-            background: #fef2f2;
-            color: #ef4444;
-        }
-
-        .locked-btn {
-            background: #f1f5f9;
-            color: #94a3b8;
-            cursor: not-allowed;
-        }
-
-        .locked-btn:hover {
-            transform: none;
-        }
-
-        .empty-state i {
-            font-size: 3rem;
-            color: #cbd5e1;
-            margin-bottom: 1rem;
-            display: inline-block;
-        }
-
-        .empty-state h5 {
-            font-weight: 800;
-            margin-bottom: .35rem;
-        }
-
-        .empty-state p {
-            margin: 0;
-            color: #64748b;
-        }
-
-        @media (max-width: 768px) {
-            .main-card,
-            .stats-card {
-                border-radius: 22px;
-            }
-
-            .main-card-header {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-            .header-buttons {
-                width: 100%;
-            }
-
-            .header-buttons a {
-                flex: 1;
-                justify-content: center;
-            }
-
-            .action-buttons {
-                justify-content: flex-start;
-            }
-        }
-    </style>
+    @media (max-width: 992px) {
+        .dashboard-page .premium-table { min-width: 1000px; }
+    }
+</style>
 @endpush

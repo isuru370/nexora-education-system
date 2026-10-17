@@ -1,80 +1,66 @@
-<div class="row g-4 mb-4">
+{{-- ============================================================
+     Exams Stats — nx-* design system
+     ============================================================ --}}
 
-    <!-- Total Exams -->
-    <div class="col-xl-3 col-md-6">
-        <div class="stats-card">
-            <div class="stats-icon blue">
-                <i class="bi bi-calendar-check"></i>
-            </div>
-            <div>
-                <h3>{{ $stats['total'] ?? 0 }}</h3>
-                <p>Total Exams</p>
-            </div>
+<div class="stats-grid mb-4">
+
+    {{-- TOTAL --}}
+    <div class="nx-card stat-card">
+        <div class="stat-icon-wrapper icon-blue"><i class="bi bi-calendar-check"></i></div>
+        <div class="stat-info">
+            <span class="stat-label">Total Exams</span>
+            <h2 class="stat-number">{{ $stats['total'] ?? 0 }}</h2>
+            <span class="stat-change neutral">All <span class="stat-change-note">exams</span></span>
         </div>
     </div>
 
-    <!-- Scheduled -->
-    <div class="col-xl-3 col-md-6">
-        <div class="stats-card">
-            <div class="stats-icon green">
-                <i class="bi bi-clock-history"></i>
-            </div>
-            <div>
-                <h3>{{ $stats['scheduled'] ?? 0 }}</h3>
-                <p>Scheduled</p>
-            </div>
+    {{-- SCHEDULED --}}
+    <div class="nx-card stat-card">
+        <div class="stat-icon-wrapper icon-green"><i class="bi bi-clock-history"></i></div>
+        <div class="stat-info">
+            <span class="stat-label">Scheduled</span>
+            <h2 class="stat-number">{{ $stats['scheduled'] ?? 0 }}</h2>
+            <span class="stat-change up">Upcoming <span class="stat-change-note">exams</span></span>
         </div>
     </div>
 
-    <!-- Ongoing -->
-    <div class="col-xl-3 col-md-6">
-        <div class="stats-card">
-            <div class="stats-icon orange">
-                <i class="bi bi-play-circle"></i>
-            </div>
-            <div>
-                <h3>{{ $stats['ongoing'] ?? 0 }}</h3>
-                <p>Ongoing</p>
-            </div>
+    {{-- ONGOING --}}
+    <div class="nx-card stat-card">
+        <div class="stat-icon-wrapper icon-amber"><i class="bi bi-play-circle-fill"></i></div>
+        <div class="stat-info">
+            <span class="stat-label">Ongoing</span>
+            <h2 class="stat-number">{{ $stats['ongoing'] ?? 0 }}</h2>
+            <span class="stat-change neutral">Running <span class="stat-change-note">now</span></span>
         </div>
     </div>
 
-    <!-- Completed -->
-    <div class="col-xl-3 col-md-6">
-        <div class="stats-card">
-            <div class="stats-icon purple">
-                <i class="bi bi-check-circle"></i>
-            </div>
-            <div>
-                <h3>{{ $stats['completed'] ?? 0 }}</h3>
-                <p>Completed</p>
-            </div>
+    {{-- COMPLETED --}}
+    <div class="nx-card stat-card">
+        <div class="stat-icon-wrapper icon-violet"><i class="bi bi-check-circle-fill"></i></div>
+        <div class="stat-info">
+            <span class="stat-label">Completed</span>
+            <h2 class="stat-number">{{ $stats['completed'] ?? 0 }}</h2>
+            <span class="stat-change up">Finished <span class="stat-change-note">exams</span></span>
         </div>
     </div>
 
-    <!-- Cancelled -->
-    <div class="col-xl-4 col-md-6">
-        <div class="stats-card">
-            <div class="stats-icon red">
-                <i class="bi bi-x-circle"></i>
-            </div>
-            <div>
-                <h3>{{ $stats['cancelled'] ?? 0 }}</h3>
-                <p>Cancelled</p>
-            </div>
+    {{-- CANCELLED --}}
+    <div class="nx-card stat-card">
+        <div class="stat-icon-wrapper icon-red"><i class="bi bi-x-circle-fill"></i></div>
+        <div class="stat-info">
+            <span class="stat-label">Cancelled</span>
+            <h2 class="stat-number">{{ $stats['cancelled'] ?? 0 }}</h2>
+            <span class="stat-change down">Removed <span class="stat-change-note">exams</span></span>
         </div>
     </div>
 
-    <!-- Upcoming -->
-    <div class="col-xl-4 col-md-6">
-        <div class="stats-card">
-            <div class="stats-icon info">
-                <i class="bi bi-calendar-event"></i>
-            </div>
-            <div>
-                <h3>{{ $stats['upcoming'] ?? 0 }}</h3>
-                <p>Upcoming</p>
-            </div>
+    {{-- UPCOMING --}}
+    <div class="nx-card stat-card">
+        <div class="stat-icon-wrapper icon-blue"><i class="bi bi-calendar-event"></i></div>
+        <div class="stat-info">
+            <span class="stat-label">Upcoming</span>
+            <h2 class="stat-number">{{ $stats['upcoming'] ?? 0 }}</h2>
+            <span class="stat-change up">Soon <span class="stat-change-note">to come</span></span>
         </div>
     </div>
 

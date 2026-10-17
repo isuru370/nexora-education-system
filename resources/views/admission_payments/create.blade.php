@@ -4,222 +4,134 @@
 @section('page-title', 'Create Admission Payment')
 
 @section('content')
+<div class="dashboard-page">
 
-<div class="admission-payment-page">
+    {{-- HERO --}}
+    <div class="hero-section mb-4">
+        <div class="hero-content">
+            <div class="hero-left">
+                <span class="greeting-badge">nexoraEDU</span>
+                <h1 class="hero-title">Create Admission Payment</h1>
+                <p class="hero-subtitle">Add a new payment record for a student admission.</p>
+            </div>
 
-    <div class="row g-4 mb-4">
-        <div class="col-lg-8">
-            <div class="page-hero-card">
-                <div class="d-flex align-items-start justify-content-between flex-wrap gap-3">
-                    <div>
-                        <div class="hero-icon">
-                            <i class="bi bi-plus-circle-fill"></i>
-                        </div>
-                        <h3>Create Admission Payment</h3>
-                        <p>Add a new payment record for a student admission.</p>
-                    </div>
-
-                    <div class="hero-badge new">
-                        New Record
-                    </div>
+            <div class="hero-right">
+                <div class="hero-actions">
+                    <a href="{{ route('admission-payments.index') }}" class="nx-btn nx-btn-light">
+                        <i class="bi bi-arrow-left"></i> Back
+                    </a>
                 </div>
+                <small class="hero-updated">New Record</small>
+            </div>
+        </div>
+    </div>
+
+    {{-- QUICK NOTES --}}
+    <div class="nx-card mb-4">
+        <div class="nx-card-header">
+            <div>
+                <h5 class="nx-card-title"><i class="bi bi-info-circle text-primary"></i> Quick Notes</h5>
+                <p class="nx-card-subtitle">Things to keep in mind when creating a payment</p>
             </div>
         </div>
 
-        <div class="col-lg-4">
-            <div class="quick-summary-card">
-                <h6 class="mb-3">Quick Notes</h6>
-
-                <div class="summary-item">
-                    <i class="bi bi-shield-check"></i>
-                    <span>Required fields are marked with *</span>
+        <div class="p-3">
+            <div class="row g-3">
+                <div class="col-md-4">
+                    <div class="quick-note">
+                        <i class="bi bi-shield-check"></i>
+                        <span>Required fields are marked with <strong style="color: var(--nx-red);">*</strong></span>
+                    </div>
                 </div>
 
-                <div class="summary-item">
-                    <i class="bi bi-credit-card"></i>
-                    <span>Payment method must match available options</span>
+                <div class="col-md-4">
+                    <div class="quick-note">
+                        <i class="bi bi-credit-card"></i>
+                        <span>Payment method must match available options</span>
+                    </div>
                 </div>
 
-                <div class="summary-item">
-                    <i class="bi bi-clock-history"></i>
-                    <span>Status starts as Paid by default</span>
+                <div class="col-md-4">
+                    <div class="quick-note">
+                        <i class="bi bi-clock-history"></i>
+                        <span>Status starts as <strong>Paid</strong> by default</span>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
 
-    <div class="main-card">
-        <div class="main-card-header">
+    {{-- FORM CARD --}}
+    <div class="nx-card mb-4">
+        <div class="nx-card-header">
             <div>
-                <h4>Payment Details</h4>
-                <p>Fill in the information below to create the payment</p>
+                <h5 class="nx-card-title"><i class="bi bi-plus-circle-fill text-primary"></i> Payment Details</h5>
+                <p class="nx-card-subtitle">Fill in the information below to create the payment</p>
             </div>
         </div>
 
-        <form action="{{ route('admission-payments.store') }}" method="POST">
-            @csrf
+        <div class="p-3 p-md-4">
+            <form action="{{ route('admission-payments.store') }}" method="POST">
+                @csrf
 
-            @include('admission_payments.partials.form', ['admissionPayment' => null])
+                @include('admission_payments.partials.form', ['admissionPayment' => null])
 
-            <div class="form-footer">
-                <div class="btn-group-inline">
-                    <a href="{{ route('admission-payments.index') }}" class="btn btn-light border custom-btn">
-                        <i class="bi bi-arrow-left"></i>
-                        Cancel
+                <div class="nx-form-actions">
+                    <a href="{{ route('admission-payments.index') }}" class="nx-btn nx-btn-light">
+                        <i class="bi bi-arrow-left"></i> Cancel
                     </a>
 
-                    <button type="submit" class="btn btn-primary custom-btn">
-                        <i class="bi bi-check2-circle"></i>
-                        Save Payment
+                    <button type="submit" class="nx-btn nx-btn-primary">
+                        <i class="bi bi-check2-circle"></i> Save Payment
                     </button>
                 </div>
-            </div>
-        </form>
+            </form>
+        </div>
     </div>
+
 </div>
 @endsection
 
+
 @push('styles')
 <style>
-    .admission-payment-page {
-        animation: fadeIn 0.4s ease;
-    }
+    /* ============================================================
+       Create Admission Payment — page-specific styles only.
+       ============================================================ */
 
-    .page-hero-card,
-    .quick-summary-card,
-    .main-card {
-        background: #fff;
-        border: 1px solid #eef2f7;
-        border-radius: 28px;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-    }
-
-    .page-hero-card {
-        padding: 1.5rem;
-        min-height: 100%;
-    }
-
-    .hero-icon {
-        width: 58px;
-        height: 58px;
-        border-radius: 18px;
-        background: linear-gradient(135deg, #2563eb, #7c3aed);
-        color: #fff;
+    .dashboard-page .quick-note {
         display: flex;
         align-items: center;
-        justify-content: center;
-        font-size: 1.35rem;
-        margin-bottom: 1rem;
-    }
-
-    .page-hero-card h3 {
-        margin: 0 0 .5rem 0;
-        font-weight: 800;
-    }
-
-    .page-hero-card p {
-        margin: 0;
-        color: #64748b;
-    }
-
-    .hero-badge {
-        padding: .55rem .9rem;
-        border-radius: 999px;
-        font-weight: 700;
+        gap: .65rem;
+        padding: .75rem .85rem;
+        border: 1px solid var(--nx-border);
+        border-radius: 8px;
+        background: #fafbfd;
         font-size: .82rem;
-        white-space: nowrap;
+        color: var(--nx-text);
     }
-
-    .hero-badge.new {
-        background: #eff6ff;
-        color: #2563eb;
-        border: 1px solid #dbeafe;
-    }
-
-    .quick-summary-card {
-        padding: 1.5rem;
-        height: 100%;
-    }
-
-    .quick-summary-card h6 {
-        font-weight: 800;
-        margin-bottom: 1rem;
-    }
-
-    .summary-item {
-        display: flex;
-        align-items: center;
-        gap: .7rem;
-        padding: .75rem 0;
-        border-bottom: 1px solid #f1f5f9;
-        color: #475569;
-    }
-
-    .summary-item:last-child {
-        border-bottom: none;
-        padding-bottom: 0;
-    }
-
-    .summary-item i {
-        color: #2563eb;
+    .dashboard-page .quick-note i {
+        color: var(--nx-blue);
         font-size: 1.05rem;
         flex-shrink: 0;
     }
 
-    .main-card {
-        padding: 1.5rem;
-    }
-
-    .main-card-header {
-        margin-bottom: 1.25rem;
-    }
-
-    .main-card-header h4 {
-        margin: 0;
-        font-weight: 800;
-    }
-
-    .main-card-header p {
-        margin: .25rem 0 0 0;
-        color: #64748b;
-    }
-
-    .form-footer {
-        margin-top: 1.5rem;
+    .dashboard-page .nx-form-actions {
         display: flex;
-        justify-content: flex-end;
-    }
-
-    .btn-group-inline {
-        display: flex;
-        gap: .75rem;
-    }
-
-    .custom-btn {
-        border-radius: 14px;
-        padding: .8rem 1.4rem;
-        font-weight: 700;
-        border: none;
-        display: inline-flex;
-        align-items: center;
         gap: .5rem;
+        margin-top: 1.5rem;
+        padding-top: 1rem;
+        border-top: 1px solid var(--nx-border);
+        justify-content: flex-end;
+        flex-wrap: wrap;
     }
 
     @media (max-width: 768px) {
-        .page-hero-card,
-        .quick-summary-card,
-        .main-card {
-            border-radius: 22px;
-        }
-
-        .btn-group-inline {
-            width: 100%;
+        .dashboard-page .nx-form-actions {
             flex-direction: column;
         }
-
-        .btn-group-inline .btn {
+        .dashboard-page .nx-form-actions .nx-btn {
             width: 100%;
-            justify-content: center;
         }
     }
 </style>

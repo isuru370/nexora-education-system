@@ -5,9 +5,9 @@
 
 @section('content')
     @include('exams.partials.form', [
-        'exam' => null,
-        'classes' => $classes,
+        'exam'       => null,
+        'classes'    => $classes,
         'categories' => $categories,
-        'halls' => $halls
+        'halls'      => $halls,
     ])
 @endsection

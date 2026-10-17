@@ -4,76 +4,174 @@
 @section('page-title', 'Class Hall Details')
 
 @section('content')
-<div class="card border-0 shadow-sm rounded-4">
-    <div class="card-header bg-white d-flex justify-content-between align-items-center">
-        <div>
-            <h5 class="mb-0 fw-bold">{{ $classHall->hall_name }}</h5>
-            <small class="text-muted">{{ $classHall->code }}</small>
-        </div>
+<div class="dashboard-page">
 
-        <div>
-            <a href="{{ route('class-halls.edit', $classHall) }}" class="btn btn-warning btn-sm">Edit</a>
-            <a href="{{ route('class-halls.index') }}" class="btn btn-outline-secondary btn-sm">Back</a>
-        </div>
-    </div>
+    {{-- HERO --}}
+    <div class="hero-section mb-4">
+        <div class="hero-content">
+            <div class="hero-left">
+                <span class="greeting-badge">
+                    <i class="bi bi-door-open"></i> Class Hall
+                </span>
+                <h1 class="hero-title">{{ $classHall->hall_name }}</h1>
+                <p class="hero-subtitle">{{ $classHall->code }}</p>
 
-    <div class="card-body">
-        @if (session('success'))
-            <div class="alert alert-success">{{ session('success') }}</div>
-        @endif
-
-        @if (session('error'))
-            <div class="alert alert-danger">{{ session('error') }}</div>
-        @endif
-
-        <div class="row g-4">
-            <div class="col-md-6">
-                <div class="border rounded-4 p-3 h-100">
-                    <h6 class="fw-bold mb-3">Hall Information</h6>
-
-                    <p><strong>Code:</strong> {{ $classHall->code }}</p>
-                    <p><strong>Hall Name:</strong> {{ $classHall->hall_name }}</p>
-                    <p><strong>Hall Type:</strong> {{ $classHall->hall_type ?? '-' }}</p>
-
-                    <p>
-                        <strong>Price:</strong>
-                        @if ((float) $classHall->hall_price == 0)
-                            <span class="badge bg-success">Free</span>
-                        @else
-                            {{ number_format($classHall->hall_price, 2) }}
-                        @endif
-                    </p>
-
-                    <p>
-                        <strong>Status:</strong>
-                        <span class="badge {{ $classHall->is_active ? 'bg-success' : 'bg-secondary' }}">
+                <div class="hero-stats-mini">
+                    <div class="mini-stat">
+                        <span class="nx-badge {{ $classHall->is_active ? 'nx-badge-green' : 'nx-badge-gray' }}">
+                            <i class="bi bi-circle-fill" style="font-size: .4rem;"></i>
                             {{ $classHall->is_active ? 'Active' : 'Inactive' }}
                         </span>
-                    </p>
+                    </div>
+                    @if ((float) $classHall->hall_price == 0)
+                        <div class="mini-stat-divider"></div>
+                        <div class="mini-stat">
+                            <span class="nx-badge nx-badge-green">Free</span>
+                        </div>
+                    @endif
                 </div>
             </div>
 
-            <div class="col-md-6">
-                <div class="border rounded-4 p-3 h-100">
-                    <h6 class="fw-bold mb-3">System Information</h6>
+            <div class="hero-right">
+                <div class="hero-actions">
+                    <a href="{{ route('class-halls.index') }}" class="nx-btn nx-btn-light">
+                        <i class="bi bi-arrow-left"></i> Back
+                    </a>
+                    <a href="{{ route('class-halls.edit', $classHall) }}" class="nx-btn nx-btn-primary">
+                        <i class="bi bi-pencil-square"></i> Edit
+                    </a>
+                </div>
+                <small class="hero-updated">{{ now()->format('D, d M Y') }}</small>
+            </div>
+        </div>
+    </div>
 
-                    <p>
-                        <strong>Created At:</strong>
-                        {{ $classHall->created_at?->format('Y-m-d h:i A') }}
-                    </p>
+    {{-- ALERTS --}}
+    @if (session('success'))
+        <div class="nx-alert nx-alert-green mb-4">
+            <i class="bi bi-check-circle-fill"></i>
+            <span>{{ session('success') }}</span>
+        </div>
+    @endif
 
-                    <p>
-                        <strong>Updated At:</strong>
-                        {{ $classHall->updated_at?->format('Y-m-d h:i A') }}
-                    </p>
+    @if (session('error'))
+        <div class="nx-alert nx-alert-red mb-4">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            <span>{{ session('error') }}</span>
+        </div>
+    @endif
 
-                    <p class="mb-0">
-                        <strong>Schedules Count:</strong>
-                        {{ $classHall->schedules()->count() }}
-                    </p>
+    {{-- INFO GRID --}}
+    <div class="row g-4 mb-4">
+
+        {{-- HALL INFO --}}
+        <div class="col-md-6">
+            <div class="nx-card h-100">
+                <div class="nx-card-header">
+                    <div>
+                        <h5 class="nx-card-title"><i class="bi bi-info-circle-fill text-primary"></i> Hall Information</h5>
+                        <p class="nx-card-subtitle">Details of this hall</p>
+                    </div>
+                </div>
+
+                <div class="p-3">
+                    <div class="detail-line">
+                        <span class="detail-label">Code</span>
+                        <span class="detail-value" style="font-family: ui-monospace, monospace;">{{ $classHall->code }}</span>
+                    </div>
+                    <div class="detail-line">
+                        <span class="detail-label">Hall Name</span>
+                        <span class="detail-value">{{ $classHall->hall_name }}</span>
+                    </div>
+                    <div class="detail-line">
+                        <span class="detail-label">Hall Type</span>
+                        <span class="detail-value">{{ $classHall->hall_type ?? '-' }}</span>
+                    </div>
+                    <div class="detail-line">
+                        <span class="detail-label">Price</span>
+                        <span class="detail-value">
+                            @if ((float) $classHall->hall_price == 0)
+                                <span class="nx-badge nx-badge-green">Free</span>
+                            @else
+                                Rs. {{ number_format($classHall->hall_price, 2) }}
+                            @endif
+                        </span>
+                    </div>
+                    <div class="detail-line" style="border-bottom: 0;">
+                        <span class="detail-label">Status</span>
+                        <span class="detail-value">
+                            <span class="nx-badge {{ $classHall->is_active ? 'nx-badge-green' : 'nx-badge-gray' }}">
+                                <i class="bi bi-circle-fill" style="font-size: .4rem;"></i>
+                                {{ $classHall->is_active ? 'Active' : 'Inactive' }}
+                            </span>
+                        </span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- SYSTEM INFO --}}
+        <div class="col-md-6">
+            <div class="nx-card h-100">
+                <div class="nx-card-header">
+                    <div>
+                        <h5 class="nx-card-title"><i class="bi bi-gear-fill text-primary"></i> System Information</h5>
+                        <p class="nx-card-subtitle">Metadata for this record</p>
+                    </div>
+                </div>
+
+                <div class="p-3">
+                    <div class="detail-line">
+                        <span class="detail-label">Created At</span>
+                        <span class="detail-value">{{ $classHall->created_at?->format('Y-m-d h:i A') }}</span>
+                    </div>
+                    <div class="detail-line">
+                        <span class="detail-label">Updated At</span>
+                        <span class="detail-value">{{ $classHall->updated_at?->format('Y-m-d h:i A') }}</span>
+                    </div>
+                    <div class="detail-line" style="border-bottom: 0;">
+                        <span class="detail-label">Schedules Count</span>
+                        <span class="detail-value" style="font-family: ui-monospace, monospace;">
+                            {{ $classHall->schedules()->count() }}
+                        </span>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
 </div>
 @endsection
+
+
+@push('styles')
+<style>
+    .dashboard-page .detail-line {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        padding: .7rem 0;
+        border-bottom: 1px solid var(--nx-border);
+        gap: 1rem;
+    }
+    .dashboard-page .detail-line:last-child { border-bottom: 0; }
+
+    .dashboard-page .detail-label {
+        flex-shrink: 0;
+        font-size: .72rem;
+        font-weight: 700;
+        color: var(--nx-muted);
+        text-transform: uppercase;
+        letter-spacing: .04em;
+    }
+
+    .dashboard-page .detail-value {
+        flex: 1;
+        text-align: right;
+        font-size: .85rem;
+        font-weight: 600;
+        color: var(--nx-text);
+        word-break: break-word;
+    }
+</style>
+@endpush

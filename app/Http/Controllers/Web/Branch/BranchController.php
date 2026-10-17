@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Web\Branch;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Web\Branch\StoreBranchRequest;
 use App\Http\Requests\Web\Branch\UpdateBranchRequest;
+use App\Models\Branch;
 use App\Services\Branch\BranchAccessService;
 use App\Services\Branch\BranchService;
 use Illuminate\Http\RedirectResponse;
@@ -24,7 +25,25 @@ class BranchController extends Controller
     {
         $branches = $this->branchService->getAll(false);
 
-        return view('branches.index', compact('branches'));
+        /*
+        |--------------------------------------------------------------------------
+        | Stats — full dataset, not just the visible list
+        |--------------------------------------------------------------------------
+        | Computed here so the view stays clean and pagination-safe.
+        */
+        $totalBranches  = Branch::count();
+        $activeBranches = Branch::where('is_active', true)->count();
+
+        $stats = [
+            'total'             => $totalBranches,
+            'active'            => $activeBranches,
+            'inactive'          => Branch::where('is_active', false)->count(),
+            'active_percentage' => $totalBranches > 0
+                ? (int) round(($activeBranches / $totalBranches) * 100)
+                : 0,
+        ];
+
+        return view('branches.index', compact('branches', 'stats'));
     }
 
     /**

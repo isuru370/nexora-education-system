@@ -5,7 +5,9 @@
 @section('content')
 <div class="dashboard-page">
 
+    {{-- ===================================================== --}}
     {{-- HERO --}}
+    {{-- ===================================================== --}}
     <div class="hero-section mb-4">
         <div class="hero-content">
             <div class="hero-left">
@@ -13,26 +15,19 @@
                 <h1 class="hero-title">Institution Branches</h1>
                 <p class="hero-subtitle">Manage all your education institution branches from one place.</p>
 
-                @php
-                    $totalBranches = $branches->count();
-                    $activeBranches = $branches->where('is_active', true)->count();
-                    $inactiveBranches = $branches->where('is_active', false)->count();
-                    $activePercentage = $totalBranches > 0 ? round(($activeBranches / $totalBranches) * 100) : 0;
-                @endphp
-
                 <div class="hero-stats-mini">
                     <div class="mini-stat">
-                        <span class="mini-stat-value">{{ $totalBranches }}</span>
+                        <span class="mini-stat-value">{{ $stats['total'] ?? 0 }}</span>
                         <span class="mini-stat-label">Total</span>
                     </div>
                     <div class="mini-stat-divider"></div>
                     <div class="mini-stat">
-                        <span class="mini-stat-value">{{ $activeBranches }}</span>
+                        <span class="mini-stat-value">{{ $stats['active'] ?? 0 }}</span>
                         <span class="mini-stat-label">Active</span>
                     </div>
                     <div class="mini-stat-divider"></div>
                     <div class="mini-stat">
-                        <span class="mini-stat-value">{{ $inactiveBranches }}</span>
+                        <span class="mini-stat-value">{{ $stats['inactive'] ?? 0 }}</span>
                         <span class="mini-stat-label">Inactive</span>
                     </div>
                 </div>
@@ -52,14 +47,16 @@
         </div>
     </div>
 
+    {{-- ===================================================== --}}
     {{-- KPI CARDS --}}
-    <div class="stats-grid mb-4">
+    {{-- ===================================================== --}}
+    <div class="stats-grid stats-grid-3 mb-4">
 
         <div class="nx-card stat-card">
             <div class="stat-icon-wrapper icon-blue"><i class="bi bi-buildings"></i></div>
             <div class="stat-info">
                 <span class="stat-label">Total Branches</span>
-                <h2 class="stat-number">{{ $totalBranches }}</h2>
+                <h2 class="stat-number">{{ $stats['total'] ?? 0 }}</h2>
                 <span class="stat-change neutral">
                     All <span class="stat-change-note">registered branches</span>
                 </span>
@@ -70,12 +67,12 @@
             <div class="stat-icon-wrapper icon-green"><i class="bi bi-check-circle-fill"></i></div>
             <div class="stat-info">
                 <span class="stat-label">Active Branches</span>
-                <h2 class="stat-number">{{ $activeBranches }}</h2>
+                <h2 class="stat-number">{{ $stats['active'] ?? 0 }}</h2>
                 <div class="nx-progress mt-2">
-                    <div class="nx-progress-fill bg-green" style="width: {{ $activePercentage }}%"></div>
+                    <div class="nx-progress-fill bg-green" style="width: {{ $stats['active_percentage'] ?? 0 }}%"></div>
                 </div>
                 <span class="stat-change up mt-1">
-                    {{ $activePercentage }}% <span class="stat-change-note">active rate</span>
+                    {{ $stats['active_percentage'] ?? 0 }}% <span class="stat-change-note">active rate</span>
                 </span>
             </div>
         </div>
@@ -84,7 +81,7 @@
             <div class="stat-icon-wrapper icon-amber"><i class="bi bi-exclamation-triangle-fill"></i></div>
             <div class="stat-info">
                 <span class="stat-label">Inactive Branches</span>
-                <h2 class="stat-number">{{ $inactiveBranches }}</h2>
+                <h2 class="stat-number">{{ $stats['inactive'] ?? 0 }}</h2>
                 <span class="stat-change down">
                     Needs <span class="stat-change-note">attention</span>
                 </span>
@@ -92,7 +89,9 @@
         </div>
     </div>
 
+    {{-- ===================================================== --}}
     {{-- BRANCHES TABLE --}}
+    {{-- ===================================================== --}}
     <div class="nx-card mb-4">
 
         <div class="nx-card-header">
@@ -102,7 +101,7 @@
             </div>
             <span class="nx-badge nx-badge-blue">
                 <i class="bi bi-circle-fill" style="font-size: .4rem;"></i>
-                {{ $totalBranches }} {{ Str::plural('Branch', $totalBranches) }}
+                {{ $stats['total'] ?? $branches->total() }} {{ Str::plural('Branch', $stats['total'] ?? $branches->total()) }}
             </span>
         </div>
 
@@ -130,6 +129,7 @@
                     <tbody>
                         @foreach ($branches as $branch)
                             <tr>
+                                {{-- BRANCH --}}
                                 <td>
                                     <div class="d-flex align-items-center gap-3">
                                         <div class="teacher-avatar">
@@ -146,12 +146,14 @@
                                     </div>
                                 </td>
 
+                                {{-- CODE --}}
                                 <td>
                                     <span class="id-badge">
                                         <i class="bi bi-hash"></i>{{ $branch->code }}
                                     </span>
                                 </td>
 
+                                {{-- CONTACT --}}
                                 <td>
                                     @if ($branch->mobile)
                                         <div class="cell-title">
@@ -168,6 +170,7 @@
                                     @endif
                                 </td>
 
+                                {{-- STATUS --}}
                                 <td>
                                     @if ($branch->is_active)
                                         <span class="nx-badge nx-badge-green">
@@ -180,15 +183,21 @@
                                     @endif
                                 </td>
 
+                                {{-- ACTIONS --}}
                                 <td class="text-end">
                                     <div class="action-buttons">
+
+                                        {{-- VIEW --}}
                                         <a href="{{ route('branches.show', $branch->id) }}" class="action-btn" title="View" aria-label="View">
                                             <i class="bi bi-eye-fill"></i>
                                         </a>
+
+                                        {{-- EDIT --}}
                                         <a href="{{ route('branches.edit', $branch->id) }}" class="action-btn" title="Edit" aria-label="Edit">
                                             <i class="bi bi-pencil-fill"></i>
                                         </a>
 
+                                        {{-- ACTIVATE / DEACTIVATE --}}
                                         @if ($branch->is_active)
                                             <form action="{{ route('branches.deactivate', $branch->id) }}" method="POST" class="d-inline">
                                                 @csrf
@@ -209,6 +218,7 @@
                                             </form>
                                         @endif
 
+                                        {{-- DELETE --}}
                                         <form action="{{ route('branches.destroy', $branch->id) }}" method="POST" class="d-inline">
                                             @csrf
                                             @method('DELETE')
@@ -224,6 +234,12 @@
                     </tbody>
                 </table>
             </div>
+
+            @if (method_exists($branches, 'links') && $branches->hasPages())
+                <div class="p-3 border-top">
+                    {{ $branches->links() }}
+                </div>
+            @endif
         @endif
     </div>
 
@@ -234,10 +250,22 @@
 @push('styles')
 <style>
     /* ============================================================
-       Branches — page-specific styles only.
-       All shared styles come from layouts/partials/nexora-theme.blade.php
+       Branches Index — page-specific styles only.
+       Shared nx-* theme from layouts/partials/nexora-theme.
        ============================================================ */
 
-    /* No page-specific styles — uses shared theme only. */
+    .dashboard-page .teacher-avatar {
+        width: 42px;
+        height: 42px;
+        border-radius: 10px;
+        background: var(--nx-blue-soft);
+        color: var(--nx-blue);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: 700;
+        font-size: 1rem;
+        flex-shrink: 0;
+    }
 </style>
 @endpush
