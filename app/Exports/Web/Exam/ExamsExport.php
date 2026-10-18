@@ -8,14 +8,24 @@ use Maatwebsite\Excel\Concerns\WithHeadings;
 
 class ExamsExport implements FromCollection, WithHeadings
 {
+    /**
+     * @param \Illuminate\Support\Collection|null $exams  exams to export
+     *        (already limited to the user's branches); null = all exams
+     */
+    public function __construct(protected $exams = null)
+    {
+    }
+
     public function collection()
     {
-        return Exam::with([
+        $exams = $this->exams ?? Exam::with([
             'studentClass',
             'category',
             'hall',
             'results'
-        ])->get()->map(function ($exam) {
+        ])->get();
+
+        return $exams->map(function ($exam) {
 
             return [
                 'title' => $exam->title,
