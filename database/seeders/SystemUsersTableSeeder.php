@@ -10,8 +10,8 @@ class SystemUsersTableSeeder extends Seeder
 {
     public function run(): void
     {
-        $username = env('SUPER_ADMIN_USERNAME');
-        $password = env('SUPER_ADMIN_PASSWORD');
+        $username = config('setup.super_admin.username');
+        $password = config('setup.super_admin.password');
 
         // -------------------------------------------------
         // Validate Environment Variables
