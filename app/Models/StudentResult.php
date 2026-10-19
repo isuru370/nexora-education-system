@@ -138,7 +138,7 @@ class StudentResult extends Model
         return match (true) {
             $percentage >= 75 => 'A',
             $percentage >= 65 => 'B',
-            $percentage >= 55 => 'C',
+            $percentage >= 50 => 'C',
             $percentage >= 35 => 'S',
             default => 'F',
         };

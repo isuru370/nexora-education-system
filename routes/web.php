@@ -541,6 +541,13 @@ Route::middleware([
 
 
 
+        // Class search (AJAX) - must be above the resource routes,
+        // otherwise exams/{exam} catches "search-classes"
+        Route::get(
+            'exams/search-classes',
+            [ExamController::class, 'searchClasses']
+        )->name('exams.search-classes')->middleware('role:ADMIN,BRANCH_ADMIN,USER,TEACHER');
+
         // Get categories by class (AJAX)
 
         Route::get(
@@ -604,13 +611,6 @@ Route::middleware([
 
 
 
-        Route::get(
-
-            '/exams/search-classes',
-
-            [ExamController::class, 'searchClasses']
-
-        )->name('exams.search-classes')->middleware('role:ADMIN,BRANCH_ADMIN,USER,TEACHER');
 
 
 

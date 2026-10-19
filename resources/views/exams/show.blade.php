@@ -3,871 +3,431 @@
 @section('title', 'Exam Details')
 @section('page-title', 'Exam Details')
 
+@php
+    $status = $exam->status;
+    $statusBadge = [
+        'scheduled' => 'nx-badge-blue',
+        'ongoing' => 'nx-badge-amber',
+        'completed' => 'nx-badge-green',
+        'cancelled' => 'nx-badge-red',
+    ][$status] ?? 'nx-badge-gray';
+
+    $isClosed = in_array($status, ['completed', 'cancelled'], true);
+    $hasResults = $exam->results->isNotEmpty();
+    $canEnterMarks = $status !== 'cancelled';
+    $canStart = $status === 'scheduled' && $exam->exam_date->lte(today());
+
+    $fmtTime = fn ($t) => $t ? \Carbon\Carbon::parse($t)->format('h:i A') : '-';
+    $studentCode = fn ($s) => $s?->permanent_qr_active ? $s->custom_id : ($s?->temporary_qr_code ?: $s?->custom_id);
+    $resultsByStudent = $exam->results->keyBy('student_id');
+@endphp
+
 @section('content')
+<div class="dashboard-page">
 
-<div class="exam-details-page">
+    {{-- HERO --}}
+    <div class="hero-section mb-4">
+        <div class="hero-content">
+            <div class="hero-left">
+                <span class="greeting-badge">
+                    <i class="bi bi-journal-bookmark-fill"></i> Exam
+                </span>
+                <h1 class="hero-title">{{ $exam->title }}</h1>
+                <p class="hero-subtitle">
+                    {{ $exam->studentClass->class_name ?? 'N/A' }}
+                    @if ($exam->studentClass?->grade)
+                        (Grade {{ $exam->studentClass->grade->grade_name }})
+                    @endif
+                    - {{ $exam->category->category_name ?? 'N/A' }}
+                </p>
 
-    <!-- BACK BUTTON & ACTIONS -->
-    <div class="details-header">
-        <div class="header-left">
-            <a href="{{ route('admin.exams.index') }}" class="btn btn-outline-secondary custom-btn">
-                <i class="bi bi-arrow-left"></i>
-                Back to Exams
-            </a>
-        </div>
-        <div class="header-right">
-            {{-- ✅ Edit button - ONLY show if NOT cancelled --}}
-            @if($exam->status != 'cancelled')
-                <a href="{{ route('admin.exams.edit', $exam->id) }}" class="btn btn-primary custom-btn">
-                    <i class="bi bi-pencil-fill"></i>
-                    Edit Exam
-                </a>
-            @endif
-
-            {{-- Cancel button - ONLY show if scheduled --}}
-            @if($exam->status == 'scheduled')
-                <button type="button" class="btn btn-danger custom-btn" data-bs-toggle="modal" data-bs-target="#cancelModal">
-                    <i class="bi bi-x-circle-fill"></i>
-                    Cancel Exam
-                </button>
-            @endif
-        </div>
-    </div>
-
-    <!-- MAIN CARD -->
-    <div class="main-card">
-
-        <!-- EXAM HEADER -->
-        <div class="exam-header">
-            <div class="exam-title-section">
-                <div class="title-icon">
-                    <i class="bi bi-journal-bookmark-fill"></i>
-                </div>
-                <div>
-                    <h1 class="exam-title">{{ $exam->title }}</h1>
-                    <div class="exam-meta">
-                        <span class="meta-item">
-                            <i class="bi bi-calendar"></i>
-                            {{ $exam->exam_date->format('l, d M Y') }}
+                <div class="hero-stats-mini">
+                    <div class="mini-stat">
+                        <span class="nx-badge {{ $statusBadge }}">
+                            <i class="bi bi-circle-fill" style="font-size: .4rem;"></i>
+                            {{ ucfirst($status) }}
                         </span>
-                        <span class="meta-item">
-                            <i class="bi bi-clock"></i>
-                            {{ \Carbon\Carbon::parse($exam->start_time)->format('h:i A') }} - 
-                            {{ \Carbon\Carbon::parse($exam->end_time)->format('h:i A') }}
+                    </div>
+                    <div class="mini-stat-divider"></div>
+                    <div class="mini-stat">
+                        <span class="mini-stat-value">{{ $exam->exam_date->format('d M Y') }}</span>
+                        <span class="mini-stat-label">
+                            {{ $exam->exam_date->isToday() ? 'Today' : $exam->exam_date->diffForHumans(today()->startOfDay(), \Carbon\CarbonInterface::DIFF_RELATIVE_TO_NOW) }}
                         </span>
-                        <span class="meta-item">
-                            <i class="bi bi-building"></i>
-                            {{ $exam->hall->hall_name ?? 'N/A' }}
-                        </span>
+                    </div>
+                    <div class="mini-stat-divider"></div>
+                    <div class="mini-stat">
+                        <span class="mini-stat-value">{{ $fmtTime($exam->start_time) }} - {{ $fmtTime($exam->end_time) }}</span>
+                        <span class="mini-stat-label">{{ $exam->hall->hall_name ?? 'No hall' }}</span>
                     </div>
                 </div>
             </div>
-            <div class="exam-status-badge">
-                <span class="badge status-{{ $exam->status }}">
-                    <i class="bi bi-{{ $exam->status == 'scheduled' ? 'clock' : 
-                                      ($exam->status == 'ongoing' ? 'play-circle' : 
-                                      ($exam->status == 'completed' ? 'check-circle' : 'x-circle')) }}">
-                    </i>
-                    {{ ucfirst($exam->status) }}
+
+            <div class="hero-right">
+                <div class="hero-actions">
+                    <a href="{{ route('admin.exams.index') }}" class="nx-btn nx-btn-light">
+                        <i class="bi bi-arrow-left"></i> Back
+                    </a>
+                    @unless ($isClosed)
+                        <a href="{{ route('admin.exams.edit', $exam->id) }}" class="nx-btn nx-btn-light">
+                            <i class="bi bi-pencil-square"></i> Edit
+                        </a>
+                    @endunless
+                    @if ($canEnterMarks)
+                        <a href="{{ route('admin.exams.mark-entry', $exam->id) }}" class="nx-btn nx-btn-primary">
+                            <i class="bi bi-journal-check"></i> Enter Marks
+                        </a>
+                    @endif
+                </div>
+                <small class="hero-updated">{{ now()->format('D, d M Y') }}</small>
+            </div>
+        </div>
+    </div>
+
+    {{-- ALERTS --}}
+    @if (session('success'))
+        <div class="nx-alert nx-alert-green mb-4">
+            <i class="bi bi-check-circle-fill"></i>
+            <span>{{ session('success') }}</span>
+        </div>
+    @endif
+
+    @if (session('error'))
+        <div class="nx-alert nx-alert-red mb-4">
+            <i class="bi bi-exclamation-triangle-fill"></i>
+            <span>{{ session('error') }}</span>
+        </div>
+    @endif
+
+    @if ($status === 'cancelled')
+        <div class="nx-alert nx-alert-red mb-4">
+            <i class="bi bi-x-octagon-fill"></i>
+            <div>
+                <strong>This exam was cancelled</strong>
+                @if ($exam->cancelled_at)
+                    on {{ $exam->cancelled_at->format('d M Y, h:i A') }}
+                @endif
+                @if ($exam->cancelledBy)
+                    by {{ $exam->cancelledBy->name }}
+                @endif
+                @if ($exam->cancel_reason)
+                    <div class="mt-1">Reason: {{ $exam->cancel_reason }}</div>
+                @endif
+            </div>
+        </div>
+    @elseif ($canStart)
+        <div class="nx-alert nx-alert-amber mb-4">
+            <i class="bi bi-play-circle-fill"></i>
+            <div class="flex-grow-1">
+                <strong>The exam date has arrived.</strong>
+                Mark it as ongoing when students sit the paper.
+            </div>
+            <form method="POST" action="{{ route('admin.exams.update-status', $exam->id) }}">
+                @csrf
+                @method('PUT')
+                <input type="hidden" name="status" value="ongoing">
+                <button type="submit" class="nx-btn nx-btn-amber">
+                    <i class="bi bi-play-fill"></i> Mark as Ongoing
+                </button>
+            </form>
+        </div>
+    @endif
+
+    {{-- STATS --}}
+    <div class="stats-grid mb-4">
+        <div class="nx-card stat-card">
+            <div class="stat-icon-wrapper icon-blue"><i class="bi bi-people-fill"></i></div>
+            <div class="stat-info">
+                <span class="stat-label">Students</span>
+                <h2 class="stat-number">{{ $students->count() }}</h2>
+                <span class="stat-change neutral">In this class <span class="stat-change-note">and category</span></span>
+            </div>
+        </div>
+
+        <div class="nx-card stat-card">
+            <div class="stat-icon-wrapper icon-violet"><i class="bi bi-journal-check"></i></div>
+            <div class="stat-info">
+                <span class="stat-label">Marks Entered</span>
+                <h2 class="stat-number">{{ $summary['marked'] + $summary['absent'] }}</h2>
+                <span class="stat-change {{ $students->count() && ($summary['marked'] + $summary['absent']) >= $students->count() ? 'up' : 'neutral' }}">
+                    of {{ $students->count() }} <span class="stat-change-note">students</span>
                 </span>
             </div>
         </div>
 
-        <!-- STATS ROW -->
-        <div class="row g-4 mb-4">
-            <div class="col-xl-3 col-md-6">
-                <div class="stats-card mini">
-                    <div class="stats-icon-sm blue">
-                        <i class="bi bi-people"></i>
-                    </div>
-                    <div>
-                        <h3>{{ $exam->studentClass->class_name ?? 'N/A' }}</h3>
-                        <p>Class</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-xl-3 col-md-6">
-                <div class="stats-card mini">
-                    <div class="stats-icon-sm purple">
-                        <i class="bi bi-tags"></i>
-                    </div>
-                    <div>
-                        <h3>{{ $exam->category->category_name ?? 'N/A' }}</h3>
-                        <p>Category</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-xl-3 col-md-6">
-                <div class="stats-card mini">
-                    <div class="stats-icon-sm green">
-                        <i class="bi bi-person-check"></i>
-                    </div>
-                    <div>
-                        <h3>{{ $exam->results ? $exam->results->count() : 0 }}</h3>
-                        <p>Total Results</p>
-                    </div>
-                </div>
-            </div>
-
-            <div class="col-xl-3 col-md-6">
-                <div class="stats-card mini">
-                    <div class="stats-icon-sm orange">
-                        <i class="bi bi-people-fill"></i>
-                    </div>
-                    <div>
-                        <h3>{{ $exam->studentClass && $exam->studentClass->students ? $exam->studentClass->students->count() : 0 }}</h3>
-                        <p>Total Students</p>
-                    </div>
-                </div>
+        <div class="nx-card stat-card">
+            <div class="stat-icon-wrapper icon-green"><i class="bi bi-check-circle-fill"></i></div>
+            <div class="stat-info">
+                <span class="stat-label">Passed</span>
+                <h2 class="stat-number">{{ $summary['passed'] }}</h2>
+                <span class="stat-change up">
+                    {{ $summary['pass_rate'] !== null ? $summary['pass_rate'] . '%' : '-' }}
+                    <span class="stat-change-note">pass rate</span>
+                </span>
             </div>
         </div>
 
-        <!-- TWO COLUMN LAYOUT -->
-        <div class="row g-4">
-
-            <!-- LEFT COLUMN -->
-            <div class="col-lg-7">
-
-                <!-- INFORMATION CARD -->
-                <div class="detail-card">
-                    <div class="detail-card-header">
-                        <div class="header-left">
-                            <i class="bi bi-info-circle"></i>
-                            <h6>Exam Information</h6>
-                        </div>
-                    </div>
-                    <div class="detail-card-body">
-                        <div class="info-grid">
-                            <div class="info-item">
-                                <span class="info-label">
-                                    <i class="bi bi-pencil"></i> Title
-                                </span>
-                                <span class="info-value">{{ $exam->title }}</span>
-                            </div>
-
-                            <div class="info-item">
-                                <span class="info-label">
-                                    <i class="bi bi-people"></i> Class
-                                </span>
-                                <span class="info-value">{{ $exam->studentClass->class_name ?? 'N/A' }}</span>
-                            </div>
-
-                            <div class="info-item">
-                                <span class="info-label">
-                                    <i class="bi bi-tags"></i> Category
-                                </span>
-                                <span class="info-value">{{ $exam->category->category_name ?? 'N/A' }}</span>
-                            </div>
-
-                            <div class="info-item">
-                                <span class="info-label">
-                                    <i class="bi bi-building"></i> Hall
-                                </span>
-                                <span class="info-value">{{ $exam->hall->hall_name ?? 'N/A' }}</span>
-                            </div>
-
-                            <div class="info-item">
-                                <span class="info-label">
-                                    <i class="bi bi-calendar"></i> Date
-                                </span>
-                                <span class="info-value">{{ $exam->exam_date->format('l, d M Y') }}</span>
-                            </div>
-
-                            <div class="info-item">
-                                <span class="info-label">
-                                    <i class="bi bi-clock"></i> Time
-                                </span>
-                                <span class="info-value">
-                                    {{ \Carbon\Carbon::parse($exam->start_time)->format('h:i A') }} - 
-                                    {{ \Carbon\Carbon::parse($exam->end_time)->format('h:i A') }}
-                                </span>
-                            </div>
-
-                            <div class="info-item full-width">
-                                <span class="info-label">
-                                    <i class="bi bi-sticky"></i> Note
-                                </span>
-                                <span class="info-value">
-                                    @if($exam->note)
-                                        {{ $exam->note }}
-                                    @else
-                                        <span class="text-muted">No notes provided</span>
-                                    @endif
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        <div class="nx-card stat-card">
+            <div class="stat-icon-wrapper icon-amber"><i class="bi bi-bar-chart-fill"></i></div>
+            <div class="stat-info">
+                <span class="stat-label">Average</span>
+                <h2 class="stat-number">{{ $summary['average'] ?? '-' }}</h2>
+                <span class="stat-change neutral">
+                    High {{ $summary['highest'] ?? '-' }} <span class="stat-change-note">/ Low {{ $summary['lowest'] ?? '-' }}</span>
+                </span>
             </div>
-
-            <!-- RIGHT COLUMN -->
-            <div class="col-lg-5">
-
-                <!-- CANCELLATION DETAILS -->
-                <div class="detail-card">
-                    <div class="detail-card-header">
-                        <div class="header-left">
-                            <i class="bi bi-exclamation-triangle"></i>
-                            <h6>Cancellation Details</h6>
-                        </div>
-                    </div>
-                    <div class="detail-card-body">
-                        @if($exam->status == 'cancelled')
-                            <div class="info-grid">
-                                <div class="info-item">
-                                    <span class="info-label">
-                                        <i class="bi bi-file-text"></i> Reason
-                                    </span>
-                                    <span class="info-value">{{ $exam->cancel_reason ?? 'No reason provided' }}</span>
-                                </div>
-                                <div class="info-item">
-                                    <span class="info-label">
-                                        <i class="bi bi-person"></i> Cancelled By
-                                    </span>
-                                    <span class="info-value">{{ $exam->cancelledBy->name ?? 'N/A' }}</span>
-                                </div>
-                                <div class="info-item">
-                                    <span class="info-label">
-                                        <i class="bi bi-clock"></i> Cancelled At
-                                    </span>
-                                    <span class="info-value">
-                                        {{ $exam->cancelled_at ? $exam->cancelled_at->format('d M Y h:i A') : 'N/A' }}
-                                    </span>
-                                </div>
-                            </div>
-                        @else
-                            <p class="text-center text-muted my-4">
-                                <i class="bi bi-check-circle text-success"></i>
-                                This exam has not been cancelled.
-                            </p>
-                        @endif
-                    </div>
-                </div>
-
-                <!-- RESULTS SUMMARY -->
-                <div class="detail-card mt-3">
-                    <div class="detail-card-header">
-                        <div class="header-left">
-                            <i class="bi bi-bar-chart"></i>
-                            <h6>Results Summary</h6>
-                        </div>
-                    </div>
-                    <div class="detail-card-body">
-                        <div class="text-center mb-3">
-                            <h3 class="mb-0">{{ $exam->results ? $exam->results->count() : 0 }}</h3>
-                            <p class="text-muted small">Total Results Recorded</p>
-                        </div>
-                        @if($exam->results && $exam->results->count() > 0)
-                            <a href="#" class="btn btn-success custom-btn w-100">
-                                <i class="bi bi-file-earmark-text"></i>
-                                View All Results
-                            </a>
-                        @else
-                            <p class="text-center text-muted mb-0">
-                                <i class="bi bi-info-circle"></i>
-                                No results recorded yet.
-                            </p>
-                        @endif
-                    </div>
-                </div>
-            </div>
-
         </div>
     </div>
-</div>
 
-<!-- ========================================== -->
-<!-- CANCEL MODAL                               -->
-<!-- ========================================== -->
-@if($exam->status == 'scheduled')
-<div class="modal fade" id="cancelModal" tabindex="-1" 
-     aria-labelledby="cancelModalLabel" aria-hidden="true"
-     data-bs-backdrop="static" data-bs-keyboard="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <form action="{{ route('admin.exams.cancel', $exam) }}" method="POST">
-                @csrf
-                <div class="modal-header">
-                    <h5 class="modal-title" id="cancelModalLabel">
-                        <i class="bi bi-exclamation-triangle-fill text-danger me-2"></i>
-                        Cancel Exam
-                    </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p>Are you sure you want to cancel <strong>"{{ $exam->title }}"</strong>?</p>
+    <div class="row g-4 mb-4">
 
-                    <div class="form-group mt-3">
-                        <label class="fw-semibold">Reason for cancellation</label>
-                        <textarea name="cancel_reason" class="form-control custom-input" rows="3" required
-                            placeholder="Enter cancellation reason..."></textarea>
-                        <small class="text-muted">This reason will be visible to students and staff.</small>
+        {{-- EXAM INFO --}}
+        <div class="col-lg-5">
+            <div class="nx-card h-100">
+                <div class="nx-card-header">
+                    <div>
+                        <h5 class="nx-card-title"><i class="bi bi-info-circle-fill text-primary"></i> Exam Information</h5>
+                        <p class="nx-card-subtitle">Class, time and place</p>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                        <i class="bi bi-x"></i> Close
-                    </button>
-                    <button type="submit" class="btn btn-danger">
-                        <i class="bi bi-x-circle"></i> Cancel Exam
-                    </button>
+
+                <div class="p-3">
+                    <div class="detail-line">
+                        <span class="detail-label">Class</span>
+                        <span class="detail-value">{{ $exam->studentClass->class_name ?? 'N/A' }}</span>
+                    </div>
+                    <div class="detail-line">
+                        <span class="detail-label">Grade / Subject</span>
+                        <span class="detail-value">
+                            {{ $exam->studentClass->grade->grade_name ?? '-' }}
+                            / {{ $exam->studentClass->subject->subject_name ?? '-' }}
+                        </span>
+                    </div>
+                    <div class="detail-line">
+                        <span class="detail-label">Category</span>
+                        <span class="detail-value">
+                            <span class="nx-badge nx-badge-blue">{{ $exam->category->category_name ?? 'N/A' }}</span>
+                        </span>
+                    </div>
+                    <div class="detail-line">
+                        <span class="detail-label">Date</span>
+                        <span class="detail-value">{{ $exam->exam_date->format('l, d M Y') }}</span>
+                    </div>
+                    <div class="detail-line">
+                        <span class="detail-label">Time</span>
+                        <span class="detail-value">{{ $fmtTime($exam->start_time) }} - {{ $fmtTime($exam->end_time) }}</span>
+                    </div>
+                    <div class="detail-line">
+                        <span class="detail-label">Hall</span>
+                        <span class="detail-value">{{ $exam->hall->hall_name ?? '-' }}</span>
+                    </div>
+                    @if ($exam->note)
+                        <div class="detail-line">
+                            <span class="detail-label">Note</span>
+                            <span class="detail-value">{{ $exam->note }}</span>
+                        </div>
+                    @endif
+                    <div class="detail-line">
+                        <span class="detail-label">Created</span>
+                        <span class="detail-value">{{ $exam->created_at?->format('d M Y, h:i A') }}</span>
+                    </div>
                 </div>
-            </form>
+
+                {{-- STATUS / OTHER ACTIONS --}}
+                <div class="p-3 border-top d-flex flex-wrap gap-2">
+                    @if ($hasResults)
+                        <a href="{{ route('admin.exams.results', $exam->id) }}" class="nx-btn nx-btn-success">
+                            <i class="bi bi-bar-chart-fill"></i> View Results
+                        </a>
+                    @endif
+
+                    @if (in_array($status, ['scheduled', 'ongoing'], true))
+                        <button type="button" class="nx-btn nx-btn-danger" data-bs-toggle="modal" data-bs-target="#cancelModal">
+                            <i class="bi bi-x-circle"></i> Cancel Exam
+                        </button>
+                    @endif
+
+                    @if (!$hasResults && $status !== 'ongoing')
+                        <form method="POST" action="{{ route('admin.exams.destroy', $exam->id) }}" class="js-delete-form">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="nx-btn nx-btn-light">
+                                <i class="bi bi-trash"></i> Delete
+                            </button>
+                        </form>
+                    @endif
+                </div>
+            </div>
+        </div>
+
+        {{-- STUDENTS --}}
+        <div class="col-lg-7">
+            <div class="nx-card h-100">
+                <div class="nx-card-header">
+                    <div>
+                        <h5 class="nx-card-title"><i class="bi bi-people-fill text-primary"></i> Students</h5>
+                        <p class="nx-card-subtitle">Active students in {{ $exam->studentClass->class_name ?? 'this class' }} - {{ $exam->category->category_name ?? '' }}</p>
+                    </div>
+                    @if ($canEnterMarks && $students->isNotEmpty())
+                        <a href="{{ route('admin.exams.mark-entry', $exam->id) }}" class="nx-btn nx-btn-light">
+                            <i class="bi bi-pencil"></i> Enter Marks
+                        </a>
+                    @endif
+                </div>
+
+                <div class="table-responsive students-scroll">
+                    <table class="table premium-table mb-0">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Student</th>
+                                <th class="text-end">Marks</th>
+                                <th>Grade</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @forelse ($students as $enrollment)
+                                @php
+                                    $s = $enrollment->student;
+                                    $r = $resultsByStudent->get($s->id);
+                                @endphp
+                                <tr>
+                                    <td class="row-number">{{ $loop->iteration }}</td>
+                                    <td>
+                                        <div class="cell-title">{{ $s->initial_name }}</div>
+                                        <small class="cell-sub">{{ $studentCode($s) }}</small>
+                                    </td>
+                                    <td class="text-end cell-title">
+                                        @if ($r && $r->is_absent)
+                                            -
+                                        @elseif ($r && $r->marks !== null)
+                                            {{ rtrim(rtrim(number_format((float) $r->marks, 2), '0'), '.') }}
+                                            <small class="cell-sub">/ {{ rtrim(rtrim(number_format((float) $r->max_marks, 2), '0'), '.') }}</small>
+                                        @else
+                                            <span class="cell-sub">-</span>
+                                        @endif
+                                    </td>
+                                    <td>{{ $r && $r->marks !== null ? $r->grade : '-' }}</td>
+                                    <td>
+                                        @if (!$r || $r->status === 'pending')
+                                            <span class="nx-badge nx-badge-gray">Not entered</span>
+                                        @elseif ($r->is_absent)
+                                            <span class="nx-badge nx-badge-amber">Absent</span>
+                                        @elseif ($r->status === 'passed')
+                                            <span class="nx-badge nx-badge-green">Passed</span>
+                                        @else
+                                            <span class="nx-badge nx-badge-red">Failed</span>
+                                        @endif
+                                    </td>
+                                </tr>
+                            @empty
+                                <tr>
+                                    <td colspan="5" class="empty-table">
+                                        <i class="bi bi-people fs-2 d-block mb-2"></i>
+                                        <strong class="d-block">No students in this class and category</strong>
+                                        <span class="cell-sub">Add students to the class first, then enter marks.</span>
+                                    </td>
+                                </tr>
+                            @endforelse
+                        </tbody>
+                    </table>
+                </div>
+            </div>
         </div>
     </div>
+
 </div>
+
+{{-- CANCEL MODAL --}}
+@if (in_array($status, ['scheduled', 'ongoing'], true))
+    <div class="modal fade" id="cancelModal" tabindex="-1" aria-labelledby="cancelModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <form method="POST" action="{{ route('admin.exams.cancel', $exam->id) }}">
+                    @csrf
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="cancelModalLabel">
+                            <i class="bi bi-exclamation-triangle-fill text-danger me-2"></i> Cancel Exam
+                        </h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p>Cancel <strong>{{ $exam->title }}</strong>?</p>
+                        <label class="nx-label" for="cancel_reason">Reason for cancellation</label>
+                        <textarea id="cancel_reason" name="cancel_reason" class="form-control custom-input" rows="3" required
+                            placeholder="e.g. Hall not available"></textarea>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="nx-btn nx-btn-light" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="nx-btn nx-btn-danger">
+                            <i class="bi bi-x-circle"></i> Cancel Exam
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
 @endif
-
 @endsection
+
 
 @push('styles')
 <style>
-    /* ============================================ */
-    /* PAGE ANIMATION                              */
-    /* ============================================ */
-    .exam-details-page {
-        animation: fadeIn 0.4s ease;
-    }
-
-    @keyframes fadeIn {
-        from {
-            opacity: 0;
-            transform: translateY(10px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    /* ============================================ */
-    /* HEADER                                      */
-    /* ============================================ */
-    .details-header {
+    .dashboard-page .detail-line {
         display: flex;
         justify-content: space-between;
-        align-items: center;
-        margin-bottom: 1.5rem;
-        flex-wrap: wrap;
+        align-items: flex-start;
+        padding: .7rem 0;
+        border-bottom: 1px solid var(--nx-border);
         gap: 1rem;
     }
+    .dashboard-page .detail-line:last-child { border-bottom: 0; }
 
-    .header-left,
-    .header-right {
-        display: flex;
-        gap: 0.7rem;
-        flex-wrap: wrap;
-    }
-
-    .custom-btn {
-        border-radius: 14px;
-        padding: 0.7rem 1.2rem;
-        font-weight: 600;
-        border: none;
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .custom-btn:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.12);
-    }
-
-    .custom-btn:disabled,
-    .custom-btn.disabled {
-        opacity: 0.6;
-        cursor: not-allowed;
-        transform: none !important;
-    }
-
-    /* ============================================ */
-    /* MAIN CARD                                   */
-    /* ============================================ */
-    .main-card {
-        background: white;
-        border-radius: 28px;
-        padding: 1.5rem;
-        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-        border: 1px solid #f1f5f9;
-    }
-
-    /* ============================================ */
-    /* EXAM HEADER                                 */
-    /* ============================================ */
-    .exam-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 1rem 1.5rem;
-        background: linear-gradient(135deg, #f8fafc, #ffffff);
-        border-radius: 20px;
-        border: 1px solid #f1f5f9;
-        margin-bottom: 1.5rem;
-        flex-wrap: wrap;
-        gap: 1rem;
-    }
-
-    .exam-title-section {
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-    }
-
-    .title-icon {
-        width: 56px;
-        height: 56px;
-        border-radius: 16px;
-        background: linear-gradient(135deg, #2563eb, #3b82f6);
-        color: white;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.6rem;
+    .dashboard-page .detail-label {
         flex-shrink: 0;
-    }
-
-    .exam-title {
-        margin: 0;
-        font-size: 1.6rem;
+        font-size: .72rem;
         font-weight: 700;
-        color: #0f172a;
-    }
-
-    .exam-meta {
-        display: flex;
-        gap: 1.5rem;
-        flex-wrap: wrap;
-        margin-top: 0.25rem;
-    }
-
-    .meta-item {
-        font-size: 0.85rem;
-        color: #64748b;
-        display: flex;
-        align-items: center;
-        gap: 0.4rem;
-    }
-
-    .meta-item i {
-        font-size: 0.9rem;
-        color: #94a3b8;
-    }
-
-    .exam-status-badge .badge {
-        font-size: 1rem;
-        padding: 0.6rem 1.5rem;
-        border-radius: 50px;
-        font-weight: 600;
-        display: inline-flex;
-        align-items: center;
-        gap: 0.5rem;
-    }
-
-    .badge.status-scheduled {
-        background: #dbeafe;
-        color: #1d4ed8;
-    }
-
-    .badge.status-ongoing {
-        background: #fef3c7;
-        color: #d97706;
-    }
-
-    .badge.status-completed {
-        background: #d1fae5;
-        color: #059669;
-    }
-
-    .badge.status-cancelled {
-        background: #fee2e2;
-        color: #dc2626;
-    }
-
-    /* ============================================ */
-    /* MINI STATS CARDS                            */
-    /* ============================================ */
-    .stats-card.mini {
-        background: white;
-        border-radius: 20px;
-        padding: 1.25rem 1.5rem;
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.03);
-        border: 1px solid #f1f5f9;
-        transition: all 0.3s ease;
-        height: 100%;
-    }
-
-    .stats-card.mini:hover {
-        transform: translateY(-2px);
-        box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
-    }
-
-    .stats-icon-sm {
-        width: 48px;
-        height: 48px;
-        border-radius: 14px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 1.3rem;
-        color: white;
-        flex-shrink: 0;
-    }
-
-    .stats-icon-sm.blue {
-        background: linear-gradient(135deg, #2563eb, #3b82f6);
-    }
-    .stats-icon-sm.purple {
-        background: linear-gradient(135deg, #8b5cf6, #a78bfa);
-    }
-    .stats-icon-sm.green {
-        background: linear-gradient(135deg, #10b981, #34d399);
-    }
-    .stats-icon-sm.orange {
-        background: linear-gradient(135deg, #f59e0b, #fbbf24);
-    }
-
-    .stats-card.mini h3 {
-        margin: 0;
-        font-size: 1.2rem;
-        font-weight: 700;
-        color: #0f172a;
-    }
-
-    .stats-card.mini p {
-        margin: 0;
-        color: #64748b;
-        font-size: 0.8rem;
-        font-weight: 500;
-    }
-
-    /* ============================================ */
-    /* DETAIL CARDS                                */
-    /* ============================================ */
-    .detail-card {
-        background: white;
-        border: 1px solid #f1f5f9;
-        border-radius: 20px;
-        overflow: hidden;
-        transition: all 0.3s ease;
-    }
-
-    .detail-card:hover {
-        border-color: #e2e8f0;
-    }
-
-    .detail-card-header {
-        padding: 1rem 1.5rem;
-        background: #f8fafc;
-        border-bottom: 1px solid #f1f5f9;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 0.5rem;
-    }
-
-    .detail-card-header .header-left {
-        display: flex;
-        align-items: center;
-        gap: 0.75rem;
-    }
-
-    .detail-card-header .header-left i {
-        font-size: 1.2rem;
-        color: #2563eb;
-    }
-
-    .detail-card-header .header-left h6 {
-        margin: 0;
-        font-weight: 700;
-        color: #0f172a;
-        font-size: 0.95rem;
-    }
-
-    .detail-card-body {
-        padding: 1.5rem;
-    }
-
-    /* ============================================ */
-    /* INFO GRID                                   */
-    /* ============================================ */
-    .info-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 0.75rem;
-    }
-
-    .info-item {
-        display: flex;
-        flex-direction: column;
-        padding: 0.6rem 0.8rem;
-        background: #fafbfc;
-        border-radius: 10px;
-        border: 1px solid #f1f5f9;
-    }
-
-    .info-item.full-width {
-        grid-column: 1 / -1;
-    }
-
-    .info-label {
-        font-size: 0.7rem;
-        font-weight: 600;
-        color: #94a3b8;
+        color: var(--nx-muted);
         text-transform: uppercase;
-        letter-spacing: 0.03em;
-        display: flex;
-        align-items: center;
-        gap: 0.3rem;
+        letter-spacing: .04em;
     }
 
-    .info-label i {
-        font-size: 0.7rem;
-    }
-
-    .info-value {
+    .dashboard-page .detail-value {
+        flex: 1;
+        text-align: right;
+        font-size: .85rem;
         font-weight: 600;
-        color: #0f172a;
-        font-size: 0.95rem;
-        margin-top: 0.15rem;
+        color: var(--nx-text);
         word-break: break-word;
     }
 
-    /* ============================================ */
-    /* MODAL                                       */
-    /* ============================================ */
-    .modal-content {
-        border-radius: 20px;
-        border: none;
-        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
-    }
+    .dashboard-page .students-scroll { max-height: 520px; overflow-y: auto; }
+    .dashboard-page .students-scroll thead th { position: sticky; top: 0; z-index: 1; }
 
-    .modal-header {
-        border-bottom: 1px solid #f1f5f9;
-        padding: 1.25rem 1.5rem;
-    }
-
-    .modal-footer {
-        border-top: 1px solid #f1f5f9;
-        padding: 1.25rem 1.5rem;
-    }
-
-    .modal-body {
-        padding: 1.5rem;
-    }
-
-    .modal-backdrop {
-        background-color: rgba(0, 0, 0, 0.5);
-        transition: opacity 0.15s linear;
-    }
-
-    .modal-backdrop.show {
-        opacity: 0.5;
-    }
-
-    .modal.fade .modal-dialog {
-        transition: transform 0.3s ease-out;
-    }
-
-    /* ============================================ */
-    /* FORM INPUTS                                 */
-    /* ============================================ */
-    .custom-input {
-        border-radius: 14px !important;
-        border: 2px solid #e2e8f0;
-        padding: 0.7rem 1rem;
-        transition: all 0.3s ease;
-        background: #fafbfc;
-        min-height: 48px;
-    }
-
-    .custom-input:focus {
-        border-color: #2563eb;
-        box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
-        background: white;
-    }
-
-    .form-group {
-        margin-bottom: 0;
-    }
-
-    .form-group label {
-        font-size: 0.85rem;
-        font-weight: 500;
-        color: #1e293b;
-        margin-bottom: 0.4rem;
-    }
-
-    /* ============================================ */
-    /* RESPONSIVE                                  */
-    /* ============================================ */
-    @media (max-width: 992px) {
-        .main-card {
-            padding: 1.25rem;
-        }
-
-        .exam-header {
-            padding: 1rem;
-            flex-direction: column;
-            align-items: flex-start;
-        }
-
-        .exam-title-section {
-            width: 100%;
-        }
-
-        .exam-status-badge {
-            width: 100%;
-        }
-
-        .exam-status-badge .badge {
-            width: 100%;
-            justify-content: center;
-        }
-
-        .info-grid {
-            grid-template-columns: 1fr;
-        }
-    }
-
-    @media (max-width: 768px) {
-        .details-header {
-            flex-direction: column;
-            align-items: stretch;
-        }
-
-        .header-left,
-        .header-right {
-            width: 100%;
-        }
-
-        .header-left .custom-btn,
-        .header-right .custom-btn {
-            flex: 1;
-            justify-content: center;
-        }
-
-        .main-card {
-            padding: 1rem;
-        }
-
-        .exam-title {
-            font-size: 1.2rem;
-        }
-
-        .exam-meta {
-            gap: 0.75rem;
-        }
-
-        .meta-item {
-            font-size: 0.75rem;
-        }
-
-        .title-icon {
-            width: 44px;
-            height: 44px;
-            font-size: 1.2rem;
-        }
-
-        .stats-card.mini {
-            padding: 1rem;
-        }
-
-        .stats-icon-sm {
-            width: 40px;
-            height: 40px;
-            font-size: 1rem;
-        }
-
-        .stats-card.mini h3 {
-            font-size: 1rem;
-        }
-
-        .detail-card-header {
-            padding: 0.75rem 1rem;
-        }
-
-        .detail-card-body {
-            padding: 1rem;
-        }
-
-        .custom-btn {
-            font-size: 0.9rem;
-            padding: 0.5rem 1rem;
-        }
-    }
-
-    @media (max-width: 576px) {
-        .main-card {
-            padding: 0.75rem;
-            border-radius: 20px;
-        }
-
-        .exam-header {
-            border-radius: 16px;
-            padding: 0.75rem;
-        }
-
-        .detail-card {
-            border-radius: 16px;
-        }
-
-        .info-value {
-            font-size: 0.85rem;
-        }
-
-        .custom-btn {
-            font-size: 0.85rem;
-            padding: 0.4rem 0.8rem;
-        }
-    }
-
-    /* ============================================ */
-    /* PRINT STYLES                                */
-    /* ============================================ */
-    @media print {
-        .details-header,
-        .btn-close,
-        .modal,
-        .modal-backdrop {
-            display: none !important;
-        }
-
-        .main-card {
-            box-shadow: none !important;
-            border: 1px solid #ddd !important;
-        }
-
-        .exam-header {
-            background: none !important;
-            border: 1px solid #ddd !important;
-        }
-
-        .stats-card.mini {
-            box-shadow: none !important;
-            border: 1px solid #ddd !important;
-        }
-
-        .detail-card {
-            border: 1px solid #ddd !important;
-            box-shadow: none !important;
-        }
-
-        .detail-card-header {
-            background: #f5f5f5 !important;
-            border: 1px solid #ddd !important;
-        }
-
-        .info-item {
-            background: #fafafa !important;
-        }
-    }
+    .dashboard-page .nx-alert form { margin: 0; }
 </style>
+@endpush
+
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.js-delete-form').forEach(function (form) {
+            form.addEventListener('submit', function (e) {
+                e.preventDefault();
+                Swal.fire({
+                    title: 'Delete this exam?',
+                    text: 'This cannot be undone.',
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#b91c1c',
+                    cancelButtonColor: '#64748b',
+                    confirmButtonText: 'Delete',
+                    reverseButtons: true
+                }).then(function (r) { if (r.isConfirmed) form.submit(); });
+            });
+        });
+    });
+</script>
 @endpush
