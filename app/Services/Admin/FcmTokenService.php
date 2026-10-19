@@ -27,6 +27,8 @@ class FcmTokenService
                 $query->android();
             } elseif ($filters['device_type'] === 'ios') {
                 $query->ios();
+            } elseif ($filters['device_type'] === 'web') {
+                $query->web();
             }
         }
 
@@ -56,6 +58,7 @@ class FcmTokenService
             'inactive' => FcmToken::inactive()->count(),
             'android' => FcmToken::android()->count(),
             'ios' => FcmToken::ios()->count(),
+            'web' => FcmToken::web()->count(),
             'unique_students' => FcmToken::distinct('student_id')->count('student_id'),
         ];
     }

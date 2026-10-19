@@ -48,11 +48,17 @@ class FcmToken extends Model
         return $query->where('device_type', 'ios');
     }
 
+    public function scopeWeb($query)
+    {
+        return $query->where('device_type', 'web');
+    }
+
     public function getDeviceTypeLabelAttribute(): string
     {
         return match ($this->device_type) {
             'android' => 'Android',
             'ios' => 'iOS',
+            'web' => 'Web browser',
             default => 'Unknown',
         };
     }
@@ -79,6 +85,7 @@ class FcmToken extends Model
         return match ($this->device_type) {
             'android' => 'bi-phone',
             'ios' => 'bi-apple',
+            'web' => 'bi-globe',
             default => 'bi-device',
         };
     }
