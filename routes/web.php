@@ -12,6 +12,7 @@ use App\Http\Controllers\Web\Auth\LoginController;
 
 
 use App\Http\Controllers\Web\Setting\DatabaseBackupController;
+use App\Http\Controllers\Web\Setting\NotificationSettingController;
 
 use App\Http\Controllers\Web\Exam\ExamController;
 
@@ -900,6 +901,13 @@ Route::middleware([
             Route::post('setting/backup/import', [DatabaseBackupController::class, 'import'])
 
                 ->name('setting.backup.import');
+
+            // Parent notifications: on / off + push or SMS (whole system)
+            Route::get('setting/notifications', [NotificationSettingController::class, 'index'])
+                ->name('setting.notifications');
+
+            Route::put('setting/notifications', [NotificationSettingController::class, 'update'])
+                ->name('setting.notifications.update');
         });
 
 

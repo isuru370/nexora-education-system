@@ -2,6 +2,7 @@
 
 namespace App\Services\Notification;
 
+use App\Models\NotificationSetting;
 use App\Models\Student;
 use App\Models\StudentAttendance;
 use App\Models\StudentClassEnrollment;
@@ -35,37 +36,33 @@ class AttendanceNotificationService
 
             /*
              * ---------------------------------------------------------
-             * FCM
+             * Push (parent app) or SMS - chosen in Settings > Notifications
              * ---------------------------------------------------------
              */
 
-            if ($this->hasActiveTokens($student)) {
-                $this->sendFcmNotification(
+            $channel = NotificationSetting::channelFor(NotificationSetting::ATTENDANCE);
+
+            if ($channel === NotificationSetting::PUSH) {
+                if ($this->hasActiveTokens($student)) {
+                    $this->sendFcmNotification(
+                        $student,
+                        $attendance,
+                        $data
+                    );
+                } else {
+                    Log::info('Attendance FCM skipped - no active token', [
+                        'student_id' => $student->id,
+                        'attendance_id' => $attendance->id,
+                    ]);
+                }
+            } elseif ($channel === NotificationSetting::SMS) {
+                $this->sendSmsNotification(
                     $student,
                     $attendance,
+                    $enrollment,
                     $data
                 );
-            } else {
-                Log::info('Attendance FCM skipped - no active token', [
-                    'student_id' => $student->id,
-                    'attendance_id' => $attendance->id,
-                ]);
             }
-
-            /*
-             * ---------------------------------------------------------
-             * SMS
-             * ---------------------------------------------------------
-             *
-             * Enable this when SMS integration is required.
-             */
-
-            // $this->sendSmsNotification(
-            //     $student,
-            //     $attendance,
-            //     $enrollment,
-            //     $data
-            // );
 
         } catch (\Throwable $e) {
 

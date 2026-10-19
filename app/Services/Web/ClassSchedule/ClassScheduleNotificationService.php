@@ -2,12 +2,21 @@
 
 namespace App\Services\Web\ClassSchedule;
 
+use App\Enums\NotificationType;
 use App\Jobs\SendClassScheduleSms;
 use App\Models\ClassHall;
+use App\Models\NotificationSetting;
 use App\Models\StudentClassEnrollment;
+use App\Services\Notification\NotificationService;
+use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class ClassScheduleNotificationService
 {
+    public function __construct(
+        private NotificationService $pushService
+    ) {
+    }
     /*
     |--------------------------------------------------------------------------
     | Send Class Schedule SMS
@@ -25,6 +34,15 @@ class ClassScheduleNotificationService
         array $validated,
         string $action
     ): void {
+        /*
+         * Push (parent app) or SMS - chosen in Settings > Notifications.
+         */
+        $channel = NotificationSetting::channelFor(NotificationSetting::CLASS_SCHEDULE);
+
+        if ($channel === null) {
+            return;
+        }
+
         /*
          * Get the selected hall, if provided.
          */
@@ -66,8 +84,12 @@ class ClassScheduleNotificationService
         foreach ($students as $enrollment) {
             $student = $enrollment->student;
 
+            if (!$student) {
+                continue;
+            }
+
             if (
-                !$student ||
+                $channel === NotificationSetting::SMS &&
                 empty($student->guardian_mobile)
             ) {
                 continue;
@@ -134,6 +156,12 @@ class ClassScheduleNotificationService
 
             $message .= "\nThank You.";
 
+            if ($channel === NotificationSetting::PUSH) {
+                $this->sendPush($student->id, $title, $message, $action, $validated);
+
+                continue;
+            }
+
             /*
              * Dispatch the existing SMS job.
              */
@@ -141,6 +169,40 @@ class ClassScheduleNotificationService
                 $student->guardian_mobile,
                 $message
             );
+        }
+    }
+
+    /**
+     * Parent app notification for one student.
+     * A failure for one student must not stop the others.
+     */
+    private function sendPush(
+        int $studentId,
+        string $title,
+        string $message,
+        string $action,
+        array $validated
+    ): void {
+        try {
+            $this->pushService->send([
+                'student_id' => $studentId,
+                'title' => rtrim($title, '.'),
+                'message' => trim(str_replace(["Dear Parent,\n\n", "\nThank You."], '', $message)),
+                'type' => NotificationType::GENERAL,
+                'data' => [
+                    'kind' => 'class_schedule',
+                    'action' => $action,
+                    'class_date' => $validated['class_date'] ?? null,
+                    'start_time' => $validated['start_time'] ?? null,
+                    'end_time' => $validated['end_time'] ?? null,
+                ],
+                'scheduled_at' => null,
+            ]);
+        } catch (Throwable $e) {
+            Log::info('Class schedule push skipped', [
+                'student_id' => $studentId,
+                'reason' => $e->getMessage(),
+            ]);
         }
     }
 }

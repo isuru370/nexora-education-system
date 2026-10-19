@@ -12,9 +12,14 @@
                 <div class="hero-left">
                     <span class="greeting-badge">nexoraEDU</span>
                     <h1 class="hero-title">Settings</h1>
-                    <p class="hero-subtitle">Manage your database backups securely.</p>
+                    <p class="hero-subtitle">Parent notifications and database backups.</p>
                 </div>
                 <div class="hero-right">
+                    <div class="hero-actions">
+                        <a href="{{ route('admin.setting.notifications') }}" class="nx-btn nx-btn-light">
+                            <i class="bi bi-bell-fill"></i> Parent Notifications
+                        </a>
+                    </div>
                     <div class="hero-date-time">
                         <div class="date-box">
                             <i class="bi bi-database"></i>
@@ -38,6 +43,51 @@
                 <span>{{ session('error') }}</span>
             </div>
         @endif
+
+        {{-- PARENT NOTIFICATIONS --}}
+        @php
+            try {
+                $notificationSettings = \App\Models\NotificationSetting::query()->orderBy('sort_order')->get();
+            } catch (\Throwable $e) {
+                $notificationSettings = collect(); // table not migrated yet
+            }
+        @endphp
+
+        <div class="nx-card mb-5">
+            <div class="nx-card-header">
+                <div>
+                    <h5 class="nx-card-title"><i class="bi bi-bell-fill text-primary"></i> Parent Notifications</h5>
+                    <p class="nx-card-subtitle">What parents are told, and whether it goes to the parent app or by SMS</p>
+                </div>
+                <a href="{{ route('admin.setting.notifications') }}" class="nx-btn nx-btn-primary">
+                    <i class="bi bi-sliders"></i> Manage
+                </a>
+            </div>
+
+            @if ($notificationSettings->isEmpty())
+                <div class="p-3">
+                    <div class="nx-alert nx-alert-amber mb-0">
+                        <i class="bi bi-exclamation-triangle-fill"></i>
+                        <span>Notification settings are not set up yet. Run <code>php artisan migrate</code>.</span>
+                    </div>
+                </div>
+            @else
+                <div class="notify-summary">
+                    @foreach ($notificationSettings as $setting)
+                        <a href="{{ route('admin.setting.notifications') }}" class="notify-pill {{ $setting->is_enabled ? '' : 'is-off' }}">
+                            <span class="notify-pill-label">{{ $setting->label }}</span>
+                            @if (!$setting->is_enabled)
+                                <span class="nx-badge nx-badge-gray">Off</span>
+                            @elseif ($setting->channel === 'sms')
+                                <span class="nx-badge nx-badge-blue"><i class="bi bi-chat-dots"></i> SMS</span>
+                            @else
+                                <span class="nx-badge nx-badge-green"><i class="bi bi-phone"></i> Parent app</span>
+                            @endif
+                        </a>
+                    @endforeach
+                </div>
+            @endif
+        </div>
 
         {{-- SECTION HEADER --}}
         <div class="nx-section-header mb-3">
@@ -310,6 +360,33 @@
     }
 
     .dashboard-page .date-time { line-height: 1.3; }
+
+    /* Parent notifications summary */
+    .dashboard-page .notify-summary {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+        gap: .75rem;
+        padding: 1rem 1.25rem;
+    }
+    .dashboard-page .notify-pill {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: .5rem;
+        padding: .7rem .85rem;
+        border: 1px solid var(--nx-border);
+        border-radius: 10px;
+        background: #fafbfd;
+        text-decoration: none;
+        transition: border-color .15s ease;
+    }
+    .dashboard-page .notify-pill:hover { border-color: var(--nx-blue); }
+    .dashboard-page .notify-pill.is-off .notify-pill-label { color: var(--nx-muted); }
+    .dashboard-page .notify-pill-label {
+        font-size: .82rem;
+        font-weight: 700;
+        color: var(--nx-text);
+    }
 
     @media (max-width: 768px) {
         .dashboard-page .message-text { max-width: 150px; }

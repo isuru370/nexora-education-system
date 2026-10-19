@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Admission;
 
+use App\Services\Notification\AdmissionPaymentNotificationService;
 use App\Http\Controllers\Controller;
 use App\Models\Admission;
 use App\Models\AdmissionPayment;
@@ -139,7 +140,11 @@ class AdmissionPaymentController extends Controller
      * Uses the same StudentAdmissionService as student registration, so the
      * payment gets the student's branch, the cashier, paid_at and a receipt number.
      */
-    public function storeAdmissionPayment(Request $request, StudentAdmissionService $admissionService)
+    public function storeAdmissionPayment(
+        Request $request,
+        StudentAdmissionService $admissionService,
+        AdmissionPaymentNotificationService $admissionNotification
+    )
     {
         $validated = $request->validate([
             'student_id' => ['required', 'integer', 'exists:students,id'],
@@ -162,6 +167,9 @@ class AdmissionPaymentController extends Controller
 
         try {
             $payment = $admissionService->createAdmissionPayment($student, (int) $validated['admission_id']);
+
+            // Parent notification (Settings > Notifications)
+            $admissionNotification->sendPaid($payment);
 
             return response()->json([
                 'success' => true,

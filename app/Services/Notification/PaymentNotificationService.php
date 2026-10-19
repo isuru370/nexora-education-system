@@ -4,6 +4,7 @@ namespace App\Services\Notification;
 
 use App\Enums\NotificationType;
 use App\Jobs\SendPaymentSms;
+use App\Models\NotificationSetting;
 use App\Models\Payment;
 use Illuminate\Support\Facades\Log;
 
@@ -31,24 +32,21 @@ class PaymentNotificationService
 
             /*
              * ---------------------------------------------------------
-             * FCM
+             * Push (parent app) or SMS - chosen in Settings > Notifications
              * ---------------------------------------------------------
              */
 
-            $this->sendFcmNotification($payment);
+            $channel = NotificationSetting::channelFor(NotificationSetting::PAYMENT);
 
-            /*
-             * ---------------------------------------------------------
-             * SMS
-             * ---------------------------------------------------------
-             *
-             * Enable when payment SMS is required.
-             */
-
-            // $this->sendSmsNotification($payment);
+            if ($channel === NotificationSetting::PUSH) {
+                $this->sendFcmNotification($payment);
+            } elseif ($channel === NotificationSetting::SMS) {
+                $this->sendSmsNotification($payment);
+            }
 
             Log::info('Payment notification processing completed.', [
                 'payment_id' => $payment->id,
+                'channel' => $channel ?? 'off',
                 'student_id' => $student->id,
             ]);
 

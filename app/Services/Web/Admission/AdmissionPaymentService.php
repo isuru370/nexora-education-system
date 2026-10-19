@@ -6,6 +6,7 @@ use App\Models\Admission;
 use App\Models\AdmissionPayment;
 use App\Models\Student;
 use App\Services\Branch\BranchAccessService;
+use App\Services\Notification\AdmissionPaymentNotificationService;
 use App\Services\Web\Receipt\ReceiptNumberService;
 use DomainException;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
@@ -15,7 +16,8 @@ class AdmissionPaymentService
 {
     public function __construct(
         protected BranchAccessService $branchAccess,
-        protected ReceiptNumberService $receiptNumberService
+        protected ReceiptNumberService $receiptNumberService,
+        protected AdmissionPaymentNotificationService $admissionNotification
     ) {}
 
     /*
@@ -177,6 +179,9 @@ class AdmissionPaymentService
 
             $this->syncStudentAdmissionFlag($student);
 
+            // Parent notification (Settings > Notifications), after commit
+            $this->admissionNotification->sendPaid($payment);
+
             return $payment;
         });
     }
@@ -201,6 +206,7 @@ class AdmissionPaymentService
             $this->assertBranchAccess((int) $payment->branch_id);
 
             $oldStudentId = (int) $payment->student_id;
+            $wasPaid = $payment->status === AdmissionPayment::STATUS_PAID;
 
             $student = Student::query()
                 ->lockForUpdate()
@@ -240,6 +246,11 @@ class AdmissionPaymentService
 
             if ($oldStudentId !== (int) $student->id) {
                 $this->syncStudentAdmissionFlag(Student::findOrFail($oldStudentId));
+            }
+
+            // Pending -> paid: notify the parent once
+            if (!$wasPaid && $becomesPaid) {
+                $this->admissionNotification->sendPaid($payment);
             }
 
             return $payment;

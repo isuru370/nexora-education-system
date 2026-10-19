@@ -28,22 +28,51 @@ class DeployCheckService
 
     /** Tables the system cannot run without. */
     public const CORE_TABLES = [
-        'users', 'user_types', 'system_users', 'branches', 'branch_users',
-        'students', 'teachers', 'grades', 'subjects', 'student_classes',
-        'class_categories', 'class_category_fees', 'class_category_fee_options',
-        'student_class_enrollments', 'class_halls', 'class_schedule_patterns',
-        'class_schedules', 'student_attendances', 'payments', 'admissions',
-        'admission_payments', 'receipt_counters', 'student_cards', 'exams',
-        'student_results', 'personal_access_tokens', 'activity_logs',
+        'users',
+        'user_types',
+        'system_users',
+        'branches',
+        'branch_users',
+        'students',
+        'teachers',
+        'grades',
+        'subjects',
+        'student_classes',
+        'class_categories',
+        'class_category_fees',
+        'class_category_fee_options',
+        'student_class_enrollments',
+        'class_halls',
+        'class_schedule_patterns',
+        'class_schedules',
+        'student_attendances',
+        'payments',
+        'admissions',
+        'admission_payments',
+        'receipt_counters',
+        'student_cards',
+        'exams',
+        'student_results',
+        'personal_access_tokens',
+        'activity_logs',
+        'notification_settings',
     ];
 
     public const USER_TYPES = ['SUPER_ADMIN', 'ADMIN', 'BRANCH_ADMIN', 'USER', 'TEACHER'];
 
     public const PHP_EXTENSIONS = [
-        'pdo_mysql' => true, 'mbstring' => true, 'openssl' => true, 'tokenizer' => true,
-        'xml' => true, 'ctype' => true, 'json' => true, 'fileinfo' => true, 'curl' => true,
+        'pdo_mysql' => true,
+        'mbstring' => true,
+        'openssl' => true,
+        'tokenizer' => true,
+        'xml' => true,
+        'ctype' => true,
+        'json' => true,
+        'fileinfo' => true,
+        'curl' => true,
         // needed for images / PDF / Excel, but the rest of the system works without them
-        'gd' => false, 'zip' => false,
+        'gd' => false,
+        'zip' => false,
     ];
 
     /*
@@ -62,8 +91,8 @@ class DeployCheckService
             ? $this->ok('PHP ' . PHP_VERSION)
             : $this->warn('PHP ' . PHP_VERSION . ' - use PHP 8.0 or newer');
 
-        $missing = collect(self::PHP_EXTENSIONS)->keys()->reject(fn ($ext) => extension_loaded($ext));
-        $missingRequired = $missing->filter(fn ($ext) => self::PHP_EXTENSIONS[$ext]);
+        $missing = collect(self::PHP_EXTENSIONS)->keys()->reject(fn($ext) => extension_loaded($ext));
+        $missingRequired = $missing->filter(fn($ext) => self::PHP_EXTENSIONS[$ext]);
 
         $checks['PHP extensions'] = match (true) {
             $missingRequired->isNotEmpty() => $this->fail('Missing: ' . $missingRequired->implode(', ')),
@@ -99,7 +128,7 @@ class DeployCheckService
             'storage/framework' => storage_path('framework'),
             'storage/logs' => storage_path('logs'),
             'bootstrap/cache' => base_path('bootstrap/cache'),
-        ])->reject(fn ($path) => is_dir($path) && is_writable($path))->keys();
+        ])->reject(fn($path) => is_dir($path) && is_writable($path))->keys();
 
         $checks['Writable folders'] = $notWritable->isEmpty()
             ? $this->ok('storage, bootstrap/cache')
@@ -118,9 +147,12 @@ class DeployCheckService
     public function databaseConnection(): array
     {
         try {
-            DB::connection()->getPdo();
+            /** @var \Illuminate\Database\Connection $connection */
+            $connection = DB::connection();
 
-            return $this->ok(config('database.default') . ' / ' . DB::connection()->getDatabaseName());
+            $connection->getPdo();
+
+            return $this->ok(config('database.default') . ' / ' . $connection->getDatabaseName());
         } catch (Throwable $e) {
             return $this->fail('Cannot connect: ' . Str::limit($e->getMessage(), 160) . ' - check DB_* in .env');
         }
@@ -182,7 +214,7 @@ class DeployCheckService
     {
         $checks = [];
 
-        $missingTables = collect(self::CORE_TABLES)->reject(fn ($t) => Schema::hasTable($t));
+        $missingTables = collect(self::CORE_TABLES)->reject(fn($t) => Schema::hasTable($t));
         $checks['Core tables'] = $missingTables->isEmpty()
             ? $this->ok(count(self::CORE_TABLES) . ' tables present')
             : $this->fail('Missing: ' . $missingTables->implode(', '));
@@ -192,7 +224,7 @@ class DeployCheckService
             : $this->ok('None');
 
         $checks['User roles'] = $this->safe(function () {
-            $codes = DB::table('user_types')->pluck('code')->map(fn ($c) => strtoupper($c));
+            $codes = DB::table('user_types')->pluck('code')->map(fn($c) => strtoupper($c));
             $missing = collect(self::USER_TYPES)->diff($codes);
 
             return $missing->isEmpty()
@@ -287,11 +319,11 @@ class DeployCheckService
     public function controllerCheck(): array
     {
         $classes = collect(Route::getRoutes()->getRoutes())
-            ->map(fn ($r) => $r->getAction('uses'))
-            ->filter(fn ($u) => is_string($u))
-            ->map(fn ($u) => explode('@', $u)[0])
+            ->map(fn($r) => $r->getAction('uses'))
+            ->filter(fn($u) => is_string($u))
+            ->map(fn($u) => explode('@', $u)[0])
             ->unique()
-            ->filter(fn ($c) => class_exists($c));
+            ->filter(fn($c) => class_exists($c));
 
         $broken = [];
 

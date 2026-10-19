@@ -35,6 +35,9 @@ return [
         'user_id' => env('SMS_USER_ID'),
         'api_key' => env('SMS_API_KEY'),
         'sender_id' => env('SMS_SENDER_ID'),
+
+        // One SMS to the parent on registration (admission + portal login)
+        'registration_sms' => env('SMS_ON_REGISTRATION', true),
     ],
 
     // ✅ Add this block for image URLs
@@ -47,6 +50,9 @@ return [
         'url' => env('PARENT_HUB_URL'),
 
         'secret' => env('PARENT_HUB_SECRET'),
+
+        // Parent app download link added to the registration SMS (optional)
+        'app_link' => env('PARENT_APP_LINK'),
 
     ],
 

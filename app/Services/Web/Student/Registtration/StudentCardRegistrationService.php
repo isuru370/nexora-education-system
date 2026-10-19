@@ -10,6 +10,7 @@ use App\Services\Web\Student\StudentAdmissionService;
 use App\Services\Web\Student\StudentPhotoService;
 use App\Services\Web\Student\StudentPortalService;
 use App\Services\Web\StudentCard\StudentCardService;
+use App\Services\Notification\RegistrationSmsService;
 use Illuminate\Support\Facades\DB;
 use RuntimeException;
 
@@ -20,7 +21,8 @@ class StudentCardRegistrationService
         private StudentCardService $studentCardService,
         private StudentAdmissionService $studentAdmissionService,
         private StudentPhotoService $studentPhotoService,
-        private StudentPortalService $studentPortalService
+        private StudentPortalService $studentPortalService,
+        private RegistrationSmsService $registrationSms
     ) {}
 
     /**
@@ -270,6 +272,22 @@ class StudentCardRegistrationService
                     'branch',
                 ]);
             }
+
+            /*
+            |--------------------------------------------------------------------------
+            | SMS to Parent (admission + portal login)
+            |--------------------------------------------------------------------------
+            |
+            | Queued only after the transaction is saved (see RegistrationSmsService).
+            |
+            */
+
+            $this->registrationSms->send(
+                $student,
+                $admissionPayment,
+                $student->custom_id,
+                $plainPassword
+            );
 
             /*
             |--------------------------------------------------------------------------
