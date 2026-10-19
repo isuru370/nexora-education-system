@@ -21,7 +21,7 @@
             </div>
 
             <div class="header-buttons">
-                <a href="{{ route('admin.student-cards.index') }}" class="btn btn-light border custom-btn">
+                <a href="{{ route('student-cards.index') }}" class="btn btn-light border custom-btn">
                     <i class="bi bi-arrow-left"></i>
                     Back to Inventory
                 </a>
@@ -422,26 +422,26 @@
                             <div class="detail-card-body">
                                 <div class="d-flex flex-wrap gap-2">
                                     @if ($card->status == 'assigned' && $card->student)
-                                        <a href="{{ route('admin.student-cards.replace', $card->id) }}" class="btn btn-warning custom-btn">
+                                        <a href="{{ route('student-cards.replace', $card->id) }}" class="btn btn-warning custom-btn">
                                             <i class="bi bi-arrow-repeat"></i>
                                             Replace Card
                                         </a>
 
-                                        <a href="{{ route('admin.student-cards.lost', $card->id) }}" 
+                                        <a href="{{ route('student-cards.lost', $card->id) }}" 
                                            class="btn btn-danger custom-btn"
                                            onclick="return confirm('Are you sure you want to mark this card as lost?')">
                                             <i class="bi bi-x-circle"></i>
                                             Mark Lost
                                         </a>
 
-                                        <a href="{{ route('admin.student-cards.damaged', $card->id) }}" 
+                                        <a href="{{ route('student-cards.damaged', $card->id) }}" 
                                            class="btn btn-dark custom-btn"
                                            onclick="return confirm('Are you sure you want to mark this card as damaged?')">
                                             <i class="bi bi-exclamation-triangle"></i>
                                             Mark Damaged
                                         </a>
 
-                                        <a href="{{ route('admin.student-cards.deactivate', $card->id) }}" 
+                                        <a href="{{ route('student-cards.deactivate', $card->id) }}" 
                                            class="btn btn-secondary custom-btn"
                                            onclick="return confirm('Are you sure you want to deactivate this card?')">
                                             <i class="bi bi-slash-circle"></i>
@@ -455,7 +455,7 @@
                                             </a>
                                         @endif
                                     @elseif($card->status == 'available')
-                                        <a href="{{ route('admin.student-cards.assign', $card->id) }}" class="btn btn-primary custom-btn">
+                                        <a href="{{ route('student-cards.assign', $card->id) }}" class="btn btn-primary custom-btn">
                                             <i class="bi bi-person-plus"></i>
                                             Assign to Student
                                         </a>

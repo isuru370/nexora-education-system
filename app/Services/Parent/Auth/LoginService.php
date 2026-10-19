@@ -2,6 +2,7 @@
 
 namespace App\Services\Parent\Auth;
 
+use Laravel\Sanctum\PersonalAccessToken;
 use App\Models\FcmToken;
 use App\Models\StudentPortalLogin;
 use Illuminate\Support\Facades\Hash;
@@ -29,13 +30,46 @@ class LoginService
 
         $student = $user->student;
 
+        if (!$student) {
+            return [
+                'status' => false,
+                'message' => 'Invalid username or password',
+            ];
+        }
+
+        /*
+         * Parent API token. Send it as "Authorization: Bearer <token>".
+         * Tokens not used for PARENT_API_TOKEN_DAYS days are removed here.
+         */
+        $days = (int) config('parent_api.token_days', 90);
+
+        if ($days > 0) {
+            $user->tokens()
+                ->where(function ($query) use ($days) {
+                    $query->where('last_used_at', '<', now()->subDays($days))
+                        ->orWhere(function ($query) use ($days) {
+                            $query->whereNull('last_used_at')
+                                ->where('created_at', '<', now()->subDays($days));
+                        });
+                })
+                ->delete();
+        }
+
+        $token = $user->createToken('parent-api')->plainTextToken;
+
         // ✅ Build full image URL
         $imgUrl = $this->getImageUrl($student->img_url);
 
         return [
             'status' => true,
             'message' => 'Login successful',
+            'token' => $token,
+            'token_type' => 'Bearer',
             'data' => [
+                // ========== API token (same as the top-level "token") ==========
+                'token' => $token,
+                'token_type' => 'Bearer',
+
                 // ========== Basic Information ==========
                 'student_id' => $student->id,
                 'custom_id' => $student->custom_id,
@@ -107,25 +141,36 @@ class LoginService
         return $baseUrl . '/storage/' . ltrim($imgUrl, '/');
     }
 
+    /**
+     * Revokes the API token used for the request (if any) and turns off
+     * push notifications for the device (if a device_id is given).
+     */
     public function logout(
         int $studentId,
-        string $deviceId
+        ?string $deviceId,
+        ?PersonalAccessToken $apiToken = null
     ): array {
 
-        $token = FcmToken::where('student_id', $studentId)
-            ->where('device_id', $deviceId)
-            ->first();
+        if ($apiToken) {
+            $apiToken->delete();
+        }
 
-        if (!$token) {
+        $device = $deviceId
+            ? FcmToken::where('student_id', $studentId)->where('device_id', $deviceId)->first()
+            : null;
+
+        if ($device) {
+            $device->update([
+                'is_active' => false,
+            ]);
+        }
+
+        if (!$device && !$apiToken) {
             return [
                 'status' => false,
                 'message' => 'Device not found.',
             ];
         }
-
-        $token->update([
-            'is_active' => false,
-        ]);
 
         return [
             'status' => true,
@@ -133,7 +178,11 @@ class LoginService
         ];
     }
 
-    public function changePassword(array $data): array
+    /**
+     * Every other login (token) of this student is signed out; the token
+     * used for this request keeps working.
+     */
+    public function changePassword(array $data, ?PersonalAccessToken $apiToken = null): array
     {
         $login = StudentPortalLogin::where(
             'student_id',
@@ -157,6 +206,8 @@ class LoginService
                 'message' => 'Current password is incorrect.',
             ];
         }
+
+        $login->keepTokenId = $apiToken ? (int) $apiToken->id : null;
 
         $login->update([
             'password' => $data['new_password'],

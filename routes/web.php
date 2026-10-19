@@ -1074,7 +1074,7 @@ Route::middleware([
 
                 // Show single token
 
-                Route::get('/{id}', [FcmTokenController::class, 'show'])
+                Route::get('/{id}', [FcmTokenController::class, 'show'])->whereNumber('id')
 
                     ->name('show');
 
@@ -1092,7 +1092,7 @@ Route::middleware([
 
                 // Activate token
 
-                Route::post('/{id}/activate', [FcmTokenController::class, 'activate'])
+                Route::post('/{id}/activate', [FcmTokenController::class, 'activate'])->whereNumber('id')
 
                     ->name('activate');
 
@@ -1101,7 +1101,7 @@ Route::middleware([
 
                 // Deactivate token
 
-                Route::post('/{id}/deactivate', [FcmTokenController::class, 'deactivate'])
+                Route::post('/{id}/deactivate', [FcmTokenController::class, 'deactivate'])->whereNumber('id')
 
                     ->name('deactivate');
 
@@ -1110,7 +1110,7 @@ Route::middleware([
 
                 // Delete token
 
-                Route::delete('/{id}', [FcmTokenController::class, 'destroy'])
+                Route::delete('/{id}', [FcmTokenController::class, 'destroy'])->whereNumber('id')
 
                     ->name('destroy');
 

@@ -788,9 +788,9 @@ class AttendanceService
             return '';
         }
 
-        return $teacher->teacher_name
-            ?? $teacher->name
-            ?? '';
+        // teachers table: full_name / initials
+        return $teacher->full_name
+            ?: ($teacher->initials ?: '');
     }
 
     /**

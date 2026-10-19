@@ -71,10 +71,14 @@ class ExtraIncomeController extends Controller
             ->appends($request->query());
 
         // 📅 years dropdown
-        $years = ExtraIncome::selectRaw('YEAR(income_date) as year')
-            ->distinct()
-            ->orderByDesc('year')
-            ->pluck('year');
+        // (works on MySQL and SQLite)
+        $years = ExtraIncome::query()
+            ->whereNotNull('income_date')
+            ->pluck('income_date')
+            ->map(fn ($date) => (int) \Illuminate\Support\Carbon::parse($date)->format('Y'))
+            ->unique()
+            ->sortDesc()
+            ->values();
 
         return view('extra-incomes.index', compact(
             'extraIncomes',

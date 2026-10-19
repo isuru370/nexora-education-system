@@ -31,8 +31,9 @@ class ParentAuthController extends Controller
     public function logout(LogoutRequest $request): JsonResponse
     {
         $result = $this->loginService->logout(
-            $request->student_id,
-            $request->device_id
+            (int) $request->student_id,
+            $request->device_id,
+            $request->attributes->get('parent_token')
         );
 
         return response()->json(
@@ -46,7 +47,8 @@ class ParentAuthController extends Controller
     ): JsonResponse {
 
         $result = $this->loginService->changePassword(
-            $request->validated()
+            $request->validated(),
+            $request->attributes->get('parent_token')
         );
 
         return response()->json(

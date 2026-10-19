@@ -2,6 +2,7 @@
 
 namespace App\Services\Web\Payment;
 
+use App\Services\Branch\BranchAccessService;
 use App\Models\Payment;
 use App\Services\Notification\PaymentNotificationService;
 use Illuminate\Support\Carbon;
@@ -54,6 +55,19 @@ class PaymentService
     }
 
     /**
+     * Staff can only take payments for their own branches
+     * (ADMIN / SUPER_ADMIN: every branch).
+     */
+    protected function ensureBranchAccess(int $branchId): void
+    {
+        if (!app(BranchAccessService::class)->canAccessBranch($branchId)) {
+            throw new \RuntimeException(
+                'You can only take payments for your own branch.'
+            );
+        }
+    }
+
+    /**
      * Read student payment information.
      *
      * Used by:
@@ -77,8 +91,13 @@ class PaymentService
             );
         }
 
+        // Only classes in branches this user works in
+        $branchIds = app(BranchAccessService::class)->getBranchIds();
+
         $enrollments = $this->studentFinder
-            ->getActiveEnrollments($student);
+            ->getActiveEnrollments($student)
+            ->filter(fn ($enrollment) => $branchIds->contains((int) $enrollment->branch_id))
+            ->values();
 
         return [
             'student' => $this->dataBuilder
@@ -201,6 +220,8 @@ class PaymentService
                         'Student class enrollment not found.'
                     );
                 }
+
+                $this->ensureBranchAccess((int) $enrollment->branch_id);
 
                 /*
                 |--------------------------------------------------------------------------
@@ -543,6 +564,8 @@ class PaymentService
                             'Student class enrollment not found.'
                         );
                     }
+
+                    $this->ensureBranchAccess((int) $enrollment->branch_id);
 
                     /*
                     |--------------------------------------------------------------------------

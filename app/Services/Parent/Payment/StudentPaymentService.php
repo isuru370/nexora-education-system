@@ -49,9 +49,8 @@ class StudentPaymentService
                 'id',
                 'student_class_id',
                 'class_category_fee_id',
+                'class_category_fee_option_id',
                 'is_free_card',
-                'custom_fee',
-                'discount_percentage',
                 'enrolled_at',
             ])
             ->where('student_id', $studentId)
@@ -62,35 +61,9 @@ class StudentPaymentService
                 'studentClass:id,class_name,teacher_id,grade_id',
                 'studentClass.teacher:id,initials',
                 'studentClass.grade:id,grade_name',
-                'classCategoryFee:id,class_category_id,fee',
+                'classCategoryFee:id,class_category_id',
                 'classCategoryFee.category:id,category_name',
-
-                // ✅ FIXED: Load payments with correct student_id
-                'payments' => function ($query) use ($studentId) {
-                    $query->select([
-                        'id',
-                        'student_class_enrollment_id',
-                        'student_id',
-                        'user_id',
-                        'amount',
-                        'discount_amount',
-                        'payment_month',
-                        'paid_at',
-                        'payment_method',
-                        'mark_method',
-                        'status',
-                        'receipt_number',
-                        'reference_number',
-                        'note',
-                    ])
-                        ->where('student_id', $studentId) // ✅ Use passed parameter
-                        ->with([
-                            'collectedBy:id,name',
-                        ])
-                        ->orderByDesc('payment_month')
-                        ->orderByDesc('paid_at');
-                },
-
+                'classCategoryFeeOption:id,class_category_fee_id,fee',
             ])
             ->get();
 
@@ -119,6 +92,8 @@ class StudentPaymentService
                 'note',
             ])
             ->where('student_id', $studentId)
+            // Only real payments - cancelled / refunded ones are not "paid"
+            ->where('status', 'completed')
             ->with([
                 'collectedBy:id,name',
             ])
@@ -334,26 +309,13 @@ class StudentPaymentService
      */
     private function calculateMonthlyFee($enrollment): float
     {
-        $baseFee = (float) ($enrollment->classCategoryFee?->fee ?? 0);
-
         // Free card - no fee
         if ($enrollment->is_free_card) {
             return 0;
         }
 
-        // Custom fee overrides base fee
-        if ($enrollment->custom_fee !== null) {
-            $fee = (float) $enrollment->custom_fee;
-        } else {
-            $fee = $baseFee;
-        }
-
-        // Apply discount
-        if ($enrollment->discount_percentage > 0) {
-            $fee = $fee * (1 - ($enrollment->discount_percentage / 100));
-        }
-
-        return round($fee, 2);
+        // The fee is on the fee option chosen for this enrollment
+        return round((float) ($enrollment->classCategoryFeeOption?->fee ?? 0), 2);
     }
 
     /**
