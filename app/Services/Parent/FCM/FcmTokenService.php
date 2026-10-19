@@ -8,6 +8,17 @@ class FcmTokenService
 {
     public function save(array $data): void
     {
+        // A token belongs to one browser / phone. If it was saved for another
+        // student or device (e.g. a parent switched child on the same phone),
+        // move it here instead of failing on the unique token column.
+        FcmToken::where('token', $data['token'])
+            ->where(function ($query) use ($data) {
+                $query->where('student_id', '!=', $data['student_id'])
+                    ->orWhere('device_id', '!=', $data['device_id'])
+                    ->orWhereNull('device_id');
+            })
+            ->delete();
+
         FcmToken::updateOrCreate(
             [
                 'student_id' => $data['student_id'],

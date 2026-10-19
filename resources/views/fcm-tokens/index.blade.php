@@ -63,8 +63,8 @@
                     <i class="bi bi-apple"></i>
                 </div>
                 <div>
-                    <h3>{{ $stats['ios'] }}</h3>
-                    <p>iOS</p>
+                    <h3>{{ $stats['ios'] }} <small class="text-muted fs-6">/ {{ $stats['web'] ?? 0 }}</small></h3>
+                    <p>iOS / Web</p>
                 </div>
             </div>
         </div>
@@ -151,6 +151,7 @@
                             <option value="">All Devices</option>
                             <option value="android" {{ request('device_type') == 'android' ? 'selected' : '' }}>Android</option>
                             <option value="ios" {{ request('device_type') == 'ios' ? 'selected' : '' }}>iOS</option>
+                            <option value="web" {{ request('device_type') == 'web' ? 'selected' : '' }}>Web browser</option>
                         </select>
                     </div>
 
