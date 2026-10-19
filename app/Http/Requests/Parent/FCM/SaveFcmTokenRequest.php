@@ -40,7 +40,7 @@ class SaveFcmTokenRequest extends FormRequest
 
             'device_type' => [
                 'required',
-                'in:android,ios',
+                'in:android,ios,web',
             ],
 
             'app_version' => [

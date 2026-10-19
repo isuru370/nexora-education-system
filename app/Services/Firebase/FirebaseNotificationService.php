@@ -475,6 +475,16 @@ class FirebaseNotificationService
                 |--------------------------------------------------------------------------
                 */
 
+                /*
+                | Web (Parent Hub portal in a browser)
+                */
+
+                'webpush' => [
+                    'headers' => [
+                        'Urgency' => 'high',
+                    ],
+                ],
+
                 'apns' => [
                     'headers' => [
                         'apns-priority' => '10',
