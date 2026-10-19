@@ -854,29 +854,6 @@ Route::middleware([
 
 
 
-        Route::get(
-
-            '/reports/teacher-student-payment',
-
-            [MonthlyReportController::class, 'TeacherWithStudentPaymentReport']
-
-        )->name('teacher.student.payment.report')->middleware('role:ADMIN,BRANCH_ADMIN,USER,TEACHER');
-
-        Route::get(
-
-            '/reports/teacher-student-payment-excel',
-
-            [MonthlyReportController::class, 'TeacherWithStudentPaymentReportExcel']
-
-        )->name('teacher.student.payment.report.excel')->middleware('role:ADMIN,BRANCH_ADMIN,USER,TEACHER');
-
-        Route::get(
-
-            '/reports/teacher-student-payment-pdf',
-
-            [MonthlyReportController::class, 'TeacherWithStudentPaymentReportPdf']
-
-        )->name('teacher.student.payment.report.pdf')->middleware('role:ADMIN,BRANCH_ADMIN,USER,TEACHER');
 
 
 
@@ -884,29 +861,10 @@ Route::middleware([
 
 
 
-        Route::get(
 
-            '/reports/teacher-student-payment-date',
 
-            [MonthlyReportController::class, 'TeacherWithStudentPaymentDateReport']
 
-        )->name('teacher.student.payment.report')->middleware('role:ADMIN,BRANCH_ADMIN,USER,TEACHER');
 
-        Route::get(
-
-            '/reports/teacher-student-payment-date-excel',
-
-            [MonthlyReportController::class, 'TeacherWithStudentPaymentDateReportExcel']
-
-        )->name('teacher.student.payment.report.excel')->middleware('role:ADMIN,BRANCH_ADMIN,USER,TEACHER');
-
-        Route::get(
-
-            '/reports/teacher-student-payment-date-pdf',
-
-            [MonthlyReportController::class, 'TeacherWithStudentPaymentDateReportPdf']
-
-        )->name('teacher.student.payment.report.pdf')->middleware('role:ADMIN,BRANCH_ADMIN,USER,TEACHER');
 
 
 
@@ -1499,31 +1457,6 @@ Route::prefix('generate-student-id')
                 'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
             ]);
 
-        /*
-        |--------------------------------------------------------------------------
-        | Update Status - Single card status update (AJAX)
-        |--------------------------------------------------------------------------
-        */
-        Route::patch('/{studentIdCard}/status', 'updateStatus')
-            ->name('status')
-            ->middleware([
-                'auth',
-                'user.active',
-                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
-            ]);
-
-        /*
-        |--------------------------------------------------------------------------
-        | Bulk Update Status - Multiple cards status update (AJAX)
-        |--------------------------------------------------------------------------
-        */
-        Route::patch('/bulk-status', 'bulkUpdateStatus')
-            ->name('bulk-status')
-            ->middleware([
-                'auth',
-                'user.active',
-                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
-            ]);
     });
 
 /*
@@ -1872,11 +1805,8 @@ Route::middleware([
             ->name('show')
             ->middleware('role:ADMIN,BRANCH_ADMIN');
 
-        Route::put('{teacher}', 'update')
-            ->name('update')
-            ->middleware('role:ADMIN,BRANCH_ADMIN');
-
-        Route::patch('{teacher}', 'update')
+        // PUT and PATCH share one route (two routes with one name break route:cache)
+        Route::match(['put', 'patch'], '{teacher}', 'update')
             ->name('update')
             ->middleware('role:ADMIN,BRANCH_ADMIN');
 

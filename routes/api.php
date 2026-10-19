@@ -170,7 +170,7 @@ Route::middleware([
     Route::post(
         '/students-image/update-image',
         [StudentImageController::class, 'updateStudentImage']
-    )->name('api.students.update-image');
+    )->name('api.students-image.update-image');
 
 
     Route::get(
@@ -365,7 +365,7 @@ Route::middleware([
     Route::post(
         '/student-tutes/read',
         [StudentTuteController::class, 'readStudentTute']
-    )->name('api.attendance.read');
+    )->name('api.student-tutes.read');
 
     Route::post(
         '/student-tutes/store',

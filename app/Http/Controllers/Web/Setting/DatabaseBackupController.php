@@ -367,11 +367,6 @@ class DatabaseBackupController extends Controller
             'database_backup.' . strtolower($environmentKey)
         );
 
-        // Also support environment overrides without a custom config file.
-        if (!is_string($configuredPath) || trim($configuredPath) === '') {
-            $configuredPath = env($environmentKey);
-        }
-
         $path = is_string($configuredPath)
             && trim($configuredPath) !== ''
             ? trim($configuredPath)
