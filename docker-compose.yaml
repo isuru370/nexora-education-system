@@ -40,6 +40,29 @@ services:
       exec su -s /bin/sh www-data -c 'php artisan queue:work database --queue=notifications,sms,default --sleep=3 --tries=3 --timeout=30'
       "
 
+  # Runs app/Console/Kernel.php schedule (finished classes every minute,
+  # expired students at 00:00, database backup at 02:15).
+  # If the server also has a cron job for "schedule:run", remove that cron
+  # job - otherwise every task runs twice.
+  scheduler:
+    depends_on:
+      - app
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    volumes:
+      - storage_volume:/var/www/html/storage
+      - uploads_volume:/var/www/html/public/uploads
+    environment:
+      - APP_ENV=production
+      - QUEUE_CONNECTION=database
+    command: >
+      sh -c "
+      chown -R www-data:www-data /var/www/html/storage /var/www/html/public/uploads &&
+      exec su -s /bin/sh www-data -c 'php artisan schedule:work'
+      "
+
 volumes:
   storage_volume:
   uploads_volume:
