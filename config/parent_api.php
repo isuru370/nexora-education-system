@@ -11,14 +11,15 @@ return [
     | on every other request; the student is then taken from the token and any
     | student_id in the body is ignored.
     |
-    | false (default for now): requests without a token still work, so older
-    | parent apps keep working. Turn this on once every app sends the token:
+    | true (default): a request without a token gets 401.
     |
-    |     PARENT_API_REQUIRE_TOKEN=true
+    | Only if an older parent app / Parent Hub must keep working for a short
+    | time, set PARENT_API_REQUIRE_TOKEN=false - then anyone who knows a
+    | student_id can read that student's data, so switch it back quickly.
     |
     */
 
-    'require_token' => (bool) env('PARENT_API_REQUIRE_TOKEN', false),
+    'require_token' => (bool) env('PARENT_API_REQUIRE_TOKEN', true),
 
     /*
     | A token stops working after this many days without being used.

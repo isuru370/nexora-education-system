@@ -36,6 +36,23 @@ class ParentApiSecurityTest extends TestCase
         return $request->postJson('/api/parent/v1' . $path, $body);
     }
 
+    public function test_a_parent_token_cannot_open_the_staff_api(): void
+    {
+        $this->assertNotEmpty($this->token);
+
+        // Staff API routes use auth:sanctum - a parent's token must not pass.
+        $this->withToken($this->token)->getJson('/api/me')->assertStatus(401);
+    }
+
+    public function test_staff_tokens_work_on_the_staff_api_but_not_the_parent_api(): void
+    {
+        $staffToken = $this->inst['admin']->createToken('test')->plainTextToken;
+
+        $this->withToken($staffToken)->getJson('/api/me')->assertOk();
+        $this->app['auth']->forgetGuards();
+        $this->withToken($staffToken)->postJson('/api/parent/v1/dashboard', ['student_id' => $this->inst['s1']])->assertStatus(401);
+    }
+
     public function test_the_token_decides_the_student_not_the_request(): void
     {
         // S1's token asking for S2's data gets S1's data
@@ -78,10 +95,15 @@ class ParentApiSecurityTest extends TestCase
 
     public function test_requests_without_a_token_follow_the_require_token_setting(): void
     {
+        // Default: blocked.
+        $this->assertTrue(config('parent_api.require_token'));
+        $this->api('/payments', ['student_id' => $this->inst['s2']], '')->assertStatus(401);
+        $this->api('/auth/change-password', ['student_id' => $this->inst['s2'], 'current_password' => 'x', 'new_password' => 'hacked1', 'new_password_confirmation' => 'hacked1'], '')->assertStatus(401);
+
         config(['parent_api.require_token' => true]);
         $this->api('/dashboard', ['student_id' => $this->inst['s1']], '')->assertStatus(401);
 
-        // old apps keep working until PARENT_API_REQUIRE_TOKEN=true
+        // temporary fallback for old apps: PARENT_API_REQUIRE_TOKEN=false
         config(['parent_api.require_token' => false]);
         $this->api('/dashboard', ['student_id' => $this->inst['s1']], '')
             ->assertOk()
