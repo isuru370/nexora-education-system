@@ -448,6 +448,11 @@
                     View and manage institute expense transactions
                 </p>
 
+                <a href="{{ route('admin.institute-expenses.create') }}" class="btn btn-light fw-semibold rounded-3 mt-2">
+                    <i class="bi bi-plus-circle me-1"></i>
+                    Add Expense
+                </a>
+
             </div>
 
             <div class="col-md-5">

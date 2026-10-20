@@ -185,7 +185,10 @@ class StudentAttendanceReadController extends Controller
             'subject' => $class->subject?->subject_name,
             'teacher' => $class->teacher?->initials,
             'category_name' => $fee->category?->category_name,
-            'default_fee' => $fee->fee,
+            // class_category_fees has no fee column - fees are on the fee options
+            'default_fee' => (float) optional(
+                $fee->feeOptions()->orderByDesc('is_default')->orderBy('id')->first()
+            )->fee,
         ];
     }
 
@@ -196,7 +199,7 @@ class StudentAttendanceReadController extends Controller
     ): ?StudentClassEnrollment {
         return StudentClassEnrollment::query()
             ->with([
-                'classCategoryFee:id,class_category_id,fee',
+                'classCategoryFee:id,class_category_id',
                 'classCategoryFee.category:id,category_name',
                 'payments' => function ($query) {
                     $query->where('status', 'completed')

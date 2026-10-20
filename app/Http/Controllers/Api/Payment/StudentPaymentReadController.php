@@ -100,7 +100,7 @@ class StudentPaymentReadController extends Controller
                 'studentClass.grade:id,grade_name',
                 'studentClass.subject:id,subject_name',
 
-                'classCategoryFee:id,class_category_id,fee',
+                'classCategoryFee:id,class_category_id',
                 'classCategoryFee.category:id,category_name',
 
                 'payments' => function ($query) {

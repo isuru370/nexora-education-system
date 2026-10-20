@@ -15,7 +15,7 @@ class LogoutRequest extends FormRequest
     {
         return [
             'student_id' => ['required', 'integer'],
-            'device_id' => ['required', 'string'],
+            'device_id' => ['nullable', 'string', 'max:255'],
         ];
     }
 }

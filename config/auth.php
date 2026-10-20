@@ -40,6 +40,14 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+
+        // Staff API (auth:sanctum). The provider makes Sanctum accept only
+        // tokens that belong to a User - parent app tokens (StudentPortalLogin)
+        // are refused here and only work on /api/parent/v1.
+        'sanctum' => [
+            'driver' => 'sanctum',
+            'provider' => 'users',
+        ],
     ],
 
     /*

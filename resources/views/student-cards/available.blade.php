@@ -73,12 +73,12 @@
             </div>
 
             <div class="header-buttons">
-                <a href="{{ route('admin.student-cards.generate') }}" class="btn btn-primary custom-btn">
+                <a href="{{ route('student-cards.generate') }}" class="btn btn-primary custom-btn">
                     <i class="bi bi-plus-circle"></i>
                     Generate Cards
                 </a>
 
-                <a href="{{ route('admin.student-cards.index') }}" class="btn btn-light border custom-btn">
+                <a href="{{ route('student-cards.index') }}" class="btn btn-light border custom-btn">
                     <i class="bi bi-arrow-left"></i>
                     Back to Inventory
                 </a>
@@ -112,7 +112,7 @@
 
         <!-- SEARCH -->
         <div class="search-card">
-            <form method="GET" action="{{ route('admin.student-cards.available') }}">
+            <form method="GET" action="{{ route('student-cards.available') }}">
                 <div class="row g-3">
                     <div class="col-lg-7">
                         <div class="search-input-wrapper">
@@ -130,7 +130,7 @@
                     </div>
 
                     <div class="col-lg-3">
-                        <a href="{{ route('admin.student-cards.available') }}" class="btn btn-light border w-100 custom-btn">
+                        <a href="{{ route('student-cards.available') }}" class="btn btn-light border w-100 custom-btn">
                             <i class="bi bi-arrow-counterclockwise"></i> Reset
                         </a>
                     </div>
@@ -205,7 +205,7 @@
                                         <i class="bi bi-person-plus-fill"></i>
                                     </button>
 
-                                    <a href="{{ route('admin.student-cards.show', $card->id) }}" 
+                                    <a href="{{ route('student-cards.show', $card->id) }}" 
                                        class="action-btn view-btn" title="View Details">
                                         <i class="bi bi-eye-fill"></i>
                                     </a>
@@ -219,7 +219,7 @@
                                     <i class="bi bi-inbox"></i>
                                     <h5>No Available Cards Found</h5>
                                     <p>Generate new cards or change your search criteria.</p>
-                                    <a href="{{ route('admin.student-cards.generate') }}" class="btn btn-primary custom-btn mt-3">
+                                    <a href="{{ route('student-cards.generate') }}" class="btn btn-primary custom-btn mt-3">
                                         <i class="bi bi-plus-circle"></i> Generate Cards Now
                                     </a>
                                 </div>
@@ -253,7 +253,7 @@
      aria-labelledby="assignCardModalLabel"
      aria-hidden="true">
     <div class="modal-dialog modal-lg modal-dialog-centered">
-        <form method="POST" action="{{ route('admin.student-cards.assign') }}" id="assignForm">
+        <form method="POST" action="{{ route('student-cards.assign') }}" id="assignForm">
             @csrf
             <div class="modal-content border-0 shadow-lg">
                 <div class="modal-header custom-modal-header">
