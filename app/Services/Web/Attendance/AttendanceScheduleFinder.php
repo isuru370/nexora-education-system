@@ -23,8 +23,24 @@ class AttendanceScheduleFinder
     public function findCurrentSchedule(
         Collection $enrollments
     ): ?array {
+        return $this->findScannableSchedules($enrollments)->first();
+    }
+
+    /**
+     * Every class of the student that is open for attendance right now,
+     * earliest first, as ['schedule' => ClassSchedule, 'enrollment' => ...].
+     *
+     * Two can be open together, e.g. A 4:30-6:00 PM and B 6:00-8:00 PM at
+     * 5:30 PM (B opens one hour early). The caller must then ask which one.
+     * Cancelled / completed / inactive classes are never returned.
+     */
+    public function findScannableSchedules(
+        Collection $enrollments
+    ): Collection {
+        $found = collect();
+
         if ($enrollments->isEmpty()) {
-            return null;
+            return $found;
         }
 
         $today = Carbon::today();
@@ -182,12 +198,12 @@ class AttendanceScheduleFinder
             |------------------------------------------------------------------
             */
 
-            return [
+            $found->push([
                 'schedule' => $schedule,
                 'enrollment' => $enrollment,
-            ];
+            ]);
         }
 
-        return null;
+        return $found;
     }
 }

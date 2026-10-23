@@ -27,7 +27,8 @@ class AttendanceController extends Controller
         try {
             $result = $this->attendanceService->scan(
                 $validated['code'],
-                $validated['mark_method']
+                $validated['mark_method'],
+                isset($validated['schedule_id']) ? (int) $validated['schedule_id'] : null
             );
 
             return response()->json([
