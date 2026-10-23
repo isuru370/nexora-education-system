@@ -37,6 +37,12 @@ class InstitutePayment extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
+    /** Same as createdBy() - the expense pages load it as "user". */
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'user_id');
+    }
+
     public function paymentReason(): BelongsTo
     {
         return $this->belongsTo(

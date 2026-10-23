@@ -394,3 +394,31 @@
     }
 </style>
 @endpush
+
+@push('scripts')
+    <script>
+        // File upload handler
+        document.getElementById('backup_file')?.addEventListener('change', function (e) {
+            const fileName = e.target.files[0]?.name;
+            const selectedDiv = document.getElementById('selectedFileName');
+            const fileNameSpan = selectedDiv.querySelector('span');
+
+            if (fileName) {
+                fileNameSpan.textContent = fileName;
+                selectedDiv.style.display = 'flex';
+            } else {
+                selectedDiv.style.display = 'none';
+            }
+        });
+
+        // Confirm import function
+        function confirmImport() {
+            const fileInput = document.getElementById('backup_file');
+            if (!fileInput.files.length) {
+                alert('Please select a backup file first.');
+                return false;
+            }
+            return confirm('⚠️ WARNING: This will replace your current database data!\n\nAre you sure you want to restore this backup?');
+        }
+    </script>
+@endpush

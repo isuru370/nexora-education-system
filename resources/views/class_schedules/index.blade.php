@@ -4,6 +4,9 @@
 @section('page-title', 'Class Schedules')
 
 @section('content')
+    @php
+        $canManageSchedules = strtoupper((string) optional(optional(auth()->user())->userType)->code) !== 'TEACHER';
+    @endphp
 <div class="dashboard-page">
 
     {{-- ===================================================== --}}
@@ -235,12 +238,14 @@
                                                 <div class="cell-sub">Category schedule</div>
 
                                                 <div class="action-group">
+                                                    @if ($canManageSchedules)
                                                     <a href="{{ route('class-schedules.create', [
                                                         'student_class_id' => $class->id,
                                                         'class_category_fee_id' => $fee->id,
                                                     ]) }}" class="icon-btn icon-btn-primary" title="Schedule this category" aria-label="Schedule this category">
                                                         <i class="bi bi-calendar-plus"></i>
                                                     </a>
+                                                    @endif
 
                                                     <a href="{{ route('class-schedules.categorySchedules', [
                                                         'student_class_id' => $class->id,
@@ -249,12 +254,14 @@
                                                         <i class="bi bi-eye"></i>
                                                     </a>
 
+                                                    @if ($canManageSchedules)
                                                     <a href="{{ route('class-schedules.bulkEdit', [
                                                         'student_class_id' => $class->id,
                                                         'class_category_fee_id' => $fee->id,
                                                     ]) }}" class="icon-btn icon-btn-warning" title="Bulk Update Schedule" aria-label="Bulk Update Schedule">
                                                         <i class="bi bi-pencil-square"></i>
                                                     </a>
+                                                    @endif
                                                 </div>
                                             </div>
 

@@ -1,4 +1,6 @@
-FROM php:8.2-apache
+# Exact PHP version, so a build never reuses an old cached "8.2-apache"
+# image. When PHP releases a new 8.2 security fix, raise this tag.
+FROM php:8.2.35-apache
 
 # ----------------------------
 # PHP2Shell (CVE-2026-109618, CVE-2026-109619) - critical unauthenticated RCE,
