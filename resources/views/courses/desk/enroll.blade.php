@@ -59,6 +59,7 @@
                             <option value="full">Pay at once · {{ number_format($course->one_time_fee, 2) }}</option>
                         </select>
                     </div>
+                    @include('courses.partials.special-fee-fields', ['sfId' => 'c' . $course->id])
                     <button class="nx-btn nx-btn-primary" type="submit"><i class="bi bi-person-plus"></i> Enroll</button>
                 </form>
             @empty

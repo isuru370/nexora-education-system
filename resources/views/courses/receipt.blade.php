@@ -46,7 +46,12 @@
         <div class="row"><span>Method</span><span>{{ ucwords(str_replace('_', ' ', $payment->payment_method)) }}</span></div>
         <div class="row big"><span>Paid</span><span>{{ number_format($payment->amount, 2) }}</span></div>
         <div class="line"></div>
-        <div class="row"><span>Course fee</span><span>{{ number_format($fees['total_fee'], 2) }}</span></div>
+        @if ($fees['special_fee'])
+            <div class="row"><span>Special fee</span><span>{{ number_format($fees['total_fee'], 2) }}</span></div>
+            <div>({{ $fees['fee_reason'] }})</div>
+        @else
+            <div class="row"><span>Course fee</span><span>{{ number_format($fees['total_fee'], 2) }}</span></div>
+        @endif
         <div class="row"><span>Total paid</span><span>{{ number_format($fees['paid'], 2) }}</span></div>
         <div class="row"><span>Balance</span><span>{{ number_format($fees['balance'], 2) }}</span></div>
         @if ($fees['next_installment'])

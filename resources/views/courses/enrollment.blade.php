@@ -5,7 +5,9 @@
 
 @section('content')
 @php
-    $canManage = in_array(strtoupper((string) optional(auth()->user()->userType)->code), ['SUPER_ADMIN', 'ADMIN', 'BRANCH_ADMIN'], true);
+    $role = strtoupper((string) optional(auth()->user()->userType)->code);
+    $canManage = in_array($role, ['SUPER_ADMIN', 'ADMIN', 'BRANCH_ADMIN'], true);
+    $canChangeFee = in_array($role, ['SUPER_ADMIN', 'ADMIN'], true);
     $student = $enrollment->student;
     $next = $fees['next_installment'];
 @endphp
@@ -44,7 +46,12 @@
                 <div class="nx-card-header"><h5 class="nx-card-title"><i class="bi bi-wallet2 text-primary"></i> Fees</h5></div>
                 <div class="p-3">
                     <dl class="kv mb-3">
-                        <dt>Course fee</dt><dd class="money">Rs. {{ number_format($fees['total_fee'], 2) }}</dd>
+                        @if ($fees['special_fee'])
+                            <dt>Course fee</dt><dd class="money text-muted"><s>Rs. {{ number_format($fees['standard_fee'], 2) }}</s></dd>
+                            <dt>Special fee</dt><dd class="money">Rs. {{ number_format($fees['total_fee'], 2) }} <span class="nx-badge nx-badge-amber">{{ $fees['fee_reason'] }}</span></dd>
+                        @else
+                            <dt>Course fee</dt><dd class="money">Rs. {{ number_format($fees['total_fee'], 2) }}</dd>
+                        @endif
                         <dt>Paid</dt><dd class="money text-success">Rs. {{ number_format($fees['paid'], 2) }}</dd>
                         <dt>Balance</dt><dd class="money">Rs. {{ number_format($fees['balance'], 2) }}</dd>
                         @if ($fees['overdue'] > 0)
@@ -84,7 +91,28 @@
                             </div>
                         </form>
                     @elseif ($fees['balance'] <= 0)
-                        <div class="nx-alert nx-alert-green mb-0"><i class="bi bi-check-circle-fill"></i><span>Fully paid.</span></div>
+                        <div class="nx-alert nx-alert-green mb-0"><i class="bi bi-check-circle-fill"></i><span>{{ $fees['total_fee'] > 0 ? 'Fully paid.' : 'Free - no payment.' }}</span></div>
+                    @endif
+
+                    @if ($canChangeFee && $enrollment->isActive())
+                        <details class="special-fee mt-3 pt-3 border-top" {{ $errors->has('fee') || $errors->has('fee_reason') ? 'open' : '' }}>
+                            <summary>Change fee</summary>
+                            <form method="POST" action="{{ route('courses.enrollments.fee', [$course, $enrollment]) }}" class="mt-2" onsubmit="return confirm('Change this student\'s fee to Rs. ' + this.fee.value + '?')">
+                                @csrf @method('PATCH')
+                                <div class="row g-2">
+                                    <div class="col-sm-5">
+                                        <label class="nx-label" for="new_fee">New fee</label>
+                                        <input id="new_fee" type="number" step="0.01" min="{{ $fees['paid'] }}" name="fee" class="form-control nx-input" value="{{ old('fee', $fees['total_fee']) }}" required>
+                                    </div>
+                                    <div class="col-sm-7">
+                                        <label class="nx-label" for="new_fee_reason">Reason</label>
+                                        <input id="new_fee_reason" name="fee_reason" class="form-control nx-input" maxlength="255" value="{{ old('fee_reason', $fees['fee_reason']) }}" required placeholder="Scholarship from December">
+                                    </div>
+                                </div>
+                                <small class="cell-sub d-block mt-1">Paid Rs. {{ number_format($fees['paid'], 2) }} stays. The rest is spread over the installments not paid yet.</small>
+                                <button class="nx-btn nx-btn-primary mt-2" type="submit">Save new fee</button>
+                            </form>
+                        </details>
                     @endif
                 </div>
             </div>

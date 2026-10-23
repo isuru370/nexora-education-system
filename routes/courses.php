@@ -49,6 +49,10 @@ Route::middleware(['auth', 'user.active', 'feature:courses'])->group(function ()
         });
     });
 
+    // Admin only: change a student's course fee
+    Route::middleware('role:ADMIN')->patch('courses/{course}/enrollments/{courseEnrollment}/fee', [CourseEnrollmentController::class, 'changeFee'])
+        ->whereNumber(['course', 'courseEnrollment'])->name('courses.enrollments.fee');
+
     // Admins: create / change courses, cancel payments, pay teachers
     Route::middleware('role:ADMIN,BRANCH_ADMIN')->group(function () {
         Route::get('courses/create', [CourseController::class, 'create'])->name('courses.create');

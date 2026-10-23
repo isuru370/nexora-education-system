@@ -34,6 +34,7 @@
     .dashboard-page .desk-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; }
     .dashboard-page .desk-card { border: 1px solid var(--nx-border); border-radius: var(--nx-radius); padding: 1rem; background: var(--nx-card-bg); display: flex; flex-direction: column; gap: .6rem; }
     .dashboard-page .desk-card h6 { margin: 0; font-weight: 700; }
+    .dashboard-page .special-fee summary { cursor: pointer; color: var(--nx-blue); font-weight: 600; font-size: .88rem; }
     @media (max-width: 576px) {
         .dashboard-page .share-row { grid-template-columns: 1fr 100px 40px; }
         .dashboard-page .kv { grid-template-columns: 1fr; gap: .1rem; }

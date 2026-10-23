@@ -42,6 +42,10 @@ class CourseFeeService
         return [
             'payment_plan' => $enrollment->payment_plan,
             'total_fee' => $total,
+            'standard_fee' => $enrollment->standard_fee !== null ? round((float) $enrollment->standard_fee, 2) : $total,
+            'special_fee' => $enrollment->hasSpecialFee(),
+            'fee_reason' => $enrollment->fee_reason,
+            'discount' => $enrollment->discount(),
             'paid' => $paid,
             'balance' => max(0, round($total - $paid, 2)),
             'overdue' => round($installments->where('status', 'overdue')->sum('remaining'), 2),

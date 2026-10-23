@@ -109,6 +109,7 @@
                             <div style="min-width:auto">
                                 <button class="nx-btn nx-btn-primary" type="submit"><i class="bi bi-person-plus"></i> Enroll</button>
                             </div>
+                            <div class="w-100">@include('courses.partials.special-fee-fields', ['sfId' => 'show'])</div>
                         </form>
                     </div>
                 @endif
@@ -139,7 +140,10 @@
                                         <small class="cell-sub d-block">{{ $e->student->custom_id ?? '' }} @if (!$e->isActive()) · <span class="text-danger">Cancelled</span> @endif</small>
                                     </td>
                                     <td>{{ $e->payment_plan === 'full' ? 'At once' : 'Installments' }}</td>
-                                    <td class="text-end money">{{ number_format($f['total_fee'], 2) }}</td>
+                                    <td class="text-end money">
+                                        {{ number_format($f['total_fee'], 2) }}
+                                        @if ($f['special_fee'])<small class="d-block"><span class="nx-badge nx-badge-amber" title="{{ $f['fee_reason'] }}">Special</span></small>@endif
+                                    </td>
                                     <td class="text-end money">{{ number_format($f['paid'], 2) }}</td>
                                     <td class="text-end money">
                                         @if ($f['balance'] <= 0)
