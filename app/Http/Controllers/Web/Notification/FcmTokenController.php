@@ -82,14 +82,14 @@ class FcmTokenController extends Controller
     /**
      * Show tokens for a specific student.
      */
-    public function studentTokens(int $studentId): View
+    public function studentTokens(int $studentId): RedirectResponse
     {
         $student = Student::findOrFail($studentId);
-        $tokens = FcmToken::where('student_id', $studentId)
-            ->orderBy('created_at', 'desc')
-            ->get();
 
-        return view('fcm-tokens.student', compact('student', 'tokens'));
+        // The token list, searched for this student.
+        return redirect()->route('admin.fcm-tokens.index', [
+            'search' => $student->custom_id ?: $student->initial_name,
+        ]);
     }
 
     /**

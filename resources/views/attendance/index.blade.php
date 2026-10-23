@@ -392,3 +392,705 @@
     }
 </style>
 @endpush
+
+@push('scripts')
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const readApiUrl = @json(route('api.attendance.read'));
+            const storeAttendanceApiUrl = @json(route('api.attendance.store'));
+            const storeEnrollmentApiUrl = @json(route('api.student-class-enrollments.store'));
+            const defaultStudentImage = @json(asset('storage/uploads/male.png'));
+
+            const classScheduleId = @json(request('class_schedule_id'));
+            const studentClassId = @json(request('student_class_id'));
+            const classCategoryFeeId = @json(request('class_category_fee_id'));
+
+            const alertBox = document.getElementById('attendanceAlert');
+            const alertIcon = document.getElementById('alertIcon');
+            const alertTitle = document.getElementById('alertTitle');
+            const alertMessage = document.getElementById('alertMessage');
+            const errorDetailsCard = document.getElementById('errorDetailsCard');
+            const errorDetails = document.getElementById('errorDetails');
+
+            const emptyStateCard = document.getElementById('emptyStateCard');
+            const studentDetailsCard = document.getElementById('studentDetailsCard');
+            const attendanceDetailsCard = document.getElementById('attendanceDetailsCard');
+
+            const studentImage = document.getElementById('studentImage');
+            const studentId = document.getElementById('studentId');
+            const studentName = document.getElementById('studentName');
+            const studentMobile = document.getElementById('studentMobile');
+            const guardianMobile = document.getElementById('guardianMobile');
+            const qrTypeBadge = document.getElementById('qrTypeBadge');
+            const attendanceDetailsContent = document.getElementById('attendanceDetailsContent');
+
+            const manualQrForm = document.getElementById('manualQrForm');
+            const manualQrCode = document.getElementById('manualQrCode');
+            const manualReadBtn = document.getElementById('manualReadBtn');
+
+            const startScannerBtn = document.getElementById('startScannerBtn');
+            const stopScannerBtn = document.getElementById('stopScannerBtn');
+
+            const addClassModalEl = document.getElementById('addClassModal');
+            const addClassModal = addClassModalEl ? new bootstrap.Modal(addClassModalEl) : null;
+            const addClassForm = document.getElementById('addClassForm');
+            const saveClassBtn = document.getElementById('saveClassBtn');
+
+            const modalStudentName = document.getElementById('modalStudentName');
+            const modalClassName = document.getElementById('modalClassName');
+            const modalCategoryName = document.getElementById('modalCategoryName');
+            const modalIsFreeCard = document.getElementById('modalIsFreeCard');
+            const modalCustomFee = document.getElementById('modalCustomFee');
+            const modalCustomFeeReason = document.getElementById('modalCustomFeeReason');
+            const modalDiscountPercentage = document.getElementById('modalDiscountPercentage');
+            const modalDiscountReason = document.getElementById('modalDiscountReason');
+            const modalEnrolledAt = document.getElementById('modalEnrolledAt');
+
+            let html5QrCode = null;
+            let scannerRunning = false;
+            let processing = false;
+            let lastScannedCode = null;
+            let lastScanTime = 0;
+            let currentQrCode = null;
+            let currentStudent = null;
+            let currentEnrollment = null;
+            let currentMarkMethod = 'qr_web';
+
+            const SCAN_COOLDOWN_MS = 1200;
+
+            function showAlert(type, message) {
+                const safeType = ['success', 'danger', 'warning', 'info'].includes(type) ? type : 'info';
+
+                alertBox.className = `alert alert-${safeType} nx-alert`;
+                alertBox.classList.remove('d-none');
+                alertBox.style.display = 'block';
+
+                if (alertIcon) {
+                    alertIcon.className =
+                        safeType === 'success' ? 'bi bi-check-circle-fill fs-5 mt-1' :
+                            safeType === 'danger' ? 'bi bi-exclamation-triangle-fill fs-5 mt-1' :
+                                safeType === 'warning' ? 'bi bi-exclamation-circle-fill fs-5 mt-1' :
+                                    'bi bi-info-circle-fill fs-5 mt-1';
+                }
+
+                alertTitle.textContent =
+                    safeType === 'success' ? 'Success' :
+                        safeType === 'danger' ? 'Error' :
+                            safeType === 'warning' ? 'Warning' : 'Info';
+
+                alertMessage.textContent = message || '';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            function hideAlert() {
+                alertBox.classList.add('d-none');
+                alertMessage.textContent = '';
+            }
+
+            function hideErrorDetails() {
+                if (errorDetailsCard) errorDetailsCard.classList.add('d-none');
+                if (errorDetails) errorDetails.innerHTML = '';
+            }
+
+            function showErrorDetails(message) {
+                if (!errorDetailsCard || !errorDetails) return;
+
+                errorDetails.innerHTML = `
+                                                    <div class="nx-alert nx-alert-red mb-0">
+                                                        ${escapeHtml(message || 'Unknown error')}
+                                                    </div>
+                                                `;
+                errorDetailsCard.classList.remove('d-none');
+            }
+
+            function setReadButtonLoading(isLoading) {
+                if (!manualReadBtn) return;
+
+                manualReadBtn.disabled = isLoading;
+                manualReadBtn.innerHTML = isLoading
+                    ? '<span class="spinner-border spinner-border-sm me-1"></span>Processing...'
+                    : '<i class="bi bi-person-check-fill me-1"></i>Read Student';
+            }
+
+            function setMarkButtonLoading(isLoading) {
+                const button = document.getElementById('markAttendanceBtn');
+                if (!button) return;
+
+                button.disabled = isLoading;
+                button.innerHTML = isLoading
+                    ? '<span class="spinner-border spinner-border-sm me-1"></span>Marking...'
+                    : '<i class="bi bi-check-circle me-1"></i>Mark Attendance';
+            }
+
+            async function postJson(url, payload) {
+                const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
+                const response = await fetch(url, {
+                    method: 'POST',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': csrfToken || '',
+                        'X-Requested-With': 'XMLHttpRequest',
+                    },
+                    credentials: 'same-origin',
+                    body: JSON.stringify(payload)
+                });
+
+                let result = {};
+                try {
+                    result = await response.json();
+                } catch (error) {
+                    result = { message: 'Invalid server response.' };
+                }
+
+                return { ok: response.ok, status: response.status, result };
+            }
+
+            function hasEnrollment(enrollment) {
+                return Boolean(
+                    enrollment && (
+                        enrollment.is_enrolled === true ||
+                        String(enrollment.status || '').toLowerCase() === 'enrolled' ||
+                        enrollment.enrollment_id !== null
+                    )
+                );
+            }
+
+            function getIssueTuteValue() {
+                const checkbox = document.getElementById('issueTuteCheckbox');
+                return checkbox && checkbox.checked ? 1 : 0;
+            }
+
+            async function readStudent(qrCode, method = 'qr_web') {
+                const code = String(qrCode || '').trim();
+
+                currentMarkMethod = method;
+                hideAlert();
+                hideErrorDetails();
+
+                if (!code) {
+                    showAlert('warning', 'Please enter or scan QR code.');
+                    return;
+                }
+
+                if (!classScheduleId || !studentClassId || !classCategoryFeeId) {
+                    showAlert('danger', 'Class schedule, class ID or category fee ID missing.');
+                    return;
+                }
+
+                if (processing) return;
+
+                try {
+                    processing = true;
+                    setReadButtonLoading(true);
+
+                    const response = await postJson(readApiUrl, {
+                        qr_code: code,
+                        student_class_id: studentClassId,
+                        class_category_fee_id: classCategoryFeeId,
+                    });
+
+                    const result = response.result || {};
+                    const isSuccess = response.ok && (result.status === 'success' || result.success === true);
+
+                    if (!isSuccess) {
+                        resetView();
+                        showAlert('danger', result.message || 'Student read failed.');
+                        showErrorDetails(result.message || 'Student read failed.');
+                        return;
+                    }
+
+                    const payload = result.data || {};
+
+                    currentQrCode = code;
+                    currentStudent = payload.student || null;
+                    currentEnrollment = pickEnrollmentFromResponse(payload);
+
+                    renderStudent(currentStudent);
+                    renderAttendanceDetails(payload);
+
+                    hideErrorDetails();
+                    showAlert('success', result.message || 'Student attendance details loaded successfully.');
+                    manualQrCode.value = code;
+                } catch (error) {
+                    console.error(error);
+                    resetView();
+                    showAlert('danger', 'Something went wrong while reading student.');
+                    showErrorDetails('Something went wrong while reading student.');
+                } finally {
+                    processing = false;
+                    setReadButtonLoading(false);
+                }
+            }
+
+            function renderStudent(student) {
+                if (!student) {
+                    resetView();
+                    return;
+                }
+
+                emptyStateCard.classList.add('d-none');
+                studentDetailsCard.classList.remove('d-none');
+                attendanceDetailsCard.classList.remove('d-none');
+
+                studentImage.src = student.img_url || defaultStudentImage;
+                studentImage.onerror = function () {
+                    this.src = defaultStudentImage;
+                    this.onerror = null;
+                };
+
+                studentId.textContent = student.custom_id || student.id || '-';
+                studentName.textContent = student.initial_name || '-';
+                studentMobile.textContent = student.mobile || '-';
+                guardianMobile.textContent = student.guardian_mobile || '-';
+
+                qrTypeBadge.textContent = student.qr_type === 'temporary' ? 'Temporary QR' : 'Permanent QR';
+                qrTypeBadge.className = student.qr_type === 'temporary' ? 'nx-badge nx-badge-amber' : 'nx-badge nx-badge-green';
+            }
+
+            function renderAttendanceDetails(data) {
+                const selectedEnrollmentRaw = pickEnrollmentFromResponse(data);
+                const enrollment = normalizeEnrollment(selectedEnrollmentRaw);
+
+                const attendance = data?.attendance || {};
+                const lastPayment = data?.last_payment || null;
+                const tute = data?.tute || null;
+
+                const enrollmentExists = hasEnrollment(enrollment);
+                const statusLabel = enrollmentExists ? 'Enrolled' : 'New Student';
+                const statusBadgeClass = enrollmentExists ? 'nx-badge nx-badge-green' : 'nx-badge nx-badge-amber';
+
+                const studentClassIdValue = enrollment.student_class_id ?? studentClassId ?? '-';
+                const feeIdValue = enrollment.class_category_fee_id ?? classCategoryFeeId ?? '-';
+
+                const className = enrollment.class_name;
+                const grade = enrollment.grade;
+                const teacher = enrollment.teacher;
+                const categoryName = enrollment.category_name;
+                const finalFeeValue = enrollment.final_fee;
+                const defaultFeeValue = enrollment.default_fee;
+
+                const paymentHtml = lastPayment
+                    ? `
+                <div class="fw-bold">${formatMoney(lastPayment.amount)}</div>
+                <small class="text-muted d-block">Month: ${escapeHtml(lastPayment.payment_month)}</small>
+                <small class="text-info d-block">Paid: ${escapeHtml(lastPayment.paid_at)}</small>
+            `
+                    : '<span class="nx-badge nx-badge-red">No Payment Yet</span>';
+
+                const tuteHtml = tute?.is_issued
+                    ? '<span class="nx-badge nx-badge-blue">Tute issued</span>'
+                    : '';
+
+                attendanceDetailsContent.innerHTML = `
+            <div class="attendance-detail-card">
+                <div class="row g-3">
+                    <div class="col-md-3">
+                        <div class="info-card">
+                            <small>Status</small>
+                            <div class="mt-2">
+                                <span class="${statusBadgeClass}">${statusLabel}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="info-card">
+                            <small>Class</small>
+                            <h6>${escapeHtml(className)}</h6>
+                            <span class="text-muted">Class ID: ${escapeHtml(studentClassIdValue)}</span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-2">
+                        <div class="info-card">
+                            <small>Grade</small>
+                            <h6>${escapeHtml(grade)}</h6>
+                        </div>
+                    </div>
+
+                    <div class="col-md-4">
+                        <div class="info-card">
+                            <small>Teacher</small>
+                            <h6>${escapeHtml(teacher)}</h6>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="info-card">
+                            <small>Category</small>
+                            <h6>${escapeHtml(categoryName)}</h6>
+                            <span class="text-muted">Fee ID: ${escapeHtml(feeIdValue)}</span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="info-card">
+                            <small>Final Fee</small>
+                            <h6>${formatMoney(finalFeeValue)}</h6>
+                            <span class="text-muted">Default: ${formatMoney(defaultFeeValue)}</span>
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="info-card">
+                            <small>Last Payment</small>
+                            ${paymentHtml}
+                        </div>
+                    </div>
+
+                    <div class="col-md-3">
+                        <div class="info-card">
+                            <small>Attendance</small>
+                            <h6>${attendance.attended_classes ?? 0} / ${attendance.total_classes ?? 0}</h6>
+                            <span class="text-muted">
+                                ${attendance.attendance_percentage ?? 0}%
+                                ${attendance.month ? '(' + escapeHtml(attendance.month) + ')' : ''}
+                            </span>
+                            ${tuteHtml ? `<div class="mt-2">${tuteHtml}</div>` : ''}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="d-flex justify-content-end gap-2 flex-wrap mt-4">
+                    ${enrollmentExists ? `
+                        <div class="form-check d-flex align-items-center gap-2 me-2">
+                            <input
+                                class="form-check-input"
+                                type="checkbox"
+                                id="issueTuteCheckbox"
+                                ${tute?.is_issued ? 'checked' : ''}
+                            >
+                            <label class="form-check-label" for="issueTuteCheckbox">
+                                Issue Tute
+                            </label>
+                        </div>
+                    ` : ''}
+
+                    <button type="button" class="nx-btn nx-btn-primary" id="addClassBtn">
+                        <i class="bi bi-plus-circle me-1"></i>
+                        Add Class
+                    </button>
+
+                    <button type="button" class="nx-btn nx-btn-success" id="markAttendanceBtn">
+                        <i class="bi bi-check-circle me-1"></i>
+                        Mark Attendance
+                    </button>
+                </div>
+            </div>
+        `;
+            }
+
+            function pickEnrollmentFromResponse(data) {
+                // The read API returns this class's enrollment as "enrollment";
+                // older responses had an "enrollments" list.
+                const enrollments = Array.isArray(data?.enrollments)
+                    ? data.enrollments
+                    : (data?.enrollment ? [data.enrollment] : []);
+
+                if (!enrollments.length) {
+                    return {};
+                }
+
+                const matched = enrollments.find((item) => {
+                    const itemStudentClassId = Number(item?.student_class_id ?? item?.studentClass?.id ?? 0);
+                    const itemFeeId = Number(item?.class_category_fee_id ?? item?.classCategoryFee?.id ?? 0);
+
+                    return (
+                        itemStudentClassId === Number(studentClassId) &&
+                        itemFeeId === Number(classCategoryFeeId)
+                    );
+                });
+
+                return matched || enrollments[0] || {};
+            }
+
+            function normalizeEnrollment(enrollment) {
+                const e = enrollment || {};
+
+                return {
+                    status: String(e.status || e.enrollment_status || '').toLowerCase(),
+                    is_enrolled:
+                        e.is_enrolled === true ||
+                        e.is_enrolled === 1 ||
+                        String(e.status || '').toLowerCase() === 'enrolled' ||
+                        !!e.enrollment_id,
+                    enrollment_id: e.enrollment_id ?? e.id ?? null,
+                    student_class_id: e.student_class_id ?? e.studentClass?.id ?? null,
+                    class_category_fee_id: e.class_category_fee_id ?? e.classCategoryFee?.id ?? null,
+                    class_name: e.class_name ?? e.studentClass?.class_name ?? e.studentClass?.name ?? '-',
+                    grade: e.grade ?? e.grade_name ?? e.studentClass?.grade?.grade_name ?? e.studentClass?.grade?.name ?? '-',
+                    teacher: e.teacher ?? e.teacher_name ?? e.studentClass?.teacher?.name ?? '-',
+                    category_name: e.category_name ?? e.classCategoryFee?.category?.category_name ?? e.classCategoryFee?.category?.name ?? '-',
+                    default_fee: e.default_fee ?? e.classCategoryFee?.default_fee ?? '-',
+                    final_fee: e.final_fee ?? e.classCategoryFee?.final_fee ?? e.default_fee ?? '-',
+                };
+            }
+
+            async function markAttendance() {
+                if (!currentQrCode) {
+                    showAlert('warning', 'Please read a student first.');
+                    return;
+                }
+
+                if (!classScheduleId) {
+                    showAlert('danger', 'Class schedule ID is missing.');
+                    return;
+                }
+
+                if (!currentStudent?.id) {
+                    showAlert('danger', 'Student ID is missing.');
+                    return;
+                }
+
+                const issueTute = getIssueTuteValue();
+                const enrollmentExists = hasEnrollment(currentEnrollment);
+
+                if (issueTute && !enrollmentExists) {
+                    showAlert('warning', 'Student must be enrolled before issuing a tute.');
+                    return;
+                }
+
+                try {
+                    setMarkButtonLoading(true);
+
+                    const response = await postJson(storeAttendanceApiUrl, {
+                        student_id: currentStudent.id,
+                        qr_code: currentQrCode,
+                        class_schedule_id: classScheduleId,
+                        student_class_id: studentClassId,
+                        class_category_fee_id: classCategoryFeeId,
+                        mark_method: currentMarkMethod,
+                        mark_tute: issueTute,
+                        note: null,
+                    });
+
+                    const result = response.result || {};
+                    const isSuccess = response.ok && (result.status === 'success' || result.success === true);
+
+                    if (!isSuccess) {
+                        const validationMessage =
+                            result.message ||
+                            (result.errors ? Object.values(result.errors).flat().join(' ') : 'Attendance mark failed.');
+
+                        showAlert('danger', validationMessage);
+                        return;
+                    }
+
+                    showAlert('success', result.message || 'Attendance marked successfully.');
+                    await readStudent(currentQrCode, currentMarkMethod);
+                } catch (error) {
+                    console.error(error);
+                    showAlert('danger', 'Something went wrong while marking attendance.');
+                } finally {
+                    setMarkButtonLoading(false);
+                }
+            }
+
+            function openAddClassModal() {
+                if (!currentStudent) {
+                    showAlert('warning', 'Please read a student first.');
+                    return;
+                }
+
+                modalStudentName.textContent = currentStudent.initial_name || currentStudent.custom_id || '-';
+                modalClassName.textContent = currentEnrollment?.class_name || '-';
+                modalCategoryName.textContent = currentEnrollment?.category_name || '-';
+
+                modalIsFreeCard.value = '0';
+                modalCustomFee.value = '';
+                modalCustomFeeReason.value = '';
+                modalDiscountPercentage.value = '';
+                modalDiscountReason.value = '';
+                modalEnrolledAt.value = new Date().toISOString().slice(0, 10);
+
+                addClassModal?.show();
+            }
+
+            async function saveClassEnrollment() {
+                if (!currentStudent) {
+                    showAlert('warning', 'Please read a student first.');
+                    return;
+                }
+
+                try {
+                    saveClassBtn.disabled = true;
+                    saveClassBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Saving...';
+
+                    const payload = {
+                        student_id: currentStudent.id,
+                        student_class_id: studentClassId,
+                        class_category_fee_id: classCategoryFeeId,
+                        is_free_card: modalIsFreeCard.value === '1' ? 1 : 0,
+                        custom_fee: modalCustomFee.value || null,
+                        custom_fee_reason: modalCustomFeeReason.value || null,
+                        discount_percentage: modalDiscountPercentage.value || null,
+                        discount_reason: modalDiscountReason.value || null,
+                        enrolled_at: modalEnrolledAt.value || null,
+                        note: null,
+                    };
+
+                    const response = await postJson(storeEnrollmentApiUrl, payload);
+                    const result = response.result || {};
+                    const isSuccess = response.ok && (result.status === 'success' || result.success === true);
+
+                    if (!isSuccess) {
+                        showAlert('danger', result.message || 'Student class enrollment failed.');
+                        return;
+                    }
+
+                    addClassModal?.hide();
+                    showAlert('success', 'Student enrolled successfully.');
+
+                    setTimeout(async () => {
+                        if (currentQrCode) {
+                            await readStudent(currentQrCode, currentMarkMethod);
+                        }
+                    }, 350);
+                } catch (error) {
+                    console.error(error);
+                    showAlert('danger', 'Something went wrong while saving class.');
+                } finally {
+                    saveClassBtn.disabled = false;
+                    saveClassBtn.innerHTML = 'Save Class';
+                }
+            }
+
+            function resetView() {
+                currentQrCode = null;
+                currentStudent = null;
+                currentEnrollment = null;
+
+                emptyStateCard.classList.remove('d-none');
+                studentDetailsCard.classList.add('d-none');
+                attendanceDetailsCard.classList.add('d-none');
+
+                if (attendanceDetailsContent) {
+                    attendanceDetailsContent.innerHTML = '';
+                }
+
+                hideErrorDetails();
+            }
+
+            function formatMoney(value) {
+                if (value === null || value === undefined || value === '') return '-';
+
+                const amount = Number(value);
+                if (Number.isNaN(amount)) return '-';
+
+                return 'Rs. ' + amount.toLocaleString('en-LK', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2
+                });
+            }
+
+            function escapeHtml(value) {
+                if (value === null || value === undefined || value === '') return '-';
+
+                return String(value)
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#039;');
+            }
+
+            async function startScanner() {
+                if (scannerRunning) return;
+
+                if (typeof Html5Qrcode === 'undefined') {
+                    showAlert('danger', 'QR scanner library failed to load.');
+                    return;
+                }
+
+                try {
+                    html5QrCode = new Html5Qrcode('qr-reader');
+
+                    startScannerBtn.disabled = true;
+                    startScannerBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Starting Scanner...';
+
+                    await html5QrCode.start(
+                        { facingMode: 'environment' },
+                        {
+                            fps: 10,
+                            qrbox: 250
+                        },
+                        function (decodedText) {
+                            const code = String(decodedText || '').trim();
+                            const now = Date.now();
+
+                            if (!code) return;
+
+                            if (code === lastScannedCode && now - lastScanTime < SCAN_COOLDOWN_MS) {
+                                return;
+                            }
+
+                            lastScannedCode = code;
+                            lastScanTime = now;
+
+                            readStudent(code, 'qr_web');
+                        }
+                    );
+
+                    scannerRunning = true;
+                    startScannerBtn.innerHTML = '<i class="bi bi-camera-video-fill me-1"></i>Scanner Running';
+                    startScannerBtn.disabled = true;
+                    stopScannerBtn.classList.remove('d-none');
+                } catch (error) {
+                    console.error(error);
+                    showAlert('danger', 'Could not start scanner.');
+                    startScannerBtn.disabled = false;
+                    startScannerBtn.innerHTML = '<i class="bi bi-camera-fill me-1"></i>Start Scanner';
+                }
+            }
+
+            async function stopScanner() {
+                if (html5QrCode && scannerRunning) {
+                    await html5QrCode.stop();
+                    await html5QrCode.clear();
+                }
+
+                scannerRunning = false;
+                html5QrCode = null;
+                lastScannedCode = null;
+                lastScanTime = 0;
+
+                startScannerBtn.disabled = false;
+                startScannerBtn.innerHTML = '<i class="bi bi-camera-fill me-1"></i>Start Scanner';
+                stopScannerBtn.classList.add('d-none');
+            }
+
+            manualQrForm.addEventListener('submit', function (event) {
+                event.preventDefault();
+                readStudent(manualQrCode.value, 'manual_web');
+            });
+
+            addClassForm.addEventListener('submit', function (event) {
+                event.preventDefault();
+                saveClassEnrollment();
+            });
+
+            startScannerBtn.addEventListener('click', startScanner);
+            stopScannerBtn.addEventListener('click', stopScanner);
+
+            attendanceDetailsContent.addEventListener('click', function (event) {
+                if (event.target.closest('#addClassBtn')) {
+                    openAddClassModal();
+                }
+
+                if (event.target.closest('#markAttendanceBtn')) {
+                    markAttendance();
+                }
+            });
+
+            window.addEventListener('beforeunload', function () {
+                if (html5QrCode && scannerRunning) {
+                    html5QrCode.stop().catch(function () { });
+                }
+            });
+        });
+    </script>
+@endpush

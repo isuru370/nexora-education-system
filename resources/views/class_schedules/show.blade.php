@@ -4,6 +4,9 @@
 @section('page-title', 'Class Schedule Details')
 
 @section('content')
+    @php
+        $canManageSchedules = strtoupper((string) optional(optional(auth()->user())->userType)->code) !== 'TEACHER';
+    @endphp
 
 @php
     $studentClass = $classSchedule->studentClass ?? null;
@@ -67,9 +70,11 @@
                     <a href="{{ route('class-schedules.index') }}" class="nx-btn nx-btn-light">
                         <i class="bi bi-arrow-left"></i> Back
                     </a>
+                    @if ($canManageSchedules)
                     <a href="{{ route('class-schedules.edit', $classSchedule) }}" class="nx-btn nx-btn-primary">
                         <i class="bi bi-pencil-square"></i> Edit
                     </a>
+                    @endif
                     <button type="button" onclick="window.print()" class="nx-btn nx-btn-light">
                         <i class="bi bi-printer"></i> Print
                     </button>

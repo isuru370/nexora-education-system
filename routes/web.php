@@ -942,6 +942,9 @@ Route::middleware([
 
             ->middleware('role:ADMIN,BRANCH_ADMIN,USER')
 
+            // {id} is a number, so /export and /cleanup reach their own actions
+            ->where(['id' => '[0-9]+'])
+
             ->group(function () {
 
 
@@ -1906,6 +1909,7 @@ Route::prefix('student-classes')
 Route::prefix('student-class-management')
     ->name('student-class-management.')
     ->controller(StudentClassManagementController::class)
+    ->middleware(['auth', 'role:ADMIN,BRANCH_ADMIN,USER'])
     ->group(function () {
 
         Route::get('/', 'index')
@@ -1971,7 +1975,7 @@ Route::prefix('student-class-management')
 Route::prefix('class-time-table')
     ->name('class-time-table.')
     ->controller(ClassTimeTableController::class)
-    ->middleware(['auth'])
+    ->middleware(['auth', 'role:ADMIN,BRANCH_ADMIN,USER,TEACHER'])
     ->group(function () {
 
         /*
@@ -2095,6 +2099,7 @@ Route::prefix('class-category-fees')
 Route::prefix('class-category-fees/{classCategoryFeeId}/fee-options')
     ->name('class-category-fee-options.')
     ->controller(ClassCategoryFeeOptionController::class)
+    ->middleware(['auth', 'role:ADMIN,BRANCH_ADMIN'])
     ->group(function () {
 
         Route::get('/', 'index')->name('index');
@@ -2156,42 +2161,51 @@ Route::prefix('class-halls')
 Route::prefix('class-schedules')
     ->name('class-schedules.')
     ->controller(ClassScheduleController::class)
+    ->middleware('auth')
     ->group(function () {
 
-        // List and create
-        Route::get('/', 'index')->name('index');
-        Route::get('/today', 'todayClasses')->name('todayClasses');
-        Route::get('/create', 'create')->name('create');
-        Route::post('/', 'store')->name('store');
+        // Viewing: staff and teachers
+        Route::middleware('role:ADMIN,BRANCH_ADMIN,USER,TEACHER')->group(function () {
+            Route::get('/', 'index')->name('index');
+            Route::get('/today', 'todayClasses')->name('todayClasses');
 
-        // Category schedules
-        Route::get('/category-schedules', 'categorySchedules')
-            ->name('categorySchedules');
+            Route::get('/category-schedules', 'categorySchedules')
+                ->name('categorySchedules');
+        });
 
-        // Bulk schedule management
-        Route::get('/bulk-edit', 'bulkEdit')->name('bulkEdit');
+        // Changing schedules: staff only (same as the staff API)
+        Route::middleware('role:ADMIN,BRANCH_ADMIN,USER')->group(function () {
+            Route::get('/create', 'create')->name('create');
+            Route::post('/', 'store')->name('store');
 
-        Route::get('/patterns/{pattern}/edit', 'editBulkSchedule')
-            ->name('editBulkSchedule');
+            // Bulk schedule management
+            Route::get('/bulk-edit', 'bulkEdit')->name('bulkEdit');
 
-        Route::put('/patterns/{pattern}', 'updateBulkSchedule')
-            ->name('updateBulkSchedule');
+            Route::get('/patterns/{pattern}/edit', 'editBulkSchedule')
+                ->name('editBulkSchedule');
 
-        // Schedule status actions
-        Route::patch('/{classSchedule}/toggle-active', 'toggleActive')
-            ->name('toggleActive');
+            Route::put('/patterns/{pattern}', 'updateBulkSchedule')
+                ->name('updateBulkSchedule');
 
-        Route::patch('/{classSchedule}/cancel', 'cancel')
-            ->name('cancel');
+            // Schedule status actions
+            Route::patch('/{classSchedule}/toggle-active', 'toggleActive')
+                ->name('toggleActive');
 
-        Route::patch('/{classSchedule}/status', 'statusUpdate')
-            ->name('statusUpdate');
+            Route::patch('/{classSchedule}/cancel', 'cancel')
+                ->name('cancel');
 
-        // Individual schedule CRUD
-        Route::get('/{classSchedule}/edit', 'edit')->name('edit');
-        Route::get('/{classSchedule}', 'show')->name('show');
-        Route::put('/{classSchedule}', 'update')->name('update');
-        Route::delete('/{classSchedule}', 'destroy')->name('destroy');
+            Route::patch('/{classSchedule}/status', 'statusUpdate')
+                ->name('statusUpdate');
+
+            Route::get('/{classSchedule}/edit', 'edit')->name('edit');
+            Route::put('/{classSchedule}', 'update')->name('update');
+            Route::delete('/{classSchedule}', 'destroy')->name('destroy');
+        });
+
+        // Last, so /create, /today ... are not taken as a schedule id
+        Route::get('/{classSchedule}', 'show')
+            ->name('show')
+            ->middleware('role:ADMIN,BRANCH_ADMIN,USER,TEACHER');
     });
 
 /*
