@@ -5,6 +5,9 @@
 
 @section('content')
     @php
+        $canManageSchedules = strtoupper((string) optional(optional(auth()->user())->userType)->code) !== 'TEACHER';
+    @endphp
+    @php
         $className    = $studentClass->class_name ?? '-';
         $gradeName    = optional($studentClass->grade)->grade_name ?? 'N/A';
         $subjectName  = optional($studentClass->subject)->subject_name ?? 'N/A';
@@ -35,6 +38,7 @@
 
                 <div class="hero-right">
                     <div class="hero-actions">
+                        @if ($canManageSchedules)
                         <a href="{{ route('class-schedules.create', [
                             'type' => 'single',
                             'student_class_id' => $studentClass->id,
@@ -43,6 +47,7 @@
                         ]) }}" class="nx-btn nx-btn-primary">
                             <i class="bi bi-calendar-plus"></i> Add New Day
                         </a>
+                        @endif
                         <a href="{{ route('class-schedules.index') }}" class="nx-btn nx-btn-light">
                             <i class="bi bi-arrow-left"></i> Back
                         </a>
@@ -229,7 +234,8 @@
                                             <i class="bi bi-eye-fill"></i>
                                         </a>
 
-                                        @if ($isLocked && !$isCancelable)
+                                        @if (!$canManageSchedules)
+                                        @elseif ($isLocked && !$isCancelable)
                                             <span class="nx-badge nx-badge-gray">Locked</span>
                                         @else
                                             @if (!$isLocked && $isEditable)
@@ -302,7 +308,7 @@
                 && ($isToday || !$schedule->is_active);
         @endphp
 
-        @if ($isCancelable)
+        @if ($isCancelable && $canManageSchedules)
             <div class="modal fade" id="cancelModal{{ $schedule->id }}" tabindex="-1" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">

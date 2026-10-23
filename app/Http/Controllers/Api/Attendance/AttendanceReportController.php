@@ -69,6 +69,14 @@ class AttendanceReportController extends Controller
 
             ]);
 
+        } catch (\DomainException $e) {
+
+            return response()->json([
+                'success' => false,
+                'message' => $e->getMessage(),
+                'data' => null,
+            ], 422);
+
         } catch (Throwable $e) {
 
             Log::error('Attendance Report Failed', [

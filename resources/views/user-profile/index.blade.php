@@ -365,3 +365,99 @@
     }
 </style>
 @endpush
+
+@push('scripts')
+    <script>
+        // Toggle password visibility
+        document.querySelectorAll('.toggle-password').forEach(toggle => {
+            toggle.addEventListener('click', function () {
+                const targetId = this.getAttribute('data-target');
+                const input = document.getElementById(targetId);
+
+                if (input.type === 'password') {
+                    input.type = 'text';
+                    this.classList.remove('bi-eye-slash');
+                    this.classList.add('bi-eye');
+                } else {
+                    input.type = 'password';
+                    this.classList.remove('bi-eye');
+                    this.classList.add('bi-eye-slash');
+                }
+            });
+        });
+
+        // Password strength checker
+        const newPassword = document.getElementById('new_password');
+        if (newPassword) {
+            newPassword.addEventListener('input', function () {
+                const password = this.value;
+                const strengthBar = document.querySelector('.strength-bar');
+                const strengthText = document.querySelector('.strength-text');
+
+                let strength = 0;
+                let message = '';
+                let color = '#e2e8f0';
+
+                if (password.length > 0) {
+                    if (password.length >= 8) strength++;
+                    if (password.match(/[a-z]+/)) strength++;
+                    if (password.match(/[A-Z]+/)) strength++;
+                    if (password.match(/[0-9]+/)) strength++;
+                    if (password.match(/[$@#&!]+/)) strength++;
+
+                    const percentage = (strength / 5) * 100;
+                    strengthBar.style.width = percentage + '%';
+
+                    if (percentage <= 20) {
+                        message = 'Very Weak';
+                        color = '#ef4444';
+                    } else if (percentage <= 40) {
+                        message = 'Weak';
+                        color = '#f59e0b';
+                    } else if (percentage <= 60) {
+                        message = 'Fair';
+                        color = '#3b82f6';
+                    } else if (percentage <= 80) {
+                        message = 'Good';
+                        color = '#10b981';
+                    } else {
+                        message = 'Strong';
+                        color = '#059669';
+                    }
+
+                    strengthBar.style.backgroundColor = color;
+                    strengthText.textContent = message;
+                    strengthText.style.color = color;
+                } else {
+                    strengthBar.style.width = '0%';
+                    strengthText.textContent = '';
+                }
+            });
+        }
+
+        // Confirm password match
+        const confirmPassword = document.getElementById('confirm_password');
+        if (confirmPassword) {
+            confirmPassword.addEventListener('input', function () {
+                const password = document.getElementById('new_password').value;
+                const confirm = this.value;
+
+                if (confirm.length > 0) {
+                    if (password === confirm) {
+                        this.style.borderColor = '#10b981';
+                    } else {
+                        this.style.borderColor = '#ef4444';
+                    }
+                } else {
+                    this.style.borderColor = '#e2e8f0';
+                }
+            });
+        }
+
+        // Form reset handler
+        document.querySelector('.btn-reset')?.addEventListener('click', function (e) {
+            e.preventDefault();
+            document.getElementById('profileForm')?.reset();
+        });
+    </script>
+@endpush

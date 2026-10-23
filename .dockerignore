@@ -1,0 +1,20 @@
+# Not copied into the Docker image.
+# (.env is left in on purpose: keep your deploy's current way of giving the
+#  container its settings.)
+
+.git
+.github
+node_modules
+tests
+.phpunit.result.cache
+
+# composer install in the Dockerfile builds vendor/ again without dev packages
+vendor
+
+# Runtime files: storage/ is a Docker volume on the server
+storage/logs/*
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/views/*
+storage/framework/laravel-excel
+!storage/**/.gitignore

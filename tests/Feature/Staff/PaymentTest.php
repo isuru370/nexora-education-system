@@ -82,11 +82,12 @@ class PaymentTest extends TestCase
 
     public function test_cashier_cannot_take_payments_for_another_branch(): void
     {
-        $this->pay('S3', $this->inst['e3'])->assertStatus(409);
+        $this->pay('S3', $this->inst['e3'])->assertStatus(403)
+            ->assertJsonPath('message', 'You do not have access to this branch.');
         $this->assertSame(0, DB::table('payments')->where('student_id', $this->inst['s3'])->count());
 
-        // the other branch's class is not offered either
-        $this->postJson('/api/new-payment/read', ['code' => 'S3'])->assertOk()->assertJsonCount(0, 'data.classes');
+        // the other branch's student cannot even be looked up
+        $this->postJson('/api/new-payment/read', ['code' => 'S3'])->assertStatus(403);
 
         // an admin can take it
         Sanctum::actingAs($this->inst['admin']);
