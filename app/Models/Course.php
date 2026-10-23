@@ -28,10 +28,6 @@ class Course extends Model
         'installment_count',
         'start_date',
         'end_date',
-        'start_time',
-        'end_time',
-        'class_days',
-        'class_hall_id',
         'is_active',
         'created_by',
     ];
@@ -42,7 +38,6 @@ class Course extends Model
         'installment_count' => 'integer',
         'start_date' => 'date',
         'end_date' => 'date',
-        'class_days' => 'array',
         'is_active' => 'boolean',
     ];
 
@@ -51,9 +46,11 @@ class Course extends Model
         return $this->belongsTo(Branch::class);
     }
 
-    public function hall(): BelongsTo
+    /** Weekly class days (each with its own time and hall), Monday first. */
+    public function days(): HasMany
     {
-        return $this->belongsTo(ClassHall::class, 'class_hall_id');
+        return $this->hasMany(CourseDay::class)
+            ->orderByRaw("CASE day WHEN 'monday' THEN 1 WHEN 'tuesday' THEN 2 WHEN 'wednesday' THEN 3 WHEN 'thursday' THEN 4 WHEN 'friday' THEN 5 WHEN 'saturday' THEN 6 ELSE 7 END");
     }
 
     public function courseTeachers(): HasMany
@@ -114,10 +111,19 @@ class Course extends Model
         return $today->gt($this->end_date) ? 'completed' : 'ongoing';
     }
 
+    /** "Sun 08:00 AM - 12:00 PM (Hall 2) · Fri 12:00 PM - 05:00 PM (Hall 3)" */
+    public function scheduleLabel(): string
+    {
+        $this->loadMissing('days.hall:id,hall_name');
+
+        return $this->days->map(fn (CourseDay $day) => $day->label())->implode(' · ');
+    }
+
+    /** "Sun, Fri" */
     public function daysLabel(): string
     {
-        return collect($this->class_days ?? [])
-            ->map(fn ($day) => ucfirst(substr($day, 0, 3)))
-            ->implode(', ');
+        $this->loadMissing('days');
+
+        return $this->days->map(fn (CourseDay $day) => ucfirst(substr($day->day, 0, 3)))->implode(', ');
     }
 }

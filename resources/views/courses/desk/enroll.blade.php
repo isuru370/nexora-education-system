@@ -50,7 +50,7 @@
                     <input type="hidden" name="student_code" value="{{ $student->custom_id ?: request('code') }}">
                     <div>
                         <h6>{{ $course->name }}</h6>
-                        <small class="cell-sub">{{ $course->start_date->format('d M Y') }} – {{ $course->end_date->format('d M Y') }} · {{ $course->daysLabel() }}</small>
+                        <small class="cell-sub">{{ $course->start_date->format('d M Y') }} – {{ $course->end_date->format('d M Y') }}<br>{{ $course->scheduleLabel() }}</small>
                     </div>
                     <div>
                         <label class="nx-label" for="plan{{ $course->id }}">Payment</label>

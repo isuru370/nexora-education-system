@@ -77,6 +77,9 @@ Route::middleware(['auth', 'user.active', 'feature:courses'])->group(function ()
             Route::patch('enrollments/{courseEnrollment}/cancel', [CourseEnrollmentController::class, 'cancel'])
                 ->whereNumber('courseEnrollment')->name('enrollments.cancel');
 
+            Route::post('sessions', [CourseSessionController::class, 'store'])->name('sessions.store');
+            Route::put('sessions/{courseSession}', [CourseSessionController::class, 'update'])
+                ->whereNumber('courseSession')->name('sessions.update');
             Route::patch('sessions/{courseSession}/status', [CourseSessionController::class, 'status'])
                 ->whereNumber('courseSession')->name('sessions.status');
 

@@ -14,6 +14,8 @@
     .dashboard-page .day-pick input:focus-visible + span { outline: 2px solid var(--nx-blue); outline-offset: 2px; }
     .dashboard-page .day-pick span { display: inline-block; padding: .45rem .9rem; border: 1px solid var(--nx-border); border-radius: 999px; cursor: pointer; font-size: .88rem; user-select: none; }
     .dashboard-page .day-pick input:checked + span { background: var(--nx-blue); border-color: var(--nx-blue); color: #fff; }
+    .dashboard-page .day-row { display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1.4fr) 44px; gap: .6rem; align-items: center; margin-bottom: .6rem; }
+    .dashboard-page .day-row.day-head { margin-bottom: .2rem; }
     .dashboard-page .share-row { display: grid; grid-template-columns: 1fr 140px 44px; gap: .6rem; align-items: center; margin-bottom: .6rem; }
     .dashboard-page .share-total { display: flex; flex-wrap: wrap; gap: 1rem; padding: .8rem 1rem; border-radius: 10px; background: var(--nx-head-bg); font-size: .9rem; }
     .dashboard-page .share-total strong { font-variant-numeric: tabular-nums; }
@@ -37,6 +39,17 @@
     .dashboard-page .special-fee summary { cursor: pointer; color: var(--nx-blue); font-weight: 600; font-size: .88rem; }
     @media (max-width: 576px) {
         .dashboard-page .share-row { grid-template-columns: 1fr 100px 40px; }
+        .dashboard-page .day-row {
+            grid-template-columns: minmax(0, 1fr) 30px minmax(0, 1fr) 40px;
+            grid-template-areas: "day day day rm" "start start end end" "hall hall hall hall";
+            padding-bottom: .6rem; border-bottom: 1px dashed var(--nx-border);
+        }
+        .dashboard-page .day-row > .day-select { grid-area: day; }
+        .dashboard-page .day-row > .start-input { grid-area: start; }
+        .dashboard-page .day-row > .end-input { grid-area: end; }
+        .dashboard-page .day-row > .hall-select { grid-area: hall; }
+        .dashboard-page .day-row > .remove-day { grid-area: rm; }
+        .dashboard-page .day-row > .start-input, .dashboard-page .day-row > .end-input { padding-left: .5rem; padding-right: .4rem; }
         .dashboard-page .kv { grid-template-columns: 1fr; gap: .1rem; }
         .dashboard-page .kv dd { margin-bottom: .5rem; }
     }

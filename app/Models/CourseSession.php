@@ -16,6 +16,8 @@ class CourseSession extends Model
         'start_time',
         'end_time',
         'class_hall_id',
+        'is_custom',
+        'original_date',
         'status',
         'cancel_reason',
         'cancelled_by',
@@ -24,6 +26,8 @@ class CourseSession extends Model
 
     protected $casts = [
         'session_date' => 'date',
+        'original_date' => 'date',
+        'is_custom' => 'boolean',
         'cancelled_at' => 'datetime',
     ];
 
@@ -73,6 +77,12 @@ class CourseSession extends Model
 
     /** An admin can cancel a class day that has not started yet. */
     public function canCancel(): bool
+    {
+        return $this->status === 'scheduled' && now()->lt($this->startsAt());
+    }
+
+    /** Date, time and hall can be changed until the day starts. */
+    public function canEdit(): bool
     {
         return $this->status === 'scheduled' && now()->lt($this->startsAt());
     }

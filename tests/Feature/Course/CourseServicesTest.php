@@ -62,7 +62,7 @@ class CourseServicesTest extends TestCase
     {
         $this->expectException(ValidationException::class);
 
-        app(CourseService::class)->update($this->inst['course'], $this->inst['course']->toArray() + ['class_days' => ['saturday']], [
+        app(CourseService::class)->update($this->inst['course'], $this->inst['course']->toArray() + ['days' => [['day' => 'saturday', 'start_time' => '08:00', 'end_time' => '12:00']]], [
             ['teacher_id' => $this->inst['teacher'], 'percentage' => 70],
             ['teacher_id' => $this->inst['teacherB'], 'percentage' => 35],
         ]);
@@ -221,10 +221,10 @@ class CourseServicesTest extends TestCase
 
         // Saturdays only, new time
         app(CourseService::class)->update($course, array_merge($course->only([
-            'branch_id', 'name', 'code', 'full_fee', 'one_time_fee', 'class_hall_id',
+            'branch_id', 'name', 'code', 'full_fee', 'one_time_fee',
         ]), [
             'start_date' => '2026-11-01', 'end_date' => '2027-04-30',
-            'start_time' => '13:00', 'end_time' => '16:00', 'class_days' => ['saturday'],
+            'days' => [['day' => 'saturday', 'start_time' => '13:00', 'end_time' => '16:00']],
         ]), [['teacher_id' => $this->inst['teacher'], 'percentage' => 70]]);
 
         $dates = CourseSession::where('course_id', $course->id)->orderBy('session_date')->get();

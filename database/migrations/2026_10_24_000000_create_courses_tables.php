@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Schema;
 /**
  * Courses (feature "courses"): a course with a fixed fee, start / end dates
  * and weekly days, taught by one or more teachers who share the income by
- * percentage. Separate from classes, class payments and teacher salaries.
+ * percentage. Each week day has its own time and hall. Separate from classes, class payments and teacher salaries.
  */
 class CreateCoursesTables extends Migration
 {
@@ -27,10 +27,6 @@ class CreateCoursesTables extends Migration
 
             $table->date('start_date');
             $table->date('end_date');
-            $table->time('start_time');
-            $table->time('end_time');
-            $table->json('class_days'); // ["saturday","sunday"]
-            $table->foreignId('class_hall_id')->nullable()->constrained('class_halls')->nullOnDelete();
 
             $table->boolean('is_active')->default(true);
             $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
@@ -38,6 +34,20 @@ class CreateCoursesTables extends Migration
             $table->softDeletes();
 
             $table->index(['branch_id', 'is_active']);
+        });
+
+        // Weekly class days, each with its own time and hall
+        // (e.g. Sunday 08:00-12:00 Hall 2, Friday 12:00-17:00 Hall 3)
+        Schema::create('course_days', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('course_id')->constrained('courses')->cascadeOnDelete();
+            $table->enum('day', ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']);
+            $table->time('start_time');
+            $table->time('end_time');
+            $table->foreignId('class_hall_id')->nullable()->constrained('class_halls')->nullOnDelete();
+            $table->timestamps();
+
+            $table->unique(['course_id', 'day']);
         });
 
         Schema::create('course_teachers', function (Blueprint $table) {
@@ -58,6 +68,10 @@ class CreateCoursesTables extends Migration
             $table->time('start_time');
             $table->time('end_time');
             $table->foreignId('class_hall_id')->nullable()->constrained('class_halls')->nullOnDelete();
+            // Added or changed by hand: kept as it is when the weekly schedule changes.
+            // original_date = the weekly date it replaces (null for an extra day).
+            $table->boolean('is_custom')->default(false);
+            $table->date('original_date')->nullable();
             // scheduled -> ongoing (first attendance) -> completed (after end time)
             // scheduled -> cancelled (by an admin, or no attendance by the end time)
             $table->enum('status', ['scheduled', 'ongoing', 'completed', 'cancelled'])->default('scheduled');
@@ -175,6 +189,7 @@ class CreateCoursesTables extends Migration
         Schema::dropIfExists('course_enrollments');
         Schema::dropIfExists('course_sessions');
         Schema::dropIfExists('course_teachers');
+        Schema::dropIfExists('course_days');
         Schema::dropIfExists('courses');
     }
 }

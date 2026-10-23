@@ -46,18 +46,29 @@ class CourseScheduleService
     }
 
     /**
-     * Make the course's sessions match its dates / days / time / hall.
-     * Sessions that already have attendance are never deleted.
+     * Make the course's class days match its dates and weekly days (each
+     * with its own time and hall). Never touched: days with attendance, and
+     * days added or changed by hand (is_custom). Time / hall changes apply
+     * from today on.
      */
     public function syncSessions(Course $course): void
     {
-        $dates = $this->sessionDates($course->start_date, $course->end_date, $course->class_days ?? []);
-        $existing = $course->sessions()->withCount('attendances')->get()
+        $slots = $course->days()->get()->keyBy('day');
+        $dates = $this->sessionDates($course->start_date, $course->end_date, $slots->keys()->all());
+        $sessions = $course->sessions()->withCount('attendances')->get();
+
+        $weekly = $sessions->where('is_custom', false)
             ->keyBy(fn (CourseSession $session) => $session->session_date->toDateString());
 
-        // Remove dates that are no longer class days (only if nobody attended)
-        foreach ($existing as $date => $session) {
-            if (!$dates->contains($date) && $session->attendances_count === 0) {
+        // Dates already used by a hand-made day (its own date, or the weekly date it replaced)
+        $custom = $sessions->where('is_custom', true);
+        $taken = $custom->map(fn ($s) => $s->session_date->toDateString())
+            ->merge($custom->filter(fn ($s) => $s->original_date)->map(fn ($s) => $s->original_date->toDateString()))
+            ->unique()->all();
+
+        // Remove weekly dates that are no longer class days (only if nobody attended)
+        foreach ($weekly as $date => $session) {
+            if ((!$dates->contains($date) || in_array($date, $taken, true)) && $session->attendances_count === 0) {
                 $session->delete();
             }
         }
@@ -65,28 +76,23 @@ class CourseScheduleService
         $today = now()->toDateString();
 
         foreach ($dates as $date) {
-            $session = $existing->get($date);
-
-            if (!$session) {
-                $course->sessions()->create([
-                    'branch_id' => $course->branch_id,
-                    'session_date' => $date,
-                    'start_time' => $course->start_time,
-                    'end_time' => $course->end_time,
-                    'class_hall_id' => $course->class_hall_id,
-                    'status' => 'scheduled',
-                ]);
+            if (in_array($date, $taken, true)) {
                 continue;
             }
 
-            // New time / hall for sessions from today on
-            if ($date >= $today) {
-                $session->update([
-                    'branch_id' => $course->branch_id,
-                    'start_time' => $course->start_time,
-                    'end_time' => $course->end_time,
-                    'class_hall_id' => $course->class_hall_id,
-                ]);
+            $slot = $slots->get(strtolower(Carbon::parse($date)->englishDayOfWeek));
+            $fields = [
+                'branch_id' => $course->branch_id,
+                'start_time' => $slot->start_time,
+                'end_time' => $slot->end_time,
+                'class_hall_id' => $slot->class_hall_id,
+            ];
+            $session = $weekly->get($date);
+
+            if (!$session) {
+                $course->sessions()->create($fields + ['session_date' => $date, 'status' => 'scheduled']);
+            } elseif ($date >= $today && $session->status === 'scheduled') {
+                $session->update($fields);
             }
         }
     }

@@ -3,9 +3,10 @@
     $oldTeachers = old('teachers', $course
         ? $course->courseTeachers->map(fn ($t) => ['teacher_id' => $t->teacher_id, 'percentage' => (float) $t->percentage])->values()->all()
         : [['teacher_id' => '', 'percentage' => '']]);
-    $oldDays = old('class_days', $course->class_days ?? []);
+    $oldDays = old('days', $course
+        ? $course->days->map(fn ($d) => ['day' => $d->day, 'start_time' => substr($d->start_time, 0, 5), 'end_time' => substr($d->end_time, 0, 5), 'class_hall_id' => $d->class_hall_id])->values()->all()
+        : [['day' => '', 'start_time' => '', 'end_time' => '', 'class_hall_id' => '']]);
     $value = fn ($field, $default = '') => old($field, $course ? $course->{$field} : $default);
-    $time = fn ($field) => old($field, $course ? substr((string) $course->{$field}, 0, 5) : '');
     $date = fn ($field) => old($field, $course && $course->{$field} ? $course->{$field}->toDateString() : '');
 @endphp
 
@@ -47,8 +48,8 @@
         {{-- SCHEDULE --}}
         <div class="form-section">
             <div class="form-section-title"><i class="bi bi-calendar-week text-primary"></i> Schedule</div>
-            <div class="form-section-sub">Class days between the start and end date are added to the schedule automatically.</div>
-            <div class="row g-3">
+            <div class="form-section-sub">Each week day has its own time and hall. Every such day between the start and end date becomes a class day.</div>
+            <div class="row g-3 mb-3">
                 <div class="col-sm-6 col-lg-3">
                     <label class="nx-label" for="start_date">Start date *</label>
                     <input type="date" id="start_date" name="start_date" class="form-control nx-input" required value="{{ $date('start_date') }}">
@@ -57,38 +58,19 @@
                     <label class="nx-label" for="end_date">End date *</label>
                     <input type="date" id="end_date" name="end_date" class="form-control nx-input" required value="{{ $date('end_date') }}">
                 </div>
-                <div class="col-sm-6 col-lg-3">
-                    <label class="nx-label" for="start_time">Start time *</label>
-                    <input type="time" id="start_time" name="start_time" class="form-control nx-input" required value="{{ $time('start_time') }}">
-                </div>
-                <div class="col-sm-6 col-lg-3">
-                    <label class="nx-label" for="end_time">End time *</label>
-                    <input type="time" id="end_time" name="end_time" class="form-control nx-input" required value="{{ $time('end_time') }}">
-                </div>
-                <div class="col-lg-8">
-                    <span class="nx-label d-block">Class days *</span>
-                    <div class="day-picks">
-                        @foreach (\App\Models\Course::DAYS as $day)
-                            <label class="day-pick">
-                                <input type="checkbox" name="class_days[]" value="{{ $day }}" {{ in_array($day, $oldDays, true) ? 'checked' : '' }}>
-                                <span>{{ ucfirst($day) }}</span>
-                            </label>
-                        @endforeach
-                    </div>
-                </div>
-                <div class="col-lg-4">
-                    <label class="nx-label" for="class_hall_id">Hall</label>
-                    <select id="class_hall_id" name="class_hall_id" class="form-select nx-input">
-                        <option value="">No hall</option>
-                        @foreach ($halls as $hall)
-                            <option value="{{ $hall->id }}" data-branch="{{ $hall->branch_id }}" {{ (string) $value('class_hall_id') === (string) $hall->id ? 'selected' : '' }}>{{ $hall->hall_name }}</option>
-                        @endforeach
-                    </select>
-                </div>
-                <div class="col-12">
-                    <div class="preview-box" id="schedulePreview">Choose the dates and class days to see the number of classes and months.</div>
-                </div>
             </div>
+
+            <div class="day-row day-head d-none d-md-grid">
+                <span class="nx-label">Day *</span><span class="nx-label">Start *</span><span class="nx-label">End *</span><span class="nx-label">Hall</span><span></span>
+            </div>
+            <div id="dayRows">
+                @foreach ($oldDays as $i => $row)
+                    @include('courses.partials.day-row', ['i' => $i, 'row' => $row])
+                @endforeach
+            </div>
+            <button type="button" class="nx-btn nx-btn-light mb-3" id="addDay"><i class="bi bi-plus-lg"></i> Add class day</button>
+
+            <div class="preview-box" id="schedulePreview">Choose the dates and class days to see the number of classes and months.</div>
         </div>
 
         {{-- FEES --}}
@@ -151,6 +133,10 @@
     </div>
 </form>
 
+<template id="dayRowTemplate">
+    @include('courses.partials.day-row', ['i' => '__d__', 'row' => []])
+</template>
+
 <template id="teacherRowTemplate">
     <div class="share-row">
         <select name="teachers[__i__][teacher_id]" class="form-select nx-input" aria-label="Teacher">
@@ -199,7 +185,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function preview() {
         const start = document.getElementById('start_date').value;
         const end = document.getElementById('end_date').value;
-        const days = [...document.querySelectorAll('input[name="class_days[]"]:checked')].map((c) => c.value);
+        const days = [...document.querySelectorAll('#dayRows select.day-select')].map((c) => c.value).filter(Boolean);
         const full = parseFloat(document.getElementById('full_fee').value) || 0;
         const once = parseFloat(document.getElementById('one_time_fee').value) || 0;
         const box = document.getElementById('schedulePreview');
@@ -212,12 +198,18 @@ document.addEventListener('DOMContentLoaded', function () {
         }
 
         const names = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
-        let classes = 0;
+        const counts = {};
         for (let d = new Date(start + 'T00:00:00'); d <= new Date(end + 'T00:00:00'); d.setDate(d.getDate() + 1)) {
-            if (days.includes(names[d.getDay()])) classes++;
+            const name = names[d.getDay()];
+            if (days.includes(name)) counts[name] = (counts[name] || 0) + 1;
         }
+        const classes = Object.values(counts).reduce((a, b) => a + b, 0);
+        const parts = days.map((d) => d.charAt(0).toUpperCase() + d.slice(1, 3) + ' ' + (counts[d] || 0));
+        const dupes = days.filter((d, i) => days.indexOf(d) !== i);
         const months = monthCount(start, end);
-        box.innerHTML = '<strong>' + months + '</strong> month(s) · <strong>' + classes + '</strong> class day(s)';
+        box.innerHTML = '<strong>' + months + '</strong> month(s) · <strong>' + classes + '</strong> class day(s)'
+            + (parts.length ? ' (' + parts.join(' · ') + ')' : '')
+            + (dupes.length ? '<br><span style="color:var(--nx-red)">' + dupes[0] + ' is added twice - one time per day.</span>' : '');
         feeBox.innerHTML = full > 0
             ? months + ' installments of about <strong>' + money(full / months) + '</strong>' + (once > 0 && once < full ? ' · saves ' + money(full - once) + ' when paid at once' : '')
             : '—';
@@ -225,10 +217,29 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function filterHalls() {
         const branch = document.getElementById('branch_id').value;
-        const hall = document.getElementById('class_hall_id');
-        [...hall.options].forEach((o) => { if (o.dataset.branch) o.hidden = o.dataset.branch !== branch; });
-        if (hall.selectedOptions[0] && hall.selectedOptions[0].hidden) hall.value = '';
+        document.querySelectorAll('#dayRows select.hall-select').forEach((hall) => {
+            [...hall.options].forEach((o) => { if (o.dataset.branch) o.hidden = o.dataset.branch !== branch; });
+            if (hall.selectedOptions[0] && hall.selectedOptions[0].hidden) hall.value = '';
+        });
     }
+
+    const dayRows = document.getElementById('dayRows');
+    const dayTemplate = document.getElementById('dayRowTemplate').innerHTML;
+    let nextDay = dayRows.children.length;
+
+    document.getElementById('addDay').addEventListener('click', function () {
+        dayRows.insertAdjacentHTML('beforeend', dayTemplate.replaceAll('__d__', nextDay++));
+        filterHalls();
+        preview();
+    });
+
+    dayRows.addEventListener('click', function (e) {
+        const btn = e.target.closest('.remove-day');
+        if (!btn) return;
+        if (dayRows.children.length > 1) btn.closest('.day-row').remove();
+        else btn.closest('.day-row').querySelectorAll('select, input').forEach((el) => el.value = '');
+        preview();
+    });
 
     document.getElementById('addTeacher').addEventListener('click', function () {
         rows.insertAdjacentHTML('beforeend', template.replaceAll('__i__', next++));

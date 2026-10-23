@@ -67,9 +67,10 @@ class CourseWebTest extends TestCase
             'one_time_fee' => 10000,
             'start_date' => '2026-11-01',
             'end_date' => '2027-04-30',
-            'start_time' => '08:00',
-            'end_time' => '12:00',
-            'class_days' => ['saturday'],
+            'days' => [
+                ['day' => 'saturday', 'start_time' => '08:00', 'end_time' => '12:00', 'class_hall_id' => ''],
+                ['day' => '', 'start_time' => '', 'end_time' => '', 'class_hall_id' => ''], // empty row from the form
+            ],
             'teachers' => [
                 ['teacher_id' => $this->inst['teacher'], 'percentage' => 35],
                 ['teacher_id' => $teacherB, 'percentage' => 35],
@@ -91,6 +92,11 @@ class CourseWebTest extends TestCase
 
         $this->get("/courses/{$course->id}")->assertOk()->assertSee('Diploma in English')->assertSee('Sunil Silva');
         $this->get("/courses/{$course->id}/edit")->assertOk()->assertSee('value="08:00"', false);
+
+        // The same day twice is refused
+        $twice = $form;
+        $twice['days'][1] = ['day' => 'saturday', 'start_time' => '13:00', 'end_time' => '15:00'];
+        $this->from('/courses/create')->post('/courses', $twice)->assertSessionHasErrors('days.1.day');
         $this->get('/courses')->assertOk()->assertSee('Diploma in English');
     }
 

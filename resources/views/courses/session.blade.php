@@ -6,6 +6,7 @@
 @section('content')
 @php
     $present = $marked->count();
+    $canManage = in_array(strtoupper((string) optional(auth()->user()->userType)->code), ['SUPER_ADMIN', 'ADMIN', 'BRANCH_ADMIN'], true);
 @endphp
 <div class="dashboard-page">
 
@@ -30,6 +31,33 @@
     </div>
 
     @include('courses.partials.alerts')
+
+    @if ($canManage && $session->canEdit())
+        <div class="nx-card mb-4" id="edit">
+            <div class="p-3">
+                <details class="special-fee" {{ $errors->hasAny(['session_date', 'start_time', 'end_time', 'class_hall_id']) ? 'open' : '' }}>
+                    <summary>Change date / time / hall</summary>
+                    <form method="POST" action="{{ route('courses.sessions.update', [$course, $session]) }}" class="inline-form mt-2" onsubmit="return confirm('Change this class day? Parents will be told.')">
+                        @csrf @method('PUT')
+                        <div><label class="nx-label" for="edit_date">Date</label><input type="date" id="edit_date" name="session_date" class="form-control nx-input" min="{{ today()->toDateString() }}" value="{{ old('session_date', $session->session_date->toDateString()) }}" required></div>
+                        <div><label class="nx-label" for="edit_start">Start</label><input type="time" id="edit_start" name="start_time" class="form-control nx-input" value="{{ old('start_time', substr($session->start_time, 0, 5)) }}" required></div>
+                        <div><label class="nx-label" for="edit_end">End</label><input type="time" id="edit_end" name="end_time" class="form-control nx-input" value="{{ old('end_time', substr($session->end_time, 0, 5)) }}" required></div>
+                        <div>
+                            <label class="nx-label" for="edit_hall">Hall</label>
+                            <select id="edit_hall" name="class_hall_id" class="form-select nx-input">
+                                <option value="">No hall</option>
+                                @foreach ($halls as $hall)
+                                    <option value="{{ $hall->id }}" {{ (string) old('class_hall_id', $session->class_hall_id) === (string) $hall->id ? 'selected' : '' }}>{{ $hall->hall_name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div style="min-width:auto"><button class="nx-btn nx-btn-primary" type="submit">Save</button></div>
+                    </form>
+                    <small class="cell-sub d-block mt-1">Only this day changes. It stays like this when the weekly schedule is edited.</small>
+                </details>
+            </div>
+        </div>
+    @endif
 
     @if ($session->isCancelled())
         <div class="nx-alert nx-alert-red mb-4"><i class="bi bi-x-circle-fill"></i><span>This class day is cancelled{{ $session->cancel_reason ? ': ' . $session->cancel_reason : '' }}.</span></div>
@@ -103,3 +131,13 @@
 @endsection
 
 @include('courses.partials.styles')
+
+@push('scripts')
+<script>
+    // Opened from "Change class day" on the course page (#edit)
+    if (window.location.hash === '#edit') {
+        const box = document.querySelector('#edit details');
+        if (box) box.open = true;
+    }
+</script>
+@endpush

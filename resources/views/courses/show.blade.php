@@ -18,9 +18,8 @@
                 <span class="greeting-badge">{{ $course->code ?: 'Course' }} · {{ $course->branch->name ?? '' }}</span>
                 <h1 class="hero-title">{{ $course->name }}</h1>
                 <p class="hero-subtitle">
-                    {{ $course->start_date->format('d M Y') }} – {{ $course->end_date->format('d M Y') }}
-                    · {{ $course->daysLabel() }} · {{ $fmtTime($course->start_time) }} – {{ $fmtTime($course->end_time) }}
-                    @if ($course->hall) · {{ $course->hall->hall_name }} @endif
+                    {{ $course->start_date->format('d M Y') }} – {{ $course->end_date->format('d M Y') }}<br>
+                    {{ $course->scheduleLabel() }}
                 </p>
                 <div class="hero-stats-mini">
                     <div class="mini-stat">@include('courses.partials.status-badge', ['status' => $course->status()])</div>
@@ -178,6 +177,30 @@
 
             {{-- SESSIONS --}}
             <div class="tab-pane fade" id="sessions" role="tabpanel">
+                @if ($canManage)
+                    <div class="p-3 border-bottom">
+                        <details class="special-fee" {{ $errors->has('session_date') || $errors->has('end_time') ? 'open' : '' }}>
+                            <summary>Add a class day</summary>
+                            <form method="POST" action="{{ route('courses.sessions.store', $course) }}" class="inline-form mt-2">
+                                @csrf
+                                <div><label class="nx-label" for="new_session_date">Date</label><input type="date" id="new_session_date" name="session_date" class="form-control nx-input" min="{{ $today->toDateString() }}" value="{{ old('session_date') }}" required></div>
+                                <div><label class="nx-label" for="new_start_time">Start</label><input type="time" id="new_start_time" name="start_time" class="form-control nx-input" value="{{ old('start_time') }}" required></div>
+                                <div><label class="nx-label" for="new_end_time">End</label><input type="time" id="new_end_time" name="end_time" class="form-control nx-input" value="{{ old('end_time') }}" required></div>
+                                <div>
+                                    <label class="nx-label" for="new_hall">Hall</label>
+                                    <select id="new_hall" name="class_hall_id" class="form-select nx-input">
+                                        <option value="">No hall</option>
+                                        @foreach ($halls as $hall)
+                                            <option value="{{ $hall->id }}" {{ (string) old('class_hall_id') === (string) $hall->id ? 'selected' : '' }}>{{ $hall->hall_name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div style="min-width:auto"><button class="nx-btn nx-btn-primary" type="submit" onclick="return confirm('Add this class day? Parents will be told.')"><i class="bi bi-calendar-plus"></i> Add</button></div>
+                            </form>
+                            <small class="cell-sub d-block mt-1">For an extra class outside the weekly days. One class per day.</small>
+                        </details>
+                    </div>
+                @endif
                 <div class="table-responsive">
                     <table class="table premium-table mb-0">
                         <thead>
@@ -188,6 +211,9 @@
                                 <tr class="{{ $session->isCancelled() ? 'row-muted' : '' }}">
                                     <td>
                                         <span class="cell-title">{{ $session->session_date->format('D, d M Y') }}</span>
+                                        @if ($session->is_custom)
+                                            <span class="nx-badge nx-badge-amber ms-1" title="{{ $session->original_date ? 'Moved from ' . $session->original_date->format('d M') : 'Extra class day' }}">{{ $session->original_date ? 'Changed' : 'Extra' }}</span>
+                                        @endif
                                         @if ($session->session_date->isSameDay($today)) <span class="nx-badge nx-badge-violet ms-1">Today</span> @endif
                                     </td>
                                     <td class="money">{{ $fmtTime($session->start_time) }} – {{ $fmtTime($session->end_time) }}</td>
@@ -200,6 +226,9 @@
                                     <td class="text-end">
                                         <div class="action-buttons">
                                             <a href="{{ route('courses.sessions.show', [$course, $session]) }}" class="action-btn" title="Attendance" aria-label="Attendance"><i class="bi bi-person-check-fill"></i></a>
+                                            @if ($canManage && $session->canEdit())
+                                                <a href="{{ route('courses.sessions.show', [$course, $session]) }}#edit" class="action-btn action-btn-warning" title="Change date / time / hall" aria-label="Change class day"><i class="bi bi-pencil-fill"></i></a>
+                                            @endif
                                             @if ($canManage)
                                                 @if ($session->canRestore())
                                                     <form method="POST" action="{{ route('courses.sessions.status', [$course, $session]) }}">

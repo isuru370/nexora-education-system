@@ -25,19 +25,36 @@ class CourseNotificationService
     /** @return int number of students told */
     public function sessionCancelled(CourseSession $session): int
     {
+        return $this->tell($session, 'cancelled', 'Course class cancelled');
+    }
+
+    /** A class day moved to another date / time / hall. */
+    public function sessionChanged(CourseSession $session): int
+    {
+        return $this->tell($session, 'updated', 'Course class changed');
+    }
+
+    /** An extra class day was added. */
+    public function sessionAdded(CourseSession $session): int
+    {
+        return $this->tell($session, 'created', 'Extra course class');
+    }
+
+    protected function tell(CourseSession $session, string $action, string $title): int
+    {
         $channel = NotificationSetting::channelFor(NotificationSetting::CLASS_SCHEDULE);
 
         if ($channel === null) {
             return 0;
         }
 
-        $session->loadMissing('course:id,name');
+        $session->loadMissing(['course:id,name', 'hall:id,hall_name']);
 
         $date = $session->session_date->format('Y-m-d');
         $time = Carbon::parse($session->start_time)->format('h:i A') . ' - ' . Carbon::parse($session->end_time)->format('h:i A');
-        $title = 'Course class cancelled';
         $body = "Course : {$session->course->name}\nDate : {$date}\nTime : {$time}"
-            . ($session->cancel_reason ? "\nReason : {$session->cancel_reason}" : '');
+            . ($action !== 'cancelled' && $session->hall ? "\nHall : {$session->hall->hall_name}" : '')
+            . ($action === 'cancelled' && $session->cancel_reason ? "\nReason : {$session->cancel_reason}" : '');
 
         $enrollments = CourseEnrollment::query()
             ->with('student:id,guardian_mobile,is_active')
@@ -63,7 +80,7 @@ class CourseNotificationService
                         'type' => NotificationType::GENERAL,
                         'data' => [
                             'kind' => 'course_session',
-                            'action' => 'cancelled',
+                            'action' => $action,
                             'course_id' => $session->course_id,
                             'class_date' => $date,
                             'start_time' => $session->start_time,

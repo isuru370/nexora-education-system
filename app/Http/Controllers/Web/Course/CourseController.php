@@ -28,7 +28,7 @@ class CourseController extends Controller
         $search = trim((string) $request->input('search'));
 
         $courses = Course::query()
-            ->with(['branch:id,name', 'teachers:id,full_name'])
+            ->with(['branch:id,name', 'teachers:id,full_name', 'days.hall:id,hall_name'])
             ->withCount(['enrollments as students_count' => fn ($q) => $q->where('status', 'active')])
             ->withSum(['payments as collected' => fn ($q) => $q->where('status', 'completed')], 'amount')
             ->whereIn('branch_id', $this->branchIds())
@@ -64,7 +64,8 @@ class CourseController extends Controller
     {
         $this->checkCourse($course);
 
-        $course->load(['branch:id,name', 'hall:id,hall_name', 'courseTeachers.teacher:id,custom_id,full_name']);
+        $course->load(['branch:id,name', 'days.hall:id,hall_name', 'courseTeachers.teacher:id,custom_id,full_name']);
+        $halls = ClassHall::where('branch_id', $course->branch_id)->where('is_active', true)->orderBy('hall_name')->get(['id', 'hall_name']);
 
         $enrollments = CourseEnrollment::query()
             ->with(['student:id,custom_id,initial_name,full_name,mobile,guardian_mobile', 'installments'])
@@ -98,13 +99,13 @@ class CourseController extends Controller
             'held' => $sessions->whereIn('status', ['ongoing', 'completed'])->count(),
         ];
 
-        return view('courses.show', compact('course', 'enrollments', 'sessions', 'payments', 'teachers', 'instituteEarned', 'payouts', 'stats'));
+        return view('courses.show', compact('course', 'enrollments', 'sessions', 'payments', 'teachers', 'instituteEarned', 'payouts', 'stats', 'halls'));
     }
 
     public function edit(Course $course)
     {
         $this->checkCourse($course);
-        $course->load('courseTeachers');
+        $course->load(['courseTeachers', 'days']);
 
         return view('courses.edit', $this->formData() + compact('course'));
     }

@@ -12,6 +12,7 @@ use App\Services\Course\CourseAttendanceService;
 use App\Services\Course\CourseSessionService;
 use App\Services\Course\CourseStudentLookup;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
 class CourseSessionController extends Controller
@@ -37,7 +38,10 @@ class CourseSessionController extends Controller
             ->sortBy(fn ($e) => $e->student->initial_name ?? '')
             ->values();
 
+        $halls = \App\Models\ClassHall::where('branch_id', $course->branch_id)->where('is_active', true)->orderBy('hall_name')->get(['id', 'hall_name']);
+
         return view('courses.session', [
+            'halls' => $halls,
             'course' => $course,
             'session' => $courseSession->load('hall:id,hall_name'),
             'students' => $students,
@@ -82,6 +86,37 @@ class CourseSessionController extends Controller
         $this->attendance->remove($courseAttendance);
 
         return back()->with('success', 'Attendance removed.');
+    }
+
+    /** Admin: an extra class day. */
+    public function store(Request $request, Course $course, CourseSessionService $sessions)
+    {
+        $this->checkCourse($course);
+
+        $result = $sessions->add($course, $this->dayData($request, $course));
+
+        return redirect()->to(route('courses.show', $course) . '#sessions')
+            ->with('success', 'Class day added for ' . $result['session']->session_date->format('d M Y') . '.' . ($result['told'] ? " {$result['told']} parent(s) will be told." : ''));
+    }
+
+    /** Admin: change one class day's date, time or hall. */
+    public function update(Request $request, Course $course, CourseSession $courseSession, CourseSessionService $sessions)
+    {
+        $this->checkCourse($course, (int) $courseSession->course_id);
+
+        $told = $sessions->edit($courseSession, $this->dayData($request, $course));
+
+        return back()->with('success', 'Class day changed.' . ($told ? " {$told} parent(s) will be told." : ''));
+    }
+
+    protected function dayData(Request $request, Course $course): array
+    {
+        return $request->validate([
+            'session_date' => ['required', 'date'],
+            'start_time' => ['required', 'date_format:H:i'],
+            'end_time' => ['required', 'date_format:H:i', 'after:start_time'],
+            'class_hall_id' => ['nullable', 'integer', Rule::exists('class_halls', 'id')->where('branch_id', $course->branch_id)],
+        ], ['end_time.after' => 'The end time must be after the start time.']);
     }
 
     /** Cancel a class day (e.g. holiday; parents are told) or bring it back. */

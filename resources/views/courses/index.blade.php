@@ -80,7 +80,9 @@
                             </td>
                             <td>
                                 <span class="cell-title">{{ $course->start_date->format('d M Y') }} – {{ $course->end_date->format('d M Y') }}</span>
-                                <small class="cell-sub d-block">{{ $course->daysLabel() }} · {{ \Carbon\Carbon::parse($course->start_time)->format('h:i A') }} – {{ \Carbon\Carbon::parse($course->end_time)->format('h:i A') }}</small>
+                                @foreach ($course->days as $day)
+                                    <small class="cell-sub d-block">{{ $day->label() }}</small>
+                                @endforeach
                             </td>
                             <td><small>{{ $course->teachers->pluck('full_name')->implode(', ') ?: '—' }}</small></td>
                             <td class="text-end money">
