@@ -2814,3 +2814,7 @@ Route::prefix('payment-reminder')
             ->where('format', 'excel|pdf')
             ->name('export');
     });
+
+
+// Courses (feature "courses")
+require __DIR__ . '/courses.php';

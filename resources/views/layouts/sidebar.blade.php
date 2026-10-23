@@ -330,6 +330,45 @@
         </div>
 
 
+        <!-- COURSES (feature "courses": only institutes that have it) -->
+        @feature('courses')
+            @if ($isUser)
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">COURSES</div>
+
+                    <div class="nav-item">
+                        <button type="button"
+                            class="nav-link-custom {{ request()->routeIs('courses.*') ? 'active' : '' }}"
+                            data-route="courses.index" data-href="{{ route('courses.index') }}">
+                            <i class="bi bi-mortarboard-fill"></i>
+                            <span>Courses</span>
+                        </button>
+                    </div>
+
+                    <div class="nav-item">
+                        <button type="button"
+                            class="nav-link-custom {{ request()->routeIs('course-payments.*') ? 'active' : '' }}"
+                            data-route="course-payments.index" data-href="{{ route('course-payments.index') }}">
+                            <i class="bi bi-receipt-cutoff"></i>
+                            <span>Course Payments</span>
+                        </button>
+                    </div>
+
+                    @if ($isBranchAdmin)
+                        <div class="nav-item">
+                            <button type="button"
+                                class="nav-link-custom {{ request()->routeIs('course-teacher-payments.*') ? 'active' : '' }}"
+                                data-route="course-teacher-payments.index" data-href="{{ route('course-teacher-payments.index') }}">
+                                <i class="bi bi-person-badge-fill"></i>
+                                <span>Course Teacher Payments</span>
+                            </button>
+                        </div>
+                    @endif
+                </div>
+            @endif
+        @endfeature
+
+
         <!-- EXAM -->
         <div class="sidebar-section">
             <div class="sidebar-section-title">EXAM</div>
