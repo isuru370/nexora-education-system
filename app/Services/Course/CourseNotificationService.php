@@ -54,7 +54,7 @@ class CourseNotificationService
     /** Payment received. @return bool told */
     public function paymentReceived(CoursePayment $payment): bool
     {
-        $payment->loadMissing(['course:id,name', 'student', 'enrollment']);
+        $payment->loadMissing(['course', 'student', 'enrollment']);
         $fees = $this->fees->summary($payment->enrollment);
 
         $body = "Course : {$payment->course->name}\n"
@@ -77,7 +77,7 @@ class CourseNotificationService
     /** Marked present. @return bool told */
     public function attendanceMarked(CourseAttendance $attendance): bool
     {
-        $attendance->loadMissing(['student', 'session.course:id,name']);
+        $attendance->loadMissing(['student', 'session.course']);
         $session = $attendance->session;
 
         $body = "{$attendance->student->initial_name} attended\n"
@@ -98,7 +98,7 @@ class CourseNotificationService
 
     protected function tellClass(CourseSession $session, string $action, string $title): int
     {
-        $session->loadMissing(['course:id,name', 'hall:id,hall_name']);
+        $session->loadMissing(['course', 'hall']);
 
         $date = $session->session_date->format('Y-m-d');
         $time = Carbon::parse($session->start_time)->format('h:i A') . ' - ' . Carbon::parse($session->end_time)->format('h:i A');
