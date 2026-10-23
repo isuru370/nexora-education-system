@@ -13,3 +13,6 @@ npm-debug.log
 yarn-error.log
 /.idea
 /.vscode
+
+# maatwebsite/excel temp files
+/storage/framework/laravel-excel
