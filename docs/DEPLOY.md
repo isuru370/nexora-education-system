@@ -55,6 +55,20 @@ then `php artisan key:generate` (only if `APP_KEY` is empty) and `php artisan ne
 
 Runs the daily backup, class status updates and expired-student checks.
 
+### Features for one institute only
+
+Every institute runs the same code. Optional features (listed in `config/features.php`) are **off** until switched on in that institute's server:
+
+```bash
+php artisan nexora:feature                 # list: which are ON here
+php artisan nexora:feature courses on
+php artisan nexora:feature courses off
+```
+
+There is no web page for this, so an institute cannot switch a feature on by itself. `nexora:deploy` shows which features are on.
+
+For developers: `feature('courses')` in PHP, `@feature('courses') ... @endfeature` in Blade, `->middleware('feature:courses')` on routes (404 when off). The mobile apps read `GET /api/features` (also in the login and `/api/me` responses as `features`).
+
 ### Never on a live server
 
 `php artisan migrate:fresh` — deletes every table and all data.

@@ -2,6 +2,7 @@
 
 namespace App\Services\System;
 
+use App\Support\Features;
 use Illuminate\Contracts\Http\Kernel as HttpKernel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
@@ -56,6 +57,7 @@ class DeployCheckService
         'personal_access_tokens',
         'activity_logs',
         'notification_settings',
+        'features',
     ];
 
     public const USER_TYPES = ['SUPER_ADMIN', 'ADMIN', 'BRANCH_ADMIN', 'USER', 'TEACHER'];
@@ -222,6 +224,16 @@ class DeployCheckService
         $checks['Pending migrations'] = ($pending = $this->pendingMigrations())
             ? $this->fail(count($pending) . ' not run: ' . Str::limit(implode(', ', $pending), 160))
             : $this->ok('None');
+
+        $checks['Features'] = $this->safe(function () {
+            // Read fresh from the database (a restored backup may differ from the cache)
+            Features::flush();
+            $on = array_keys(array_filter(Features::all()));
+
+            return $this->ok($on
+                ? 'ON for this institute: ' . implode(', ', $on)
+                : 'None switched on (php artisan nexora:feature)');
+        });
 
         $checks['User roles'] = $this->safe(function () {
             $codes = DB::table('user_types')->pluck('code')->map(fn($c) => strtoupper($c));
