@@ -11,8 +11,10 @@ use Illuminate\Validation\ValidationException;
 
 class CourseAttendanceService
 {
-    public function __construct(private CourseSessionService $sessions)
-    {
+    public function __construct(
+        private CourseSessionService $sessions,
+        private CourseNotificationService $notifications
+    ) {
     }
 
     /**
@@ -62,6 +64,9 @@ class CourseAttendanceService
             'mark_method' => $markMethod,
             'marked_by' => $userId,
         ]);
+
+        // Tell the parent (Settings > Notifications > Course attendance marked)
+        $this->notifications->attendanceMarked($attendance);
 
         return ['attendance' => $attendance, 'enrollment' => $enrollment, 'already_marked' => false];
     }

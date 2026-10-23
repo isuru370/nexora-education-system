@@ -99,7 +99,7 @@ class CourseScheduleDaysTest extends TestCase
     public function test_change_one_day_and_add_an_extra_day(): void
     {
         Queue::fake();
-        NotificationSetting::query()->updateOrCreate(['key' => NotificationSetting::CLASS_SCHEDULE], ['label' => 'Class schedule', 'is_enabled' => true, 'channel' => 'sms']);
+        NotificationSetting::query()->updateOrCreate(['key' => NotificationSetting::COURSE_SCHEDULE], ['label' => 'Course class changes', 'is_enabled' => true, 'channel' => 'sms']);
         NotificationSetting::clearCache();
         app(CourseEnrollmentService::class)->enroll($this->inst['course'], Student::findOrFail($this->inst['s1']), 'installment');
 

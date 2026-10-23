@@ -52,8 +52,8 @@ class CourseSessionStatusTest extends TestCase
 
     private function channel(?string $channel): void
     {
-        NotificationSetting::query()->updateOrCreate(['key' => NotificationSetting::CLASS_SCHEDULE], [
-            'label' => 'Class schedule',
+        NotificationSetting::query()->updateOrCreate(['key' => NotificationSetting::COURSE_SCHEDULE], [
+            'label' => 'Course class changes',
             'is_enabled' => $channel !== null,
             'channel' => $channel ?? NotificationSetting::SMS,
         ]);
@@ -135,7 +135,7 @@ class CourseSessionStatusTest extends TestCase
         Queue::assertNotPushed(SendClassScheduleSms::class);
     }
 
-    public function test_nothing_is_sent_when_class_notices_are_off(): void
+    public function test_nothing_is_sent_when_course_class_notices_are_off(): void
     {
         Queue::fake();
         $this->channel(null);

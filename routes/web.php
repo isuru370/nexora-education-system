@@ -2773,10 +2773,10 @@ Route::prefix('reports')
                 // Dashboard chart (JSON)
                 Route::get('/yearly', 'yearly')->name('yearly');
                 Route::get('/{tab?}', 'index')
-                    ->where('tab', 'summary|classes|teachers|organizers|extra-income|expenses')
+                    ->where('tab', 'summary|classes|teachers|organizers|courses|extra-income|expenses')
                     ->name('index');
                 Route::get('/{tab}/export/{format}', 'export')
-                    ->where(['tab' => 'summary|classes|teachers|organizers|extra-income|expenses', 'format' => 'excel|pdf'])
+                    ->where(['tab' => 'summary|classes|teachers|organizers|courses|extra-income|expenses', 'format' => 'excel|pdf'])
                     ->name('export');
             });
 

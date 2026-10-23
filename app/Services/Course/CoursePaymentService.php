@@ -12,7 +12,8 @@ class CoursePaymentService
 {
     public function __construct(
         private CourseFeeService $fees,
-        private ReceiptNumberService $receipts
+        private ReceiptNumberService $receipts,
+        private CourseNotificationService $notifications
     ) {
     }
 
@@ -38,7 +39,7 @@ class CoursePaymentService
             throw ValidationException::withMessages(['payment_method' => 'Invalid payment method.']);
         }
 
-        return DB::transaction(function () use ($enrollment, $amount, $paymentMethod, $markMethod, $userId, $note) {
+        $payment = DB::transaction(function () use ($enrollment, $amount, $paymentMethod, $markMethod, $userId, $note) {
             // One payment at a time per enrollment
             CourseEnrollment::query()->whereKey($enrollment->id)->lockForUpdate()->first();
 
@@ -94,6 +95,11 @@ class CoursePaymentService
 
             return $payment->load('splits');
         });
+
+        // Tell the parent (Settings > Notifications > Course fee payment)
+        $this->notifications->paymentReceived($payment);
+
+        return $payment;
     }
 
     public function cancel(CoursePayment $payment, string $reason, ?int $userId = null): void
