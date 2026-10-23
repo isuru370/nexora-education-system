@@ -59,6 +59,9 @@
         {{-- ERROR --}}
         <div id="errorResult" class="nx-alert nx-alert-red mb-4 d-none" role="alert"></div>
 
+        {{-- Shown when the student has more than one class open now --}}
+        <div id="classChooser" class="mb-4 d-none"></div>
+
         {{-- EMPTY STATE --}}
         <div id="emptyState" class="nx-card">
             <div class="empty-state-box">
@@ -317,4 +320,484 @@
         .dashboard-page .stat-label { font-size: .55rem; }
     }
 </style>
+@endpush
+
+@push('scripts')
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+
+    <script>
+        (function() {
+            'use strict';
+
+            /* ---------------------------------------------------------------
+             | Config
+             * ------------------------------------------------------------- */
+
+            const SCAN_URL = @json(route('new-attendance.scan'));
+            const CSRF_TOKEN = @json(csrf_token());
+            const SCAN_COOLDOWN_MS = 2500;
+
+            /* ---------------------------------------------------------------
+             | Elements
+             * ------------------------------------------------------------- */
+
+            const el = {
+                scannerStatus: document.getElementById('scannerStatus'),
+                scannerMessage: document.getElementById('scannerMessage'),
+                manualForm: document.getElementById('manualAttendanceForm'),
+                manualCode: document.getElementById('manualCode'),
+                manualSubmitBtn: document.getElementById('manualSubmitBtn'),
+                error: document.getElementById('errorResult'),
+                emptyState: document.getElementById('emptyState'),
+                studentResult: document.getElementById('studentResult'),
+                studentImage: document.getElementById('studentImage'),
+                studentImagePlaceholder: document.getElementById('studentImagePlaceholder'),
+                attendanceBadge: document.getElementById('attendanceBadge'),
+                paymentEmpty: document.getElementById('paymentEmpty'),
+                paymentDetails: document.getElementById('paymentDetails'),
+                classChooser: document.getElementById('classChooser'),
+            };
+
+            /* ---------------------------------------------------------------
+             | State
+             * ------------------------------------------------------------- */
+
+            let qrScanner = null;
+            let isProcessing = false;
+            let lastScannedCode = null;
+            let lastScanTime = 0;
+            let awaitingChoice = false; // "choose the class" panel is open
+
+            /* ---------------------------------------------------------------
+             | Scanner
+             * ------------------------------------------------------------- */
+
+            async function startScanner() {
+                if (typeof Html5Qrcode === 'undefined') {
+                    setScannerStatus(false);
+                    showError('QR scanner library could not be loaded.');
+                    return;
+                }
+
+                try {
+                    qrScanner = new Html5Qrcode('qr-reader');
+
+                    await qrScanner.start({
+                            facingMode: 'environment'
+                        }, {
+                            fps: 10,
+                            qrbox: {
+                                width: 180,
+                                height: 180
+                            }
+                        },
+                        handleQrScan,
+                        () => {} // Frame-level "no QR found" errors are normal.
+                    );
+
+                    setScannerStatus(true);
+                    setScannerMessage("Point the camera at the student's QR code.");
+                } catch (error) {
+                    qrScanner = null;
+                    setScannerStatus(false);
+                    showError('Unable to start camera. Please check camera permission.');
+                }
+            }
+
+            function stopScanner() {
+                if (qrScanner && qrScanner.isScanning) {
+                    qrScanner.stop().catch(() => {});
+                }
+            }
+
+            async function handleQrScan(decodedText) {
+                const code = String(decodedText || '').trim();
+                const now = Date.now();
+
+                if (!code || isProcessing || awaitingChoice) {
+                    return;
+                }
+
+                if (code === lastScannedCode && now - lastScanTime < SCAN_COOLDOWN_MS) {
+                    return;
+                }
+
+                lastScannedCode = code;
+                lastScanTime = now;
+
+                await runAttendance(code, 'qr_web', 'Processing attendance...');
+            }
+
+            /* ---------------------------------------------------------------
+             | Manual Attendance
+             * ------------------------------------------------------------- */
+
+            el.manualForm.addEventListener('submit', async function(event) {
+                event.preventDefault();
+
+                const code = el.manualCode.value.trim();
+
+                if (!code) {
+                    showError('Please enter a Student ID or QR code.');
+                    el.manualCode.focus();
+                    return;
+                }
+
+                await runAttendance(code, 'manual_web', 'Processing manual attendance...');
+
+                el.manualCode.value = '';
+                el.manualCode.focus();
+            });
+
+            /* ---------------------------------------------------------------
+             | Attendance Request
+             * ------------------------------------------------------------- */
+
+            async function runAttendance(code, markMethod, busyMessage, scheduleId = null) {
+                if (isProcessing) {
+                    return;
+                }
+
+                isProcessing = true;
+                el.manualSubmitBtn.disabled = true;
+                setScannerMessage(busyMessage);
+                hideError();
+                hideClassChooser();
+
+                try {
+                    const result = await postScan(code, markMethod, scheduleId);
+
+                    if (result.data && result.data.requires_class_selection) {
+                        renderClassChooser(code, markMethod, result);
+                    } else if (result.success === true) {
+                        renderStudent(result.data);
+                    } else {
+                        renderError(result);
+                    }
+                } catch (error) {
+                    showError(error.message || 'Unable to connect to the server.');
+                } finally {
+                    isProcessing = false;
+                    el.manualSubmitBtn.disabled = false;
+                    if (!awaitingChoice) {
+                        setScannerMessage('Ready for next student...');
+                    }
+                }
+            }
+
+            async function postScan(code, markMethod, scheduleId = null) {
+                const response = await fetch(SCAN_URL, {
+                    method: 'POST',
+                    credentials: 'same-origin',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                        'X-CSRF-TOKEN': CSRF_TOKEN,
+                    },
+                    body: JSON.stringify({
+                        code: code,
+                        mark_method: markMethod,
+                        schedule_id: scheduleId,
+                    }),
+                });
+
+                if (response.status === 419) {
+                    throw new Error('Your session has expired. Please refresh the page.');
+                }
+
+                let result;
+
+                try {
+                    result = await response.json();
+                } catch (error) {
+                    throw new Error('Server returned an invalid response.');
+                }
+
+                // Laravel validation errors (422) return { message, errors }.
+                if (result.errors && typeof result.success === 'undefined') {
+                    return {
+                        success: false,
+                        message: firstValidationError(result),
+                        data: null
+                    };
+                }
+
+                return result;
+            }
+
+            function firstValidationError(result) {
+                const messages = Object.values(result.errors || {})[0];
+
+                return (messages && messages[0]) || result.message || 'Invalid request.';
+            }
+
+            /* ---------------------------------------------------------------
+             | Render: Success
+             * ------------------------------------------------------------- */
+
+            function renderStudent(data) {
+                if (!data) {
+                    showError('No attendance data received.');
+                    return;
+                }
+
+                const student = data.student || {};
+                const schedule = data.schedule || {};
+                const classInfo = schedule.class || {};
+                const attendance = data.attendance || {};
+                const summary = data.attendance_summary || {};
+
+                el.emptyState.classList.add('d-none');
+                el.studentResult.classList.remove('d-none');
+
+                // Student
+                setText('studentName', student.initial_name || student.full_name);
+                setText('studentCustomId', student.custom_id || student.student_code);
+                setText('studentGrade', gradeName(student));
+                setStudentImage(student.img_url);
+
+                // Class
+                setText('className', classInfo.class_name);
+                setText('classCategory', classInfo.category);
+                setText('classBranch', schedule.branch ? schedule.branch.name : '');
+                setText('classDate', schedule.class_date);
+                setText('startTime', schedule.start_time);
+                setText('endTime', schedule.end_time);
+
+                // Attendance badge
+                if (attendance.already_marked === true) {
+                    el.attendanceBadge.textContent = 'ALREADY PRESENT';
+                    el.attendanceBadge.className = 'nx-badge nx-badge-amber attendance-badge';
+                } else {
+                    el.attendanceBadge.textContent = 'PRESENT';
+                    el.attendanceBadge.className = 'nx-badge nx-badge-green attendance-badge';
+                }
+
+                // This month
+                setText('classDays', summary.total_count ?? 0);
+                setText('attendedDays', summary.present_count ?? 0);
+                setText('absentDays', summary.absent_count ?? 0);
+                setText('attendancePercentage', (summary.attendance_percentage ?? 0) + '%');
+
+                renderPayment(data.last_payment);
+            }
+
+            function renderPayment(payment) {
+                el.paymentEmpty.classList.toggle('d-none', Boolean(payment));
+                el.paymentDetails.classList.toggle('d-none', !payment);
+
+                if (!payment) {
+                    return;
+                }
+
+                setText('paymentAmount', 'Rs. ' + formatAmount(payment.amount));
+                setText('paymentMonth', payment.payment_month);
+                setText('paymentMethod', payment.payment_method);
+                setText('paymentReceipt', payment.receipt_number);
+                setText('paymentPaidAt', payment.paid_at);
+            }
+
+            function setStudentImage(url) {
+                const hasImage = Boolean(url);
+
+                if (hasImage) {
+                    el.studentImage.src = url;
+                } else {
+                    el.studentImage.removeAttribute('src');
+                }
+
+                el.studentImage.classList.toggle('d-none', !hasImage);
+                el.studentImagePlaceholder.classList.toggle('d-none', hasImage);
+            }
+
+            // Show placeholder if the image URL is broken.
+            el.studentImage.addEventListener('error', function() {
+                setStudentImage('');
+            });
+
+            /* ---------------------------------------------------------------
+             | Render: Choose the class
+             |
+             | The student has more than one class open now (e.g. A 4:30-6:00
+             | and B 6:00-8:00 at 5:30 PM). Nothing was marked - the user picks
+             | the class and the scan is sent again with its schedule_id.
+             * ------------------------------------------------------------- */
+
+            function renderClassChooser(code, markMethod, result) {
+                const student = result.data.student || {};
+                const classes = result.data.classes || [];
+
+                awaitingChoice = true;
+                setScannerMessage('Choose the class for this student.');
+
+                const buttons = classes.map(function(item) {
+                    const info = item.class || {};
+                    const when = formatTime(item.start_time) + ' - ' + formatTime(item.end_time);
+                    const state = item.already_marked
+                        ? '<span class="nx-badge nx-badge-amber ms-2">Already marked</span>'
+                        : (item.is_started
+                            ? '<span class="nx-badge nx-badge-green ms-2">In progress</span>'
+                            : '<span class="nx-badge nx-badge-blue ms-2">Starts ' + escapeHtml(formatTime(item.start_time)) + '</span>');
+
+                    return '<button type="button" class="nx-btn nx-btn-light w-100 text-start mb-2 class-choice" style="display:block;width:100%;text-align:left" data-schedule="' + Number(item.schedule_id) + '">'
+                        + '<div class="fw-semibold">' + escapeHtml(info.class_name || '-')
+                        + (info.category ? ' <span class="cell-sub">(' + escapeHtml(info.category) + ')</span>' : '') + state + '</div>'
+                        + '<div class="cell-sub">' + escapeHtml(when)
+                        + (item.hall ? ' &middot; ' + escapeHtml(item.hall) : '')
+                        + (info.teacher ? ' &middot; ' + escapeHtml(info.teacher) : '') + '</div>'
+                        + '</button>';
+                }).join('');
+
+                el.classChooser.innerHTML = '<div class="nx-alert nx-alert-blue"><div style="width:100%">'
+                    + '<div class="mb-2"><strong>' + escapeHtml(result.message || 'Choose the class.') + '</strong></div>'
+                    + '<div class="cell-sub mb-3">' + escapeHtml(student.initial_name || student.full_name || '-')
+                    + ' &middot; ' + escapeHtml(student.custom_id || '-') + '</div>'
+                    + buttons
+                    + '<button type="button" class="nx-btn nx-btn-light w-100 mt-1" id="classChooserCancel">Cancel</button>'
+                    + '</div></div>';
+
+                el.classChooser.classList.remove('d-none');
+                el.classChooser.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+                el.classChooser.querySelectorAll('.class-choice').forEach(function(button) {
+                    button.addEventListener('click', function() {
+                        awaitingChoice = false;
+                        runAttendance(code, markMethod, 'Marking attendance...', Number(button.dataset.schedule));
+                    });
+                });
+
+                document.getElementById('classChooserCancel').addEventListener('click', function() {
+                    awaitingChoice = false;
+                    hideClassChooser();
+                    setScannerMessage('Ready for next student...');
+                });
+            }
+
+            function hideClassChooser() {
+                el.classChooser.classList.add('d-none');
+                el.classChooser.innerHTML = '';
+            }
+
+            // "16:30:00" -> "4:30 PM"
+            function formatTime(value) {
+                const match = String(value || '').match(/^(\d{1,2}):(\d{2})/);
+
+                if (!match) {
+                    return value || '-';
+                }
+
+                const hour = Number(match[1]);
+                return ((hour % 12) || 12) + ':' + match[2] + ' ' + (hour < 12 ? 'AM' : 'PM');
+            }
+
+            /* ---------------------------------------------------------------
+             | Render: Error
+             * ------------------------------------------------------------- */
+
+            function renderError(result) {
+                const message = result.message || 'Attendance could not be processed.';
+                const student = result.data && result.data.student;
+
+                if (!student) {
+                    showError(message);
+                    return;
+                }
+
+                showError(message, `
+                    <div class="d-flex flex-wrap gap-2 mt-2">
+                        <div class="bg-light px-3 py-1 rounded">
+                            <strong>Student:</strong> ${escapeHtml(student.initial_name || student.full_name || '-')}
+                        </div>
+                        <div class="bg-light px-3 py-1 rounded">
+                            <strong>ID:</strong> ${escapeHtml(student.custom_id || student.student_code || '-')}
+                        </div>
+                        <div class="bg-light px-3 py-1 rounded">
+                            <strong>Grade:</strong> ${escapeHtml(gradeName(student))}
+                        </div>
+                    </div>
+                `);
+            }
+
+            /**
+             * @param {string} message      Plain text (escaped here).
+             * @param {string} [extraHtml]  Already-escaped HTML.
+             */
+            function showError(message, extraHtml = '') {
+                el.error.innerHTML = `
+                    <div class="d-flex align-items-center">
+                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        <strong>${escapeHtml(message)}</strong>
+                    </div>
+                    ${extraHtml}
+                `;
+
+                el.error.classList.remove('d-none');
+                el.error.scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'nearest'
+                });
+            }
+
+            function hideError() {
+                el.error.classList.add('d-none');
+                el.error.innerHTML = '';
+            }
+
+            /* ---------------------------------------------------------------
+             | Scanner UI
+             * ------------------------------------------------------------- */
+
+            function setScannerStatus(active) {
+                el.scannerStatus.textContent = active ? 'Scanner Active' : 'Scanner Inactive';
+                el.scannerStatus.className = active ? 'nx-badge nx-badge-green' : 'nx-badge nx-badge-red';
+            }
+
+            function setScannerMessage(message) {
+                el.scannerMessage.textContent = message;
+            }
+
+            /* ---------------------------------------------------------------
+             | Helpers
+             * ------------------------------------------------------------- */
+
+            function setText(id, value) {
+                const element = document.getElementById(id);
+
+                if (element) {
+                    element.textContent = value === null || value === undefined || value === '' ? '-' : value;
+                }
+            }
+
+            function gradeName(student) {
+                if (student.grade && typeof student.grade === 'object') {
+                    return student.grade.grade_name || '-';
+                }
+
+                return student.grade || '-';
+            }
+
+            function formatAmount(amount) {
+                return Number(amount || 0).toLocaleString('en-LK', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                });
+            }
+
+            function escapeHtml(value) {
+                return String(value ?? '')
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+                    .replace(/'/g, '&#039;');
+            }
+
+            /* ---------------------------------------------------------------
+             | Start
+             * ------------------------------------------------------------- */
+
+            startScanner();
+            window.addEventListener('pagehide', stopScanner);
+        })();
+    </script>
 @endpush

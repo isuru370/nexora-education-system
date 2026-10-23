@@ -52,9 +52,14 @@ class AttendanceService
      *      ↓
      * Final Response
      */
+    /**
+     * @param  int|null  $scheduleId  The class the user picked, when the
+     *                                student had more than one class open.
+     */
     public function scan(
         string $code,
-        string $markMethod
+        string $markMethod,
+        ?int $scheduleId = null
     ): array {
         try {
 
@@ -98,10 +103,10 @@ class AttendanceService
             |--------------------------------------------------------------------------
             */
 
-            $current = $this->scheduleFinder
-                ->findCurrentSchedule($enrollments);
+            $open = $this->scheduleFinder
+                ->findScannableSchedules($enrollments);
 
-            if (!$current) {
+            if ($open->isEmpty()) {
                 return $this->error(
                     'No active class found for this student at this time.',
                     422,
@@ -109,6 +114,32 @@ class AttendanceService
                         'student' => $this->studentData($student),
                     ]
                 );
+            }
+
+            /*
+            | 3a. More than one class open (e.g. A 4:30-6:00 and B 6:00-8:00
+            |     at 5:30): never guess. The user picks the class and scans
+            |     again with its schedule_id.
+            */
+
+            if ($scheduleId !== null) {
+                $current = $open->first(
+                    fn ($item) => (int) $item['schedule']->id === $scheduleId
+                );
+
+                if (!$current) {
+                    return $this->error(
+                        'The selected class is not open for attendance now.',
+                        422,
+                        [
+                            'student' => $this->studentData($student),
+                        ]
+                    );
+                }
+            } elseif ($open->count() > 1) {
+                return $this->chooseClass($student, $open);
+            } else {
+                $current = $open->first();
             }
 
             $schedule = $current['schedule'];
@@ -679,6 +710,45 @@ class AttendanceService
     /**
      * Build schedule response.
      */
+    /**
+     * 409: the student has several classes open now - list them so the
+     * user can pick one. Nothing is marked.
+     */
+    protected function chooseClass(Student $student, $open): array
+    {
+        $marked = StudentAttendance::query()
+            ->where('student_id', $student->id)
+            ->whereIn('class_schedule_id', $open->pluck('schedule.id'))
+            ->pluck('class_schedule_id')
+            ->map(fn ($id) => (int) $id)
+            ->all();
+
+        $now = Carbon::now();
+
+        $classes = $open->map(function ($item) use ($marked, $now) {
+            $schedule = $item['schedule'];
+            $start = Carbon::parse($now->toDateString() . ' ' . $schedule->start_time);
+
+            return $this->scheduleData($schedule) + [
+                'schedule_id' => (int) $schedule->id,
+                'enrollment_id' => (int) $item['enrollment']->id,
+                'is_started' => $now->gte($start),
+                'already_marked' => in_array((int) $schedule->id, $marked, true),
+            ];
+        })->values()->all();
+
+        return [
+            'success' => false,
+            'message' => 'This student has ' . count($classes) . ' classes now. Choose the class to mark attendance.',
+            'data' => [
+                'requires_class_selection' => true,
+                'student' => $this->studentData($student),
+                'classes' => $classes,
+            ],
+            'status_code' => 409,
+        ];
+    }
+
     protected function scheduleData(
         ClassSchedule $schedule
     ): array {

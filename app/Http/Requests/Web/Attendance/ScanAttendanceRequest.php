@@ -45,6 +45,13 @@ class ScanAttendanceRequest extends FormRequest
                 'required',
                 'in:qr_mobile,qr_web,manual_mobile,manual_web',
             ],
+
+            // Only when the scan answered 409 (several classes open) and the
+            // user picked one of them.
+            'schedule_id' => [
+                'nullable',
+                'integer',
+            ],
         ];
     }
 
