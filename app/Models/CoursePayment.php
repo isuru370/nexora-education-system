@@ -59,6 +59,11 @@ class CoursePayment extends Model
         return $this->belongsTo(User::class, 'user_id');
     }
 
+    public function cancelledBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'cancelled_by');
+    }
+
     public function splits(): HasMany
     {
         return $this->hasMany(CoursePaymentSplit::class);

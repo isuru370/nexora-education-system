@@ -4,17 +4,20 @@ namespace App\Services\Web\Receipt;
 
 use App\Models\ActivityLog;
 use App\Models\AdmissionPayment;
+use App\Models\CoursePayment;
 use App\Models\ExtraIncome;
 use App\Models\Payment;
 use App\Models\StudentClassEnrollment;
 use App\Services\Branch\BranchAccessService;
+use App\Support\Features;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Route;
 
 /**
- * Receipts list (student payments, admission payments, extra income).
+ * Receipts list (student payments, admission payments, extra income, and
+ * course payments when the institute has the "courses" feature).
  *
  * Status filter:
  * - active  (default) : only live receipts  -> totals are real money
@@ -32,6 +35,7 @@ class ReceiptListService
     public const TYPE_STUDENT = 'Student Payment';
     public const TYPE_ADMISSION = 'Admission Payment';
     public const TYPE_EXTRA = 'Extra Income';
+    public const TYPE_COURSE = 'Course Payment';
 
     public function __construct(
         protected BranchAccessService $branchAccess
@@ -59,6 +63,10 @@ class ReceiptListService
 
         if ($this->wantsType($filters, self::TYPE_EXTRA)) {
             $receipts = $receipts->merge($this->extraIncomes($filters, $branchIds));
+        }
+
+        if (Features::enabled('courses') && $this->wantsType($filters, self::TYPE_COURSE)) {
+            $receipts = $receipts->merge($this->coursePayments($filters, $branchIds));
         }
 
         return $receipts
@@ -292,6 +300,50 @@ class ReceiptListService
                 'status' => $item->deleted_at ? 'Deleted' : 'Active',
                 'deleted_at' => $item->deleted_at,
                 'url' => $item->deleted_at ? null : $this->safeRoute('extra-incomes.show', $item->id),
+            ]);
+        });
+    }
+
+    /**
+     * Course payments use a status instead of soft delete:
+     * completed = Active, cancelled = shown in the "deleted" view.
+     */
+    protected function coursePayments(array $filters, Collection $branchIds): Collection
+    {
+        $query = CoursePayment::query()
+            ->with([
+                'student:id,custom_id,initial_name,permanent_qr_active,temporary_qr_code',
+                'course:id,name,code',
+                'course.teachers:id,full_name',
+                'cancelledBy:id,name',
+            ])
+            ->whereIn('branch_id', $branchIds)
+            ->when($filters['status'] === self::STATUS_ACTIVE, fn ($q) => $q->where('status', 'completed'))
+            ->when($filters['status'] === self::STATUS_DELETED, fn ($q) => $q->where('status', 'cancelled'))
+            ->when($filters['receipt_number'], fn ($q) => $q->where('receipt_number', 'like', '%' . $filters['receipt_number'] . '%'))
+            ->when($filters['from_date'], fn ($q) => $q->where('paid_at', '>=', Carbon::parse($filters['from_date'])->startOfDay()))
+            ->when($filters['to_date'], fn ($q) => $q->where('paid_at', '<=', Carbon::parse($filters['to_date'])->endOfDay()));
+
+        return $query->get()->map(function (CoursePayment $item) {
+            $cancelled = !$item->isCompleted();
+
+            return $this->row([
+                'id' => $item->id,
+                'receipt_number' => $item->receipt_number,
+                'type' => self::TYPE_COURSE,
+                'student_id' => $this->studentCode($item->student),
+                'student_name' => optional($item->student)->initial_name ?? 'N/A',
+                'category' => optional($item->course)->code ?? 'N/A',
+                'class_name' => optional($item->course)->name ?? 'N/A',
+                'teacher_name' => optional($item->course)->teachers?->pluck('full_name')->implode(', ') ?: 'N/A',
+                'paid_at' => $item->paid_at,
+                'amount' => (float) $item->amount,
+                'date' => $item->paid_at,
+                'status' => $cancelled ? 'Cancelled' : 'Active',
+                'deleted_at' => $item->cancelled_at,
+                'deleted_by' => optional($item->cancelledBy)->name,
+                'delete_reason' => $item->cancel_reason,
+                'url' => $this->safeRoute('course-payments.receipt', $item->id),
             ]);
         });
     }
