@@ -95,7 +95,8 @@ Route::middleware([
 Route::middleware([
     'auth:sanctum',
     'user.active',
-    'role:ADMIN,BRANCH_ADMIN,USER'
+    'role:ADMIN,BRANCH_ADMIN,USER',
+    'staff.branch',
 ])->group(function () {
 
     // Scan a permanent student card (available / already assigned + history)

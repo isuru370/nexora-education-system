@@ -29,8 +29,10 @@ class AttendanceReportService
         );
 
         if (!$schedule) {
-            throw new Exception(
-                'Schedule not found.'
+            // The schedule exists (validated) but has not started, was
+            // cancelled or is inactive: tell the user, do not fail with 500.
+            throw new \DomainException(
+                'The attendance report is available once the class has started.'
             );
         }
 
