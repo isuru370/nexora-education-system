@@ -60,6 +60,7 @@ class Kernel extends HttpKernel
         // Role Based
         'role' => \App\Http\Middleware\CheckUserRole::class,
         'staff.branch' => \App\Http\Middleware\EnsureStaffBranchAccess::class,
+        'feature' => \App\Http\Middleware\EnsureFeatureEnabled::class,
         
 
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,

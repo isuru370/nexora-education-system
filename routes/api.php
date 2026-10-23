@@ -75,6 +75,12 @@ Route::middleware([
         '/logout',
         [LoginController::class, 'logout']
     )->name('api.logout');
+
+    // Optional features on for this institute (show / hide app menus)
+    Route::get(
+        '/features',
+        [\App\Http\Controllers\Api\Feature\FeatureController::class, 'index']
+    )->name('api.features');
 });
 
 

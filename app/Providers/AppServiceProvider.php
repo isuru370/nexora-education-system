@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Models\Payment;
+use App\Support\Features;
+use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Pagination\Paginator;
@@ -31,5 +33,8 @@ class AppServiceProvider extends ServiceProvider
         Paginator::useBootstrap();
         Student::observe(StudentObserver::class);
         Payment::observe(PaymentObserver::class);
+
+        // @feature('courses') ... @endfeature
+        Blade::if('feature', fn (string $key) => Features::enabled($key));
     }
 }
