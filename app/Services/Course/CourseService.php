@@ -9,8 +9,10 @@ use Illuminate\Validation\ValidationException;
 
 class CourseService
 {
-    public function __construct(private CourseScheduleService $schedule)
-    {
+    public function __construct(
+        private CourseScheduleService $schedule,
+        private CourseCodeService $codes
+    ) {
     }
 
     /**
@@ -24,6 +26,7 @@ class CourseService
 
         return DB::transaction(function () use ($data, $teachers, $userId, $days) {
             $course = Course::create($this->fields($data) + [
+                'code' => $this->codes->next((int) $data['branch_id'], $data['start_date']),
                 'created_by' => $userId,
                 'is_active' => true,
             ]);
@@ -62,7 +65,6 @@ class CourseService
         return [
             'branch_id' => $data['branch_id'],
             'name' => $data['name'],
-            'code' => $data['code'] ?? null,
             'description' => $data['description'] ?? null,
             'full_fee' => $data['full_fee'],
             'one_time_fee' => $data['one_time_fee'],

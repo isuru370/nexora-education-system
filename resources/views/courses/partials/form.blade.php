@@ -28,7 +28,7 @@
                 </div>
                 <div class="col-md-3">
                     <label class="nx-label" for="code">Code</label>
-                    <input id="code" name="code" class="form-control nx-input" maxlength="50" value="{{ $value('code') }}" placeholder="e.g. DIT-2026">
+                    <input id="code" class="form-control nx-input" value="{{ $course->code ?? '' }}" placeholder="Made on save (e.g. CMB-C26001)" readonly aria-readonly="true">
                 </div>
                 <div class="col-md-3">
                     <label class="nx-label" for="branch_id">Branch *</label>

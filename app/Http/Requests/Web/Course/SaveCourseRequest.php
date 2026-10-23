@@ -18,7 +18,6 @@ class SaveCourseRequest extends FormRequest
         return [
             'branch_id' => ['required', 'integer', 'exists:branches,id'],
             'name' => ['required', 'string', 'max:150'],
-            'code' => ['nullable', 'string', 'max:50'],
             'description' => ['nullable', 'string', 'max:2000'],
             'full_fee' => ['required', 'numeric', 'min:0', 'max:99999999'],
             'one_time_fee' => ['required', 'numeric', 'min:0', 'lte:full_fee'],

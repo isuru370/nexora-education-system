@@ -16,7 +16,7 @@ trait BuildsCourse
 {
     protected function buildCourse(array $overrides = []): Course
     {
-        $teacherB = DB::table('teachers')->insertGetId([
+        $teacherB = $this->inst['teacherB'] ?? DB::table('teachers')->insertGetId([
             'custom_id' => 'T2', 'full_name' => 'Sunil Silva', 'initials' => 'S.', 'email' => 't2@test.lk',
             'mobile' => '0770000001', 'nic' => '900000001V', 'bday' => '1990-01-01', 'gender' => 'male',
             'address1' => 'Colombo', 'is_active' => 1,
@@ -25,7 +25,6 @@ trait BuildsCourse
         $course = app(CourseService::class)->create(array_merge([
             'branch_id' => $this->inst['b1'],
             'name' => 'Diploma in IT',
-            'code' => 'DIT',
             'full_fee' => 12000,
             'one_time_fee' => 10000,
             'start_date' => '2026-11-01',
