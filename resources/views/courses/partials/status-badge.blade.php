@@ -11,6 +11,7 @@
         'active' => ['nx-badge-green', 'Active'],
         'cancelled' => ['nx-badge-red', 'Cancelled'],
         'scheduled' => ['nx-badge-blue', 'Scheduled'],
+        'ongoing' => ['nx-badge-violet', 'Ongoing'],
     ];
     [$cls, $label] = $map[$status] ?? ['nx-badge-gray', ucfirst($status)];
 @endphp

@@ -197,14 +197,14 @@
                                         <div class="action-buttons">
                                             <a href="{{ route('courses.sessions.show', [$course, $session]) }}" class="action-btn" title="Attendance" aria-label="Attendance"><i class="bi bi-person-check-fill"></i></a>
                                             @if ($canManage)
-                                                @if ($session->isCancelled())
+                                                @if ($session->canRestore())
                                                     <form method="POST" action="{{ route('courses.sessions.status', [$course, $session]) }}">
                                                         @csrf @method('PATCH')
                                                         <input type="hidden" name="status" value="scheduled">
                                                         <button class="action-btn action-btn-success" title="Restore class day" aria-label="Restore class day"><i class="bi bi-arrow-counterclockwise"></i></button>
                                                     </form>
-                                                @elseif ($session->attendances_count === 0)
-                                                    <form method="POST" action="{{ route('courses.sessions.status', [$course, $session]) }}" onsubmit="const r = prompt('Reason for cancelling this class day (e.g. holiday):'); if (r === null) return false; this.cancel_reason.value = r; return true;">
+                                                @elseif ($session->canCancel())
+                                                    <form method="POST" action="{{ route('courses.sessions.status', [$course, $session]) }}" onsubmit="const r = prompt('Reason for cancelling this class day (e.g. holiday). Parents will be told:'); if (r === null) return false; this.cancel_reason.value = r; return true;">
                                                         @csrf @method('PATCH')
                                                         <input type="hidden" name="status" value="cancelled">
                                                         <input type="hidden" name="cancel_reason" value="">

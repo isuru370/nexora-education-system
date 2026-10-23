@@ -58,8 +58,12 @@ class CreateCoursesTables extends Migration
             $table->time('start_time');
             $table->time('end_time');
             $table->foreignId('class_hall_id')->nullable()->constrained('class_halls')->nullOnDelete();
-            $table->enum('status', ['scheduled', 'cancelled'])->default('scheduled');
+            // scheduled -> ongoing (first attendance) -> completed (after end time)
+            // scheduled -> cancelled (by an admin, or no attendance by the end time)
+            $table->enum('status', ['scheduled', 'ongoing', 'completed', 'cancelled'])->default('scheduled');
             $table->string('cancel_reason', 255)->nullable();
+            $table->foreignId('cancelled_by')->nullable()->constrained('users')->nullOnDelete();
+            $table->timestamp('cancelled_at')->nullable();
             $table->timestamps();
 
             $table->unique(['course_id', 'session_date']);

@@ -11,7 +11,7 @@ use Illuminate\Validation\ValidationException;
 
 class CourseAttendanceService
 {
-    public function __construct(private CourseFeeService $fees)
+    public function __construct(private CourseSessionService $sessions)
     {
     }
 
@@ -22,12 +22,12 @@ class CourseAttendanceService
      */
     public function mark(CourseSession $session, Student $student, string $markMethod, ?int $userId = null): array
     {
-        if ($session->isCancelled()) {
-            throw ValidationException::withMessages(['session' => 'This session is cancelled.']);
-        }
-
-        if ($session->session_date->toDateString() > now()->toDateString()) {
-            throw ValidationException::withMessages(['session' => 'This session has not started yet.']);
+        if (!$session->canMarkAttendance()) {
+            throw ValidationException::withMessages(['session' => match (true) {
+                $session->status === 'cancelled' => 'This class day is cancelled.',
+                $session->status === 'completed' => 'This class day is over.',
+                default => 'This class day has not come yet.',
+            }]);
         }
 
         $enrollment = CourseEnrollment::query()
@@ -50,6 +50,8 @@ class CourseAttendanceService
         if ($existing) {
             return ['attendance' => $existing, 'enrollment' => $enrollment, 'already_marked' => true];
         }
+
+        $this->sessions->start($session);
 
         $attendance = CourseAttendance::create([
             'course_session_id' => $session->id,
@@ -91,8 +93,7 @@ class CourseAttendanceService
     {
         $held = CourseSession::query()
             ->where('course_id', $enrollment->course_id)
-            ->where('status', 'scheduled')
-            ->whereDate('session_date', '<=', now()->toDateString())
+            ->whereIn('status', ['ongoing', 'completed'])
             ->count();
 
         $attended = $enrollment->attendances()->count();

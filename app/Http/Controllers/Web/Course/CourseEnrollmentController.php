@@ -10,8 +10,8 @@ use App\Models\Student;
 use App\Services\Course\CourseAttendanceService;
 use App\Services\Course\CourseEnrollmentService;
 use App\Services\Course\CourseFeeService;
+use App\Services\Course\CourseStudentLookup;
 use Illuminate\Http\Request;
-use Illuminate\Validation\ValidationException;
 
 class CourseEnrollmentController extends Controller
 {
@@ -31,14 +31,7 @@ class CourseEnrollmentController extends Controller
             'note' => ['nullable', 'string', 'max:500'],
         ]);
 
-        $code = trim($data['student_code']);
-        $student = Student::query()
-            ->where(fn ($q) => $q->where('custom_id', $code)->orWhere('temporary_qr_code', $code))
-            ->first();
-
-        if (!$student || !in_array((int) $student->branch_id, $this->branchIds(), true)) {
-            throw ValidationException::withMessages(['student_code' => "No student found for \"{$code}\"."]);
-        }
+        $student = app(CourseStudentLookup::class)->find($data['student_code'], $this->branchIds());
 
         $enrollment = $this->enrollments->enroll($course, $student, $data['payment_plan'], auth()->id(), $data['note'] ?? null);
 

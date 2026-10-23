@@ -9,6 +9,8 @@ use App\Models\CourseEnrollment;
 use App\Models\CourseSession;
 use App\Models\Student;
 use App\Services\Course\CourseAttendanceService;
+use App\Services\Course\CourseSessionService;
+use App\Services\Course\CourseStudentLookup;
 use Illuminate\Http\Request;
 use Illuminate\Validation\ValidationException;
 
@@ -40,7 +42,7 @@ class CourseSessionController extends Controller
             'session' => $courseSession->load('hall:id,hall_name'),
             'students' => $students,
             'marked' => $marked,
-            'canMark' => !$courseSession->isCancelled() && $courseSession->session_date->lte(today()),
+            'canMark' => $courseSession->canMarkAttendance(),
         ]);
     }
 
@@ -54,14 +56,8 @@ class CourseSessionController extends Controller
         ]);
 
         $student = !empty($data['student_id'])
-            ? Student::find($data['student_id'])
-            : Student::query()
-                ->where(fn ($q) => $q->where('custom_id', trim($data['student_code']))->orWhere('temporary_qr_code', trim($data['student_code'])))
-                ->first();
-
-        if (!$student) {
-            throw ValidationException::withMessages(['student_code' => 'No student found for this ID / QR.']);
-        }
+            ? Student::findOrFail($data['student_id'])
+            : app(CourseStudentLookup::class)->find($data['student_code'], $this->branchIds());
 
         $result = $this->attendance->mark(
             $courseSession,
@@ -88,8 +84,8 @@ class CourseSessionController extends Controller
         return back()->with('success', 'Attendance removed.');
     }
 
-    /** Cancel a class day (e.g. holiday) or bring it back. */
-    public function status(Request $request, Course $course, CourseSession $courseSession)
+    /** Cancel a class day (e.g. holiday; parents are told) or bring it back. */
+    public function status(Request $request, Course $course, CourseSession $courseSession, CourseSessionService $sessions)
     {
         $this->checkCourse($course, (int) $courseSession->course_id);
 
@@ -98,15 +94,14 @@ class CourseSessionController extends Controller
             'cancel_reason' => ['nullable', 'string', 'max:255'],
         ]);
 
-        if ($data['status'] === 'cancelled' && $courseSession->attendances()->exists()) {
-            throw ValidationException::withMessages(['status' => 'Students are already marked for this day. Remove them first.']);
+        if ($data['status'] === 'scheduled') {
+            $sessions->restore($courseSession);
+
+            return back()->with('success', 'Class day restored.');
         }
 
-        $courseSession->update([
-            'status' => $data['status'],
-            'cancel_reason' => $data['status'] === 'cancelled' ? ($data['cancel_reason'] ?? null) : null,
-        ]);
+        $told = $sessions->cancel($courseSession, $data['cancel_reason'] ?? null, auth()->id());
 
-        return back()->with('success', $data['status'] === 'cancelled' ? 'Class day cancelled.' : 'Class day restored.');
+        return back()->with('success', 'Class day cancelled.' . ($told ? " {$told} parent(s) will be told." : ''));
     }
 }

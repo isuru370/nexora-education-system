@@ -1,7 +1,9 @@
 <?php
 
 use App\Http\Controllers\Web\Course\CourseController;
+use App\Http\Controllers\Web\Course\CourseDeskController;
 use App\Http\Controllers\Web\Course\CourseEnrollmentController;
+use App\Http\Controllers\Web\Course\CourseReportController;
 use App\Http\Controllers\Web\Course\CoursePaymentController;
 use App\Http\Controllers\Web\Course\CourseSessionController;
 use App\Http\Controllers\Web\Course\CourseTeacherPaymentController;
@@ -19,6 +21,11 @@ Route::middleware(['auth', 'user.active', 'feature:courses'])->group(function ()
     // Staff: view courses, enroll, take payments, mark attendance
     Route::middleware('role:ADMIN,BRANCH_ADMIN,USER')->group(function () {
         Route::get('courses', [CourseController::class, 'index'])->name('courses.index');
+
+        // Front desk: scan a student / today's class days
+        Route::get('course-desk/enroll', [CourseDeskController::class, 'enroll'])->name('course-desk.enroll');
+        Route::get('course-desk/payment', [CourseDeskController::class, 'payment'])->name('course-desk.payment');
+        Route::get('course-desk/attendance', [CourseDeskController::class, 'attendance'])->name('course-desk.attendance');
 
         Route::get('course-payments', [CoursePaymentController::class, 'index'])->name('course-payments.index');
         Route::get('course-payments/{coursePayment}/receipt', [CoursePaymentController::class, 'receipt'])
@@ -47,7 +54,14 @@ Route::middleware(['auth', 'user.active', 'feature:courses'])->group(function ()
         Route::get('courses/create', [CourseController::class, 'create'])->name('courses.create');
         Route::post('courses', [CourseController::class, 'store'])->name('courses.store');
 
+        Route::get('course-reports/{type}', [CourseReportController::class, 'show'])
+            ->where('type', 'daily|monthly|yearly|courses')->name('course-reports.show');
+
         Route::get('course-teacher-payments', [CourseTeacherPaymentController::class, 'index'])->name('course-teacher-payments.index');
+        Route::get('course-teacher-payments/{teacher}', [CourseTeacherPaymentController::class, 'show'])
+            ->whereNumber('teacher')->name('course-teacher-payments.show');
+        Route::get('course-teacher-payouts/{courseTeacherPayout}/slip', [CourseTeacherPaymentController::class, 'slip'])
+            ->whereNumber('courseTeacherPayout')->name('course-teacher-payouts.slip');
         Route::patch('course-payments/{coursePayment}/cancel', [CoursePaymentController::class, 'cancel'])
             ->whereNumber('coursePayment')->name('course-payments.cancel');
 

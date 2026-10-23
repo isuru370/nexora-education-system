@@ -14,7 +14,7 @@
             <div class="hero-left">
                 <span class="greeting-badge">{{ $course->name }}</span>
                 <h1 class="hero-title">{{ $session->session_date->format('l, d M Y') }}</h1>
-                <p class="hero-subtitle">{{ \Carbon\Carbon::parse($session->start_time)->format('h:i A') }} – {{ \Carbon\Carbon::parse($session->end_time)->format('h:i A') }} @if ($session->hall) · {{ $session->hall->hall_name }} @endif</p>
+                <p class="hero-subtitle">@include('courses.partials.status-badge', ['status' => $session->status]) {{ \Carbon\Carbon::parse($session->start_time)->format('h:i A') }} – {{ \Carbon\Carbon::parse($session->end_time)->format('h:i A') }} @if ($session->hall) · {{ $session->hall->hall_name }} @endif</p>
                 <div class="hero-stats-mini">
                     <div class="mini-stat"><span class="mini-stat-value">{{ $present }}</span><span class="mini-stat-label">Present</span></div>
                     <div class="mini-stat-divider"></div>
@@ -33,6 +33,8 @@
 
     @if ($session->isCancelled())
         <div class="nx-alert nx-alert-red mb-4"><i class="bi bi-x-circle-fill"></i><span>This class day is cancelled{{ $session->cancel_reason ? ': ' . $session->cancel_reason : '' }}.</span></div>
+    @elseif ($session->status === 'completed')
+        <div class="nx-alert nx-alert-blue mb-4"><i class="bi bi-check-circle-fill"></i><span>This class day is completed.</span></div>
     @elseif (!$canMark)
         <div class="nx-alert nx-alert-blue mb-4"><i class="bi bi-info-circle-fill"></i><span>Attendance can be marked from this day on.</span></div>
     @else

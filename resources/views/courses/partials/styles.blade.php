@@ -29,6 +29,11 @@
     .dashboard-page .inline-form > div { min-width: 160px; }
     .dashboard-page .scan-box { font-size: 1.1rem; padding: .8rem 1rem; }
     .dashboard-page tr.row-muted td { opacity: .55; }
+    .dashboard-page .student-strip { display: flex; gap: .8rem; align-items: center; padding: .75rem 1rem; border-radius: 10px; background: var(--nx-head-bg); }
+    .dashboard-page .student-avatar { width: 42px; height: 42px; border-radius: 50%; background: var(--nx-blue-soft); color: var(--nx-blue); display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0; }
+    .dashboard-page .desk-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 1rem; }
+    .dashboard-page .desk-card { border: 1px solid var(--nx-border); border-radius: var(--nx-radius); padding: 1rem; background: var(--nx-card-bg); display: flex; flex-direction: column; gap: .6rem; }
+    .dashboard-page .desk-card h6 { margin: 0; font-weight: 700; }
     @media (max-width: 576px) {
         .dashboard-page .share-row { grid-template-columns: 1fr 100px 40px; }
         .dashboard-page .kv { grid-template-columns: 1fr; gap: .1rem; }

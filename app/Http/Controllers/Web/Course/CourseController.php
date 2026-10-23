@@ -94,8 +94,8 @@ class CourseController extends Controller
             'collected' => round((float) $payments->where('status', 'completed')->sum('amount'), 2),
             'balance' => round($active->sum(fn ($row) => $row['fees']['balance']), 2),
             'overdue' => round($active->sum(fn ($row) => $row['fees']['overdue']), 2),
-            'sessions' => $sessions->where('status', 'scheduled')->count(),
-            'held' => $sessions->where('status', 'scheduled')->filter(fn ($s) => $s->session_date->lte(today()))->count(),
+            'sessions' => $sessions->where('status', '!=', 'cancelled')->count(),
+            'held' => $sessions->whereIn('status', ['ongoing', 'completed'])->count(),
         ];
 
         return view('courses.show', compact('course', 'enrollments', 'sessions', 'payments', 'teachers', 'instituteEarned', 'payouts', 'stats'));
