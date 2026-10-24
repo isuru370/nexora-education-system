@@ -12,6 +12,11 @@
         'Extra Income'      => ['nx-badge-amber',  'bi-cash'],
     ];
 
+    // Course payments only for institutes with the "courses" feature
+    if (feature('courses')) {
+        $typeStyles['Course Payment'] = ['nx-badge-violet', 'bi-mortarboard-fill'];
+    }
+
     $hasFilters = request()->hasAny(['receipt_number', 'type', 'from_date', 'to_date'])
         && collect(request()->only(['receipt_number', 'type', 'from_date', 'to_date']))->filter()->isNotEmpty();
 @endphp

@@ -4,6 +4,8 @@ namespace App\Services\Api\Auth;
 
 use App\Models\Branch;
 use App\Models\User;
+use App\Support\CardMode;
+use App\Support\Features;
 use Illuminate\Support\Collection;
 
 /**
@@ -102,6 +104,10 @@ class MobileSessionService
                 'custom_id' => $teacher->custom_id,
                 'full_name' => $teacher->full_name,
             ] : null,
+            // Optional features on for this institute (same as GET /api/features)
+            'features' => (object) Features::all(),
+            // How this institute gives ID cards: permanent / temporary
+            'card_mode' => CardMode::get(),
         ];
     }
 

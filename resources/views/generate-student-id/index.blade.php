@@ -61,7 +61,7 @@
                     <i class="bi bi-inbox fs-1 d-block mb-3 text-muted"></i>
                     <strong class="d-block mb-2">No Students Found</strong>
                     <span class="cell-sub">
-                        {{ request('search') ? 'No matching students found.' : 'Please add students first.' }}
+                        {{ request('search') ? 'No matching students found.' : 'Every active student already has a permanent ID card.' }}
                     </span>
                 </div>
             </div>

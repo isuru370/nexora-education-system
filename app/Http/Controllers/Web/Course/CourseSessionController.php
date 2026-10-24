@@ -1,0 +1,142 @@
+<?php
+
+namespace App\Http\Controllers\Web\Course;
+
+use App\Http\Controllers\Controller;
+use App\Models\Course;
+use App\Models\CourseAttendance;
+use App\Models\CourseEnrollment;
+use App\Models\CourseSession;
+use App\Models\Student;
+use App\Services\Course\CourseAttendanceService;
+use App\Services\Course\CourseSessionService;
+use App\Services\Course\CourseStudentLookup;
+use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
+use Illuminate\Validation\ValidationException;
+
+class CourseSessionController extends Controller
+{
+    use ChecksCourseBranch;
+
+    public function __construct(private CourseAttendanceService $attendance)
+    {
+    }
+
+    /** One class day: who came, who did not, and a box to mark by student ID / QR. */
+    public function show(Course $course, CourseSession $courseSession)
+    {
+        $this->checkCourse($course, (int) $courseSession->course_id);
+
+        $marked = $courseSession->attendances()->with(['student:id,custom_id,initial_name', 'markedBy:id,name'])->get()->keyBy('student_id');
+
+        $students = CourseEnrollment::query()
+            ->with('student:id,custom_id,initial_name,mobile')
+            ->where('course_id', $course->id)
+            ->where('status', 'active')
+            ->get()
+            ->sortBy(fn ($e) => $e->student->initial_name ?? '')
+            ->values();
+
+        $halls = \App\Models\ClassHall::where('branch_id', $course->branch_id)->where('is_active', true)->orderBy('hall_name')->get(['id', 'hall_name']);
+
+        return view('courses.session', [
+            'halls' => $halls,
+            'course' => $course,
+            'session' => $courseSession->load('hall:id,hall_name'),
+            'students' => $students,
+            'marked' => $marked,
+            'canMark' => $courseSession->canMarkAttendance(),
+        ]);
+    }
+
+    public function mark(Request $request, Course $course, CourseSession $courseSession)
+    {
+        $this->checkCourse($course, (int) $courseSession->course_id);
+
+        $data = $request->validate([
+            'student_code' => ['required_without:student_id', 'nullable', 'string', 'max:150'],
+            'student_id' => ['nullable', 'integer'],
+        ]);
+
+        $student = !empty($data['student_id'])
+            ? Student::findOrFail($data['student_id'])
+            : app(CourseStudentLookup::class)->find($data['student_code'], $this->branchIds());
+
+        $result = $this->attendance->mark(
+            $courseSession,
+            $student,
+            !empty($data['student_id']) ? 'manual_web' : 'qr_web',
+            auth()->id()
+        );
+
+        $name = $student->initial_name ?: $student->custom_id;
+
+        return back()->with(
+            $result['already_marked'] ? 'warning' : 'success',
+            $result['already_marked'] ? "{$name} was already marked." : "{$name} marked present."
+        );
+    }
+
+    public function unmark(Course $course, CourseSession $courseSession, CourseAttendance $courseAttendance)
+    {
+        $this->checkCourse($course, (int) $courseSession->course_id);
+        abort_unless((int) $courseAttendance->course_session_id === (int) $courseSession->id, 404);
+
+        $this->attendance->remove($courseAttendance);
+
+        return back()->with('success', 'Attendance removed.');
+    }
+
+    /** Admin: an extra class day. */
+    public function store(Request $request, Course $course, CourseSessionService $sessions)
+    {
+        $this->checkCourse($course);
+
+        $result = $sessions->add($course, $this->dayData($request, $course));
+
+        return redirect()->to(route('courses.show', $course) . '#sessions')
+            ->with('success', 'Class day added for ' . $result['session']->session_date->format('d M Y') . '.' . ($result['told'] ? " {$result['told']} parent(s) will be told." : ''));
+    }
+
+    /** Admin: change one class day's date, time or hall. */
+    public function update(Request $request, Course $course, CourseSession $courseSession, CourseSessionService $sessions)
+    {
+        $this->checkCourse($course, (int) $courseSession->course_id);
+
+        $told = $sessions->edit($courseSession, $this->dayData($request, $course));
+
+        return back()->with('success', 'Class day changed.' . ($told ? " {$told} parent(s) will be told." : ''));
+    }
+
+    protected function dayData(Request $request, Course $course): array
+    {
+        return $request->validate([
+            'session_date' => ['required', 'date'],
+            'start_time' => ['required', 'date_format:H:i'],
+            'end_time' => ['required', 'date_format:H:i', 'after:start_time'],
+            'class_hall_id' => ['nullable', 'integer', Rule::exists('class_halls', 'id')->where('branch_id', $course->branch_id)],
+        ], ['end_time.after' => 'The end time must be after the start time.']);
+    }
+
+    /** Cancel a class day (e.g. holiday; parents are told) or bring it back. */
+    public function status(Request $request, Course $course, CourseSession $courseSession, CourseSessionService $sessions)
+    {
+        $this->checkCourse($course, (int) $courseSession->course_id);
+
+        $data = $request->validate([
+            'status' => ['required', 'in:scheduled,cancelled'],
+            'cancel_reason' => ['nullable', 'string', 'max:255'],
+        ]);
+
+        if ($data['status'] === 'scheduled') {
+            $sessions->restore($courseSession);
+
+            return back()->with('success', 'Class day restored.');
+        }
+
+        $told = $sessions->cancel($courseSession, $data['cancel_reason'] ?? null, auth()->id());
+
+        return back()->with('success', 'Class day cancelled.' . ($told ? " {$told} parent(s) will be told." : ''));
+    }
+}

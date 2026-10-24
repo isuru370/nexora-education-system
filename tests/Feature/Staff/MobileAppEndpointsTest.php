@@ -97,7 +97,10 @@ class MobileAppEndpointsTest extends TestCase
 
         // ---- registration
         $grade = DB::table('grades')->value('id');
+        // each institute registers one way (nexora:card-mode); try both here
+        \App\Support\CardMode::set('temporary');
         $reg = $call('student (temporary)', 'POST', '/api/student', ['branch_id' => $b1, 'temporary_qr_code' => 'TMP001', 'quick_image_id' => 'QP001', 'initial_name' => 'K. Perera', 'guardian_mobile' => '0771234567', 'grade_id' => $grade, 'gender' => 'male', 'admission_id' => $adm]);
+        \App\Support\CardMode::set('permanent');
         $call('student-new (card)', 'POST', '/api/student-new', ['branch_id' => $b1, 'card_qr_code' => 'NXCMB0002', 'quick_image_id' => 'QP002', 'initial_name' => 'L. Perera', 'guardian_mobile' => '0771234567', 'grade_id' => $grade, 'gender' => 'female', 'admission_id' => $adm]);
         $newId = $reg['student']['id'] ?? null;
         $call('admission payments', 'GET', '/api/admission-payments');

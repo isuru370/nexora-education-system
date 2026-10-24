@@ -1,5 +1,7 @@
 <?php
 
+use App\Support\CardAccess;
+
 use App\Http\Controllers\Api\Admission\AdmissionPaymentController;
 use App\Http\Controllers\Api\Attendance\AttendanceReportController;
 use App\Http\Controllers\Api\Attendance\AttendanceScheduleController;
@@ -75,6 +77,12 @@ Route::middleware([
         '/logout',
         [LoginController::class, 'logout']
     )->name('api.logout');
+
+    // Optional features on for this institute (show / hide app menus)
+    Route::get(
+        '/features',
+        [\App\Http\Controllers\Api\Feature\FeatureController::class, 'index']
+    )->name('api.features');
 });
 
 
@@ -109,7 +117,7 @@ Route::middleware([
     Route::post(
         '/re-assign',
         [StudentCardController::class, 'reAssign']
-    )->name('api.card.reassign');
+    )->name('api.card.reassign')->middleware('role:' . CardAccess::MANAGE_ROLES);
 
 
     /*
@@ -123,13 +131,13 @@ Route::middleware([
     Route::post(
         '/student',
         [StudentTemporaryRegistrationController::class, 'store']
-    )->name('api.QuickStudentStore');
+    )->name('api.QuickStudentStore')->middleware('card.mode:temporary');
 
     // Register a student with a permanent student card
     Route::post(
         '/student-new',
         [StudentPermanentRegistrationController::class, 'store']
-    )->name('api.student.store');
+    )->name('api.student.store')->middleware('card.mode:permanent');
 
     Route::get(
         '/students',
@@ -594,3 +602,31 @@ Route::middleware([
             [TeacherProfileController::class, 'changePassword']
         )->name('profile.change-password');
     });
+
+/*
+|--------------------------------------------------------------------------
+| Staff app: Courses (feature "courses" - 404 when it is off)
+|--------------------------------------------------------------------------
+| See App\Http\Controllers\Api\Course\CourseController for the screens.
+*/
+
+Route::middleware([
+    'auth:sanctum',
+    'user.active',
+    'role:ADMIN,BRANCH_ADMIN,USER',
+    'staff.branch',
+    'feature:courses',
+])->prefix('courses')->name('api.courses.')->controller(\App\Http\Controllers\Api\Course\CourseController::class)->group(function () {
+    Route::get('/', 'index')->name('index');
+
+    // Course Attendance
+    Route::get('sessions', 'sessions')->name('sessions');
+    Route::post('sessions/{courseSession}/attendance', 'markAttendance')->whereNumber('courseSession')->name('sessions.attendance');
+    Route::get('sessions/{courseSession}/report', 'sessionReport')->whereNumber('courseSession')->name('sessions.report');
+
+    // Course Payment / enrolling
+    Route::post('student', 'student')->name('student');
+    Route::post('{course}/enroll', 'enroll')->whereNumber('course')->name('enroll');
+    Route::post('enrollments/{courseEnrollment}/pay', 'pay')->whereNumber('courseEnrollment')->name('pay');
+    Route::get('payments/{coursePayment}/receipt', 'receipt')->whereNumber('coursePayment')->name('receipt');
+});

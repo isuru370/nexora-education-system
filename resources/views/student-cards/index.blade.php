@@ -153,17 +153,21 @@
 
 
 
+                    @cardaccess('generate')
                     <a href="{{ route('student-cards.generate') }}" class="btn btn-primary custom-btn">
                         <i class="bi bi-plus-circle"></i>
                         Generate Cards
                     </a>
+                    @endcardaccess
 
 
 
+                    @cardaccess('download')
                     <a href="{{ route('student-cards.preview') }}" class="btn btn-success custom-btn">
                         <i class="bi bi-eye"></i>
                         Preview
                     </a>
+                    @endcardaccess
 
                 </div>
 
@@ -419,13 +423,13 @@
                                                 There are no student cards available.
                                             </p>
 
-                                            @can('generate_cards')
+                                            @cardaccess('generate')
                                                 <a href="{{ route('student-cards.generate') }}"
                                                     class="btn btn-primary custom-btn mt-3">
                                                     <i class="bi bi-plus-circle"></i>
                                                     Generate Cards
                                                 </a>
-                                            @endcan
+                                            @endcardaccess
                                         </div>
                                     </td>
                                 </tr>

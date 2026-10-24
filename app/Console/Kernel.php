@@ -29,6 +29,10 @@ class Kernel extends ConsoleKernel
 
         $schedule->command('class-schedules:complete-finished')
             ->everyMinute();
+
+        // Courses (does nothing when the "courses" feature is off)
+        $schedule->command('course-sessions:complete-finished')
+            ->everyMinute();
     }
 
     /**

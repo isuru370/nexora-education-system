@@ -2,6 +2,9 @@
 
 namespace App\Services\System;
 
+use App\Services\ParentHub\ParentHubService;
+use App\Support\CardMode;
+use App\Support\Features;
 use Illuminate\Contracts\Http\Kernel as HttpKernel;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
@@ -56,6 +59,7 @@ class DeployCheckService
         'personal_access_tokens',
         'activity_logs',
         'notification_settings',
+        'features',
     ];
 
     public const USER_TYPES = ['SUPER_ADMIN', 'ADMIN', 'BRANCH_ADMIN', 'USER', 'TEACHER'];
@@ -223,6 +227,18 @@ class DeployCheckService
             ? $this->fail(count($pending) . ' not run: ' . Str::limit(implode(', ', $pending), 160))
             : $this->ok('None');
 
+        $checks['Features'] = $this->safe(function () {
+            // Read fresh from the database (a restored backup may differ from the cache)
+            Features::flush();
+            $on = array_keys(array_filter(Features::all()));
+
+            return $this->ok($on
+                ? 'ON for this institute: ' . implode(', ', $on)
+                : 'None switched on (php artisan nexora:feature)');
+        });
+
+        $checks['Card mode'] = $this->cardMode();
+
         $checks['User roles'] = $this->safe(function () {
             $codes = DB::table('user_types')->pluck('code')->map(fn($c) => strtoupper($c));
             $missing = collect(self::USER_TYPES)->diff($codes);
@@ -344,7 +360,8 @@ class DeployCheckService
     public function httpSmokeTests(): array
     {
         $tests = [
-            'Page: home (/)' => ['GET', '/', [], [200], 'text/html'],
+            // product page on edu.nexorait.lk only; institutes redirect to login
+            'Page: home (/)' => ['GET', '/', [], Features::enabled('landing_page') ? [200] : [301, 302], 'text/html'],
             'Page: login' => ['GET', '/login', [], [200], 'text/html'],
             'API: protected route' => ['GET', '/api/me', [], [401], 'application/json'],
             'API: wrong login' => ['POST', '/api/login', ['email' => 'deploy-check@invalid.local', 'password' => 'wrong-password', 'device_name' => 'deploy-check'], [401, 403, 422], 'application/json'],
@@ -373,6 +390,70 @@ class DeployCheckService
     | Helpers
     |--------------------------------------------------------------------------
     */
+
+    /** How students get ID cards here (php artisan nexora:card-mode). */
+    public function cardMode(): array
+    {
+        return $this->safe(function () {
+            CardMode::flush();
+            $mode = strtoupper(CardMode::get());
+
+            return CardMode::isSet()
+                ? $this->ok($mode . ' - ' . CardMode::label())
+                : $this->warn("Not set, using {$mode}. Choose one: php artisan nexora:card-mode permanent|temporary");
+        });
+    }
+
+    /** Parent Hub settings in .env (no call to the hub). */
+    public function parentHubSettings(): array
+    {
+        $hub = app(ParentHubService::class);
+        $missing = $hub->missingSettings();
+
+        if ($missing) {
+            return $this->fail('Missing in .env: ' . implode(', ', $missing));
+        }
+
+        $url = (string) config('services.parent_hub.url');
+
+        if (!filter_var($url, FILTER_VALIDATE_URL)) {
+            return $this->fail('PARENT_HUB_URL is not a URL: ' . $url);
+        }
+
+        $notes = [];
+        if (!str_starts_with($url, 'https://')) {
+            $notes[] = 'PARENT_HUB_URL is not https';
+        }
+        if (blank(config('services.institute.contact_mobile'))) {
+            $notes[] = 'CONTACT_MOBILE is empty';
+        }
+
+        $text = config('services.institute.code') . ' -> ' . $url;
+
+        return $notes ? $this->warn($text . ' (' . implode(', ', $notes) . ')') : $this->ok($text);
+    }
+
+    /**
+     * Send this institute's details to the Parent Hub and confirm they were
+     * saved. Not reachable / refused = fail (parents could not log in).
+     */
+    public function parentHubSync(): array
+    {
+        return $this->safe(function () {
+            $result = app(ParentHubService::class)->syncInstitute();
+
+            if (!$result['ok']) {
+                return $this->fail($result['message']);
+            }
+
+            $payload = app(ParentHubService::class)->institutePayload();
+            $saved = $result['data'] ?? [];
+
+            return $this->ok('Saved: ' . ($saved['code'] ?? $payload['institute_code'])
+                . ' - ' . ($saved['name'] ?? $payload['institute_name'])
+                . ' (' . $payload['api_url'] . ')');
+        });
+    }
 
     public function ok(string $message): array
     {

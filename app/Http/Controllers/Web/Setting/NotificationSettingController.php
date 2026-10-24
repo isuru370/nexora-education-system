@@ -18,6 +18,7 @@ class NotificationSettingController extends Controller
     {
         $settings = NotificationSetting::query()
             ->with('updatedBy:id,name')
+            ->when(!feature('courses'), fn ($q) => $q->whereNotIn('key', NotificationSetting::COURSE_KEYS))
             ->orderBy('sort_order')
             ->get();
 

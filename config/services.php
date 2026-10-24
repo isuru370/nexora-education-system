@@ -62,6 +62,9 @@ return [
 
         'name' => env('INSTITUTE_NAME'),
 
+        // Path under public/ (or a full URL) - sent to the Parent Hub
+        'logo' => env('INSTITUTE_LOGO'),
+
         'contact_email' => env('CONTACT_EMAIL'),
 
         'contact_mobile' => env('CONTACT_MOBILE'),

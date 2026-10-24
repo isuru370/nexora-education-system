@@ -50,8 +50,10 @@
             $canUsers = $isAdmin;
 
             $canStudentImages = $isTeacher;
-            $canStudentCards = $isUser;
-            $canTemporaryIdCards = $isUser;
+            // ID cards: App\Support\CardAccess (roles) + CardMode (nexora:card-mode)
+            $canStudentCards = \App\Support\CardAccess::canView();
+            $canTemporaryIdCards = $canStudentCards && \App\Support\CardMode::temporary();
+            $canGenerateStudentId = \App\Support\CardAccess::canDownload() && \App\Support\CardMode::temporary();
 
             $canStudentClasses = $isTeacher;
             $canClassSchedules = $isTeacher;
@@ -266,7 +268,7 @@
                 </div>
             @endif
 
-            @if ($canStudentCards)
+            @if ($canTemporaryIdCards)
                 <div class="nav-item">
                     <button type="button"
                         class="nav-link-custom {{ request()->routeIs('temporary_id_cards.*') ? 'active' : '' }}"
@@ -277,7 +279,7 @@
                 </div>
             @endif
 
-            @if ($canStudentCards)
+            @if ($canGenerateStudentId)
                 <div class="nav-item">
                     <button type="button"
                         class="nav-link-custom {{ request()->routeIs('generate-student-id.*') ? 'active' : '' }}"
@@ -328,6 +330,76 @@
                 </div>
             @endif
         </div>
+
+
+        <!-- COURSES (feature "courses": only institutes that have it) -->
+        @feature('courses')
+            @if ($isUser)
+                <div class="sidebar-section">
+                    <div class="sidebar-section-title">COURSES</div>
+
+                    <div class="nav-item">
+                        <button type="button"
+                            class="nav-link-custom {{ request()->routeIs('courses.*') ? 'active' : '' }}"
+                            data-route="courses.index" data-href="{{ route('courses.index') }}">
+                            <i class="bi bi-mortarboard-fill"></i>
+                            <span>Courses</span>
+                        </button>
+                    </div>
+                    <div class="nav-item">
+                        <button type="button"
+                            class="nav-link-custom {{ request()->routeIs('course-desk.enroll') ? 'active' : '' }}"
+                            data-route="course-desk.enroll" data-href="{{ route('course-desk.enroll') }}">
+                            <i class="bi bi-person-plus-fill"></i>
+                            <span>Course Enrollment</span>
+                        </button>
+                    </div>
+                    <div class="nav-item">
+                        <button type="button"
+                            class="nav-link-custom {{ request()->routeIs('course-desk.attendance') ? 'active' : '' }}"
+                            data-route="course-desk.attendance" data-href="{{ route('course-desk.attendance') }}">
+                            <i class="bi bi-person-check-fill"></i>
+                            <span>Course Attendance</span>
+                        </button>
+                    </div>
+                    <div class="nav-item">
+                        <button type="button"
+                            class="nav-link-custom {{ request()->routeIs('course-desk.payment') ? 'active' : '' }}"
+                            data-route="course-desk.payment" data-href="{{ route('course-desk.payment') }}">
+                            <i class="bi bi-cash-coin"></i>
+                            <span>Course Payment</span>
+                        </button>
+                    </div>
+                    <div class="nav-item">
+                        <button type="button"
+                            class="nav-link-custom {{ request()->routeIs('course-payments.*') ? 'active' : '' }}"
+                            data-route="course-payments.index" data-href="{{ route('course-payments.index') }}">
+                            <i class="bi bi-receipt-cutoff"></i>
+                            <span>Course Payments History</span>
+                        </button>
+                    </div>
+
+                    @if ($isBranchAdmin)
+                    <div class="nav-item">
+                        <button type="button"
+                            class="nav-link-custom {{ request()->routeIs('course-teacher-payments.*') ? 'active' : '' }}"
+                            data-route="course-teacher-payments.index" data-href="{{ route('course-teacher-payments.index') }}">
+                            <i class="bi bi-person-badge-fill"></i>
+                            <span>Course Teacher Payments</span>
+                        </button>
+                    </div>
+                    <div class="nav-item">
+                        <button type="button"
+                            class="nav-link-custom {{ request()->routeIs('course-reports.*') ? 'active' : '' }}"
+                            data-route="course-reports.show" data-href="{{ route('course-reports.show', "daily") }}">
+                            <i class="bi bi-bar-chart-fill"></i>
+                            <span>Course Reports</span>
+                        </button>
+                    </div>
+                    @endif
+                </div>
+            @endif
+        @endfeature
 
 
         <!-- EXAM -->

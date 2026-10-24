@@ -73,10 +73,12 @@
             </div>
 
             <div class="header-buttons">
+                @cardaccess('generate')
                 <a href="{{ route('student-cards.generate') }}" class="btn btn-primary custom-btn">
                     <i class="bi bi-plus-circle"></i>
                     Generate Cards
                 </a>
+                @endcardaccess
 
                 <a href="{{ route('student-cards.index') }}" class="btn btn-light border custom-btn">
                     <i class="bi bi-arrow-left"></i>
@@ -219,9 +221,11 @@
                                     <i class="bi bi-inbox"></i>
                                     <h5>No Available Cards Found</h5>
                                     <p>Generate new cards or change your search criteria.</p>
+                                    @cardaccess('generate')
                                     <a href="{{ route('student-cards.generate') }}" class="btn btn-primary custom-btn mt-3">
                                         <i class="bi bi-plus-circle"></i> Generate Cards Now
                                     </a>
+                                    @endcardaccess
                                 </div>
                             </td>
                         </tr>

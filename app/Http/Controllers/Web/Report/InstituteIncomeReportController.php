@@ -25,7 +25,7 @@ class InstituteIncomeReportController extends Controller
 
     public function index(InstituteIncomeReportRequest $request, string $tab = 'summary')
     {
-        abort_unless(array_key_exists($tab, InstituteIncomeReportService::TABS), 404);
+        abort_unless(array_key_exists($tab, InstituteIncomeReportService::tabs()), 404);
 
         try {
             $filter = $this->makeFilter($request);
@@ -35,7 +35,7 @@ class InstituteIncomeReportController extends Controller
 
         return view('reports.institute-income', [
             'tab' => $tab,
-            'tabs' => InstituteIncomeReportService::TABS,
+            'tabs' => InstituteIncomeReportService::tabs(),
             'filter' => $filter,
             'summary' => $this->reportService->summary($filter),
             'table' => $this->reportService->table($tab),
@@ -47,14 +47,14 @@ class InstituteIncomeReportController extends Controller
 
     public function export(InstituteIncomeReportRequest $request, string $tab, string $format)
     {
-        abort_unless(array_key_exists($tab, InstituteIncomeReportService::TABS), 404);
+        abort_unless(array_key_exists($tab, InstituteIncomeReportService::tabs()), 404);
         abort_unless(in_array($format, ['excel', 'pdf'], true), 404);
 
         try {
             $filter = $this->makeFilter($request);
             $rows = $this->reportService->rows($tab, $filter);
             $table = $this->reportService->table($tab);
-            $title = 'Institute Income - ' . InstituteIncomeReportService::TABS[$tab];
+            $title = 'Institute Income - ' . InstituteIncomeReportService::tabs()[$tab];
             $fileName = 'institute-income-' . $tab . '-' . $filter->from->format('Ymd') . '-' . $filter->to->format('Ymd');
             $info = [
                 'Date: ' . $filter->dateLabel(),
@@ -64,7 +64,7 @@ class InstituteIncomeReportController extends Controller
 
             if ($format === 'excel') {
                 return Excel::download(
-                    new TableReportExport($title, $info, $table, $rows, InstituteIncomeReportService::TABS[$tab]),
+                    new TableReportExport($title, $info, $table, $rows, InstituteIncomeReportService::tabs()[$tab]),
                     $fileName . '.xlsx'
                 );
             }

@@ -104,7 +104,7 @@
         @if (($showStudentCardWarning ?? false) || ($expiringStudentsCount ?? 0) > 0 || ($incompleteRegistrationCount ?? 0) > 0)
             <div class="alerts-row mb-4">
                 @if ($showStudentCardWarning ?? false)
-                    <a href="{{ route('student-cards.index') }}" class="nx-alert nx-alert-amber">
+                    <a href="{{ \App\Support\CardAccess::canView() ? route('student-cards.index') : '#' }}" class="nx-alert nx-alert-amber">
                         <i class="bi bi-person-vcard"></i>
                         <span>Student cards are running low: <strong>{{ $availableStudentCardCount ?? 0 }}</strong> left</span>
                         <i class="bi bi-chevron-right ms-auto"></i>
@@ -112,7 +112,7 @@
                 @endif
 
                 @if (($expiringStudentsCount ?? 0) > 0)
-                    <a href="{{ route('temporary_id_cards.index') }}" class="nx-alert nx-alert-red">
+                    <a href="{{ \App\Support\CardAccess::canView() && \App\Support\CardMode::temporary() ? route('temporary_id_cards.index') : route('students.index') }}" class="nx-alert nx-alert-red">
                         <i class="bi bi-qr-code"></i>
                         <span><strong>{{ $expiringStudentsCount }}</strong> temporary QR codes expire within 10 days</span>
                         <i class="bi bi-chevron-right ms-auto"></i>
@@ -188,10 +188,12 @@
         {{-- ===================================================== --}}
         <div class="quick-actions-section mb-4">
             <div class="quick-actions-grid">
-                <a href="{{ route('student-card-registration.create') }}" class="quick-action-btn">
+                @cardaccess('assign')
+                <a href="{{ \App\Support\CardMode::temporary() ? route('student-temporary-registration.create') : route('student-card-registration.create') }}" class="quick-action-btn">
                     <span class="qa-icon"><i class="bi bi-person-plus-fill"></i></span>
-                    <span class="qa-text"><span class="qa-title">Add Student</span><span class="qa-desc">New registration</span></span>
+                    <span class="qa-text"><span class="qa-title">Add Student</span><span class="qa-desc">{{ \App\Support\CardMode::temporary() ? 'Temporary card registration' : 'New registration' }}</span></span>
                 </a>
+                @endcardaccess
 
                 <a href="{{ route('new-payment.index') }}" class="quick-action-btn">
                     <span class="qa-icon"><i class="bi bi-credit-card-2-front-fill"></i></span>
@@ -479,7 +481,9 @@
                             <div class="nx-progress-fill bg-amber" style="width: {{ min(100, (($availableStudentCardCount ?? 0) / 50) * 100) }}%"></div>
                         </div>
                         <span class="cell-sub d-block mt-1">Reorder when stock reaches 20</span>
+                        @cardaccess('view')
                         <a href="{{ route('student-cards.index') }}" class="nx-link d-inline-block mt-2">Manage cards <i class="bi bi-arrow-right"></i></a>
+                        @endcardaccess
                     </div>
                 </div>
             </div>
