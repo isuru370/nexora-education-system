@@ -2,6 +2,8 @@
 
 namespace App\Services\System;
 
+use App\Services\ParentHub\ParentHubService;
+use App\Support\CardMode;
 use App\Support\Features;
 use Illuminate\Contracts\Http\Kernel as HttpKernel;
 use Illuminate\Http\Request;
@@ -235,6 +237,8 @@ class DeployCheckService
                 : 'None switched on (php artisan nexora:feature)');
         });
 
+        $checks['Card mode'] = $this->cardMode();
+
         $checks['User roles'] = $this->safe(function () {
             $codes = DB::table('user_types')->pluck('code')->map(fn($c) => strtoupper($c));
             $missing = collect(self::USER_TYPES)->diff($codes);
@@ -385,6 +389,70 @@ class DeployCheckService
     | Helpers
     |--------------------------------------------------------------------------
     */
+
+    /** How students get ID cards here (php artisan nexora:card-mode). */
+    public function cardMode(): array
+    {
+        return $this->safe(function () {
+            CardMode::flush();
+            $mode = strtoupper(CardMode::get());
+
+            return CardMode::isSet()
+                ? $this->ok($mode . ' - ' . CardMode::label())
+                : $this->warn("Not set, using {$mode}. Choose one: php artisan nexora:card-mode permanent|temporary");
+        });
+    }
+
+    /** Parent Hub settings in .env (no call to the hub). */
+    public function parentHubSettings(): array
+    {
+        $hub = app(ParentHubService::class);
+        $missing = $hub->missingSettings();
+
+        if ($missing) {
+            return $this->fail('Missing in .env: ' . implode(', ', $missing));
+        }
+
+        $url = (string) config('services.parent_hub.url');
+
+        if (!filter_var($url, FILTER_VALIDATE_URL)) {
+            return $this->fail('PARENT_HUB_URL is not a URL: ' . $url);
+        }
+
+        $notes = [];
+        if (!str_starts_with($url, 'https://')) {
+            $notes[] = 'PARENT_HUB_URL is not https';
+        }
+        if (blank(config('services.institute.contact_mobile'))) {
+            $notes[] = 'CONTACT_MOBILE is empty';
+        }
+
+        $text = config('services.institute.code') . ' -> ' . $url;
+
+        return $notes ? $this->warn($text . ' (' . implode(', ', $notes) . ')') : $this->ok($text);
+    }
+
+    /**
+     * Send this institute's details to the Parent Hub and confirm they were
+     * saved. Not reachable / refused = fail (parents could not log in).
+     */
+    public function parentHubSync(): array
+    {
+        return $this->safe(function () {
+            $result = app(ParentHubService::class)->syncInstitute();
+
+            if (!$result['ok']) {
+                return $this->fail($result['message']);
+            }
+
+            $payload = app(ParentHubService::class)->institutePayload();
+            $saved = $result['data'] ?? [];
+
+            return $this->ok('Saved: ' . ($saved['code'] ?? $payload['institute_code'])
+                . ' - ' . ($saved['name'] ?? $payload['institute_name'])
+                . ' (' . $payload['api_url'] . ')');
+        });
+    }
 
     public function ok(string $message): array
     {
