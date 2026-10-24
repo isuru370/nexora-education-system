@@ -21,8 +21,9 @@ or `✖ NOT READY FOR PRODUCTION` with a list of what to fix. Exit code is 0 / 1
 | 1. Server and .env | PHP version + extensions, APP_KEY, APP_ENV=production, APP_DEBUG=false, APP_URL (https), writable folders, database connection, mail, `public/storage` link (created if missing) |
 | 2. Database tables | Runs only the new migrations (`migrate --force`) and lists them |
 | 3. Basic data | First install only: roles, branch, super admin, grades, banks, class categories |
-| 4. Health checks | Core tables, roles, an active admin, a branch, every route → controller method exists, every controller starts, all views compile, storage + cache work, `/` and `/login` load, API returns 401 without login |
+| 4. Health checks | Core tables, features, **card mode** (warning until `nexora:card-mode` is run), roles, an active admin, a branch, every route → controller method exists, every controller starts, all views compile, storage + cache work, `/` and `/login` load, API returns 401 without login |
 | 5. Caches | `config:cache`, `route:cache`, `view:cache` |
+| 6. Parent Hub | Checks `PARENT_HUB_URL`, `PARENT_HUB_SECRET`, `INSTITUTE_CODE`, then sends this institute's details (code, name, `APP_URL`, contact email / mobile, logo, version) to the hub and confirms they were saved. Missing settings, a wrong secret or a hub that cannot be reached = **NOT READY** (parents could not log in). With `--check` nothing is sent. `php artisan parenthub:register` does only this step. |
 
 ### First install
 
@@ -34,7 +35,17 @@ APP_DEBUG=false
 APP_URL=https://your-domain.lk
 SUPER_ADMIN_USERNAME=admin@your-domain.lk
 SUPER_ADMIN_PASSWORD=a-strong-password
+
+INSTITUTE_CODE=SHEI                      # unique per institute, never change it later
+INSTITUTE_NAME="Savidya Higher Education Institute"
+CONTACT_EMAIL=info@your-domain.lk
+CONTACT_MOBILE=0771234567
+INSTITUTE_LOGO=logo/logo.png             # under public/ (or a full URL)
+PARENT_HUB_URL=https://hub.nexorait.lk/api/v1
+PARENT_HUB_SECRET=same-as-the-hub
 ```
+
+The `.env` is the master copy of the institute details: every deploy overwrites the name / contacts in the Parent Hub admin.
 
 then `php artisan key:generate` (only if `APP_KEY` is empty) and `php artisan nexora:deploy`.
 
