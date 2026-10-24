@@ -56,6 +56,12 @@ Route::post(
     [LoginController::class, 'login']
 )->middleware('throttle:10,1')->name('api.login');
 
+// Institute name / tagline / logo for the staff app (no login)
+Route::get(
+    '/institute',
+    [\App\Http\Controllers\Api\Institute\InstituteInfoController::class, 'show']
+)->middleware('throttle:60,1')->name('api.institute');
+
 /*
 |--------------------------------------------------------------------------
 | Any logged-in user (staff and teachers)
