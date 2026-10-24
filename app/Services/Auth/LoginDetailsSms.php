@@ -75,7 +75,7 @@ class LoginDetailsSms
         string $role,
         bool $reset = false
     ): string {
-        $institute = config('services.institute.name') ?: config('app.name');
+        $institute = \App\Support\InstituteInfo::name();
         $login = rtrim((string) config('app.url'), '/') . '/login';
 
         return implode("\n", [

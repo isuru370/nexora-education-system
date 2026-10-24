@@ -2,6 +2,7 @@
 
 namespace App\Services\ParentHub;
 
+use App\Support\InstituteInfo;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -100,18 +101,15 @@ class ParentHubService
     public function institutePayload(): array
     {
         $appUrl = rtrim((string) config('app.url'), '/');
-        $logo = (string) config('services.institute.logo');
 
         return [
             'secret_key' => config('services.parent_hub.secret'),
             'institute_code' => config('services.institute.code'),
-            'institute_name' => config('services.institute.name') ?: config('app.name'),
+            'institute_name' => InstituteInfo::name(),
             'api_url' => $appUrl,
             'contact_email' => config('services.institute.contact_email') ?: null,
             'contact_mobile' => config('services.institute.contact_mobile') ?: null,
-            'logo' => $logo === ''
-                ? null
-                : (preg_match('#^https?://#i', $logo) ? $logo : $appUrl . '/' . ltrim($logo, '/')),
+            'logo' => InstituteInfo::logoUrl(),
             'app_version' => config('app.version') ?: null,
         ];
     }
