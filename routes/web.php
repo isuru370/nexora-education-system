@@ -80,6 +80,7 @@ use App\Http\Controllers\Web\StudentClassEnrollment\StudentClassEnrollmentContro
 use App\Http\Controllers\Web\Teacher\TeacherController;
 use App\Http\Controllers\Web\TeacherSalary\TeacherSalaryController;
 use App\Http\Controllers\Web\TemporaryCard\TemporaryIDCardController;
+use App\Support\CardAccess;
 use Illuminate\Http\Request;
 
 use Illuminate\Support\Facades\Mail;
@@ -1309,7 +1310,7 @@ Route::prefix('student-cards')
         Route::get('/', [StudentCardController::class, 'index'])
             ->name('index')->middleware([
                 'auth',
-                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+                'role:' . CardAccess::VIEW_ROLES,
             ]);
 
         // Generate cards
@@ -1317,14 +1318,14 @@ Route::prefix('student-cards')
             ->name('generate')->middleware([
                 'auth',
                 'user.active',
-                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+                'role:' . CardAccess::GENERATE_ROLES,
             ]);
 
         Route::post('/generate', [StudentCardController::class, 'generateCards'])
             ->name('generate.store')->middleware([
                 'auth',
                 'user.active',
-                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+                'role:' . CardAccess::GENERATE_ROLES,
             ]);
 
         // Available cards
@@ -1332,7 +1333,7 @@ Route::prefix('student-cards')
             ->name('available')->middleware([
                 'auth',
                 'user.active',
-                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+                'role:' . CardAccess::VIEW_ROLES,
             ]);
 
         // Search cards
@@ -1340,7 +1341,7 @@ Route::prefix('student-cards')
             ->name('search')->middleware([
                 'auth',
                 'user.active',
-                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+                'role:' . CardAccess::VIEW_ROLES,
             ]);
 
         // Preview cards
@@ -1348,7 +1349,7 @@ Route::prefix('student-cards')
             ->name('preview')->middleware([
                 'auth',
                 'user.active',
-                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+                'role:' . CardAccess::DOWNLOAD_ROLES,
             ]);
 
         // Check current student card
@@ -1356,7 +1357,7 @@ Route::prefix('student-cards')
             ->name('check-current-card')->middleware([
                 'auth',
                 'user.active',
-                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+                'role:' . CardAccess::ASSIGN_ROLES,
             ]);
 
         // Assign card form
@@ -1364,7 +1365,7 @@ Route::prefix('student-cards')
             ->name('assign-form')->middleware([
                 'auth',
                 'user.active',
-                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+                'role:' . CardAccess::ASSIGN_ROLES,
             ]);
 
         // Assign card
@@ -1372,7 +1373,7 @@ Route::prefix('student-cards')
             ->name('assign')->middleware([
                 'auth',
                 'user.active',
-                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+                'role:' . CardAccess::ASSIGN_ROLES,
             ]);
 
         // Student card history
@@ -1380,7 +1381,7 @@ Route::prefix('student-cards')
             ->name('history')->middleware([
                 'auth',
                 'user.active',
-                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+                'role:' . CardAccess::VIEW_ROLES,
             ]);
 
         // Branch sequences
@@ -1390,7 +1391,7 @@ Route::prefix('student-cards')
         ])->name('branch-sequences')->middleware([
             'auth',
             'user.active',
-            'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+            'role:' . CardAccess::VIEW_ROLES,
         ]);
 
 
@@ -1399,7 +1400,7 @@ Route::prefix('student-cards')
             ->name('replace-form')->middleware([
                 'auth',
                 'user.active',
-                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+                'role:' . CardAccess::MANAGE_ROLES,
             ]);
 
         // Replace card
@@ -1407,7 +1408,7 @@ Route::prefix('student-cards')
             ->name('replace')->middleware([
                 'auth',
                 'user.active',
-                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+                'role:' . CardAccess::MANAGE_ROLES,
             ]);
 
         // Mark card as lost
@@ -1415,7 +1416,7 @@ Route::prefix('student-cards')
             ->name('lost')->middleware([
                 'auth',
                 'user.active',
-                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+                'role:' . CardAccess::MANAGE_ROLES,
             ]);
 
         // Mark card as damaged
@@ -1423,7 +1424,7 @@ Route::prefix('student-cards')
             ->name('damaged')->middleware([
                 'auth',
                 'user.active',
-                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+                'role:' . CardAccess::MANAGE_ROLES,
             ]);
 
         // Deactivate card
@@ -1431,7 +1432,7 @@ Route::prefix('student-cards')
             ->name('deactivate')->middleware([
                 'auth',
                 'user.active',
-                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+                'role:' . CardAccess::MANAGE_ROLES,
             ]);
 
         // Card details — keep this after static routes
@@ -1439,7 +1440,7 @@ Route::prefix('student-cards')
             ->name('show')->middleware([
                 'auth',
                 'user.active',
-                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+                'role:' . CardAccess::VIEW_ROLES,
             ]);
     });
 
@@ -1465,7 +1466,7 @@ Route::prefix('generate-student-id')
             ->middleware([
                 'auth',
                 'user.active',
-                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+                'role:' . CardAccess::DOWNLOAD_ROLES,
             ]);
 
     });
@@ -1479,6 +1480,7 @@ Route::prefix('generate-student-id')
 Route::prefix('temporary_id_cards')
     ->name('temporary_id_cards.')
     ->controller(TemporaryIDCardController::class)
+    ->middleware('card.mode:temporary')
     ->group(function () {
 
         /*
@@ -1490,7 +1492,7 @@ Route::prefix('temporary_id_cards')
             ->name('index')->middleware([
                 'auth',
                 'user.active',
-                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+                'role:' . CardAccess::VIEW_ROLES,
             ]);
 
         /*
@@ -1502,7 +1504,7 @@ Route::prefix('temporary_id_cards')
             ->name('create')->middleware([
                 'auth',
                 'user.active',
-                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+                'role:' . CardAccess::GENERATE_ROLES,
             ]);
 
         /*
@@ -1514,7 +1516,7 @@ Route::prefix('temporary_id_cards')
             ->name('store')->middleware([
                 'auth',
                 'user.active',
-                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+                'role:' . CardAccess::GENERATE_ROLES,
             ]);
 
         /*
@@ -1526,7 +1528,7 @@ Route::prefix('temporary_id_cards')
             ->name('preview')->middleware([
                 'auth',
                 'user.active',
-                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+                'role:' . CardAccess::DOWNLOAD_ROLES,
             ]);
 
         /*
@@ -1538,7 +1540,7 @@ Route::prefix('temporary_id_cards')
             ->name('preview-generate')->middleware([
                 'auth',
                 'user.active',
-                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+                'role:' . CardAccess::DOWNLOAD_ROLES,
             ]);
 
         /*
@@ -1550,7 +1552,7 @@ Route::prefix('temporary_id_cards')
             ->name('update-status')->middleware([
                 'auth',
                 'user.active',
-                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+                'role:' . CardAccess::MANAGE_ROLES,
             ]);
 
         /*
@@ -1562,7 +1564,7 @@ Route::prefix('temporary_id_cards')
             ->name('change-status')->middleware([
                 'auth',
                 'user.active',
-                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+                'role:' . CardAccess::MANAGE_ROLES,
             ]);
 
         /*
@@ -1574,7 +1576,7 @@ Route::prefix('temporary_id_cards')
             ->name('download-pdf')->middleware([
                 'auth',
                 'user.active',
-                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+                'role:' . CardAccess::DOWNLOAD_ROLES,
             ]);
 
         /*
@@ -1586,7 +1588,7 @@ Route::prefix('temporary_id_cards')
             ->name('pdf')->middleware([
                 'auth',
                 'user.active',
-                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+                'role:' . CardAccess::DOWNLOAD_ROLES,
             ]);
     });
 
@@ -1600,6 +1602,7 @@ Route::prefix('temporary_id_cards')
 Route::prefix('student-card-registration')
     ->name('student-card-registration.')
     ->controller(StudentCardRegistrationController::class)
+    ->middleware('card.mode:permanent')
     ->group(function () {
 
         Route::get('/', 'create')
@@ -1607,7 +1610,7 @@ Route::prefix('student-card-registration')
             ->middleware([
                 'auth',
                 'user.active',
-                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+                'role:' . CardAccess::ASSIGN_ROLES,
             ]);
 
         Route::post('/', 'store')
@@ -1615,7 +1618,7 @@ Route::prefix('student-card-registration')
             ->middleware([
                 'auth',
                 'user.active',
-                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+                'role:' . CardAccess::ASSIGN_ROLES,
             ]);
     });
 
@@ -1629,6 +1632,7 @@ Route::prefix('student-card-registration')
 Route::prefix('student-temporary-registration')
     ->name('student-temporary-registration.')
     ->controller(StudentTemporaryRegistrationController::class)
+    ->middleware('card.mode:temporary')
     ->group(function () {
 
         Route::get('/', 'create')
@@ -1636,7 +1640,7 @@ Route::prefix('student-temporary-registration')
             ->middleware([
                 'auth',
                 'user.active',
-                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+                'role:' . CardAccess::ASSIGN_ROLES,
             ]);
 
         Route::post('/', 'store')
@@ -1644,7 +1648,7 @@ Route::prefix('student-temporary-registration')
             ->middleware([
                 'auth',
                 'user.active',
-                'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER',
+                'role:' . CardAccess::ASSIGN_ROLES,
             ]);
     });
 

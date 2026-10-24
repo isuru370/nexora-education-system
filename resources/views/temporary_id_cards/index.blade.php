@@ -214,10 +214,13 @@
 
                 <div class="hero-actions">
                     
+                        @cardaccess('generate')
                         <a href="{{ route('temporary_id_cards.create') }}" class="btn btn-primary custom-btn">
                             <i class="bi bi-plus-circle me-1"></i> Generate New
                         </a>
+                        @endcardaccess
 
+                        @cardaccess('download')
                         <a href="{{ route('temporary_id_cards.pdf') }}" class="btn btn-danger custom-btn">
                             <i class="bi bi-file-pdf me-1"></i> Download PDF
                         </a>
@@ -225,10 +228,13 @@
                         <a href="{{ route('temporary_id_cards.preview') }}" class="btn btn-success custom-btn">
                             <i class="bi bi-eye me-1"></i> Preview
                         </a>
+                        @endcardaccess
 
+                        @cardaccess('manage')
                         <a href="{{ route('temporary_id_cards.update-status') }}" class="btn btn-dark custom-btn">
                             <i class="bi bi-arrow-repeat me-1"></i> Change Status
                         </a>
+                        @endcardaccess
                    
 
                     <a href="{{ route('temporary_id_cards.index') }}" class="btn btn-secondary custom-btn">

@@ -50,8 +50,10 @@
             $canUsers = $isAdmin;
 
             $canStudentImages = $isTeacher;
-            $canStudentCards = $isUser;
-            $canTemporaryIdCards = $isUser;
+            // ID cards: App\Support\CardAccess (roles) + CardMode (nexora:card-mode)
+            $canStudentCards = \App\Support\CardAccess::canView();
+            $canTemporaryIdCards = $canStudentCards && \App\Support\CardMode::temporary();
+            $canGenerateStudentId = \App\Support\CardAccess::canDownload();
 
             $canStudentClasses = $isTeacher;
             $canClassSchedules = $isTeacher;
@@ -266,7 +268,7 @@
                 </div>
             @endif
 
-            @if ($canStudentCards)
+            @if ($canTemporaryIdCards)
                 <div class="nav-item">
                     <button type="button"
                         class="nav-link-custom {{ request()->routeIs('temporary_id_cards.*') ? 'active' : '' }}"
@@ -277,7 +279,7 @@
                 </div>
             @endif
 
-            @if ($canStudentCards)
+            @if ($canGenerateStudentId)
                 <div class="nav-item">
                     <button type="button"
                         class="nav-link-custom {{ request()->routeIs('generate-student-id.*') ? 'active' : '' }}"

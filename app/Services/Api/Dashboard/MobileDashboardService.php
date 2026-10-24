@@ -24,6 +24,8 @@ use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
 use Throwable;
+use App\Support\CardAccess;
+use App\Support\CardMode;
 
 /**
  * Mobile app staff dashboard (GET /api/mobile-dashboard?branch_id=).
@@ -108,11 +110,27 @@ class MobileDashboardService
      */
     public function features(string $role): array
     {
-        return collect(self::FEATURES)
+        $features = collect(self::FEATURES)
             ->filter(fn (array $roles) => in_array($role, $roles, true))
-            ->keys()
-            ->values()
-            ->all();
+            ->keys();
+
+        // ID cards: one way to register per institute (nexora:card-mode)
+        $cards = CardAccess::forRole($role);
+
+        if (CardMode::permanent()) {
+            // students get the permanent card at registration: no Re Assign
+            $features = $features->reject(fn ($key) => $key === 'reassign_card');
+        }
+
+        if ($features->contains('register_student')) {
+            $features->push(CardMode::temporary() ? 'register_temporary' : 'register_permanent');
+        }
+
+        if ($cards['manage']) {
+            $features->push('replace_card'); // lost / damaged -> new card
+        }
+
+        return $features->values()->all();
     }
 
     /*
@@ -214,6 +232,7 @@ class MobileDashboardService
                 ->map(fn (Branch $b) => ['id' => $b->id, 'name' => $b->name, 'code' => $b->code])
                 ->values(),
             'features' => $features,
+            'card_mode' => CardMode::get(),
             'date' => $now->toDateString(),
             'generated_at' => $now->toDateTimeString(),
         ];
@@ -565,7 +584,7 @@ class MobileDashboardService
             ];
         }
 
-        if ($cards['temporary_level'] !== 'ok') {
+        if (CardMode::temporary() && $cards['temporary_level'] !== 'ok') {
             $alerts[] = [
                 'type' => 'temporary_cards',
                 'level' => $cards['temporary_level'] === 'critical' ? 'danger' : 'warning',

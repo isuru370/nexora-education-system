@@ -69,6 +69,20 @@ There is no web page for this, so an institute cannot switch a feature on by its
 
 For developers: `feature('courses')` in PHP, `@feature('courses') ... @endfeature` in Blade, `->middleware('feature:courses')` on routes (404 when off). The mobile apps read `GET /api/features` (also in the login and `/api/me` responses as `features`).
 
+### Student ID card mode (per institute)
+
+Each institute registers students **one** way. The developer chooses it on that institute's server (default `permanent`):
+
+```bash
+php artisan nexora:card-mode              # show the current mode
+php artisan nexora:card-mode permanent    # register with a permanent ID card straight away
+php artisan nexora:card-mode temporary    # register with a temporary card (TMP001...), permanent card later (Re Assign Student)
+```
+
+There is no web page for it. Permanent mode hides Temporary Registration, Temporary Cards and Re Assign Student (web and app); temporary mode hides the direct permanent registration. Attendance and payment scanning accept both kinds of ID in either mode.
+
+Who can do what with ID cards (`App\Support\CardAccess`): generate = Super Admin; download / print and replace / lost / damaged / deactivate = Super Admin, Admin, Branch Admin; assign (registration, Re Assign Student) and view = also Cashier; teachers have no access.
+
 ### Never on a live server
 
 `php artisan migrate:fresh` — deletes every table and all data.

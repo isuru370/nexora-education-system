@@ -92,6 +92,7 @@ class FeatureFlagsTest extends TestCase
                 'status' => 'success',
                 'message' => 'Features loaded successfully.',
                 'data' => ['courses' => false],
+                'card_mode' => 'permanent',
             ]);
 
         Features::set('courses', true);
