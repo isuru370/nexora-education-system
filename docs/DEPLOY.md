@@ -76,6 +76,11 @@ php artisan nexora:feature courses on
 php artisan nexora:feature courses off
 ```
 
+| Feature | Use |
+|---|---|
+| `courses` | Course management (only institutes that sell courses) |
+| `landing_page` | **Only edu.nexorait.lk.** Shows the NexoraIT EDU product page on `/`. Off (every institute) = `/` opens the login page. |
+
 There is no web page for this, so an institute cannot switch a feature on by itself. `nexora:deploy` shows which features are on.
 
 For developers: `feature('courses')` in PHP, `@feature('courses') ... @endfeature` in Blade, `->middleware('feature:courses')` on routes (404 when off). The mobile apps read `GET /api/features` (also in the login and `/api/me` responses as `features`).
