@@ -422,6 +422,7 @@
                             <div class="detail-card-body">
                                 <div class="d-flex flex-wrap gap-2">
                                     @if ($card->status == 'assigned' && $card->student)
+                                        @cardaccess('manage')
                                         <a href="{{ route('student-cards.replace', $card->id) }}" class="btn btn-warning custom-btn">
                                             <i class="bi bi-arrow-repeat"></i>
                                             Replace Card
@@ -447,6 +448,7 @@
                                             <i class="bi bi-slash-circle"></i>
                                             Deactivate
                                         </a>
+                                        @endcardaccess
 
                                         @if($card->student)
                                             <a href="{{ route('admin.students.show', $card->student->id) }}" class="btn btn-info custom-btn text-white">

@@ -1,5 +1,7 @@
 <?php
 
+use App\Support\CardAccess;
+
 use App\Http\Controllers\Api\Admission\AdmissionPaymentController;
 use App\Http\Controllers\Api\Attendance\AttendanceReportController;
 use App\Http\Controllers\Api\Attendance\AttendanceScheduleController;
@@ -115,7 +117,7 @@ Route::middleware([
     Route::post(
         '/re-assign',
         [StudentCardController::class, 'reAssign']
-    )->name('api.card.reassign');
+    )->name('api.card.reassign')->middleware('role:' . CardAccess::MANAGE_ROLES);
 
 
     /*
@@ -129,13 +131,13 @@ Route::middleware([
     Route::post(
         '/student',
         [StudentTemporaryRegistrationController::class, 'store']
-    )->name('api.QuickStudentStore');
+    )->name('api.QuickStudentStore')->middleware('card.mode:temporary');
 
     // Register a student with a permanent student card
     Route::post(
         '/student-new',
         [StudentPermanentRegistrationController::class, 'store']
-    )->name('api.student.store');
+    )->name('api.student.store')->middleware('card.mode:permanent');
 
     Route::get(
         '/students',

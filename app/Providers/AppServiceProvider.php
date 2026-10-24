@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Models\Payment;
+use App\Support\CardAccess;
+use App\Support\CardMode;
 use App\Support\Features;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\ServiceProvider;
@@ -36,5 +38,11 @@ class AppServiceProvider extends ServiceProvider
 
         // @feature('courses') ... @endfeature
         Blade::if('feature', fn (string $key) => Features::enabled($key));
+
+        // @cardmode('temporary') ... @endcardmode   (php artisan nexora:card-mode)
+        Blade::if('cardmode', fn (string $mode) => CardMode::is($mode));
+
+        // @cardaccess('generate') ... @endcardaccess   (App\Support\CardAccess)
+        Blade::if('cardaccess', fn (string $action) => CardAccess::can($action));
     }
 }

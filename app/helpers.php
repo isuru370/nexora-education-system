@@ -1,5 +1,6 @@
 <?php
 
+use App\Support\CardMode;
 use App\Support\Features;
 
 if (!function_exists('feature')) {
@@ -7,5 +8,13 @@ if (!function_exists('feature')) {
     function feature(string $key): bool
     {
         return Features::enabled($key);
+    }
+}
+
+if (!function_exists('card_mode')) {
+    /** "permanent" or "temporary" (php artisan nexora:card-mode) */
+    function card_mode(): string
+    {
+        return CardMode::get();
     }
 }

@@ -61,6 +61,7 @@ class Kernel extends HttpKernel
         'role' => \App\Http\Middleware\CheckUserRole::class,
         'staff.branch' => \App\Http\Middleware\EnsureStaffBranchAccess::class,
         'feature' => \App\Http\Middleware\EnsureFeatureEnabled::class,
+        'card.mode' => \App\Http\Middleware\EnsureCardMode::class,
         
 
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,

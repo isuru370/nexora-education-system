@@ -150,12 +150,19 @@
             </div>
 
             <div class="header-buttons">
-                <a href="{{ route('student-card-registration.create') }}" class="nx-btn nx-btn-primary">
-                    <i class="bi bi-person-plus-fill"></i> New Registration
-                </a>
-                <a href="{{ route('student-temporary-registration.create') }}" class="nx-btn nx-btn-primary">
-                    <i class="bi bi-person-plus-fill"></i> Temporary Registration
-                </a>
+                {{-- One way to register, chosen per institute: php artisan nexora:card-mode --}}
+                @cardaccess('assign')
+                    @cardmode('permanent')
+                        <a href="{{ route('student-card-registration.create') }}" class="nx-btn nx-btn-primary">
+                            <i class="bi bi-person-plus-fill"></i> New Registration
+                        </a>
+                    @endcardmode
+                    @cardmode('temporary')
+                        <a href="{{ route('student-temporary-registration.create') }}" class="nx-btn nx-btn-primary">
+                            <i class="bi bi-person-plus-fill"></i> New Registration (Temporary Card)
+                        </a>
+                    @endcardmode
+                @endcardaccess
                 <a href="{{ route('students.export.excel') }}" class="nx-btn nx-btn-success">
                     <i class="bi bi-file-earmark-excel-fill"></i> Excel
                 </a>

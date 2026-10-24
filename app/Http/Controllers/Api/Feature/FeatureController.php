@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Feature;
 
 use App\Http\Controllers\Controller;
+use App\Support\CardMode;
 use App\Support\Features;
 use Illuminate\Http\JsonResponse;
 
@@ -18,6 +19,8 @@ class FeatureController extends Controller
             'status' => 'success',
             'message' => 'Features loaded successfully.',
             'data' => (object) Features::all(),
+            // How this institute gives ID cards: permanent / temporary
+            'card_mode' => CardMode::get(),
         ]);
     }
 }
