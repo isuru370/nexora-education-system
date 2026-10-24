@@ -53,7 +53,7 @@
             // ID cards: App\Support\CardAccess (roles) + CardMode (nexora:card-mode)
             $canStudentCards = \App\Support\CardAccess::canView();
             $canTemporaryIdCards = $canStudentCards && \App\Support\CardMode::temporary();
-            $canGenerateStudentId = \App\Support\CardAccess::canDownload();
+            $canGenerateStudentId = \App\Support\CardAccess::canDownload() && \App\Support\CardMode::temporary();
 
             $canStudentClasses = $isTeacher;
             $canClassSchedules = $isTeacher;

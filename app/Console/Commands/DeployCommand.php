@@ -18,7 +18,8 @@ use Throwable;
  *  3. Seeds the basic data on the first deploy (or with --seed)
  *  4. Health checks (tables, roles, admin, routes, controllers, views, pages)
  *  5. Rebuilds the caches
- *  6. Prints READY FOR PRODUCTION / NOT READY  (exit code 0 / 1)
+ *  6. Sends this institute's details to the Parent Hub (parent app login)
+ *  7. Prints READY FOR PRODUCTION / NOT READY  (exit code 0 / 1)
  */
 class DeployCommand extends Command
 {
@@ -98,6 +99,20 @@ class DeployCommand extends Command
             $this->record(['Caches' => $checker->ok('Skipped')]);
         } else {
             $this->optimise($checker);
+        }
+
+        /*
+         * 6. Parent Hub (institute details saved there - parents log in through it)
+         */
+        $this->section('6', 'Parent Hub');
+        $this->record(['Parent Hub settings' => $checker->parentHubSettings()]);
+
+        if ($this->hasFailure('Parent Hub settings')) {
+            // nothing to send
+        } elseif ($checkOnly) {
+            $this->record(['Parent Hub' => $checker->ok('Not sent (--check)')]);
+        } else {
+            $this->record(['Parent Hub' => $checker->parentHubSync()]);
         }
 
         return $this->finish($started);
@@ -212,7 +227,7 @@ class DeployCommand extends Command
     protected function section(string $number, string $title): void
     {
         $this->newLine();
-        $this->line("<fg=cyan;options=bold>[{$number}/5] {$title}</>");
+        $this->line("<fg=cyan;options=bold>[{$number}/6] {$title}</>");
     }
 
     protected function record(array $checks): void

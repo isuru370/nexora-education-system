@@ -12,7 +12,7 @@ class RegisterInstitute extends Command
     protected $signature = 'parenthub:register';
 
     protected $description =
-    'Register institute with Parent Hub';
+    'Register / update this institute in the Parent Hub (nexora:deploy does this too)';
 
     public function __construct(
         private ParentHubService $parentHubService
@@ -22,51 +22,31 @@ class RegisterInstitute extends Command
 
     public function handle(): int
     {
+        $this->info('Sending this institute to the Parent Hub...');
+
         try {
-
-            $this->info(
-                'Registering institute...'
-            );
-
-            $registered =
-                $this->parentHubService
-                ->registerInstitute();
-
-            if (!$registered) {
-
-                $this->error(
-                    'Institute registration failed.'
-                );
-
-                return self::FAILURE;
-            }
-
-            $this->info(
-                'Institute registered successfully.'
-            );
-
-            return self::SUCCESS;
+            $result = $this->parentHubService->syncInstitute();
         } catch (Throwable $e) {
+            Log::error('Parent Hub Registration Command Failed', [
+                'message' => $e->getMessage(),
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+            ]);
 
-            Log::error(
-                'Parent Hub Registration Command Failed',
-                [
-                    'message' =>
-                    $e->getMessage(),
-
-                    'file' =>
-                    $e->getFile(),
-
-                    'line' =>
-                    $e->getLine(),
-                ]
-            );
-
-            $this->error(
-                $e->getMessage()
-            );
+            $this->error($e->getMessage());
 
             return self::FAILURE;
         }
+
+        if (!$result['ok']) {
+            $this->error('Institute registration failed: ' . $result['message']);
+
+            return self::FAILURE;
+        }
+
+        $payload = $this->parentHubService->institutePayload();
+        $this->info('Institute registered successfully: ' . $payload['institute_code'] . ' - ' . $payload['institute_name']);
+
+        return self::SUCCESS;
     }
 }

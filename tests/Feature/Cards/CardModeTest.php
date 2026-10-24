@@ -177,6 +177,8 @@ class CardModeTest extends TestCase
 
     public function test_download_pages_are_for_admins_and_branch_admins(): void
     {
+        CardMode::set('temporary'); // Generate Student ID is a temporary-mode page
+
         foreach (['SUPER_ADMIN', 'ADMIN', 'BRANCH_ADMIN'] as $role) {
             $this->actingAs($this->users[$role]);
             $this->assertNotSame(403, $this->get('/generate-student-id')->status(), $role);
@@ -186,6 +188,28 @@ class CardModeTest extends TestCase
             $this->actingAs($this->users[$role]);
             $this->get('/generate-student-id')->assertForbidden();
         }
+    }
+
+    public function test_generate_student_id_is_only_for_temporary_card_institutes(): void
+    {
+        $this->actingAs($this->users['ADMIN']);
+
+        // permanent mode: no page, no menu
+        $this->get('/generate-student-id')->assertRedirect(route('students.index'));
+        $this->get('/students')->assertOk()->assertDontSee('Generate Student ID');
+
+        CardMode::set('temporary');
+
+        // only students without a permanent card are listed
+        DB::table('students')->where('id', $this->inst['s1'])->update(['permanent_qr_active' => true]);
+        DB::table('students')->where('id', $this->inst['s2'])->update(['permanent_qr_active' => false]);
+
+        $page = $this->get('/generate-student-id')->assertOk();
+        $names = fn (int $id) => DB::table('students')->where('id', $id)->value('initial_name');
+        $page->assertSee($names($this->inst['s2']));
+        $page->assertDontSee($names($this->inst['s1']));
+
+        $this->get('/students')->assertSee('Generate Student ID');
     }
 
     public function test_teachers_cannot_open_card_pages(): void
