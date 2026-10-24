@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\UserType;
 use App\Models\Teacher;
 use App\Models\SystemUser;
+use App\Services\Auth\LoginDetailsSms;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
@@ -159,8 +160,16 @@ class UserController extends Controller
                 'created_by' => auth()->id()
             ]);
 
+            $sms = app(LoginDetailsSms::class)->send(
+                $user,
+                $request->password,
+                false,
+                null,
+                $request->boolean('send_sms', true)
+            );
+
             return redirect()->route('admin.users.index')
-                ->with('success', 'User created successfully!');
+                ->with('success', 'User created successfully!' . LoginDetailsSms::notice($sms));
 
         } catch (\Exception $e) {
             DB::rollBack();
@@ -598,8 +607,16 @@ class UserController extends Controller
                 'changed_by' => auth()->id()
             ]);
 
+            $sms = app(LoginDetailsSms::class)->send(
+                $user,
+                $request->password,
+                true,
+                null,
+                $request->boolean('send_sms', true)
+            );
+
             return redirect()->back()
-                ->with('success', 'Password changed successfully!');
+                ->with('success', 'Password changed successfully!' . LoginDetailsSms::notice($sms));
 
         } catch (\Exception $e) {
             Log::error('Failed to change password: ' . $e->getMessage());

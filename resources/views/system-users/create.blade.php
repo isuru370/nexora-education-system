@@ -65,6 +65,10 @@
 
                 @include('system-users.partials.form', ['systemUser' => null])
 
+                <div class="px-3 pt-3">
+                    @include('partials.send-login-sms', ['id' => 'sendSmsSystemUser'])
+                </div>
+
                 <div class="form-footer">
                     <div class="d-flex gap-2 ms-auto">
                         <a href="{{ route('admin.system-users.index') }}" class="btn btn-light border custom-btn">

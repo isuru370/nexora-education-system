@@ -206,6 +206,11 @@
 
                     <hr>
 
+                    <div class="mb-3">
+                        @include('partials.send-login-sms', ['id' => 'sendSmsUser'])
+                        <div class="form-text">Sent to the mobile of the linked teacher / system user.</div>
+                    </div>
+
                     <div class="d-flex gap-3 flex-wrap">
                         <button type="submit" class="btn btn-primary custom-btn btn-lg">
                             <i class="bi bi-plus-lg me-2"></i>
