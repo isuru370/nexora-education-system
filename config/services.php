@@ -65,6 +65,11 @@ return [
         // Path under public/ (or a full URL) - sent to the Parent Hub
         'logo' => env('INSTITUTE_LOGO'),
 
+        'tagline' => env('INSTITUTE_TAGLINE'),
+
+        // App name on the phone ("MihisaraEdu"). Empty = first word + "Edu".
+        'short_name' => env('INSTITUTE_SHORT_NAME'),
+
         'contact_email' => env('CONTACT_EMAIL'),
 
         'contact_mobile' => env('CONTACT_MOBILE'),
