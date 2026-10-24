@@ -313,8 +313,9 @@ class DeployCheckService
             $count++;
             $uses = $route->getAction('uses');
 
-            if (!is_string($uses)) {
-                continue; // closure
+            // closure (with route:cache it is stored as a serialized string)
+            if (!is_string($uses) || \Illuminate\Routing\RouteAction::containsSerializedClosure($route->getAction())) {
+                continue;
             }
 
             [$class, $method] = Str::contains($uses, '@') ? explode('@', $uses, 2) : [$uses, '__invoke'];
