@@ -274,9 +274,9 @@
                         <div class="nx-card-header">
                             <div>
                                 <h5 class="nx-card-title">
-                                    <i class="bi bi-pie-chart text-primary"></i> Class Fee Split
+                                    <i class="bi bi-pie-chart text-primary"></i> {{ empty($summary['courses']) ? 'Class Fee Split' : 'Fee Split' }}
                                 </h5>
-                                <p class="nx-card-subtitle">Where the class fees go</p>
+                                <p class="nx-card-subtitle">{{ empty($summary['courses']) ? 'Where the class fees go' : 'Where the class and course fees go' }}</p>
                             </div>
                         </div>
                         <div class="p-3">
@@ -296,6 +296,23 @@
                                     <td class="text-end cell-sub">Rs. {{ number_format($summary['hall_fee'], 2) }}</td>
                                 </tr>
                             </table>
+
+                            @if (!empty($summary['courses']))
+                                <table class="table premium-table mb-0 mt-3">
+                                    <tr class="fw-bold">
+                                        <td>Course fees collected</td>
+                                        <td class="text-end cell-title">Rs. {{ number_format($summary['courses']['collected'], 2) }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Course teacher share</td>
+                                        <td class="text-end cell-title">Rs. {{ number_format($summary['courses']['teachers'], 2) }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Course institute share</td>
+                                        <td class="text-end cell-title">Rs. {{ number_format($summary['courses']['institute'], 2) }}</td>
+                                    </tr>
+                                </table>
+                            @endif
 
                             <p class="cell-sub mt-3 mb-0">
                                 Teacher and organizer shares are not institute money. Their salaries and advances are in the

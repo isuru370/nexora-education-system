@@ -600,3 +600,31 @@ Route::middleware([
             [TeacherProfileController::class, 'changePassword']
         )->name('profile.change-password');
     });
+
+/*
+|--------------------------------------------------------------------------
+| Staff app: Courses (feature "courses" - 404 when it is off)
+|--------------------------------------------------------------------------
+| See App\Http\Controllers\Api\Course\CourseController for the screens.
+*/
+
+Route::middleware([
+    'auth:sanctum',
+    'user.active',
+    'role:ADMIN,BRANCH_ADMIN,USER',
+    'staff.branch',
+    'feature:courses',
+])->prefix('courses')->name('api.courses.')->controller(\App\Http\Controllers\Api\Course\CourseController::class)->group(function () {
+    Route::get('/', 'index')->name('index');
+
+    // Course Attendance
+    Route::get('sessions', 'sessions')->name('sessions');
+    Route::post('sessions/{courseSession}/attendance', 'markAttendance')->whereNumber('courseSession')->name('sessions.attendance');
+    Route::get('sessions/{courseSession}/report', 'sessionReport')->whereNumber('courseSession')->name('sessions.report');
+
+    // Course Payment / enrolling
+    Route::post('student', 'student')->name('student');
+    Route::post('{course}/enroll', 'enroll')->whereNumber('course')->name('enroll');
+    Route::post('enrollments/{courseEnrollment}/pay', 'pay')->whereNumber('courseEnrollment')->name('pay');
+    Route::get('payments/{coursePayment}/receipt', 'receipt')->whereNumber('coursePayment')->name('receipt');
+});

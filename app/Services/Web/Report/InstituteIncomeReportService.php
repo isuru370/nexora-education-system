@@ -3,6 +3,9 @@
 namespace App\Services\Web\Report;
 
 use App\Models\Branch;
+use App\Models\Course;
+use App\Models\CoursePayment;
+use App\Models\CoursePaymentSplit;
 use App\Models\Organizer;
 use App\Models\Payment;
 use App\Models\StudentClass;
@@ -17,6 +20,7 @@ use Illuminate\Support\Facades\DB;
  *  and Admin\InstitutePaymentReportController.)
  *
  *   Institute income  = institute share of class fees (includes hall fee)
+ *                     + institute share of course fees (institutes with courses)
  *                     + admission fees + extra income
  *   Institute expense = institute expenses (bills, rent ...)
  *   Net               = income - expenses
@@ -32,6 +36,7 @@ use Illuminate\Support\Facades\DB;
  *  - organizers    class fee split per organizer
  *  - extra-income  received extra income
  *  - expenses      paid institute expenses
+ *  - courses       course fee split per course (institutes with courses)
  */
 class InstituteIncomeReportService
 {
@@ -43,6 +48,14 @@ class InstituteIncomeReportService
         'extra-income' => 'Extra Income',
         'expenses' => 'Institute Expenses',
     ];
+
+    /** TABS + "By Course" when the institute has the courses feature. */
+    public static function tabs(): array
+    {
+        return feature('courses')
+            ? array_slice(self::TABS, 0, 4, true) + ['courses' => 'By Course'] + array_slice(self::TABS, 4, null, true)
+            : self::TABS;
+    }
 
     protected const SPLIT_COLUMNS = ['payments', 'payment_amount', 'hall_fee', 'teacher_amount', 'organizer_amount', 'institution_amount'];
 
@@ -78,8 +91,15 @@ class InstituteIncomeReportService
         $extraIncome = round((float) $this->query->extraIncomes($filter)->sum('amount'), 2);
         $expenses = round((float) $this->query->instituteExpenses($filter)->sum('amount'), 2);
 
-        $income = [
-            'Institute share of class fees' => $instituteShare,
+        $courses = $this->courseTotals($filter);
+
+        $income = ['Institute share of class fees' => $instituteShare];
+
+        if ($courses !== null) {
+            $income['Institute share of course fees'] = $courses['institute'];
+        }
+
+        $income += [
             'Admission fees' => $admissionFees,
             'Extra income' => $extraIncome,
         ];
@@ -101,6 +121,9 @@ class InstituteIncomeReportService
                 'Institute share' => $instituteShare,
             ],
             'hall_fee' => round((float) $split->hall_fee, 2),
+
+            // null when the institute has no courses
+            'courses' => $courses,
 
             // Completed payments that have no fee split (their institute share is unknown)
             'unsplit_count' => max($unsplitCount, 0),
@@ -127,6 +150,12 @@ class InstituteIncomeReportService
         }
 
         $rows->push(['section' => 'Class fees', 'item' => 'Hall fee (part of institute share)', 'amount' => $summary['hall_fee']]);
+
+        if ($summary['courses'] !== null) {
+            $rows->push(['section' => 'Course fees', 'item' => 'Course fees collected (' . $summary['courses']['payments'] . ' payments)', 'amount' => $summary['courses']['collected']]);
+            $rows->push(['section' => 'Course fees', 'item' => 'Teacher share', 'amount' => $summary['courses']['teachers']]);
+            $rows->push(['section' => 'Course fees', 'item' => 'Institute share', 'amount' => $summary['courses']['institute']]);
+        }
 
         if ($summary['unsplit_count'] > 0) {
             $rows->push(['section' => 'Class fees', 'item' => 'Not split (' . $summary['unsplit_count'] . ' payments)', 'amount' => $summary['unsplit_amount']]);
@@ -171,6 +200,12 @@ class InstituteIncomeReportService
                 'money' => $splitMoney,
                 'total' => 'payment_amount',
             ],
+            'courses' => [
+                'headings' => ['Course', 'Code', 'Payments', 'Collected (Rs.)', 'Teacher (Rs.)', 'Institute (Rs.)'],
+                'columns' => ['name', 'code', 'payments', 'collected', 'teachers', 'institute'],
+                'money' => ['collected', 'teachers', 'institute'],
+                'total' => 'collected',
+            ],
             'extra-income' => [
                 'headings' => ['Date', 'Branch', 'Type', 'Reason', 'Receipt No', 'Note', 'Added By', 'Amount (Rs.)'],
                 'columns' => ['date', 'branch', 'type', 'reason', 'receipt_number', 'note', 'created_by', 'amount'],
@@ -195,6 +230,7 @@ class InstituteIncomeReportService
             'organizers' => $this->splitBy($filter, 'organizer_id', fn (Collection $ids) => $this->organizerNames($ids)),
             'extra-income' => $this->extraIncomeRows($filter),
             'expenses' => $this->expenseRows($filter),
+            'courses' => $this->courseRows($filter),
         };
     }
 
@@ -266,6 +302,64 @@ class InstituteIncomeReportService
             ->whereIn('id', $ids)
             ->get(['id', 'name'])
             ->mapWithKeys(fn ($organizer) => [$organizer->id => ['name' => $organizer->name]]);
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Courses (institutes with the "courses" feature)
+    |--------------------------------------------------------------------------
+    */
+
+    /** Completed course payments in the filter (same branch / date / cashier / method filters). */
+    protected function coursePayments(ReportFilter $filter)
+    {
+        return CoursePayment::query()
+            ->where('status', 'completed')
+            ->whereIn('branch_id', $filter->branchIds)
+            ->whereBetween('paid_at', [$filter->from, $filter->to])
+            ->when($filter->collectedBy, fn ($query, $userId) => $query->where('user_id', $userId))
+            ->when($filter->paymentMethod, fn ($query, $method) => $query->where('payment_method', $method));
+    }
+
+    /** @return array{payments: int, collected: float, teachers: float, institute: float}|null */
+    protected function courseTotals(ReportFilter $filter): ?array
+    {
+        if (!feature('courses')) {
+            return null;
+        }
+
+        $payments = $this->coursePayments($filter);
+        $splits = CoursePaymentSplit::query()->whereIn('course_payment_id', (clone $payments)->select('id'));
+
+        return [
+            'payments' => (clone $payments)->count(),
+            'collected' => round((float) (clone $payments)->sum('amount'), 2),
+            'teachers' => round((float) (clone $splits)->whereNotNull('teacher_id')->sum('amount'), 2),
+            'institute' => round((float) (clone $splits)->whereNull('teacher_id')->sum('amount'), 2),
+        ];
+    }
+
+    protected function courseRows(ReportFilter $filter): Collection
+    {
+        if (!feature('courses')) {
+            return collect();
+        }
+
+        $payments = $this->coursePayments($filter)->with('splits')->get();
+        $courses = Course::withTrashed()->whereIn('id', $payments->pluck('course_id')->unique())->get(['id', 'name', 'code'])->keyBy('id');
+
+        return $payments->groupBy('course_id')->map(function (Collection $rows, $courseId) use ($courses) {
+            $splits = $rows->flatMap->splits;
+
+            return [
+                'name' => optional($courses->get($courseId))->name ?? '-',
+                'code' => optional($courses->get($courseId))->code ?? '-',
+                'payments' => $rows->count(),
+                'collected' => round((float) $rows->sum('amount'), 2),
+                'teachers' => round((float) $splits->whereNotNull('teacher_id')->sum('amount'), 2),
+                'institute' => round((float) $splits->whereNull('teacher_id')->sum('amount'), 2),
+            ];
+        })->sortByDesc('collected')->values();
     }
 
     protected function extraIncomeRows(ReportFilter $filter): Collection
