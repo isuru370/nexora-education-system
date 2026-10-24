@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Web\User;
 
 use App\Http\Controllers\Controller;
 use App\Models\SystemUser;
+use App\Services\Auth\LoginDetailsSms;
 use App\Models\User;
 use App\Models\UserType;
 use Illuminate\Http\RedirectResponse;
@@ -124,7 +125,7 @@ class SystemUserController extends Controller
 
         try {
 
-            DB::transaction(function () use ($request, $validated) {
+            $user = DB::transaction(function () use ($request, $validated) {
 
                 /*
             |--------------------------------------------------------------------------
@@ -194,7 +195,17 @@ class SystemUserController extends Controller
 
                     'note' => $validated['note'] ?? null,
                 ]);
+
+                return $user;
             });
+
+            $sms = app(LoginDetailsSms::class)->send(
+                $user,
+                $validated['password'],
+                false,
+                $validated['mobile'],
+                $request->boolean('send_sms', true)
+            );
 
 
             /*
@@ -207,7 +218,7 @@ class SystemUserController extends Controller
                 ->route('admin.system-users.index')
                 ->with(
                     'success',
-                    'System user created successfully.'
+                    'System user created successfully.' . LoginDetailsSms::notice($sms, $validated['mobile'])
                 );
         } catch (\Throwable $e) {
 

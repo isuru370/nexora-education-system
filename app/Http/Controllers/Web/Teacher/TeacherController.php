@@ -6,6 +6,7 @@ use App\Exports\Web\Teacher\TeachersExport;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Web\Teacher\StoreTeacherRequest;
 use App\Http\Requests\Web\Teacher\UpdateTeacherRequest;
+use App\Services\Auth\LoginDetailsSms;
 use App\Services\Branch\BranchAccessService;
 use App\Services\Web\Teacher\TeacherService;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -263,14 +264,22 @@ class TeacherController extends Controller
 
         $teacherModel = $this->teacherService->findForEdit($teacher);
 
-        $this->teacherService->createLogin(
+        $user = $this->teacherService->createLogin(
             $teacherModel,
             $request->password
         );
 
+        $sms = app(LoginDetailsSms::class)->send(
+            $user,
+            $request->password,
+            false,
+            $teacherModel->mobile,
+            $request->boolean('send_sms', true)
+        );
+
         return back()->with(
             'success',
-            'Login account created successfully.'
+            'Login account created successfully.' . LoginDetailsSms::notice($sms, $teacherModel->mobile)
         );
     }
 
@@ -297,9 +306,20 @@ class TeacherController extends Controller
             $request->password
         );
 
+        $user = $teacherModel->fresh('user')->user;
+        $sms = $user
+            ? app(LoginDetailsSms::class)->send(
+                $user,
+                $request->password,
+                true,
+                $teacherModel->mobile,
+                $request->boolean('send_sms', true)
+            )
+            : LoginDetailsSms::SKIPPED;
+
         return back()->with(
             'success',
-            'Password reset successfully.'
+            'Password reset successfully.' . LoginDetailsSms::notice($sms, $teacherModel->mobile)
         );
     }
 }

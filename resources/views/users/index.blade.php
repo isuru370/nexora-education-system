@@ -390,6 +390,7 @@
                                                     <label class="form-label fw-semibold">Confirm Password</label>
                                                     <input type="password" name="password_confirmation" class="form-control" required>
                                                 </div>
+                                                @include('partials.send-login-sms', ['id' => 'sendSmsPassword' . $user->id])
                                             </div>
                                             <div class="modal-footer">
                                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
