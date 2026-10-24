@@ -360,7 +360,8 @@ class DeployCheckService
     public function httpSmokeTests(): array
     {
         $tests = [
-            'Page: home (/)' => ['GET', '/', [], [200], 'text/html'],
+            // product page on edu.nexorait.lk only; institutes redirect to login
+            'Page: home (/)' => ['GET', '/', [], Features::enabled('landing_page') ? [200] : [301, 302], 'text/html'],
             'Page: login' => ['GET', '/login', [], [200], 'text/html'],
             'API: protected route' => ['GET', '/api/me', [], [401], 'application/json'],
             'API: wrong login' => ['POST', '/api/login', ['email' => 'deploy-check@invalid.local', 'password' => 'wrong-password', 'device_name' => 'deploy-check'], [401, 403, 422], 'application/json'],

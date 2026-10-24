@@ -107,6 +107,12 @@ Route::get('/', function () {
         return redirect('/dashboard');
     }
 
+    // The NexoraIT EDU product page is only for edu.nexorait.lk
+    // (php artisan nexora:feature landing_page on). Institutes: login.
+    if (!feature('landing_page')) {
+        return redirect()->route('login');
+    }
+
     return view('welcome');
 })->name('welcome');
 

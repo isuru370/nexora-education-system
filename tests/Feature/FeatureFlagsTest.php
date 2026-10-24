@@ -32,7 +32,7 @@ class FeatureFlagsTest extends TestCase
     {
         $this->assertFalse(feature('courses'));
         $this->assertFalse(feature('not-a-feature'));
-        $this->assertSame(['courses' => false], Features::all());
+        $this->assertSame(['courses' => false, 'landing_page' => false], Features::all());
 
         $this->get('/_test/courses')->assertNotFound();
         $this->getJson('/api/_test/courses')->assertNotFound()->assertJson(['success' => false]);
@@ -58,7 +58,7 @@ class FeatureFlagsTest extends TestCase
     public function test_command_lists_features_and_refuses_unknown_ones(): void
     {
         $this->artisan('nexora:feature')
-            ->expectsTable(['Key', 'Feature', 'This institute'], [['courses', 'Courses', 'off']])
+            ->expectsTable(['Key', 'Feature', 'This institute'], [['courses', 'Courses', 'off'], ['landing_page', 'Landing page', 'off']])
             ->assertExitCode(0);
 
         $this->artisan('nexora:feature cours on')->assertExitCode(1);
@@ -91,7 +91,7 @@ class FeatureFlagsTest extends TestCase
             ->assertExactJson([
                 'status' => 'success',
                 'message' => 'Features loaded successfully.',
-                'data' => ['courses' => false],
+                'data' => ['courses' => false, 'landing_page' => false],
                 'card_mode' => 'permanent',
             ]);
 

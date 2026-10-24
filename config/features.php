@@ -28,4 +28,10 @@ return [
         'description' => 'Course management (diploma / certificate courses).',
     ],
 
+    // Only edu.nexorait.lk (the product site). Institutes: "/" goes to login.
+    'landing_page' => [
+        'name' => 'Landing page',
+        'description' => 'NexoraIT EDU product page on "/" (welcome.blade.php). Off = "/" opens the login page.',
+    ],
+
 ];
