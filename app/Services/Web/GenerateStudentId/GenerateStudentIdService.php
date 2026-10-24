@@ -10,7 +10,8 @@ use Throwable;
 class GenerateStudentIdService
 {
     /**
-     * Get paginated students for the ID card generation page.
+     * Get paginated students for the ID card generation page: active
+     * students who do not have a permanent card yet (temporary card mode).
      *
      * @throws \RuntimeException
      */
@@ -43,6 +44,8 @@ class GenerateStudentIdService
                     });
                 })
                 ->where('is_active', true)
+                // only students still on a temporary card need an ID printed
+                ->where('permanent_qr_active', false)
                 ->latest('created_at')
                 ->paginate(12);
 

@@ -1454,6 +1454,8 @@ Route::prefix('student-cards')
 Route::prefix('generate-student-id')
     ->name('generate-student-id.')
     ->controller(GenerateStudentIdController::class)
+    // permanent-card institutes get pre-printed cards: nothing to generate
+    ->middleware('card.mode:temporary')
     ->group(function () {
 
         /*
