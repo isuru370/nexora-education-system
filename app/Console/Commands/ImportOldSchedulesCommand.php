@@ -60,9 +60,17 @@ class ImportOldSchedulesCommand extends Command
     private bool $dry;
     private array $problems = [];
     private int $fake = -1;
+    /** schedule id => [class, category fee] of the schedules made in this run (also dry-run ids) */
+    private array $made = [];
 
     public function handle(): int
     {
+        // thousands of schedules and attendance rows
+        if ($this->bytes((string) ini_get('memory_limit')) < 512 * 1024 * 1024) {
+            ini_set('memory_limit', '512M');
+        }
+        DB::connection()->disableQueryLog();
+
         $this->dry = (bool) $this->option('dry-run');
         $until = $this->option('until') ? Carbon::parse((string) $this->option('until'))->toDateString() : now()->toDateString();
 
@@ -123,10 +131,13 @@ class ImportOldSchedulesCommand extends Command
             'completed' => 0, 'cancelled' => 0, 'merged' => 0, 'exists' => 0, 'future' => 0, 'failed' => 0];
 
         // existing schedules: class|fee|date|start|end => [id, status, imported]
-        $schedules = ClassSchedule::query()->get(['id', 'student_class_id', 'class_category_fee_id', 'class_date', 'start_time', 'end_time', 'status', 'note'])
-            ->mapWithKeys(fn ($s) => [$this->key($s->student_class_id, $s->class_category_fee_id, $s->class_date->toDateString(), substr($s->start_time, 0, 5), substr($s->end_time, 0, 5))
-                => ['id' => (int) $s->id, 'status' => $s->status, 'imported' => str_starts_with((string) $s->note, self::NOTE)]])
-            ->all();
+        // plain rows (not models): there can be thousands
+        $schedules = [];
+        foreach (DB::table('class_schedules')->whereNull('deleted_at')
+            ->select(['id', 'student_class_id', 'class_category_fee_id', 'class_date', 'start_time', 'end_time', 'status', 'note'])->cursor() as $s) {
+            $schedules[$this->key($s->student_class_id, $s->class_category_fee_id, substr((string) $s->class_date, 0, 10), substr($s->start_time, 0, 5), substr($s->end_time, 0, 5))]
+                = ['id' => (int) $s->id, 'status' => $s->status, 'imported' => str_starts_with((string) $s->note, self::NOTE)];
+        }
 
         $existingPatterns = ClassSchedulePattern::query()->where('note', self::NOTE)->get()
             ->mapWithKeys(fn ($p) => [$this->patternKey($p->student_class_id, $p->class_category_fee_id, $p->class_day, substr($p->start_time, 0, 5), substr($p->end_time, 0, 5), $p->class_hall_id) => $p])
@@ -193,6 +204,7 @@ class ImportOldSchedulesCommand extends Command
                     $id = $this->dry ? $this->fake-- : $this->createSchedule($s, $patternId, $hallId, $status);
 
                     $schedules[$key] = ['id' => $id, 'status' => $status, 'imported' => true];
+                    $this->made[$id] = [$s['class'], $s['fee']];
                     $sessionSchedule[$s['old_id']] = $id;
                     $count[$status]++;
                 }
@@ -210,6 +222,7 @@ class ImportOldSchedulesCommand extends Command
                                     $patternId, $hallId, 'scheduled'
                                 );
                                 $schedules[$key] = ['id' => $id, 'status' => 'scheduled', 'imported' => true];
+                                $this->made[$id] = [$first['class'], $first['fee']];
                                 $count['future']++;
                             }
                         }
@@ -321,16 +334,19 @@ class ImportOldSchedulesCommand extends Command
             });
 
         // schedule id => [class, category fee]
-        $scheduleInfo = ClassSchedule::query()->whereIn('id', array_filter($sessionSchedule, fn ($id) => $id > 0))
-            ->get(['id', 'student_class_id', 'class_category_fee_id'])
-            ->mapWithKeys(fn ($s) => [$s->id => [(int) $s->student_class_id, (int) $s->class_category_fee_id]])->all();
+        $scheduleInfo = $this->made;
+        foreach (DB::table('class_schedules')->select(['id', 'student_class_id', 'class_category_fee_id'])->cursor() as $s) {
+            $scheduleInfo[(int) $s->id] = [(int) $s->student_class_id, (int) $s->class_category_fee_id];
+        }
         $count['other_category'] = 0;
         $count['other_class'] = 0;
 
         $imported = DB::table('student_attendances')->where('note', 'like', self::ATTENDANCE_NOTE . '%')->pluck('note')
             ->map(fn ($n) => (int) substr($n, strlen(self::ATTENDANCE_NOTE)))->flip()->all();
-        $taken = DB::table('student_attendances')->whereNull('deleted_at')->get(['student_id', 'class_schedule_id'])
-            ->mapWithKeys(fn ($a) => [$a->student_id . '|' . $a->class_schedule_id => true])->all();
+        $taken = [];
+        foreach (DB::table('student_attendances')->whereNull('deleted_at')->select(['student_id', 'class_schedule_id'])->cursor() as $a) {
+            $taken[$a->student_id . '|' . $a->class_schedule_id] = true;
+        }
 
         $insert = [];
         $flush = function () use (&$insert, &$count) {
@@ -441,6 +457,21 @@ class ImportOldSchedulesCommand extends Command
         $this->newLine();
         $this->line('Check - attendance per month (old system vs new database):');
         $this->table(['Month', 'Old system', 'Imported', 'Not imported', ''], $rows);
+    }
+
+    protected function bytes(string $limit): int
+    {
+        if ($limit === '-1') {
+            return PHP_INT_MAX;
+        }
+        $n = (int) $limit;
+
+        return match (strtolower(substr($limit, -1))) {
+            'g' => $n * 1024 ** 3,
+            'm' => $n * 1024 ** 2,
+            'k' => $n * 1024,
+            default => $n,
+        };
     }
 
     /** old fee id => [class, fee, option] from the classes import */
