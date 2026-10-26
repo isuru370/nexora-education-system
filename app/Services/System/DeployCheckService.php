@@ -391,6 +391,34 @@ class DeployCheckService
     |--------------------------------------------------------------------------
     */
 
+    /**
+     * Sri Lankan banks and bank branches (teacher bank details). With
+     * $apply the missing ones are added (seeders are safe to run again).
+     */
+    public function referenceData(bool $apply): array
+    {
+        return $this->safe(function () use ($apply) {
+            if (!Schema::hasTable('banks') || !Schema::hasTable('bank_branches')) {
+                return $this->fail('banks / bank_branches tables missing - run the migrations');
+            }
+
+            $added = 0;
+
+            if ($apply) {
+                (new \Database\Seeders\BanksTableSeeder())->run();
+                $added = (new \Database\Seeders\BankBranchesSeeder())->run()['added'];
+            }
+
+            $banks = DB::table('banks')->whereNull('deleted_at')->count();
+            $branches = DB::table('bank_branches')->whereNull('deleted_at')->count();
+            $text = "{$banks} banks, {$branches} branches" . ($added ? " ({$added} branches added)" : '');
+
+            return $branches === 0
+                ? $this->warn($text . ' - added by php artisan nexora:deploy')
+                : $this->ok($text);
+        });
+    }
+
     /** How students get ID cards here (php artisan nexora:card-mode). */
     public function cardMode(): array
     {

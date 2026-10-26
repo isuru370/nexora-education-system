@@ -46,7 +46,7 @@ class BanksTableSeeder extends Seeder
             ['bank_name' => 'Nations Trust Bank PLC', 'bank_code' => '7162', 'created_at' => now(), 'updated_at' => now()],
             ['bank_name' => 'Pan Asia Banking Corporation PLC', 'bank_code' => '7311', 'created_at' => now(), 'updated_at' => now()],
             ['bank_name' => 'Peoples Bank', 'bank_code' => '7135', 'created_at' => now(), 'updated_at' => now()],
-            ['bank_name' => 'Peopleâ€™s Leasing & Finance PLC', 'bank_code' => '7922', 'created_at' => now(), 'updated_at' => now()],
+            ['bank_name' => "People's Leasing & Finance PLC", 'bank_code' => '7922', 'created_at' => now(), 'updated_at' => now()],
             ['bank_name' => 'Public Bank', 'bank_code' => '7296', 'created_at' => now(), 'updated_at' => now()],
             ['bank_name' => 'Regional Development Bank', 'bank_code' => '7755', 'created_at' => now(), 'updated_at' => now()],
             ['bank_name' => 'Sampath Bank PLC', 'bank_code' => '7278', 'created_at' => now(), 'updated_at' => now()],
@@ -60,15 +60,17 @@ class BanksTableSeeder extends Seeder
             ['bank_name' => 'Vallibel Finance PLC', 'bank_code' => '7816', 'created_at' => now(), 'updated_at' => now()],
         ];
 
-        // Check existing registration before entering data.
-        $existingBanks = DB::table('banks')->count();
+        // Add the banks that are missing (safe to run again on any database)
+        $existing = DB::table('banks')->pluck('bank_code')->map(fn ($c) => (string) $c)->all();
+        $missing = array_values(array_filter($banks, fn ($b) => !in_array($b['bank_code'], $existing, true)));
 
-        if ($existingBanks == 0) {
-            DB::table('banks')->insert($banks);
-            $this->command->info('✅ Banks were successfully created.!');
-            $this->command->info('🏦 Total Banks: ' . count($banks));
-        } else {
-            $this->command->info('ℹ️ Banks already exist. (' . $existingBanks . ' banks)');
+        if ($missing) {
+            DB::table('banks')->insert($missing);
         }
+
+        // Old installs saved a broken apostrophe
+        DB::table('banks')->where('bank_code', '7922')->update(['bank_name' => "People's Leasing & Finance PLC"]);
+
+        $this->command?->info('Banks: ' . count($missing) . ' added, ' . DB::table('banks')->count() . ' in total.');
     }
 }
