@@ -180,6 +180,28 @@ php artisan nexora:import-expenses /path/expenses.csv
 The reasons are added to `payment_reasons` when missing (matched by name). Cancelled rows come in as `cancelled`
 (listed, not counted). Paid totals per month shown at the end. Safe to run again.
 
+## 11. Class schedules and attendance
+
+After the classes (with enrollments) and the halls (codes `H1`, `H2` ...). Two CSVs:
+
+```
+sessions.csv:    old_id, old_fee_id, class_date, start_time, end_time, hall_code, held
+attendance.csv:  old_id, custom_id, old_enrollment_id, old_fee_id, old_session_id, attended_at
+```
+
+```bash
+php artisan nexora:import-schedules /path/sessions.csv --attendance=/path/attendance.csv --dry-run
+php artisan nexora:import-schedules /path/sessions.csv --attendance=/path/attendance.csv
+```
+
+- Weekly **patterns**: one per class + category + day + time + hall, from the first to the last old session.
+  Times like `3:00 PM` and `15:00` are the same.
+- Old sessions up to `--until` (default today): held (or left "ongoing") -> `completed`, not held -> `cancelled`
+  ("Not held (old system)"). The same class + category + date + time twice becomes one schedule.
+- Later dates are made from the patterns (active classes only), as the system does for a new pattern.
+- Attendance goes to the session's schedule and the student's enrollment, with the old time; one per student and
+  schedule (a second one is listed). No SMS. A month-by-month check is shown at the end. Safe to run again.
+
 ## Switching over (go-live day)
 
 1. Stop taking payments in the old system; take the final backup and build the CSVs from it.
