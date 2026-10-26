@@ -603,33 +603,22 @@ class TeacherService
      */
     protected function generateCustomId(): string
     {
-        $lastTeacher = Teacher::withTrashed()
+        // Highest SAT number of any teacher (imported teachers can have
+        // other ids, e.g. CT0001, or SAT0007 with 4 digits), then the
+        // next number that is not taken.
+        $last = Teacher::withTrashed()
+            ->where('custom_id', 'like', 'SAT%')
             ->lockForUpdate()
-            ->orderByDesc('id')
-            ->first();
+            ->pluck('custom_id')
+            ->map(fn ($id) => preg_match('/^SAT(\d+)$/', $id, $m) ? (int) $m[1] : 0)
+            ->max() ?? 0;
 
-        if (!$lastTeacher) {
-            return 'SAT001';
-        }
+        do {
+            $last++;
+            $customId = 'SAT' . str_pad((string) $last, 3, '0', STR_PAD_LEFT);
+        } while (Teacher::withTrashed()->where('custom_id', $customId)->exists());
 
-        if (
-            !preg_match(
-                '/^SAT(\d+)$/',
-                $lastTeacher->custom_id,
-                $matches
-            )
-        ) {
-            return 'SAT001';
-        }
-
-        $nextNumber = (int) $matches[1] + 1;
-
-        return 'SAT' . str_pad(
-            $nextNumber,
-            3,
-            '0',
-            STR_PAD_LEFT
-        );
+        return $customId;
     }
 
     /**
