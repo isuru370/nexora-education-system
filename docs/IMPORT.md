@@ -168,6 +168,18 @@ php artisan nexora:import-extra-incomes /path/extra_incomes.csv
 Received, type `extra`, date and reason kept, `REC-` receipts in date order; totals per month shown at the end.
 Safe to run again.
 
+## 10. Institute expenses
+
+CSV: `old_id, reason, amount, payment_date, status` (1 = paid, 0 = cancelled).
+
+```bash
+php artisan nexora:import-expenses /path/expenses.csv --dry-run
+php artisan nexora:import-expenses /path/expenses.csv
+```
+
+The reasons are added to `payment_reasons` when missing (matched by name). Cancelled rows come in as `cancelled`
+(listed, not counted). Paid totals per month shown at the end. Safe to run again.
+
 ## Switching over (go-live day)
 
 1. Stop taking payments in the old system; take the final backup and build the CSVs from it.
