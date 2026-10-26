@@ -53,7 +53,7 @@ php artisan nexora:import-students /path/students.csv --images=/path/old-uploads
 - Phones: the first of `07X / 07Y`, `9477...` → `077...`, `77...` → `077...`. Guardian mobile falls back to the mobile.
 - Birthday: `2008-05-17` or `05/17/2008` (old system: month first). A date that does not exist is left empty.
 - Photo: `storage/app/public/uploads/<file name from img_url>`, copied from `--images` when needed; without it the
-  student has no photo (add it from the web).
+  student gets the default `uploads/male.png` / `uploads/female.png` (same as a new registration).
 - A NIC already used by another student is left empty. All of these are listed in
   `storage/logs/import-students-problems.txt`.
 - `--branch=<code>` when there is more than one branch (default: the only branch / `MAIN`).

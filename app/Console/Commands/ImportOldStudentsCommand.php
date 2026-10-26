@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Models\Student;
 use App\Services\Import\OldValue;
+use App\Services\Web\Student\StudentPhotoService;
 use Illuminate\Console\Command;
 use Throwable;
 
@@ -30,7 +31,7 @@ class ImportOldStudentsCommand extends Command
 
     public const REQUIRED = ['custom_id', 'fname', 'lname', 'grade'];
 
-    public function handle(): int
+    public function handle(StudentPhotoService $photos): int
     {
         $dry = (bool) $this->option('dry-run');
         $imagesDir = $this->option('images') ? rtrim((string) $this->option('images'), '/\\') : null;
@@ -135,8 +136,10 @@ class ImportOldStudentsCommand extends Command
             if ($imagePath === null) {
                 $count['no_photo']++;
                 $warn($id, $imageState === 'missing'
-                    ? 'photo ' . basename((string) parse_url((string) $row['img_url'], PHP_URL_PATH)) . ' not found - no photo'
-                    : 'no photo');
+                    ? 'photo ' . basename((string) parse_url((string) $row['img_url'], PHP_URL_PATH)) . ' not found - default photo'
+                    : 'no photo - default photo');
+                // same default picture as a new registration without a photo
+                $imagePath = $photos->getDefaultImageUrl($gender);
             } else {
                 $count[$imageState]++;
             }
@@ -162,7 +165,7 @@ class ImportOldStudentsCommand extends Command
                 'grade_id' => $grades[OldValue::gradeKey($row['grade'])],
                 'admission' => OldValue::bool($row['admission'] ?? null),
                 'student_school' => OldValue::text($row['student_school'] ?? null, 150),
-                'img_url' => $imagePath ?? '',
+                'img_url' => $imagePath,
                 'is_active' => OldValue::bool($row['is_active'] ?? null, true),
                 // the old card QR is the Custom ID
                 'permanent_qr_active' => true,
@@ -198,7 +201,7 @@ class ImportOldStudentsCommand extends Command
             [$dry ? 'Would be imported' : 'Imported', $count['created']],
             ['  photo already in storage/app/public/uploads', $count['in_storage']],
             ['  photo ' . ($dry ? 'to copy' : 'copied') . ' from --images', $count['copied']],
-            ['  without a photo', $count['no_photo']],
+            ['  no photo: default male.png / female.png', $count['no_photo']],
             ['Already imported (left as they are)', $count['exists']],
             ['Skipped: no custom_id / name', $count['bad']],
             ['Failed', $count['failed']],

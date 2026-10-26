@@ -85,6 +85,10 @@ class ImportStudentsTeachersTest extends TestCase
                 'bday' => '2010-01-15', 'guardian_mobile' => '0755555555', 'is_active' => '1', 'grade' => '11',
                 'img_url' => 'https://other.test/images/logo.png',
             ],
+            [
+                'custom_id' => 'SA25003', 'fname' => 'Dilini', 'lname' => 'D. Jayasinghe', 'gender' => 'Female',
+                'guardian_mobile' => '0766666666', 'grade' => '11', 'img_url' => 'https://admin.old.test/uploads/missing.jpg',
+            ],
             ['custom_id' => '', 'fname' => 'No id', 'lname' => 'No id', 'grade' => '10'],
         ]);
     }
@@ -144,7 +148,7 @@ class ImportStudentsTeachersTest extends TestCase
         $this->artisan('nexora:import-students', ['file' => $this->students(), '--images' => $this->dir . '/images'])
             ->assertExitCode(0);
 
-        $this->assertSame(3, Student::count());
+        $this->assertSame(4, Student::count());
         Storage::disk('public')->assertExists('uploads/1727429708.jpg');
 
         $kasun = Student::where('custom_id', 'CS0001')->first();
@@ -171,7 +175,10 @@ class ImportStudentsTeachersTest extends TestCase
 
         $new = Student::where('custom_id', 'SA25002')->first();
         $this->assertSame('male', $new->gender);
-        $this->assertSame('', $new->img_url);                  // logo placeholder is not a photo
+        $this->assertSame('uploads/male.png', $new->img_url);  // logo placeholder is not a photo
+
+        $girl = Student::where('custom_id', 'SA25003')->first();
+        $this->assertSame('uploads/female.png', $girl->img_url); // picture not found
 
         $problems = file_get_contents(storage_path('logs/import-students-problems.txt'));
         $this->assertStringContainsString('SA25001: NIC 200812345678 is also on CS0001', $problems);
@@ -180,7 +187,7 @@ class ImportStudentsTeachersTest extends TestCase
 
         // Again: nothing new
         $this->artisan('nexora:import-students', ['file' => $this->students()])->assertExitCode(0);
-        $this->assertSame(3, Student::count());
+        $this->assertSame(4, Student::count());
     }
 
     private const TEACHER_COLS = ['custom_id', 'fname', 'lname', 'email', 'mobile', 'nic', 'bday', 'gender', 'address1', 'address2',
