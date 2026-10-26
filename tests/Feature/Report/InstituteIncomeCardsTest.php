@@ -36,7 +36,7 @@ class InstituteIncomeCardsTest extends TestCase
             ->get('/reports/institute-income?from=2026-09-01&to=2026-09-30')
             ->assertOk()
             ->assertSeeInOrder(['Admission Payments', 'Rs. 1,234.00', 'Extra Income', 'Rs. 5,678.00',
-                'Teachers Salary', 'Rs. 0.00', 'Teacher Advances', 'Rs. 432.00', 'Teacher Net Salary', 'Rs. -432.00', 'Institute Income']);
+                'Teachers Salary', 'Rs. 0.00', 'Teacher Advances', 'Rs. 432.00', 'Teacher Net Salary', 'Rs. -432.00', 'Institute Income', 'Institute Net Income (Net Profit)', 'Rs. 6,912.00']);
 
         Carbon::setTestNow();
     }

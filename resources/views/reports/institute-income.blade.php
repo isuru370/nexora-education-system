@@ -231,8 +231,8 @@
             <div class="nx-card stat-card">
                 <div class="stat-icon-wrapper icon-blue"><i class="bi bi-wallet2"></i></div>
                 <div class="stat-info">
-                    <span class="stat-label">Net Income</span>
-                    <h2 class="stat-number">Rs. {{ number_format($summary['net'], 2) }}</h2>
+                    <span class="stat-label">Institute Net Income (Net Profit)</span>
+                    <h2 class="stat-number {{ $summary['net'] < 0 ? 'text-danger' : '' }}">Rs. {{ number_format($summary['net'], 2) }}</h2>
                     <span class="stat-change neutral">Income <span class="stat-change-note">minus expenses</span></span>
                 </div>
             </div>
