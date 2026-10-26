@@ -184,6 +184,33 @@
             </div>
 
             <div class="nx-card stat-card">
+                <div class="stat-icon-wrapper icon-green"><i class="bi bi-person-badge-fill"></i></div>
+                <div class="stat-info">
+                    <span class="stat-label">Teachers Salary</span>
+                    <h2 class="stat-number">Rs. {{ number_format($summary['teacher_salary'], 2) }}</h2>
+                    <span class="stat-change neutral">Teacher share <span class="stat-change-note">of the fees</span></span>
+                </div>
+            </div>
+
+            <div class="nx-card stat-card">
+                <div class="stat-icon-wrapper icon-violet"><i class="bi bi-hand-index-thumb-fill"></i></div>
+                <div class="stat-info">
+                    <span class="stat-label">Teacher Advances</span>
+                    <h2 class="stat-number">Rs. {{ number_format($summary['teacher_advances'], 2) }}</h2>
+                    <span class="stat-change down">Advances <span class="stat-change-note">given</span></span>
+                </div>
+            </div>
+
+            <div class="nx-card stat-card">
+                <div class="stat-icon-wrapper icon-blue"><i class="bi bi-calculator-fill"></i></div>
+                <div class="stat-info">
+                    <span class="stat-label">Teacher Net Salary</span>
+                    <h2 class="stat-number">Rs. {{ number_format($summary['teacher_net_salary'], 2) }}</h2>
+                    <span class="stat-change neutral">Salary <span class="stat-change-note">minus advances</span></span>
+                </div>
+            </div>
+
+            <div class="nx-card stat-card">
                 <div class="stat-icon-wrapper icon-green"><i class="bi bi-cash-stack"></i></div>
                 <div class="stat-info">
                     <span class="stat-label">Institute Income</span>
