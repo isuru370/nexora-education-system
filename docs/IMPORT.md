@@ -78,6 +78,21 @@ php artisan nexora:import-teachers /path/teachers.csv
 - Linked to the branch (`teacher_branches`). No login is made - add it from the web (Teachers → login).
 - Problems: `storage/logs/import-teachers-problems.txt`.
 
+## 5. Admission payments
+
+After the students. CSV: `old_id, custom_id, admission_name, admission_amount, amount, paid_at`.
+
+```bash
+php artisan nexora:import-admissions /path/admission_payments.csv --dry-run
+php artisan nexora:import-admissions /path/admission_payments.csv
+```
+
+- Admission types matched by name (case does not matter); missing ones are added with `admission_amount`.
+- The **paid** amount and date are kept (status paid, cash). Receipts get the next `REC-` numbers in date order.
+- The same student paying the same admission twice on one day (double entry) is imported once.
+- No SMS. The note is `Imported from old system #<old id>`, so running again adds nothing.
+- Problems: `storage/logs/import-admissions-problems.txt`.
+
 ## Next
 
 Subjects and classes - separate commands.
