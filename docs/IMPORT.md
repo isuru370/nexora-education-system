@@ -121,3 +121,44 @@ php artisan nexora:import-classes /path/classes.csv --enrollments=/path/enrollme
   the same class + category is enrolled once (the active row).
 - Safe to run again (imported fee options and enrollments are marked in their note). Problems:
   `storage/logs/import-classes-problems.txt`.
+
+## 7. Class fee payments
+
+After the classes (with enrollments). CSV: `old_id, custom_id, old_enrollment_id, old_fee_id, payment_month, amount, paid_at, status`.
+
+```bash
+php artisan nexora:import-payments /path/class_payments.csv --dry-run
+php artisan nexora:import-payments /path/class_payments.csv
+```
+
+- Each payment goes to the student's imported enrollment (a double-entry enrollment's payments go to the one kept).
+  Month (`2025 Feb` / `2025-02`), amount and paid date are kept; cash, completed; receipts get `REC-` numbers in date order.
+- The teacher / institute split is made exactly as for a payment from the web (class %).
+- One payment per enrollment and month (the system's rule): a second one is a double entry, skipped and listed.
+  `status = 0` (cancelled in the old system) is skipped.
+- No SMS. Safe to run again: with a newer backup only the new payments are added.
+- At the end the **old system and the database are compared month by month** - every month must say `OK`.
+
+## 8. Teacher salaries settled in the old system
+
+After the payments. CSV (old teacher payments): `old_id, teacher_custom_id, reason_code, reason, amount, paid_at, salary_month, status`.
+
+```bash
+php artisan nexora:import-teacher-salaries /path/teacher_payments.csv --settled-until=2026-08 --dry-run
+php artisan nexora:import-teacher-salaries /path/teacher_payments.csv --settled-until=2026-08
+```
+
+- Every month up to `--settled-until` in which a teacher earned (or was paid) becomes a **paid** `teacher_salaries`
+  row: gross = earnings in the new system, net = what the old system paid (salary + advances), with a note. So the
+  new system never pays those months again. Months with earnings but no old payment are closed too, and listed.
+- After `--settled-until`, only the months the old system already paid are closed; the rest stay open and are paid
+  from the new system.
+- Both systems count a payment in the month it was **paid** (checked: 232 of 244 old salary payments match exactly).
+- Problems / open months: `storage/logs/import-teacher-salaries-problems.txt`.
+
+## Switching over (go-live day)
+
+1. Stop taking payments in the old system; take the final backup and build the CSVs from it.
+2. Run the imports again in the same order - each one only adds what is new (students, enrollments, payments,
+   teacher payments). Check that the payments check says `All months match`.
+3. Start using the new system.
