@@ -247,6 +247,8 @@ class ImportOldSchedulesCommand extends Command
             $table[] = ['  already imported', $att['exists']];
             $table[] = ['  skipped: same student + schedule twice', $att['duplicate']];
             $table[] = ['  skipped: student / enrollment / session not found', $att['missing']];
+            $table[] = ['  linked to the session\'s category (old system had the other one)', $att['other_category']];
+            $table[] = ['  not enrolled in the session\'s class (listed)', $att['other_class']];
             $count['failed'] += $att['failed'];
         }
         $table[] = ['Failed', $count['failed']];
@@ -309,15 +311,21 @@ class ImportOldSchedulesCommand extends Command
 
         $byStudentOption = [];
         $byStudentClass = [];
+        $byStudentClassFee = [];
         StudentClassEnrollment::query()->orderByDesc('is_active')->orderBy('id')
-            ->get(['id', 'branch_id', 'student_id', 'student_class_id', 'class_category_fee_option_id'])
-            ->each(function ($e) use (&$byStudentOption, &$byStudentClass) {
+            ->get(['id', 'branch_id', 'student_id', 'student_class_id', 'class_category_fee_id', 'class_category_fee_option_id'])
+            ->each(function ($e) use (&$byStudentOption, &$byStudentClass, &$byStudentClassFee) {
                 $byStudentOption[$e->student_id . '|' . $e->class_category_fee_option_id] ??= $e;
                 $byStudentClass[$e->student_id . '|' . $e->student_class_id] ??= $e;
+                $byStudentClassFee[$e->student_id . '|' . $e->student_class_id . '|' . $e->class_category_fee_id] ??= $e;
             });
 
-        $scheduleClass = ClassSchedule::query()->whereIn('id', array_filter($sessionSchedule, fn ($id) => $id > 0))
-            ->pluck('student_class_id', 'id')->all();
+        // schedule id => [class, category fee]
+        $scheduleInfo = ClassSchedule::query()->whereIn('id', array_filter($sessionSchedule, fn ($id) => $id > 0))
+            ->get(['id', 'student_class_id', 'class_category_fee_id'])
+            ->mapWithKeys(fn ($s) => [$s->id => [(int) $s->student_class_id, (int) $s->class_category_fee_id]])->all();
+        $count['other_category'] = 0;
+        $count['other_class'] = 0;
 
         $imported = DB::table('student_attendances')->where('note', 'like', self::ATTENDANCE_NOTE . '%')->pluck('note')
             ->map(fn ($n) => (int) substr($n, strlen(self::ATTENDANCE_NOTE)))->flip()->all();
@@ -355,13 +363,29 @@ class ImportOldSchedulesCommand extends Command
             $scheduleId = $sessionSchedule[(int) $row['old_session_id']] ?? null;
             $studentId = $students[$id] ?? null;
 
-            // the student's enrollment: the imported one, or the one in the same fee option / class
-            $enrollment = $enrollmentByOld[(int) ($row['old_enrollment_id'] ?? 0)] ?? null;
-            if (!$enrollment && $studentId && isset($fees[(int) ($row['old_fee_id'] ?? 0)])) {
-                $enrollment = $byStudentOption[$studentId . '|' . $fees[(int) $row['old_fee_id']]['option']] ?? null;
+            // The student's enrollment in the session's class + category; the old system
+            // sometimes linked the student's other enrollment.
+            $old = $enrollmentByOld[(int) ($row['old_enrollment_id'] ?? 0)] ?? null;
+            if (!$old && $studentId && isset($fees[(int) ($row['old_fee_id'] ?? 0)])) {
+                $old = $byStudentOption[$studentId . '|' . $fees[(int) $row['old_fee_id']]['option']] ?? null;
             }
-            if (!$enrollment && $studentId && $scheduleId && isset($scheduleClass[$scheduleId])) {
-                $enrollment = $byStudentClass[$studentId . '|' . $scheduleClass[$scheduleId]] ?? null;
+            [$sClass, $sFee] = $scheduleInfo[$scheduleId] ?? [null, null];
+
+            $enrollment = null;
+            if ($studentId && $sClass) {
+                $enrollment = $byStudentClassFee[$studentId . '|' . $sClass . '|' . $sFee]
+                    ?? (($old && (int) $old->student_class_id === $sClass) ? $old : null)
+                    ?? $byStudentClass[$studentId . '|' . $sClass]
+                    ?? null;
+            }
+            if ($enrollment && $old && $enrollment->id !== $old->id && (int) $old->student_class_id === $sClass) {
+                $count['other_category']++;
+            }
+            if (!$enrollment && $old) {
+                // not enrolled in the session's class: keep the old system's link (listed)
+                $enrollment = $old;
+                $count['other_class']++;
+                $this->problems[] = "attendance #{$oldId} {$id}: not enrolled in this session's class - linked to the student's other class enrollment (as in the old system)";
             }
 
             if (!$scheduleId || !$studentId || !$enrollment || !$at || (int) $enrollment->student_id !== $studentId) {

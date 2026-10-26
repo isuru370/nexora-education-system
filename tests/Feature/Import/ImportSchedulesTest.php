@@ -30,6 +30,7 @@ class ImportSchedulesTest extends TestCase
         $branch = Branch::create(['name' => 'Main Branch', 'code' => 'MAIN', 'is_active' => true]);
         $grade = Grade::create(['grade_name' => '10', 'is_active' => true]);
         ClassCategory::create(['category_name' => 'Theory', 'code' => 'theory', 'is_active' => true]);
+        ClassCategory::create(['category_name' => 'Revision', 'code' => 'revision', 'is_active' => true]);
         ClassHall::create(['branch_id' => $branch->id, 'code' => 'H1', 'hall_name' => 'HALL NO 1', 'is_active' => true]);
         Teacher::create(['custom_id' => 'CT0001', 'full_name' => 'T', 'initials' => 'T', 'email' => 't@t.lk', 'mobile' => '0771234567',
             'nic' => '1', 'bday' => '1980-01-01', 'gender' => 'male', 'address1' => 'x']);
@@ -43,10 +44,12 @@ class ImportSchedulesTest extends TestCase
 
         $this->csv('classes.csv', ['old_class_id', 'old_fee_id', 'class_name', 'teacher_custom_id', 'teacher_percentage', 'subject', 'grade', 'is_active', 'is_ongoing', 'category', 'fee', 'created_at'], [
             [11, 25, 'ENGLISH G10', 'CT0001', 75, 'English', '10', 1, 1, 'Theory', 1000, '2024-09-15 00:00:00'],
+            [11, 26, 'ENGLISH G10', 'CT0001', 75, 'English', '10', 1, 1, 'Revision', 500, '2024-09-15 00:00:00'],
         ]);
         $this->csv('enrollments.csv', ['old_id', 'custom_id', 'old_fee_id', 'is_active', 'is_free_card', 'enrolled_at', 'updated_at'], [
             [1, 'CS0001', 25, 1, 0, '2026-09-01 09:00:00', ''],
             [2, 'CS0002', 25, 1, 0, '2026-09-01 09:00:00', ''],
+            [3, 'CS0001', 26, 1, 0, '2026-09-01 09:00:00', ''],   // CS0001 also in Revision
         ]);
         // Saturdays 3:00-5:00 PM in hall H1 (old times in two formats); Oct 3 twice in the old system
         $this->csv('sessions.csv', ['old_id', 'old_fee_id', 'class_date', 'start_time', 'end_time', 'hall_code', 'held'], [
@@ -55,6 +58,7 @@ class ImportSchedulesTest extends TestCase
             [102, 25, '2026-10-10', '3:00 PM', '5:00 PM', 'H1', 0], // not held
             [103, 25, '2026-10-17', '15:00', '17:00', 'H1', 1],
             [104, 25, '2026-11-14', '15:00', '17:00', 'H1', 0],     // future: the pattern runs to here
+            [105, 26, '2026-10-04', '08:00', '10:00', 'H1', 1],     // a Revision session (Sunday)
         ]);
         $this->csv('attendance.csv', ['old_id', 'custom_id', 'old_enrollment_id', 'old_fee_id', 'old_session_id', 'attended_at'], [
             [1, 'CS0001', 1, 25, 100, '2026-10-03 15:05:00'],
@@ -62,6 +66,7 @@ class ImportSchedulesTest extends TestCase
             [3, 'CS0002', 2, 25, 101, '2026-10-03 15:07:00'],
             [4, 'CS0002', 2, 25, 103, '2026-10-17 15:01:00'],
             [5, 'CS0002', 2, 25, 999, '2026-10-17 15:01:00'],   // no such session
+            [6, 'CS0001', 1, 25, 105, '2026-10-04 08:05:00'],   // old system linked the Theory enrollment
         ]);
 
         $this->artisan('nexora:import-classes', ['file' => $this->dir . '/classes.csv', '--enrollments' => $this->dir . '/enrollments.csv'])->assertExitCode(0);
@@ -108,7 +113,7 @@ class ImportSchedulesTest extends TestCase
         $this->import()->assertExitCode(0);
 
         // one weekly pattern: Saturday 15:00-17:00, hall H1, Oct 3 - Nov 14
-        $pattern = ClassSchedulePattern::sole();
+        $pattern = ClassSchedulePattern::where('class_day', 'saturday')->sole();
         $this->assertSame('saturday', $pattern->class_day);
         $this->assertSame('15:00:00', $pattern->start_time);
         $this->assertSame('17:00:00', $pattern->end_time);
@@ -117,7 +122,7 @@ class ImportSchedulesTest extends TestCase
         $this->assertSame('H1', $pattern->hall->code);
         $this->assertTrue($pattern->is_active);
 
-        $status = ClassSchedule::orderBy('class_date')->get()->mapWithKeys(fn ($s) => [$s->class_date->toDateString() => $s->status])->all();
+        $status = ClassSchedule::where('day_of_week', 'saturday')->orderBy('class_date')->get()->mapWithKeys(fn ($s) => [$s->class_date->toDateString() => $s->status])->all();
         $this->assertSame([
             '2026-10-03' => 'completed',  // #100 + #101 = one
             '2026-10-10' => 'cancelled',  // not held
@@ -128,8 +133,15 @@ class ImportSchedulesTest extends TestCase
         ], $status);
         $this->assertSame('Not held (old system)', ClassSchedule::where('status', 'cancelled')->value('cancel_reason'));
 
-        // attendance: 3 (CS0001 twice on Oct 3 = once; session #999 unknown)
-        $this->assertSame(3, StudentAttendance::count());
+        // attendance: 4 (CS0001 twice on Oct 3 = once; session #999 unknown)
+        $this->assertSame(4, StudentAttendance::count());
+
+        // the Revision session goes to CS0001's Revision enrollment, not the Theory one the old system had
+        $revision = StudentAttendance::where('note', 'Imported from old system #6')->first();
+        $this->assertSame(
+            ClassSchedule::find($revision->class_schedule_id)->class_category_fee_id,
+            \App\Models\StudentClassEnrollment::find($revision->student_class_enrollment_id)->class_category_fee_id
+        );
         $oct3 = ClassSchedule::whereDate('class_date', '2026-10-03')->value('id');
         $this->assertSame(2, StudentAttendance::where('class_schedule_id', $oct3)->count());
         $first = StudentAttendance::where('note', 'Imported from old system #1')->first();
@@ -143,8 +155,8 @@ class ImportSchedulesTest extends TestCase
 
         // again: nothing new
         $this->import()->assertExitCode(0);
-        $this->assertSame(1, ClassSchedulePattern::count());
-        $this->assertSame(6, ClassSchedule::count());
-        $this->assertSame(3, StudentAttendance::count());
+        $this->assertSame(2, ClassSchedulePattern::count());
+        $this->assertSame(7, ClassSchedule::count());
+        $this->assertSame(4, StudentAttendance::count());
     }
 }
