@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder
             SystemUsersTableSeeder::class,
             GradesTableSeeder::class,
             BanksTableSeeder::class,
+            BankBranchesSeeder::class,
             ClassCategoryTableSeeder::class,
         ]);
     }
