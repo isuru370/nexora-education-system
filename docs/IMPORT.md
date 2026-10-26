@@ -156,6 +156,18 @@ php artisan nexora:import-teacher-salaries /path/teacher_payments.csv --settled-
 - Both systems count a payment in the month it was **paid** (checked: 232 of 244 old salary payments match exactly).
 - Problems / open months: `storage/logs/import-teacher-salaries-problems.txt`.
 
+## 9. Extra incomes
+
+CSV: `old_id, reason, amount, income_date`.
+
+```bash
+php artisan nexora:import-extra-incomes /path/extra_incomes.csv --dry-run
+php artisan nexora:import-extra-incomes /path/extra_incomes.csv
+```
+
+Received, type `extra`, date and reason kept, `REC-` receipts in date order; totals per month shown at the end.
+Safe to run again.
+
 ## Switching over (go-live day)
 
 1. Stop taking payments in the old system; take the final backup and build the CSVs from it.
