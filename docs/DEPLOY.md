@@ -20,7 +20,7 @@ or `✖ NOT READY FOR PRODUCTION` with a list of what to fix. Exit code is 0 / 1
 |---|---|
 | 1. Server and .env | PHP version + extensions, APP_KEY, APP_ENV=production, APP_DEBUG=false, APP_URL (https), writable folders, database connection, mail, `public/storage` link (created if missing) |
 | 2. Database tables | Runs only the new migrations (`migrate --force`) and lists them |
-| 3. Basic data | First install only: roles, branch, super admin, grades, banks, class categories |
+| 3. Basic data | First install only: roles, branch, super admin, grades, banks, class categories. **Every deploy:** adds missing banks (44) and bank branches (3,630, `database/seeders/data/bank_branches.csv`) |
 | 4. Health checks | Core tables, features, **card mode** (warning until `nexora:card-mode` is run), roles, an active admin, a branch, every route → controller method exists, every controller starts, all views compile, storage + cache work, `/` and `/login` load, API returns 401 without login |
 | 5. Caches | `config:cache`, `route:cache`, `view:cache` |
 | 6. Parent Hub | Checks `PARENT_HUB_URL`, `PARENT_HUB_SECRET`, `INSTITUTE_CODE`, then sends this institute's details (code, name, `APP_URL`, contact email / mobile, logo, version) to the hub and confirms they were saved. Missing settings, a wrong secret or a hub that cannot be reached = **NOT READY** (parents could not log in). With `--check` nothing is sent. `php artisan parenthub:register` does only this step. |

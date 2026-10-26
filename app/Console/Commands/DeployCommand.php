@@ -83,6 +83,9 @@ class DeployCommand extends Command
             $this->seed($checker);
         }
 
+        // Banks + bank branches: every database, every deploy (adds what is missing)
+        $this->record(['Banks / branches' => $checker->referenceData(!$checkOnly)]);
+
         /*
          * 4. Health
          */
