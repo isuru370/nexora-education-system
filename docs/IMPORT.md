@@ -99,8 +99,9 @@ After the teachers and students. Two CSVs:
 
 ```
 classes.csv:      old_class_id, old_fee_id, class_name, teacher_custom_id, teacher_percentage, subject, grade,
-                  is_active, is_ongoing, category, fee, created_at        (one row per class + category)
-enrollments.csv:  old_id, custom_id, old_fee_id, is_active, is_free_card, enrolled_at
+                  is_active, is_ongoing, category, fee, created_at, option_label (optional)
+                  - one row per class + category
+enrollments.csv:  old_id, custom_id, old_fee_id, is_active, is_free_card, enrolled_at, updated_at
 ```
 
 ```bash
@@ -109,11 +110,14 @@ php artisan nexora:import-classes /path/classes.csv --enrollments=/path/enrollme
 ```
 
 - Class: name, teacher (by Custom ID), subject, grade, active / ongoing and date as in the old system;
-  offline, Sinhala medium. Missing subjects and categories are added; a missing grade stops the import.
+  offline, Sinhala medium. Missing subjects are added; a missing grade stops the import.
 - Teacher % → `class_payment_configs` (institute % = 100 − teacher %, organizer 0).
-- Each class + category → `class_category_fees` with a **Default** fee option (the old fee). The same
-  category twice with another fee becomes a second option (`Free` / `Rs. …`); with the same fee, the same option.
-- Enrollments: student by Custom ID, active / free card / date kept. A student twice in the same class +
-  category is enrolled once (the active row).
+- Categories are the system ones (Theory / Revision / Paper Class). Each class + category → `class_category_fees`
+  with the fee option **"Theory Only"** / **"Revision Only"** / **"Paper Class Only"** (the old fee). Another fee in
+  the same category is **"Special"**; `option_label` gives a name (the old category `Theory+Revision` comes in as
+  the Theory option **"Theory + Revision"**).
+- Enrollments: student by Custom ID, active / free card / date kept. An inactive enrollment gets `left_at` =
+  the old row's `updated_at` (as when deactivated from the web), so reports stop counting it. A student twice in
+  the same class + category is enrolled once (the active row).
 - Safe to run again (imported fee options and enrollments are marked in their note). Problems:
   `storage/logs/import-classes-problems.txt`.

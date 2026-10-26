@@ -24,17 +24,21 @@ use Throwable;
  *   php artisan nexora:import-classes classes.csv --enrollments=enrollments.csv --dry-run
  *   php artisan nexora:import-classes classes.csv --enrollments=enrollments.csv
  *
- * classes.csv has one row per class + category (old_class_id, old_fee_id,
+ * classes.csv has one row per class + category: old_class_id, old_fee_id,
  * class_name, teacher_custom_id, teacher_percentage, subject, grade,
- * is_active, is_ongoing, category, fee, created_at). For each class:
- * student_classes, a class_category_fees row per category with one
- * "Default" fee option, and class_payment_configs (teacher %, institute =
- * 100 - teacher %). Subjects and categories are made when missing; grades
- * must be there (nexora:grades add).
+ * is_active, is_ongoing, category, fee, created_at (+ optional option_label).
+ * For each class: student_classes, class_payment_configs (teacher %,
+ * institute = 100 - teacher %) and a class_category_fees row per category.
+ * Fee options: "<Category> Only" (e.g. "Theory Only"); another fee in the
+ * same category is "Special"; option_label overrides (the old category
+ * "Theory+Revision" comes in as the Theory option "Theory + Revision").
+ * Subjects and categories are made when missing; grades must be there
+ * (nexora:grades add).
  *
  * enrollments.csv: old_id, custom_id, old_fee_id, is_active, is_free_card,
- * enrolled_at. A student in the same class + category twice is enrolled
- * once (the active row).
+ * enrolled_at, updated_at. An inactive enrollment gets left_at = updated_at
+ * (as when deactivated from the web). A student in the same class +
+ * category twice is enrolled once (the active row).
  *
  * Imported rows are marked in their note, so it is safe to run again.
  */
@@ -53,8 +57,7 @@ class ImportOldClassesCommand extends Command
 
     public const FEE_NOTE = 'Imported from old system - class #%d fee #%s';
     public const ENROLLMENT_NOTE = 'Imported from old system #';
-    public const OPTION_LABEL = 'Default';
-
+    
     private bool $dry;
     private array $problems = [];
 
@@ -206,7 +209,11 @@ class ImportOldClassesCommand extends Command
 
                 // Fees: one per category; the same category twice = more options
                 $feeByCategory = [];   // category id => fee id
-                $optionByAmount = [];  // fee id|amount => [option id, old fee ids]
+                $optionByAmount = [];  // fee id|label|amount => [option id, old fee ids]
+                $labelsByFee = [];     // fee id => option labels used
+
+                // rows without their own option label first: they make the default option
+                $classRows = $classRows->sortBy(fn ($r) => [OldValue::text($r['option_label'] ?? null) === null ? 0 : 1, (int) ($r['old_fee_id'] ?? 0)])->values();
 
                 foreach ($classRows as $row) {
                     $oldFeeId = (int) ($row['old_fee_id'] ?? 0);
@@ -258,8 +265,9 @@ class ImportOldClassesCommand extends Command
                     }
                     $feeByCategory[$category->id] = $feeId;
 
-                    // the fee option (same amount = the same option)
-                    $optionKey = $feeId . '|' . $amount;
+                    // the fee option (same label + amount = the same option)
+                    $givenLabel = OldValue::text($row['option_label'] ?? null, 150);
+                    $optionKey = $feeId . '|' . mb_strtolower((string) $givenLabel) . '|' . $amount;
                     if (isset($optionByAmount[$optionKey])) {
                         $optionByAmount[$optionKey]['old'][] = $oldFeeId;
                         $optionId = $optionByAmount[$optionKey]['id'];
@@ -270,9 +278,16 @@ class ImportOldClassesCommand extends Command
                         }
                     } else {
                         $isDefault = $isNewFee;
+                        // "Theory Only" / "Revision Only"; another fee in the same category = "Special"
+                        $optionLabel = $givenLabel ?? ($isDefault ? $category->category_name . ' Only' : 'Special');
+                        $used = $labelsByFee[$feeId] ?? [];
+                        for ($n = 2, $base = $optionLabel; in_array(mb_strtolower($optionLabel), $used, true); $n++) {
+                            $optionLabel = "{$base} {$n}";
+                        }
+                        $labelsByFee[$feeId][] = mb_strtolower($optionLabel);
                         $optionId = $this->dry ? $fake-- : ClassCategoryFeeOption::create([
                             'class_category_fee_id' => $feeId,
-                            'label' => $isDefault ? self::OPTION_LABEL : ($amount > 0 ? 'Rs. ' . number_format($amount, 2) : 'Free'),
+                            'label' => $optionLabel,
                             'fee' => $amount,
                             'is_default' => $isDefault,
                             'is_active' => true,
@@ -393,6 +408,16 @@ class ImportOldClassesCommand extends Command
             $free = OldValue::bool($row['is_free_card'] ?? null);
             $date = OldValue::text($row['enrolled_at'] ?? null) ? OldValue::time($row['enrolled_at']) : null;
 
+            // like deactivating from the web: an inactive enrollment has a left date
+            // (the old row's last update), so reports stop counting it after that
+            $leftAt = null;
+            if (!$active) {
+                $leftAt = OldValue::text($row['updated_at'] ?? null) ? OldValue::time($row['updated_at']) : ($date ?? now());
+                if ($date && $leftAt->lt($date)) {
+                    $leftAt = $date->copy();
+                }
+            }
+
             if (!$this->dry) {
                 try {
                     $enrollment = new StudentClassEnrollment([
@@ -404,6 +429,7 @@ class ImportOldClassesCommand extends Command
                         'is_active' => $active,
                         'is_free_card' => $free,
                         'enrolled_at' => $date?->toDateString(),
+                        'left_at' => $leftAt?->toDateString(),
                         'note' => self::ENROLLMENT_NOTE . $oldId,
                     ]);
                     if ($date) {
