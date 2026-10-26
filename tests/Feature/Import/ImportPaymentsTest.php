@@ -83,6 +83,15 @@ class ImportPaymentsTest extends TestCase
         fclose($h);
     }
 
+    public function test_salaries_need_the_payments_first(): void
+    {
+        $this->artisan('nexora:import-teacher-salaries', ['file' => $this->dir . '/teacher_payments.csv', '--settled-until' => '2026-08', '--dry-run' => true])
+            ->expectsOutput('No class payments in the database yet. Import them first: php artisan nexora:import-payments ...')
+            ->assertExitCode(1);
+
+        $this->assertSame(0, TeacherSalary::count());
+    }
+
     public function test_dry_run_changes_nothing(): void
     {
         $this->artisan('nexora:import-payments', ['file' => $this->dir . '/payments.csv', '--dry-run' => true])

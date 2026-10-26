@@ -64,6 +64,13 @@ class ImportOldTeacherSalariesCommand extends Command
             return self::FAILURE;
         }
 
+        // The earnings come from the imported class payments - without them every month would close with 0
+        if (!PaymentSplitSnapshot::query()->where('branch_id', $branch->id)->exists()) {
+            $this->error('No class payments in the database yet. Import them first: php artisan nexora:import-payments ...');
+
+            return self::FAILURE;
+        }
+
         $teachers = Teacher::query()->get(['id', 'custom_id'])->keyBy(fn ($t) => strtoupper($t->custom_id));
         $problems = [];
 
