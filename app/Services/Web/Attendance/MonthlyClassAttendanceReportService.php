@@ -45,6 +45,8 @@ class MonthlyClassAttendanceReportService
             ])
             ->where('status', 'completed')
             ->where('is_active', true)
+            // inactive classes are not in the report
+            ->whereHas('studentClass', fn ($query) => $query->where('is_active', true))
             ->with([
                 'studentClass',
                 'classCategoryFee.category',
@@ -63,6 +65,7 @@ class MonthlyClassAttendanceReportService
         */
 
         $enrollments = StudentClassEnrollment::query()
+            ->whereHas('studentClass', fn ($query) => $query->where('is_active', true))
             ->whereDate('enrolled_at', '<=', $monthEnd)
             ->where(function ($query) use ($monthStart) {
                 $query->whereNull('left_at')
@@ -142,6 +145,8 @@ class MonthlyClassAttendanceReportService
         */
 
         $classes = StudentClass::query()
+            // inactive classes are not in the report
+            ->where('is_active', true)
             ->whereHas('enrollments', function ($query) use (
                 $monthStart,
                 $monthEnd

@@ -77,14 +77,16 @@ class MonthlyCollectionReportService
         | Enrollments for the month
         |----------------------------------------------------------------------
         | Active during the month (enrolled before month end, not left before
-        | month start) OR paid for this month (so no collected money is lost
-        | when a student left early).
+        | month start) in an ACTIVE class, OR paid for this month (so no
+        | collected money is lost when a student left early or the class was
+        | closed).
         */
         $enrollments = StudentClassEnrollment::withTrashed()
             ->whereIn('branch_id', $filter->branchIds)
             ->where(function ($query) use ($monthStart, $monthEnd, $collectedByEnrollment) {
                 $query->where(function ($active) use ($monthStart, $monthEnd) {
                     $active->whereNull('deleted_at')
+                        ->whereHas('studentClass', fn ($class) => $class->where('is_active', true))
                         ->where(function ($enrolled) use ($monthEnd) {
                             $enrolled->whereNull('enrolled_at')
                                 ->orWhereDate('enrolled_at', '<=', $monthEnd->toDateString());

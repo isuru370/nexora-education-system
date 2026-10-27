@@ -377,6 +377,15 @@
                     </tbody>
                 </table>
             </div>
+
+            @if ($receipts->hasPages())
+                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 p-3">
+                    <small class="text-muted">
+                        Showing {{ $receipts->firstItem() }}-{{ $receipts->lastItem() }} of {{ number_format($receipts->total()) }}
+                    </small>
+                    {{ $receipts->onEachSide(1)->links() }}
+                </div>
+            @endif
         </div>
 
     </div>
