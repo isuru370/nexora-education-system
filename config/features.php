@@ -28,6 +28,13 @@ return [
         'description' => 'Course management (diploma / certificate courses).',
     ],
 
+    // Mobile app: after a QR attendance scan the phone says the student's
+    // name, subject and grade (English) and this month's fee (Sinhala).
+    'tts' => [
+        'name' => 'Voice on attendance (TTS)',
+        'description' => 'Mobile app speaks the name, subject, grade and "ගෙවා ඇත / ගෙවා නැත" after an attendance scan.',
+    ],
+
     // Only edu.nexorait.lk (the product site). Institutes: "/" goes to login.
     'landing_page' => [
         'name' => 'Landing page',
