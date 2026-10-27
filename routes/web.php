@@ -80,6 +80,7 @@ use App\Http\Controllers\Web\StudentClassEnrollment\StudentClassEnrollmentContro
 use App\Http\Controllers\Web\Teacher\TeacherController;
 use App\Http\Controllers\Web\TeacherSalary\TeacherSalaryController;
 use App\Http\Controllers\Web\TemporaryCard\TemporaryIDCardController;
+use App\Http\Controllers\Web\GradeClosure\CloseGradeController;
 use App\Support\CardAccess;
 use Illuminate\Http\Request;
 
@@ -2825,6 +2826,25 @@ Route::prefix('payment-reminder')
         Route::get('/export/{format}', 'export')
             ->where('format', 'excel|pdf')
             ->name('export');
+    });
+
+
+/*
+|--------------------------------------------------------------------------
+| Close Batch (grade): end of a batch, e.g. 2026 A/L after the exam
+|--------------------------------------------------------------------------
+| Admin only: changes classes and students of every branch.
+*/
+
+Route::prefix('close-grade')
+    ->name('close-grade.')
+    ->middleware(['auth', 'user.active', 'role:ADMIN'])
+    ->controller(CloseGradeController::class)
+    ->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('/', 'store')->name('store');
+        Route::get('/{closure}', 'show')->whereNumber('closure')->name('show');
+        Route::post('/{closure}/undo', 'undo')->whereNumber('closure')->name('undo');
     });
 
 

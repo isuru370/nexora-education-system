@@ -60,7 +60,7 @@ class CloseGradeCommandTest extends TestCase
 
         $this->assertSame(0, DB::table('student_classes')->where('is_active', false)->count());
         $this->assertSame(0, DB::table('students')->where('is_active', false)->count());
-        $this->assertEmpty(Storage::files('close-grade'));
+        $this->assertSame(0, DB::table('grade_closures')->count());
     }
 
     public function test_closes_grade_and_undo_puts_it_back(): void
@@ -96,8 +96,14 @@ class CloseGradeCommandTest extends TestCase
         $this->assertGreaterThan(0, DB::table('payments')->count());
         $this->assertGreaterThan(0, DB::table('student_attendances')->count());
 
+        // saved in the history
+        $closure = DB::table('grade_closures')->first();
+        $this->assertSame('command', $closure->source);
+        $this->assertSame(['10'], json_decode($closure->grade_names, true));
+
         // ---- undo
         $this->artisan('nexora:close-grade', ['--undo' => 'last'])->assertExitCode(0);
+        $this->assertNotNull(DB::table('grade_closures')->value('undone_at'));
 
         $this->assertSame(0, DB::table('student_classes')->where('is_active', false)->count());
         $e1 = DB::table('student_class_enrollments')->find($i['e1']);
@@ -117,5 +123,31 @@ class CloseGradeCommandTest extends TestCase
         $this->artisan('nexora:close-grade', ['grades' => ['2099 A/L']])
             ->expectsOutput('Grade not found: 2099 A/L')
             ->assertExitCode(1);
+    }
+
+    public function test_run_saved_as_file_by_the_first_version_is_added_to_history_and_can_be_undone(): void
+    {
+        $i = $this->inst;
+
+        // what the first version of the command did and saved
+        DB::table('student_classes')->where('id', $i['c1'])->update(['is_active' => false]);
+        DB::table('students')->where('id', $i['s1'])->update(['is_active' => false, 'student_disable' => true]);
+        Storage::put('close-grade/20261027_213000.json', json_encode([
+            'grades' => ['10'],
+            'at' => '2026-10-27 21:30:00',
+            'classes' => [['id' => $i['c1'], 'class_name' => 'Maths 10 CMB', 'is_active' => 1]],
+            'enrollments' => [],
+            'patterns' => [],
+            'schedules' => [],
+            'students' => [['id' => $i['s1'], 'is_active' => 1, 'student_disable' => 0]],
+        ]));
+
+        $this->artisan('nexora:close-grade', ['--undo' => 'last'])->assertExitCode(0);
+
+        $this->assertSame('file', DB::table('grade_closures')->value('source'));
+        $this->assertTrue(Storage::exists('close-grade/20261027_213000.json.imported'));
+        $this->assertTrue((bool) DB::table('student_classes')->where('id', $i['c1'])->value('is_active'));
+        $this->assertTrue((bool) DB::table('students')->where('id', $i['s1'])->value('is_active'));
+        $this->assertFalse((bool) DB::table('students')->where('id', $i['s1'])->value('student_disable'));
     }
 }

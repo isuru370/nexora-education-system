@@ -329,6 +329,17 @@
                     </button>
                 </div>
             @endif
+
+            @if ($isAdmin)
+                <div class="nav-item">
+                    <button type="button"
+                        class="nav-link-custom {{ request()->routeIs('close-grade.*') ? 'active' : '' }}"
+                        data-route="close-grade.index" data-href="{{ route('close-grade.index') }}">
+                        <i class="bi bi-archive-fill"></i>
+                        <span>Close Batch (Grade)</span>
+                    </button>
+                </div>
+            @endif
         </div>
 
 
