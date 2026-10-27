@@ -8,7 +8,7 @@ use Illuminate\Console\Command;
 
 /**
  * Course class days after their end time: ongoing -> completed,
- * scheduled (nobody marked) -> cancelled. Runs every minute.
+ * scheduled (nobody marked) -> cancelled. Runs daily at 8.45 PM.
  */
 class CompleteFinishedCourseSessions extends Command
 {

@@ -30,12 +30,18 @@ class Kernel extends ConsoleKernel
         // "Promote Class": close the old class on the new class's start date
         $schedule->command('nexora:apply-class-promotions')->hourly();
 
+        // Once a day at 8.45 PM (not when each class ends), so late students
+        // can still be marked: the day's classes -> completed, past ones
+        // nobody attended -> cancelled. A class ending after 8.45 PM is
+        // completed the next evening.
         $schedule->command('class-schedules:complete-finished')
-            ->everyMinute();
+            ->dailyAt('20:45')
+            ->timezone('Asia/Colombo');
 
         // Courses (does nothing when the "courses" feature is off)
         $schedule->command('course-sessions:complete-finished')
-            ->everyMinute();
+            ->dailyAt('20:45')
+            ->timezone('Asia/Colombo');
     }
 
     /**
