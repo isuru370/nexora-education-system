@@ -27,6 +27,9 @@ class Kernel extends ConsoleKernel
             ->dailyAt('02:15')
             ->timezone('Asia/Colombo');
 
+        // "Promote Class": close the old class on the new class's start date
+        $schedule->command('nexora:apply-class-promotions')->hourly();
+
         $schedule->command('class-schedules:complete-finished')
             ->everyMinute();
 

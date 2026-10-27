@@ -154,7 +154,61 @@
         {{-- ===================================================== --}}
         {{-- STATS --}}
         {{-- ===================================================== --}}
-        <div class="stats-grid mb-4">
+        <div class="stats-grid stats-grid-3 mb-4">
+
+            <div class="nx-card stat-card">
+                <div class="stat-icon-wrapper icon-violet"><i class="bi bi-credit-card-fill"></i></div>
+                <div class="stat-info">
+                    <span class="stat-label">Class Fees Collected · {{ $summary['class_fee_count'] }}</span>
+                    <h2 class="stat-number">Rs. {{ number_format($summary['class_fees'], 2) }}</h2>
+                    <span class="stat-change up">Institute share <span class="stat-change-note">Rs. {{ number_format($summary['split']['Institute share'], 2) }}</span></span>
+                </div>
+            </div>
+
+            <div class="nx-card stat-card">
+                <div class="stat-icon-wrapper icon-blue"><i class="bi bi-mortarboard-fill"></i></div>
+                <div class="stat-info">
+                    <span class="stat-label">Admission Payments</span>
+                    <h2 class="stat-number">Rs. {{ number_format($summary['income']['Admission fees'] ?? 0, 2) }}</h2>
+                    <span class="stat-change up">Total <span class="stat-change-note">admission fees</span></span>
+                </div>
+            </div>
+
+            <div class="nx-card stat-card">
+                <div class="stat-icon-wrapper icon-amber"><i class="bi bi-plus-circle-fill"></i></div>
+                <div class="stat-info">
+                    <span class="stat-label">Extra Income</span>
+                    <h2 class="stat-number">Rs. {{ number_format($summary['income']['Extra income'] ?? 0, 2) }}</h2>
+                    <span class="stat-change up">Total <span class="stat-change-note">received</span></span>
+                </div>
+            </div>
+
+            <div class="nx-card stat-card">
+                <div class="stat-icon-wrapper icon-green"><i class="bi bi-person-badge-fill"></i></div>
+                <div class="stat-info">
+                    <span class="stat-label">Teachers Salary</span>
+                    <h2 class="stat-number">Rs. {{ number_format($summary['teacher_salary'], 2) }}</h2>
+                    <span class="stat-change neutral">Teacher share <span class="stat-change-note">of the fees</span></span>
+                </div>
+            </div>
+
+            <div class="nx-card stat-card">
+                <div class="stat-icon-wrapper icon-violet"><i class="bi bi-hand-index-thumb-fill"></i></div>
+                <div class="stat-info">
+                    <span class="stat-label">Teacher Advances</span>
+                    <h2 class="stat-number">Rs. {{ number_format($summary['teacher_advances'], 2) }}</h2>
+                    <span class="stat-change down">Advances <span class="stat-change-note">given</span></span>
+                </div>
+            </div>
+
+            <div class="nx-card stat-card">
+                <div class="stat-icon-wrapper icon-blue"><i class="bi bi-calculator-fill"></i></div>
+                <div class="stat-info">
+                    <span class="stat-label">Teacher Net Salary</span>
+                    <h2 class="stat-number">Rs. {{ number_format($summary['teacher_net_salary'], 2) }}</h2>
+                    <span class="stat-change neutral">Salary <span class="stat-change-note">minus advances</span></span>
+                </div>
+            </div>
 
             <div class="nx-card stat-card">
                 <div class="stat-icon-wrapper icon-green"><i class="bi bi-cash-stack"></i></div>
@@ -177,18 +231,9 @@
             <div class="nx-card stat-card">
                 <div class="stat-icon-wrapper icon-blue"><i class="bi bi-wallet2"></i></div>
                 <div class="stat-info">
-                    <span class="stat-label">Net Income</span>
-                    <h2 class="stat-number">Rs. {{ number_format($summary['net'], 2) }}</h2>
+                    <span class="stat-label">Institute Net Income (Net Profit)</span>
+                    <h2 class="stat-number {{ $summary['net'] < 0 ? 'text-danger' : '' }}">Rs. {{ number_format($summary['net'], 2) }}</h2>
                     <span class="stat-change neutral">Income <span class="stat-change-note">minus expenses</span></span>
-                </div>
-            </div>
-
-            <div class="nx-card stat-card">
-                <div class="stat-icon-wrapper icon-violet"><i class="bi bi-credit-card-fill"></i></div>
-                <div class="stat-info">
-                    <span class="stat-label">Class Fees Collected · {{ $summary['class_fee_count'] }}</span>
-                    <h2 class="stat-number">Rs. {{ number_format($summary['class_fees'], 2) }}</h2>
-                    <span class="stat-change up">Total <span class="stat-change-note">class fees</span></span>
                 </div>
             </div>
         </div>

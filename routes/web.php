@@ -80,6 +80,8 @@ use App\Http\Controllers\Web\StudentClassEnrollment\StudentClassEnrollmentContro
 use App\Http\Controllers\Web\Teacher\TeacherController;
 use App\Http\Controllers\Web\TeacherSalary\TeacherSalaryController;
 use App\Http\Controllers\Web\TemporaryCard\TemporaryIDCardController;
+use App\Http\Controllers\Web\ClassPromotion\ClassPromotionController;
+use App\Http\Controllers\Web\GradeClosure\CloseGradeController;
 use App\Support\CardAccess;
 use Illuminate\Http\Request;
 
@@ -2825,6 +2827,44 @@ Route::prefix('payment-reminder')
         Route::get('/export/{format}', 'export')
             ->where('format', 'excel|pdf')
             ->name('export');
+    });
+
+
+/*
+|--------------------------------------------------------------------------
+| Close Batch (grade): end of a batch, e.g. 2026 A/L after the exam
+|--------------------------------------------------------------------------
+| Admin only: changes classes and students of every branch.
+*/
+
+Route::prefix('close-grade')
+    ->name('close-grade.')
+    ->middleware(['auth', 'user.active', 'role:ADMIN'])
+    ->controller(CloseGradeController::class)
+    ->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('/', 'store')->name('store');
+        Route::get('/{closure}', 'show')->whereNumber('closure')->name('show');
+        Route::post('/{closure}/undo', 'undo')->whereNumber('closure')->name('undo');
+    });
+
+
+/*
+|--------------------------------------------------------------------------
+| Promote Class: e.g. "Aa class - Grade 9" goes on as "Grade 10"
+|--------------------------------------------------------------------------
+*/
+
+Route::prefix('class-promotions')
+    ->name('class-promotions.')
+    ->middleware(['auth', 'user.active', 'role:ADMIN'])
+    ->controller(ClassPromotionController::class)
+    ->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('/create', 'create')->name('create');
+        Route::post('/', 'store')->name('store');
+        Route::get('/{promotion}', 'show')->whereNumber('promotion')->name('show');
+        Route::post('/{promotion}/undo', 'undo')->whereNumber('promotion')->name('undo');
     });
 
 

@@ -10,6 +10,7 @@ use App\Models\Organizer;
 use App\Models\Payment;
 use App\Models\StudentClass;
 use App\Models\Teacher;
+use App\Models\TeacherPayment;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -93,6 +94,15 @@ class InstituteIncomeReportService
 
         $courses = $this->courseTotals($filter);
 
+        // Teacher share of the fees and the advances given in the range (as in the old system)
+        $teacherShare = round((float) $split->teacher_amount + (float) ($courses['teachers'] ?? 0), 2);
+        $teacherAdvances = round((float) TeacherPayment::query()
+            ->where('payment_type', 'advance')
+            ->where('status', '!=', 'cancelled')
+            ->whereIn('branch_id', $filter->branchIds)
+            ->whereBetween('payment_date', [$filter->from->toDateString(), $filter->to->toDateString()])
+            ->sum('amount'), 2);
+
         $income = ['Institute share of class fees' => $instituteShare];
 
         if ($courses !== null) {
@@ -121,6 +131,11 @@ class InstituteIncomeReportService
                 'Institute share' => $instituteShare,
             ],
             'hall_fee' => round((float) $split->hall_fee, 2),
+
+            // class + course teacher share, advances given, share - advances
+            'teacher_salary' => $teacherShare,
+            'teacher_advances' => $teacherAdvances,
+            'teacher_net_salary' => round($teacherShare - $teacherAdvances, 2),
 
             // null when the institute has no courses
             'courses' => $courses,
