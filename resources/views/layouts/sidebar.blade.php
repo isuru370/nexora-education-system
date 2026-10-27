@@ -339,6 +339,14 @@
                         <span>Close Batch (Grade)</span>
                     </button>
                 </div>
+                <div class="nav-item">
+                    <button type="button"
+                        class="nav-link-custom {{ request()->routeIs('class-promotions.*') ? 'active' : '' }}"
+                        data-route="class-promotions.index" data-href="{{ route('class-promotions.index') }}">
+                        <i class="bi bi-arrow-up-circle-fill"></i>
+                        <span>Promote Class</span>
+                    </button>
+                </div>
             @endif
         </div>
 
