@@ -32,7 +32,7 @@ class FeatureFlagsTest extends TestCase
     {
         $this->assertFalse(feature('courses'));
         $this->assertFalse(feature('not-a-feature'));
-        $this->assertSame(['courses' => false, 'landing_page' => false], Features::all());
+        $this->assertSame(['courses' => false, 'tts' => false, 'landing_page' => false], Features::all());
 
         $this->get('/_test/courses')->assertNotFound();
         $this->getJson('/api/_test/courses')->assertNotFound()->assertJson(['success' => false]);
@@ -58,7 +58,7 @@ class FeatureFlagsTest extends TestCase
     public function test_command_lists_features_and_refuses_unknown_ones(): void
     {
         $this->artisan('nexora:feature')
-            ->expectsTable(['Key', 'Feature', 'This institute'], [['courses', 'Courses', 'off'], ['landing_page', 'Landing page', 'off']])
+            ->expectsTable(['Key', 'Feature', 'This institute'], [['courses', 'Courses', 'off'], ['tts', 'Voice on attendance (TTS)', 'off'], ['landing_page', 'Landing page', 'off']])
             ->assertExitCode(0);
 
         $this->artisan('nexora:feature cours on')->assertExitCode(1);
@@ -91,7 +91,7 @@ class FeatureFlagsTest extends TestCase
             ->assertExactJson([
                 'status' => 'success',
                 'message' => 'Features loaded successfully.',
-                'data' => ['courses' => false, 'landing_page' => false],
+                'data' => ['courses' => false, 'tts' => false, 'landing_page' => false],
                 'card_mode' => 'permanent',
             ]);
 
@@ -99,6 +99,10 @@ class FeatureFlagsTest extends TestCase
 
         $this->getJson('/api/features')->assertOk()->assertJsonPath('data.courses', true);
         $this->getJson('/api/me')->assertOk()->assertJsonPath('features.courses', true);
+
+        // the voice on attendance (mobile app)
+        $this->artisan('nexora:feature tts on')->assertExitCode(0);
+        $this->getJson('/api/features')->assertOk()->assertJsonPath('data.tts', true);
     }
 
     public function test_login_response_has_the_features(): void
