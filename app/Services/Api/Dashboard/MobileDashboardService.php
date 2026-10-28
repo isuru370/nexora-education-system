@@ -73,6 +73,7 @@ class MobileDashboardService
         'today_payments' => ['SUPER_ADMIN', 'ADMIN', 'BRANCH_ADMIN', 'USER'],
         'admission' => ['SUPER_ADMIN', 'ADMIN', 'BRANCH_ADMIN', 'USER'],
         'finance_summary' => ['SUPER_ADMIN', 'ADMIN', 'BRANCH_ADMIN'], // income / expenses today
+        'teacher_advance' => ['SUPER_ADMIN', 'ADMIN', 'BRANCH_ADMIN'], // pay a teacher advance (same roles as the web)
 
         // Other
         'student_tute' => ['SUPER_ADMIN', 'ADMIN', 'BRANCH_ADMIN', 'USER'],
@@ -674,7 +675,8 @@ class MobileDashboardService
 
             $json = is_array($raw['json'] ?? null) ? $raw['json'] : [];
 
-            $balance = $json['current_balance'] ?? $json['balance'] ?? $raw['current_balance'] ?? null;
+            // ChatBiz /v1/balance answers "main_balance" (resellers also get sub_accounts)
+            $balance = $json['main_balance'] ?? $json['current_balance'] ?? $json['balance'] ?? $raw['current_balance'] ?? null;
             $statusCode = (int) ($json['status_code'] ?? $raw['provider_status_code'] ?? 0);
 
             return [
