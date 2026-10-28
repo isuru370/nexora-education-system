@@ -3,6 +3,7 @@
 use App\Support\CardAccess;
 
 use App\Http\Controllers\Api\Admission\AdmissionPaymentController;
+use App\Http\Controllers\Api\TeacherAdvance\TeacherAdvanceController;
 use App\Http\Controllers\Api\Attendance\AttendanceReportController;
 use App\Http\Controllers\Api\Attendance\AttendanceScheduleController;
 use App\Http\Controllers\Api\StudentCard\StudentCardAssignmentController;
@@ -635,4 +636,21 @@ Route::middleware([
     Route::post('{course}/enroll', 'enroll')->whereNumber('course')->name('enroll');
     Route::post('enrollments/{courseEnrollment}/pay', 'pay')->whereNumber('courseEnrollment')->name('pay');
     Route::get('payments/{coursePayment}/receipt', 'receipt')->whereNumber('coursePayment')->name('receipt');
+});
+
+
+/*
+|--------------------------------------------------------------------------
+| Teacher advance (staff app): pay only, ADMIN / BRANCH_ADMIN as on the web
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware([
+    'auth:sanctum',
+    'user.active',
+    'role:ADMIN,BRANCH_ADMIN',
+    'staff.branch',
+])->prefix('teacher-advances')->name('api.teacher-advances.')->controller(TeacherAdvanceController::class)->group(function () {
+    Route::get('teachers', 'teachers')->name('teachers');
+    Route::post('/', 'store')->name('store');
 });
