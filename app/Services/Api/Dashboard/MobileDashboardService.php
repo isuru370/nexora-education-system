@@ -675,7 +675,8 @@ class MobileDashboardService
 
             $json = is_array($raw['json'] ?? null) ? $raw['json'] : [];
 
-            $balance = $json['current_balance'] ?? $json['balance'] ?? $raw['current_balance'] ?? null;
+            // ChatBiz /v1/balance answers "main_balance" (resellers also get sub_accounts)
+            $balance = $json['main_balance'] ?? $json['current_balance'] ?? $json['balance'] ?? $raw['current_balance'] ?? null;
             $statusCode = (int) ($json['status_code'] ?? $raw['provider_status_code'] ?? 0);
 
             return [
