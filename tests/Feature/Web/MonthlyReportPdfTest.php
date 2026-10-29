@@ -1,0 +1,75 @@
+<?php
+
+namespace Tests\Feature\Web;
+
+use App\Services\Web\MonthlyReport\MonthlyReportService;
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
+use Tests\Support\BuildsInstitute;
+use Tests\TestCase;
+
+/**
+ * Monthly report PDFs: the two views were empty files, so the downloads
+ * were blank. Class 1 has one paid and one free card student,
+ * class 2 one unpaid student (October 2026, by fee month).
+ */
+class MonthlyReportPdfTest extends TestCase
+{
+    use RefreshDatabase;
+    use BuildsInstitute;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+        $this->buildInstitute();
+        DB::table('student_class_enrollments')->where('id', $this->inst['e2'])->update(['is_free_card' => 1]);
+        DB::table('teacher_branches')->insert([
+            ['teacher_id' => $this->inst['teacher'], 'branch_id' => $this->inst['b1']],
+            ['teacher_id' => $this->inst['teacher'], 'branch_id' => $this->inst['b2']],
+        ]);
+        $this->actingAs($this->inst['admin']);
+    }
+
+    protected function query(): string
+    {
+        return '?teacher_id=' . $this->inst['teacher'] . '&year=2026&month=10';
+    }
+
+    public function test_student_payment_pdf_downloads_for_both_bases(): void
+    {
+        foreach (['fee-month', 'paid-date'] as $basis) {
+            $response = $this->get("/monthly-report/student-payments/{$basis}/pdf" . $this->query());
+
+            $response->assertOk();
+            $this->assertSame('application/pdf', $response->headers->get('content-type'));
+            $this->assertGreaterThan(3000, strlen($response->getContent()));
+        }
+    }
+
+    public function test_student_payment_pdf_shows_class_wise_counts(): void
+    {
+        $report = app(MonthlyReportService::class)
+            ->teacherStudentPaymentReport($this->inst['teacher'], 2026, 10, 'fee-month');
+
+        $html = view('pdf.teacher.teacher_with_student_payment_report', [
+            'report' => $report, 'year' => 2026, 'month' => 10,
+        ])->render();
+
+        $this->assertStringContainsString('Student Payment Report', $html);
+        $this->assertStringContainsString('October 2026', $html);
+        $this->assertStringContainsString('Paid 1', $html);
+        $this->assertStringContainsString('Free Card 1', $html);
+        $this->assertStringContainsString('Unpaid 0', $html);   // class 1
+        $this->assertStringContainsString('Unpaid 1', $html);   // class 2
+        $this->assertStringContainsString('2,000.00', $html);
+    }
+
+    public function test_teacher_salary_pdf_downloads(): void
+    {
+        $response = $this->get('/monthly-report/teacher-salary/pdf?branch_id=' . $this->inst['b1'] . '&year=2026&month=10');
+
+        $response->assertOk();
+        $this->assertSame('application/pdf', $response->headers->get('content-type'));
+        $this->assertGreaterThan(3000, strlen($response->getContent()));
+    }
+}
