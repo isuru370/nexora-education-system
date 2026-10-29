@@ -53,7 +53,7 @@ class StudentCardRegistrationController extends Controller
 
             return back()
                 ->withInput()
-                ->with('error', $e->getMessage());
+                ->with('error', \App\Support\ErrorDetail::safe($e));
         }
     }
 }

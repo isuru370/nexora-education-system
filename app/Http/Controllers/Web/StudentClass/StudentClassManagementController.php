@@ -173,7 +173,7 @@ class StudentClassManagementController extends Controller
         } catch (Throwable $e) {
             return redirect()
                 ->route('student-class-management.index')
-                ->with('error', 'An error occurred: ' . $e->getMessage())
+                ->with('error', 'An error occurred: ' . \App\Support\ErrorDetail::safe($e))
                 ->withInput();
         }
     }
@@ -249,7 +249,7 @@ class StudentClassManagementController extends Controller
         } catch (Throwable $e) {
             return redirect()
                 ->route('student-class-management.index')
-                ->with('error', 'QR scan error: ' . $e->getMessage());
+                ->with('error', 'QR scan error: ' . \App\Support\ErrorDetail::safe($e));
         }
     }
 
@@ -284,7 +284,7 @@ class StudentClassManagementController extends Controller
         } catch (Throwable $e) {
             return redirect()
                 ->back()
-                ->with('error', 'Unable to load payment details: ' . $e->getMessage());
+                ->with('error', 'Unable to load payment details: ' . \App\Support\ErrorDetail::safe($e));
         }
     }
 
@@ -319,7 +319,7 @@ class StudentClassManagementController extends Controller
         } catch (Throwable $e) {
             return redirect()
                 ->back()
-                ->with('error', 'Unable to load attendance details: ' . $e->getMessage());
+                ->with('error', 'Unable to load attendance details: ' . \App\Support\ErrorDetail::safe($e));
         }
     }
 
@@ -354,7 +354,7 @@ class StudentClassManagementController extends Controller
         } catch (Throwable $e) {
             return redirect()
                 ->back()
-                ->with('error', 'Unable to load tute details: ' . $e->getMessage());
+                ->with('error', 'Unable to load tute details: ' . \App\Support\ErrorDetail::safe($e));
         }
     }
 
@@ -428,7 +428,7 @@ class StudentClassManagementController extends Controller
         } catch (Throwable $e) {
             return redirect()
                 ->back()
-                ->with('error', 'An error occurred while updating class status: ' . $e->getMessage());
+                ->with('error', 'An error occurred while updating class status: ' . \App\Support\ErrorDetail::safe($e));
         }
     }
 
@@ -467,7 +467,7 @@ class StudentClassManagementController extends Controller
         } catch (Throwable $e) {
             return redirect()
                 ->back()
-                ->with('error', 'An error occurred: ' . $e->getMessage());
+                ->with('error', 'An error occurred: ' . \App\Support\ErrorDetail::safe($e));
         }
     }
 
@@ -500,7 +500,7 @@ class StudentClassManagementController extends Controller
         } catch (Throwable $e) {
             return redirect()
                 ->back()
-                ->with('error', 'An error occurred: ' . $e->getMessage());
+                ->with('error', 'An error occurred: ' . \App\Support\ErrorDetail::safe($e));
         }
     }
 
@@ -560,7 +560,7 @@ class StudentClassManagementController extends Controller
         } catch (Throwable $e) {
             return redirect()
                 ->route('student-class-management.show', $studentId)
-                ->with('error', 'An error occurred: ' . $e->getMessage());
+                ->with('error', 'An error occurred: ' . \App\Support\ErrorDetail::safe($e));
         }
     }
 
@@ -803,7 +803,7 @@ class StudentClassManagementController extends Controller
                 ->with('success', 'Class assigned to student successfully.');
         } catch (Throwable $e) {
             return redirect()->back()
-                ->with('error', 'An error occurred: ' . $e->getMessage())
+                ->with('error', 'An error occurred: ' . \App\Support\ErrorDetail::safe($e))
                 ->withInput();
         }
     }
@@ -855,7 +855,7 @@ class StudentClassManagementController extends Controller
         } catch (Throwable $e) {
             return redirect()
                 ->route('student-class-management.index')
-                ->with('error', 'Unable to load student classes: ' . $e->getMessage());
+                ->with('error', 'Unable to load student classes: ' . \App\Support\ErrorDetail::safe($e));
         }
     }
 
@@ -935,7 +935,7 @@ class StudentClassManagementController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Error loading category fees',
-                'error' => $e->getMessage(),
+                'error' => \App\Support\ErrorDetail::safe($e),
             ], 500);
         }
     }

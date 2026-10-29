@@ -28,7 +28,7 @@ class AnnualReportController extends Controller
             $filter = $this->reportService->yearFilter($year, $branchId);
             $previousFilter = $this->reportService->previousYearFilter($filter);
         } catch (DomainException $e) {
-            return redirect()->route('reports.annual.index')->with('error', $e->getMessage());
+            return redirect()->route('reports.annual.index')->with('error', \App\Support\ErrorDetail::safe($e));
         }
 
         $report = $this->reportService->generate($filter);
@@ -91,7 +91,7 @@ class AnnualReportController extends Controller
                 ->setPaper('a4', 'landscape')
                 ->download($fileName . '.pdf');
         } catch (DomainException $e) {
-            return back()->with('error', $e->getMessage());
+            return back()->with('error', \App\Support\ErrorDetail::safe($e));
         } catch (Throwable $e) {
             report($e);
 

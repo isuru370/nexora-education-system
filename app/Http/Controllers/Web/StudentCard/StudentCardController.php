@@ -102,7 +102,7 @@ class StudentCardController extends Controller
 
             return back()
                 ->withInput()
-                ->with('error', $e->getMessage());
+                ->with('error', \App\Support\ErrorDetail::safe($e));
         }
     }
 
@@ -173,7 +173,7 @@ class StudentCardController extends Controller
         } catch (\Throwable $e) {
             return back()
                 ->withInput()
-                ->with('error', $e->getMessage());
+                ->with('error', \App\Support\ErrorDetail::safe($e));
         }
     }
 
@@ -249,7 +249,7 @@ class StudentCardController extends Controller
         } catch (\Throwable $e) {
             return back()
                 ->withInput()
-                ->with('error', $e->getMessage());
+                ->with('error', \App\Support\ErrorDetail::safe($e));
         }
     }
 
@@ -275,7 +275,7 @@ class StudentCardController extends Controller
 
             return redirect()
                 ->route('student-cards.show', $card->id)
-                ->with('error', $e->getMessage());
+                ->with('error', \App\Support\ErrorDetail::safe($e));
         }
     }
 
@@ -301,7 +301,7 @@ class StudentCardController extends Controller
 
             return redirect()
                 ->route('student-cards.show', $card->id)
-                ->with('error', $e->getMessage());
+                ->with('error', \App\Support\ErrorDetail::safe($e));
         }
     }
 
@@ -327,7 +327,7 @@ class StudentCardController extends Controller
 
             return redirect()
                 ->route('student-cards.show', $card->id)
-                ->with('error', $e->getMessage());
+                ->with('error', \App\Support\ErrorDetail::safe($e));
         }
     }
 

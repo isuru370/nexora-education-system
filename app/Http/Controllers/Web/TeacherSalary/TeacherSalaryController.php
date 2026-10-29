@@ -30,7 +30,7 @@ class TeacherSalaryController extends Controller
         try {
             $branchId = $this->salaryService->resolveBranchId($request->branchId());
         } catch (DomainException $e) {
-            abort(403, $e->getMessage());
+            abort(403, \App\Support\ErrorDetail::safe($e));
         }
 
         $data = $this->salaryService->monthlyIncome($branchId, $year, $month);
@@ -59,7 +59,7 @@ class TeacherSalaryController extends Controller
         try {
             $branchId = $this->salaryService->resolveBranchId($request->branchId(), $teacher);
         } catch (DomainException $e) {
-            return $this->toIndex($year, $month, $e->getMessage());
+            return $this->toIndex($year, $month, \App\Support\ErrorDetail::safe($e));
         }
 
         return view('teacher-salaries.show', [
@@ -85,7 +85,7 @@ class TeacherSalaryController extends Controller
                 $validated['note'] ?? null
             );
         } catch (DomainException $e) {
-            return back()->with('error', $e->getMessage());
+            return back()->with('error', \App\Support\ErrorDetail::safe($e));
         } catch (Throwable $e) {
             report($e);
 
@@ -109,7 +109,7 @@ class TeacherSalaryController extends Controller
         try {
             $branchId = $this->salaryService->resolveBranchId($request->branchId(), $teacher);
         } catch (DomainException $e) {
-            return $this->toIndex($year, $month, $e->getMessage());
+            return $this->toIndex($year, $month, \App\Support\ErrorDetail::safe($e));
         }
 
         return view('teacher-salaries.salary-slip-exact', [
@@ -124,7 +124,7 @@ class TeacherSalaryController extends Controller
         try {
             $this->paymentService->storePayment($teacher, (int) $validated['branch_id'], $validated);
         } catch (DomainException $e) {
-            return back()->withInput()->with('error', $e->getMessage());
+            return back()->withInput()->with('error', \App\Support\ErrorDetail::safe($e));
         } catch (Throwable $e) {
             report($e);
 
@@ -141,7 +141,7 @@ class TeacherSalaryController extends Controller
         try {
             $branchId = $this->salaryService->resolveBranchId($request->branchId(), $teacher);
         } catch (DomainException $e) {
-            return $this->toIndex($year, $month, $e->getMessage());
+            return $this->toIndex($year, $month, \App\Support\ErrorDetail::safe($e));
         }
 
         return view(
@@ -155,7 +155,7 @@ class TeacherSalaryController extends Controller
         try {
             $this->paymentService->deletePayment($paymentId);
         } catch (DomainException $e) {
-            return back()->with('error', $e->getMessage());
+            return back()->with('error', \App\Support\ErrorDetail::safe($e));
         } catch (Throwable $e) {
             report($e);
 
@@ -176,7 +176,7 @@ class TeacherSalaryController extends Controller
         try {
             $branchId = $this->salaryService->resolveBranchId($request->branchId(), $teacher);
         } catch (DomainException $e) {
-            return $this->toIndex($year, $month, $e->getMessage());
+            return $this->toIndex($year, $month, \App\Support\ErrorDetail::safe($e));
         }
 
         return view('teacher-salaries.summary', [
