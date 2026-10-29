@@ -5,6 +5,9 @@
     $monthLabel = \Carbon\Carbon::create($year, $month, 1)->format('F Y');
     $institute = config('institution.name', config('app.name'));
     $statusLabels = ['paid' => 'Paid', 'unpaid' => 'Unpaid', 'freecard' => 'Free Card'];
+    // By collection date the paid fee month can differ from the report month
+    $showPaidFor = ($filter['basis'] ?? null) === 'paid-date';
+    $columns = $showPaidFor ? 11 : 10;
 @endphp
 <!DOCTYPE html>
 <html lang="en">
@@ -120,10 +123,14 @@
                             <th style="width:11%">Code</th>
                             <th>Student Name</th>
                             <th style="width:12%">Guardian Mobile</th>
-                            <th style="width:13%">Fee Option</th>
-                            <th class="right" style="width:9%">Fee</th>
-                            <th class="right" style="width:9%">Paid</th>
-                            <th class="right" style="width:9%">Balance</th>
+                            <th style="width:10%">Fee Option</th>
+                            @if ($showPaidFor)
+                                <th style="width:9%">Paid For</th>
+                            @endif
+                            <th style="width:9%">Paid On</th>
+                            <th class="right" style="width:8%">Fee</th>
+                            <th class="right" style="width:8%">Paid</th>
+                            <th class="right" style="width:8%">Balance</th>
                             <th class="center" style="width:8%">Status</th>
                         </tr>
                     </thead>
@@ -135,19 +142,23 @@
                                 <td>{{ $student['initial_name'] ?? '-' }}</td>
                                 <td>{{ $student['guardian_mobile'] ?? '-' }}</td>
                                 <td>{{ $student['fee_option']['label'] ?? '-' }}</td>
+                                @if ($showPaidFor)
+                                    <td>{{ $student['paid_for'] ?: '-' }}</td>
+                                @endif
+                                <td>{{ $student['paid_on'] ?: '-' }}</td>
                                 <td class="right">{{ number_format((float) $student['final_fee'], 2) }}</td>
                                 <td class="right">{{ number_format((float) $student['paid_amount'], 2) }}</td>
                                 <td class="right">{{ number_format((float) $student['balance'], 2) }}</td>
                                 <td class="center status-{{ $student['status'] }}">{{ $statusLabels[$student['status']] ?? $student['status'] }}</td>
                             </tr>
                         @empty
-                            <tr><td colspan="9" class="empty">No active students.</td></tr>
+                            <tr><td colspan="{{ $columns }}" class="empty">No active students.</td></tr>
                         @endforelse
                     </tbody>
                     @if ($students->isNotEmpty())
                         <tfoot>
                             <tr>
-                                <td colspan="5">Total ({{ $students->count() }})</td>
+                                <td colspan="{{ $columns - 4 }}">Total ({{ $students->count() }})</td>
                                 <td class="right">{{ number_format($students->sum('final_fee'), 2) }}</td>
                                 <td class="right">{{ number_format($collected, 2) }}</td>
                                 <td class="right">{{ number_format($students->sum('balance'), 2) }}</td>
