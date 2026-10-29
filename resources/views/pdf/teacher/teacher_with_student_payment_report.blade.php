@@ -43,6 +43,7 @@
         .pill-paid { background: #dcfce7; color: #166534; }
         .pill-unpaid { background: #fee2e2; color: #991b1b; }
         .pill-freecard { background: #dbeafe; color: #1e40af; }
+        .pill-inactive { background: #fef3c7; color: #92400e; }
 
         table.data { width: 100%; border-collapse: collapse; }
         table.data thead { display: table-header-group; }
@@ -101,7 +102,12 @@
                 <table class="class-head">
                     <tr>
                         <td>
-                            <div class="class-name">{{ $class['class_name'] }}</div>
+                            <div class="class-name">
+                                {{ $class['class_name'] }}
+                                @if (!($class['is_active'] ?? true))
+                                    <span class="pill pill-inactive">Inactive</span>
+                                @endif
+                            </div>
                             <div class="class-sub">
                                 {{ $class['grade_name'] ?? '' }}{{ $category['category_name'] ? ' | ' . $category['category_name'] : '' }}
                                 | Collected Rs. {{ number_format($collected, 2) }}
