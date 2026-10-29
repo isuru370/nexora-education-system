@@ -340,7 +340,7 @@ class StudentPaymentController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Something went wrong while deleting payment.',
-                'error' => $exception->getMessage(),
+                'error' => \App\Support\ErrorDetail::safe($exception),
             ], 500);
         }
     }

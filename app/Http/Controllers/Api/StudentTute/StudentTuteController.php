@@ -183,7 +183,7 @@ class StudentTuteController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Something went wrong',
-                'error' => $e->getMessage()
+                'error' => \App\Support\ErrorDetail::safe($e)
             ], 500);
         }
     }
@@ -219,7 +219,7 @@ class StudentTuteController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Something went wrong',
-                'error' => $e->getMessage()
+                'error' => \App\Support\ErrorDetail::safe($e)
             ], 500);
         }
     }

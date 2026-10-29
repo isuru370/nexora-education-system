@@ -3,9 +3,14 @@
 namespace App\Services\Web\Student;
 
 use App\Models\QuickPhoto;
+use App\Services\FileUpload\ImageUploadService;
 
 class StudentPhotoService
 {
+    public function __construct(
+        protected ImageUploadService $imageUploadService
+    ) {}
+
     /**
      * Get default image URL based on gender.
      */
@@ -27,10 +32,8 @@ class StudentPhotoService
     ): string {
 
         if ($file) {
-            return $file->store(
-                'uploads/',
-                'public'
-            );
+            // Saved smaller (see ImageUploadService::upload)
+            return $this->imageUploadService->upload($file, 'uploads');
         }
 
         return $gender
@@ -82,5 +85,16 @@ class StudentPhotoService
             )
             ->where('is_active', true)
             ->exists();
+    }
+
+    /**
+     * Remove a student's previous photo after it was replaced,
+     * unless it is a default image or still used elsewhere.
+     */
+    public function deleteReplacedImage(?string $oldPath, ?string $newPath): void
+    {
+        if ($oldPath && $oldPath !== $newPath) {
+            $this->imageUploadService->delete($oldPath);
+        }
     }
 }

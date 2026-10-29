@@ -179,7 +179,7 @@ class ClassScheduleController extends Controller
 
             return back()
                 ->withInput()
-                ->with('error', $e->getMessage());
+                ->with('error', \App\Support\ErrorDetail::safe($e));
         }
     }
 
@@ -285,7 +285,7 @@ class ClassScheduleController extends Controller
 
         return back()
             ->withInput()
-            ->with('error', $e->getMessage());
+            ->with('error', \App\Support\ErrorDetail::safe($e));
     }
 }
 
@@ -312,7 +312,7 @@ class ClassScheduleController extends Controller
 
             ]);
 
-            return back()->with('error', $e->getMessage());
+            return back()->with('error', \App\Support\ErrorDetail::safe($e));
         }
     }
 
@@ -335,7 +335,7 @@ class ClassScheduleController extends Controller
 
             ]);
 
-            return back()->with('error', $e->getMessage());
+            return back()->with('error', \App\Support\ErrorDetail::safe($e));
         }
     }
 
@@ -370,7 +370,7 @@ class ClassScheduleController extends Controller
 
             ]);
 
-            return back()->withInput()->with('error', $e->getMessage());
+            return back()->withInput()->with('error', \App\Support\ErrorDetail::safe($e));
         }
     }
 
@@ -410,7 +410,7 @@ class ClassScheduleController extends Controller
 
             ]);
 
-            return back()->with('error', $e->getMessage());
+            return back()->with('error', \App\Support\ErrorDetail::safe($e));
         }
     }
 

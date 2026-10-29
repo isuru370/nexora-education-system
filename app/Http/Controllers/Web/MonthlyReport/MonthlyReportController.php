@@ -30,7 +30,7 @@ class MonthlyReportController extends Controller
             try {
                 $branchId = $this->reportService->resolveBranchId(null);
             } catch (DomainException $e) {
-                abort(403, $e->getMessage());
+                abort(403, \App\Support\ErrorDetail::safe($e));
             }
         }
 
@@ -64,7 +64,7 @@ class MonthlyReportController extends Controller
                 "teacher-salary-report-{$branchId}-{$year}-{$month}.xlsx"
             );
         } catch (DomainException $e) {
-            return $this->failed($e->getMessage());
+            return $this->failed(\App\Support\ErrorDetail::safe($e));
         } catch (Throwable $e) {
             report($e);
 
@@ -90,7 +90,7 @@ class MonthlyReportController extends Controller
                 ->setPaper('a4', 'landscape')
                 ->download("teacher-salary-report-{$branchId}-{$year}-{$month}.pdf");
         } catch (DomainException $e) {
-            return $this->failed($e->getMessage());
+            return $this->failed(\App\Support\ErrorDetail::safe($e));
         } catch (Throwable $e) {
             report($e);
 
@@ -117,7 +117,7 @@ class MonthlyReportController extends Controller
                 "teacher-student-payments-{$basis}-{$teacherId}-{$year}-{$month}.xlsx"
             );
         } catch (DomainException $e) {
-            return $this->failed($e->getMessage());
+            return $this->failed(\App\Support\ErrorDetail::safe($e));
         } catch (Throwable $e) {
             report($e);
 
@@ -140,7 +140,7 @@ class MonthlyReportController extends Controller
                 ->setPaper('a4', 'landscape')
                 ->download("teacher-student-payments-{$basis}-{$teacherId}-{$year}-{$month}.pdf");
         } catch (DomainException $e) {
-            return $this->failed($e->getMessage());
+            return $this->failed(\App\Support\ErrorDetail::safe($e));
         } catch (Throwable $e) {
             report($e);
 
@@ -197,7 +197,7 @@ class MonthlyReportController extends Controller
                 ->setPaper('a4', 'landscape')
                 ->download($fileName . '.pdf');
         } catch (DomainException $e) {
-            return $this->failed($e->getMessage());
+            return $this->failed(\App\Support\ErrorDetail::safe($e));
         } catch (Throwable $e) {
             report($e);
 

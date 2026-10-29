@@ -194,10 +194,13 @@ class StudentService
         array $data,
         $image = null
     ): Student {
-        return DB::transaction(function () use (
+        $replacedImage = null;
+
+        $updated = DB::transaction(function () use (
             $student,
             $data,
-            $image
+            $image,
+            &$replacedImage
         ) {
 
             /*
@@ -246,6 +249,8 @@ class StudentService
              * Handle new student image.
              */
             if ($image !== null) {
+                $replacedImage = $student->img_url;
+
                 $data['img_url'] = $this->studentPhotoService
                     ->handleStudentImage(
                         $image,
@@ -284,6 +289,11 @@ class StudentService
                 'branch',
             ]);
         });
+
+        // Old photo goes only after the update is saved (and never if still in use)
+        $this->studentPhotoService->deleteReplacedImage($replacedImage, $updated->img_url);
+
+        return $updated;
     }
 
     /**

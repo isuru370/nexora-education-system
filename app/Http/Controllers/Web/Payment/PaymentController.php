@@ -63,7 +63,7 @@ class PaymentController extends Controller
         } catch (\RuntimeException $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => $e->getMessage(),
+                'message' => \App\Support\ErrorDetail::safe($e),
             ], 404);
         } catch (Throwable $e) {
             Log::error('Admin new payment read failed.', [
@@ -105,12 +105,12 @@ class PaymentController extends Controller
         } catch (\InvalidArgumentException $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => $e->getMessage(),
+                'message' => \App\Support\ErrorDetail::safe($e),
             ], 422);
         } catch (\RuntimeException $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => $e->getMessage(),
+                'message' => \App\Support\ErrorDetail::safe($e),
             ], 409);
         } catch (Throwable $e) {
             Log::error('Admin new payment failed.', [
@@ -155,12 +155,12 @@ class PaymentController extends Controller
         } catch (\InvalidArgumentException $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => $e->getMessage(),
+                'message' => \App\Support\ErrorDetail::safe($e),
             ], 422);
         } catch (\RuntimeException $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => $e->getMessage(),
+                'message' => \App\Support\ErrorDetail::safe($e),
             ], 409);
         } catch (Throwable $e) {
             Log::error('Admin new bulk payment failed.', [

@@ -15,7 +15,7 @@ use Throwable;
 
 class QuickPhotoController extends Controller
 {
-    public function uploadQuickPhoto(Request $request): JsonResponse
+    public function uploadQuickPhoto(Request $request, ImageUploadService $imageUploadService): JsonResponse
     {
         $uploadedPath = null;
 
@@ -36,7 +36,7 @@ class QuickPhotoController extends Controller
             }
 
             // store image
-            $uploadedPath = $file->store('uploads', 'public');
+            $uploadedPath = $imageUploadService->upload($file, 'uploads');
 
             // save DB
             $quickPhoto = DB::transaction(function () use ($uploadedPath) {
@@ -83,7 +83,7 @@ class QuickPhotoController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Image upload failed',
-                'error' => $e->getMessage(),
+                'error' => \App\Support\ErrorDetail::safe($e),
             ], 500);
         }
     }
@@ -150,7 +150,7 @@ class QuickPhotoController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Image update failed.',
-                'error' => $e->getMessage(),
+                'error' => \App\Support\ErrorDetail::safe($e),
             ], 500);
         }
     }

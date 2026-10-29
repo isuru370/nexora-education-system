@@ -87,7 +87,7 @@ class StudentTemporaryRegistrationController extends Controller
                 ->withInput()
                 ->with(
                     'error',
-                    $e->getMessage()
+                    \App\Support\ErrorDetail::safe($e)
                 );
         }
     }

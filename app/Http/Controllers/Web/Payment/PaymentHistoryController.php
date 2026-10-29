@@ -36,7 +36,7 @@ class PaymentHistoryController extends Controller
         try {
             $filter = $this->makeFilter($request);
         } catch (DomainException $e) {
-            return redirect()->route('payments.index')->with('error', $e->getMessage());
+            return redirect()->route('payments.index')->with('error', \App\Support\ErrorDetail::safe($e));
         }
 
         $validated = $request->validated();
@@ -101,7 +101,7 @@ class PaymentHistoryController extends Controller
                 ->setPaper('a4', 'landscape')
                 ->download($fileName . '.pdf');
         } catch (DomainException $e) {
-            return back()->with('error', $e->getMessage());
+            return back()->with('error', \App\Support\ErrorDetail::safe($e));
         } catch (Throwable $e) {
             report($e);
 
@@ -152,7 +152,7 @@ class PaymentHistoryController extends Controller
         try {
             $deleted = $deleteService->delete($payment, $request->validated()['reason']);
         } catch (DomainException $e) {
-            return back()->with('error', $e->getMessage());
+            return back()->with('error', \App\Support\ErrorDetail::safe($e));
         } catch (Throwable $e) {
             report($e);
 

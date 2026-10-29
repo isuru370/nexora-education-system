@@ -30,7 +30,7 @@ class InstituteIncomeReportController extends Controller
         try {
             $filter = $this->makeFilter($request);
         } catch (DomainException $e) {
-            return redirect()->route('reports.institute-income.index')->with('error', $e->getMessage());
+            return redirect()->route('reports.institute-income.index')->with('error', \App\Support\ErrorDetail::safe($e));
         }
 
         return view('reports.institute-income', [
@@ -78,7 +78,7 @@ class InstituteIncomeReportController extends Controller
                 ->setPaper('a4', count($table['columns']) > 6 ? 'landscape' : 'portrait')
                 ->download($fileName . '.pdf');
         } catch (DomainException $e) {
-            return back()->with('error', $e->getMessage());
+            return back()->with('error', \App\Support\ErrorDetail::safe($e));
         } catch (Throwable $e) {
             report($e);
 
