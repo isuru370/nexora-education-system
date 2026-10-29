@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Services\Branch\BranchAccessService;
 use App\Services\Web\TeacherSalary\TeacherSalaryCalculator;
 use App\Services\Web\TeacherSalary\TeacherSalaryService;
+use Carbon\Carbon;
 use DomainException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -429,6 +430,24 @@ class MonthlyReportService
             'paid_amount' => $paidAmount,
             'balance' => max(round($finalFee - $paidAmount, 2), 0),
             'status' => $status,
+
+            // Which fee month(s) the payments were for, and when they were paid
+            'paid_for' => $enrollment->payments
+                ->pluck('payment_month')
+                ->filter()
+                ->map(fn ($month) => Carbon::parse($month)->startOfMonth())
+                ->sort()
+                ->map(fn (Carbon $month) => $month->format('M Y'))
+                ->unique()
+                ->implode(', '),
+            'paid_on' => $enrollment->payments
+                ->pluck('paid_at')
+                ->filter()
+                ->map(fn ($date) => Carbon::parse($date))
+                ->sort()
+                ->map(fn (Carbon $date) => $date->format('d M Y'))
+                ->unique()
+                ->implode(', '),
         ];
     }
 

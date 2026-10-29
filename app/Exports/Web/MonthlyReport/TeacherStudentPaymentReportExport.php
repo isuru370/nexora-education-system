@@ -70,6 +70,8 @@ class TeacherStudentPaymentReportExport implements
             $class['grade_name'],
             $category['category_name'],
             $feeOption ? $feeOption['label'] : '',
+            $student['paid_for'] ?? '',
+            $student['paid_on'] ?? '',
             $student['student_code'],
             $student['initial_name'],
             $student['guardian_mobile'],
@@ -87,6 +89,8 @@ class TeacherStudentPaymentReportExport implements
             'Grade',
             'Category',
             'Fee Option',
+            'Paid For',
+            'Paid On',
             'Student Code',
             'Student Name',
             'Guardian Mobile',
@@ -102,9 +106,9 @@ class TeacherStudentPaymentReportExport implements
         $money = NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1;
 
         return [
-            'I' => $money,
-            'J' => $money,
             'K' => $money,
+            'L' => $money,
+            'M' => $money,
         ];
     }
 
@@ -131,10 +135,10 @@ class TeacherStudentPaymentReportExport implements
                 $sheet->freezePane('A2');
 
                 if ($this->rowCount > 0) {
-                    $sheet->setAutoFilter('A1:K' . $lastDataRow);
+                    $sheet->setAutoFilter('A1:M' . $lastDataRow);
 
-                    $sheet->setCellValue('H' . $infoRow, 'Total');
-                    foreach (['I', 'J', 'K'] as $column) {
+                    $sheet->setCellValue('J' . $infoRow, 'Total');
+                    foreach (['K', 'L', 'M'] as $column) {
                         $sheet->setCellValue(
                             $column . $infoRow,
                             '=SUM(' . $column . '2:' . $column . $lastDataRow . ')'
@@ -143,7 +147,7 @@ class TeacherStudentPaymentReportExport implements
                             ->getNumberFormat()
                             ->setFormatCode(NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1);
                     }
-                    $sheet->getStyle('H' . $infoRow . ':K' . $infoRow)->getFont()->setBold(true);
+                    $sheet->getStyle('J' . $infoRow . ':M' . $infoRow)->getFont()->setBold(true);
                 }
 
                 $teacher = $this->report['teacher'];

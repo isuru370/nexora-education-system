@@ -72,4 +72,39 @@ class MonthlyReportPdfTest extends TestCase
         $this->assertSame('application/pdf', $response->headers->get('content-type'));
         $this->assertGreaterThan(3000, strlen($response->getContent()));
     }
+
+    public function test_collection_report_shows_which_month_was_paid(): void
+    {
+        // S3 pays the September fee late, in October
+        DB::table('payments')->insert([
+            'branch_id' => $this->inst['b2'], 'student_id' => $this->inst['s3'],
+            'student_class_enrollment_id' => $this->inst['e3'], 'user_id' => $this->inst['cashier']->id,
+            'amount' => 2000, 'paid_at' => '2026-10-10 10:00:00', 'payment_month' => '2026-09-01',
+            'payment_method' => 'cash', 'status' => 'completed', 'receipt_number' => 'R-SEP',
+        ]);
+
+        $service = app(MonthlyReportService::class);
+        $teacher = $this->inst['teacher'];
+
+        $byCollection = $service->teacherStudentPaymentReport($teacher, 2026, 10, 'paid-date');
+        $s3 = $byCollection['classes'][1]['categories'][0]['students']['paid'][0];
+        $this->assertSame('Sep 2026', $s3['paid_for']);
+        $this->assertSame('10 Oct 2026', $s3['paid_on']);
+
+        $html = view('pdf.teacher.teacher_with_student_payment_report', [
+            'report' => $byCollection, 'year' => 2026, 'month' => 10,
+        ])->render();
+        $this->assertStringContainsString('Paid For', $html);
+        $this->assertStringContainsString('Sep 2026', $html);
+
+        // By fee month the September payment is not in October; no Paid For column
+        $byFeeMonth = $service->teacherStudentPaymentReport($teacher, 2026, 10, 'fee-month');
+        $this->assertSame('unpaid', $byFeeMonth['classes'][1]['categories'][0]['students']['unpaid'][0]['status']);
+
+        $html = view('pdf.teacher.teacher_with_student_payment_report', [
+            'report' => $byFeeMonth, 'year' => 2026, 'month' => 10,
+        ])->render();
+        $this->assertStringNotContainsString('Paid For', $html);
+        $this->assertStringContainsString('05 Oct 2026', $html);   // S1 paid on
+    }
 }
