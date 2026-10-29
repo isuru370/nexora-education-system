@@ -73,7 +73,7 @@ class AttendanceReportController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => $e->getMessage(),
+                'message' => \App\Support\ErrorDetail::safe($e),
                 'data' => null,
             ], 422);
 

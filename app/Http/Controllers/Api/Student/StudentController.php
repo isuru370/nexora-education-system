@@ -67,7 +67,7 @@ class StudentController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => $e->getMessage(),
+                'message' => \App\Support\ErrorDetail::safe($e),
             ], 404);
         }
     }
@@ -150,7 +150,7 @@ class StudentController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => $e->getMessage()
+                'message' => \App\Support\ErrorDetail::safe($e)
                     ?: 'Failed to update student image',
             ], 422);
         }

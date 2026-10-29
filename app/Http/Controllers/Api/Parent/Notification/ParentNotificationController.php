@@ -70,7 +70,7 @@ class ParentNotificationController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to retrieve notifications: ' . $e->getMessage(),
+                'message' => 'Failed to retrieve notifications: ' . \App\Support\ErrorDetail::safe($e),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -116,7 +116,7 @@ class ParentNotificationController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to get notification details: ' . $e->getMessage(),
+                'message' => 'Failed to get notification details: ' . \App\Support\ErrorDetail::safe($e),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -159,7 +159,7 @@ class ParentNotificationController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to get unread notifications: ' . $e->getMessage(),
+                'message' => 'Failed to get unread notifications: ' . \App\Support\ErrorDetail::safe($e),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -196,7 +196,7 @@ class ParentNotificationController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to get unread count: ' . $e->getMessage(),
+                'message' => 'Failed to get unread count: ' . \App\Support\ErrorDetail::safe($e),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -238,7 +238,7 @@ class ParentNotificationController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to mark notification as read: ' . $e->getMessage(),
+                'message' => 'Failed to mark notification as read: ' . \App\Support\ErrorDetail::safe($e),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -275,7 +275,7 @@ class ParentNotificationController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to mark all notifications as read: ' . $e->getMessage(),
+                'message' => 'Failed to mark all notifications as read: ' . \App\Support\ErrorDetail::safe($e),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -317,7 +317,7 @@ class ParentNotificationController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to delete notification: ' . $e->getMessage(),
+                'message' => 'Failed to delete notification: ' . \App\Support\ErrorDetail::safe($e),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -354,7 +354,7 @@ class ParentNotificationController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to delete read notifications: ' . $e->getMessage(),
+                'message' => 'Failed to delete read notifications: ' . \App\Support\ErrorDetail::safe($e),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -389,7 +389,7 @@ class ParentNotificationController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to get notification statistics: ' . $e->getMessage(),
+                'message' => 'Failed to get notification statistics: ' . \App\Support\ErrorDetail::safe($e),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }

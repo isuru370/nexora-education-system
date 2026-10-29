@@ -47,6 +47,12 @@ return [
     'expiration' => null,
 
     /*
+    | Staff app (users) tokens stop working after this many days without use.
+    | 0 = never. See AuthServiceProvider.
+    */
+    'staff_idle_days' => (int) env('STAFF_TOKEN_IDLE_DAYS', 7),
+
+    /*
     |--------------------------------------------------------------------------
     | Sanctum Middleware
     |--------------------------------------------------------------------------

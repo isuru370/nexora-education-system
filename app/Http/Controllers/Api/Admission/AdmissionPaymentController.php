@@ -190,7 +190,7 @@ class AdmissionPaymentController extends Controller
             // e.g. 403 "You do not have access to this branch."
             return response()->json([
                 'success' => false,
-                'message' => $e->getMessage(),
+                'message' => \App\Support\ErrorDetail::safe($e),
             ], $e->getStatusCode());
         } catch (\Throwable $e) {
             Log::error('Failed to store admission payment.', [

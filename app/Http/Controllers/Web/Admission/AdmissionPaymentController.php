@@ -42,7 +42,7 @@ class AdmissionPaymentController extends Controller
         try {
             $payment = $this->admissionPaymentService->create($request->validated());
         } catch (DomainException $e) {
-            return back()->withInput()->with('error', $e->getMessage());
+            return back()->withInput()->with('error', \App\Support\ErrorDetail::safe($e));
         }
 
         return redirect()
@@ -55,7 +55,7 @@ class AdmissionPaymentController extends Controller
         try {
             $admissionPayment = $this->admissionPaymentService->getShowData($admissionPayment);
         } catch (DomainException $e) {
-            abort(403, $e->getMessage());
+            abort(403, \App\Support\ErrorDetail::safe($e));
         }
 
         return view('admission_payments.show', compact('admissionPayment'));
@@ -66,7 +66,7 @@ class AdmissionPaymentController extends Controller
         try {
             $this->admissionPaymentService->assertCanView($admissionPayment);
         } catch (DomainException $e) {
-            abort(403, $e->getMessage());
+            abort(403, \App\Support\ErrorDetail::safe($e));
         }
 
         $options = $this->admissionPaymentService->formOptions($admissionPayment);
@@ -87,7 +87,7 @@ class AdmissionPaymentController extends Controller
                 $request->validated()
             );
         } catch (DomainException $e) {
-            return back()->withInput()->with('error', $e->getMessage());
+            return back()->withInput()->with('error', \App\Support\ErrorDetail::safe($e));
         }
 
         return redirect()
@@ -100,7 +100,7 @@ class AdmissionPaymentController extends Controller
         try {
             $this->admissionPaymentService->delete($admissionPayment);
         } catch (DomainException $e) {
-            return back()->with('error', $e->getMessage());
+            return back()->with('error', \App\Support\ErrorDetail::safe($e));
         }
 
         return redirect()

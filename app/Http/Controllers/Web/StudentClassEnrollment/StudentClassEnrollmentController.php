@@ -207,7 +207,7 @@ class StudentClassEnrollmentController extends Controller
         } catch (ValidationException $e) {
             throw $e;
         } catch (Throwable $e) {
-            return back()->with('error', $e->getMessage());
+            return back()->with('error', \App\Support\ErrorDetail::safe($e));
         }
     }
 
@@ -243,7 +243,7 @@ class StudentClassEnrollmentController extends Controller
         } catch (Throwable $e) {
             return back()
                 ->withInput()
-                ->with('error', $e->getMessage());
+                ->with('error', \App\Support\ErrorDetail::safe($e));
         }
     }
 
@@ -323,7 +323,7 @@ class StudentClassEnrollmentController extends Controller
         } catch (Throwable $e) {
             return back()
                 ->withInput()
-                ->with('error', $e->getMessage());
+                ->with('error', \App\Support\ErrorDetail::safe($e));
         }
     }
 
@@ -343,7 +343,7 @@ class StudentClassEnrollmentController extends Controller
         } catch (ValidationException $e) {
             throw $e;
         } catch (Throwable $e) {
-            return back()->with('error', $e->getMessage());
+            return back()->with('error', \App\Support\ErrorDetail::safe($e));
         }
     }
 
@@ -377,7 +377,7 @@ class StudentClassEnrollmentController extends Controller
         } catch (ValidationException $e) {
             throw $e;
         } catch (Throwable $e) {
-            return back()->with('error', $e->getMessage());
+            return back()->with('error', \App\Support\ErrorDetail::safe($e));
         }
     }
 
@@ -400,7 +400,7 @@ class StudentClassEnrollmentController extends Controller
         } catch (ValidationException $e) {
             throw $e;
         } catch (Throwable $e) {
-            return back()->with('error', $e->getMessage());
+            return back()->with('error', \App\Support\ErrorDetail::safe($e));
         }
     }
 

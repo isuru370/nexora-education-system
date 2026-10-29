@@ -28,7 +28,7 @@ class MonthlyCollectionReportController extends Controller
         try {
             [$filter, $month] = $this->makeFilter($request);
         } catch (DomainException $e) {
-            return redirect()->route('reports.monthly-collection.index')->with('error', $e->getMessage());
+            return redirect()->route('reports.monthly-collection.index')->with('error', \App\Support\ErrorDetail::safe($e));
         }
 
         return view('reports.monthly-collection', [
@@ -104,7 +104,7 @@ class MonthlyCollectionReportController extends Controller
                 ->setPaper('a4', 'landscape')
                 ->download($fileName . '.pdf');
         } catch (DomainException $e) {
-            return back()->with('error', $e->getMessage());
+            return back()->with('error', \App\Support\ErrorDetail::safe($e));
         } catch (Throwable $e) {
             report($e);
 

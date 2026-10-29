@@ -39,7 +39,7 @@ class StudentPermanentRegistrationController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => $e->getMessage() ?: 'Student registration failed.',
+                'message' => \App\Support\ErrorDetail::safe($e) ?: 'Student registration failed.',
             ], 422);
         }
     }

@@ -48,9 +48,10 @@ return [
     */
 
     'channels' => [
+        // Daily files, kept 14 days (LOG_DAYS), so the log never fills the disk
         'stack' => [
             'driver' => 'stack',
-            'channels' => ['single'],
+            'channels' => ['daily'],
             'ignore_exceptions' => false,
         ],
 
@@ -64,7 +65,7 @@ return [
             'driver' => 'daily',
             'path' => storage_path('logs/laravel.log'),
             'level' => env('LOG_LEVEL', 'debug'),
-            'days' => 14,
+            'days' => (int) env('LOG_DAYS', 14),
             // Web (www-data) and CLI / queue worker share these files. If a root
             // process creates the day's file first, the web app must still be
             // able to write to it - otherwise every logged error becomes a 500.

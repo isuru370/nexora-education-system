@@ -45,7 +45,7 @@ class PaymentController extends Controller
         } catch (\RuntimeException $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => $e->getMessage(),
+                'message' => \App\Support\ErrorDetail::safe($e),
             ], 404);
         } catch (Throwable $e) {
             Log::error('New payment read failed.', [
@@ -88,18 +88,18 @@ class PaymentController extends Controller
             // e.g. "No active payment configuration found for this class."
             return response()->json([
                 'status' => 'error',
-                'message' => collect($e->errors())->flatten()->first() ?: $e->getMessage(),
+                'message' => collect($e->errors())->flatten()->first() ?: \App\Support\ErrorDetail::safe($e),
                 'errors' => $e->errors(),
             ], 422);
         } catch (\InvalidArgumentException $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => $e->getMessage(),
+                'message' => \App\Support\ErrorDetail::safe($e),
             ], 422);
         } catch (\RuntimeException $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => $e->getMessage(),
+                'message' => \App\Support\ErrorDetail::safe($e),
             ], 409);
         } catch (Throwable $e) {
             Log::error('New payment failed.', [
@@ -143,18 +143,18 @@ class PaymentController extends Controller
             // e.g. "No active payment configuration found for this class."
             return response()->json([
                 'status' => 'error',
-                'message' => collect($e->errors())->flatten()->first() ?: $e->getMessage(),
+                'message' => collect($e->errors())->flatten()->first() ?: \App\Support\ErrorDetail::safe($e),
                 'errors' => $e->errors(),
             ], 422);
         } catch (\InvalidArgumentException $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => $e->getMessage(),
+                'message' => \App\Support\ErrorDetail::safe($e),
             ], 422);
         } catch (\RuntimeException $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => $e->getMessage(),
+                'message' => \App\Support\ErrorDetail::safe($e),
             ], 409);
         } catch (Throwable $e) {
             Log::error('New bulk payment failed.', [

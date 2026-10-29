@@ -47,7 +47,7 @@ class StudentCardAssignmentController extends Controller
 
                 'success' => false,
 
-                'message' => $e->getMessage(),
+                'message' => \App\Support\ErrorDetail::safe($e),
 
                 'data' => null,
 
@@ -88,7 +88,7 @@ class StudentCardAssignmentController extends Controller
 
                 'success' => false,
 
-                'message' => $e->getMessage(),
+                'message' => \App\Support\ErrorDetail::safe($e),
 
                 'data' => null,
 
@@ -149,7 +149,7 @@ class StudentCardAssignmentController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => $isExpectedError
-                    ? $e->getMessage()
+                    ? \App\Support\ErrorDetail::safe($e)
                     : 'Unable to assign student card. Please try again.',
                 'data' => null,
             ], $isExpectedError ? 422 : 500);

@@ -82,7 +82,7 @@ class TemporaryIDCardController extends Controller
         } catch (RuntimeException $e) {
 
             return back()
-                ->with('error', $e->getMessage())
+                ->with('error', \App\Support\ErrorDetail::safe($e))
                 ->withInput();
 
         } catch (\Throwable $e) {
@@ -136,7 +136,7 @@ class TemporaryIDCardController extends Controller
 
         } catch (RuntimeException $e) {
 
-            return back()->with('error', $e->getMessage());
+            return back()->with('error', \App\Support\ErrorDetail::safe($e));
 
         } catch (\Throwable $e) {
 
@@ -189,7 +189,7 @@ class TemporaryIDCardController extends Controller
 
         } catch (RuntimeException $e) {
 
-            return back()->with('error', $e->getMessage());
+            return back()->with('error', \App\Support\ErrorDetail::safe($e));
 
         } catch (\Throwable $e) {
 
@@ -227,7 +227,7 @@ class TemporaryIDCardController extends Controller
 
         } catch (RuntimeException $e) {
 
-            return back()->with('error', $e->getMessage());
+            return back()->with('error', \App\Support\ErrorDetail::safe($e));
 
         } catch (\Throwable $e) {
 
@@ -256,7 +256,7 @@ class TemporaryIDCardController extends Controller
 
         } catch (RuntimeException $e) {
 
-            return back()->with('error', $e->getMessage());
+            return back()->with('error', \App\Support\ErrorDetail::safe($e));
 
         } catch (\Throwable $e) {
 
@@ -267,7 +267,7 @@ class TemporaryIDCardController extends Controller
                 'user_id' => auth()->id(),
             ]);
 
-            return back()->with('error', 'Failed to download PDF: ' . $e->getMessage());
+            return back()->with('error', 'Failed to download PDF: ' . \App\Support\ErrorDetail::safe($e));
         }
     }
 }

@@ -28,7 +28,7 @@ class GradeController extends Controller
             return response()->json([
                 'success' => false,
                 'message' => 'Failed to fetch grades',
-                'error' => $e->getMessage(),
+                'error' => \App\Support\ErrorDetail::safe($e),
             ], 500);
         }
     }

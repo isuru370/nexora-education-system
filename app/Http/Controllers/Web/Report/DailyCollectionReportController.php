@@ -33,7 +33,7 @@ class DailyCollectionReportController extends Controller
         try {
             $filter = $this->makeFilter($request);
         } catch (DomainException $e) {
-            return redirect()->route('reports.daily-collection.index')->with('error', $e->getMessage());
+            return redirect()->route('reports.daily-collection.index')->with('error', \App\Support\ErrorDetail::safe($e));
         }
 
         $rows = $this->reportService->rows($tab, $filter, $tab === 'summary' ? null : self::PER_PAGE);
@@ -87,7 +87,7 @@ class DailyCollectionReportController extends Controller
                 ->setPaper('a4', count($table['columns']) > 6 ? 'landscape' : 'portrait')
                 ->download($fileName . '.pdf');
         } catch (DomainException $e) {
-            return back()->with('error', $e->getMessage());
+            return back()->with('error', \App\Support\ErrorDetail::safe($e));
         } catch (Throwable $e) {
             report($e);
 

@@ -184,7 +184,7 @@ class ClassScheduleController extends Controller
             report($e);
 
             return $this->errorResponse(
-                $e->getMessage(),
+                \App\Support\ErrorDetail::safe($e),
                 422
             );
         }
@@ -243,7 +243,7 @@ class ClassScheduleController extends Controller
             report($e);
 
             return $this->errorResponse(
-                $e->getMessage(),
+                \App\Support\ErrorDetail::safe($e),
                 422
             );
         }
@@ -283,7 +283,7 @@ class ClassScheduleController extends Controller
             report($e);
 
             return $this->errorResponse(
-                $e->getMessage(),
+                \App\Support\ErrorDetail::safe($e),
                 422
             );
         }
