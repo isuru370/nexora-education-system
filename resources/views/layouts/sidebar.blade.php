@@ -333,6 +333,14 @@
             @if ($isAdmin)
                 <div class="nav-item">
                     <button type="button"
+                        class="nav-link-custom {{ request()->routeIs('app-setup.*') ? 'active' : '' }}"
+                        data-route="app-setup.index" data-href="{{ route('app-setup.index') }}">
+                        <i class="bi bi-qr-code"></i>
+                        <span>Staff App QR</span>
+                    </button>
+                </div>
+                <div class="nav-item">
+                    <button type="button"
                         class="nav-link-custom {{ request()->routeIs('close-grade.*') ? 'active' : '' }}"
                         data-route="close-grade.index" data-href="{{ route('close-grade.index') }}">
                         <i class="bi bi-archive-fill"></i>
