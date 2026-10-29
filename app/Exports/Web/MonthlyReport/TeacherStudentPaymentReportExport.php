@@ -66,7 +66,7 @@ class TeacherStudentPaymentReportExport implements
         $feeOption = $student['fee_option'] ?? null;
 
         return [
-            $class['class_name'],
+            $class['class_name'] . (($class['is_active'] ?? true) ? '' : ' (Inactive)'),
             $class['grade_name'],
             $category['category_name'],
             $feeOption ? $feeOption['label'] : '',
