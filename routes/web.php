@@ -2893,3 +2893,9 @@ Route::prefix('app-setup-qr')
 Route::get('/app-setup', [AppSetupController::class, 'help'])
     ->middleware('throttle:60,1')
     ->name('app-setup.help');
+
+
+// Privacy policy (public): the Play Store privacy policy URL of the staff app
+Route::view('/privacy-policy', 'legal.privacy-policy')
+    ->middleware('throttle:60,1')
+    ->name('privacy-policy');
