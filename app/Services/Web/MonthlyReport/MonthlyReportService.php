@@ -155,10 +155,28 @@ class MonthlyReportService
 
         [$start, $end] = $this->calculator->monthRange($year, $month);
 
+        // Completed payments that belong to this report (by fee month or by collection date)
+        $inPeriod = function ($paymentQuery) use ($basis, $start, $end) {
+            $paymentQuery->where('status', 'completed');
+
+            if ($basis === self::BASIS_FEE_MONTH) {
+                $paymentQuery->whereBetween('payment_month', [$start->toDateString(), $end->toDateString()]);
+            } else {
+                $paymentQuery->whereBetween('paid_at', [$start, $end]);
+            }
+        };
+
+        // Active classes always; an inactive class only for a month it still has
+        // payments in (e.g. the month it was closed), so later months skip it.
+        // Students: active enrollments, plus anyone who paid in this period.
         $classes = StudentClass::query()
-            ->select('id', 'branch_id', 'class_name', 'grade_id', 'teacher_id')
+            ->select('id', 'branch_id', 'class_name', 'grade_id', 'teacher_id', 'is_active')
             ->where('teacher_id', $teacherId)
             ->whereIn('branch_id', $this->branchAccessService->getBranchIds())
+            ->where(function ($query) use ($inPeriod) {
+                $query->where('is_active', true)
+                    ->orWhereHas('enrollments.payments', $inPeriod);
+            })
             ->with([
                 'grade:id,grade_name',
                 'categoryFees' => function ($query) {
@@ -166,7 +184,7 @@ class MonthlyReportService
                         ->with('category:id,category_name')
                         ->orderBy('id');
                 },
-                'enrollments' => function ($query) use ($basis, $start, $end) {
+                'enrollments' => function ($query) use ($inPeriod) {
                     $query->select(
                         'id',
                         'student_id',
@@ -176,20 +194,16 @@ class MonthlyReportService
                         'is_active',
                         'is_free_card'
                     )
-                        ->where('is_active', true)
+                        ->where(function ($enrollmentQuery) use ($inPeriod) {
+                            $enrollmentQuery->where('is_active', true)
+                                ->orWhereHas('payments', $inPeriod);
+                        })
                         ->with([
                             'student:id,permanent_qr_active,custom_id,temporary_qr_code,initial_name,guardian_mobile',
                             'classCategoryFeeOption:id,class_category_fee_id,label,fee',
-                            'payments' => function ($paymentQuery) use ($basis, $start, $end) {
-                                $paymentQuery
-                                    ->select('id', 'student_class_enrollment_id', 'amount', 'status', 'payment_month', 'paid_at')
-                                    ->where('status', 'completed');
-
-                                if ($basis === self::BASIS_FEE_MONTH) {
-                                    $paymentQuery->whereBetween('payment_month', [$start->toDateString(), $end->toDateString()]);
-                                } else {
-                                    $paymentQuery->whereBetween('paid_at', [$start, $end]);
-                                }
+                            'payments' => function ($paymentQuery) use ($inPeriod) {
+                                $paymentQuery->select('id', 'student_class_enrollment_id', 'amount', 'status', 'payment_month', 'paid_at');
+                                $inPeriod($paymentQuery);
                             },
                         ]);
                 },
@@ -253,6 +267,7 @@ class MonthlyReportService
                 'class_id' => $class->id,
                 'class_name' => $class->class_name,
                 'grade_name' => optional($class->grade)->grade_name,
+                'is_active' => (bool) $class->is_active,
                 'categories' => $classCategories,
             ];
         }

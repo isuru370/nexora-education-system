@@ -107,4 +107,36 @@ class MonthlyReportPdfTest extends TestCase
         $this->assertStringNotContainsString('Paid For', $html);
         $this->assertStringContainsString('05 Oct 2026', $html);   // S1 paid on
     }
+
+    public function test_inactive_class_shows_only_in_months_with_payments(): void
+    {
+        // Class 1 is closed; S1 paid the October fee on 5 Oct, S2 (free card) is left
+        DB::table('student_classes')->where('id', $this->inst['c1'])->update(['is_active' => 0]);
+        DB::table('student_class_enrollments')->where('student_class_id', $this->inst['c1'])->update(['is_active' => 0]);
+
+        $service = app(MonthlyReportService::class);
+        $teacher = $this->inst['teacher'];
+        $names = fn (array $report) => array_column($report['classes'], 'class_name');
+
+        // October: the closed class still shows, with the student who paid
+        foreach (['fee-month', 'paid-date'] as $basis) {
+            $october = $service->teacherStudentPaymentReport($teacher, 2026, 10, $basis);
+            $this->assertSame(['Maths 10 CMB', 'Maths 10 KDY'], $names($october));
+            $this->assertFalse($october['classes'][0]['is_active']);
+            $this->assertSame(1, $october['classes'][0]['categories'][0]['total_students']);
+            $this->assertSame(1, $october['classes'][0]['categories'][0]['paid_count']);
+            $this->assertSame(2, $october['summary']['total_classes']);
+            $this->assertEquals(2000, $october['summary']['total_collected']);
+        }
+
+        // November: no payments, so the closed class is skipped
+        $november = $service->teacherStudentPaymentReport($teacher, 2026, 11, 'fee-month');
+        $this->assertSame(['Maths 10 KDY'], $names($november));
+        $this->assertSame(1, $november['summary']['total_classes']);
+
+        $html = view('pdf.teacher.teacher_with_student_payment_report', [
+            'report' => $service->teacherStudentPaymentReport($teacher, 2026, 10, 'fee-month'), 'year' => 2026, 'month' => 10,
+        ])->render();
+        $this->assertStringContainsString('Inactive', $html);
+    }
 }
