@@ -174,8 +174,9 @@
                     Nexora IT.</li>
                 <li><strong>SMS provider:</strong> guardian phone numbers and message text are sent to the SMS
                     service the institute uses, only to deliver its messages.</li>
-                <li><strong>Backups:</strong> encrypted-in-transit database backups are stored in a private cloud
-                    storage account controlled by Nexora IT / the institute.</li>
+                <li><strong>Backups:</strong> a daily database backup is sent over an encrypted connection to a
+                    private Google Drive account owned by Nexora IT. Only Nexora IT can access these backups; they
+                    are used only to restore the institute's data if something goes wrong.</li>
                 <li>When required by law.</li>
             </ul>
 
