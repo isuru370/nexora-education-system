@@ -232,5 +232,12 @@ class PaymentRulesTest extends TestCase
             ['fee_option' => true, 'custom_amount' => false, 'no_attendance' => true, 'tute' => false],
             PaymentRules::all()
         );
+
+        // The page shows the saved switches as on
+        $this->actingAs($super)->get('/payment-rules')
+            ->assertSee('id="fee_option" checked', false)
+            ->assertSee('id="no_attendance" checked', false)
+            ->assertDontSee('id="tute" checked', false)
+            ->assertDontSee('@checked', false);
     }
 }

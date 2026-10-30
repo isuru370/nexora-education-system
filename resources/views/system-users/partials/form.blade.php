@@ -239,7 +239,7 @@
     <div class="col-12">
         <div class="custom-switch">
             <input type="checkbox" name="is_active" value="1" id="is_active" class="form-check-input"
-                @checked(old('is_active', $systemUser?->is_active ?? true))>
+                {{ (old('is_active', $systemUser?->is_active ?? true)) ? 'checked' : '' }}>
             <label for="is_active">Active Account</label>
         </div>
     </div>

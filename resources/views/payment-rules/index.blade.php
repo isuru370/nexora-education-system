@@ -68,7 +68,7 @@
                         <div class="form-check form-switch fs-4 mb-0">
                             <input type="hidden" name="{{ $key }}" value="0">
                             <input class="form-check-input" type="checkbox" role="switch" name="{{ $key }}" value="1"
-                                id="{{ $key }}" @checked(old($key, $rules[$key]))>
+                                id="{{ $key }}" {{ (old($key, $rules[$key])) ? 'checked' : '' }}>
                         </div>
                     </div>
                 </div>
@@ -114,7 +114,7 @@
                     <div class="form-check form-switch fs-4 mb-0">
                         <input type="hidden" name="no_time_limit" value="0">
                         <input class="form-check-input" type="checkbox" role="switch" name="no_time_limit" value="1"
-                            id="no_time_limit" @checked(old('no_time_limit', $attendance['no_time_limit']))>
+                            id="no_time_limit" {{ (old('no_time_limit', $attendance['no_time_limit'])) ? 'checked' : '' }}>
                     </div>
                 </div>
             </div>

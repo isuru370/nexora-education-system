@@ -299,11 +299,11 @@
 
                             <select name="status" class="form-select custom-input">
                                 <option value="">Select Status</option>
-                                <option value="pending" @selected(old('status', $selectedStatus ?? '') === 'pending')>Pending</option>
-                                <option value="downloaded" @selected(old('status', $selectedStatus ?? '') === 'downloaded')>Downloaded</option>
-                                <option value="issued" @selected(old('status', $selectedStatus ?? '') === 'issued')>Issued</option>
-                                <option value="active" @selected(old('status', $selectedStatus ?? '') === 'active')>Active</option>
-                                <option value="expired" @selected(old('status', $selectedStatus ?? '') === 'expired')>Expired</option>
+                                <option value="pending" {{ (old('status', $selectedStatus ?? '') === 'pending') ? 'selected' : '' }}>Pending</option>
+                                <option value="downloaded" {{ (old('status', $selectedStatus ?? '') === 'downloaded') ? 'selected' : '' }}>Downloaded</option>
+                                <option value="issued" {{ (old('status', $selectedStatus ?? '') === 'issued') ? 'selected' : '' }}>Issued</option>
+                                <option value="active" {{ (old('status', $selectedStatus ?? '') === 'active') ? 'selected' : '' }}>Active</option>
+                                <option value="expired" {{ (old('status', $selectedStatus ?? '') === 'expired') ? 'selected' : '' }}>Expired</option>
                             </select>
 
                             @error('status')

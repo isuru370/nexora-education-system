@@ -171,7 +171,7 @@
                             <select name="status" class="form-select custom-input">
                                 <option value="">All Status</option>
                                 @foreach ($statusBadges as $value => [$class, $label])
-                                    <option value="{{ $value }}" @selected(request('status') === $value)>{{ $label }}</option>
+                                    <option value="{{ $value }}" {{ (request('status') === $value) ? 'selected' : '' }}>{{ $label }}</option>
                                 @endforeach
                             </select>
                         </div>
