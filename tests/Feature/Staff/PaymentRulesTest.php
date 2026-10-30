@@ -219,7 +219,7 @@ class PaymentRulesTest extends TestCase
             'user_type_id' => $type, 'is_active' => 1,
         ]);
 
-        $this->actingAs($super)->get('/payment-rules')->assertOk()->assertSee('Payment Rules');
+        $this->actingAs($super)->get('/payment-rules')->assertOk()->assertSee('Attendance Rules');
 
         $this->actingAs($super)->put('/payment-rules', [
             'fee_option' => '1',
