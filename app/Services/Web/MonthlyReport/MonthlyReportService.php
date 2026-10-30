@@ -202,7 +202,7 @@ class MonthlyReportService
                             'student:id,permanent_qr_active,custom_id,temporary_qr_code,initial_name,guardian_mobile',
                             'classCategoryFeeOption:id,class_category_fee_id,label,fee',
                             'payments' => function ($paymentQuery) use ($inPeriod) {
-                                $paymentQuery->select('id', 'student_class_enrollment_id', 'amount', 'status', 'payment_month', 'paid_at');
+                                $paymentQuery->select('id', 'student_class_enrollment_id', 'amount', 'discount_amount', 'status', 'payment_month', 'paid_at');
                                 $inPeriod($paymentQuery);
                             },
                         ]);
@@ -217,6 +217,7 @@ class MonthlyReportService
             'paid_students' => 0,
             'unpaid_students' => 0,
             'freecard_students' => 0,
+            'noattend_students' => 0,
             'total_collected' => 0,
         ];
 
@@ -230,15 +231,15 @@ class MonthlyReportService
                     ->where('class_category_fee_id', $fee->id)
                     ->values();
 
-                $groups = ['paid' => [], 'unpaid' => [], 'freecard' => []];
+                $groups = ['paid' => [], 'unpaid' => [], 'freecard' => [], 'noattend' => []];
 
                 foreach ($categoryEnrollments as $enrollment) {
-                    $studentRow = $this->studentRow($enrollment);
+                    $studentRow = $this->studentRow($enrollment, $start);
 
                     $groups[$studentRow['status']][] = $studentRow;
 
                     $summary['total_students']++;
-                    $summary[$studentRow['status'] === 'freecard' ? 'freecard_students' : $studentRow['status'] . '_students']++;
+                    $summary[$studentRow['status'] . '_students']++;
                     $summary['total_collected'] += $studentRow['paid_amount'];
                 }
 
@@ -258,6 +259,8 @@ class MonthlyReportService
                     'paid_count' => count($groups['paid']),
                     'unpaid_count' => count($groups['unpaid']),
                     'freecard_count' => count($groups['freecard']),
+                    // Payment Rules > no attendance (not counted as unpaid)
+                    'noattend_count' => count($groups['noattend']),
 
                     'students' => $groups,
                 ];
@@ -418,18 +421,28 @@ class MonthlyReportService
     |--------------------------------------------------------------------------
     */
 
-    protected function studentRow($enrollment): array
+    protected function studentRow($enrollment, ?\Carbon\CarbonInterface $month = null): array
     {
         $student = $enrollment->student;
         $paidAmount = round((float) $enrollment->payments->sum('amount'), 2);
         $finalFee = (float) $enrollment->final_fee;
+        $attendance = null;
 
         if ($enrollment->is_free_card) {
             $status = 'freecard';
-        } elseif ($finalFee <= 0 || $paidAmount >= $finalFee) {
+        } elseif ($finalFee <= 0 || $paidAmount >= $finalFee || $this->paidWithDiscount($enrollment, $finalFee)) {
             $status = 'paid';
         } else {
             $status = 'unpaid';
+
+            // Payment Rules > no attendance: not attended this month, so no payment is taken
+            if ($month && \App\Support\PaymentRules::noAttendance()) {
+                $attendance = \App\Services\Web\Payment\PaymentMonthInfoService::attendanceCount($enrollment->id, $month);
+
+                if ($attendance === 0) {
+                    $status = 'noattend';
+                }
+            }
         }
 
         return [
@@ -464,6 +477,17 @@ class MonthlyReportService
                 ->unique()
                 ->implode(', '),
         ];
+    }
+
+    /**
+     * A payment with a discount (custom amount / attendance rule) pays the
+     * month even though the amount is below the fee.
+     */
+    protected function paidWithDiscount($enrollment, float $finalFee): bool
+    {
+        return $enrollment->payments->contains(
+            fn ($payment) => (float) $payment->amount + (float) ($payment->discount_amount ?? 0) >= $finalFee
+        );
     }
 
     protected function feeOption($enrollment): ?array

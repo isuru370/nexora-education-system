@@ -185,6 +185,27 @@
                         </div>
 
 
+                        {{-- Payment Rules: attendance this month, fee after the rules, tute --}}
+                        <div class="col-12 d-none" id="payment-month-info">
+                            <div class="border rounded p-2 bg-light small d-flex flex-wrap gap-3 align-items-center">
+                                <span><i class="bi bi-calendar-check text-success"></i>
+                                    Attendance: <strong id="pmi-attendance">-</strong></span>
+                                <span id="pmi-noattend" class="d-none text-secondary fw-semibold"><i class="bi bi-calendar-x"></i>
+                                    No attendance this month: no payment is taken</span>
+                                <span id="pmi-paid" class="d-none text-danger fw-semibold"><i class="bi bi-exclamation-triangle"></i>
+                                    <span id="pmi-paid-text"></span></span>
+                            </div>
+                            <div id="pmi-option" class="mt-2 d-none" style="max-width: 360px">
+                                <label for="payment-fee-option" class="form-label fw-semibold mb-1">Fee option for this month</label>
+                                <select id="payment-fee-option" class="form-select"></select>
+                            </div>
+                            <div id="pmi-tute" class="form-check mt-2 d-none">
+                                <input class="form-check-input" type="checkbox" id="payment-give-tute">
+                                <label class="form-check-label" for="payment-give-tute" id="pmi-tute-label">Give tute</label>
+                            </div>
+                        </div>
+
+
                         {{-- Note --}}
                         <div class="col-12">
                             <label for="payment-note" class="form-label fw-semibold">
