@@ -142,8 +142,8 @@
                 </div>
                 <div class="col-xl-3 col-md-6">
                     <div class="stat-card stat-blue">
-                        <div class="label">Free card</div>
-                        <div class="value">{{ $summary['free_card'] }}</div>
+                        <div class="label">Free card{{ ($summary['no_fee'] ?? 0) > 0 ? ' / No fee' : '' }}</div>
+                        <div class="value">{{ $summary['free_card'] }}{{ ($summary['no_fee'] ?? 0) > 0 ? ' / ' . $summary['no_fee'] : '' }}</div>
                     </div>
                 </div>
             </div>
@@ -234,6 +234,8 @@
                                                 <span class="badge bg-success">Paid</span>
                                             @elseif ($row['status'] === 'free_card')
                                                 <span class="badge bg-secondary">Free Card</span>
+                                            @elseif ($row['status'] === 'no_fee')
+                                                <span class="badge bg-light text-dark border" title="Payment Rules: no fee for this attendance">No Fee</span>
                                             @else
                                                 <span class="badge bg-danger">Not Paid</span>
                                             @endif

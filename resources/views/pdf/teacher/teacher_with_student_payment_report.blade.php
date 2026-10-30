@@ -4,7 +4,8 @@
     $filter = $report['filter'];
     $monthLabel = \Carbon\Carbon::create($year, $month, 1)->format('F Y');
     $institute = config('institution.name', config('app.name'));
-    $statusLabels = ['paid' => 'Paid', 'unpaid' => 'Unpaid', 'freecard' => 'Free Card'];
+    $statusLabels = ['paid' => 'Paid', 'unpaid' => 'Unpaid', 'freecard' => 'Free Card', 'nofee' => 'No Fee'];
+    $hasNoFee = ($summary['nofee_students'] ?? 0) > 0;
     // By collection date the paid fee month can differ from the report month
     $showPaidFor = ($filter['basis'] ?? null) === 'paid-date';
     $columns = $showPaidFor ? 11 : 10;
@@ -43,6 +44,8 @@
         .pill-paid { background: #dcfce7; color: #166534; }
         .pill-unpaid { background: #fee2e2; color: #991b1b; }
         .pill-freecard { background: #dbeafe; color: #1e40af; }
+        .pill-nofee { background: #f1f5f9; color: #475569; }
+        .status-nofee { color: #475569; font-weight: bold; }
         .pill-inactive { background: #fef3c7; color: #92400e; }
 
         table.data { width: 100%; border-collapse: collapse; }
@@ -85,7 +88,7 @@
             <td><div class="card-value">{{ $summary['total_students'] }}</div><div class="card-label">Students</div></td>
             <td><div class="card-value" style="color:#166534">{{ $summary['paid_students'] }}</div><div class="card-label">Paid</div></td>
             <td><div class="card-value" style="color:#b91c1c">{{ $summary['unpaid_students'] }}</div><div class="card-label">Unpaid</div></td>
-            <td><div class="card-value" style="color:#1d4ed8">{{ $summary['freecard_students'] }}</div><div class="card-label">Free Card</div></td>
+            <td><div class="card-value" style="color:#1d4ed8">{{ $summary['freecard_students'] }}{{ $hasNoFee ? ' / ' . $summary['nofee_students'] : '' }}</div><div class="card-label">Free Card{{ $hasNoFee ? ' / No Fee' : '' }}</div></td>
             <td><div class="card-value">{{ number_format($summary['total_collected'], 2) }}</div><div class="card-label">Collected (Rs.)</div></td>
         </tr>
     </table>
@@ -94,6 +97,7 @@
         @forelse ($class['categories'] as $category)
             @php
                 $students = collect(['paid', 'unpaid', 'freecard'])
+                    ->merge(['nofee'])
                     ->flatMap(fn ($group) => $category['students'][$group] ?? []);
                 $collected = $students->sum('paid_amount');
             @endphp
@@ -118,6 +122,9 @@
                             <span class="pill pill-paid">Paid {{ $category['paid_count'] }}</span>
                             <span class="pill pill-unpaid">Unpaid {{ $category['unpaid_count'] }}</span>
                             <span class="pill pill-freecard">Free Card {{ $category['freecard_count'] }}</span>
+                            @if ($category['nofee_count'] ?? 0)
+                                <span class="pill pill-nofee">No Fee {{ $category['nofee_count'] }}</span>
+                            @endif
                         </td>
                     </tr>
                 </table>

@@ -64,6 +64,12 @@ class StorePaymentRequest extends FormRequest
                 'string',
                 'max:1000',
             ],
+
+            // Payment Rules > tute: also give this month's tute (optional)
+            'give_tute' => [
+                'nullable',
+                'boolean',
+            ],
         ];
     }
 

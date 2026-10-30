@@ -43,6 +43,11 @@ class BulkPayPaymentRequest extends FormRequest
                 'date',
             ],
 
+            'payments.*.give_tute' => [
+                'nullable',
+                'boolean',
+            ],
+
             'payments.*.mark_method' => [
                 'required',
                 'in:qr_mobile,qr_web,manual_mobile,manual_web',

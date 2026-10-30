@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Web\Payment;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Web\Payment\BulkPayPaymentRequest;
+use App\Http\Requests\Web\Payment\PaymentMonthInfoRequest;
 use App\Http\Requests\Web\Payment\ReadPaymentRequest;
 use App\Http\Requests\Web\Payment\StorePaymentRequest;
 use App\Services\Web\Payment\PaymentService;
@@ -172,6 +173,38 @@ class PaymentController extends Controller
                 'status' => 'error',
                 'message' => 'Bulk payment could not be completed.',
             ], 500);
+        }
+    }
+
+    /**
+     * One class + one month: attendance, fee after the Payment Rules,
+     * paid or not, tute.
+     *
+     * POST /new-payment/month-info
+     */
+    public function monthInfo(PaymentMonthInfoRequest $request): JsonResponse
+    {
+        $validated = $request->validated();
+
+        try {
+            return response()->json([
+                'status' => 'success',
+                'data' => $this->paymentService->monthInfo(
+                    $validated['code'],
+                    (int) $validated['enrollment_id'],
+                    $validated['payment_month']
+                ),
+            ]);
+        } catch (\InvalidArgumentException $e) {
+            return response()->json(['status' => 'error', 'message' => \App\Support\ErrorDetail::safe($e)], 422);
+        } catch (\RuntimeException $e) {
+            return response()->json(['status' => 'error', 'message' => \App\Support\ErrorDetail::safe($e)], 404);
+        } catch (\Symfony\Component\HttpKernel\Exception\HttpException $e) {
+            throw $e;
+        } catch (Throwable $e) {
+            report($e);
+
+            return response()->json(['status' => 'error', 'message' => 'Could not load the month details.'], 500);
         }
     }
 }

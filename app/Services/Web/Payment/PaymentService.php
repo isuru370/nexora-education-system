@@ -109,6 +109,40 @@ class PaymentService
     }
 
     /**
+     * Payment screen, after a month is chosen for one class: attendance that
+     * month, the fee after the Payment Rules, paid or not, and the tute.
+     */
+    public function monthInfo(string $code, int $enrollmentId, string $month): array
+    {
+        $student = $this->studentFinder->findStudent($code);
+
+        if (!$student) {
+            throw new \RuntimeException('Student not found.');
+        }
+
+        $enrollment = $this->studentFinder->findEnrollment($student, $enrollmentId);
+
+        if (!$enrollment) {
+            throw new \RuntimeException('Student class enrollment not found.');
+        }
+
+        $this->ensureBranchAccess((int) $enrollment->branch_id);
+
+        try {
+            $paymentMonth = \Illuminate\Support\Carbon::parse($month)->startOfMonth();
+        } catch (\Throwable $e) {
+            throw new \InvalidArgumentException('Invalid payment month.');
+        }
+
+        return $this->monthInfoService()->info($enrollment, $paymentMonth);
+    }
+
+    protected function monthInfoService(): PaymentMonthInfoService
+    {
+        return app(PaymentMonthInfoService::class);
+    }
+
+    /**
      * Store ONE payment.
      *
      * Flow:
@@ -240,11 +274,18 @@ class PaymentService
                 |
                 */
 
-                return $this->paymentMarker->mark(
+                $payment = $this->paymentMarker->mark(
                     $student,
                     $enrollment,
                     $data
                 );
+
+                // Optional "Give tute" (Payment Rules > tute)
+                if (!empty($data['give_tute'])) {
+                    $this->monthInfoService()->giveTute($enrollment, $payment->payment_month);
+                }
+
+                return $payment;
             }
         );
 
@@ -579,6 +620,11 @@ class PaymentService
                             $enrollment,
                             $data
                         );
+
+                    // Optional "Give tute" (Payment Rules > tute)
+                    if (!empty($data['give_tute'])) {
+                        $this->monthInfoService()->giveTute($enrollment, $payment->payment_month);
+                    }
 
                     $results[] = $payment;
                 }
