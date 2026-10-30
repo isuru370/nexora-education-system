@@ -3,6 +3,7 @@
 namespace App\Services\Web\Attendance;
 
 use App\Models\ClassSchedule;
+use App\Support\AttendanceRules;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 
@@ -12,9 +13,11 @@ class AttendanceScheduleFinder
      * Find the class that is currently available
      * for attendance scanning for the student.
      *
-     * Attendance scanning is allowed:
-     * - 1 hour before class starts
-     * - Until the class ends
+     * Attendance scanning is allowed (Payment & Attendance Rules, per
+     * institute; default 1 hour before the start until the end):
+     * - before_minutes before the class starts
+     * - until after_minutes after it ends
+     * - or any class today when the time limit is off
      *
      * Matching is done using:
      * - student_class_id
@@ -32,7 +35,7 @@ class AttendanceScheduleFinder
      *
      * Two can be open together, e.g. A 4:30-6:00 PM and B 6:00-8:00 PM at
      * 5:30 PM (B opens one hour early). The caller must then ask which one.
-     * Cancelled / completed / inactive classes are never returned.
+     * Cancelled / inactive classes are never returned.
      */
     public function findScannableSchedules(
         Collection $enrollments
@@ -59,9 +62,12 @@ class AttendanceScheduleFinder
         $query = ClassSchedule::query()
             ->whereDate('class_date', $today)
             ->where('is_active', true)
+            // completed: a class can be closed (e.g. at 8:45 PM) while the
+            // window after the end, or "no time limit", still allows marking
             ->whereIn('status', [
                 'scheduled',
                 'ongoing',
+                'completed',
             ])
             ->with([
                 'branch:id,name,code',
@@ -140,25 +146,17 @@ class AttendanceScheduleFinder
 
             /*
             |------------------------------------------------------------------
-            | Attendance scanning starts 1 hour before class
+            | Attendance window (AttendanceRules)
             |------------------------------------------------------------------
             |
-            | Example:
+            | Example with the default (60 before, 0 after):
             |
             | Class       : 09:00 - 11:00
             | Scan allowed: 08:00 - 11:00
             |
             */
 
-            $scanStart = $start->copy()->subHour();
-
-            /*
-            |------------------------------------------------------------------
-            | Check current time
-            |------------------------------------------------------------------
-            */
-
-            if (!$now->betweenIncluded($scanStart, $end)) {
+            if (!AttendanceRules::isOpen($now, $start, $end)) {
                 continue;
             }
 
