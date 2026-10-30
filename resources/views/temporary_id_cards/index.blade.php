@@ -327,11 +327,11 @@
                             <label class="form-label fw-semibold">Status</label>
                             <select name="status" class="form-select custom-input">
                                 <option value="">All Status</option>
-                                <option value="pending" @selected(($status ?? '') === 'pending')>Pending</option>
-                                <option value="downloaded" @selected(($status ?? '') === 'downloaded')>Downloaded</option>
-                                <option value="issued" @selected(($status ?? '') === 'issued')>Issued</option>
-                                <option value="active" @selected(($status ?? '') === 'active')>Active</option>
-                                <option value="expired" @selected(($status ?? '') === 'expired')>Expired</option>
+                                <option value="pending" {{ (($status ?? '') === 'pending') ? 'selected' : '' }}>Pending</option>
+                                <option value="downloaded" {{ (($status ?? '') === 'downloaded') ? 'selected' : '' }}>Downloaded</option>
+                                <option value="issued" {{ (($status ?? '') === 'issued') ? 'selected' : '' }}>Issued</option>
+                                <option value="active" {{ (($status ?? '') === 'active') ? 'selected' : '' }}>Active</option>
+                                <option value="expired" {{ (($status ?? '') === 'expired') ? 'selected' : '' }}>Expired</option>
                             </select>
                         </div>
 
