@@ -117,11 +117,11 @@
             class="form-select nx-input @error('payment_method') is-invalid @enderror"
             required>
 
-            <option value="cash"          @selected($selectedMethod === 'cash')>Cash</option>
-            <option value="card"          @selected($selectedMethod === 'card')>Card</option>
-            <option value="bank_transfer" @selected($selectedMethod === 'bank_transfer')>Bank Transfer</option>
-            <option value="online"        @selected($selectedMethod === 'online')>Online</option>
-            <option value="other"         @selected($selectedMethod === 'other')>Other</option>
+            <option value="cash"          {{ ($selectedMethod === 'cash') ? 'selected' : '' }}>Cash</option>
+            <option value="card"          {{ ($selectedMethod === 'card') ? 'selected' : '' }}>Card</option>
+            <option value="bank_transfer" {{ ($selectedMethod === 'bank_transfer') ? 'selected' : '' }}>Bank Transfer</option>
+            <option value="online"        {{ ($selectedMethod === 'online') ? 'selected' : '' }}>Online</option>
+            <option value="other"         {{ ($selectedMethod === 'other') ? 'selected' : '' }}>Other</option>
         </select>
 
         @error('payment_method')
@@ -141,10 +141,10 @@
             class="form-select nx-input @error('status') is-invalid @enderror"
             required>
 
-            <option value="pending"   @selected($selectedStatus === 'pending')>Pending</option>
-            <option value="paid"      @selected($selectedStatus === 'paid')>Paid</option>
-            <option value="cancelled" @selected($selectedStatus === 'cancelled')>Cancelled</option>
-            <option value="refunded"  @selected($selectedStatus === 'refunded')>Refunded</option>
+            <option value="pending"   {{ ($selectedStatus === 'pending') ? 'selected' : '' }}>Pending</option>
+            <option value="paid"      {{ ($selectedStatus === 'paid') ? 'selected' : '' }}>Paid</option>
+            <option value="cancelled" {{ ($selectedStatus === 'cancelled') ? 'selected' : '' }}>Cancelled</option>
+            <option value="refunded"  {{ ($selectedStatus === 'refunded') ? 'selected' : '' }}>Refunded</option>
         </select>
 
         @error('status')
