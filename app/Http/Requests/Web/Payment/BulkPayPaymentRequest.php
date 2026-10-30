@@ -43,6 +43,12 @@ class BulkPayPaymentRequest extends FormRequest
                 'date',
             ],
 
+            'payments.*.fee_option_id' => [
+                'nullable',
+                'integer',
+                'min:1',
+            ],
+
             'payments.*.give_tute' => [
                 'nullable',
                 'boolean',

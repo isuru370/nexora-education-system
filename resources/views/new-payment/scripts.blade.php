@@ -696,7 +696,25 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function rulesActive() {
-        return monthInfo && (monthInfo.rule.enabled || monthInfo.custom_amount);
+        return monthInfo && (monthInfo.fee_option_enabled || monthInfo.custom_amount);
+    }
+
+    function selectedOption() {
+        if (!monthInfo || !monthInfo.fee_option_enabled) return null;
+        const id = Number(document.getElementById('payment-fee-option')?.value || 0);
+        return monthInfo.fee_options.find(function (option) { return Number(option.id) === id; }) || null;
+    }
+
+    function setAmountFromOption() {
+        const option = selectedOption();
+        const amountInput = document.getElementById('payment-amount');
+        const discountInput = document.getElementById('payment-discount');
+        const total = Number(document.getElementById('payment-final-fee')?.value || 0);
+        if (!amountInput || !discountInput) return;
+
+        const amount = option ? Number(option.amount) : total;
+        amountInput.value = amount.toFixed(2);
+        discountInput.value = Math.max(total - amount, 0).toFixed(2);
     }
 
     function applyMonthInfo() {
@@ -707,15 +725,7 @@ document.addEventListener('DOMContentLoaded', function () {
         document.getElementById('pmi-attendance').textContent =
             monthInfo.attendance_count + ' (' + monthInfo.payment_month_name + ')';
 
-        const rule = document.getElementById('pmi-rule');
-        if (monthInfo.rule.enabled) {
-            rule.classList.remove('d-none');
-            document.getElementById('pmi-rule-text').textContent = monthInfo.rule.no_fee
-                ? 'No fee this month'
-                : monthInfo.rule.reason + ' = Rs. ' + formatMoney(monthInfo.suggested_amount);
-        } else {
-            rule.classList.add('d-none');
-        }
+        document.getElementById('pmi-noattend').classList.toggle('d-none', !monthInfo.no_attendance);
 
         const paid = document.getElementById('pmi-paid');
         if (monthInfo.already_paid) {
@@ -724,6 +734,21 @@ document.addEventListener('DOMContentLoaded', function () {
                 'Already paid (' + (monthInfo.paid.receipt_number || '') + ')';
         } else {
             paid.classList.add('d-none');
+        }
+
+        // Fee options of the class category; the student's own one first selected
+        const optionBox = document.getElementById('pmi-option');
+        const select = document.getElementById('payment-fee-option');
+        if (monthInfo.fee_option_enabled) {
+            optionBox.classList.remove('d-none');
+            select.innerHTML = monthInfo.fee_options.map(function (option) {
+                return '<option value="' + option.id + '"' + (option.is_student_option ? ' selected' : '') + '>'
+                    + escapeHtml(option.label) + ' - Rs. ' + formatMoney(option.amount)
+                    + (option.is_student_option ? ' (student)' : '') + '</option>';
+            }).join('');
+        } else {
+            optionBox.classList.add('d-none');
+            select.innerHTML = '';
         }
 
         const tuteBox = document.getElementById('pmi-tute');
@@ -739,17 +764,15 @@ document.addEventListener('DOMContentLoaded', function () {
             tuteBox.classList.add('d-none');
         }
 
-        // Amount follows the rule; the discount is worked out from the amount
-        const amountInput = document.getElementById('payment-amount');
+        // Amount follows the option; the discount is worked out from the amount
         const discountInput = document.getElementById('payment-discount');
-        if (rulesActive() && amountInput && discountInput) {
+        if (rulesActive() && discountInput) {
             discountInput.readOnly = true;
-            const total = Number(document.getElementById('payment-final-fee')?.value || 0);
-            const amount = monthInfo.rule.enabled ? Number(monthInfo.suggested_amount) : total;
-            amountInput.value = amount.toFixed(2);
-            discountInput.value = Math.max(total - amount, 0).toFixed(2);
+            setAmountFromOption();
         }
     }
+
+    document.getElementById('payment-fee-option')?.addEventListener('change', setAmountFromOption);
 
     document.getElementById('payment-month')?.addEventListener('change', loadMonthInfo);
 
@@ -859,6 +882,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         // With Payment Rules the server saves the rest as a discount (with the reason)
                         discount_amount: rulesActive() ? 0 : discount,
                         give_tute: !!document.getElementById('payment-give-tute')?.checked,
+                        fee_option_id: selectedOption() ? selectedOption().id : null,
                         note: note
                     };
 

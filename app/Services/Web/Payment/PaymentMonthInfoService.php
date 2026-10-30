@@ -2,6 +2,7 @@
 
 namespace App\Services\Web\Payment;
 
+use App\Models\ClassCategoryFeeOption;
 use App\Models\Payment;
 use App\Models\StudentClassEnrollment;
 use App\Models\StudentTute;
@@ -37,9 +38,8 @@ class PaymentMonthInfoService
         $rules = PaymentRules::all();
 
         $grossFee = $this->paymentMarker->grossFee($enrollment);
+        $hallFee = $this->paymentMarker->hallFee($enrollment);
         $attendance = self::attendanceCount($enrollment->id, $month);
-        $percent = PaymentRules::percentFor($attendance);
-        $suggested = round($grossFee * $percent / 100, 2);
 
         $payment = Payment::query()
             ->where('student_class_enrollment_id', $enrollment->id)
@@ -52,22 +52,40 @@ class PaymentMonthInfoService
             ->whereDate('issued_month', $month)
             ->first();
 
+        // Fee options of the student's class category (cashier picks one)
+        $options = [];
+        if ($rules['fee_option'] && !$enrollment->is_free_card) {
+            $options = ClassCategoryFeeOption::query()
+                ->where('class_category_fee_id', $enrollment->class_category_fee_id)
+                ->where('is_active', true)
+                ->orderByDesc('fee')
+                ->get(['id', 'label', 'fee'])
+                ->map(fn ($option) => [
+                    'id' => $option->id,
+                    'label' => $option->label,
+                    'fee' => (float) $option->fee,
+                    // what this month costs with this option (hall fee added)
+                    'amount' => round((float) $option->fee + $hallFee, 2),
+                    'is_student_option' => (int) $option->id === (int) $enrollment->class_category_fee_option_id,
+                ])
+                ->values()
+                ->all();
+        }
+
         return [
             'enrollment_id' => $enrollment->id,
             'payment_month' => $month->toDateString(),
             'payment_month_name' => $month->format('F Y'),
 
             'attendance_count' => $attendance,
+            // Payment Rules > no attendance: do not take a payment, not unpaid
+            'no_attendance' => $rules['no_attendance'] && $attendance === 0,
 
             'gross_fee' => $grossFee,
-            'rule' => [
-                'enabled' => $rules['attendance_rule'],
-                'percent' => $percent,
-                'reason' => $rules['attendance_rule'] ? PaymentRules::reason($attendance, $percent) : null,
-                'no_fee' => $rules['attendance_rule'] && $percent === 0,
-            ],
-            'suggested_amount' => $suggested,
-            'suggested_discount' => round($grossFee - $suggested, 2),
+            'hall_fee' => $hallFee,
+            'fee_option_enabled' => $rules['fee_option'] && $options !== [],
+            'fee_options' => $options,
+            'student_fee_option_id' => $enrollment->class_category_fee_option_id,
 
             // Cashier may type an amount (the rest is saved as a discount)
             'custom_amount' => $rules['custom_amount'],

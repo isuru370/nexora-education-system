@@ -2,6 +2,7 @@
 
 namespace App\Services\Web\Payment;
 
+use App\Models\ClassCategoryFeeOption;
 use App\Models\Payment;
 use App\Models\Student;
 use App\Models\StudentClassEnrollment;
@@ -94,21 +95,21 @@ class PaymentMarker
 
         // 13. Payment amount validation
         //     Payment Rules (per institute, off by default) may allow less:
-        //     - attendance rule: the month's fee follows the attendance count
-        //     - custom amount:   any amount; the rest becomes a discount
+        //     - fee option: the cashier picked another fee option of the
+        //       class category for this month (e.g. Half)
+        //     - custom amount: any amount
         //     The part not paid is saved as a discount, so the month is paid.
         if ($amount < $payableAmount) {
             $minimum = $payableAmount;
             $reason = null;
 
-            if (PaymentRules::attendanceRule()) {
-                $attendance = PaymentMonthInfoService::attendanceCount($enrollment->id, $paymentMonth);
-                $percent = PaymentRules::percentFor($attendance);
-                $ruleAmount = round($grossFee * $percent / 100, 2);
+            $option = $this->chosenFeeOption($enrollment, $data['fee_option_id'] ?? null);
+            if ($option) {
+                $optionFee = round((float) $option->fee + $this->hallFee($enrollment), 2);
 
-                if ($ruleAmount < $minimum) {
-                    $minimum = $ruleAmount;
-                    $reason = PaymentRules::reason($attendance, $percent);
+                if ($optionFee < $minimum) {
+                    $minimum = $optionFee;
+                    $reason = 'Fee option: ' . $option->label;
                 }
             }
 
@@ -120,7 +121,7 @@ class PaymentMarker
             if ($amount < $minimum || $reason === null) {
                 throw new \InvalidArgumentException(sprintf(
                     'Payment amount must be at least Rs. %.2f.',
-                    $payableAmount
+                    $minimum < $payableAmount ? $minimum : $payableAmount
                 ));
             }
 
@@ -203,6 +204,11 @@ class PaymentMarker
             throw new \InvalidArgumentException('Invalid enrollment fee.');
         }
 
+        return round($classFee + $this->hallFee($enrollment), 2);
+    }
+
+    public function hallFee(StudentClassEnrollment $enrollment): float
+    {
         $hallFee = 0;
         $studentClass = $enrollment->studentClass;
 
@@ -224,6 +230,29 @@ class PaymentMarker
             throw new \InvalidArgumentException('Invalid hall fee.');
         }
 
-        return round($classFee + $hallFee, 2);
+        return round($hallFee, 2);
+    }
+
+    /**
+     * The fee option the cashier picked for this payment (Payment Rules >
+     * fee option). Only an active option of the student's own class category.
+     */
+    public function chosenFeeOption(StudentClassEnrollment $enrollment, $optionId): ?ClassCategoryFeeOption
+    {
+        if (!PaymentRules::feeOption() || !$optionId || $enrollment->is_free_card) {
+            return null;
+        }
+
+        $option = ClassCategoryFeeOption::query()
+            ->where('id', (int) $optionId)
+            ->where('class_category_fee_id', $enrollment->class_category_fee_id)
+            ->where('is_active', true)
+            ->first();
+
+        if (!$option) {
+            throw new \InvalidArgumentException('The selected fee option is not available for this class.');
+        }
+
+        return $option;
     }
 }

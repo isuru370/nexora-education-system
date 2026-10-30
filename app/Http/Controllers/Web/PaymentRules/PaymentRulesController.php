@@ -22,30 +22,13 @@ class PaymentRulesController extends Controller
     public function update(Request $request): RedirectResponse
     {
         $validated = $request->validate([
+            'fee_option' => ['nullable', 'boolean'],
             'custom_amount' => ['nullable', 'boolean'],
-            'attendance_rule' => ['nullable', 'boolean'],
+            'no_attendance' => ['nullable', 'boolean'],
             'tute' => ['nullable', 'boolean'],
-            'tiers' => ['nullable', 'array', 'max:20'],
-            'tiers.*.attendance' => ['required_with:tiers', 'integer', 'min:0', 'max:60', 'distinct'],
-            'tiers.*.percent' => ['required_with:tiers', 'integer', 'min:0', 'max:100'],
-        ], [
-            'tiers.*.attendance.distinct' => 'Each attendance count can be listed only once.',
         ]);
 
-        $tiers = collect($validated['tiers'] ?? [])
-            ->mapWithKeys(fn ($row) => [(int) $row['attendance'] => (int) $row['percent']])
-            ->all();
-
-        if (!empty($validated['attendance_rule']) && $tiers === []) {
-            return back()->withInput()->withErrors(['tiers' => 'Add at least one attendance row.']);
-        }
-
-        PaymentRules::save([
-            'custom_amount' => (bool) ($validated['custom_amount'] ?? false),
-            'attendance_rule' => (bool) ($validated['attendance_rule'] ?? false),
-            'tute' => (bool) ($validated['tute'] ?? false),
-            'tiers' => $tiers ?: PaymentRules::DEFAULT_TIERS,
-        ]);
+        PaymentRules::save(array_map(fn ($value) => (bool) $value, $validated));
 
         return redirect()->route('payment-rules.index')->with('success', 'Payment rules saved.');
     }

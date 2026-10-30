@@ -71,75 +71,102 @@ class PaymentRulesTest extends TestCase
         ]);
     }
 
+    private function halfOption(): int
+    {
+        return DB::table('class_category_fee_options')->insertGetId([
+            'class_category_fee_id' => $this->inst['f1'], 'label' => 'Half', 'fee' => 1000,
+            'is_default' => 0, 'is_active' => 1,
+        ]);
+    }
+
     /* ---------- Off by default: nothing changes ---------- */
 
     public function test_rules_are_off_by_default_and_less_than_the_fee_is_refused(): void
     {
         $this->attend($this->inst['e2'], $this->inst['s2'], 1);
+        $half = $this->halfOption();
 
         $this->monthInfo()
             ->assertOk()
             ->assertJsonPath('data.attendance_count', 1)
-            ->assertJsonPath('data.rule.enabled', false)
-            ->assertJsonPath('data.suggested_amount', 2000)
+            ->assertJsonPath('data.fee_option_enabled', false)
+            ->assertJsonPath('data.fee_options', [])
+            ->assertJsonPath('data.no_attendance', false)
             ->assertJsonPath('data.custom_amount', false)
             ->assertJsonPath('data.tute.enabled', false);
 
-        $this->pay(1000)->assertStatus(422);
+        $this->pay(1000, ['fee_option_id' => $half])->assertStatus(422);
         $this->assertSame(0, DB::table('payments')->where('student_class_enrollment_id', $this->inst['e2'])->count());
     }
 
-    /* ---------- Fee by attendance ---------- */
+    /* ---------- Fee option picked at payment ---------- */
 
-    public function test_one_attendance_gives_half_fee_saved_as_a_discount(): void
+    public function test_cashier_picks_the_half_option_for_the_month(): void
     {
-        PaymentRules::save(['attendance_rule' => true, 'tiers' => [0 => 0, 1 => 50]]);
+        PaymentRules::save(['fee_option' => true]);
         $this->attend($this->inst['e2'], $this->inst['s2'], 1);
+        $half = $this->halfOption();
 
         $this->monthInfo()
             ->assertJsonPath('data.attendance_count', 1)
-            ->assertJsonPath('data.rule.percent', 50)
-            ->assertJsonPath('data.rule.reason', 'Attendance 1: 50% fee')
-            ->assertJsonPath('data.suggested_amount', 1000)
-            ->assertJsonPath('data.suggested_discount', 1000);
+            ->assertJsonPath('data.fee_option_enabled', true)
+            ->assertJsonPath('data.fee_options.0.label', 'Normal')
+            ->assertJsonPath('data.fee_options.0.is_student_option', true)
+            ->assertJsonPath('data.fee_options.1.label', 'Half')
+            ->assertJsonPath('data.fee_options.1.amount', 1000);
 
-        $this->pay(999)->assertStatus(422);   // below the rule, custom amount is off
-        $this->pay(1000)->assertCreated();
+        $this->pay(999, ['fee_option_id' => $half])->assertStatus(422);   // below the option
+        $this->pay(1000)->assertStatus(422);                              // no option picked
+        $this->pay(1000, ['fee_option_id' => $half])->assertCreated();
 
         $payment = DB::table('payments')->where('student_class_enrollment_id', $this->inst['e2'])->first();
         $this->assertEquals(1000, $payment->amount);
         $this->assertEquals(1000, $payment->discount_amount);
-        $this->assertStringContainsString('Attendance 1: 50% fee', $payment->note);
+        $this->assertStringContainsString('Fee option: Half', $payment->note);
+
+        // The student's own option is unchanged
+        $this->assertSame(
+            $this->inst['o1'],
+            (int) DB::table('student_class_enrollments')->where('id', $this->inst['e2'])->value('class_category_fee_option_id')
+        );
     }
 
-    public function test_two_or_more_attendances_pay_the_full_fee(): void
+    public function test_an_option_of_another_class_is_refused(): void
     {
-        PaymentRules::save(['attendance_rule' => true, 'tiers' => [0 => 0, 1 => 50]]);
-        $this->attend($this->inst['e2'], $this->inst['s2'], 3);
+        PaymentRules::save(['fee_option' => true]);
+        $other = DB::table('class_category_fee_options')->insertGetId([
+            'class_category_fee_id' => $this->inst['f2'] ?? $this->inst['f1'] + 1, 'label' => 'Cheap', 'fee' => 100,
+            'is_default' => 0, 'is_active' => 1,
+        ]);
 
-        $this->monthInfo()->assertJsonPath('data.rule.percent', 100)->assertJsonPath('data.suggested_amount', 2000);
-        $this->pay(1000)->assertStatus(422);
+        $this->pay(100, ['fee_option_id' => $other])->assertStatus(422);
     }
 
-    public function test_no_attendance_means_no_fee_in_reports_and_reminders(): void
+    /* ---------- No attendance ---------- */
+
+    public function test_no_attendance_is_not_unpaid_in_reports_and_reminders(): void
     {
-        PaymentRules::save(['attendance_rule' => true, 'tiers' => [0 => 0, 1 => 50]]);
+        PaymentRules::save(['no_attendance' => true]);
         DB::table('teacher_branches')->insert(['teacher_id' => $this->inst['teacher'], 'branch_id' => $this->inst['b1']]);
         $this->actingAs($this->inst['admin']);
 
-        $this->monthInfo()
-            ->assertJsonPath('data.rule.no_fee', true)
-            ->assertJsonPath('data.suggested_amount', 0);
+        $this->monthInfo()->assertJsonPath('data.no_attendance', true);
 
         $report = app(MonthlyReportService::class)->teacherStudentPaymentReport($this->inst['teacher'], 2026, 11, 'fee-month');
         $category = $report['classes'][0]['categories'][0];
-        $this->assertSame(2, $category['nofee_count']);   // S1 and S2: no attendance in November
+        $this->assertSame(2, $category['noattend_count']);   // S1 and S2: no attendance in November
         $this->assertSame(0, $category['unpaid_count']);
 
         $reminders = app(PaymentReminderService::class)
             ->report($this->inst['c1'], $this->inst['f1'], Carbon::parse('2026-11-01'));
         $this->assertSame(0, $reminders['summary']['unpaid']);
-        $this->assertSame(2, $reminders['summary']['no_fee']);
+        $this->assertSame(2, $reminders['summary']['no_attendance']);
+
+        // One attendance: unpaid again
+        $this->attend($this->inst['e2'], $this->inst['s2'], 1);
+        $reminders = app(PaymentReminderService::class)
+            ->report($this->inst['c1'], $this->inst['f1'], Carbon::parse('2026-11-01'));
+        $this->assertSame(1, $reminders['summary']['unpaid']);
     }
 
     /* ---------- Custom amount ---------- */
@@ -195,17 +222,15 @@ class PaymentRulesTest extends TestCase
         $this->actingAs($super)->get('/payment-rules')->assertOk()->assertSee('Payment Rules');
 
         $this->actingAs($super)->put('/payment-rules', [
-            'custom_amount' => '1',
-            'attendance_rule' => '1',
+            'fee_option' => '1',
+            'custom_amount' => '0',
+            'no_attendance' => '1',
             'tute' => '0',
-            'tiers' => [['attendance' => 1, 'percent' => 50], ['attendance' => 0, 'percent' => 0], ['attendance' => 2, 'percent' => 75]],
         ])->assertRedirect('/payment-rules');
 
-        $this->assertTrue(PaymentRules::customAmount());
-        $this->assertTrue(PaymentRules::attendanceRule());
-        $this->assertFalse(PaymentRules::tute());
-        $this->assertSame([0 => 0, 1 => 50, 2 => 75], PaymentRules::tiers());
-        $this->assertSame(75, PaymentRules::percentFor(2));
-        $this->assertSame(100, PaymentRules::percentFor(5));
+        $this->assertSame(
+            ['fee_option' => true, 'custom_amount' => false, 'no_attendance' => true, 'tute' => false],
+            PaymentRules::all()
+        );
     }
 }

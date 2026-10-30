@@ -217,7 +217,7 @@ class MonthlyReportService
             'paid_students' => 0,
             'unpaid_students' => 0,
             'freecard_students' => 0,
-            'nofee_students' => 0,
+            'noattend_students' => 0,
             'total_collected' => 0,
         ];
 
@@ -231,7 +231,7 @@ class MonthlyReportService
                     ->where('class_category_fee_id', $fee->id)
                     ->values();
 
-                $groups = ['paid' => [], 'unpaid' => [], 'freecard' => [], 'nofee' => []];
+                $groups = ['paid' => [], 'unpaid' => [], 'freecard' => [], 'noattend' => []];
 
                 foreach ($categoryEnrollments as $enrollment) {
                     $studentRow = $this->studentRow($enrollment, $start);
@@ -259,8 +259,8 @@ class MonthlyReportService
                     'paid_count' => count($groups['paid']),
                     'unpaid_count' => count($groups['unpaid']),
                     'freecard_count' => count($groups['freecard']),
-                    // Payment Rules: attendance gives a 0 % fee for this month
-                    'nofee_count' => count($groups['nofee']),
+                    // Payment Rules > no attendance (not counted as unpaid)
+                    'noattend_count' => count($groups['noattend']),
 
                     'students' => $groups,
                 ];
@@ -435,12 +435,12 @@ class MonthlyReportService
         } else {
             $status = 'unpaid';
 
-            // Payment Rules: no fee this month for this attendance (e.g. 0 times)
-            if ($month && \App\Support\PaymentRules::attendanceRule()) {
+            // Payment Rules > no attendance: not attended this month, so no payment is taken
+            if ($month && \App\Support\PaymentRules::noAttendance()) {
                 $attendance = \App\Services\Web\Payment\PaymentMonthInfoService::attendanceCount($enrollment->id, $month);
 
-                if (\App\Support\PaymentRules::percentFor($attendance) === 0) {
-                    $status = 'nofee';
+                if ($attendance === 0) {
+                    $status = 'noattend';
                 }
             }
         }
