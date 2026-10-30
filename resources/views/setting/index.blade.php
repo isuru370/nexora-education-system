@@ -15,10 +15,21 @@
                     <p class="hero-subtitle">Parent notifications and database backups.</p>
                 </div>
                 <div class="hero-right">
-                    <div class="hero-actions">
+                    @php
+                        $settingsRole = strtoupper(optional(optional(auth()->user())->userType)->code ?? '');
+                    @endphp
+                    <div class="hero-actions d-flex flex-wrap gap-2">
                         <a href="{{ route('admin.setting.notifications') }}" class="nx-btn nx-btn-light">
                             <i class="bi bi-bell-fill"></i> Parent Notifications
                         </a>
+                        <a href="{{ route('app-setup.index') }}" class="nx-btn nx-btn-light">
+                            <i class="bi bi-qr-code"></i> Staff App QR
+                        </a>
+                        @if ($settingsRole === 'SUPER_ADMIN')
+                            <a href="{{ route('payment-rules.index') }}" class="nx-btn nx-btn-light">
+                                <i class="bi bi-sliders"></i> Payment &amp; Attendance Rules
+                            </a>
+                        @endif
                     </div>
                     <div class="hero-date-time">
                         <div class="date-box">

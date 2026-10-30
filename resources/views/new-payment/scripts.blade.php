@@ -36,6 +36,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const readUrl     = @json(route('new-payment.read'));
     const payUrl      = @json(route('new-payment.pay'));
     const bulkPayUrl  = @json(route('new-payment.bulk-pay'));
+    const monthInfoUrl = @json(route('new-payment.month-info'));
+
+    // Payment Rules details for the open single-class payment (or null)
+    let monthInfo = null;
 
     /*
     |--------------------------------------------------------------------------
@@ -627,11 +631,159 @@ document.addEventListener('DOMContentLoaded', function () {
         noteInput.value     = '';
 
         setCurrentMonth();
+        resetMonthInfo();
 
         bootstrap.Modal
             .getOrCreateInstance(modalElement)
             .show();
+
+        if (enrollmentIds.length === 1) {
+            loadMonthInfo();
+        }
     }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Payment Rules: attendance this month, fee after the rules, tute
+    |--------------------------------------------------------------------------
+    */
+
+    function resetMonthInfo() {
+        monthInfo = null;
+        document.getElementById('payment-month-info')?.classList.add('d-none');
+        const discount = document.getElementById('payment-discount');
+        if (discount) discount.readOnly = false;
+        const tute = document.getElementById('payment-give-tute');
+        if (tute) tute.checked = false;
+    }
+
+    async function loadMonthInfo() {
+        const enrollmentIds = (document.getElementById('payment-enrollment-id')?.value || '')
+            .split(',').map(Number).filter(Boolean);
+        const month = document.getElementById('payment-month')?.value || '';
+
+        if (enrollmentIds.length !== 1 || !month || !currentStudent) {
+            resetMonthInfo();
+            return;
+        }
+
+        try {
+            const response = await fetch(monthInfoUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': csrfToken()
+                },
+                body: JSON.stringify({
+                    code: currentStudent.custom_id,
+                    enrollment_id: enrollmentIds[0],
+                    payment_month: month + '-01'
+                })
+            });
+
+            const result = await response.json();
+            if (!response.ok || result.status !== 'success') {
+                resetMonthInfo();
+                return;
+            }
+
+            monthInfo = result.data;
+            applyMonthInfo();
+        } catch (error) {
+            resetMonthInfo();
+        }
+    }
+
+    function rulesActive() {
+        return monthInfo && (monthInfo.fee_option_enabled || monthInfo.custom_amount);
+    }
+
+    function selectedOption() {
+        if (!monthInfo || !monthInfo.fee_option_enabled) return null;
+        const id = Number(document.getElementById('payment-fee-option')?.value || 0);
+        return monthInfo.fee_options.find(function (option) { return Number(option.id) === id; }) || null;
+    }
+
+    function setAmountFromOption() {
+        const option = selectedOption();
+        const amountInput = document.getElementById('payment-amount');
+        const discountInput = document.getElementById('payment-discount');
+        const total = Number(document.getElementById('payment-final-fee')?.value || 0);
+        if (!amountInput || !discountInput) return;
+
+        const amount = option ? Number(option.amount) : total;
+        amountInput.value = amount.toFixed(2);
+        discountInput.value = Math.max(total - amount, 0).toFixed(2);
+    }
+
+    function applyMonthInfo() {
+        const box = document.getElementById('payment-month-info');
+        if (!box || !monthInfo) return;
+
+        box.classList.remove('d-none');
+        document.getElementById('pmi-attendance').textContent =
+            monthInfo.attendance_count + ' (' + monthInfo.payment_month_name + ')';
+
+        document.getElementById('pmi-noattend').classList.toggle('d-none', !monthInfo.no_attendance);
+
+        const paid = document.getElementById('pmi-paid');
+        if (monthInfo.already_paid) {
+            paid.classList.remove('d-none');
+            document.getElementById('pmi-paid-text').textContent =
+                'Already paid (' + (monthInfo.paid.receipt_number || '') + ')';
+        } else {
+            paid.classList.add('d-none');
+        }
+
+        // Fee options of the class category; the student's own one first selected
+        const optionBox = document.getElementById('pmi-option');
+        const select = document.getElementById('payment-fee-option');
+        if (monthInfo.fee_option_enabled) {
+            optionBox.classList.remove('d-none');
+            select.innerHTML = monthInfo.fee_options.map(function (option) {
+                return '<option value="' + option.id + '"' + (option.is_student_option ? ' selected' : '') + '>'
+                    + escapeHtml(option.label) + ' - Rs. ' + formatMoney(option.amount)
+                    + (option.is_student_option ? ' (student)' : '') + '</option>';
+            }).join('');
+        } else {
+            optionBox.classList.add('d-none');
+            select.innerHTML = '';
+        }
+
+        const tuteBox = document.getElementById('pmi-tute');
+        const tuteInput = document.getElementById('payment-give-tute');
+        if (monthInfo.tute.enabled) {
+            tuteBox.classList.remove('d-none');
+            tuteInput.checked = false;
+            tuteInput.disabled = monthInfo.tute.issued;
+            document.getElementById('pmi-tute-label').textContent = monthInfo.tute.issued
+                ? 'Tute already given (' + (monthInfo.tute.issued_at || '') + ')'
+                : 'Give ' + monthInfo.payment_month_name + ' tute';
+        } else {
+            tuteBox.classList.add('d-none');
+        }
+
+        // Amount follows the option; the discount is worked out from the amount
+        const discountInput = document.getElementById('payment-discount');
+        if (rulesActive() && discountInput) {
+            discountInput.readOnly = true;
+            setAmountFromOption();
+        }
+    }
+
+    document.getElementById('payment-fee-option')?.addEventListener('change', setAmountFromOption);
+
+    document.getElementById('payment-month')?.addEventListener('change', loadMonthInfo);
+
+    document.getElementById('payment-amount')?.addEventListener('input', function () {
+        if (!rulesActive()) return;
+        const total = Number(document.getElementById('payment-final-fee')?.value || 0);
+        const discountInput = document.getElementById('payment-discount');
+        if (discountInput) {
+            discountInput.value = Math.max(total - Number(this.value || 0), 0).toFixed(2);
+        }
+    });
 
     function setCurrentMonth() {
         const monthInput = document.getElementById('payment-month');
@@ -727,7 +879,10 @@ document.addEventListener('DOMContentLoaded', function () {
                         payment_month: month + '-01',
                         mark_method: markMethod,
                         payment_method: paymentMethod,
-                        discount_amount: discount,
+                        // With Payment Rules the server saves the rest as a discount (with the reason)
+                        discount_amount: rulesActive() ? 0 : discount,
+                        give_tute: !!document.getElementById('payment-give-tute')?.checked,
+                        fee_option_id: selectedOption() ? selectedOption().id : null,
                         note: note
                     };
 

@@ -608,23 +608,15 @@ class AttendanceScanService
 
             /*
             |--------------------------------------------------------------------------
-            | Attendance opens 1 hour before class
-            |--------------------------------------------------------------------------
-            */
-
-            $attendanceOpen = $classStart
-                ->copy()
-                ->subHour();
-
-            /*
-            |--------------------------------------------------------------------------
-            | Attendance Window Open
+            | Attendance window (Payment & Attendance Rules, default 1 hour
+            | before the start until the end)
             |--------------------------------------------------------------------------
             */
 
             if (
-                $now->between(
-                    $attendanceOpen,
+                \App\Support\AttendanceRules::isOpen(
+                    $now,
+                    $classStart,
                     $classEnd
                 )
             ) {

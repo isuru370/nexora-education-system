@@ -293,6 +293,12 @@ Route::middleware([
                 '/bulk-pay',
                 [PaymentController::class, 'bulkPay']
             )->name('bulk-pay');
+
+            // One class + month: attendance, fee after Payment Rules, tute
+            Route::post(
+                '/month-info',
+                [PaymentController::class, 'monthInfo']
+            )->name('month-info');
         });
 
 

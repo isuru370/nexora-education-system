@@ -331,6 +331,16 @@
             @endif
 
             @if ($isAdmin)
+                @if ($isSuperAdmin)
+                    <div class="nav-item">
+                        <button type="button"
+                            class="nav-link-custom {{ request()->routeIs('payment-rules.*') ? 'active' : '' }}"
+                            data-route="payment-rules.index" data-href="{{ route('payment-rules.index') }}">
+                            <i class="bi bi-sliders"></i>
+                            <span>Payment &amp; Attendance Rules</span>
+                        </button>
+                    </div>
+                @endif
                 <div class="nav-item">
                     <button type="button"
                         class="nav-link-custom {{ request()->routeIs('app-setup.*') ? 'active' : '' }}"

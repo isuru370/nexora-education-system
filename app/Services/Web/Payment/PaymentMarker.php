@@ -2,10 +2,12 @@
 
 namespace App\Services\Web\Payment;
 
+use App\Models\ClassCategoryFeeOption;
 use App\Models\Payment;
 use App\Models\Student;
 use App\Models\StudentClassEnrollment;
 use App\Services\Web\Receipt\ReceiptNumberService;
+use App\Support\PaymentRules;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Carbon;
 
@@ -77,36 +79,8 @@ class PaymentMarker
             throw new \InvalidArgumentException('Discount amount cannot be negative.');
         }
 
-        // 8. Class fee
-        $classFee = (float) $enrollment->final_fee;
-        if ($classFee < 0) {
-            throw new \InvalidArgumentException('Invalid enrollment fee.');
-        }
-
-        // 9. Hall fee — from active schedule pattern
-        $hallFee = 0;
-        $studentClass = $enrollment->studentClass;
-
-        if ($studentClass) {
-            $pattern = $studentClass
-                ->schedulePatterns()
-                ->where('is_active', true)
-                ->where('class_category_fee_id', $enrollment->class_category_fee_id)
-                ->with('hall')
-                ->latest('start_date')
-                ->first();
-
-            if ($pattern && $pattern->hall) {
-                $hallFee = (float) $pattern->hall->hall_price;
-            }
-        }
-
-        if ($hallFee < 0) {
-            throw new \InvalidArgumentException('Invalid hall fee.');
-        }
-
-        // 10. Gross fee
-        $grossFee = round($classFee + $hallFee, 2);
+        // 8-10. Gross fee (class fee + hall fee)
+        $grossFee = $this->grossFee($enrollment);
 
         // 11. Discount validation
         if ($discountAmount > $grossFee) {
@@ -120,11 +94,40 @@ class PaymentMarker
         $payableAmount = round(max($grossFee - $discountAmount, 0), 2);
 
         // 13. Payment amount validation
+        //     Payment Rules (per institute, off by default) may allow less:
+        //     - fee option: the cashier picked another fee option of the
+        //       class category for this month (e.g. Half)
+        //     - custom amount: any amount
+        //     The part not paid is saved as a discount, so the month is paid.
         if ($amount < $payableAmount) {
-            throw new \InvalidArgumentException(sprintf(
-                'Payment amount must be at least Rs. %.2f.',
-                $payableAmount
-            ));
+            $minimum = $payableAmount;
+            $reason = null;
+
+            $option = $this->chosenFeeOption($enrollment, $data['fee_option_id'] ?? null);
+            if ($option) {
+                $optionFee = round((float) $option->fee + $this->hallFee($enrollment), 2);
+
+                if ($optionFee < $minimum) {
+                    $minimum = $optionFee;
+                    $reason = 'Fee option: ' . $option->label;
+                }
+            }
+
+            if (PaymentRules::customAmount()) {
+                $minimum = 0;
+                $reason = $reason ?? 'Custom amount';
+            }
+
+            if ($amount < $minimum || $reason === null) {
+                throw new \InvalidArgumentException(sprintf(
+                    'Payment amount must be at least Rs. %.2f.',
+                    $minimum < $payableAmount ? $minimum : $payableAmount
+                ));
+            }
+
+            $discountAmount = round($grossFee - $amount, 2);
+            $data['note'] = trim(($data['note'] ?? '') . ' [' . $reason . ': discount Rs. '
+                . number_format($discountAmount, 2) . ']');
         }
 
         // 14. Duplicate check
@@ -188,5 +191,68 @@ class PaymentMarker
 
             throw $e;
         }
+    }
+
+    /**
+     * Class fee (selected fee option, 0 for a free card) + hall fee of the
+     * active schedule pattern.
+     */
+    public function grossFee(StudentClassEnrollment $enrollment): float
+    {
+        $classFee = (float) $enrollment->final_fee;
+        if ($classFee < 0) {
+            throw new \InvalidArgumentException('Invalid enrollment fee.');
+        }
+
+        return round($classFee + $this->hallFee($enrollment), 2);
+    }
+
+    public function hallFee(StudentClassEnrollment $enrollment): float
+    {
+        $hallFee = 0;
+        $studentClass = $enrollment->studentClass;
+
+        if ($studentClass) {
+            $pattern = $studentClass
+                ->schedulePatterns()
+                ->where('is_active', true)
+                ->where('class_category_fee_id', $enrollment->class_category_fee_id)
+                ->with('hall')
+                ->latest('start_date')
+                ->first();
+
+            if ($pattern && $pattern->hall) {
+                $hallFee = (float) $pattern->hall->hall_price;
+            }
+        }
+
+        if ($hallFee < 0) {
+            throw new \InvalidArgumentException('Invalid hall fee.');
+        }
+
+        return round($hallFee, 2);
+    }
+
+    /**
+     * The fee option the cashier picked for this payment (Payment Rules >
+     * fee option). Only an active option of the student's own class category.
+     */
+    public function chosenFeeOption(StudentClassEnrollment $enrollment, $optionId): ?ClassCategoryFeeOption
+    {
+        if (!PaymentRules::feeOption() || !$optionId || $enrollment->is_free_card) {
+            return null;
+        }
+
+        $option = ClassCategoryFeeOption::query()
+            ->where('id', (int) $optionId)
+            ->where('class_category_fee_id', $enrollment->class_category_fee_id)
+            ->where('is_active', true)
+            ->first();
+
+        if (!$option) {
+            throw new \InvalidArgumentException('The selected fee option is not available for this class.');
+        }
+
+        return $option;
     }
 }

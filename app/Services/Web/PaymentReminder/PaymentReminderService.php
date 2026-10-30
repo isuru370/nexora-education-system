@@ -14,6 +14,7 @@ use App\Services\Branch\BranchAccessService;
 use App\Services\Notification\NotificationService;
 use App\Services\Web\Report\PaymentReportQuery;
 use Carbon\Carbon;
+use App\Support\PaymentRules;
 use DomainException;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Log;
@@ -42,6 +43,9 @@ class PaymentReminderService
     public const STATUS_PAID = 'paid';
 
     public const STATUS_FREE_CARD = 'free_card';
+
+    /** Payment Rules > no attendance: not attended this month (no reminder) */
+    public const STATUS_NO_ATTENDANCE = 'no_attendance';
 
     /** Placeholders that are filled for every student */
     public const PLACEHOLDERS = ['[Student Name]', '[Class]', '[Month]', '[Amount]', '[Attendance]'];
@@ -209,11 +213,17 @@ class PaymentReminderService
                 $option = $enrollment->classCategoryFeeOption;
                 $fee = round((float) $enrollment->final_fee, 2);
                 $paid = round((float) $enrollment->payments->sum('amount'), 2);
+                $discount = round((float) $enrollment->payments->sum('discount_amount'), 2);
+                $days = (int) $attendance->get($enrollment->id, 0);
 
                 if ($enrollment->is_free_card) {
                     $status = self::STATUS_FREE_CARD;
+                } elseif ($enrollment->payments->isNotEmpty() && $paid + $discount >= $fee) {
+                    $status = self::STATUS_PAID;   // paid (a discount covers the rest)
                 } elseif ($paid >= $fee) {
                     $status = self::STATUS_PAID;
+                } elseif (PaymentRules::noAttendance() && $days === 0) {
+                    $status = self::STATUS_NO_ATTENDANCE;
                 } else {
                     $status = self::STATUS_UNPAID;
                 }
@@ -237,7 +247,7 @@ class PaymentReminderService
                 ];
             })
             ->sort(function (array $a, array $b) {
-                $order = [self::STATUS_UNPAID => 0, self::STATUS_FREE_CARD => 1, self::STATUS_PAID => 2];
+                $order = [self::STATUS_UNPAID => 0, self::STATUS_NO_ATTENDANCE => 1, self::STATUS_FREE_CARD => 2, self::STATUS_PAID => 3];
 
                 return [$order[$a['status']], -$a['attendance'], $a['student_name']]
                     <=> [$order[$b['status']], -$b['attendance'], $b['student_name']];
@@ -279,6 +289,7 @@ class PaymentReminderService
             'paid' => $students->where('status', self::STATUS_PAID)->count(),
             'unpaid' => $unpaid->count(),
             'free_card' => $students->where('status', self::STATUS_FREE_CARD)->count(),
+            'no_attendance' => $students->where('status', self::STATUS_NO_ATTENDANCE)->count(),
             'expected' => round($students->sum('fee'), 2),
             'collected' => round($students->sum('paid'), 2),
             'balance' => round($unpaid->sum('balance'), 2),
@@ -292,6 +303,7 @@ class PaymentReminderService
             self::STATUS_UNPAID => 'Not Paid',
             self::STATUS_PAID => 'Paid',
             self::STATUS_FREE_CARD => 'Free Card',
+            self::STATUS_NO_ATTENDANCE => 'No Attendance',
         ][$status] ?? $status;
     }
 
