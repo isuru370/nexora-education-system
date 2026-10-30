@@ -48,7 +48,7 @@ class TeacherStudentPaymentReportExport implements
 
         foreach ($this->report['classes'] as $class) {
             foreach ($class['categories'] as $category) {
-                foreach (['paid', 'unpaid', 'freecard'] as $group) {
+                foreach (['paid', 'unpaid', 'freecard', 'noattend'] as $group) {
                     foreach ($category['students'][$group] as $student) {
                         $rows[] = $this->makeRow($class, $category, $student);
                     }
@@ -75,7 +75,7 @@ class TeacherStudentPaymentReportExport implements
             $student['student_code'],
             $student['initial_name'],
             $student['guardian_mobile'],
-            ucfirst($student['status'] === 'freecard' ? 'free card' : $student['status']),
+            ['paid' => 'Paid', 'unpaid' => 'Unpaid', 'freecard' => 'Free card', 'noattend' => 'No attendance'][$student['status']] ?? $student['status'],
             (float) $student['final_fee'],
             (float) $student['paid_amount'],
             (float) $student['balance'],

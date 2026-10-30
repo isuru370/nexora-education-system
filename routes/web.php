@@ -4,6 +4,7 @@
 
 use App\Http\Controllers\Web\ActivityLog\ActivityLogController;
 use App\Http\Controllers\Web\AppSetup\AppSetupController;
+use App\Http\Controllers\Web\PaymentRules\PaymentRulesController;
 
 use App\Http\Controllers\Web\OrganizerPayment\OrganizerPaymentController;
 
@@ -2479,6 +2480,10 @@ Route::prefix('new-payment')
         // Store multiple payments
         Route::post('bulk-pay', 'bulkPay')
             ->name('bulk-pay');
+
+        // One class + month: attendance, fee after Payment Rules, tute
+        Route::post('month-info', 'monthInfo')
+            ->name('month-info');
     });
 
 /*
@@ -2899,3 +2904,21 @@ Route::get('/app-setup', [AppSetupController::class, 'help'])
 Route::view('/privacy-policy', 'legal.privacy-policy')
     ->middleware('throttle:60,1')
     ->name('privacy-policy');
+
+
+/*
+|--------------------------------------------------------------------------
+| Payment Rules (Super Admin)
+|--------------------------------------------------------------------------
+| Per-institute fee options: custom amount, attendance-based fee, tute with
+| payment. All off by default.
+*/
+
+Route::prefix('payment-rules')
+    ->name('payment-rules.')
+    ->middleware(['auth', 'user.active', 'role:SUPER_ADMIN'])
+    ->controller(PaymentRulesController::class)
+    ->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::put('/', 'update')->name('update');
+    });

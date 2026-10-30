@@ -64,6 +64,19 @@ class StorePaymentRequest extends FormRequest
                 'string',
                 'max:1000',
             ],
+
+            // Payment Rules > fee option: option picked for this month
+            'fee_option_id' => [
+                'nullable',
+                'integer',
+                'min:1',
+            ],
+
+            // Payment Rules > tute: also give this month's tute (optional)
+            'give_tute' => [
+                'nullable',
+                'boolean',
+            ],
         ];
     }
 
