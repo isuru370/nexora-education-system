@@ -27,6 +27,8 @@ class WebProductionReadyTest extends TestCase
         'forgot-password',
         'forgot-password/*',
         'sanctum/csrf-cookie',
+        'app-setup',   // help page a phone camera opens from the staff app QR
+        'privacy-policy',
     ];
 
     protected function setUp(): void

@@ -76,6 +76,11 @@ return [
 
     ],
 
+    // Nexora IT (the app developer): shown on the public /privacy-policy page
+    'nexora' => [
+        'support_email' => env('NEXORA_SUPPORT_EMAIL'),
+    ],
+
     'firebase' => [
         'project_id' => env('FIREBASE_PROJECT_ID'),
     ],

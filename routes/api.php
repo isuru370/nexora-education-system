@@ -57,6 +57,12 @@ Route::post(
     [LoginController::class, 'login']
 )->middleware('throttle:10,1')->name('api.login');
 
+// Staff app first start: check the key from the scanned setup QR (no login)
+Route::post(
+    '/app-setup/verify',
+    \App\Http\Controllers\Api\AppSetup\AppSetupVerifyController::class
+)->middleware('throttle:10,1')->name('api.app-setup.verify');
+
 // Institute name / tagline / logo for the staff app (no login)
 Route::get(
     '/institute',

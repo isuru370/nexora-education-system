@@ -49,7 +49,7 @@ class TeacherAdvanceController extends Controller
         try {
             $income = $this->salaryService->monthlyIncome($branchId, $now->year, $now->month);
         } catch (DomainException $e) {
-            return $this->fail($e->getMessage(), 403);
+            return $this->fail(\App\Support\ErrorDetail::safe($e), 403);
         }
 
         $teachers = collect($income['data'] ?? [])->map(fn (array $row) => [
@@ -97,7 +97,7 @@ class TeacherAdvanceController extends Controller
                 'note' => trim(($data['note'] ?? '') . ' (mobile app)'),
             ]);
         } catch (DomainException $e) {
-            return $this->fail($e->getMessage(), 422);
+            return $this->fail(\App\Support\ErrorDetail::safe($e), 422);
         } catch (Throwable $e) {
             report($e);
 

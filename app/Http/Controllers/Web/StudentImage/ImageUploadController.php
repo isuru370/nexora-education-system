@@ -56,7 +56,7 @@ class ImageUploadController extends Controller
             return response()->json([
                 'status' => false,
                 'message' => 'Image upload failed.',
-                'error' => $e->getMessage(),
+                'error' => \App\Support\ErrorDetail::safe($e),
             ], 500);
         }
     }
@@ -67,19 +67,17 @@ class ImageUploadController extends Controller
             'path' => 'required|string',
         ]);
 
-        try {
-            $this->imageUploadService->delete($request->path);
-
-            return response()->json([
-                'status' => true,
-                'message' => 'Image deleted successfully.',
-            ]);
-        } catch (\Throwable $e) {
+        // Only a photo nobody uses any more (not a student's or a quick photo's)
+        if (!$this->imageUploadService->delete($request->path)) {
             return response()->json([
                 'status' => false,
-                'message' => 'Image delete failed.',
-                'error' => $e->getMessage(),
-            ], 500);
+                'message' => 'This image cannot be deleted.',
+            ], 422);
         }
+
+        return response()->json([
+            'status' => true,
+            'message' => 'Image deleted successfully.',
+        ]);
     }
 }

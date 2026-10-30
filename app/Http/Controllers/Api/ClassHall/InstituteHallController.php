@@ -24,7 +24,7 @@ class InstituteHallController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => $e->getMessage()
+                'message' => \App\Support\ErrorDetail::safe($e)
             ], 500);
         }
     }

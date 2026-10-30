@@ -45,7 +45,7 @@ class PaymentReminderController extends Controller
                 $report = $this->reminderService->report($classId, $categoryFeeId, $month);
             }
         } catch (DomainException $e) {
-            return redirect()->route('payment-reminder.index')->with('error', $e->getMessage());
+            return redirect()->route('payment-reminder.index')->with('error', \App\Support\ErrorDetail::safe($e));
         }
 
         return view('payment-reminder.index', [
@@ -82,7 +82,7 @@ class PaymentReminderController extends Controller
                 $validated['message'] ?? null
             );
         } catch (DomainException $e) {
-            return $back->with('error', $e->getMessage());
+            return $back->with('error', \App\Support\ErrorDetail::safe($e));
         } catch (Throwable $e) {
             report($e);
 
@@ -142,7 +142,7 @@ class PaymentReminderController extends Controller
                 ->setPaper('a4', 'landscape')
                 ->download($fileName . '.pdf');
         } catch (DomainException $e) {
-            return redirect()->route('payment-reminder.index')->with('error', $e->getMessage());
+            return redirect()->route('payment-reminder.index')->with('error', \App\Support\ErrorDetail::safe($e));
         } catch (Throwable $e) {
             report($e);
 

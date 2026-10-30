@@ -104,7 +104,7 @@ class StudentCardController extends Controller
 
             return response()->json([
                 'status' => false,
-                'message' => $e->getMessage() ?: 'Unable to reassign the student card.',
+                'message' => \App\Support\ErrorDetail::safe($e) ?: 'Unable to reassign the student card.',
             ], 400);
         }
     }

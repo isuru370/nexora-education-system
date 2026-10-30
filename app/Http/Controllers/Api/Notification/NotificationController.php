@@ -55,7 +55,7 @@ class NotificationController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to send notification: ' . $e->getMessage(),
+                'message' => 'Failed to send notification: ' . \App\Support\ErrorDetail::safe($e),
             ]);
         }
     }
@@ -96,7 +96,7 @@ class NotificationController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to send notification: ' . $e->getMessage(),
+                'message' => 'Failed to send notification: ' . \App\Support\ErrorDetail::safe($e),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -138,7 +138,7 @@ class NotificationController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to send bulk notifications: ' . $e->getMessage(),
+                'message' => 'Failed to send bulk notifications: ' . \App\Support\ErrorDetail::safe($e),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -172,7 +172,7 @@ class NotificationController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to send notifications: ' . $e->getMessage(),
+                'message' => 'Failed to send notifications: ' . \App\Support\ErrorDetail::safe($e),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -209,7 +209,7 @@ class NotificationController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to send notifications: ' . $e->getMessage(),
+                'message' => 'Failed to send notifications: ' . \App\Support\ErrorDetail::safe($e),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -239,7 +239,7 @@ class NotificationController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to get notification status: ' . $e->getMessage(),
+                'message' => 'Failed to get notification status: ' . \App\Support\ErrorDetail::safe($e),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -269,12 +269,12 @@ class NotificationController extends Controller
         } catch (\InvalidArgumentException $e) {
             return response()->json([
                 'success' => false,
-                'message' => $e->getMessage(),
+                'message' => \App\Support\ErrorDetail::safe($e),
             ], Response::HTTP_BAD_REQUEST);
         } catch (\RuntimeException $e) {
             return response()->json([
                 'success' => false,
-                'message' => $e->getMessage(),
+                'message' => \App\Support\ErrorDetail::safe($e),
             ], Response::HTTP_BAD_REQUEST);
         } catch (\Exception $e) {
             Log::error('Retry notification failed', [
@@ -285,7 +285,7 @@ class NotificationController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to retry notification: ' . $e->getMessage(),
+                'message' => 'Failed to retry notification: ' . \App\Support\ErrorDetail::safe($e),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -315,7 +315,7 @@ class NotificationController extends Controller
         } catch (\InvalidArgumentException $e) {
             return response()->json([
                 'success' => false,
-                'message' => $e->getMessage(),
+                'message' => \App\Support\ErrorDetail::safe($e),
             ], Response::HTTP_BAD_REQUEST);
         } catch (\Exception $e) {
             Log::error('Cancel notification failed', [
@@ -326,7 +326,7 @@ class NotificationController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to cancel notification: ' . $e->getMessage(),
+                'message' => 'Failed to cancel notification: ' . \App\Support\ErrorDetail::safe($e),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -369,7 +369,7 @@ class NotificationController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to get notification history: ' . $e->getMessage(),
+                'message' => 'Failed to get notification history: ' . \App\Support\ErrorDetail::safe($e),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -404,7 +404,7 @@ class NotificationController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to mark notification as read: ' . $e->getMessage(),
+                'message' => 'Failed to mark notification as read: ' . \App\Support\ErrorDetail::safe($e),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -429,7 +429,7 @@ class NotificationController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to get notification statistics: ' . $e->getMessage(),
+                'message' => 'Failed to get notification statistics: ' . \App\Support\ErrorDetail::safe($e),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -458,7 +458,7 @@ class NotificationController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to get notifications: ' . $e->getMessage(),
+                'message' => 'Failed to get notifications: ' . \App\Support\ErrorDetail::safe($e),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }
@@ -493,7 +493,7 @@ class NotificationController extends Controller
 
             return response()->json([
                 'success' => false,
-                'message' => 'Failed to delete old notifications: ' . $e->getMessage(),
+                'message' => 'Failed to delete old notifications: ' . \App\Support\ErrorDetail::safe($e),
             ], Response::HTTP_INTERNAL_SERVER_ERROR);
         }
     }

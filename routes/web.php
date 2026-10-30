@@ -3,6 +3,7 @@
 
 
 use App\Http\Controllers\Web\ActivityLog\ActivityLogController;
+use App\Http\Controllers\Web\AppSetup\AppSetupController;
 
 use App\Http\Controllers\Web\OrganizerPayment\OrganizerPaymentController;
 
@@ -2870,3 +2871,31 @@ Route::prefix('class-promotions')
 
 // Courses (feature "courses")
 require __DIR__ . '/courses.php';
+
+
+/*
+|--------------------------------------------------------------------------
+| Staff app setup QR
+|--------------------------------------------------------------------------
+| Admin page with the QR the staff app scans on first start.
+| /app-setup (no login) is what a phone camera opens: a help page only.
+*/
+
+Route::prefix('app-setup-qr')
+    ->name('app-setup.')
+    ->middleware(['auth', 'user.active', 'role:ADMIN'])
+    ->controller(AppSetupController::class)
+    ->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('/regenerate', 'regenerate')->name('regenerate');
+    });
+
+Route::get('/app-setup', [AppSetupController::class, 'help'])
+    ->middleware('throttle:60,1')
+    ->name('app-setup.help');
+
+
+// Privacy policy (public): the Play Store privacy policy URL of the staff app
+Route::view('/privacy-policy', 'legal.privacy-policy')
+    ->middleware('throttle:60,1')
+    ->name('privacy-policy');

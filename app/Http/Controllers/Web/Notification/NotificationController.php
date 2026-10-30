@@ -143,7 +143,7 @@ class NotificationController extends Controller
             return redirect()
                 ->back()
                 ->withInput()
-                ->with('error', 'Failed to create notification: ' . $e->getMessage());
+                ->with('error', 'Failed to create notification: ' . \App\Support\ErrorDetail::safe($e));
         }
     }
 
@@ -176,7 +176,7 @@ class NotificationController extends Controller
             return redirect()
                 ->back()
                 ->withInput()
-                ->with('error', 'Failed to send notifications: ' . $e->getMessage());
+                ->with('error', 'Failed to send notifications: ' . \App\Support\ErrorDetail::safe($e));
         }
     }
 
@@ -237,7 +237,7 @@ class NotificationController extends Controller
 
             return redirect()
                 ->back()
-                ->with('error', 'Failed to retry notification: ' . $e->getMessage());
+                ->with('error', 'Failed to retry notification: ' . \App\Support\ErrorDetail::safe($e));
         }
     }
 

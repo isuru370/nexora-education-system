@@ -69,7 +69,7 @@ class AdmissionController extends Controller
         try {
             $this->admissionService->delete($admission);
         } catch (DomainException $e) {
-            return back()->with('error', $e->getMessage());
+            return back()->with('error', \App\Support\ErrorDetail::safe($e));
         }
 
         return redirect()

@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Services\Web\Auth\AuthService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\RateLimiter;
+use Illuminate\Support\Str;
 use Illuminate\View\View;
 
 class LoginController extends Controller
@@ -39,15 +41,33 @@ class LoginController extends Controller
             ],
         ]);
 
+        // 5 wrong passwords per minute for one email from one IP. Keyed on both,
+        // so staff sharing the institute WiFi do not lock each other out.
+        $throttleKey = 'web-login:' . Str::lower($credentials['email']) . '|' . $request->ip();
+
+        if (RateLimiter::tooManyAttempts($throttleKey, 5)) {
+            $seconds = RateLimiter::availableIn($throttleKey);
+
+            return back()
+                ->withInput($request->only('email'))
+                ->withErrors([
+                    'email' => "Too many login attempts. Please try again in {$seconds} seconds.",
+                ]);
+        }
+
         $result = $this->authService->login($credentials);
 
         if (!$result['success']) {
+            RateLimiter::hit($throttleKey, 60);
+
             return back()
                 ->withInput($request->only('email'))
                 ->withErrors([
                     'email' => $result['message'],
                 ]);
         }
+
+        RateLimiter::clear($throttleKey);
 
         return redirect()->intended(
             route('dashboard')
