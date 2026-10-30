@@ -67,6 +67,7 @@ class AttendanceChooseClassTest extends TestCase
     protected function tearDown(): void
     {
         Carbon::setTestNow();
+        \App\Support\AttendanceRules::forget();
         parent::tearDown();
     }
 
@@ -154,5 +155,81 @@ class AttendanceChooseClassTest extends TestCase
         $this->scan($other)->assertStatus(422);
 
         $this->assertSame([], $this->marked());
+    }
+
+    /* ---------- Attendance Rules (per institute) ---------- */
+
+    public function test_default_window_is_one_hour_before_until_the_end(): void
+    {
+        \App\Support\AttendanceRules::forget();
+
+        Carbon::setTestNow('2026-10-13 15:00:00'); // A opens 15:30
+        $this->scan()->assertStatus(422);
+
+        Carbon::setTestNow('2026-10-13 20:30:00'); // B ended 20:00
+        $this->scan()->assertStatus(422);
+        $this->assertSame([], $this->marked());
+    }
+
+    public function test_two_hours_before_and_after(): void
+    {
+        \App\Support\AttendanceRules::save(['before_minutes' => 120, 'after_minutes' => 120]);
+
+        Carbon::setTestNow('2026-10-13 14:30:00'); // A: 14:30 - 20:00, B opens 16:00
+        $this->scan()->assertStatus(201)->assertJsonPath('data.schedule.id', $this->scheduleA);
+
+        // 21:30: only B (until 22:00), even after the 8:45 PM auto-complete
+        DB::table('class_schedules')->where('id', $this->scheduleB)->update(['status' => 'completed']);
+        Carbon::setTestNow('2026-10-13 21:30:00');
+        $this->scan()->assertStatus(201)->assertJsonPath('data.schedule.id', $this->scheduleB);
+
+        Carbon::setTestNow('2026-10-13 22:01:00');
+        $this->assertSame([$this->scheduleA, $this->scheduleB], $this->marked());
+    }
+
+    public function test_no_time_limit_lists_todays_classes_only(): void
+    {
+        \App\Support\AttendanceRules::save(['no_time_limit' => true]);
+
+        // A class yesterday is never offered
+        DB::table('class_schedules')->insert([
+            'branch_id' => $this->inst['b1'], 'student_class_id' => $this->inst['c1'], 'class_category_fee_id' => $this->inst['f1'],
+            'class_date' => '2026-10-12', 'day_of_week' => 'monday', 'start_time' => '16:30', 'end_time' => '18:00',
+            'status' => 'completed', 'is_active' => 1,
+        ]);
+
+        Carbon::setTestNow('2026-10-13 09:00:00'); // long before both classes
+        $this->scan()
+            ->assertStatus(409)
+            ->assertJsonCount(2, 'data.classes')
+            ->assertJsonPath('data.classes.0.schedule_id', $this->scheduleA)
+            ->assertJsonPath('data.classes.1.schedule_id', $this->scheduleB);
+
+        $this->scan($this->scheduleB)->assertStatus(201);
+
+        // Only one class today: marked straight away
+        DB::table('class_schedules')->where('id', $this->scheduleB)->update(['status' => 'cancelled']);
+        $this->scan()->assertStatus(201)->assertJsonPath('data.schedule.id', $this->scheduleA);
+    }
+
+    public function test_attendance_rules_are_saved_on_the_rules_page(): void
+    {
+        $type = DB::table('user_types')->insertGetId(['name' => 'SUPER_ADMIN', 'code' => 'SUPER_ADMIN', 'is_active' => 1]);
+        $super = \App\Models\User::forceCreate([
+            'name' => 'Super', 'email' => 'super2@test.lk', 'password' => 'password123',
+            'user_type_id' => $type, 'is_active' => 1,
+        ]);
+
+        $this->actingAs($super)->get('/admin/setting')->assertOk()->assertSee('Payment &amp; Attendance Rules', false);
+        $this->actingAs($this->inst['admin'])->get('/admin/setting')->assertOk()->assertDontSee('Payment &amp; Attendance Rules', false);
+
+        $this->actingAs($super)->put('/payment-rules', [
+            'before_minutes' => 120, 'after_minutes' => 120, 'no_time_limit' => '0',
+        ])->assertRedirect('/payment-rules');
+
+        $this->assertSame(
+            ['before_minutes' => 120, 'after_minutes' => 120, 'no_time_limit' => false],
+            \App\Support\AttendanceRules::all()
+        );
     }
 }
