@@ -516,6 +516,24 @@
                         <span>Teacher Salaries</span>
                     </button>
                 </div>
+                @feature('welfare')
+                    <div class="nav-item">
+                        <button type="button"
+                            class="nav-link-custom {{ request()->routeIs('welfare.index') ? 'active' : '' }}"
+                            data-route="welfare.index" data-href="{{ route('welfare.index') }}">
+                            <i class="bi bi-heart-pulse"></i>
+                            <span>Teacher Welfare</span>
+                        </button>
+                    </div>
+                    <div class="nav-item">
+                        <button type="button"
+                            class="nav-link-custom {{ request()->routeIs('welfare.fund*') ? 'active' : '' }}"
+                            data-route="welfare.fund" data-href="{{ route('welfare.fund') }}">
+                            <i class="bi bi-piggy-bank"></i>
+                            <span>Welfare Fund</span>
+                        </button>
+                    </div>
+                @endfeature
             @endif
 
             @if ($canOrganizerPayments)

@@ -19,6 +19,7 @@ class TeacherSalary extends Model
         'gross_amount',
         'advance_deduction',
         'other_deduction',
+        'welfare_deduction',
         'bonus_amount',
         'net_amount',
         'status',

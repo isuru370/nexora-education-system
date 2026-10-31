@@ -165,6 +165,9 @@
                         <h3>
                             LKR {{ number_format($deductionTotal, 2) }}
                         </h3>
+                        @if (($data['welfare'] ?? 0) > 0)
+                            <small class="summary-sub">incl. welfare LKR {{ number_format($data['welfare'], 2) }}</small>
+                        @endif
                     </div>
                 </div>
             </div>
