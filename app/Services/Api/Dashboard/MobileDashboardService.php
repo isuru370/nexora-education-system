@@ -118,8 +118,8 @@ class MobileDashboardService
         // ID cards: one way to register per institute (nexora:card-mode)
         $cards = CardAccess::forRole($role);
 
-        if (CardMode::permanent()) {
-            // students get the permanent card at registration: no Re Assign
+        if (CardMode::temporary()) {
+            // no card stock: the permanent card is printed on Generate Student ID (web)
             $features = $features->reject(fn ($key) => $key === 'reassign_card');
         }
 
@@ -127,8 +127,8 @@ class MobileDashboardService
             $features->push(CardMode::temporary() ? 'register_temporary' : 'register_permanent');
         }
 
-        if ($cards['manage']) {
-            $features->push('replace_card'); // lost / damaged -> new card
+        if ($cards['manage'] && CardMode::permanent()) {
+            $features->push('replace_card'); // lost / damaged -> new card from the stock
         }
 
         return $features->values()->all();

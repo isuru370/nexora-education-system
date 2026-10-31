@@ -1316,6 +1316,9 @@ Route::middleware([
 Route::prefix('student-cards')
     ->name('student-cards.')
     ->controller(StudentCardController::class)
+    // card stock (pre-printed permanent cards): permanent-card institutes only.
+    // Temporary-card institutes print the permanent card on Generate Student ID.
+    ->middleware('card.mode:permanent')
     ->group(function () {
 
         // Card inventory

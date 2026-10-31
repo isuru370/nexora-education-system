@@ -415,7 +415,7 @@
         {{-- YEARLY CHART + CARD STOCK --}}
         {{-- ===================================================== --}}
         <div class="row g-4 mb-4">
-            <div class="col-xl-9">
+            <div class="{{ \App\Support\CardMode::permanent() ? 'col-xl-9' : 'col-xl-12' }}">
                 <div class="nx-card h-100">
                     <div class="nx-card-header">
                         <div>
@@ -459,6 +459,7 @@
                 </div>
             </div>
 
+            @cardmode('permanent')
             <div class="col-xl-3">
                 <div class="nx-card h-100 p-3 d-flex flex-column">
                     <div class="d-flex justify-content-between align-items-start">
@@ -487,6 +488,7 @@
                     </div>
                 </div>
             </div>
+            @endcardmode
         </div>
 
         {{-- ===================================================== --}}
