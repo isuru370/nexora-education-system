@@ -186,7 +186,8 @@ class SmsService
     {
         try {
             if ($this->provider === self::SENDLK) {
-                $response = $this->sendLk()->asForm()->timeout($timeout)->post("{$this->baseUrl}/sms/send", [
+                // JSON body: send.lk refuses a form body ("The given data was invalid.")
+                $response = $this->sendLk()->asJson()->timeout($timeout)->post("{$this->baseUrl}/sms/send", [
                     'recipient' => implode(',', $numbers),
                     'sender_id' => $this->senderId,
                     // Required by send.lk: plain = English, unicode = Sinhala / Tamil
