@@ -314,6 +314,12 @@ class DeployCheckService
         return $checks;
     }
 
+    /** A closure route after `route:cache`: its action is a serialized closure string */
+    public static function isCachedClosure(string $uses): bool
+    {
+        return str_starts_with($uses, 'O:') && str_contains($uses, 'SerializableClosure');
+    }
+
     /** Every route points to a controller method that exists. */
     public function routeCheck(): array
     {
@@ -324,8 +330,8 @@ class DeployCheckService
             $count++;
             $uses = $route->getAction('uses');
 
-            if (!is_string($uses)) {
-                continue; // closure
+            if (!is_string($uses) || self::isCachedClosure($uses)) {
+                continue; // closure (with route:cache it is a serialized string)
             }
 
             [$class, $method] = Str::contains($uses, '@') ? explode('@', $uses, 2) : [$uses, '__invoke'];
@@ -347,7 +353,7 @@ class DeployCheckService
     {
         $classes = collect(Route::getRoutes()->getRoutes())
             ->map(fn($r) => $r->getAction('uses'))
-            ->filter(fn($u) => is_string($u))
+            ->filter(fn($u) => is_string($u) && !self::isCachedClosure($u))
             ->map(fn($u) => explode('@', $u)[0])
             ->unique()
             ->filter(fn($c) => class_exists($c));
