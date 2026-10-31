@@ -48,12 +48,12 @@
 
         /* Header */
         .head { display: flex; align-items: center; gap: 4mm; border-bottom: 2.5px solid #1d4ed8; padding-bottom: 2mm; }
-        .head img { width: 18mm; height: 18mm; object-fit: contain; }
+        .head img { width: 26mm; height: 26mm; object-fit: contain; }
         .head .inst { flex: 1; }
         .head .inst-name { font-size: 15pt; font-weight: 800; color: #1e3a8a; line-height: 1.15; }
         .head .inst-sub { font-size: 8.5pt; color: #475569; margin-top: 1mm; }
         .head .photo {
-            width: 24mm; height: 28mm; border: 1.2px dashed #64748b; border-radius: 2mm;
+            width: 22mm; height: 26mm; border: 1.2px dashed #64748b; border-radius: 2mm;
             display: flex; align-items: center; justify-content: center; text-align: center;
             font-size: 8pt; color: #64748b; padding: 2mm;
         }
@@ -63,7 +63,7 @@
         .hint { font-size: 8.3pt; color: #475569; margin: 0 0 1mm; }
 
         /* Sections */
-        .section { margin-top: 1.8mm; border: 1px solid #cbd5e1; border-radius: 2mm; overflow: hidden; break-inside: avoid; }
+        .section { margin-top: 1.6mm; border: 1px solid #cbd5e1; border-radius: 2mm; overflow: hidden; break-inside: avoid; }
         .section-title {
             background: #1e3a8a; color: #fff; font-weight: 700; font-size: 9.5pt;
             padding: 1.1mm 3mm; letter-spacing: .3px;
@@ -74,7 +74,7 @@
         .field label { display: block; font-size: 7.8pt; font-weight: 700; color: #334155; margin-bottom: .6mm; }
         .field label .req { color: #dc2626; }
         .field label .opt { font-weight: 400; color: #64748b; }
-        .line { border-bottom: 1px solid #475569; height: 5.3mm; }
+        .line { border-bottom: 1px solid #475569; height: 5mm; }
         .boxes { display: flex; gap: 0; }
         .boxes span { width: 5.2mm; height: 5.6mm; border: 1px solid #475569; border-left-width: 0; }
         .boxes span:first-child { border-left-width: 1px; }
@@ -87,12 +87,12 @@
         .w-2 { flex: 2; } .w-3 { flex: 3; } .w-auto { flex: 0 0 auto; }
 
         table.classes { width: 100%; border-collapse: collapse; margin-top: 2mm; }
-        table.classes th, table.classes td { border: 1px solid #94a3b8; padding: 1.2mm 2mm; text-align: left; }
+        table.classes th, table.classes td { border: 1px solid #94a3b8; padding: .8mm 2mm; text-align: left; }
         table.classes th { background: #f1f5f9; font-size: 8.3pt; }
-        table.classes td { height: 6mm; padding-top: 0; padding-bottom: 0; }
+        table.classes td { height: 5.6mm; padding-top: 0; padding-bottom: 0; }
 
         .declaration { font-size: 8.8pt; line-height: 1.45; color: #1e293b; }
-        .sign-row { display: flex; gap: 8mm; margin-top: 5mm; }
+        .sign-row { display: flex; gap: 8mm; margin-top: 4.5mm; }
         .sign-row div { flex: 1; text-align: center; font-size: 8.3pt; color: #334155; border-top: 1px dotted #334155; padding-top: 1mm; }
 
         .office { background: #f8fafc; border-style: dashed; }
@@ -231,7 +231,7 @@
                 </div>
                 <div class="row">
                     <div class="field w-auto">
-                        <label>Parent / Guardian Mobile <span class="req">*</span></label>
+                        <label>Parent / Guardian Mobile <span class="req">*</span> <span class="opt">(SMS &amp; Parent Portal login)</span></label>
                         <div class="boxes">@for ($i = 0; $i < 10; $i++)<span></span>@endfor</div>
                     </div>
                     <div class="field">
@@ -239,9 +239,6 @@
                         <div class="boxes">@for ($i = 0; $i < 12; $i++)<span></span>@endfor</div>
                     </div>
                 </div>
-                <p class="hint" style="margin:2mm 0 0">
-                    Payment, attendance SMS and the Parent Portal login are sent to this mobile number.
-                </p>
             </div>
         </div>
 
@@ -254,7 +251,7 @@
                         <tr><th style="width:6%">#</th><th>Subject</th><th style="width:32%">Teacher</th><th style="width:24%">Day &amp; Time</th></tr>
                     </thead>
                     <tbody>
-                        @for ($i = 1; $i <= 3; $i++)
+                        @for ($i = 1; $i <= 6; $i++)
                             <tr><td>{{ $i }}</td><td></td><td></td><td></td></tr>
                         @endfor
                     </tbody>
