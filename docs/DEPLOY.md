@@ -79,6 +79,7 @@ php artisan nexora:feature courses off
 | Feature | Use |
 |---|---|
 | `courses` | Course management (only institutes that sell courses) |
+| `welfare` | Teacher welfare: a monthly amount taken from teacher salaries (per branch) into the branch welfare fund (not institute income), its expenses and a PDF. Shown on the salary slip. |
 | `landing_page` | **Only edu.nexorait.lk.** Shows the NexoraIT EDU product page on `/`. Off (every institute) = `/` opens the login page. |
 
 There is no web page for this, so an institute cannot switch a feature on by itself. `nexora:deploy` shows which features are on.
@@ -95,9 +96,27 @@ php artisan nexora:card-mode permanent    # register with a permanent ID card st
 php artisan nexora:card-mode temporary    # register with a temporary card (TMP001...), permanent card later (Re Assign Student)
 ```
 
-There is no web page for it. Permanent mode hides Temporary Registration, Temporary Cards and Re Assign Student (web and app); temporary mode hides the direct permanent registration. Attendance and payment scanning accept both kinds of ID in either mode.
+There is no web page for it.
+
+- **Permanent** mode: registration with a pre-printed card from the card stock (**Student Cards**). Re Assign Student and replacing a lost / damaged card use the same stock. Temporary Registration, Temporary Cards and Generate Student ID are hidden.
+- **Temporary** mode: registration with a TMP card; the permanent card is printed later on **Generate Student ID** (QR = student ID). There is no card stock: Student Cards, Re Assign Student and card replacement are hidden (web and app), and the direct permanent registration too. Attendance and payment scanning accept both kinds of ID in either mode.
 
 Who can do what with ID cards (`App\Support\CardAccess`): generate = Super Admin; download / print and replace / lost / damaged / deactivate = Super Admin, Admin, Branch Admin; assign (registration, Re Assign Student) and view = also Cashier; teachers have no access.
+
+### SMS (two accounts)
+
+| Account | `.env` | Used for |
+|---|---|---|
+| Institute | `SMS_PROVIDER` = `chatbiz` (`SMS_USER_ID`, `SMS_API_KEY`, `SMS_SENDER_ID`) or `sendlk` (`SMS_API_KEY` = send.lk API token, `SMS_SENDER_ID`) | Payment, attendance, class schedule, payment reminders |
+| NexoraIT (ChatBiz) | `SMS_SYSTEM_USER_ID`, `SMS_SYSTEM_API_KEY`, `SMS_SYSTEM_SENDER_ID` (same on every institute) | Student registration (parent portal login), parent portal password, teacher and staff logins |
+
+`SMS_SYSTEM_*` empty = those SMS use the institute account. Check both (balance) and send a test:
+
+```bash
+php artisan nexora:sms-test
+php artisan nexora:sms-test 0771234567            # institute account
+php artisan nexora:sms-test 0771234567 --system   # NexoraIT account
+```
 
 ### Never on a live server
 

@@ -32,7 +32,7 @@ class FeatureFlagsTest extends TestCase
     {
         $this->assertFalse(feature('courses'));
         $this->assertFalse(feature('not-a-feature'));
-        $this->assertSame(['courses' => false, 'tts' => false, 'landing_page' => false], Features::all());
+        $this->assertSame(['courses' => false, 'tts' => false, 'welfare' => false, 'landing_page' => false], Features::all());
 
         $this->get('/_test/courses')->assertNotFound();
         $this->getJson('/api/_test/courses')->assertNotFound()->assertJson(['success' => false]);
@@ -91,7 +91,7 @@ class FeatureFlagsTest extends TestCase
             ->assertExactJson([
                 'status' => 'success',
                 'message' => 'Features loaded successfully.',
-                'data' => ['courses' => false, 'tts' => false, 'landing_page' => false],
+                'data' => ['courses' => false, 'tts' => false, 'welfare' => false, 'landing_page' => false],
                 'card_mode' => 'permanent',
             ]);
 

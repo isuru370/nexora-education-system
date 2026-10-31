@@ -100,7 +100,7 @@ class MonthlyReportService
 
         $rows = collect($data['data'])
             ->map(function (array $row) use ($initials) {
-                $totalDeductions = round($row['advance'] + $row['deduction'] + $row['other'], 2);
+                $totalDeductions = round($row['advance'] + $row['deduction'] + $row['other'] + ($row['welfare'] ?? 0), 2);
 
                 return [
                     'teacher_id' => $row['teacher_id'],
@@ -112,6 +112,7 @@ class MonthlyReportService
                     'advance' => $row['advance'],
                     'deduction' => $row['deduction'],
                     'other' => $row['other'],
+                    'welfare' => $row['welfare'] ?? 0,
 
                     // Old key name kept for the PDF view: all deductions together
                     'advance_deduction' => $totalDeductions,

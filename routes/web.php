@@ -6,6 +6,7 @@ use App\Http\Controllers\Web\ActivityLog\ActivityLogController;
 use App\Http\Controllers\Web\AppSetup\AppSetupController;
 use App\Http\Controllers\Web\PaymentRules\PaymentRulesController;
 use App\Http\Controllers\Web\CardDesigner\CardDesignerController;
+use App\Http\Controllers\Web\Welfare\WelfareController;
 
 use App\Http\Controllers\Web\OrganizerPayment\OrganizerPaymentController;
 
@@ -1315,6 +1316,9 @@ Route::middleware([
 Route::prefix('student-cards')
     ->name('student-cards.')
     ->controller(StudentCardController::class)
+    // card stock (pre-printed permanent cards): permanent-card institutes only.
+    // Temporary-card institutes print the permanent card on Generate Student ID.
+    ->middleware('card.mode:permanent')
     ->group(function () {
 
         // Card inventory
@@ -2675,6 +2679,28 @@ Route::prefix('teacher-salaries')
         Route::get('/{teacher}/{year}/{month}/summary', 'teacherPaymentAndClassSummery')
             ->where(['teacher' => '[0-9]+', 'year' => '[0-9]{4}', 'month' => '[0-9]{1,2}'])
             ->name('payment-summary');
+    });
+
+/*
+|--------------------------------------------------------------------------
+| Teacher Welfare (feature "welfare"): from teacher salaries, per branch fund
+|--------------------------------------------------------------------------
+*/
+
+Route::prefix('welfare')
+    ->name('welfare.')
+    ->controller(WelfareController::class)
+    ->middleware(['auth', 'user.active', 'feature:welfare', 'role:ADMIN,BRANCH_ADMIN'])
+    ->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::put('/amounts', 'saveAmounts')->name('amounts');
+        Route::post('/deduct', 'deduct')->name('deduct');
+        Route::delete('/deductions/{deduction}', 'cancelDeduction')->where('deduction', '[0-9]+')->name('deductions.cancel');
+
+        Route::get('/fund', 'fund')->name('fund');
+        Route::get('/fund/pdf', 'fundPdf')->name('fund.pdf');
+        Route::post('/fund/expenses', 'storeExpense')->name('expenses.store');
+        Route::delete('/fund/expenses/{expense}', 'cancelExpense')->where('expense', '[0-9]+')->name('expenses.cancel');
     });
 
 /*

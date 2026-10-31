@@ -141,7 +141,8 @@
                         number_format(
                             ($summary['total_advance'] ?? 0) +
                             ($summary['total_deduction'] ?? 0) +
-                            ($summary['total_other'] ?? 0),
+                            ($summary['total_other'] ?? 0) +
+                            ($summary['total_welfare'] ?? 0),
                             2
                         )
                     }}
@@ -185,6 +186,9 @@
                         <th class="text-end">Advance</th>
                         <th class="text-end">Deduction</th>
                         <th class="text-end">Other</th>
+                        @feature('welfare')
+                            <th class="text-end">Welfare</th>
+                        @endfeature
                         <th class="text-end">Net Payable</th>
                         <th>Status</th>
                         <th class="text-center">Action</th>
@@ -228,6 +232,12 @@
                             <td class="text-end cell-sub">
                                 {{ number_format($row['other'] ?? 0, 2) }}
                             </td>
+
+                            @feature('welfare')
+                                <td class="text-end cell-sub">
+                                    {{ number_format($row['welfare'] ?? 0, 2) }}
+                                </td>
+                            @endfeature
 
                             {{-- NET PAYABLE --}}
                             <td class="text-end cell-title" style="color: var(--nx-green);">

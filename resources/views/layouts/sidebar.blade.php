@@ -51,8 +51,9 @@
 
             $canStudentImages = $isTeacher;
             // ID cards: App\Support\CardAccess (roles) + CardMode (nexora:card-mode)
-            $canStudentCards = \App\Support\CardAccess::canView();
-            $canTemporaryIdCards = $canStudentCards && \App\Support\CardMode::temporary();
+            $canTemporaryIdCards = \App\Support\CardAccess::canView() && \App\Support\CardMode::temporary();
+            // card stock: permanent-card institutes only
+            $canStudentCards = \App\Support\CardAccess::canView() && \App\Support\CardMode::permanent();
             $canGenerateStudentId = \App\Support\CardAccess::canDownload() && \App\Support\CardMode::temporary();
 
             $canStudentClasses = $isTeacher;
@@ -516,6 +517,24 @@
                         <span>Teacher Salaries</span>
                     </button>
                 </div>
+                @feature('welfare')
+                    <div class="nav-item">
+                        <button type="button"
+                            class="nav-link-custom {{ request()->routeIs('welfare.index') ? 'active' : '' }}"
+                            data-route="welfare.index" data-href="{{ route('welfare.index') }}">
+                            <i class="bi bi-heart-pulse"></i>
+                            <span>Teacher Welfare</span>
+                        </button>
+                    </div>
+                    <div class="nav-item">
+                        <button type="button"
+                            class="nav-link-custom {{ request()->routeIs('welfare.fund*') ? 'active' : '' }}"
+                            data-route="welfare.fund" data-href="{{ route('welfare.fund') }}">
+                            <i class="bi bi-piggy-bank"></i>
+                            <span>Welfare Fund</span>
+                        </button>
+                    </div>
+                @endfeature
             @endif
 
             @if ($canOrganizerPayments)

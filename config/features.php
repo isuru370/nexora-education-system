@@ -35,6 +35,14 @@ return [
         'description' => 'Mobile app speaks the name, subject, grade and "ගෙවා ඇත / ගෙවා නැත" after an attendance scan.',
     ],
 
+    // Admin takes a monthly welfare amount from each teacher's salary (per
+    // branch). It is the branch's welfare fund (not institute income); the
+    // admin records what is paid out of it. Shown on the salary slip.
+    'welfare' => [
+        'name' => 'Teacher welfare',
+        'description' => 'Monthly welfare taken from teacher salaries (per branch), welfare fund and its expenses.',
+    ],
+
     // Only edu.nexorait.lk (the product site). Institutes: "/" goes to login.
     'landing_page' => [
         'name' => 'Landing page',
