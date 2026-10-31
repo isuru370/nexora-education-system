@@ -51,8 +51,9 @@
 
             $canStudentImages = $isTeacher;
             // ID cards: App\Support\CardAccess (roles) + CardMode (nexora:card-mode)
-            $canStudentCards = \App\Support\CardAccess::canView();
-            $canTemporaryIdCards = $canStudentCards && \App\Support\CardMode::temporary();
+            $canTemporaryIdCards = \App\Support\CardAccess::canView() && \App\Support\CardMode::temporary();
+            // card stock: permanent-card institutes only
+            $canStudentCards = \App\Support\CardAccess::canView() && \App\Support\CardMode::permanent();
             $canGenerateStudentId = \App\Support\CardAccess::canDownload() && \App\Support\CardMode::temporary();
 
             $canStudentClasses = $isTeacher;

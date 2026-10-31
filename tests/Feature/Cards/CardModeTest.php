@@ -263,6 +263,26 @@ class CardModeTest extends TestCase
         $this->assertNotSame(403, $this->postJson('/api/re-assign', [])->status());
     }
 
+    public function test_temporary_institutes_have_no_card_stock(): void
+    {
+        CardMode::set('temporary');
+
+        $this->actingAs($this->users['SUPER_ADMIN']);
+        $this->get('/student-cards')->assertRedirect(route('students.index'));
+        $this->get('/dashboard')->assertOk()->assertDontSee('Available Student Cards');
+        $this->get('/students')->assertDontSee(route('student-cards.index'), false);
+
+        Sanctum::actingAs($this->users['BRANCH_ADMIN']);
+        $this->postJson('/api/qr-code', ['card_qr_code' => 'X'])->assertForbidden()->assertJson(['card_mode' => 'temporary']);
+        $this->postJson('/api/re-assign', [])->assertForbidden();
+        $this->postJson('/api/student-card-assignment/search-student', ['code' => 'S1'])->assertForbidden();
+
+        CardMode::set('permanent');
+        $this->actingAs($this->users['SUPER_ADMIN']);
+        $this->get('/student-cards')->assertOk();
+        $this->get('/dashboard')->assertOk()->assertSee('Available Student Cards');
+    }
+
     public function test_app_menus_follow_the_card_mode_and_role(): void
     {
         Sanctum::actingAs($this->users['USER']);
@@ -270,18 +290,20 @@ class CardModeTest extends TestCase
         $features = $this->getJson('/api/mobile-dashboard')->assertOk()->json('data.features');
         $this->assertContains('register_permanent', $features);
         $this->assertNotContains('register_temporary', $features);
-        $this->assertNotContains('reassign_card', $features, 'no Re Assign in permanent mode');
+        $this->assertContains('reassign_card', $features, 'Re Assign uses the card stock (permanent mode)');
         $this->assertNotContains('replace_card', $features, 'cashier cannot replace cards');
         $this->getJson('/api/mobile-dashboard')->assertJsonPath('data.card_mode', 'permanent');
 
-        CardMode::set('temporary');
-
-        $features = $this->getJson('/api/mobile-dashboard')->json('data.features');
-        $this->assertContains('register_temporary', $features);
-        $this->assertContains('reassign_card', $features);
-
         Sanctum::actingAs($this->users['BRANCH_ADMIN']);
         $this->assertContains('replace_card', $this->getJson('/api/mobile-dashboard')->json('data.features'));
+
+        CardMode::set('temporary');
+
+        // no card stock: the permanent card is printed on Generate Student ID
+        $features = $this->getJson('/api/mobile-dashboard')->json('data.features');
+        $this->assertContains('register_temporary', $features);
+        $this->assertNotContains('reassign_card', $features);
+        $this->assertNotContains('replace_card', $features);
 
         $this->getJson('/api/features')->assertOk()->assertJsonPath('card_mode', 'temporary');
         $this->getJson('/api/me')->assertOk()->assertJsonFragment(['card_mode' => 'temporary']);

@@ -121,16 +121,17 @@ Route::middleware([
 ])->group(function () {
 
     // Scan a permanent student card (available / already assigned + history)
+    // Card stock: permanent-card institutes only
     Route::post(
         '/qr-code',
         [StudentCardController::class, 'searchQrcode']
-    )->name('api.card.searchQrcode');
+    )->name('api.card.searchQrcode')->middleware('card.mode:permanent');
 
     // Replace a student's card (lost / damaged / worn out)
     Route::post(
         '/re-assign',
         [StudentCardController::class, 'reAssign']
-    )->name('api.card.reassign')->middleware('role:' . CardAccess::MANAGE_ROLES);
+    )->name('api.card.reassign')->middleware(['role:' . CardAccess::MANAGE_ROLES, 'card.mode:permanent']);
 
 
     /*
@@ -540,6 +541,7 @@ Route::middleware([
 
     Route::prefix('student-card-assignment')
         ->name('api.student-card-assignment.')
+        ->middleware('card.mode:permanent')
         ->group(function () {
 
             Route::post(
