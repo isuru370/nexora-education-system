@@ -47,11 +47,11 @@
         }
 
         /* Header */
-        .head { display: flex; align-items: center; gap: 4mm; border-bottom: 2.5px solid #1d4ed8; padding-bottom: 2mm; }
+        .head { display: flex; align-items: center; justify-content: center; gap: 4mm; border-bottom: 2.5px solid #1d4ed8; padding-bottom: 2mm; }
         .head img { width: 26mm; height: 26mm; object-fit: contain; }
-        .head .inst { flex: 1; }
-        .head .inst-name { font-size: 15pt; font-weight: 800; color: #1e3a8a; line-height: 1.15; }
-        .head .inst-sub { font-size: 8.5pt; color: #475569; margin-top: 1mm; }
+        .head .inst { text-align: center; }
+        .head .inst-name { font-size: 20pt; font-weight: 800; color: #1e3a8a; line-height: 1.15; }
+        .head .inst-sub { font-size: 9.5pt; color: #475569; margin-top: 1mm; }
         .head .photo {
             width: 22mm; height: 26mm; border: 1.2px dashed #64748b; border-radius: 2mm;
             display: flex; align-items: center; justify-content: center; text-align: center;
@@ -137,7 +137,6 @@
                     <div class="inst-sub">{{ collect([$contactMobile, $contactEmail])->filter()->implode('  |  ') }}</div>
                 @endif
             </div>
-            <div class="photo">Paste a recent<br>passport-size<br>photo here<br>(optional)</div>
         </div>
 
         <div class="title-row">
@@ -148,8 +147,8 @@
 
         {{-- ================= IDs (written by the student) ================= --}}
         <div class="ids">
-            <div class="field"><label>Image ID</label><div class="line"></div></div>
             <div class="field"><label>ID Card No. (QR)</label><div class="line"></div></div>
+            <div class="field"><label>Image ID</label><div class="line"></div></div>
         </div>
 
         {{-- ================= Student ================= --}}
