@@ -21,7 +21,7 @@ class GenerateStudentIdService
             $search = $search !== null ? trim($search) : '';
 
             return Student::query()
-                ->with(['branch:id,name,code'])
+                ->with(['branch:id,name,code', 'grade'])
                 ->select([
                     'id',
                     'custom_id',
@@ -33,6 +33,7 @@ class GenerateStudentIdService
                     'branch_id',
                     'img_url',
                     'grade_id',
+                    'mobile',
                     'is_active',
                     'created_at',
                 ])
