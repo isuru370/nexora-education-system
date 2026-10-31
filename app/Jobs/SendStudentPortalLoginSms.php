@@ -34,8 +34,11 @@ class SendStudentPortalLoginSms implements ShouldQueue
         $this->onQueue('sms');
     }
 
-    public function handle(SmsService $smsService): void
+    public function handle(): void
     {
+        // Login / password SMS: NexoraIT account
+        $smsService = SmsService::system();
+
         $appName = config('app.name');
 
         $playStoreLink = "https://play.google.com/apps/internaltest/4700199862235636842";

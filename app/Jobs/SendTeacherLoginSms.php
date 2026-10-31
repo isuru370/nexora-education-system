@@ -34,8 +34,11 @@ class SendTeacherLoginSms implements ShouldQueue
         $this->onQueue('sms');
     }
 
-    public function handle(SmsService $smsService): void
+    public function handle(): void
     {
+        // Login / password SMS: NexoraIT account
+        $smsService = SmsService::system();
+
         $appName = config('app.name');
 
         $message = "{$appName}\n\n"
