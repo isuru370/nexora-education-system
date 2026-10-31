@@ -156,6 +156,9 @@
                         <a href="{{ route('student-card-registration.create') }}" class="nx-btn nx-btn-primary">
                             <i class="bi bi-person-plus-fill"></i> New Registration
                         </a>
+                        <a href="{{ route('student-card-registration.paper-form') }}" target="_blank" rel="noopener" class="nx-btn nx-btn-light">
+                            <i class="bi bi-printer"></i> Registration Form
+                        </a>
                     @endcardmode
                     @cardmode('temporary')
                         <a href="{{ route('student-temporary-registration.create') }}" class="nx-btn nx-btn-primary">

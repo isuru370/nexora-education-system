@@ -1627,6 +1627,15 @@ Route::prefix('student-card-registration')
                 'role:' . CardAccess::ASSIGN_ROLES,
             ]);
 
+        // Blank form to print for parents
+        Route::get('/form', 'paperForm')
+            ->name('paper-form')
+            ->middleware([
+                'auth',
+                'user.active',
+                'role:' . CardAccess::ASSIGN_ROLES,
+            ]);
+
         Route::post('/', 'store')
             ->name('store')
             ->middleware([

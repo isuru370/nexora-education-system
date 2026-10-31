@@ -156,6 +156,11 @@
             </div>
 
             <div class="hero-actions">
+                <a href="{{ route('student-card-registration.paper-form') }}" target="_blank" rel="noopener"
+                    class="btn btn-outline-primary custom-btn">
+                    <i class="bi bi-printer me-1"></i>
+                    Print Registration Form
+                </a>
                 <a href="{{ route('students.index') }}" class="btn btn-outline-secondary custom-btn">
                     <i class="bi bi-arrow-left me-1"></i>
                     Back

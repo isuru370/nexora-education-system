@@ -24,6 +24,16 @@ class StudentCardRegistrationController extends Controller
     }
 
     /**
+     * Blank A4 registration form to print (parents fill it in).
+     */
+    public function paperForm()
+    {
+        return view('student-card-registration.paper-form', [
+            'branches' => \App\Models\Branch::query()->where('is_active', true)->orderBy('id')->get(['id', 'name']),
+        ]);
+    }
+
+    /**
      * Register student using permanent physical ID card.
      */
     public function store(
