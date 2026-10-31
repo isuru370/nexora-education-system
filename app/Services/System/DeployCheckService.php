@@ -145,6 +145,17 @@ class DeployCheckService
             ? $this->warn("MAIL_MAILER={$mailer} - password reset emails will not be sent")
             : $this->ok($mailer);
 
+        $institute = new \App\Services\SmsService();
+        $checks['SMS (institute)'] = $institute->isConfigured()
+            ? $this->ok($institute->provider() . ' / sender ' . $institute->senderId())
+            : $this->warn('SMS_PROVIDER=' . $institute->provider() . ' - set SMS_API_KEY and SMS_SENDER_ID'
+                . ($institute->provider() === 'chatbiz' ? ' (and SMS_USER_ID)' : '') . ' (payment / attendance SMS will not be sent)');
+
+        $system = \App\Services\SmsService::system();
+        $checks['SMS (NexoraIT, logins)'] = $system->channel() === 'system'
+            ? ($system->isConfigured() ? $this->ok('chatbiz / sender ' . $system->senderId()) : $this->warn('Set SMS_SYSTEM_USER_ID, SMS_SYSTEM_API_KEY and SMS_SYSTEM_SENDER_ID'))
+            : $this->warn('SMS_SYSTEM_* not set - login / registration SMS use the institute account');
+
         return $checks;
     }
 

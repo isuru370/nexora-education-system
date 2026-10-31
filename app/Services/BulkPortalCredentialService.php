@@ -12,7 +12,8 @@ class BulkPortalCredentialService
 
     public function __construct(SmsService $smsService)
     {
-        $this->smsService = $smsService;
+        // Parent portal logins: NexoraIT SMS account
+        $this->smsService = SmsService::system();
     }
 
     /**
