@@ -5,6 +5,8 @@
 use App\Http\Controllers\Web\ActivityLog\ActivityLogController;
 use App\Http\Controllers\Web\AppSetup\AppSetupController;
 use App\Http\Controllers\Web\PaymentRules\PaymentRulesController;
+use App\Http\Controllers\Web\CardDesigner\CardDesignerController;
+use App\Http\Controllers\Web\Welfare\WelfareController;
 
 use App\Http\Controllers\Web\OrganizerPayment\OrganizerPaymentController;
 
@@ -1314,6 +1316,9 @@ Route::middleware([
 Route::prefix('student-cards')
     ->name('student-cards.')
     ->controller(StudentCardController::class)
+    // card stock (pre-printed permanent cards): permanent-card institutes only.
+    // Temporary-card institutes print the permanent card on Generate Student ID.
+    ->middleware('card.mode:permanent')
     ->group(function () {
 
         // Card inventory
@@ -2678,6 +2683,28 @@ Route::prefix('teacher-salaries')
 
 /*
 |--------------------------------------------------------------------------
+| Teacher Welfare (feature "welfare"): from teacher salaries, per branch fund
+|--------------------------------------------------------------------------
+*/
+
+Route::prefix('welfare')
+    ->name('welfare.')
+    ->controller(WelfareController::class)
+    ->middleware(['auth', 'user.active', 'feature:welfare', 'role:ADMIN,BRANCH_ADMIN'])
+    ->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::put('/amounts', 'saveAmounts')->name('amounts');
+        Route::post('/deduct', 'deduct')->name('deduct');
+        Route::delete('/deductions/{deduction}', 'cancelDeduction')->where('deduction', '[0-9]+')->name('deductions.cancel');
+
+        Route::get('/fund', 'fund')->name('fund');
+        Route::get('/fund/pdf', 'fundPdf')->name('fund.pdf');
+        Route::post('/fund/expenses', 'storeExpense')->name('expenses.store');
+        Route::delete('/fund/expenses/{expense}', 'cancelExpense')->where('expense', '[0-9]+')->name('expenses.cancel');
+    });
+
+/*
+|--------------------------------------------------------------------------
 | Monthly Reports
 |--------------------------------------------------------------------------
 | {basis}: fee-month = by payments.payment_month
@@ -2921,4 +2948,20 @@ Route::prefix('payment-rules')
     ->group(function () {
         Route::get('/', 'index')->name('index');
         Route::put('/', 'update')->name('update');
+    });
+
+/*
+|--------------------------------------------------------------------------
+| Card Designer (Super Admin): ID card layouts of this institute
+|--------------------------------------------------------------------------
+*/
+
+Route::prefix('card-designer')
+    ->name('card-designer.')
+    ->middleware(['auth', 'user.active', 'role:SUPER_ADMIN'])
+    ->controller(CardDesignerController::class)
+    ->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::put('/{type}', 'update')->name('update');
+        Route::delete('/{type}', 'reset')->name('reset');
     });

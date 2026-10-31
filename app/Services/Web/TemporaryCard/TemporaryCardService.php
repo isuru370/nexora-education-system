@@ -4,7 +4,7 @@ namespace App\Services\Web\TemporaryCard;
 
 use App\Models\Student;
 use App\Models\TemporaryIdCard;
-use Barryvdh\Snappy\Facades\SnappyPdf as Pdf;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Support\Facades\DB;
 use RuntimeException;
 
@@ -382,21 +382,13 @@ class TemporaryCardService
             ];
         });
 
-        $pdf = Pdf::loadView('temporary-id-cards.pdf', [
+        // dompdf (wkhtmltopdf is not installed on the servers)
+        $pdf = Pdf::loadView('temporary_id_cards.pdf', [
             'codes' => $codes,
         ])
             ->setPaper('a4', 'landscape')
-            ->setOption('encoding', 'UTF-8')
-            ->setOption('enable-local-file-access', true)
-            ->setOption('print-media-type', true)
-            ->setOption('background', true)
-            ->setOption('disable-smart-shrinking', true)
             ->setOption('dpi', 300)
-            ->setOption('zoom', 1)
-            ->setOption('margin-top', 0)
-            ->setOption('margin-right', 0)
-            ->setOption('margin-bottom', 0)
-            ->setOption('margin-left', 0);
+            ->setOption('isRemoteEnabled', false);
 
         // Update status to downloaded
         TemporaryIdCard::whereIn('id', $cards->pluck('id'))

@@ -30,14 +30,28 @@ return [
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
 
+    // The institute's own SMS account: payment, attendance, schedule, reminders.
+    // SMS_PROVIDER = chatbiz (SMS_USER_ID + SMS_API_KEY) or sendlk (SMS_API_KEY = API token).
     'sms' => [
-        'base_url' => env('SMS_BASE_URL', 'https://smssender.chatbiz.net/v1'),
+        'provider' => env('SMS_PROVIDER', 'chatbiz'),
+        'base_url' => env('SMS_BASE_URL'),
         'user_id' => env('SMS_USER_ID'),
         'api_key' => env('SMS_API_KEY'),
         'sender_id' => env('SMS_SENDER_ID'),
 
         // One SMS to the parent on registration (admission + portal login)
         'registration_sms' => env('SMS_ON_REGISTRATION', true),
+    ],
+
+    // NexoraIT's ChatBiz account (same on every institute): login / password SMS
+    // (student registration + parent portal login, teacher and staff logins).
+    // Empty SMS_SYSTEM_API_KEY = the institute account above is used.
+    'sms_system' => [
+        'provider' => 'chatbiz',
+        'base_url' => env('SMS_SYSTEM_BASE_URL'),
+        'user_id' => env('SMS_SYSTEM_USER_ID'),
+        'api_key' => env('SMS_SYSTEM_API_KEY'),
+        'sender_id' => env('SMS_SYSTEM_SENDER_ID'),
     ],
 
     // ✅ Add this block for image URLs
