@@ -49,7 +49,22 @@ class SmsProvidersTest extends TestCase
             && $r->hasHeader('Authorization', 'Bearer 7|institute-token')
             && $r['recipient'] === '94771234567'
             && $r['sender_id'] === 'SUCCESSACA'
+            && $r['type'] === 'plain'
             && $r['message'] === 'Hello');
+    }
+
+    public function test_sendlk_sinhala_is_unicode_and_field_errors_are_shown(): void
+    {
+        Http::fake(['sms.send.lk/*' => Http::response([
+            'message' => 'The given data was invalid.',
+            'errors' => ['sender_id' => ['The selected sender id is invalid.']],
+        ], 422)]);
+
+        $result = app(SmsService::class)->sendSms('0771234567', 'ගෙවා ඇත');
+
+        $this->assertFalse($result['success']);
+        $this->assertSame('The given data was invalid. (sender_id: The selected sender id is invalid.)', $result['error']);
+        Http::assertSent(fn (Request $r) => $r['type'] === 'unicode');
     }
 
     public function test_sendlk_error_message_is_kept(): void
