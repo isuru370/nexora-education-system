@@ -63,20 +63,20 @@
         .hint { font-size: 8.3pt; color: #475569; margin: 0 0 1mm; }
 
         /* Sections */
-        .section { margin-top: 1.6mm; border: 1px solid #cbd5e1; border-radius: 2mm; overflow: hidden; break-inside: avoid; }
+        .section { margin-top: 2.6mm; border: 1px solid #cbd5e1; border-radius: 2mm; overflow: hidden; break-inside: avoid; }
         .section-title {
             background: #1e3a8a; color: #fff; font-weight: 700; font-size: 9.5pt;
             padding: 1.1mm 3mm; letter-spacing: .3px;
         }
         .section-body { padding: .6mm 3mm 1.6mm; }
         .row { display: flex; gap: 4mm; }
-        .field { flex: 1; margin-top: 1mm; min-width: 0; }
+        .field { flex: 1; margin-top: 1.8mm; min-width: 0; }
         .field label { display: block; font-size: 7.8pt; font-weight: 700; color: #334155; margin-bottom: .6mm; }
         .field label .req { color: #dc2626; }
         .field label .opt { font-weight: 400; color: #64748b; }
-        .line { border-bottom: 1px solid #475569; height: 5mm; }
+        .line { border-bottom: 1px solid #475569; height: 6.2mm; }
         .boxes { display: flex; gap: 0; }
-        .boxes span { width: 5.2mm; height: 5.6mm; border: 1px solid #475569; border-left-width: 0; }
+        .boxes span { width: 5.6mm; height: 6.4mm; border: 1px solid #475569; border-left-width: 0; }
         .boxes span:first-child { border-left-width: 1px; }
         .boxes .gap { border: 0; width: 2mm; }
         .ticks { display: flex; gap: 5mm; flex-wrap: wrap; padding-top: 1mm; font-size: 9.5pt; }
@@ -89,14 +89,18 @@
         table.classes { width: 100%; border-collapse: collapse; margin-top: 2mm; }
         table.classes th, table.classes td { border: 1px solid #94a3b8; padding: .8mm 2mm; text-align: left; }
         table.classes th { background: #f1f5f9; font-size: 8.3pt; }
-        table.classes td { height: 5.6mm; padding-top: 0; padding-bottom: 0; }
+        table.classes td { height: 6.6mm; padding-top: 0; padding-bottom: 0; }
 
-        .declaration { font-size: 8.8pt; line-height: 1.45; color: #1e293b; }
-        .sign-row { display: flex; gap: 8mm; margin-top: 4.5mm; }
-        .sign-row div { flex: 1; text-align: center; font-size: 8.3pt; color: #334155; border-top: 1px dotted #334155; padding-top: 1mm; }
 
-        .office { background: #f8fafc; border-style: dashed; }
-        .office .section-title { background: #475569; }
+        .ids {
+            display: flex; gap: 6mm; margin-top: 1.5mm; padding: .5mm 3mm 2mm;
+            border: 1.5px solid #1e3a8a; border-radius: 2mm; background: #eff6ff;
+        }
+        .ids .line { height: 6mm; }
+        .office-ticks {
+            margin-top: 3mm; padding: 2mm 3mm; gap: 5mm; font-size: 9.5pt;
+            border: 1px dashed #94a3b8; border-radius: 2mm; background: #f8fafc;
+        }
 
         .foot { margin-top: 2mm; font-size: 7.8pt; color: #64748b; text-align: center; }
 
@@ -142,6 +146,12 @@
         </div>
         <p class="hint">Please write clearly in CAPITAL letters. Fields marked <strong style="color:#dc2626">*</strong> are required.</p>
 
+        {{-- ================= IDs (written by the student) ================= --}}
+        <div class="ids">
+            <div class="field"><label>Image ID</label><div class="line"></div></div>
+            <div class="field"><label>ID Card No. (QR)</label><div class="line"></div></div>
+        </div>
+
         {{-- ================= Student ================= --}}
         <div class="section">
             <div class="section-title">1. STUDENT DETAILS</div>
@@ -166,19 +176,13 @@
                         <div class="boxes"><span></span><span></span><i class="gap"></i><span></span><span></span><i class="gap"></i><span></span><span></span><span></span><span></span></div>
                     </div>
                     <div class="field">
-                        <label>Student NIC <span class="opt">(if any)</span></label>
-                        <div class="boxes">@for ($i = 0; $i < 12; $i++)<span></span>@endfor</div>
-                    </div>
-                </div>
-                <div class="row">
-                    <div class="field w-2">
-                        <label>School</label>
-                        <div class="line"></div>
-                    </div>
-                    <div class="field">
                         <label>Grade <span class="req">*</span></label>
                         <div class="line"></div>
                     </div>
+                </div>
+                <div class="field">
+                    <label>School</label>
+                    <div class="line"></div>
                 </div>
                 <div class="row">
                     <div class="field w-auto">
@@ -229,15 +233,9 @@
                     <div class="field"><label>First Name</label><div class="line"></div></div>
                     <div class="field"><label>Last Name</label><div class="line"></div></div>
                 </div>
-                <div class="row">
-                    <div class="field w-auto">
-                        <label>Parent / Guardian Mobile <span class="req">*</span> <span class="opt">(SMS &amp; Parent Portal login)</span></label>
-                        <div class="boxes">@for ($i = 0; $i < 10; $i++)<span></span>@endfor</div>
-                    </div>
-                    <div class="field">
-                        <label>Parent / Guardian NIC</label>
-                        <div class="boxes">@for ($i = 0; $i < 12; $i++)<span></span>@endfor</div>
-                    </div>
+                <div class="field">
+                    <label>Parent / Guardian Mobile <span class="req">*</span> <span class="opt">(SMS &amp; Parent Portal login)</span></label>
+                    <div class="boxes">@for ($i = 0; $i < 10; $i++)<span></span>@endfor</div>
                 </div>
             </div>
         </div>
@@ -259,38 +257,10 @@
             </div>
         </div>
 
-        {{-- ================= Declaration ================= --}}
-        <div class="section">
-            <div class="section-title">4. DECLARATION</div>
-            <div class="section-body">
-                <p class="declaration" style="margin:2mm 0 0">
-                    I confirm that the details above are correct. I agree to follow the rules of {{ $institute }},
-                    to pay the class fees on time, and that the student ID card must be shown for attendance and
-                    payments. A lost card is replaced for a fee.
-                </p>
-                <div class="sign-row">
-                    <div>Student's Signature</div>
-                    <div>Parent / Guardian's Signature</div>
-                    <div>Date</div>
-                </div>
-            </div>
-        </div>
-
-        {{-- ================= Office use ================= --}}
-        <div class="section office">
-            <div class="section-title">FOR OFFICE USE ONLY</div>
-            <div class="section-body">
-                <div class="row">
-                    <div class="field"><label>Student ID</label><div class="line"></div></div>
-                    <div class="field"><label>ID Card No. (QR)</label><div class="line"></div></div>
-                    <div class="field"><label>Receipt No.</label><div class="line"></div></div>
-                    <div class="field"><label>Registered By / Date</label><div class="line"></div></div>
-                </div>
-                <div class="ticks" style="margin-top:2mm;gap:4mm;font-size:9pt">
-                    <span>Admission paid Rs. ________</span><span>Not paid</span>
-                    <span>Photo taken</span><span>Card given</span><span>Entered in system</span>
-                </div>
-            </div>
+        {{-- ================= Office ticks (bottom) ================= --}}
+        <div class="ticks office-ticks">
+            <span>Admission paid Rs. ________</span><span>Not paid</span>
+            <span>Photo taken</span><span>Card given</span><span>Entered in system</span>
         </div>
 
         <div class="foot">{{ $institute }} &middot; Student Registration Form</div>

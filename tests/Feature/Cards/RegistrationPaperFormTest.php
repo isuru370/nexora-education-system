@@ -28,7 +28,11 @@ class RegistrationPaperFormTest extends TestCase
             ->assertSee('STUDENT REGISTRATION FORM')
             ->assertSee('Success Academy')
             ->assertSee('Parent / Guardian Mobile')
-            ->assertSee('FOR OFFICE USE ONLY');
+            ->assertSee('Image ID')
+            ->assertSee('ID Card No. (QR)')
+            ->assertSee('School')
+            ->assertDontSee('NIC')
+            ->assertDontSee('DECLARATION');
 
         $this->actingAs($this->inst['cashier'])->get('/student-card-registration')
             ->assertSee(route('student-card-registration.paper-form'), false);
