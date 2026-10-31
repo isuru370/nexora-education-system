@@ -189,6 +189,8 @@ class SmsService
                 $response = $this->sendLk()->asForm()->timeout($timeout)->post("{$this->baseUrl}/sms/send", [
                     'recipient' => implode(',', $numbers),
                     'sender_id' => $this->senderId,
+                    // Required by send.lk: plain = English, unicode = Sinhala / Tamil
+                    'type' => preg_match('/[^\x00-\x7F]/', $message) ? 'unicode' : 'plain',
                     'message' => $message,
                 ]);
 
@@ -237,8 +239,23 @@ class SmsService
             $messageId,
             $response->body(),
             $body,
-            $success ? null : (string) ($body['message'] ?? ($response->status() === 401 ? 'Invalid send.lk API token.' : 'SMS sending failed.'))
+            $success ? null : $this->sendLkError($response, $body)
         );
+    }
+
+    /** "The given data was invalid." + the field errors (e.g. "sender_id: ...") */
+    protected function sendLkError(Response $response, array $body): string
+    {
+        if ($response->status() === 401) {
+            return 'Invalid send.lk API token.';
+        }
+
+        $message = (string) ($body['message'] ?? 'SMS sending failed.');
+        $errors = collect(is_array($body['errors'] ?? null) ? $body['errors'] : [])
+            ->map(fn ($items, $field) => $field . ': ' . (is_array($items) ? implode(' ', $items) : $items))
+            ->implode('; ');
+
+        return $errors !== '' ? $message . ' (' . $errors . ')' : $message;
     }
 
     /** send.lk balance "data" can be a number, a string or an object */
