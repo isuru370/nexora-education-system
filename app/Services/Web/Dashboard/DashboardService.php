@@ -69,7 +69,9 @@ class DashboardService
                 'monthlyIncome' => $monthlyIncome,
 
                 'availableStudentCardCount' => $availableStudentCardCount,
-                'showStudentCardWarning' => $availableStudentCardCount < self::LOW_CARD_THRESHOLD,
+                // card stock is used only by permanent-card institutes
+                'showStudentCardWarning' => \App\Support\CardMode::permanent()
+                    && $availableStudentCardCount < self::LOW_CARD_THRESHOLD,
 
                 'incompleteRegistrationCount' => $this->getIncompleteRegistrationCount(),
                 'incompleteRegistrations' => $this->getIncompleteRegistrations(),

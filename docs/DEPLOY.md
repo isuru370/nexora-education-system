@@ -96,7 +96,10 @@ php artisan nexora:card-mode permanent    # register with a permanent ID card st
 php artisan nexora:card-mode temporary    # register with a temporary card (TMP001...), permanent card later (Re Assign Student)
 ```
 
-There is no web page for it. Permanent mode hides Temporary Registration, Temporary Cards and Re Assign Student (web and app); temporary mode hides the direct permanent registration. Attendance and payment scanning accept both kinds of ID in either mode.
+There is no web page for it.
+
+- **Permanent** mode: registration with a pre-printed card from the card stock (**Student Cards**). Re Assign Student and replacing a lost / damaged card use the same stock. Temporary Registration, Temporary Cards and Generate Student ID are hidden.
+- **Temporary** mode: registration with a TMP card; the permanent card is printed later on **Generate Student ID** (QR = student ID). There is no card stock: Student Cards, Re Assign Student and card replacement are hidden (web and app), and the direct permanent registration too. Attendance and payment scanning accept both kinds of ID in either mode.
 
 Who can do what with ID cards (`App\Support\CardAccess`): generate = Super Admin; download / print and replace / lost / damaged / deactivate = Super Admin, Admin, Branch Admin; assign (registration, Re Assign Student) and view = also Cashier; teachers have no access.
 
