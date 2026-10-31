@@ -5,6 +5,7 @@
 use App\Http\Controllers\Web\ActivityLog\ActivityLogController;
 use App\Http\Controllers\Web\AppSetup\AppSetupController;
 use App\Http\Controllers\Web\PaymentRules\PaymentRulesController;
+use App\Http\Controllers\Web\CardDesigner\CardDesignerController;
 
 use App\Http\Controllers\Web\OrganizerPayment\OrganizerPaymentController;
 
@@ -2921,4 +2922,20 @@ Route::prefix('payment-rules')
     ->group(function () {
         Route::get('/', 'index')->name('index');
         Route::put('/', 'update')->name('update');
+    });
+
+/*
+|--------------------------------------------------------------------------
+| Card Designer (Super Admin): ID card layouts of this institute
+|--------------------------------------------------------------------------
+*/
+
+Route::prefix('card-designer')
+    ->name('card-designer.')
+    ->middleware(['auth', 'user.active', 'role:SUPER_ADMIN'])
+    ->controller(CardDesignerController::class)
+    ->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::put('/{type}', 'update')->name('update');
+        Route::delete('/{type}', 'reset')->name('reset');
     });

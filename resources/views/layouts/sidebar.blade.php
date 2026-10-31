@@ -340,6 +340,14 @@
                             <span>Payment &amp; Attendance Rules</span>
                         </button>
                     </div>
+                    <div class="nav-item">
+                        <button type="button"
+                            class="nav-link-custom {{ request()->routeIs('card-designer.*') ? 'active' : '' }}"
+                            data-route="card-designer.index" data-href="{{ route('card-designer.index') }}">
+                            <i class="bi bi-person-badge"></i>
+                            <span>ID Card Designer</span>
+                        </button>
+                    </div>
                 @endif
                 <div class="nav-item">
                     <button type="button"

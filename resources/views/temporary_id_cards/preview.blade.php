@@ -141,109 +141,11 @@
     }
 
     /* =========================
-        ID CARD
+        ID CARD (layout: Card Designer)
     ========================== */
-    .id-card {
-        width: 9cm;
-        height: 5.05cm;
-        position: relative;
-        overflow: hidden;
-        border-radius: 18px;
-        background: url('{{ asset('storage/id/temporary.png') }}') center/cover no-repeat;
+    .cards-grid .nx-id-card {
         margin: auto;
         box-shadow: 0 5px 20px rgba(0, 0, 0, .12);
-    }
-
-    .logo-section {
-        position: absolute;
-        top: 1.08cm;
-        left: .38cm;
-        z-index: 2;
-    }
-
-    .logo-img {
-        position: absolute;
-        left: 0.05cm;
-        top: 0.05cm;
-        width: 2cm;
-        height: 2cm;
-        object-fit: contain;
-        display: block;
-    }
-
-    .institute-name {
-        position: absolute;
-        left: 2.00cm;
-        top: .55cm;
-        line-height: 1.2;
-        width: 3.8cm;
-    }
-
-    .institute-name .title {
-        font-size: 0.50cm;
-        font-weight: 800;
-        color: #08348f;
-        letter-spacing: .01cm;
-        white-space: nowrap;
-    }
-
-    .institute-name .sub {
-        font-size: .28cm;
-        font-weight: 800;
-        color: #38a51e;
-        letter-spacing: .03cm;
-        margin-top: .05cm;
-        white-space: nowrap;
-    }
-
-    .institute-name .name-line {
-        width: 2.55cm;
-        height: .06cm;
-        border-radius: 999px;
-        background: linear-gradient(90deg, #79d11a 0%, #38a51e 50%, #0fa7b8 100%);
-        margin-top: .10cm;
-        box-shadow: 0 1px 4px rgba(56, 165, 30, .25);
-    }
-
-    .qr-wrapper {
-        position: absolute;
-        top: 1.10cm;
-        right: .60cm;
-        width: 2.45cm;
-        height: 2.45cm;
-        border-radius: .22cm;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        overflow: hidden;
-        box-sizing: border-box;
-        z-index: 2;
-        background: transparent;
-        border: none;
-    }
-
-    .qr-wrapper img {
-        width: 88%;
-        height: 88%;
-        object-fit: contain;
-        display: block;
-    }
-
-    .tmp-code {
-        position: absolute;
-        right: .30cm;
-        bottom: .61cm;
-        width: 3.10cm;
-        height: .70cm;
-        border-radius: .18cm;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        color: #ffffff;
-        font-size: .40cm;
-        font-weight: 800;
-        letter-spacing: .02cm;
-        z-index: 2;
     }
 
     .page-footer {
@@ -302,6 +204,10 @@
             background: #fff;
         }
 
+        .cards-grid .nx-id-card {
+            box-shadow: none;
+        }
+
         .a4-page {
             box-shadow: none;
             margin: 0;
@@ -325,10 +231,8 @@
             grid-template-columns: repeat(2, 1fr);
         }
 
-        .id-card {
-            width: 100%;
-            height: auto;
-            aspect-ratio: 9 / 5.05;
+        .preview-wrapper {
+            overflow-x: auto;
         }
     }
 
@@ -490,31 +394,17 @@
         <div class="preview-wrapper">
             @if (isset($codes) && $codes->count())
 
+                @php($cardDesign = \App\Support\CardDesign::get(\App\Support\CardDesign::TEMPORARY))
                 @foreach ($codes->chunk(12) as $pageIndex => $pageCodes)
                     <div class="a4-page">
                         <div class="cards-grid">
                             @foreach ($pageCodes as $item)
-                                <div class="id-card">
-                                    <div class="logo-section">
-                                        <img src="{{ asset('storage/logo/logo.png') }}"
-                                             class="logo-img"
-                                             alt="Logo">
-
-                                        <div class="institute-name">
-                                            <div class="title">MIHISARA</div>
-                                            <div class="sub">EDUCATION CENTRE</div>
-                                            <div class="name-line"></div>
-                                        </div>
-                                    </div>
-
-                                    <div class="qr-wrapper">
-                                        <img src="{{ $item['qr_base64'] }}" alt="QR Code">
-                                    </div>
-
-                                    <div class="tmp-code">
-                                        {{ $item['code'] }}
-                                    </div>
-                                </div>
+                                @include('id-cards.card', [
+                                    'card' => \App\Support\CardDesign::card(\App\Support\CardDesign::TEMPORARY, [
+                                        'code'   => $item['code'],
+                                        'qr_src' => $item['qr_base64'],
+                                    ], false, $cardDesign),
+                                ])
                             @endforeach
                         </div>
 
