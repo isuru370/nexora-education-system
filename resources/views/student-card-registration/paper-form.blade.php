@@ -181,7 +181,7 @@
                     </div>
                 </div>
                 <div class="field">
-                    <label>School <span class="req">*</span></label>
+                    <label>School <span class="opt">(optional)</span></label>
                     <div class="line"></div>
                 </div>
                 <div class="row">
