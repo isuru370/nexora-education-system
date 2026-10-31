@@ -2,7 +2,7 @@
 
 namespace App\Services\Notification;
 
-use App\Jobs\SendPaymentSms;
+use App\Jobs\SendSystemSms;
 use App\Models\AdmissionPayment;
 use App\Models\NotificationSetting;
 use App\Models\Student;
@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Log;
 use Throwable;
 
 /**
- * One SMS to the parent when a student is registered:
+ * One SMS to the parent when a student is registered (NexoraIT SMS account):
  * admission fee (paid amount or NOT PAID) + parent portal login.
  *
  * On / off: Settings > Notifications > Student registration (always SMS).
@@ -40,7 +40,7 @@ class RegistrationSmsService
         // An SMS problem must never fail the registration.
         DB::afterCommit(function () use ($mobile, $message, $student) {
             try {
-                SendPaymentSms::dispatch($mobile, $message);
+                SendSystemSms::dispatch($mobile, $message);
             } catch (Throwable $e) {
                 Log::warning('Registration SMS not sent', [
                     'student_id' => $student->id,

@@ -30,8 +30,11 @@ class SendLoginDetailsSms implements ShouldQueue
         $this->onQueue('sms');
     }
 
-    public function handle(SmsService $smsService): void
+    public function handle(): void
     {
+        // Login / password SMS: NexoraIT account
+        $smsService = SmsService::system();
+
         $response = $smsService->sendSms($this->mobile, $this->message);
 
         if (!($response['success'] ?? false)) {

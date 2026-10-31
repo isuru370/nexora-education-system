@@ -100,6 +100,21 @@ There is no web page for it. Permanent mode hides Temporary Registration, Tempor
 
 Who can do what with ID cards (`App\Support\CardAccess`): generate = Super Admin; download / print and replace / lost / damaged / deactivate = Super Admin, Admin, Branch Admin; assign (registration, Re Assign Student) and view = also Cashier; teachers have no access.
 
+### SMS (two accounts)
+
+| Account | `.env` | Used for |
+|---|---|---|
+| Institute | `SMS_PROVIDER` = `chatbiz` (`SMS_USER_ID`, `SMS_API_KEY`, `SMS_SENDER_ID`) or `sendlk` (`SMS_API_KEY` = send.lk API token, `SMS_SENDER_ID`) | Payment, attendance, class schedule, payment reminders |
+| NexoraIT (ChatBiz) | `SMS_SYSTEM_USER_ID`, `SMS_SYSTEM_API_KEY`, `SMS_SYSTEM_SENDER_ID` (same on every institute) | Student registration (parent portal login), parent portal password, teacher and staff logins |
+
+`SMS_SYSTEM_*` empty = those SMS use the institute account. Check both (balance) and send a test:
+
+```bash
+php artisan nexora:sms-test
+php artisan nexora:sms-test 0771234567            # institute account
+php artisan nexora:sms-test 0771234567 --system   # NexoraIT account
+```
+
 ### Never on a live server
 
 `php artisan migrate:fresh` — deletes every table and all data.
