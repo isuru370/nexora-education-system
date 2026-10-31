@@ -50,6 +50,7 @@ class SmsProvidersTest extends TestCase
             && $r['recipient'] === '94771234567'
             && $r['sender_id'] === 'SUCCESSACA'
             && $r['type'] === 'plain'
+            && $r->isJson()
             && $r['message'] === 'Hello');
     }
 
