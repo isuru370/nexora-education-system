@@ -3,350 +3,42 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ID Card Print - {{ $studentIdCard->card_no ?? 'N/A' }}</title>
-
+    <title>ID Card - {{ $student->custom_id ?? '' }}</title>
     <style>
-        @font-face {
-            font-family: 'Monbaiti';
-            src: url('{{ asset('fonts/monbaiti.ttf') }}') format('truetype');
-            font-weight: normal;
-            font-style: normal;
-            font-display: swap;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html,
-        body {
-            margin: 0;
-            padding: 0;
-            background: #dde6f0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            font-family: Arial, Helvetica, sans-serif;
-        }
-
-        /* ==================================================
-           CR80 Card: 85.725mm × 53.975mm
-        ================================================== */
-        .student-id-card {
-            width: 85.725mm;
-            height: 53.975mm;
-            border-radius: 3mm;
-            position: relative;
-            overflow: hidden;
-            background: #f5ede8;
-            box-shadow: 0 3mm 8mm rgba(2, 6, 23, 0.18);
-            font-family: 'Monbaiti', Arial, Helvetica, sans-serif;
-        }
-
-        /* ==================================================
-           Full-bleed background image
-        ================================================== */
-        .card-bg {
-            position: absolute;
-            inset: 0;
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            z-index: 0;
-        }
-
-        /* ==================================================
-           Content wrapper
-        ================================================== */
-        .card-content {
-            position: relative;
-            z-index: 2;
-            display: flex;
-            flex-direction: row;
-            width: 100%;
-            height: 100%;
-            padding: 3mm;
-        }
-
-        /* ==================================================
-           Left section (70%)
-        ================================================== */
-        .card-left {
-            width: 70%;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-        }
-
-        /* ==================================================
-           Right section (30%)
-        ================================================== */
-        .card-right {
-            width: 30%;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
-        /* ==================================================
-           Profile photo
-        ================================================== */
-        .id-card-profile-box {
-            width: 18mm;
-            height: 22mm;
-            border: 0.3mm solid rgba(255, 255, 255, 0.3);
-            border-radius: 2mm;
-            overflow: hidden;
-            background: #c8d4e0;
-            box-shadow: 0 0.5mm 2mm rgba(0, 0, 0, 0.15);
-        }
-
-        .id-card-profile-box img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
-
-        /* ==================================================
-           Student details
-        ================================================== */
-        .student-details {
-            margin-left: 1mm;
-            margin-top: 3mm;
-            text-align: left;
-        }
-
-        .id-card-student-id {
-            font-family: 'Monbaiti', Arial, Helvetica, sans-serif;
-            font-size: 4.5mm;
-            font-weight: 900;
-            line-height: 1.1;
-            color: #03050a;
-            letter-spacing: 0.3mm;
-        }
-
-        .id-card-student-name {
-            font-family: 'Monbaiti', Arial, Helvetica, sans-serif;
-            font-size: 4mm;
-            font-weight: 600;
-            line-height: 1.2;
-            color: #03050a;
-            margin-top: 1mm;
-        }
-
-        .id-card-address {
-            font-family: Arial, Helvetica, sans-serif;
-            font-size: 2.8mm;
-            line-height: 1.2;
-            color: #03050a;
-            margin-top: 1mm;
-            max-width: 45mm;
-            overflow: hidden;
-            display: -webkit-box;
-            -webkit-line-clamp: 2;
-            -webkit-box-orient: vertical;
-            word-wrap: break-word;
-        }
-
-        /* ==================================================
-           QR Code
-        ================================================== */
-        .id-card-qr-img {
-            width: 18mm;
-            height: 18mm;
-            background: #fff;
-            padding: 1mm;
-            border-radius: 1.5mm;
-            box-shadow: 0 0.5mm 2mm rgba(0, 0, 0, 0.14);
-            margin-top: 1mm;
-        }
-
-        /* ==================================================
-           Logo
-        ================================================== */
-        .id-card-logo {
-            width: 22mm;
-            margin-top: auto;
-            margin-bottom: 1mm;
-        }
-
-        /* ==================================================
-           Institution header (optional)
-        ================================================== */
-        .card-header {
-            position: absolute;
-            top: 2.5mm;
-            left: 0;
-            right: 0;
-            text-align: center;
-            z-index: 3;
-            pointer-events: none;
-        }
-
-        .card-inst-name {
-            font-size: 3.8mm;
-            font-weight: 900;
-            letter-spacing: 0.15mm;
-            line-height: 1.1;
-            background: linear-gradient(90deg, #0f2d7a 0%, #1d4ed8 50%, #38bdf8 100%);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-
-        .card-inst-sub {
-            font-size: 2.5mm;
-            font-weight: 800;
-            letter-spacing: 1mm;
-            margin-top: 0.8mm;
-            text-transform: uppercase;
-            background: linear-gradient(90deg, #0f2d7a 0%, #1d4ed8 50%, #38bdf8 100%);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-
-        /* ==================================================
-           Print styles - exact physical CR80
-        ================================================== */
+        html, body { margin: 0; padding: 0; background: #dde6f0; }
+        body { display: flex; justify-content: center; align-items: center; min-height: 100vh; }
         @media print {
-
-            @page {
-                size: 85.725mm 53.975mm;
-                margin: 0;
-            }
-
-            html,
-            body {
-                background: #fff !important;
-                margin: 0 !important;
-                padding: 0 !important;
-                width: 85.725mm !important;
-                height: 53.975mm !important;
-                min-height: auto !important;
-                display: block !important;
-            }
-
-            .student-id-card {
-                box-shadow: none !important;
-                margin: 0 !important;
-                border-radius: 0 !important;
-                width: 85.725mm !important;
-                height: 53.975mm !important;
-                break-inside: avoid;
-                page-break-inside: avoid;
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
-            }
-
-            .card-bg,
-            .id-card-profile-box img,
-            .id-card-qr-img,
-            .id-card-logo {
-                -webkit-print-color-adjust: exact !important;
-                print-color-adjust: exact !important;
-            }
+            @page { size: 85.6mm 54mm; margin: 0; }
+            html, body { background: #fff; min-height: auto; display: block; }
+            * { -webkit-print-color-adjust: exact !important; print-color-adjust: exact !important; }
         }
     </style>
 </head>
 
 <body>
     @php
-        // ==================== STUDENT ====================
-        $student = $studentIdCard->student;
-
-        // ==================== ADDRESS ====================
-        $address = collect([$student?->address1, $student?->address2, $student?->address3])
-            ->filter()
-            ->implode(', ');
-
-        // ==================== STUDENT KEY ====================
-        $studentKey = $student?->custom_id ?? ($studentIdCard->card_no ?? $studentIdCard->id);
-
-        // ==================== IMAGE ====================
-        $defaultImage = asset('storage/logo/black_logo3.png');
-        $studentImage = $student?->img_url ?: $defaultImage;
-
-        if ($studentImage && !str_starts_with($studentImage, 'http')) {
-            $studentImage = ltrim($studentImage, '/');
-
-            if (str_starts_with($studentImage, 'storage/')) {
-                $studentImage = asset($studentImage);
-            } elseif (str_starts_with($studentImage, 'uploads/')) {
-                $studentImage = asset($studentImage);
-            } else {
-                $studentImage = asset('storage/' . $studentImage);
-            }
+        $photo = $student->img_url ?? null;
+        if ($photo && !str_starts_with($photo, 'http')) {
+            $photo = ltrim($photo, '/');
+            $photo = str_starts_with($photo, 'storage/') || str_starts_with($photo, 'uploads/')
+                ? asset($photo)
+                : asset('storage/' . $photo);
         }
 
-        // ==================== QR ====================
-        $qrData = $student?->custom_id ?? ($studentIdCard->card_no ?? 'N/A');
-
-        $qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=600x600&data=' . urlencode($qrData);
+        $card = \App\Support\CardDesign::card(\App\Support\CardDesign::PERMANENT, [
+            'student_id' => $student->custom_id ?? '',
+            'name'       => $student->initial_name ?? '',
+            'branch'     => $student->branch?->name ?? '',
+            'address'    => collect([$student->address1, $student->address2, $student->address3])->filter()->implode(', '),
+            'grade'      => $student->grade?->grade_name ?? '',
+            'mobile'     => $student->mobile ?? '',
+            'qr'         => $student->custom_id ?? '',
+            'photo'      => $photo,
+        ]);
     @endphp
 
-    <div class="student-id-card">
-
-        {{-- ==================== BACKGROUND ==================== --}}
-        <img src="{{ asset('storage/id/idcard_bg.png') }}" class="card-bg" alt="Background">
-
-        {{-- ==================== OPTIONAL HEADER ==================== --}}
-        <div class="card-header">
-            <div class="card-inst-name">MINIPALASA EDUCATION CENTRE</div>
-            <div class="card-inst-sub">Student ID Card</div>
-        </div>
-
-        {{-- ==================== MAIN CONTENT ==================== --}}
-        <div class="card-content">
-
-            {{-- LEFT SIDE - Photo + Details --}}
-            <div class="card-left">
-
-                {{-- Photo --}}
-                <div class="id-card-profile-box">
-                    <img src="{{ $studentImage }}" alt="Student Photo" crossorigin="anonymous"
-                        onerror="this.onerror=null;this.src='{{ $defaultImage }}'">
-                </div>
-
-                {{-- Details --}}
-                <div class="student-details">
-
-                    <div class="id-card-student-id">
-                        {{ $studentKey }}
-                    </div>
-
-                    <div class="id-card-student-name">
-                        {{ $student?->initial_name ?? 'Student Name' }}
-                    </div>
-
-                    <div class="id-card-address">
-                        {{ $address ?: 'Address not available' }}
-                    </div>
-
-                </div>
-
-            </div>
-
-            {{-- RIGHT SIDE - QR + Logo --}}
-            <div class="card-right">
-
-                <img src="{{ $qrUrl }}" class="id-card-qr-img" alt="QR Code" crossorigin="anonymous"
-                    onerror="this.onerror=null;this.src='{{ $defaultImage }}'">
-
-                <img src="{{ asset('storage/logo/black_logo3.png') }}" class="id-card-logo" alt="Logo">
-
-            </div>
-
-        </div>
-
-    </div>
-
+    @include('id-cards.card', ['card' => $card])
 </body>
 
 </html>

@@ -33,6 +33,8 @@
         'img_url'      => $student->img_url,
         'branch_name'  => $branchName,
         'branch_code'  => $branchCode,
+        'grade_name'   => $student->grade?->grade_name ?? '',
+        'mobile'       => $student->mobile ?? '',
     ];
 
     // ==================== KEYS ====================
