@@ -156,6 +156,7 @@ class TeacherSalaryService
             'total_advance' => 0,
             'total_deduction' => 0,
             'total_other' => 0,
+            'total_welfare' => 0,
             'calculated_net_total' => 0,
             'db_net_total' => 0,
             'net_difference_total' => 0,
@@ -188,6 +189,7 @@ class TeacherSalaryService
                 'advance' => $totals['advance'],
                 'deduction' => $totals['deduction'],
                 'other' => $totals['other'],
+                'welfare' => $totals['welfare'],
 
                 'calculated_net' => $totals['net'],
                 'net_payable' => $netPayable,
@@ -200,6 +202,7 @@ class TeacherSalaryService
             $summary['total_advance'] += $totals['advance'];
             $summary['total_deduction'] += $totals['deduction'];
             $summary['total_other'] += $totals['other'];
+            $summary['total_welfare'] += $totals['welfare'];
             $summary['calculated_net_total'] += $totals['net'];
             $summary['db_net_total'] += $dbNet ?? 0;
             $summary['net_difference_total'] += $netDifference;
@@ -280,6 +283,7 @@ class TeacherSalaryService
             'advance' => $totals['advance'],
             'deduction' => $totals['deduction'],
             'other' => $totals['other'],
+            'welfare' => $totals['welfare'],
             'total_deductions' => $totals['total_deductions'],
 
             // When paid, show what was actually paid
@@ -333,6 +337,7 @@ class TeacherSalaryService
                 'advance' => $details['advance'],
                 'deduction' => $details['deduction'],
                 'other' => $details['other'],
+                'welfare' => $details['welfare'],
                 'all' => $details['total_deductions'],
             ],
 
@@ -421,7 +426,7 @@ class TeacherSalaryService
 
         $deductions = [];
 
-        foreach (['advance' => 'Advance', 'deduction' => 'Deduction', 'other' => 'Other Expenses'] as $key => $label) {
+        foreach (['advance' => 'Advance', 'deduction' => 'Deduction', 'other' => 'Other Expenses', 'welfare' => 'Welfare'] as $key => $label) {
             if ($totals[$key] > 0) {
                 $deductions[] = ['description' => $label, 'amount' => $totals[$key]];
             }
@@ -430,7 +435,7 @@ class TeacherSalaryService
         // A paid slip must show the amounts that were actually paid
         $totalAddition = $isPaid ? (float) $record->gross_amount : $totals['gross'];
         $totalDeductions = $isPaid
-            ? round((float) $record->advance_deduction + (float) $record->other_deduction, 2)
+            ? round((float) $record->advance_deduction + (float) $record->other_deduction + (float) $record->welfare_deduction, 2)
             : $totals['total_deductions'];
         $netSalary = $isPaid ? (float) $record->net_amount : $totals['net'];
 

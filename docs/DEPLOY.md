@@ -79,6 +79,7 @@ php artisan nexora:feature courses off
 | Feature | Use |
 |---|---|
 | `courses` | Course management (only institutes that sell courses) |
+| `welfare` | Teacher welfare: a monthly amount taken from teacher salaries (per branch) into the branch welfare fund (not institute income), its expenses and a PDF. Shown on the salary slip. |
 | `landing_page` | **Only edu.nexorait.lk.** Shows the NexoraIT EDU product page on `/`. Off (every institute) = `/` opens the login page. |
 
 There is no web page for this, so an institute cannot switch a feature on by itself. `nexora:deploy` shows which features are on.

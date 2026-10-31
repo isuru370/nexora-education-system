@@ -79,6 +79,7 @@ class TeacherSalaryPaymentService
                 'gross_amount' => $totals['gross'],
                 'advance_deduction' => $totals['advance'],
                 'other_deduction' => round($totals['deduction'] + $totals['other'], 2),
+                'welfare_deduction' => $totals['welfare'],
                 'bonus_amount' => 0,
                 'net_amount' => $totals['net'],
                 'status' => 'paid',

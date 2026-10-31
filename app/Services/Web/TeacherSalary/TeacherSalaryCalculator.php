@@ -5,6 +5,7 @@ namespace App\Services\Web\TeacherSalary;
 use App\Models\PaymentSplitSnapshot;
 use App\Models\TeacherPayment;
 use App\Models\TeacherSalary;
+use App\Models\WelfareDeduction;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 
@@ -55,11 +56,12 @@ class TeacherSalaryCalculator
     }
 
     /**
-     * Advance / deduction / other totals per teacher for one branch and month.
+     * Advance / deduction / other / welfare totals per teacher for one branch and month.
      * Cancelled records are ignored. Soft-deleted records are ignored automatically.
+     * Welfare (feature "welfare") is kept per salary month in welfare_deductions.
      *
      * @param  array<int>|null  $teacherIds
-     * @return Collection<int, array{advance: float, deduction: float, other: float}>
+     * @return Collection<int, array{advance: float, deduction: float, other: float, welfare: float}>
      */
     public function deductionsByTeacher(int $branchId, int $year, int $month, ?array $teacherIds = null): Collection
     {
@@ -74,25 +76,42 @@ class TeacherSalaryCalculator
             ->selectRaw('teacher_id, payment_type, SUM(amount) as total')
             ->get();
 
-        return $rows
+        $welfare = WelfareDeduction::query()
+            ->where('branch_id', $branchId)
+            ->where('salary_year', $year)
+            ->where('salary_month', $month)
+            ->when($teacherIds !== null, fn ($query) => $query->whereIn('teacher_id', $teacherIds))
+            ->groupBy('teacher_id')
+            ->selectRaw('teacher_id, SUM(amount) as total')
+            ->pluck('total', 'teacher_id');
+
+        $result = $rows
             ->groupBy('teacher_id')
             ->map(function (Collection $teacherRows) {
                 $totals = $this->emptyDeductions();
 
                 foreach ($teacherRows as $row) {
-                    if (array_key_exists($row->payment_type, $totals)) {
+                    if (in_array($row->payment_type, self::PAYMENT_TYPES, true)) {
                         $totals[$row->payment_type] = round((float) $row->total, 2);
                     }
                 }
 
                 return $totals;
             });
+
+        foreach ($welfare as $teacherId => $total) {
+            $totals = $result->get($teacherId, $this->emptyDeductions());
+            $totals['welfare'] = round((float) $total, 2);
+            $result->put($teacherId, $totals);
+        }
+
+        return $result;
     }
 
     /**
      * Full calculation for one teacher in one branch and month.
      *
-     * @return array{gross: float, advance: float, deduction: float, other: float, total_deductions: float, net: float, available_limit: float}
+     * @return array{gross: float, advance: float, deduction: float, other: float, welfare: float, total_deductions: float, net: float, available_limit: float}
      */
     public function forTeacher(int $teacherId, int $branchId, int $year, int $month): array
     {
@@ -106,12 +125,14 @@ class TeacherSalaryCalculator
     }
 
     /**
-     * @param  array{advance: float, deduction: float, other: float}  $deductions
+     * @param  array{advance: float, deduction: float, other: float, welfare?: float}  $deductions
      */
     public function buildTotals(float $gross, array $deductions): array
     {
+        $deductions += ['welfare' => 0.0];
+
         $totalDeductions = round(
-            $deductions['advance'] + $deductions['deduction'] + $deductions['other'],
+            $deductions['advance'] + $deductions['deduction'] + $deductions['other'] + $deductions['welfare'],
             2
         );
 
@@ -122,6 +143,7 @@ class TeacherSalaryCalculator
             'advance' => $deductions['advance'],
             'deduction' => $deductions['deduction'],
             'other' => $deductions['other'],
+            'welfare' => $deductions['welfare'],
             'total_deductions' => $totalDeductions,
             'net' => $net,
             // How much more can still be given as advance / deduction this month
@@ -130,11 +152,11 @@ class TeacherSalaryCalculator
     }
 
     /**
-     * @return array{advance: float, deduction: float, other: float}
+     * @return array{advance: float, deduction: float, other: float, welfare: float}
      */
     public function emptyDeductions(): array
     {
-        return ['advance' => 0.0, 'deduction' => 0.0, 'other' => 0.0];
+        return ['advance' => 0.0, 'deduction' => 0.0, 'other' => 0.0, 'welfare' => 0.0];
     }
 
     public function salaryRecord(

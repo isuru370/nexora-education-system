@@ -58,7 +58,7 @@ class TeacherAdvanceController extends Controller
             'name' => $row['teacher_name'],
             'gross' => round((float) $row['gross_earnings'], 2),
             'advance' => round((float) $row['advance'], 2),
-            'deductions' => round((float) $row['deduction'] + (float) $row['other'], 2),
+            'deductions' => round((float) $row['deduction'] + (float) $row['other'] + (float) ($row['welfare'] ?? 0), 2),
             'salary_paid' => $row['status'] === 'paid',
             'available' => $row['status'] === 'paid' ? 0.0 : round(max((float) $row['calculated_net'], 0), 2),
         ])->values();

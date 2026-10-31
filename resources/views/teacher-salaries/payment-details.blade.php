@@ -16,6 +16,7 @@
         $totalAdvance = $totals['advance'] ?? 0;
         $totalDeduction = $totals['deduction'] ?? 0;
         $totalOther = $totals['other'] ?? 0;
+        $totalWelfare = $totals['welfare'] ?? 0;
     @endphp
 
     <div class="teacher-payment-details-page">
@@ -106,6 +107,9 @@
                         <h3>LKR {{ number_format($totalOther, 2) }}</h3>
                         <small class="summary-sub">
                             Other adjustments
+                            @if ($totalWelfare > 0)
+                                <br>Welfare: LKR {{ number_format($totalWelfare, 2) }}
+                            @endif
                         </small>
                     </div>
                 </div>
@@ -336,7 +340,7 @@
             <div class="col-lg-4">
                 <div class="final-card">
                     <small class="text-muted d-block">Total Deductions</small>
-                    <h4 class="text-danger mb-0">LKR {{ number_format($totalAdvance + $totalDeduction + $totalOther, 2) }}
+                    <h4 class="text-danger mb-0">LKR {{ number_format($totalAdvance + $totalDeduction + $totalOther + $totalWelfare, 2) }}
                     </h4>
                 </div>
             </div>
