@@ -470,7 +470,7 @@ class ClassScheduleApiService
             'id' => $schedule->id,
             'class_category_fee_id' => $schedule->class_category_fee_id,
             'class_schedule_pattern_id' => $schedule->class_schedule_pattern_id,
-            'class_date' => $schedule->class_date,
+            'class_date' => optional($schedule->class_date)->format('Y-m-d'),
             'start_time' => $schedule->start_time,
             'end_time' => $schedule->end_time,
             'status' => $schedule->status,

@@ -242,8 +242,8 @@ class StudentPaymentController extends Controller
                             return [
                                 'id' => $payment->id,
                                 'amount' => (float) $payment->amount,
-                                'paid_at' => $payment->paid_at,
-                                'payment_month' => $payment->payment_month,
+                                'paid_at' => optional($payment->paid_at)->format('Y-m-d H:i:s'),
+                                'payment_month' => optional($payment->payment_month)->format('Y-m-d'),
                                 'payment_method' => $payment->payment_method,
                                 'status' => $payment->status,
                                 'receipt_number' => $payment->receipt_number,
@@ -650,9 +650,9 @@ class StudentPaymentController extends Controller
 
                     'discount_amount' => (float) $payment->discount_amount,
 
-                    'paid_at' => $payment->paid_at,
+                    'paid_at' => optional($payment->paid_at)->format('Y-m-d H:i:s'),
 
-                    'payment_month' => $payment->payment_month,
+                    'payment_month' => optional($payment->payment_month)->format('Y-m-d'),
 
                     'payment_method' => $payment->payment_method,
 
