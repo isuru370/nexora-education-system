@@ -374,6 +374,8 @@ class StudentPaymentController extends Controller
                 'enrollment.classCategoryFee.category',
 
                 'enrollment.classCategoryFeeOption',
+
+                'splitSnapshot:id,payment_id,hall_fee',
             ])
             ->whereDate('paid_at', $date)
             ->where('status', 'completed');
@@ -649,6 +651,9 @@ class StudentPaymentController extends Controller
                     'amount' => (float) $payment->amount,
 
                     'discount_amount' => (float) $payment->discount_amount,
+
+                    // hall fee in this payment (0 = no hall fee), for the receipt
+                    'hall_fee' => round((float) optional($payment->splitSnapshot)->hall_fee, 2),
 
                     'paid_at' => optional($payment->paid_at)->format('Y-m-d H:i:s'),
 

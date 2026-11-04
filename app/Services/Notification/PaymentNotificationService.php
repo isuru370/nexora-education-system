@@ -6,6 +6,8 @@ use App\Enums\NotificationType;
 use App\Jobs\SendPaymentSms;
 use App\Models\NotificationSetting;
 use App\Models\Payment;
+use App\Services\Web\Payment\PaymentMarker;
+use App\Support\SmsTemplates;
 use Illuminate\Support\Facades\Log;
 
 class PaymentNotificationService
@@ -210,16 +212,46 @@ class PaymentNotificationService
     private function formatSmsMessage(Payment $payment): string
     {
         $data = $this->getPaymentData($payment);
+        $hallFee = $this->hallFee($payment);
+        $total = (float) ($payment->splitSnapshot?->total_fee ?? $payment->amount);
 
-        return sprintf(
-            'Payment received. Student: %s, Class: %s, ' .
-            'Amount: Rs. %s, Month: %s, Receipt: %s. Thank you.',
-            $data['student_name'],
-            $data['class_name'],
-            $data['amount'],
-            $data['month'],
-            $data['receipt']
-        );
+        return SmsTemplates::render(SmsTemplates::PAYMENT, [
+            '[Student Name]' => $data['student_name'],
+            '[Class]' => $data['class_name'],
+            '[Grade]' => $data['grade'],
+            '[Category]' => $data['category'],
+            '[Month]' => $data['month'],
+            '[Amount]' => $data['amount'],
+            '[Class Fee]' => number_format(max(0, $total - $hallFee), 2),
+            // empty = the hall fee line is left out (hall price 0)
+            '[Hall Fee]' => $hallFee > 0 ? number_format($hallFee, 2) : '',
+            '[Receipt]' => $data['receipt'],
+            '[Date]' => ($payment->paid_at ? \Carbon\Carbon::parse($payment->paid_at) : now())->format('Y-m-d'),
+            '[Institute]' => (string) (config('institution.name') ?: config('app.name')),
+        ]);
+    }
+
+    /**
+     * Hall fee in this payment: from the payment split, or the class hall price.
+     */
+    private function hallFee(Payment $payment): float
+    {
+        try {
+            if ($payment->splitSnapshot) {
+                return round((float) $payment->splitSnapshot->hall_fee, 2);
+            }
+
+            return $payment->enrollment
+                ? app(PaymentMarker::class)->hallFee($payment->enrollment)
+                : 0.0;
+        } catch (\Throwable $e) {
+            Log::warning('Payment SMS: hall fee not found.', [
+                'payment_id' => $payment->id,
+                'error' => $e->getMessage(),
+            ]);
+
+            return 0.0;
+        }
     }
 
     /**

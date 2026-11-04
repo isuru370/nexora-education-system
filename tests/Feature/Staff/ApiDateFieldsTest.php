@@ -28,5 +28,7 @@ class ApiDateFieldsTest extends TestCase
 
         $this->assertSame('2026-10-01', $row['payment_month']);
         $this->assertSame('2026-10-05 09:00:00', $row['paid_at']);
+        // for the app receipt (no split saved in the fixture = 0)
+        $this->assertEquals(0, $row['hall_fee']);
     }
 }
