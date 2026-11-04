@@ -73,6 +73,7 @@ class MobileDashboardService
         'today_payments' => ['SUPER_ADMIN', 'ADMIN', 'BRANCH_ADMIN', 'USER'],
         'admission' => ['SUPER_ADMIN', 'ADMIN', 'BRANCH_ADMIN', 'USER'],
         'finance_summary' => ['SUPER_ADMIN', 'ADMIN', 'BRANCH_ADMIN'], // income / expenses today
+        'income_report' => ['SUPER_ADMIN', 'ADMIN', 'BRANCH_ADMIN', 'USER'], // Income Report + PDF
         'teacher_advance' => ['SUPER_ADMIN', 'ADMIN', 'BRANCH_ADMIN'], // pay a teacher advance (same roles as the web)
 
         // Other

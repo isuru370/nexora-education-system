@@ -232,6 +232,12 @@ Route::middleware([
         [StudentPaymentController::class, 'todayPayments']
     );
 
+    // Income Report: money in / out for a date range (all staff, own branches)
+    Route::get(
+        '/reports/income',
+        [\App\Http\Controllers\Api\Report\IncomeReportController::class, 'index']
+    )->name('api.reports.income');
+
     Route::get(
         '/payments/students/{studentId}/enrollments/{enrolledId}',
         [StudentPaymentController::class, 'fetchStudentAllPayment']
