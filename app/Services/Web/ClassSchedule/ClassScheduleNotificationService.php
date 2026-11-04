@@ -2,6 +2,7 @@
 
 namespace App\Services\Web\ClassSchedule;
 
+use App\Support\SmsTemplates;
 use App\Enums\NotificationType;
 use App\Jobs\SendClassScheduleSms;
 use App\Models\ClassHall;
@@ -167,7 +168,18 @@ class ClassScheduleNotificationService
              */
             SendClassScheduleSms::dispatch(
                 $student->guardian_mobile,
-                $message
+                SmsTemplates::render(SmsTemplates::CLASS_SCHEDULE, [
+                    '[Title]' => $title,
+                    '[Class]' => $studentClass->class_name ?? 'N/A',
+                    '[Category]' => $category->category_name ?? 'N/A',
+                    '[Hall]' => $hall ? $hall->hall_name : '',
+                    '[Date]' => $validated['class_date'] ?? '',
+                    '[Time]' => !empty($validated['start_time']) && !empty($validated['end_time'])
+                        ? $validated['start_time'] . ' - ' . $validated['end_time']
+                        : '',
+                    '[Reason]' => $action === 'cancelled' ? ($validated['cancel_reason'] ?? '') : '',
+                    '[Institute]' => (string) (config('institution.name') ?: config('app.name')),
+                ])
             );
         }
     }

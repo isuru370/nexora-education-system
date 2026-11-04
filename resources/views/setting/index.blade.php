@@ -22,6 +22,9 @@
                         <a href="{{ route('admin.setting.notifications') }}" class="nx-btn nx-btn-light">
                             <i class="bi bi-bell-fill"></i> Parent Notifications
                         </a>
+                        <a href="{{ route('admin.setting.sms-templates') }}" class="nx-btn nx-btn-light">
+                            <i class="bi bi-chat-dots-fill"></i> SMS Messages
+                        </a>
                         <a href="{{ route('app-setup.index') }}" class="nx-btn nx-btn-light">
                             <i class="bi bi-qr-code"></i> Staff App QR
                         </a>

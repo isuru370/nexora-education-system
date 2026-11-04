@@ -18,6 +18,7 @@ use App\Http\Controllers\Web\Auth\LoginController;
 
 use App\Http\Controllers\Web\Setting\DatabaseBackupController;
 use App\Http\Controllers\Web\Setting\NotificationSettingController;
+use App\Http\Controllers\Web\Setting\SmsTemplateController;
 
 use App\Http\Controllers\Web\Exam\ExamController;
 
@@ -922,6 +923,17 @@ Route::middleware([
 
             Route::put('setting/notifications', [NotificationSettingController::class, 'update'])
                 ->name('setting.notifications.update');
+
+            // SMS texts parents get + cost of one SMS
+            Route::get('setting/sms-templates', [SmsTemplateController::class, 'index'])
+                ->name('setting.sms-templates');
+
+            Route::put('setting/sms-templates', [SmsTemplateController::class, 'update'])
+                ->name('setting.sms-templates.update');
+
+            Route::post('setting/sms-templates/test', [SmsTemplateController::class, 'test'])
+                ->middleware('throttle:10,1')
+                ->name('setting.sms-templates.test');
         });
 
 
