@@ -335,12 +335,15 @@ Route::middleware([
     |--------------------------------------------------------------------------
     | Student Payment Delete
     |--------------------------------------------------------------------------
+    | Admin only, with a reason. Soft delete (kept for audit, deleted_by and
+    | delete_reason), same rules as the web (PaymentDeleteService).
+    | Before: any staff could permanently delete a payment with no reason.
     */
 
     Route::delete(
         '/payments/{paymentId}',
-        [StudentPaymentController::class, 'destroy']
-    )->name('api.student-payments.destroy');
+        [\App\Http\Controllers\Api\Payment\PaymentDeleteController::class, 'destroy']
+    )->whereNumber('paymentId')->middleware(['role:ADMIN', 'throttle:30,1'])->name('api.student-payments.destroy');
 
 
 
