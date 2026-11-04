@@ -6,6 +6,8 @@
 
 <div class="container-fluid py-4">
 
+    @include('dashboard.partials.auto-disabled-students')
+
     {{-- Page Header --}}
     <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
 

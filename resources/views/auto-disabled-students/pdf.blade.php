@@ -1,0 +1,108 @@
+@php
+    $institute = config('services.institute.name') ?: config('app.name');
+    $range = $from->isSameDay($to) ? $from->format('d M Y') : $from->format('d M Y') . ' - ' . $to->format('d M Y');
+@endphp
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Auto-disabled Students - {{ $range }}</title>
+    <style>
+        @page { margin: 18px 20px 26px 20px; }
+        body { font-family: 'DejaVu Sans', Arial, sans-serif; font-size: 8.3px; color: #1e293b; }
+        .header { width: 100%; border-bottom: 2px solid #2563eb; padding-bottom: 6px; margin-bottom: 8px; }
+        .header td { vertical-align: bottom; }
+        .company { font-size: 11px; font-weight: bold; color: #2563eb; }
+        h1 { font-size: 15px; margin: 2px 0 0; }
+        .meta { text-align: right; color: #64748b; font-size: 8px; line-height: 1.5; }
+        .note { color: #475569; margin: 0 0 8px; }
+        table.data { width: 100%; border-collapse: collapse; }
+        table.data thead { display: table-header-group; }
+        table.data tr { page-break-inside: avoid; }
+        table.data th { background: #f1f5f9; padding: 4px; font-size: 7px; text-transform: uppercase; text-align: left; border: 1px solid #e2e8f0; }
+        table.data td { padding: 3.5px 4px; border: 1px solid #e2e8f0; vertical-align: top; }
+        .muted { color: #64748b; }
+        .ok { color: #166534; font-weight: bold; }
+        .empty { text-align: center; color: #64748b; padding: 10px; }
+        .footer { margin-top: 10px; text-align: center; color: #94a3b8; font-size: 7px; }
+    </style>
+</head>
+
+<body>
+    <table class="header">
+        <tr>
+            <td>
+                <div class="company">{{ $institute }}</div>
+                <h1>Auto-disabled Students</h1>
+            </td>
+            <td class="meta">
+                {{ $range }}<br>
+                {{ $records->count() }} students<br>
+                Printed by: {{ optional(auth()->user())->name ?? 'System' }}
+            </td>
+        </tr>
+    </table>
+
+    <p class="note">Made inactive by the system (no attendance for 2 months) and taken out of these classes.</p>
+
+    <table class="data">
+        <thead>
+            <tr>
+                <th style="width:3%">#</th>
+                <th style="width:8%">ID</th>
+                <th style="width:15%">Name</th>
+                <th style="width:5%">Grade</th>
+                <th style="width:10%">Mobile / Guardian</th>
+                <th style="width:12%">Last attendance</th>
+                <th style="width:14%">Last payment</th>
+                <th>Taken out of</th>
+                <th style="width:9%">Disabled</th>
+            </tr>
+        </thead>
+        <tbody>
+            @forelse ($records as $record)
+                @php $student = $record->student; @endphp
+                <tr>
+                    <td>{{ $loop->iteration }}</td>
+                    <td>{{ optional($student)->custom_id }}</td>
+                    <td>{{ optional($student)->initial_name }}</td>
+                    <td>{{ optional(optional($student)->grade)->grade_name }}</td>
+                    <td>{{ optional($student)->mobile }}<br><span class="muted">{{ optional($student)->guardian_mobile }}</span></td>
+                    <td>
+                        @if ($record->last_attendance_at)
+                            {{ $record->last_attendance_at->format('d M Y') }}<br><span class="muted">{{ $record->last_attendance_class }}</span>
+                        @else
+                            <span class="muted">Never</span>
+                        @endif
+                    </td>
+                    <td>
+                        @if ($record->last_payment_at)
+                            Rs. {{ number_format((float) $record->last_payment_amount, 2) }} for {{ optional($record->last_payment_month)->format('M Y') }}<br>
+                            <span class="muted">{{ $record->last_payment_at->format('d M Y') }} &middot; {{ $record->last_payment_class }}</span>
+                        @else
+                            <span class="muted">Never</span>
+                        @endif
+                    </td>
+                    <td>
+                        @foreach ($record->classes ?? [] as $class)
+                            {{ $class['class_name'] }}{{ $class['category'] ? ' (' . $class['category'] . ')' : '' }}@if (!$loop->last)<br>@endif
+                        @endforeach
+                    </td>
+                    <td>
+                        {{ $record->disabled_at->format('d M Y') }}
+                        @if ($record->reactivated_at)
+                            <br><span class="ok">Re-activated {{ $record->reactivated_at->format('d M') }}</span>
+                        @endif
+                    </td>
+                </tr>
+            @empty
+                <tr><td colspan="9" class="empty">No students were disabled in this period.</td></tr>
+            @endforelse
+        </tbody>
+    </table>
+
+    <div class="footer">Generated by {{ $institute }} on {{ now()->format('d M Y, h:i A') }}</div>
+</body>
+
+</html>

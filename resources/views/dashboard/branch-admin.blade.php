@@ -34,6 +34,8 @@
 
     <div class="container-fluid py-4">
 
+        @include('dashboard.partials.auto-disabled-students')
+
 
 
         {{-- Page Header --}}
