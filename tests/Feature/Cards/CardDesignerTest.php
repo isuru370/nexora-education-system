@@ -29,6 +29,7 @@ class CardDesignerTest extends TestCase
         $this->buildInstitute();
         CardDesign::forget();
         Storage::fake('public');
+        CardMode::set(CardMode::TEMPORARY); // the designer is for temporary-card institutes
 
         $type = DB::table('user_types')->where('code', 'SUPER_ADMIN')->value('id')
             ?? DB::table('user_types')->insertGetId(['name' => 'SUPER_ADMIN', 'code' => 'SUPER_ADMIN', 'is_active' => 1]);
@@ -65,6 +66,19 @@ class CardDesignerTest extends TestCase
 
         $this->actingAs($this->super)->get('/card-designer?type=temporary')
             ->assertOk()->assertSee('data-field="code"', false);
+    }
+
+    public function test_designer_is_only_for_temporary_card_institutes(): void
+    {
+        CardMode::set(CardMode::PERMANENT);
+        $this->actingAs($this->super);
+
+        $this->get('/card-designer')->assertRedirect(route('students.index'));
+        $this->get('/admin/setting')->assertOk()->assertDontSee('ID Card Designer');
+
+        CardMode::set(CardMode::TEMPORARY);
+        $this->get('/card-designer')->assertOk();
+        $this->get('/admin/setting')->assertOk()->assertSee('ID Card Designer');
     }
 
     public function test_default_design_has_no_hardcoded_institute_and_no_outside_qr_site(): void
