@@ -74,6 +74,16 @@
                     {{ $studentData['custom_id'] }}
                 </div>
 
+                @if ($student->permanent_qr_active)
+                    <span class="badge rounded-pill bg-success-subtle text-success border border-success-subtle">
+                        <i class="fas fa-check-circle me-1"></i> Permanent card
+                    </span>
+                @else
+                    <span class="badge rounded-pill bg-warning-subtle text-warning-emphasis border border-warning-subtle">
+                        <i class="fas fa-clock me-1"></i> Temporary card
+                    </span>
+                @endif
+
                 {{-- ✅ Branch Info --}}
                 @if ($branchName)
                     <div class="student-card-badge mt-1">

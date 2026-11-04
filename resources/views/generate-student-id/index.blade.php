@@ -61,7 +61,13 @@
                     <i class="bi bi-inbox fs-1 d-block mb-3 text-muted"></i>
                     <strong class="d-block mb-2">No Students Found</strong>
                     <span class="cell-sub">
-                        {{ request('search') ? 'No matching students found.' : 'Every active student already has a permanent ID card.' }}
+                        @if (request('search'))
+                            No matching students found.
+                        @elseif (($show ?? 'all') === 'pending')
+                            Every active student already has a permanent ID card.
+                        @else
+                            There are no active students.
+                        @endif
                     </span>
                 </div>
             </div>

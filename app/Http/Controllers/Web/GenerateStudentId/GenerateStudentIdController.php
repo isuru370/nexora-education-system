@@ -24,10 +24,12 @@ class GenerateStudentIdController extends Controller
             $validated = $request->validated();
 
             $students = $this->service->getIndexData(
-                $validated['search'] ?? null
+                $validated['search'] ?? null,
+                $validated['show'] ?? 'all'
             );
+            $show = $validated['show'] ?? 'all';
 
-            return view('generate-student-id.index', compact('students'));
+            return view('generate-student-id.index', compact('students', 'show'));
 
         } catch (Throwable $e) {
             Log::error('Student ID Card Fetch Error', [
