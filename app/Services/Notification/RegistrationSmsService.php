@@ -2,6 +2,7 @@
 
 namespace App\Services\Notification;
 
+use App\Support\SmsTemplates;
 use App\Jobs\SendSystemSms;
 use App\Models\AdmissionPayment;
 use App\Models\NotificationSetting;
@@ -56,32 +57,21 @@ class RegistrationSmsService
         string $portalUsername,
         string $portalPassword
     ): string {
-        $institute = config('institution.name');
-
-        $lines = [
-            "Dear Parent, {$student->initial_name} has been registered at {$institute}.",
-            '',
-        ];
-
         if ($payment && $payment->status === AdmissionPayment::STATUS_PAID) {
-            $lines[] = 'Admission fee: Rs. ' . number_format((float) $payment->amount, 2) . ' PAID'
+            $admissionFee = 'Rs. ' . number_format((float) $payment->amount, 2) . ' PAID'
                 . ($payment->receipt_number ? " (Receipt {$payment->receipt_number})" : '');
         } else {
-            $lines[] = 'Admission fee: NOT PAID. Please pay at the office.';
+            $admissionFee = 'NOT PAID. Please pay at the office.';
         }
 
-        $lines[] = '';
-        $lines[] = 'Parent portal login';
-        $lines[] = "Username: {$portalUsername}";
-        $lines[] = "Password: {$portalPassword}";
-
-        if ($appLink = config('services.parent_hub.app_link')) {
-            $lines[] = '';
-            $lines[] = "App: {$appLink}";
-        }
-
-        $lines[] = 'Keep these details private.';
-
-        return implode("\n", $lines);
+        return SmsTemplates::render(SmsTemplates::REGISTRATION, [
+            '[Student Name]' => $student->initial_name ?: $student->full_name,
+            '[Student ID]' => (string) $student->custom_id,
+            '[Institute]' => (string) (config('institution.name') ?: config('app.name')),
+            '[Admission Fee]' => $admissionFee,
+            '[Username]' => $portalUsername,
+            '[Password]' => $portalPassword,
+            '[App Link]' => (string) (config('services.parent_hub.app_link') ?: ''),
+        ]);
     }
 }

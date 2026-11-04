@@ -2,6 +2,7 @@
     $searchValue = request('search', '');
     $hasSearch   = !empty($searchValue);
     $totalStudents = $totalStudents ?? null;
+    $showValue   = request('show') === 'pending' ? 'pending' : 'all';
 @endphp
 
 <div class="premium-card search-card mb-4">
@@ -14,7 +15,7 @@
         <div class="row g-3 align-items-end">
 
             {{-- ==================== SEARCH INPUT ==================== --}}
-            <div class="col-lg-9 col-md-8">
+            <div class="col-lg-6 col-md-8">
 
                 <label for="search" class="form-label fw-semibold search-label">
                     <i class="fas fa-search me-1"></i>
@@ -34,7 +35,7 @@
                            id="search"
                            name="search"
                            value="{{ $searchValue }}"
-                           placeholder="Search by student ID or name..."
+                           placeholder="Search by student ID, name or mobile..."
                            autocomplete="off">
 
                     @if($hasSearch)
@@ -54,6 +55,18 @@
                     </small>
                 @endif
 
+            </div>
+
+            {{-- ==================== SHOW FILTER ==================== --}}
+            <div class="col-lg-3 col-md-4">
+                <label for="show" class="form-label fw-semibold search-label">
+                    <i class="fas fa-filter me-1"></i> Show
+                </label>
+                <select id="show" name="show" class="form-select custom-input search-show"
+                        onchange="this.form.submit()">
+                    <option value="all" {{ $showValue === 'all' ? 'selected' : '' }}>All active students</option>
+                    <option value="pending" {{ $showValue === 'pending' ? 'selected' : '' }}>No permanent card yet</option>
+                </select>
             </div>
 
             {{-- ==================== ACTION BUTTONS ==================== --}}
@@ -192,6 +205,12 @@
     }
 
     /* Search Input */
+    .search-show {
+        height: 52px;
+        border-radius: 14px;
+        font-weight: 500;
+    }
+
     .search-input {
         padding-left: 48px !important;
         padding-right: 48px !important;

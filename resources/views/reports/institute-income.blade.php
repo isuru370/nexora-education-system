@@ -239,6 +239,22 @@
         </div>
 
         {{-- ===================================================== --}}
+        {{-- HALL FEES --}}
+        {{-- ===================================================== --}}
+        <a href="{{ route('reports.institute-income.index', ['tab' => 'hall-fees'] + $query) }}" class="nx-card hall-fee-band mb-4">
+            <div class="stat-icon-wrapper icon-green"><i class="bi bi-building"></i></div>
+            <div class="flex-grow-1">
+                <span class="stat-label">Hall Fees</span>
+                <div class="hall-fee-amount">Rs. {{ number_format($summary['hall_fee'], 2) }}</div>
+                <small class="cell-sub">
+                    From {{ $summary['hall_fee_payments'] }} class fee payment(s) in this period
+                    &middot; part of the institute share
+                </small>
+            </div>
+            <span class="hall-fee-link">How it came <i class="bi bi-arrow-right"></i></span>
+        </a>
+
+        {{-- ===================================================== --}}
         {{-- UNSPLIT WARNING --}}
         {{-- ===================================================== --}}
         @if ($summary['unsplit_count'] > 0)
@@ -371,6 +387,18 @@
         @else
 
             {{-- OTHER TABS --}}
+            @if ($tab === 'hall-fees')
+                <div class="nx-alert nx-alert-blue mb-4">
+                    <i class="bi bi-info-circle-fill"></i>
+                    <span>
+                        Hall fee per payment = the <strong>highest hall price</strong> of the class's active schedules
+                        (a class in Hall A Rs. 50 and Hall B Rs. 0 is charged Rs. 50). "Hall now" shows the hall the fee
+                        comes from today. To stop a hall fee, make that schedule inactive or change its hall in
+                        <a href="{{ route('class-schedules.index') }}">Class Schedules</a> &rsaquo; class &rsaquo; Bulk Update Schedule.
+                    </span>
+                </div>
+            @endif
+
             <div class="nx-card">
                 @include('reports.partials.table', ['table' => $table, 'rows' => $rows])
             </div>
@@ -417,6 +445,20 @@
         border-color: var(--nx-blue);
         box-shadow: 0 2px 8px rgba(29, 78, 216, .25);
     }
+
+    /* Hall fees band */
+    .dashboard-page .hall-fee-band {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem 1.25rem;
+        text-decoration: none;
+        color: inherit;
+        border-left: 4px solid #16a34a;
+    }
+    .dashboard-page .hall-fee-band:hover { box-shadow: var(--nx-shadow); }
+    .dashboard-page .hall-fee-amount { font-size: 1.35rem; font-weight: 800; line-height: 1.2; }
+    .dashboard-page .hall-fee-link { font-size: .82rem; font-weight: 700; color: var(--nx-blue); white-space: nowrap; }
 
     /* Table row borders for summary lists */
     .dashboard-page .premium-table tbody tr {

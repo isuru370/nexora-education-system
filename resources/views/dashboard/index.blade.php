@@ -101,6 +101,7 @@
         {{-- ===================================================== --}}
         {{-- ALERTS --}}
         {{-- ===================================================== --}}
+        @include('dashboard.partials.auto-disabled-students')
         @if (($showStudentCardWarning ?? false) || ($expiringStudentsCount ?? 0) > 0 || ($incompleteRegistrationCount ?? 0) > 0)
             <div class="alerts-row mb-4">
                 @if ($showStudentCardWarning ?? false)

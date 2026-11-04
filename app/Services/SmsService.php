@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Support\SmsText;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
@@ -184,14 +185,17 @@ class SmsService
     /** @param  array<int, string>  $numbers */
     protected function send(array $numbers, string $message, int $timeout): array
     {
+        // English SMS only: 160 characters per SMS (Sinhala / Tamil would be 70)
+        $message = SmsText::english($message);
+
         try {
             if ($this->provider === self::SENDLK) {
                 // JSON body: send.lk refuses a form body ("The given data was invalid.")
                 $response = $this->sendLk()->asJson()->timeout($timeout)->post("{$this->baseUrl}/sms/send", [
                     'recipient' => implode(',', $numbers),
                     'sender_id' => $this->senderId,
-                    // Required by send.lk: plain = English, unicode = Sinhala / Tamil
-                    'type' => preg_match('/[^\x00-\x7F]/', $message) ? 'unicode' : 'plain',
+                    // Required by send.lk: always plain (English)
+                    'type' => 'plain',
                     'message' => $message,
                 ]);
 

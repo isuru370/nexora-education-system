@@ -5,6 +5,7 @@ namespace App\Services\Web\Payment;
 use App\Models\Payment;
 use App\Models\Student;
 use App\Models\StudentClassEnrollment;
+use App\Support\HallFee;
 use Carbon\Carbon;
 
 class PaymentDataBuilder
@@ -78,23 +79,8 @@ class PaymentDataBuilder
         |--------------------------------------------------------------------------
         */
 
-        $pattern = null;
-
-        if ($studentClass && $studentClass->schedulePatterns) {
-            $pattern = $studentClass->schedulePatterns
-                ->where(
-                    'class_category_fee_id',
-                    $enrollment->class_category_fee_id
-                )
-                ->sortByDesc('start_date')
-                ->first();
-        }
-
-        $hallFee = 0;
-
-        if ($pattern && $pattern->hall) {
-            $hallFee = (float) ($pattern->hall->hall_price ?: 0);
-        }
+        // highest hall price of the class's active schedule patterns
+        $hallFee = HallFee::forEnrollment($enrollment);
 
         /*
         |--------------------------------------------------------------------------
@@ -686,31 +672,7 @@ class PaymentDataBuilder
     private function getCurrentHallFee(
         StudentClassEnrollment $enrollment
     ): float {
-
-        $studentClass = $enrollment->studentClass;
-
-        if (!$studentClass) {
-            return 0;
-        }
-
-        $pattern = $studentClass
-            ->schedulePatterns()
-            ->where('is_active', true)
-            ->where(
-                'class_category_fee_id',
-                $enrollment->class_category_fee_id
-            )
-            ->with('hall')
-            ->latest('start_date')
-            ->first();
-
-        if (!$pattern || !$pattern->hall) {
-            return 0;
-        }
-
-        return (float) (
-            $pattern->hall->hall_price ?: 0
-        );
+        return HallFee::forEnrollment($enrollment);
     }
 
     /**

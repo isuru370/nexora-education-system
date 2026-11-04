@@ -112,51 +112,63 @@ class ClassSchedulePatternService
                 $dayOfWeek ===
                 strtolower($pattern->class_day)
             ) {
-                $exists = ClassSchedule::query()
-                    ->where('branch_id', $pattern->branch_id)
-                    ->where(
-                        'student_class_id',
-                        $pattern->student_class_id
-                    )
-                    ->where(
-                        'class_category_fee_id',
-                        $pattern->class_category_fee_id
-                    )
-                    ->whereDate(
-                        'class_date',
-                        $date->toDateString()
-                    )
-                    ->where(
-                        'start_time',
-                        $pattern->start_time
-                    )
-                    ->where(
-                        'end_time',
-                        $pattern->end_time
-                    )
-                    ->whereNull('deleted_at')
-                    ->exists();
-
-                if (!$exists) {
-                    ClassSchedule::create([
-                        'branch_id' => $pattern->branch_id,
-                        'class_schedule_pattern_id' => $pattern->id,
-                        'student_class_id' => $pattern->student_class_id,
-                        'class_category_fee_id' => $pattern->class_category_fee_id,
-                        'class_hall_id' => $pattern->class_hall_id,
-                        'class_date' => $date->toDateString(),
-                        'start_time' => $pattern->start_time,
-                        'end_time' => $pattern->end_time,
-                        'day_of_week' => $dayOfWeek,
-                        'status' => 'scheduled',
-                        'is_active' => $pattern->is_active,
-                        'note' => $pattern->note,
-                    ]);
-                }
+                $this->saveSlot($pattern, $date, $dayOfWeek);
             }
 
             $date->addDay();
         }
+    }
+
+    /**
+     * Make the schedule of one date for the pattern.
+     *
+     * The slot (class, category, date, start, end) is unique in the
+     * database, also for deleted rows. regenerateFutureSchedules() soft
+     * deletes the pattern's future schedules first, so a deleted row of the
+     * same slot is brought back and updated instead of inserting a new one
+     * (that failed with "Duplicate entry ... cs_unique_slot"). A live
+     * schedule of the slot (another pattern, a cancelled / completed class)
+     * is left as it is.
+     */
+    protected function saveSlot(ClassSchedulePattern $pattern, Carbon $date, string $dayOfWeek): void
+    {
+        $startTime = Carbon::parse($pattern->start_time)->format('H:i:s');
+        $endTime = Carbon::parse($pattern->end_time)->format('H:i:s');
+
+        $existing = ClassSchedule::withTrashed()
+            ->where('student_class_id', $pattern->student_class_id)
+            ->where('class_category_fee_id', $pattern->class_category_fee_id)
+            ->whereDate('class_date', $date->toDateString())
+            ->where(fn ($q) => $q->where('start_time', $startTime)->orWhere('start_time', substr($startTime, 0, 5)))
+            ->where(fn ($q) => $q->where('end_time', $endTime)->orWhere('end_time', substr($endTime, 0, 5)))
+            ->first();
+
+        $values = [
+            'branch_id' => $pattern->branch_id,
+            'class_schedule_pattern_id' => $pattern->id,
+            'class_hall_id' => $pattern->class_hall_id,
+            'day_of_week' => $dayOfWeek,
+            'status' => 'scheduled',
+            'is_active' => $pattern->is_active,
+            'note' => $pattern->note,
+        ];
+
+        if ($existing) {
+            if ($existing->trashed()) {
+                $existing->restore();
+                $existing->update($values);
+            }
+
+            return;
+        }
+
+        ClassSchedule::create($values + [
+            'student_class_id' => $pattern->student_class_id,
+            'class_category_fee_id' => $pattern->class_category_fee_id,
+            'class_date' => $date->toDateString(),
+            'start_time' => $startTime,
+            'end_time' => $endTime,
+        ]);
     }
 
     /*
