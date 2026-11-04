@@ -182,6 +182,10 @@
                                 <span class="toggle-description">Apply future changes</span>
                             </label>
                         </div>
+                        <small class="cell-sub d-block mt-1">
+                            Off = this pattern's hall price is not used for the hall fee
+                            (the highest hall price of the active patterns is charged).
+                        </small>
                     </div>
 
                     {{-- NOTE --}}

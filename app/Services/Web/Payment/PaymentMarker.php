@@ -7,6 +7,7 @@ use App\Models\Payment;
 use App\Models\Student;
 use App\Models\StudentClassEnrollment;
 use App\Services\Web\Receipt\ReceiptNumberService;
+use App\Support\HallFee;
 use App\Support\PaymentRules;
 use Illuminate\Database\QueryException;
 use Illuminate\Support\Carbon;
@@ -209,22 +210,8 @@ class PaymentMarker
 
     public function hallFee(StudentClassEnrollment $enrollment): float
     {
-        $hallFee = 0;
-        $studentClass = $enrollment->studentClass;
-
-        if ($studentClass) {
-            $pattern = $studentClass
-                ->schedulePatterns()
-                ->where('is_active', true)
-                ->where('class_category_fee_id', $enrollment->class_category_fee_id)
-                ->with('hall')
-                ->latest('start_date')
-                ->first();
-
-            if ($pattern && $pattern->hall) {
-                $hallFee = (float) $pattern->hall->hall_price;
-            }
-        }
+        // highest hall price of the class's active schedule patterns
+        $hallFee = HallFee::forEnrollment($enrollment);
 
         if ($hallFee < 0) {
             throw new \InvalidArgumentException('Invalid hall fee.');
