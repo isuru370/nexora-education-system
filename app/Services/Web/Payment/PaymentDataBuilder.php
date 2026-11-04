@@ -250,11 +250,13 @@ class PaymentDataBuilder
 
             /*
             |--------------------------------------------------------------------------
-            | Keep old field for frontend compatibility
+            | What to pay (class fee + hall fee)
             |--------------------------------------------------------------------------
+            | The staff app sends final_fee as the payment amount, and the server
+            | needs class fee + hall fee. (The web uses class_fee / total_fee.)
             */
 
-            'final_fee' => $classFee,
+            'final_fee' => $totalFee,
 
             /*
             |--------------------------------------------------------------------------
