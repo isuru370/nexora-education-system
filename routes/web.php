@@ -7,6 +7,7 @@ use App\Http\Controllers\Web\AppSetup\AppSetupController;
 use App\Http\Controllers\Web\PaymentRules\PaymentRulesController;
 use App\Http\Controllers\Web\CardDesigner\CardDesignerController;
 use App\Http\Controllers\Web\Welfare\WelfareController;
+use App\Http\Controllers\Web\Student\AutoDisabledStudentController;
 
 use App\Http\Controllers\Web\OrganizerPayment\OrganizerPaymentController;
 
@@ -2679,6 +2680,22 @@ Route::prefix('teacher-salaries')
         Route::get('/{teacher}/{year}/{month}/summary', 'teacherPaymentAndClassSummery')
             ->where(['teacher' => '[0-9]+', 'year' => '[0-9]{4}', 'month' => '[0-9]{1,2}'])
             ->name('payment-summary');
+    });
+
+/*
+|--------------------------------------------------------------------------
+| Auto-disabled students (nightly job: no attendance for 2 months)
+|--------------------------------------------------------------------------
+*/
+
+Route::prefix('auto-disabled-students')
+    ->name('auto-disabled-students.')
+    ->controller(AutoDisabledStudentController::class)
+    ->middleware(['auth', 'user.active', 'role:ADMIN,BRANCH_ADMIN,USER'])
+    ->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('/pdf', 'pdf')->name('pdf');
+        Route::post('/{record}/reactivate', 'reactivate')->where('record', '[0-9]+')->name('reactivate');
     });
 
 /*
