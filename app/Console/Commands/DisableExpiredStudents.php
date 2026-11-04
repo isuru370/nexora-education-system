@@ -29,7 +29,11 @@ class DisableExpiredStudents extends Command
             ->where('student_disable', false)
             ->where('is_active', true)
 
-            // At least one active enrollment older than 2 months
+            // At least one active enrollment older than 2 months - in THIS system.
+            // An enrollment imported from an old system keeps its old enrolled_at,
+            // but its attendance was not imported: count from when the row was
+            // made here (created_at), or every imported student is disabled the
+            // first night.
             ->whereHas('enrollments', function ($query) use ($twoMonthsAgo) {
                 $query
                     ->where('is_active', true)
@@ -38,7 +42,8 @@ class DisableExpiredStudents extends Command
                         'enrolled_at',
                         '<=',
                         $twoMonthsAgo->toDateString()
-                    );
+                    )
+                    ->where(fn ($q) => $q->whereNull('created_at')->orWhere('created_at', '<=', $twoMonthsAgo));
             })
 
             // No attendance during the last 2 months
