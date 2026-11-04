@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Payment;
 
+use App\Support\HallFee;
 use App\Http\Controllers\Controller;
 use App\Models\ClassSchedule;
 use App\Models\Student;
@@ -149,7 +150,12 @@ class StudentPaymentReadController extends Controller
 
                     'is_free_card' => (bool) $enrollment->is_free_card,
 
-                    'final_fee' => $enrollment->final_fee,
+                    // What the app charges: class fee + hall fee (the server needs
+                    // at least this; the app sends final_fee as the amount).
+                    // Free card = 0 (the app does not take a payment).
+                    'class_fee' => (float) $enrollment->final_fee,
+                    'hall_fee' => $hallFee = $enrollment->is_free_card ? 0.0 : HallFee::forEnrollment($enrollment),
+                    'final_fee' => round((float) $enrollment->final_fee + $hallFee, 2),
 
                     'last_payment' => $this->formatLastPayment($lastPayment),
 
