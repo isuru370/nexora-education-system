@@ -2981,13 +2981,14 @@ Route::prefix('payment-rules')
 
 /*
 |--------------------------------------------------------------------------
-| Card Designer (Super Admin): ID card layouts of this institute
+| Card Designer (Super Admin): ID card layouts of this institute.
+| Only for temporary-card institutes (php artisan nexora:card-mode).
 |--------------------------------------------------------------------------
 */
 
 Route::prefix('card-designer')
     ->name('card-designer.')
-    ->middleware(['auth', 'user.active', 'role:SUPER_ADMIN'])
+    ->middleware(['auth', 'user.active', 'role:SUPER_ADMIN', 'card.mode:temporary'])
     ->controller(CardDesignerController::class)
     ->group(function () {
         Route::get('/', 'index')->name('index');
