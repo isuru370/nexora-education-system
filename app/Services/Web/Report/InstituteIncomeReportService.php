@@ -12,6 +12,8 @@ use App\Models\StudentClass;
 use App\Models\Teacher;
 use App\Models\TeacherPayment;
 use Carbon\Carbon;
+use App\Models\ClassCategoryFee;
+use App\Support\HallFee;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
@@ -35,6 +37,7 @@ use Illuminate\Support\Facades\DB;
  *  - classes       class fee split per class
  *  - teachers      class fee split per teacher
  *  - organizers    class fee split per organizer
+ *  - hall-fees     hall fees collected: per class, fee category and amount
  *  - extra-income  received extra income
  *  - expenses      paid institute expenses
  *  - courses       course fee split per course (institutes with courses)
@@ -46,6 +49,7 @@ class InstituteIncomeReportService
         'classes' => 'By Class',
         'teachers' => 'By Teacher',
         'organizers' => 'By Organizer',
+        'hall-fees' => 'Hall Fees',
         'extra-income' => 'Extra Income',
         'expenses' => 'Institute Expenses',
     ];
@@ -81,6 +85,7 @@ class InstituteIncomeReportService
                 COUNT(*) as payments,
                 COALESCE(SUM(payment_amount), 0) as payment_amount,
                 COALESCE(SUM(hall_fee), 0) as hall_fee,
+                COALESCE(SUM(CASE WHEN hall_fee > 0 THEN 1 ELSE 0 END), 0) as hall_fee_payments,
                 COALESCE(SUM(teacher_amount), 0) as teacher_amount,
                 COALESCE(SUM(organizer_amount), 0) as organizer_amount,
                 COALESCE(SUM(institution_amount), 0) as institution_amount
@@ -131,6 +136,7 @@ class InstituteIncomeReportService
                 'Institute share' => $instituteShare,
             ],
             'hall_fee' => round((float) $split->hall_fee, 2),
+            'hall_fee_payments' => (int) $split->hall_fee_payments,
 
             // class + course teacher share, advances given, share - advances
             'teacher_salary' => $teacherShare,
@@ -164,7 +170,7 @@ class InstituteIncomeReportService
             $rows->push(['section' => 'Class fees', 'item' => $label, 'amount' => $amount]);
         }
 
-        $rows->push(['section' => 'Class fees', 'item' => 'Hall fee (part of institute share)', 'amount' => $summary['hall_fee']]);
+        $rows->push(['section' => 'Class fees', 'item' => 'Hall fees (part of institute share, ' . $summary['hall_fee_payments'] . ' payments)', 'amount' => $summary['hall_fee']]);
 
         if ($summary['courses'] !== null) {
             $rows->push(['section' => 'Course fees', 'item' => 'Course fees collected (' . $summary['courses']['payments'] . ' payments)', 'amount' => $summary['courses']['collected']]);
@@ -215,6 +221,12 @@ class InstituteIncomeReportService
                 'money' => $splitMoney,
                 'total' => 'payment_amount',
             ],
+            'hall-fees' => [
+                'headings' => ['Class', 'Grade', 'Category', 'Hall now', 'Hall Fee (Rs.)', 'Payments', 'Total (Rs.)'],
+                'columns' => ['name', 'grade_name', 'category', 'hall', 'hall_fee', 'payments', 'total'],
+                'money' => ['hall_fee', 'total'],
+                'total' => 'total',
+            ],
             'courses' => [
                 'headings' => ['Course', 'Code', 'Payments', 'Collected (Rs.)', 'Teacher (Rs.)', 'Institute (Rs.)'],
                 'columns' => ['name', 'code', 'payments', 'collected', 'teachers', 'institute'],
@@ -243,10 +255,61 @@ class InstituteIncomeReportService
             'classes' => $this->splitBy($filter, 'student_class_id', fn (Collection $ids) => $this->classNames($ids)),
             'teachers' => $this->splitBy($filter, 'teacher_id', fn (Collection $ids) => $this->teacherNames($ids)),
             'organizers' => $this->splitBy($filter, 'organizer_id', fn (Collection $ids) => $this->organizerNames($ids)),
+            'hall-fees' => $this->hallFeeRows($filter),
             'extra-income' => $this->extraIncomeRows($filter),
             'expenses' => $this->expenseRows($filter),
             'courses' => $this->courseRows($filter),
         };
+    }
+
+    /**
+     * Hall fees collected: one row per class, fee category and hall fee
+     * amount (a class whose hall price changed in the period has two rows).
+     */
+    protected function hallFeeRows(ReportFilter $filter): Collection
+    {
+        // no join: splitSnapshots() uses plain column names (branch_id ...)
+        $groups = $this->query->splitSnapshots($filter)
+            ->where('hall_fee', '>', 0)
+            ->selectRaw('
+                student_class_id as class_id,
+                (SELECT class_category_fee_id FROM student_class_enrollments
+                    WHERE student_class_enrollments.id = payment_split_snapshots.student_class_enrollment_id) as category_fee_id,
+                hall_fee,
+                COUNT(*) as payments,
+                COALESCE(SUM(hall_fee), 0) as total
+            ')
+            ->groupBy('class_id', 'category_fee_id', 'hall_fee')
+            ->get();
+
+        $classes = $this->classNames($groups->pluck('class_id')->filter()->unique()->values());
+        $categories = ClassCategoryFee::query()
+            ->with('category:id,category_name')
+            ->whereIn('id', $groups->pluck('category_fee_id')->filter()->unique())
+            ->get()
+            ->keyBy('id');
+
+        return $groups
+            ->map(function ($group) use ($classes, $categories) {
+                $class = $group->class_id ? $classes->get($group->class_id, []) : [];
+                $hall = $group->class_id
+                    ? HallFee::forClass((int) $group->class_id, $group->category_fee_id ? (int) $group->category_fee_id : null)
+                    : ['fee' => 0, 'hall' => null];
+
+                return [
+                    'name' => $class['name'] ?? ($group->class_id ? 'Deleted #' . $group->class_id : 'None'),
+                    'grade_name' => $class['grade_name'] ?? '',
+                    'category' => optional(optional($categories->get($group->category_fee_id))->category)->category_name ?? '-',
+                    'hall' => $hall['hall']
+                        ? $hall['hall']->hall_name . ' (Rs. ' . number_format($hall['fee'], 2) . ')'
+                        : 'No hall fee now',
+                    'hall_fee' => round((float) $group->hall_fee, 2),
+                    'payments' => (int) $group->payments,
+                    'total' => round((float) $group->total, 2),
+                ];
+            })
+            ->sortByDesc('total')
+            ->values();
     }
 
     /**

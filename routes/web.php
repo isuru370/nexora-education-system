@@ -7,6 +7,7 @@ use App\Http\Controllers\Web\AppSetup\AppSetupController;
 use App\Http\Controllers\Web\PaymentRules\PaymentRulesController;
 use App\Http\Controllers\Web\CardDesigner\CardDesignerController;
 use App\Http\Controllers\Web\Welfare\WelfareController;
+use App\Http\Controllers\Web\Student\AutoDisabledStudentController;
 
 use App\Http\Controllers\Web\OrganizerPayment\OrganizerPaymentController;
 
@@ -17,6 +18,7 @@ use App\Http\Controllers\Web\Auth\LoginController;
 
 use App\Http\Controllers\Web\Setting\DatabaseBackupController;
 use App\Http\Controllers\Web\Setting\NotificationSettingController;
+use App\Http\Controllers\Web\Setting\SmsTemplateController;
 
 use App\Http\Controllers\Web\Exam\ExamController;
 
@@ -921,6 +923,17 @@ Route::middleware([
 
             Route::put('setting/notifications', [NotificationSettingController::class, 'update'])
                 ->name('setting.notifications.update');
+
+            // SMS texts parents get + cost of one SMS
+            Route::get('setting/sms-templates', [SmsTemplateController::class, 'index'])
+                ->name('setting.sms-templates');
+
+            Route::put('setting/sms-templates', [SmsTemplateController::class, 'update'])
+                ->name('setting.sms-templates.update');
+
+            Route::post('setting/sms-templates/test', [SmsTemplateController::class, 'test'])
+                ->middleware('throttle:10,1')
+                ->name('setting.sms-templates.test');
         });
 
 
@@ -2683,6 +2696,22 @@ Route::prefix('teacher-salaries')
 
 /*
 |--------------------------------------------------------------------------
+| Auto-disabled students (nightly job: no attendance for 2 months)
+|--------------------------------------------------------------------------
+*/
+
+Route::prefix('auto-disabled-students')
+    ->name('auto-disabled-students.')
+    ->controller(AutoDisabledStudentController::class)
+    ->middleware(['auth', 'user.active', 'role:ADMIN,BRANCH_ADMIN,USER'])
+    ->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('/pdf', 'pdf')->name('pdf');
+        Route::post('/{record}/reactivate', 'reactivate')->where('record', '[0-9]+')->name('reactivate');
+    });
+
+/*
+|--------------------------------------------------------------------------
 | Teacher Welfare (feature "welfare"): from teacher salaries, per branch fund
 |--------------------------------------------------------------------------
 */
@@ -2820,10 +2849,10 @@ Route::prefix('reports')
                 // Dashboard chart (JSON)
                 Route::get('/yearly', 'yearly')->name('yearly');
                 Route::get('/{tab?}', 'index')
-                    ->where('tab', 'summary|classes|teachers|organizers|courses|extra-income|expenses')
+                    ->where('tab', 'summary|classes|teachers|organizers|hall-fees|courses|extra-income|expenses')
                     ->name('index');
                 Route::get('/{tab}/export/{format}', 'export')
-                    ->where(['tab' => 'summary|classes|teachers|organizers|courses|extra-income|expenses', 'format' => 'excel|pdf'])
+                    ->where(['tab' => 'summary|classes|teachers|organizers|hall-fees|courses|extra-income|expenses', 'format' => 'excel|pdf'])
                     ->name('export');
             });
 
@@ -2952,13 +2981,14 @@ Route::prefix('payment-rules')
 
 /*
 |--------------------------------------------------------------------------
-| Card Designer (Super Admin): ID card layouts of this institute
+| Card Designer (Super Admin): ID card layouts of this institute.
+| Only for temporary-card institutes (php artisan nexora:card-mode).
 |--------------------------------------------------------------------------
 */
 
 Route::prefix('card-designer')
     ->name('card-designer.')
-    ->middleware(['auth', 'user.active', 'role:SUPER_ADMIN'])
+    ->middleware(['auth', 'user.active', 'role:SUPER_ADMIN', 'card.mode:temporary'])
     ->controller(CardDesignerController::class)
     ->group(function () {
         Route::get('/', 'index')->name('index');

@@ -2,6 +2,7 @@
 
 namespace App\Services\Notification;
 
+use App\Support\SmsTemplates;
 use App\Enums\NotificationType;
 use App\Jobs\SendPaymentSms;
 use App\Models\AdmissionPayment;
@@ -66,11 +67,14 @@ class AdmissionPaymentNotificationService
                 $mobile = trim((string) $student->guardian_mobile);
 
                 if ($mobile !== '') {
-                    SendPaymentSms::dispatch(
-                        $mobile,
-                        "Dear Parent, {$name} fee {$amount} paid for {$student->initial_name} at "
-                            . config('institution.name') . ".{$receipt} Thank you."
-                    );
+                    SendPaymentSms::dispatch($mobile, SmsTemplates::render(SmsTemplates::ADMISSION_PAYMENT, [
+                        '[Student Name]' => $student->initial_name ?: $student->full_name,
+                        '[Admission]' => $name,
+                        '[Amount]' => number_format((float) $payment->amount, 2),
+                        '[Receipt]' => (string) $payment->receipt_number,
+                        '[Date]' => now()->format('Y-m-d'),
+                        '[Institute]' => (string) (config('institution.name') ?: config('app.name')),
+                    ]));
                 }
             } catch (Throwable $e) {
                 Log::warning('Admission payment notification not sent', [

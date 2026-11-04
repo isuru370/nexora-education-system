@@ -5,6 +5,7 @@ namespace App\Services\Web\Payment;
 use App\Services\Branch\BranchAccessService;
 use App\Models\Payment;
 use App\Services\Notification\PaymentNotificationService;
+use App\Support\HallFee;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -722,33 +723,8 @@ class PaymentService
             |--------------------------------------------------------------------------
             */
 
-            $hallFee = 0;
-
-            if (
-                $enrollment &&
-                $enrollment->studentClass
-            ) {
-                $pattern = $enrollment
-                    ->studentClass
-                    ->schedulePatterns()
-                    ->where('is_active', true)
-                    ->where(
-                        'class_category_fee_id',
-                        $enrollment->class_category_fee_id
-                    )
-                    ->with('hall')
-                    ->latest('start_date')
-                    ->first();
-
-                if (
-                    $pattern &&
-                    $pattern->hall
-                ) {
-                    $hallFee = (float) $pattern
-                        ->hall
-                        ->hall_price;
-                }
-            }
+            // highest hall price of the class's active schedule patterns
+            $hallFee = HallFee::forEnrollment($enrollment);
 
             /*
             |--------------------------------------------------------------------------

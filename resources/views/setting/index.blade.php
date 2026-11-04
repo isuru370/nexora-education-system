@@ -22,6 +22,9 @@
                         <a href="{{ route('admin.setting.notifications') }}" class="nx-btn nx-btn-light">
                             <i class="bi bi-bell-fill"></i> Parent Notifications
                         </a>
+                        <a href="{{ route('admin.setting.sms-templates') }}" class="nx-btn nx-btn-light">
+                            <i class="bi bi-chat-dots-fill"></i> SMS Messages
+                        </a>
                         <a href="{{ route('app-setup.index') }}" class="nx-btn nx-btn-light">
                             <i class="bi bi-qr-code"></i> Staff App QR
                         </a>
@@ -29,9 +32,11 @@
                             <a href="{{ route('payment-rules.index') }}" class="nx-btn nx-btn-light">
                                 <i class="bi bi-sliders"></i> Payment &amp; Attendance Rules
                             </a>
-                            <a href="{{ route('card-designer.index') }}" class="nx-btn nx-btn-light">
-                                <i class="bi bi-person-badge"></i> ID Card Designer
-                            </a>
+                            @if (\App\Support\CardMode::temporary())
+                                <a href="{{ route('card-designer.index') }}" class="nx-btn nx-btn-light">
+                                    <i class="bi bi-person-badge"></i> ID Card Designer
+                                </a>
+                            @endif
                         @endif
                     </div>
                     <div class="hero-date-time">

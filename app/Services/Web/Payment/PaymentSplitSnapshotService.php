@@ -3,10 +3,10 @@
 namespace App\Services\Web\Payment;
 
 use App\Models\ClassPaymentConfig;
-use App\Models\ClassSchedulePattern;
 use App\Models\Payment;
 use App\Models\PaymentSplitSnapshot;
 use App\Models\StudentClassEnrollment;
+use App\Support\HallFee;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
 
@@ -226,22 +226,6 @@ class PaymentSplitSnapshotService
      */
     protected function resolveHallFee(StudentClassEnrollment $enrollment): float
     {
-        /** @var ClassSchedulePattern|null $pattern */
-        $pattern = ClassSchedulePattern::query()
-            ->with('hall:id,hall_name,hall_price')
-            ->where('student_class_id', $enrollment->student_class_id)
-            ->where('class_category_fee_id', $enrollment->class_category_fee_id)
-            ->where('branch_id', $enrollment->branch_id)
-            ->whereNotNull('class_hall_id')
-            ->where('is_active', true)
-            ->orderByDesc('start_date')
-            ->orderByDesc('id')
-            ->first();
-
-        if (!$pattern || !$pattern->hall) {
-            return 0.0;
-        }
-
-        return (float) ($pattern->hall->hall_price ?? 0);
+        return HallFee::forEnrollment($enrollment);
     }
 }

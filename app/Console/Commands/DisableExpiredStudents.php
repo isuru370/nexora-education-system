@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Student;
+use App\Services\Web\Student\StudentAutoDisableService;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Command\Command as ConsoleCommand;
@@ -13,7 +14,7 @@ class DisableExpiredStudents extends Command
 
     protected $description = 'Disable students with no attendance for the last 2 months';
 
-    public function handle()
+    public function handle(StudentAutoDisableService $service)
     {
         $twoMonthsAgo = Carbon::now()
             ->subMonths(2)
@@ -64,24 +65,12 @@ class DisableExpiredStudents extends Command
         */
 
         $updated = 0;
+        $now = Carbon::now();
 
         foreach ($students as $student) {
-
-            // Disable student
-            $student->update([
-                'student_disable' => true,
-                'is_active' => false,
-            ]);
-
-            // Leave all currently active classes
-            $student->enrollments()
-                ->where('is_active', true)
-                ->whereNull('left_at')
-                ->update([
-                    'is_active' => false,
-                    'left_at' => now()->toDateString(),
-                ]);
-
+            // Disable + leave the active classes, and keep a record (classes,
+            // last attendance, last payment) for the "Auto-disabled students" page
+            $service->disable($student, $now);
             $updated++;
         }
 

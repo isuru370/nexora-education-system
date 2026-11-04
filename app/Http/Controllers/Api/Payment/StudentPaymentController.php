@@ -284,67 +284,6 @@ class StudentPaymentController extends Controller
             ],
         ]);
     }
-    public function destroy(int $paymentId): JsonResponse
-    {
-        try {
-            $payment = Payment::with('splitSnapshot')
-                ->findOrFail($paymentId);
-
-            // Allow delete only within 14 days
-            if ($payment->created_at->lt(now()->subDays(14))) {
-                return response()->json([
-                    'success' => false,
-                    'message' => 'This payment can only be deleted within 14 days.',
-                ], 403);
-            }
-
-            DB::beginTransaction();
-
-            try {
-                // Delete payment split snapshot first
-                if ($payment->splitSnapshot) {
-                    $payment->splitSnapshot->forceDelete();
-                }
-
-                // Delete payment permanently
-                $payment->forceDelete();
-
-                DB::commit();
-
-                // Laravel log
-                Log::info('Payment deleted successfully.', [
-                    'payment_id' => $paymentId,
-                    'deleted_by' => auth()->id(),
-                    'deleted_at' => now(),
-                ]);
-
-                return response()->json([
-                    'success' => true,
-                    'message' => 'Payment deleted successfully.',
-                ]);
-            } catch (\Exception $exception) {
-                DB::rollBack();
-
-                throw $exception;
-            }
-        } catch (\Exception $exception) {
-
-            Log::error('Payment delete failed.', [
-                'payment_id' => $paymentId,
-                'user_id' => auth()->id(),
-                'message' => $exception->getMessage(),
-                'file' => $exception->getFile(),
-                'line' => $exception->getLine(),
-            ]);
-
-            return response()->json([
-                'success' => false,
-                'message' => 'Something went wrong while deleting payment.',
-                'error' => \App\Support\ErrorDetail::safe($exception),
-            ], 500);
-        }
-    }
-
     public function todayPayments(Request $request): JsonResponse
     {
         $validated = $request->validate([
@@ -374,6 +313,8 @@ class StudentPaymentController extends Controller
                 'enrollment.classCategoryFee.category',
 
                 'enrollment.classCategoryFeeOption',
+
+                'splitSnapshot:id,payment_id,hall_fee',
             ])
             ->whereDate('paid_at', $date)
             ->where('status', 'completed');
@@ -649,6 +590,9 @@ class StudentPaymentController extends Controller
                     'amount' => (float) $payment->amount,
 
                     'discount_amount' => (float) $payment->discount_amount,
+
+                    // hall fee in this payment (0 = no hall fee), for the receipt
+                    'hall_fee' => round((float) optional($payment->splitSnapshot)->hall_fee, 2),
 
                     'paid_at' => optional($payment->paid_at)->format('Y-m-d H:i:s'),
 
