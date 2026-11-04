@@ -10,12 +10,14 @@ use Throwable;
 class GenerateStudentIdService
 {
     /**
-     * Get paginated students for the ID card generation page: active
-     * students who do not have a permanent card yet (temporary card mode).
+     * Get paginated students for the ID card generation page (temporary card
+     * mode). Every active student is listed so a card can be downloaded again
+     * at any time; $show = 'pending' lists only students who do not have a
+     * permanent card yet.
      *
      * @throws \RuntimeException
      */
-    public function getIndexData(?string $search = null): LengthAwarePaginator
+    public function getIndexData(?string $search = null, string $show = 'all'): LengthAwarePaginator
     {
         try {
             $search = $search !== null ? trim($search) : '';
@@ -35,20 +37,22 @@ class GenerateStudentIdService
                     'grade_id',
                     'mobile',
                     'is_active',
+                    'permanent_qr_active',
                     'created_at',
                 ])
                 ->when($search !== '', function ($query) use ($search) {
                     $query->where(function ($mainQuery) use ($search) {
                         $mainQuery->where('custom_id', 'like', "%{$search}%")
                             ->orWhere('initial_name', 'like', "%{$search}%")
-                            ->orWhere('full_name', 'like', "%{$search}%");
+                            ->orWhere('full_name', 'like', "%{$search}%")
+                            ->orWhere('mobile', 'like', "%{$search}%");
                     });
                 })
                 ->where('is_active', true)
-                // only students still on a temporary card need an ID printed
-                ->where('permanent_qr_active', false)
+                ->when($show === 'pending', fn ($query) => $query->where('permanent_qr_active', false))
                 ->latest('created_at')
-                ->paginate(12);
+                ->paginate(12)
+                ->withQueryString();
 
         } catch (Throwable $e) {
             Log::error('Failed to fetch students for ID card page.', [

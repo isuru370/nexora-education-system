@@ -200,14 +200,24 @@ class CardModeTest extends TestCase
 
         CardMode::set('temporary');
 
-        // only students without a permanent card are listed
         DB::table('students')->where('id', $this->inst['s1'])->update(['permanent_qr_active' => true]);
         DB::table('students')->where('id', $this->inst['s2'])->update(['permanent_qr_active' => false]);
-
-        $page = $this->get('/generate-student-id')->assertOk();
         $names = fn (int $id) => DB::table('students')->where('id', $id)->value('initial_name');
+
+        // every active student is listed, so a card can be downloaded again any time
+        $page = $this->get('/generate-student-id')->assertOk();
+        $page->assertSee($names($this->inst['s1']));
+        $page->assertSee($names($this->inst['s2']));
+        $page->assertSee('Permanent card')->assertSee('Temporary card');
+
+        // "No permanent card yet" lists only students still on a temporary card
+        $page = $this->get('/generate-student-id?show=pending')->assertOk();
         $page->assertSee($names($this->inst['s2']));
         $page->assertDontSee($names($this->inst['s1']));
+
+        // inactive students are never listed
+        DB::table('students')->where('id', $this->inst['s1'])->update(['is_active' => false]);
+        $this->get('/generate-student-id')->assertOk()->assertDontSee($names($this->inst['s1']));
 
         $this->get('/students')->assertSee('Generate Student ID');
     }
