@@ -25,6 +25,10 @@ class IndexStudentIdCardRequest extends FormRequest
                 'string',
                 'max:100',
             ],
+            'show' => [
+                'nullable',
+                'in:all,pending',
+            ],
         ];
     }
 

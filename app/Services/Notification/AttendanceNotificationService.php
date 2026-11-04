@@ -2,6 +2,7 @@
 
 namespace App\Services\Notification;
 
+use App\Support\SmsTemplates;
 use App\Models\NotificationSetting;
 use App\Models\Student;
 use App\Models\StudentAttendance;
@@ -233,16 +234,15 @@ class AttendanceNotificationService
      */
     private function buildSmsMessage(array $data): string
     {
-        return sprintf(
-            'Attendance marked. Student: %s, Class: %s, ' .
-                'Category: %s, Grade: %s, Date: %s, Time: %s. Thank you.',
-            $data['student_name'],
-            $data['class_name'],
-            $data['category'],
-            $data['grade'],
-            $data['date'],
-            $data['time']
-        );
+        return SmsTemplates::render(SmsTemplates::ATTENDANCE, [
+            '[Student Name]' => $data['student_name'],
+            '[Class]' => $data['class_name'],
+            '[Grade]' => $data['grade'],
+            '[Category]' => $data['category'],
+            '[Date]' => $data['date'],
+            '[Time]' => $data['time'],
+            '[Institute]' => (string) (config('institution.name') ?: config('app.name')),
+        ]);
     }
 
     /**

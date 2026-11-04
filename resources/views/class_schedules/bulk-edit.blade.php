@@ -83,6 +83,28 @@
         </div>
     </div>
 
+    {{-- HALL FEE: highest hall price of the active patterns --}}
+    @php
+        $hallFeeNow = \App\Support\HallFee::forClass(
+            (int) $studentClass->id,
+            (int) $categoryFee->id
+        );
+    @endphp
+    <div class="nx-alert {{ $hallFeeNow['fee'] > 0 ? 'nx-alert-green' : 'nx-alert-blue' }} mb-4">
+        <i class="bi bi-building"></i>
+        <span>
+            @if ($hallFeeNow['fee'] > 0)
+                Hall fee added to each payment: <strong>Rs. {{ number_format($hallFeeNow['fee'], 2) }}</strong>
+                (from {{ $hallFeeNow['hall']->hall_name }}).
+            @else
+                No hall fee is added to payments of this class.
+            @endif
+            When the class uses more than one hall, the <strong>highest</strong> hall price of the
+            <strong>active</strong> patterns is charged. To stop a hall fee, edit that pattern and turn off
+            <em>Active</em>, or change its hall.
+        </span>
+    </div>
+
     {{-- PATTERNS --}}
     <div class="nx-card mb-4">
         <div class="nx-card-header">
@@ -125,7 +147,15 @@
                                 @endif
                             </td>
 
-                            <td class="cell-sub">{{ optional($pattern->hall)->hall_name ?? 'N/A' }}</td>
+                            <td class="cell-sub">
+                                {{ optional($pattern->hall)->hall_name ?? 'N/A' }}
+                                @if ($pattern->hall)
+                                    <small class="d-block">Rs. {{ number_format((float) $pattern->hall->hall_price, 2) }}</small>
+                                    @if ($pattern->is_active && $hallFeeNow['fee'] > 0 && optional($hallFeeNow['hall'])->id === $pattern->hall->id)
+                                        <span class="nx-badge nx-badge-green">Hall fee charged</span>
+                                    @endif
+                                @endif
+                            </td>
 
                             <td class="cell-sub">
                                 {{ $pattern->start_date ? \Carbon\Carbon::parse($pattern->start_date)->format('Y-m-d') : 'N/A' }}

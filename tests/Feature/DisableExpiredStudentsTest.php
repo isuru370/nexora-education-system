@@ -60,4 +60,55 @@ class DisableExpiredStudentsTest extends TestCase
 
         $this->assertSame(0, (int) DB::table('students')->where('id', $this->inst['s2'])->value('is_active'));
     }
+
+    private function runOldEnrollmentWithoutAttendance(): void
+    {
+        Carbon::setTestNow('2026-11-04 00:00:00');
+        $this->buildInstitute();
+        DB::table('student_class_enrollments')->where('id', $this->inst['e2'])
+            ->update(['created_at' => '2026-05-01 10:00:00']);
+        $this->artisan('disable:expired-students')->assertExitCode(0);
+    }
+
+    public function test_the_job_keeps_a_record_with_classes_last_attendance_and_payment(): void
+    {
+        $this->runOldEnrollmentWithoutAttendance();
+
+        $record = DB::table('student_auto_disables')->where('student_id', $this->inst['s2'])->first();
+        $this->assertNotNull($record);
+        $classes = json_decode($record->classes, true);
+        $this->assertSame($this->inst['e2'], $classes[0]['enrollment_id']);
+        $this->assertNull($record->last_attendance_at);   // S2 never came
+    }
+
+    public function test_staff_see_the_list_pdf_and_dashboard_button_and_can_reactivate(): void
+    {
+        $this->runOldEnrollmentWithoutAttendance();
+        Carbon::setTestNow('2026-11-04 08:00:00');
+
+        $name = DB::table('students')->where('id', $this->inst['s2'])->value('initial_name');
+
+        $this->actingAs($this->inst['cashier'])->get('/auto-disabled-students')
+            ->assertOk()->assertSee($name)->assertSee('Re-activate');
+        $this->actingAs($this->inst['cashier'])->get('/auto-disabled-students?search=zzz')
+            ->assertOk()->assertDontSee($name);
+        $this->actingAs($this->inst['cashier'])->get('/auto-disabled-students/pdf')
+            ->assertOk()->assertHeader('content-type', 'application/pdf');
+        $this->actingAs($this->inst['admin'])->get('/dashboard')
+            ->assertOk()->assertSee('Auto-disabled students');
+
+        $id = DB::table('student_auto_disables')->value('id');
+        $this->actingAs($this->inst['cashier'])->post('/auto-disabled-students/' . $id . '/reactivate')
+            ->assertSessionHas('success');
+
+        $this->assertSame(1, (int) DB::table('students')->where('id', $this->inst['s2'])->value('is_active'));
+        $this->assertSame(0, (int) DB::table('students')->where('id', $this->inst['s2'])->value('student_disable'));
+        $this->assertSame(1, (int) DB::table('student_class_enrollments')->where('id', $this->inst['e2'])->value('is_active'));
+        $this->assertNull(DB::table('student_class_enrollments')->where('id', $this->inst['e2'])->value('left_at'));
+        $this->assertNotNull(DB::table('student_auto_disables')->where('id', $id)->value('reactivated_at'));
+
+        // twice: refused
+        $this->actingAs($this->inst['cashier'])->post('/auto-disabled-students/' . $id . '/reactivate')
+            ->assertSessionHas('error');
+    }
 }

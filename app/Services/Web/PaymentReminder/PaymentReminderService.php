@@ -2,6 +2,7 @@
 
 namespace App\Services\Web\PaymentReminder;
 
+use App\Support\SmsTemplates;
 use App\Enums\NotificationType;
 use App\Jobs\SendPaymentReminderBulkSmsJob;
 use App\Jobs\SendPaymentReminderSmsJob;
@@ -326,13 +327,8 @@ class PaymentReminderService
 
     public function defaultMessage(): string
     {
-        return "Dear Parent/Guardian,\n"
-            . "The class fee for [Month] is still pending.\n"
-            . "Student: [Student Name]\n"
-            . "Class: [Class]\n"
-            . "Amount due: Rs. [Amount]\n"
-            . "Attended: [Attendance] day(s)\n"
-            . 'Please settle the payment. Thank you.';
+        // Settings > SMS Messages
+        return SmsTemplates::body(SmsTemplates::PAYMENT_REMINDER);
     }
 
     /**

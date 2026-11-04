@@ -27,6 +27,9 @@
             </div>
             <div class="hero-right">
                 <div class="hero-actions">
+                    <a href="{{ route('admin.setting.sms-templates') }}" class="nx-btn nx-btn-light">
+                        <i class="bi bi-chat-dots-fill"></i> SMS Messages
+                    </a>
                     <a href="{{ route('admin.setting.index') }}" class="nx-btn nx-btn-light">
                         <i class="bi bi-arrow-left"></i> Settings
                     </a>
