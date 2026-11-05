@@ -163,6 +163,47 @@ class CourseWebTest extends TestCase
         $this->get("/courses/{$course->id}")->assertOk();
     }
 
+    public function test_teacher_payment_is_saved_and_institute_share_can_be_given_to_the_owner(): void
+    {
+        $course = $this->buildCourse();   // teachers 35% + 35%, institute 30%
+        $this->actingAs($this->inst['admin']);
+
+        $this->post("/courses/{$course->id}/enrollments", ['student_code' => 'S1', 'payment_plan' => 'full']);
+        $enrollment = CourseEnrollment::firstOrFail();
+        $this->post("/courses/{$course->id}/enrollments/{$enrollment->id}/payments", ['amount' => 10000, 'payment_method' => 'cash']);
+
+        // Teacher payment saved with the course, branch, user, date and method
+        $this->post("/courses/{$course->id}/payouts", ['teacher_id' => $this->inst['teacher'], 'amount' => 2000, 'payment_method' => 'bank_transfer', 'note' => 'Nov'])
+            ->assertSessionHasNoErrors();
+        $this->assertDatabaseHas('course_teacher_payouts', [
+            'course_id' => $course->id, 'branch_id' => $course->branch_id, 'teacher_id' => $this->inst['teacher'],
+            'amount' => 2000, 'payment_method' => 'bank_transfer', 'status' => 'paid', 'user_id' => $this->inst['admin']->id,
+            'note' => 'Nov',
+        ]);
+        $this->assertSame(now()->toDateString(), \App\Models\CourseTeacherPayout::firstOrFail()->paid_on->toDateString());
+        $teacher = app(\App\Services\Course\CourseTeacherEarningService::class)->forCourse($course)
+            ->first(fn ($r) => $r['teacher']->id === $this->inst['teacher']);
+        $this->assertEquals([3500, 2000, 1500], [$teacher['earned'], $teacher['paid'], $teacher['balance']]);
+
+        // Institute share 3,000 -> 2,000 given to the owner
+        $this->post("/courses/{$course->id}/owner-payouts", ['amount' => 2000, 'payment_method' => 'cash', 'note' => 'To owner'])
+            ->assertSessionHasNoErrors();
+        $this->post("/courses/{$course->id}/owner-payouts", ['amount' => 1500, 'payment_method' => 'cash'])
+            ->assertSessionHasErrors('amount');   // only 1,000 left
+
+        $row = app(\App\Services\Course\CourseTeacherEarningService::class)->instituteRow($course);
+        $this->assertEquals(['earned' => 3000, 'paid' => 2000, 'balance' => 1000], $row);
+
+        $this->get("/courses/{$course->id}")->assertOk()
+            ->assertSee('Paid to owner')->assertSee('To owner')->assertSee('1,000.00');
+
+        // Cancel: back to the institute balance
+        $owner = \App\Models\CourseOwnerPayout::firstOrFail();
+        $this->patch("/courses/{$course->id}/owner-payouts/{$owner->id}/cancel")->assertRedirect();
+        $this->assertSame('cancelled', $owner->fresh()->status);
+        $this->assertEquals(3000, app(\App\Services\Course\CourseTeacherEarningService::class)->instituteRow($course)['balance']);
+    }
+
     public function test_other_branch_users_cannot_open_the_course(): void
     {
         $course = $this->buildCourse(['branch_id' => $this->inst['b2']]);
