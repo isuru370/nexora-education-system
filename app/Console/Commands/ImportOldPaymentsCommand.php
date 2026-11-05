@@ -35,11 +35,20 @@ use Throwable;
  *
  * At the end the totals per month in the file and in the database are
  * compared; they must be the same.
+ *
+ * Each run is a batch (--batch, default the date and time), saved on the
+ * payments, so it can be taken out again:
+ *   php artisan nexora:import-payments-rollback <batch>
+ * --preview=file.csv writes every row with the class it goes to.
+ * The old system had no hall fee: imported payments are saved with hall
+ * fee 0 (the teacher / institute split is a % of the amount, as always).
  */
 class ImportOldPaymentsCommand extends Command
 {
     protected $signature = 'nexora:import-payments
-        {file : CSV - old_id, custom_id, old_enrollment_id, old_fee_id, payment_month, amount, paid_at, status}
+        {file : CSV - old_id, custom_id, old_enrollment_id, old_fee_id, payment_month, amount, paid_at, status (+ optional old_class)}
+        {--batch= : name of this import, to roll it back later (default: date-time)}
+        {--preview= : write every row and the class it goes to into this CSV}
         {--dry-run : only report, change nothing}';
 
     protected $description = 'Import the old system class fee payments (with the teacher / institute split)';
@@ -48,9 +57,14 @@ class ImportOldPaymentsCommand extends Command
     public const NOTE = 'Imported from old system #';
     public const ENROLLMENT_NOTE = ImportOldClassesCommand::ENROLLMENT_NOTE;
 
+    /** payments.reference_number of an imported payment: IMPORT-<batch> */
+    public const BATCH_PREFIX = 'IMPORT-';
+
     public function handle(ReceiptNumberService $receipts, PaymentSplitSnapshotService $splits): int
     {
         $dry = (bool) $this->option('dry-run');
+        $batch = preg_replace('/[^A-Za-z0-9_\-]/', '', (string) ($this->option('batch') ?: now()->format('Ymd-His')));
+        $preview = [];
 
         try {
             $rows = OldValue::csv((string) $this->argument('file'), self::REQUIRED);
@@ -72,7 +86,7 @@ class ImportOldPaymentsCommand extends Command
 
         $enrollmentByOld = [];
         StudentClassEnrollment::query()->where('note', 'like', self::ENROLLMENT_NOTE . '%')
-            ->get(['id', 'note', 'branch_id', 'student_id'])
+            ->get(['id', 'note', 'branch_id', 'student_id', 'student_class_id', 'class_category_fee_id', 'is_active'])
             ->each(function ($e) use (&$enrollmentByOld) {
                 $enrollmentByOld[(int) substr($e->note, strlen(self::ENROLLMENT_NOTE))] = $e;
             });
@@ -89,7 +103,7 @@ class ImportOldPaymentsCommand extends Command
 
         $enrollmentByStudentOption = [];
         StudentClassEnrollment::query()->orderByDesc('is_active')->orderBy('id')
-            ->get(['id', 'branch_id', 'student_id', 'class_category_fee_option_id'])
+            ->get(['id', 'branch_id', 'student_id', 'class_category_fee_option_id', 'student_class_id', 'class_category_fee_id', 'is_active'])
             ->each(function ($e) use (&$enrollmentByStudentOption) {
                 $enrollmentByStudentOption[$e->student_id . '|' . $e->class_category_fee_option_id] ??= $e;
             });
@@ -114,13 +128,21 @@ class ImportOldPaymentsCommand extends Command
             $amount = is_numeric(trim($row['amount'])) ? round((float) $row['amount'], 2) : null;
             $paidAt = OldValue::text($row['paid_at']) ? OldValue::time($row['paid_at']) : null;
 
+            $note = function (string $result, $enrollment = null) use (&$preview, $row, $id, $month, $amount) {
+                $preview[] = [$row['old_id'], $id, $row['old_class'] ?? '', $enrollment ? $enrollment->id : '',
+                    $enrollment ? $this->classLabel($enrollment) : '', $enrollment ? ($enrollment->is_active ? 'active' : 'inactive') : '',
+                    $month, $amount, $row['paid_at'], $result];
+            };
+
             if (!OldValue::bool($row['status'] ?? null, true)) {
+                $note('skip: cancelled in the old system');
                 $count['cancelled']++;
                 $problems[] = "#{$oldId} {$id}: not imported - cancelled in the old system (Rs. {$row['amount']})";
                 continue;
             }
 
             if ($oldId <= 0 || $month === null || $amount === null || $paidAt === null) {
+                $note('skip: no month / amount / date');
                 $count['bad']++;
                 $problems[] = "#{$oldId} {$id}: NOT imported - no month / amount / date";
                 continue;
@@ -129,6 +151,7 @@ class ImportOldPaymentsCommand extends Command
             $fileTotals[$month] = ($fileTotals[$month] ?? 0) + $amount;
 
             if (isset($imported[$oldId])) {
+                $note('skip: already imported');
                 $count['exists']++;
                 continue;
             }
@@ -140,13 +163,15 @@ class ImportOldPaymentsCommand extends Command
             }
 
             if (!$enrollment || ($students[$id] ?? null) !== (int) $enrollment->student_id) {
+                $note('NOT FOUND: class enrollment');
                 $count['no_enrollment']++;
-                $problems[] = "#{$oldId} {$id}: NOT imported - class enrollment not found (import classes first)";
+                $problems[] = "#{$oldId} {$id}: NOT imported - class enrollment not found (import classes first) ({$month}, Rs. {$amount})";
                 continue;
             }
 
             $monthKey = $enrollment->id . '|' . $month;
             if (isset($paidMonths[$monthKey])) {
+                $note('skip: month already paid for this class', $enrollment);
                 $count['duplicate']++;
                 $problems[] = "#{$oldId} {$id}: NOT imported - {$month} already paid for this class (double entry, Rs. {$amount})";
                 continue;
@@ -154,8 +179,8 @@ class ImportOldPaymentsCommand extends Command
 
             if (!$dry) {
                 try {
-                    DB::transaction(function () use ($enrollment, $amount, $paidAt, $month, $oldId, $receipts, $splits) {
-                        $payment = Payment::withoutEvents(function () use ($enrollment, $amount, $paidAt, $month, $oldId, $receipts) {
+                    DB::transaction(function () use ($enrollment, $amount, $paidAt, $month, $oldId, $receipts, $splits, $batch) {
+                        $payment = Payment::withoutEvents(function () use ($enrollment, $amount, $paidAt, $month, $oldId, $receipts, $batch) {
                             $payment = new Payment([
                                 'branch_id' => $enrollment->branch_id,
                                 'student_id' => $enrollment->student_id,
@@ -169,6 +194,7 @@ class ImportOldPaymentsCommand extends Command
                                 'payment_method' => 'cash',
                                 'status' => 'completed',
                                 'receipt_number' => $receipts->generate(),
+                                'reference_number' => self::BATCH_PREFIX . $batch,
                                 'note' => self::NOTE . $oldId,
                             ]);
                             $payment->created_at = $paidAt;
@@ -179,7 +205,18 @@ class ImportOldPaymentsCommand extends Command
                         });
 
                         // teacher / institute split, same as a payment from the web
-                        $splits->createForPayment($payment);
+                        $snapshot = $splits->createForPayment($payment);
+
+                        // the old system had no hall fee: the whole amount is class fee
+                        if ($snapshot) {
+                            [$teacher, $organizer, $institution] = PaymentSplitSnapshotService::split(
+                                $amount, 0, (float) $snapshot->teacher_percentage, (float) $snapshot->organizer_percentage
+                            );
+                            $snapshot->forceFill([
+                                'hall_fee' => 0, 'class_fee' => $amount, 'total_fee' => $amount,
+                                'teacher_amount' => $teacher, 'organizer_amount' => $organizer, 'institution_amount' => $institution,
+                            ])->save();
+                        }
                     });
                 } catch (Throwable $e) {
                     $count['failed']++;
@@ -188,6 +225,7 @@ class ImportOldPaymentsCommand extends Command
                 }
             }
 
+            $note($dry ? 'would import' : 'imported', $enrollment);
             $paidMonths[$monthKey] = true;
             $imported[$oldId] = true;
             $count['created']++;
@@ -209,6 +247,18 @@ class ImportOldPaymentsCommand extends Command
 
         if (!$dry) {
             $this->check($fileTotals, $problems);
+            $this->info("Batch: {$batch}  (to take it out again: php artisan nexora:import-payments-rollback {$batch})");
+        }
+
+        if ($path = $this->option('preview')) {
+            $handle = fopen($path, 'w');
+            fwrite($handle, "\xEF\xBB\xBF");
+            fputcsv($handle, ['old_id', 'student_id', 'old_class', 'enrollment_id', 'new_class', 'enrollment', 'month', 'amount', 'paid_at', 'result']);
+            foreach ($preview as $line) {
+                fputcsv($handle, $line);
+            }
+            fclose($handle);
+            $this->info("Preview: {$path} (" . count($preview) . ' rows)');
         }
 
         $log = OldValue::writeProblems('import-payments', $problems, fn ($l) => $this->line($l));
@@ -217,6 +267,20 @@ class ImportOldPaymentsCommand extends Command
         }
 
         return $count['failed'] > 0 ? self::FAILURE : self::SUCCESS;
+    }
+
+    /** "ICT 2028 A/L / Theory" */
+    protected function classLabel(StudentClassEnrollment $enrollment): string
+    {
+        $enrollment->loadMissing([
+            'studentClass' => fn ($q) => $q->withTrashed(),
+            'classCategoryFee.category',
+        ]);
+
+        $class = optional($enrollment->studentClass)->class_name ?? '#' . $enrollment->student_class_id;
+        $category = optional(optional($enrollment->classCategoryFee)->category)->category_name;
+
+        return $class . ($category ? ' / ' . $category : '') . (optional($enrollment->studentClass)->deleted_at ? ' (deleted)' : '');
     }
 
     /**
@@ -228,6 +292,10 @@ class ImportOldPaymentsCommand extends Command
         $skipped = [];
         foreach ($problems as $p) {
             if (preg_match('/- (\d{4}-\d{2}) already paid .*Rs\. ([\d.]+)\)/', $p, $m)) {
+                $skipped[$m[1]] = ($skipped[$m[1]] ?? 0) + (float) $m[2];
+            }
+            // enrollment not found: not in the database either
+            if (preg_match('/enrollment not found .*\((\d{4}-\d{2}), Rs\. ([\d.]+)\)/', $p, $m)) {
                 $skipped[$m[1]] = ($skipped[$m[1]] ?? 0) + (float) $m[2];
             }
         }
@@ -257,7 +325,7 @@ class ImportOldPaymentsCommand extends Command
 
         $this->newLine();
         $this->line('Check - old system vs new database, per month:');
-        $this->table(['Month', 'Old system', 'Imported', 'Skipped (double)', ''], array_values($rows));
+        $this->table(['Month', 'Old system', 'Imported', 'Skipped (double / no class)', ''], array_values($rows));
 
         $imported = (float) $db->sum();
         $this->line(sprintf('Total imported: Rs. %s - teacher / institute split made for %d payments (Rs. %s)',
