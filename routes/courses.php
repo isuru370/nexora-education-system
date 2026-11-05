@@ -86,6 +86,11 @@ Route::middleware(['auth', 'user.active', 'feature:courses'])->group(function ()
             Route::post('payouts', [CourseTeacherPaymentController::class, 'store'])->name('payouts.store');
             Route::patch('payouts/{courseTeacherPayout}/cancel', [CourseTeacherPaymentController::class, 'cancel'])
                 ->whereNumber('courseTeacherPayout')->name('payouts.cancel');
+
+            // Institute share handed to the owner
+            Route::post('owner-payouts', [\App\Http\Controllers\Web\Course\CourseOwnerPayoutController::class, 'store'])->name('owner-payouts.store');
+            Route::patch('owner-payouts/{courseOwnerPayout}/cancel', [\App\Http\Controllers\Web\Course\CourseOwnerPayoutController::class, 'cancel'])
+                ->whereNumber('courseOwnerPayout')->name('owner-payouts.cancel');
         });
     });
 });

@@ -3,6 +3,7 @@
 namespace App\Services\Course;
 
 use App\Models\Course;
+use App\Models\CourseOwnerPayout;
 use App\Models\CoursePaymentSplit;
 use App\Models\CourseTeacherPayout;
 use App\Models\Teacher;
@@ -71,6 +72,56 @@ class CourseTeacherEarningService
             ->where('course_payments.status', 'completed')
             ->whereNull('course_payment_splits.teacher_id')
             ->sum('course_payment_splits.amount'), 2);
+    }
+
+    /**
+     * Institute share: earned, handed to the owner, balance (still with the institute).
+     *
+     * @return array{earned: float, paid: float, balance: float}
+     */
+    public function instituteRow(Course $course): array
+    {
+        $earned = $this->instituteEarned($course);
+        $paid = round((float) CourseOwnerPayout::query()
+            ->where('course_id', $course->id)
+            ->where('status', 'paid')
+            ->sum('amount'), 2);
+
+        return ['earned' => $earned, 'paid' => $paid, 'balance' => round($earned - $paid, 2)];
+    }
+
+    /** Record that (part of) the institute share was given to the owner. */
+    public function ownerPayout(Course $course, float $amount, string $method, ?string $note, ?int $userId): CourseOwnerPayout
+    {
+        $amount = round($amount, 2);
+
+        return DB::transaction(function () use ($course, $amount, $method, $note, $userId) {
+            Course::query()->whereKey($course->id)->lockForUpdate()->first();
+
+            $balance = $this->instituteRow($course)['balance'];
+
+            if ($amount <= 0 || $amount > $balance) {
+                throw ValidationException::withMessages([
+                    'amount' => 'Amount must be between 1 and the institute balance (Rs. ' . number_format(max(0, $balance), 2) . ').',
+                ]);
+            }
+
+            return CourseOwnerPayout::create([
+                'branch_id' => $course->branch_id,
+                'course_id' => $course->id,
+                'amount' => $amount,
+                'paid_on' => now()->toDateString(),
+                'payment_method' => $method,
+                'status' => 'paid',
+                'user_id' => $userId,
+                'note' => $note,
+            ]);
+        });
+    }
+
+    public function cancelOwnerPayout(CourseOwnerPayout $payout): void
+    {
+        $payout->update(['status' => 'cancelled']);
     }
 
     public function payout(Course $course, int $teacherId, float $amount, string $method, ?string $note, ?int $userId): CourseTeacherPayout

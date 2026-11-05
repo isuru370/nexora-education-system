@@ -19,7 +19,7 @@
 
         {{-- ==================== PAGINATION LINKS ==================== --}}
         <nav aria-label="Student ID Cards Pagination" class="pagination-nav">
-            {{ $students->appends(request()->query())->links('pagination::bootstrap-5') }}
+            {{ $students->appends(request()->query())->links('pagination::bootstrap-4') }}
         </nav>
 
     </div>
