@@ -51,4 +51,32 @@ class OldCardQrTest extends TestCase
             'payment_month' => '2026-12', 'paid_at' => null, 'payment_method' => 'cash', 'mark_method' => 'qr_mobile', 'note' => null,
         ]]])->assertSuccessful();
     }
+
+    public function test_student_class_management_finds_old_cards_and_students_with_no_class(): void
+    {
+        $this->buildInstitute();
+        $this->actingAs($this->inst['admin']);
+        $name = \Illuminate\Support\Facades\DB::table('students')->where('id', $this->inst['s1'])->value('initial_name');
+
+        $this->post('/student-class-management/search', ['search' => '{"std_ID":"S1"}'])->assertOk()->assertSee($name);
+        $this->get('/student-class-management/scan/' . rawurlencode('{"std_ID":"S1"}'))->assertOk()->assertSee($name);
+
+        // registered, no class yet: found, so a class can be assigned
+        \Illuminate\Support\Facades\DB::table('students')->insert([
+            'custom_id' => 'S9', 'branch_id' => $this->inst['b1'], 'initial_name' => 'New Kid', 'full_name' => 'New Kid',
+            'guardian_mobile' => '0771234567', 'grade_id' => \Illuminate\Support\Facades\DB::table('grades')->value('id'),
+            'img_url' => '', 'permanent_qr_active' => 1, 'is_active' => 1,
+        ]);
+        $this->post('/student-class-management/search', ['search' => 'S9'])->assertOk()->assertSee('New Kid');
+
+        // another branch's student without a class is not shown to a cashier of B1
+        \Illuminate\Support\Facades\DB::table('students')->insert([
+            'custom_id' => 'K9', 'branch_id' => $this->inst['b2'], 'initial_name' => 'Kandy Kid', 'full_name' => 'Kandy Kid',
+            'guardian_mobile' => '0771234567', 'grade_id' => \Illuminate\Support\Facades\DB::table('grades')->value('id'),
+            'img_url' => '', 'permanent_qr_active' => 1, 'is_active' => 1,
+        ]);
+        $this->actingAs($this->inst['cashier'])
+            ->post('/student-class-management/search', ['search' => 'K9'])
+            ->assertRedirect(route('student-class-management.index'));
+    }
 }
