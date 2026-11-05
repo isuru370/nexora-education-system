@@ -85,6 +85,12 @@ class Course extends Model
         return $this->hasMany(CourseTeacherPayout::class);
     }
 
+    /** Institute share handed to the owner */
+    public function ownerPayouts(): HasMany
+    {
+        return $this->hasMany(CourseOwnerPayout::class);
+    }
+
     /** Institute share = 100 - teachers' shares. */
     public function institutePercentage(): float
     {

@@ -113,8 +113,11 @@ class StudentClassManagementController extends Controller
                         ->orWhere('whatsapp_mobile', 'LIKE', "%{$search}%")
                         ->orWhere('guardian_mobile', 'LIKE', "%{$search}%");
                 })
-                ->whereHas('enrollments', function ($q) use ($accessibleBranchIds) {
-                    $q->whereIn('branch_id', $accessibleBranchIds);
+                // Students of the user's branches, also those with no class yet
+                // (to assign their first class), or with a class in one of them
+                ->where(function ($q) use ($accessibleBranchIds) {
+                    $q->whereIn('branch_id', $accessibleBranchIds)
+                        ->orWhereHas('enrollments', fn ($e) => $e->whereIn('branch_id', $accessibleBranchIds));
                 })
                 ->with([
                     'enrollments' => function ($query) use ($accessibleBranchIds) {
@@ -196,6 +199,9 @@ class StudentClassManagementController extends Controller
      */
     public function scanQr(string $qrCode)
     {
+        // Old cards: {"std_ID":"SA11045"} -> SA11045
+        $qrCode = (string) \App\Support\ScannedCode::clean(urldecode($qrCode));
+
         try {
             /** @var Collection<int, int> $accessibleBranchIds */
             $accessibleBranchIds = $this->branchAccessService->getBranchIds();
@@ -211,8 +217,11 @@ class StudentClassManagementController extends Controller
                         ->where('custom_id', $qrCode)
                         ->orWhere('temporary_qr_code', $qrCode);
                 })
-                ->whereHas('enrollments', function ($q) use ($accessibleBranchIds) {
-                    $q->whereIn('branch_id', $accessibleBranchIds);
+                // Students of the user's branches, also those with no class yet
+                // (to assign their first class), or with a class in one of them
+                ->where(function ($q) use ($accessibleBranchIds) {
+                    $q->whereIn('branch_id', $accessibleBranchIds)
+                        ->orWhereHas('enrollments', fn ($e) => $e->whereIn('branch_id', $accessibleBranchIds));
                 })
                 ->with([
                     'enrollments' => function ($query) use ($accessibleBranchIds) {
