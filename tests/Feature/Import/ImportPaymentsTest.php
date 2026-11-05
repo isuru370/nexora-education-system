@@ -153,6 +153,58 @@ class ImportPaymentsTest extends TestCase
         $this->assertSame(1, TeacherSalary::count());
     }
 
+    public function test_batch_preview_hall_fee_zero_and_rollback(): void
+    {
+        // a hall with a price today: the old payments had no hall fee
+        $hall = \Illuminate\Support\Facades\DB::table('class_halls')->insertGetId([
+            'branch_id' => Branch::value('id'), 'code' => 'H1', 'hall_name' => 'Hall 1', 'hall_price' => 100,
+            'is_active' => 1, 'created_at' => now(), 'updated_at' => now(),
+        ]);
+        $class = \Illuminate\Support\Facades\DB::table('student_classes')->value('id');
+        \Illuminate\Support\Facades\DB::table('class_schedule_patterns')->insert([
+            'branch_id' => Branch::value('id'), 'student_class_id' => $class,
+            'class_category_fee_id' => \Illuminate\Support\Facades\DB::table('class_category_fees')->value('id'),
+            'class_hall_id' => $hall, 'start_date' => '2026-01-01', 'end_date' => '2026-12-31', 'start_time' => '08:00:00',
+            'end_time' => '10:00:00', 'class_day' => 'monday', 'is_active' => 1, 'created_at' => now(), 'updated_at' => now(),
+        ]);
+
+        // a payment made in this system is never touched by the rollback
+        $own = Payment::create([
+            'branch_id' => Branch::value('id'), 'student_id' => Student::where('custom_id', 'CS0002')->value('id'),
+            'student_class_enrollment_id' => \Illuminate\Support\Facades\DB::table('student_class_enrollments')->where('note', 'Imported from old system #3')->value('id'),
+            'amount' => 1100, 'paid_at' => '2026-11-03 10:00:00', 'payment_month' => '2026-11-01', 'status' => 'completed', 'receipt_number' => 'OWN-1',
+        ]);
+
+        $preview = $this->dir . '/preview.csv';
+        $this->artisan('nexora:import-payments', ['file' => $this->dir . '/payments.csv', '--batch' => 'octnov', '--preview' => $preview])
+            ->expectsOutput('Batch: octnov  (to take it out again: php artisan nexora:import-payments-rollback octnov)')
+            ->assertExitCode(0);
+
+        $this->assertSame(4, Payment::where('reference_number', 'IMPORT-octnov')->count());
+        $this->assertEquals(0, PaymentSplitSnapshot::sum('hall_fee'));   // old payments: no hall fee
+        $this->assertEquals(2850, PaymentSplitSnapshot::sum('teacher_amount'));
+
+        $lines = array_map('str_getcsv', file($preview, FILE_IGNORE_NEW_LINES));
+        $this->assertStringContainsString('new_class', $lines[0][4]);
+        $this->assertContains('ENGLISH G10 / Theory', array_column($lines, 4));
+        $this->assertContains('imported', array_column($lines, 9));
+
+        $this->artisan('nexora:import-payments-rollback', ['batch' => 'octnov', '--dry-run' => true])->assertExitCode(0);
+        $this->assertSame(4, Payment::where('reference_number', 'IMPORT-octnov')->count());
+
+        $this->artisan('nexora:import-payments-rollback', ['batch' => 'octnov'])
+            ->expectsOutput('Removed 4 payments and their splits. The batch can be imported again.')
+            ->assertExitCode(0);
+
+        $this->assertSame(0, Payment::withTrashed()->where('reference_number', 'IMPORT-octnov')->count());
+        $this->assertSame(0, PaymentSplitSnapshot::withTrashed()->count());
+        $this->assertNotNull(Payment::find($own->id));
+
+        // and it can be imported again
+        $this->artisan('nexora:import-payments', ['file' => $this->dir . '/payments.csv', '--batch' => 'again'])->assertExitCode(0);
+        $this->assertSame(4, Payment::where('reference_number', 'IMPORT-again')->count());
+    }
+
     public function test_months_without_an_old_salary_are_closed_until_the_settled_month(): void
     {
         $this->artisan('nexora:import-payments', ['file' => $this->dir . '/payments.csv'])->assertExitCode(0);
