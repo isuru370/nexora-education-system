@@ -432,10 +432,8 @@ class ImportOldClassesCommand extends Command
                         'left_at' => $leftAt?->toDateString(),
                         'note' => self::ENROLLMENT_NOTE . $oldId,
                     ]);
-                    if ($date) {
-                        $enrollment->created_at = $date;
-                        $enrollment->updated_at = $date;
-                    }
+                    // created_at = the import time (enrolled_at keeps the old date):
+                    // the row is new in this system and has no attendance yet
                     $enrollment->save();
                 } catch (Throwable $e) {
                     $count['failed']++;
