@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Models\Student;
+use App\Models\StudentAttendance;
 use App\Services\Web\Student\StudentAutoDisableService;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
@@ -22,6 +23,31 @@ class DisableExpiredStudents extends Command
 
         /*
         |--------------------------------------------------------------------------
+        | Branches that have used this system for 2 months
+        |--------------------------------------------------------------------------
+        |
+        | "No attendance for 2 months" only means something when attendance has
+        | been marked in this system for 2 months. A branch that started (or
+        | imported its students) less than 2 months ago has no attendance
+        | history yet, so nobody there is disabled. (Imported students and
+        | enrollments keep their old dates, so their dates cannot tell this.)
+        |
+        */
+
+        $readyBranchIds = StudentAttendance::query()
+            ->whereNotNull('branch_id')
+            ->groupBy('branch_id')
+            ->havingRaw('MIN(attended_at) <= ?', [$twoMonthsAgo->toDateTimeString()])
+            ->pluck('branch_id');
+
+        if ($readyBranchIds->isEmpty()) {
+            $this->info('No branch has 2 months of attendance in this system yet. Nobody was disabled.');
+
+            return ConsoleCommand::SUCCESS;
+        }
+
+        /*
+        |--------------------------------------------------------------------------
         | Find students eligible for deactivation
         |--------------------------------------------------------------------------
         */
@@ -29,6 +55,7 @@ class DisableExpiredStudents extends Command
         $students = Student::query()
             ->where('student_disable', false)
             ->where('is_active', true)
+            ->whereIn('branch_id', $readyBranchIds)
 
             // At least one active enrollment older than 2 months - in THIS system.
             // An enrollment imported from an old system keeps its old enrolled_at,
