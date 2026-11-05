@@ -186,13 +186,13 @@ class StudentAutoDisableService
      *
      * @return array{student: Student, classes: int}
      */
-    public function reactivate(int $id): array
+    public function reactivate(int $id, bool $checkAccess = true): array
     {
-        return DB::transaction(function () use ($id) {
+        return DB::transaction(function () use ($id, $checkAccess) {
             /** @var StudentAutoDisable $record */
             $record = StudentAutoDisable::query()->lockForUpdate()->findOrFail($id);
 
-            if ($record->branch_id && !$this->branchAccess->canAccessBranch((int) $record->branch_id)) {
+            if ($checkAccess && $record->branch_id && !$this->branchAccess->canAccessBranch((int) $record->branch_id)) {
                 throw new DomainException('You do not have access to this branch.');
             }
             if ($record->reactivated_at) {

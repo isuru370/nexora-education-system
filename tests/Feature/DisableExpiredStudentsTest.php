@@ -19,6 +19,28 @@ class DisableExpiredStudentsTest extends TestCase
     use RefreshDatabase;
     use BuildsInstitute;
 
+    /** Attendance marked in this system since $date (the branch is "ready"). */
+    private function systemUsedSince(string $date): void
+    {
+        foreach ([$this->inst['b1'], $this->inst['b2']] as $i => $branch) {
+            $this->attendanceOn($date, $branch, $i);
+        }
+    }
+
+    private function attendanceOn(string $date, int $branch, int $n): void
+    {
+        $schedule = (array) DB::table('class_schedules')->first();
+        unset($schedule['id']);
+        $scheduleId = DB::table('class_schedules')->insertGetId(['class_date' => date('Y-m-d', strtotime($date . " +{$n} day")), 'branch_id' => $branch, 'status' => 'completed'] + $schedule);
+
+        $row = (array) DB::table('student_attendances')->first();
+        unset($row['id']);
+        if (array_key_exists('local_uuid', $row)) {
+            $row['local_uuid'] = null;
+        }
+        DB::table('student_attendances')->insert(['attended_at' => $date . ' 15:05:00', 'class_schedule_id' => $scheduleId, 'branch_id' => $branch] + $row);
+    }
+
     protected function tearDown(): void
     {
         Carbon::setTestNow();
@@ -29,6 +51,7 @@ class DisableExpiredStudentsTest extends TestCase
     {
         Carbon::setTestNow('2026-11-04 00:00:00');
         $this->buildInstitute();
+        $this->systemUsedSince('2026-06-01');
 
         // S2: enrolled in 2026-01 (old system), row made here yesterday (import)
         DB::table('student_class_enrollments')->where('id', $this->inst['e2'])
@@ -53,6 +76,7 @@ class DisableExpiredStudentsTest extends TestCase
     {
         Carbon::setTestNow('2027-01-05 00:00:00');
         $this->buildInstitute();
+        $this->systemUsedSince('2026-06-01');
         DB::table('student_class_enrollments')->where('id', $this->inst['e2'])
             ->update(['created_at' => '2026-11-03 23:10:00']);
 
@@ -65,9 +89,44 @@ class DisableExpiredStudentsTest extends TestCase
     {
         Carbon::setTestNow('2026-11-04 00:00:00');
         $this->buildInstitute();
+        $this->systemUsedSince('2026-06-01');
         DB::table('student_class_enrollments')->where('id', $this->inst['e2'])
             ->update(['created_at' => '2026-05-01 10:00:00']);
         $this->artisan('disable:expired-students')->assertExitCode(0);
+    }
+
+    public function test_nobody_is_disabled_before_the_branch_has_two_months_of_attendance(): void
+    {
+        // Success Academy: students, classes and enrollments imported with
+        // their OLD dates, first attendance here on 2026-10-06
+        Carbon::setTestNow('2026-11-05 00:00:00');
+        $this->buildInstitute();
+        DB::table('student_class_enrollments')->update(['created_at' => '2026-01-01 10:00:00']);
+
+        $this->artisan('disable:expired-students')
+            ->expectsOutput('No branch has 2 months of attendance in this system yet. Nobody was disabled.')
+            ->assertExitCode(0);
+
+        $this->assertSame(0, DB::table('students')->where('is_active', 0)->count());
+        $this->assertSame(0, DB::table('student_auto_disables')->count());
+    }
+
+    public function test_command_reactivates_everyone_disabled_on_the_last_run(): void
+    {
+        $this->runOldEnrollmentWithoutAttendance();
+        $this->assertSame(0, (int) DB::table('students')->where('id', $this->inst['s2'])->value('is_active'));
+
+        $this->artisan('nexora:reactivate-auto-disabled', ['--dry-run' => true])->assertExitCode(0);
+        $this->assertSame(0, (int) DB::table('students')->where('id', $this->inst['s2'])->value('is_active'));
+
+        $disabled = DB::table('student_auto_disables')->count();
+        $this->artisan('nexora:reactivate-auto-disabled')
+            ->expectsOutput("Re-activated {$disabled} students, back in {$disabled} classes.")
+            ->assertExitCode(0);
+
+        $this->assertSame(0, DB::table('students')->where('is_active', 0)->count());
+        $this->assertSame(1, (int) DB::table('student_class_enrollments')->where('id', $this->inst['e2'])->value('is_active'));
+        $this->assertSame(0, DB::table('student_auto_disables')->whereNull('reactivated_at')->count());
     }
 
     public function test_the_job_keeps_a_record_with_classes_last_attendance_and_payment(): void
