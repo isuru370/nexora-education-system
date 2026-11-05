@@ -647,6 +647,18 @@
             @if ($canMonthlyClassAttendanceReport)
                 <div class="nav-item">
                     <button type="button"
+                        class="nav-link-custom {{ request()->routeIs('reports.manual-attendance.*') ? 'active' : '' }}"
+                        data-route="reports.manual-attendance.index"
+                        data-href="{{ route('reports.manual-attendance.index') }}">
+                        <i class="bi bi-qr-code-scan"></i>
+                        <span>Card Scan vs Manual</span>
+                    </button>
+                </div>
+            @endif
+
+            @if ($canMonthlyClassAttendanceReport)
+                <div class="nav-item">
+                    <button type="button"
                         class="nav-link-custom {{ request()->routeIs('admin.monthly-class-attendance-report.*') ? 'active' : '' }}"
                         data-route="admin.monthly-class-attendance-report.index"
                         data-href="{{ route('admin.monthly-class-attendance-report.index') }}">
