@@ -207,9 +207,15 @@ class ImportOldPaymentsCommand extends Command
                         // teacher / institute split, same as a payment from the web
                         $snapshot = $splits->createForPayment($payment);
 
-                        // the old system had no hall fee
+                        // the old system had no hall fee: the whole amount is class fee
                         if ($snapshot) {
-                            $snapshot->forceFill(['hall_fee' => 0, 'class_fee' => $amount, 'total_fee' => $amount])->save();
+                            [$teacher, $organizer, $institution] = PaymentSplitSnapshotService::split(
+                                $amount, 0, (float) $snapshot->teacher_percentage, (float) $snapshot->organizer_percentage
+                            );
+                            $snapshot->forceFill([
+                                'hall_fee' => 0, 'class_fee' => $amount, 'total_fee' => $amount,
+                                'teacher_amount' => $teacher, 'organizer_amount' => $organizer, 'institution_amount' => $institution,
+                            ])->save();
                         }
                     });
                 } catch (Throwable $e) {

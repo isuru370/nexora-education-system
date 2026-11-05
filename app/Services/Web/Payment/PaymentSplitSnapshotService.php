@@ -98,9 +98,12 @@ class PaymentSplitSnapshotService
             | Compute Split Amounts
             |--------------------------------------------------------------------------
             */
-            $teacherAmount = round($paymentAmount * ($teacherPercentage / 100), 2);
-            $organizerAmount = round($paymentAmount * ($organizerPercentage / 100), 2);
-            $institutionAmount = round($paymentAmount * ($institutionPercentage / 100), 2);
+            [$teacherAmount, $organizerAmount, $institutionAmount] = self::split(
+                $paymentAmount,
+                $hallFee,
+                $teacherPercentage,
+                $organizerPercentage
+            );
 
             /*
             |--------------------------------------------------------------------------
@@ -160,6 +163,28 @@ class PaymentSplitSnapshotService
         });
     }
 
+
+    /**
+     * Split one payment. The hall fee belongs to the institute: the teacher
+     * and organizer get their % of the payment WITHOUT the hall fee, the
+     * institute gets the rest (its % + the hall fee). If less than the hall
+     * fee was paid, all of it is hall fee.
+     *
+     *   4,000 paid, hall fee 100, teacher 75% -> teacher 2,925, institute 1,075
+     *
+     * @return array{0: float, 1: float, 2: float} teacher, organizer, institution
+     */
+    public static function split(float $paymentAmount, float $hallFee, float $teacherPercentage, float $organizerPercentage): array
+    {
+        $hallPart = min(max($hallFee, 0), max($paymentAmount, 0));
+        $classPart = round($paymentAmount - $hallPart, 2);
+
+        $teacher = round($classPart * ($teacherPercentage / 100), 2);
+        $organizer = round($classPart * ($organizerPercentage / 100), 2);
+        $institution = round($paymentAmount - $teacher - $organizer, 2);
+
+        return [$teacher, $organizer, $institution];
+    }
 
     /*
     |--------------------------------------------------------------------------
