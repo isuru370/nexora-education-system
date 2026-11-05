@@ -7,8 +7,8 @@ use Illuminate\Console\Scheduling\Schedule;
 use Tests\TestCase;
 
 /**
- * Classes / course days are completed once a day at 8.45 PM (Sri Lanka),
- * not when each class ends, so late students can still be marked.
+ * Classes are closed 3 hours after each class's end time (checked every
+ * 15 minutes); course days once a day at 8.45 PM (Sri Lanka).
  */
 class ScheduleTimesTest extends TestCase
 {
@@ -22,13 +22,16 @@ class ScheduleTimesTest extends TestCase
         return $event;
     }
 
-    public function test_complete_commands_run_daily_at_845_pm_colombo(): void
+    public function test_class_schedules_are_checked_every_15_minutes(): void
     {
-        foreach (['class-schedules:complete-finished', 'course-sessions:complete-finished'] as $command) {
-            $event = $this->event($command);
+        $this->assertSame('*/15 * * * *', $this->event('class-schedules:complete-finished')->expression);
+    }
 
-            $this->assertSame('45 20 * * *', $event->expression, $command);
-            $this->assertSame('Asia/Colombo', (string) $event->timezone, $command);
-        }
+    public function test_course_days_are_completed_daily_at_845_pm_colombo(): void
+    {
+        $event = $this->event('course-sessions:complete-finished');
+
+        $this->assertSame('45 20 * * *', $event->expression);
+        $this->assertSame('Asia/Colombo', (string) $event->timezone);
     }
 }
