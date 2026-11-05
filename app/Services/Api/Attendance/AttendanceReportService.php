@@ -216,6 +216,7 @@ class AttendanceReportService
                 'student_class_enrollment_id',
                 'class_schedule_id',
                 'attended_at',
+                'mark_method',
             ])
 
             ->where(
@@ -409,6 +410,11 @@ class AttendanceReportService
 
             'payment_percentage' => $paymentPercentage,
 
+            // How the present students were marked
+            'qr_marked' => $attendanceRecords->filter(fn ($a) => !str_starts_with((string) $a->mark_method, 'manual'))->count(),
+
+            'manual_marked' => $attendanceRecords->filter(fn ($a) => str_starts_with((string) $a->mark_method, 'manual'))->count(),
+
         ];
     }
 
@@ -496,6 +502,12 @@ class AttendanceReportService
 
                     'attended_at' => $attendance?->attended_at?->format('Y-m-d H:i:s'),
 
+                    // qr_mobile / qr_web = card scanned, manual_* = Student ID typed
+                    // (did not bring the card)
+                    'mark_method' => $attendance?->mark_method,
+
+                    'is_manual' => $attendance !== null && str_starts_with((string) $attendance->mark_method, 'manual'),
+
                 ],
 
                 'payment' => [
@@ -570,6 +582,10 @@ class AttendanceReportService
                     'is_present' => true,
 
                     'attended_at' => $attendance->attended_at,
+
+                    'mark_method' => $attendance->mark_method,
+
+                    'is_manual' => str_starts_with((string) $attendance->mark_method, 'manual'),
 
                 ],
 

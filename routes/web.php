@@ -2786,6 +2786,11 @@ Route::prefix('reports')
     ->middleware(['auth', 'user.active'])
     ->group(function () {
 
+        // Attendance marked by scanning the ID card vs typing the Student ID
+        Route::get('/manual-attendance', [\App\Http\Controllers\Web\Report\ManualAttendanceReportController::class, 'index'])
+            ->middleware('role:ADMIN,BRANCH_ADMIN,USER')
+            ->name('manual-attendance.index');
+
         // Daily / date-range collection (old: admin/daily-report)
         Route::controller(DailyCollectionReportController::class)
             ->prefix('daily-collection')

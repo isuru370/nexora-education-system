@@ -87,6 +87,8 @@ class CourseController extends Controller
 
         $teachers = $earnings->forCourse($course);
         $instituteEarned = $earnings->instituteEarned($course);
+        $institute = $earnings->instituteRow($course);
+        $ownerPayouts = $course->ownerPayouts()->with('paidBy:id,name')->latest('id')->get();
         $payouts = $course->payouts()->with(['teacher:id,full_name', 'paidBy:id,name'])->latest('id')->get();
 
         $active = $enrollments->filter(fn ($row) => $row['enrollment']->isActive());
@@ -99,7 +101,7 @@ class CourseController extends Controller
             'held' => $sessions->whereIn('status', ['ongoing', 'completed'])->count(),
         ];
 
-        return view('courses.show', compact('course', 'enrollments', 'sessions', 'payments', 'teachers', 'instituteEarned', 'payouts', 'stats', 'halls'));
+        return view('courses.show', compact('course', 'enrollments', 'sessions', 'payments', 'teachers', 'instituteEarned', 'payouts', 'stats', 'halls', 'institute', 'ownerPayouts'));
     }
 
     public function edit(Course $course)
