@@ -299,7 +299,7 @@ class ReceiptListService
                 'date' => $item->created_at,
                 'status' => $item->deleted_at ? 'Deleted' : 'Active',
                 'deleted_at' => $item->deleted_at,
-                'url' => $item->deleted_at ? null : $this->safeRoute('extra-incomes.show', $item->id),
+                'url' => $item->deleted_at ? null : $this->safeRoute(['admin.extra-incomes.show', 'extra-incomes.show'], $item->id),
             ]);
         });
     }
