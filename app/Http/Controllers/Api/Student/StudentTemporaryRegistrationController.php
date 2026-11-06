@@ -5,12 +5,14 @@ namespace App\Http\Controllers\Api\Student;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\Student\MobileTemporaryStudentRequest;
 use App\Services\Web\Student\Registtration\StudentTemporaryRegistrationService;
+use App\Services\Web\Student\StudentTemporaryCardService;
 use Illuminate\Database\QueryException;
 use Illuminate\Http\JsonResponse;
 use Throwable;
 
 /**
  * POST /api/student - register a student with a temporary ID card (mobile app).
+ * GET  /api/temporary-cards/next - the card the next student will get.
  */
 class StudentTemporaryRegistrationController extends Controller
 {
@@ -19,6 +21,20 @@ class StudentTemporaryRegistrationController extends Controller
     public function __construct(
         private StudentTemporaryRegistrationService $registrationService
     ) {}
+
+    public function next(StudentTemporaryCardService $cards): JsonResponse
+    {
+        $next = $cards->nextIssuedCard();
+
+        return response()->json([
+            'success' => true,
+            'data' => [
+                'next' => $next?->temporary_id_number,
+                'issued_left' => $cards->issuedLeftCount(),
+                'message' => $next ? null : StudentTemporaryCardService::NONE_LEFT_MESSAGE,
+            ],
+        ]);
+    }
 
     public function store(MobileTemporaryStudentRequest $request): JsonResponse
     {
