@@ -27,23 +27,35 @@ class CardDesign
     public const PERMANENT = 'permanent';
     public const TEMPORARY = 'temporary';
 
-    public const TYPES = [self::PERMANENT, self::TEMPORARY];
+    /**
+     * Permanent-card institutes: the pre-printed card stock (QR + its number
+     * only, printed before a student gets it). One design per branch.
+     */
+    public const STOCK = 'stock';
+
+    public const TYPES = [self::PERMANENT, self::TEMPORARY, self::STOCK];
+
+    /** Types with one design per branch */
+    public const BRANCH_TYPES = [self::STOCK];
 
     /** Card size in mm [width, height] */
     public const SIZES = [
         self::PERMANENT => [85.6, 54.0],
         self::TEMPORARY => [88.9, 50.8],
+        self::STOCK => [85.6, 54.0],
     ];
 
     public const LABELS = [
         self::PERMANENT => 'Student ID card (permanent)',
         self::TEMPORARY => 'Temporary card (pre-printed)',
+        self::STOCK => 'Permanent card stock (pre-printed)',
     ];
 
     /** Background used until one is uploaded (public path) */
     public const DEFAULT_BACKGROUNDS = [
         self::PERMANENT => 'storage/id/idcard_bg.png',
         self::TEMPORARY => 'storage/id/temporary.png',
+        self::STOCK => 'storage/id/id_card_bg.png',
     ];
 
     public const LOGO = 'storage/logo/logo.png';
@@ -75,7 +87,7 @@ class CardDesign
      *
      * @return array<string, array<string, mixed>>
      */
-    public static function defaults(string $type): array
+    public static function defaults(string $type, ?int $branchId = null): array
     {
         self::assertType($type);
 
@@ -94,6 +106,28 @@ class CardDesign
         ], $values);
 
         [$first, $rest] = self::splitName(InstituteInfo::name());
+
+        if ($type === self::STOCK) {
+            // The layout used before the designer (student-cards/preview):
+            // branch 2 had its own places, every other branch the branch-1 ones.
+            if ($branchId === 2) {
+                return [
+                    'qr' => $box('qr', ['label' => 'QR code', 'x' => 58.65, 'y' => 18.35, 'w' => 14.8, 'h' => 14.8]),
+                    'code' => $text(['label' => 'QR number', 'source' => 'code',
+                        'x' => 30.9, 'y' => 23.8, 'w' => 20.5, 'h' => 3.8, 'size' => 3.7, 'color' => '#111111', 'bold' => true, 'align' => 'center']),
+                    'title' => $text(['label' => 'Own text', 'on' => false, 'text' => mb_strtoupper(InstituteInfo::name()),
+                        'x' => 5, 'y' => 3, 'w' => 75, 'h' => 5.5, 'size' => 4, 'color' => '#0f2d7a', 'bold' => true]),
+                ];
+            }
+
+            return [
+                'qr' => $box('qr', ['label' => 'QR code', 'x' => 61.1, 'y' => 21.95, 'w' => 16, 'h' => 16]),
+                'code' => $text(['label' => 'QR number', 'source' => 'code',
+                    'x' => 27.4, 'y' => 23.8, 'w' => 20.5, 'h' => 4.3, 'size' => 3.4, 'color' => '#111111', 'bold' => true, 'align' => 'center']),
+                'title' => $text(['label' => 'Own text', 'on' => false, 'text' => mb_strtoupper(InstituteInfo::name()),
+                    'x' => 5, 'y' => 3, 'w' => 75, 'h' => 5.5, 'size' => 4, 'color' => '#0f2d7a', 'bold' => true]),
+            ];
+        }
 
         if ($type === self::PERMANENT) {
             return [
@@ -139,17 +173,19 @@ class CardDesign
      *
      * @return array{type: string, width: float, height: float, background: ?string, fields: array<string, array<string, mixed>>, saved: bool}
      */
-    public static function get(string $type): array
+    public static function get(string $type, ?int $branchId = null): array
     {
         self::assertType($type);
+        $branchId = self::branchFor($type, $branchId);
+        $key = self::layoutKey($type, $branchId);
 
         $row = null;
         try {
-            $row = Cache::rememberForever(self::CACHE_KEY . $type, function () use ($type) {
+            $row = Cache::rememberForever(self::CACHE_KEY . $key, function () use ($key) {
                 if (!Schema::hasTable('card_layouts')) {
                     return null;
                 }
-                $layout = CardLayout::query()->where('type', $type)->first();
+                $layout = CardLayout::query()->where('type', $key)->first();
 
                 return $layout ? ['fields' => $layout->fields ?? [], 'background' => $layout->background] : null;
             });
@@ -161,10 +197,11 @@ class CardDesign
 
         return [
             'type' => $type,
+            'branch_id' => $branchId,
             'width' => $width,
             'height' => $height,
             'background' => $row['background'] ?? null,
-            'fields' => self::merge($type, $row['fields'] ?? []),
+            'fields' => self::merge($type, $row['fields'] ?? [], $branchId),
             'saved' => $row !== null,
         ];
     }
@@ -173,10 +210,10 @@ class CardDesign
      * Defaults with the saved values on top; unknown fields and values are dropped
      * and numbers kept on the card.
      */
-    public static function merge(string $type, array $saved): array
+    public static function merge(string $type, array $saved, ?int $branchId = null): array
     {
         [$width, $height] = self::SIZES[$type];
-        $fields = self::defaults($type);
+        $fields = self::defaults($type, $branchId);
 
         foreach ($fields as $key => $field) {
             $values = is_array($saved[$key] ?? null) ? $saved[$key] : [];
@@ -237,33 +274,72 @@ class CardDesign
     /**
      * Save a design (only the editable values are kept).
      */
-    public static function save(string $type, array $fields, ?string $background, ?int $userId = null): void
+    public static function save(string $type, array $fields, ?string $background, ?int $userId = null, ?int $branchId = null): void
     {
+        self::assertType($type);
+        $branchId = self::branchFor($type, $branchId);
+
         $clean = [];
-        foreach (self::merge($type, $fields) as $key => $field) {
+        foreach (self::merge($type, $fields, $branchId) as $key => $field) {
             $clean[$key] = array_intersect_key($field, array_flip(self::EDITABLE));
         }
 
         CardLayout::query()->updateOrCreate(
-            ['type' => $type],
+            ['type' => self::layoutKey($type, $branchId)],
             ['fields' => $clean, 'background' => $background, 'updated_by' => $userId]
         );
 
-        self::forget($type);
+        self::forget($type, $branchId);
     }
 
-    public static function reset(string $type): void
+    public static function reset(string $type, ?int $branchId = null): void
     {
         self::assertType($type);
-        CardLayout::query()->where('type', $type)->delete();
-        self::forget($type);
+        $branchId = self::branchFor($type, $branchId);
+
+        CardLayout::query()->where('type', self::layoutKey($type, $branchId))->delete();
+        self::forget($type, $branchId);
     }
 
-    public static function forget(?string $type = null): void
+    public static function forget(?string $type = null, ?int $branchId = null): void
     {
-        foreach ($type ? [$type] : self::TYPES as $item) {
+        if ($type !== null) {
+            Cache::forget(self::CACHE_KEY . self::layoutKey($type, self::branchFor($type, $branchId)));
+
+            return;
+        }
+
+        foreach (self::TYPES as $item) {
             Cache::forget(self::CACHE_KEY . $item);
         }
+    }
+
+    /** card_layouts.type: "stock:5" for a branch design, else the type */
+    public static function layoutKey(string $type, ?int $branchId = null): string
+    {
+        return $branchId !== null && in_array($type, self::BRANCH_TYPES, true)
+            ? $type . ':' . $branchId
+            : $type;
+    }
+
+    /** Branch only for the per-branch types */
+    private static function branchFor(string $type, ?int $branchId): ?int
+    {
+        return in_array($type, self::BRANCH_TYPES, true) && $branchId ? $branchId : null;
+    }
+
+    /**
+     * Designs shown in the Card Designer for this institute's card mode:
+     * temporary mode -> the student card + the temporary card,
+     * permanent mode -> the pre-printed card stock.
+     *
+     * @return string[]
+     */
+    public static function typesForMode(): array
+    {
+        return CardMode::permanent()
+            ? [self::STOCK]
+            : [self::PERMANENT, self::TEMPORARY];
     }
 
     /* ------------------------------------------------------------------ */
@@ -485,6 +561,14 @@ class CardDesign
             $src = self::publicSrc('storage/' . ltrim($design['background'], '/'), $embed);
             if ($src) {
                 return $src;
+            }
+        }
+
+        // Card stock: the branch's old file (storage/id/id_card_bg_<branch>.png) first
+        if ($design['type'] === self::STOCK && !empty($design['branch_id'])) {
+            $branchFile = 'storage/id/id_card_bg_' . (int) $design['branch_id'] . '.png';
+            if (is_file(public_path($branchFile)) || is_file(storage_path('app/public/id/id_card_bg_' . (int) $design['branch_id'] . '.png'))) {
+                return self::publicSrc($branchFile, $embed);
             }
         }
 

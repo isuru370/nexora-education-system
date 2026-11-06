@@ -341,7 +341,6 @@
                             <span>Payment &amp; Attendance Rules</span>
                         </button>
                     </div>
-                    @if (\App\Support\CardMode::temporary())
                     <div class="nav-item">
                         <button type="button"
                             class="nav-link-custom {{ request()->routeIs('card-designer.*') ? 'active' : '' }}"
@@ -350,7 +349,6 @@
                             <span>ID Card Designer</span>
                         </button>
                     </div>
-                    @endif
                 @endif
                 <div class="nav-item">
                     <button type="button"
