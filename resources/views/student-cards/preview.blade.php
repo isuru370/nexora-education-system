@@ -76,22 +76,14 @@
 
         <div class="card-wrapper">
 
+            @php
+                $stockDesigns = [];
+            @endphp
             @foreach ($cards as $card)
                 @php
-                    // ============================================
-                    // Branch-wise Background Selection
-                    // ============================================
-                    $branchId = $card->branch_id ?? 1;
-                    $branchBackground = 'id_card_bg_' . $branchId . '.png';
-
-                    $branchBackgroundPath = public_path(
-                        'storage/id/' . $branchBackground
-                    );
-
-                    // Fallback to default background if branch image is missing
-                    if (!file_exists($branchBackgroundPath)) {
-                        $branchBackground = 'id_card_bg.png';
-                    }
+                    // Each branch has its own design (ID Card Designer > Permanent card stock)
+                    $branchId = (int) ($card->branch_id ?? 1);
+                    $stockDesigns[$branchId] ??= \App\Support\CardDesign::get(\App\Support\CardDesign::STOCK, $branchId);
                 @endphp
 
                 <div class="card-item student-card" data-id="{{ $card->id }}" data-card-id="{{ $card->id }}"
@@ -129,25 +121,15 @@
                         CARD
                     ====================== --}}
 
-                    <div class="id-card student-id-card branch-{{ $branchId }}">
-
-                        <img src="{{ asset('storage/id/' . $branchBackground) }}" class="card-bg"
-                            alt="Branch {{ $branchId }} Card Background">
-
-                        {{-- QR --}}
-                        <div class="qr-image">
-
-                            {!! QrCode::format('svg')->size(180)->margin(0)->generate($card->qr_code) !!}
-
-                        </div>
-
-                        {{-- QR TEXT --}}
-                        <div class="qr-text">
-
-                            {{ $card->qr_code }}
-
-                        </div>
-
+                    <div class="id-card student-id-card">
+                        @include('id-cards.card', [
+                            'card' => \App\Support\CardDesign::card(
+                                \App\Support\CardDesign::STOCK,
+                                ['qr' => $card->qr_code, 'code' => $card->qr_code],
+                                false,
+                                $stockDesigns[$branchId]
+                            ),
+                        ])
                     </div>
 
                 </div>
@@ -344,10 +326,11 @@
                                        CR80 CARD
                                     ========================================== */
 
+        /* the card itself is drawn by id-cards.card (85.6 x 54 mm) */
         .id-card {
             position: relative;
-            width: 3.375in;
-            height: 2.125in;
+            width: 85.6mm;
+            height: 54mm;
             overflow: hidden;
             background: #fff;
 

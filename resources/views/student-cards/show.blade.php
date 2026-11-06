@@ -6,41 +6,20 @@
 
 <div class="container-fluid">
 
-    @php
-        // ============================================
-        // Branch-wise Background Selection
-        // ============================================
-        $branchId = (int) $card->branch_id;
-        $backgroundFile = 'id_card_bg_' . $branchId . '.png';
-
-        if (!file_exists(public_path('storage/id/' . $backgroundFile))) {
-            $backgroundFile = 'id_card_bg.png';
-        }
-    @endphp
-
     {{-- ============================================
          PRINTABLE PHYSICAL ID CARD (Hidden on screen)
+         Branch design: ID Card Designer > Permanent card stock
     ============================================ --}}
     @if($card->status === 'assigned' && $card->student)
-        <div id="printable-student-card"
-             class="id-card branch-{{ $branchId }}">
-
-            <img
-                src="{{ asset('storage/id/' . $backgroundFile) }}"
-                class="card-bg"
-                alt="Student ID Card Background"
-            >
-
-            <div class="qr-image">
-                {!! \SimpleSoftwareIO\QrCode\Facades\QrCode::format('svg')
-                    ->size(180)
-                    ->margin(0)
-                    ->generate($card->qr_code) !!}
-            </div>
-
-            <div class="qr-text">
-                {{ $card->qr_code }}
-            </div>
+        <div id="printable-student-card">
+            @include('id-cards.card', [
+                'card' => \App\Support\CardDesign::card(
+                    \App\Support\CardDesign::STOCK,
+                    ['qr' => $card->qr_code, 'code' => $card->qr_code],
+                    false,
+                    \App\Support\CardDesign::get(\App\Support\CardDesign::STOCK, (int) $card->branch_id)
+                ),
+            ])
         </div>
     @endif
 
@@ -515,8 +494,8 @@
 
     #printable-student-card {
         position: relative;
-        width: 3.375in;
-        height: 2.125in;
+        width: 85.6mm;
+        height: 54mm;
         overflow: hidden;
         background: #fff;
         border-radius: 0;
