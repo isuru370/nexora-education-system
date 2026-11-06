@@ -11,6 +11,8 @@ use App\Models\StudentCard;
 use App\Models\StudentClass;
 use App\Models\StudentClassEnrollment;
 use App\Models\Teacher;
+use App\Models\TemporaryIdCard;
+use App\Support\CardMode;
 use Carbon\Carbon;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -18,9 +20,10 @@ use Illuminate\Support\Facades\Log;
 use Throwable;
 
 /**
- * Admin dashboard data (SUPER_ADMIN / ADMIN).
+ * Dashboard data.
  *
- * Admins see all branches. Branch-wise numbers are in `branchSummary`.
+ * SUPER_ADMIN / ADMIN: all branches (branch-wise numbers in `branchSummary`).
+ * BRANCH_ADMIN: forBranches([...]) -> every number only for their branches.
  *
  * Income rules:
  * - "Income" = completed payments by paid_at (cash collected on that day/month).
@@ -38,6 +41,33 @@ class DashboardService
      * Temporary QR codes expiring within this many days.
      */
     private const QR_EXPIRY_DAYS = 10;
+
+    /** Warn when fewer issued temporary cards than this are left */
+    private const LOW_TEMPORARY_CARD_THRESHOLD = 20;
+
+    /** null = all branches */
+    protected ?array $branchIds = null;
+
+    /**
+     * The same dashboard, limited to these branches (Branch Admin).
+     */
+    public function forBranches(array $branchIds): static
+    {
+        $copy = clone $this;
+        $copy->branchIds = array_values(array_unique(array_map('intval', $branchIds)));
+
+        return $copy;
+    }
+
+    /** where <column> in the chosen branches (no-op for all branches) */
+    protected function inBranches($query, string $column = 'branch_id')
+    {
+        if ($this->branchIds !== null) {
+            $query->whereIn($column, $this->branchIds);
+        }
+
+        return $query;
+    }
 
     public function getDashboardData(): array
     {
@@ -72,6 +102,10 @@ class DashboardService
                 // card stock is used only by permanent-card institutes
                 'showStudentCardWarning' => \App\Support\CardMode::permanent()
                     && $availableStudentCardCount < self::LOW_CARD_THRESHOLD,
+
+                // temporary-card institutes: cards ready to give out
+                'issuedTemporaryCardsLeft' => $this->getIssuedTemporaryCardsLeft(),
+                'lowTemporaryCardThreshold' => self::LOW_TEMPORARY_CARD_THRESHOLD,
 
                 'incompleteRegistrationCount' => $this->getIncompleteRegistrationCount(),
                 'incompleteRegistrations' => $this->getIncompleteRegistrations(),
@@ -152,16 +186,16 @@ class DashboardService
         return [
             'totalStudents' => $this->getStudentsCount(),
             'activeStudents' => $this->activeStudentQuery()->count(),
-            'newStudentsThisMonth' => Student::query()
+            'newStudentsThisMonth' => $this->inBranches(Student::query())
                 ->where('created_at', '>=', $now->copy()->startOfMonth())
                 ->count(),
 
-            'activeEnrollments' => StudentClassEnrollment::query()
+            'activeEnrollments' => $this->inBranches(StudentClassEnrollment::query())
                 ->where('is_active', true)
                 ->count(),
 
-            'activeTeachers' => Teacher::query()->where('is_active', true)->count(),
-            'activeClasses' => StudentClass::query()->where('is_active', true)->count(),
+            'activeTeachers' => $this->activeTeachersCount(),
+            'activeClasses' => $this->inBranches(StudentClass::query())->where('is_active', true)->count(),
 
             'todayIncome' => $todayIncome,
             'yesterdayIncome' => $yesterdayIncome,
@@ -171,17 +205,17 @@ class DashboardService
             'lastMonthToDateIncome' => $lastMonthToDate,
             'monthlyChangePercent' => $this->percentChange($monthlyIncome, $lastMonthToDate),
 
-            'monthlyDiscount' => (float) Payment::query()
+            'monthlyDiscount' => (float) $this->inBranches(Payment::query())
                 ->where('status', 'completed')
                 ->whereBetween('paid_at', [$now->copy()->startOfMonth(), $now])
                 ->sum('discount_amount'),
 
-            'todayPaymentsCount' => Payment::query()
+            'todayPaymentsCount' => $this->inBranches(Payment::query())
                 ->where('status', 'completed')
                 ->whereDate('paid_at', $today)
                 ->count(),
 
-            'todayAttendance' => StudentAttendance::query()
+            'todayAttendance' => $this->inBranches(StudentAttendance::query())
                 ->whereDate('attended_at', $today)
                 ->count(),
         ];
@@ -217,6 +251,7 @@ class DashboardService
                 'hall:id,hall_name',
             ])
             ->withCount('studentAttendances')
+            ->when($this->branchIds !== null, fn ($query) => $query->whereIn('branch_id', $this->branchIds))
             ->whereDate('class_date', $today)
             ->where('is_active', true)
             ->orderBy('start_time')
@@ -304,7 +339,7 @@ class DashboardService
 
     protected function getUnpaidSummary(Carbon $monthStart): array
     {
-        $unpaidQuery = StudentClassEnrollment::query()
+        $unpaidQuery = $this->inBranches(StudentClassEnrollment::query())
             ->where('is_active', true)
             ->where('is_free_card', false)
             ->whereHas('student', function ($query) {
@@ -317,7 +352,7 @@ class DashboardService
 
         $unpaidCount = (clone $unpaidQuery)->count();
 
-        $payableCount = StudentClassEnrollment::query()
+        $payableCount = $this->inBranches(StudentClassEnrollment::query())
             ->where('is_active', true)
             ->where('is_free_card', false)
             ->whereHas('student', function ($query) {
@@ -393,7 +428,7 @@ class DashboardService
     {
         $from = $today->copy()->subDays($days - 1)->startOfDay();
 
-        $totals = Payment::query()
+        $totals = $this->inBranches(Payment::query())
             ->select([
                 DB::raw('DATE(paid_at) as day'),
                 DB::raw('SUM(amount) as total'),
@@ -422,7 +457,7 @@ class DashboardService
      */
     protected function getPaymentMethodBreakdown(Carbon $now): Collection
     {
-        return Payment::query()
+        return $this->inBranches(Payment::query())
             ->select([
                 'payment_method',
                 DB::raw('COUNT(*) as payments'),
@@ -452,7 +487,11 @@ class DashboardService
 
     protected function getBranchSummary(Carbon $today, Carbon $now): Collection
     {
-        $branches = Branch::query()
+        if ($this->branchIds !== null && count($this->branchIds) <= 1) {
+            return collect();
+        }
+
+        $branches = $this->inBranches(Branch::query(), 'id')
             ->where('is_active', true)
             ->orderBy('name')
             ->get(['id', 'name']);
@@ -528,6 +567,7 @@ class DashboardService
                 'collectedBy:id,name',
             ])
             ->where('status', 'completed')
+            ->when($this->branchIds !== null, fn ($query) => $query->whereIn('branch_id', $this->branchIds))
             ->latest('paid_at')
             ->limit($limit)
             ->get()
@@ -557,17 +597,47 @@ class DashboardService
 
     protected function getStudentsCount(): int
     {
-        return Student::query()->count();
+        return $this->inBranches(Student::query())->count();
     }
 
     protected function getTeachersCount(): int
     {
-        return Teacher::query()->count();
+        if ($this->branchIds === null) {
+            return Teacher::query()->count();
+        }
+
+        // teachers with a class in these branches
+        return (int) $this->inBranches(StudentClass::query())->distinct()->count('teacher_id');
+    }
+
+    protected function activeTeachersCount(): int
+    {
+        if ($this->branchIds === null) {
+            return Teacher::query()->where('is_active', true)->count();
+        }
+
+        return Teacher::query()
+            ->where('is_active', true)
+            ->whereIn('id', $this->inBranches(StudentClass::query())->where('is_active', true)->select('teacher_id'))
+            ->count();
     }
 
     protected function getClassesCount(): int
     {
-        return StudentClass::query()->count();
+        return $this->inBranches(StudentClass::query())->count();
+    }
+
+    /** Temporary mode: issued cards not given to a student yet (institute-wide) */
+    protected function getIssuedTemporaryCardsLeft(): ?int
+    {
+        if (!CardMode::temporary()) {
+            return null;
+        }
+
+        return TemporaryIdCard::query()
+            ->where('status', 'issued')
+            ->whereNull('student_id')
+            ->count();
     }
 
     protected function getTodayIncome(Carbon $today): float
@@ -587,7 +657,7 @@ class DashboardService
 
     protected function getAvailableStudentCardCount(): int
     {
-        return StudentCard::query()
+        return $this->inBranches(StudentCard::query())
             ->where('status', 'available')
             ->count();
     }
@@ -600,7 +670,7 @@ class DashboardService
 
     protected function incompleteRegistrationQuery()
     {
-        return Student::query()
+        return $this->inBranches(Student::query())
             ->where(function ($query) {
                 $query->whereNull('full_name')
                     ->orWhere('full_name', '')
@@ -632,7 +702,7 @@ class DashboardService
 
     protected function getLatestStudents(): Collection
     {
-        return Student::query()
+        return $this->inBranches(Student::query())
             ->latest()
             ->take(5)
             ->get([
@@ -654,6 +724,7 @@ class DashboardService
                 'guardian_mobile',
                 'temporary_qr_code_expire_date',
             ])
+            ->when($this->branchIds !== null, fn ($query) => $query->whereIn('branch_id', $this->branchIds))
             ->where('is_active', true)
             ->where('permanent_qr_active', false)
             ->whereNotNull('temporary_qr_code_expire_date')
@@ -676,7 +747,7 @@ class DashboardService
      */
     protected function activeStudentQuery()
     {
-        return Student::query()
+        return $this->inBranches(Student::query())
             ->where('is_active', true)
             ->where(function ($query) {
                 $query->whereNull('student_disable')
@@ -692,7 +763,7 @@ class DashboardService
      */
     protected function sumCompletedPayments(Carbon $from, Carbon $to): float
     {
-        return (float) Payment::query()
+        return (float) $this->inBranches(Payment::query())
             ->where('status', 'completed')
             ->whereBetween('paid_at', [$from, $to])
             ->sum('amount');
