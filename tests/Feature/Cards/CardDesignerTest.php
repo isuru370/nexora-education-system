@@ -130,6 +130,30 @@ class CardDesignerTest extends TestCase
             ->assertOk()->assertSee('nx-id-field-qr', false)->assertDontSee('qrserver');
     }
 
+    public function test_save_form_is_not_blocked_by_the_browser(): void
+    {
+        // QR / photo boxes have font size 0 (helper box min 0.5): the browser
+        // used to block Save silently
+        $this->actingAs($this->super)->get('/card-designer?type=permanent')
+            ->assertOk()->assertSee('id="cdForm" novalidate', false);
+    }
+
+    public function test_student_name_stays_on_one_line_and_long_names_shrink(): void
+    {
+        $name = fn (string $value) => CardDesign::card('permanent', ['name' => $value])['fields']['name'];
+
+        $short = $name('A.PERERA');
+        $this->assertStringContainsString('white-space:nowrap', $short['style']);
+        $this->assertSame(3.2, (float) $short['size']);
+
+        $long = $name('W.A.D.M. KARUNARATHNA');
+        $this->assertStringContainsString('white-space:nowrap', $long['style']);
+        $this->assertLessThan(3.2, $long['size']);
+        $this->assertGreaterThan(1.44, $long['size']);
+        // fits the 24.4 mm box (15 letters x 0.74 em + 6 dots/spaces x 0.38 em)
+        $this->assertLessThanOrEqual(24.4, (15 * 0.74 + 6 * 0.38) * $long['size']);
+    }
+
     public function test_background_upload_and_reset(): void
     {
         $this->actingAs($this->super)->put('/card-designer/temporary', [

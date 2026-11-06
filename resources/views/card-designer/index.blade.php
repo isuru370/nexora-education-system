@@ -71,7 +71,10 @@
             @endforeach
         </ul>
 
-        <form method="POST" action="{{ route('card-designer.update', $type) }}" enctype="multipart/form-data" id="cdForm">
+        {{-- novalidate: the side-panel boxes (e.g. Font size = 0 on a QR/photo box) are
+             only helpers; the browser blocked Save on them without a message.
+             The server checks and corrects every value. --}}
+        <form method="POST" action="{{ route('card-designer.update', $type) }}" enctype="multipart/form-data" id="cdForm" novalidate>
             @csrf
             @method('PUT')
             <input type="hidden" name="fields" id="cdFields">
