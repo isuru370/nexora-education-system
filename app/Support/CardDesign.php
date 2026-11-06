@@ -101,7 +101,8 @@ class CardDesign
                     'bg' => '#c8d4e0', 'frame' => '#1d4ed8', 'radius' => 1]),
                 'student_id' => $text(['label' => 'Student ID', 'source' => 'student_id',
                     'x' => 33, 'y' => 20.5, 'w' => 24.4, 'h' => 6.5, 'size' => 5, 'color' => '#143d8d', 'bold' => true]),
-                'name' => $text(['label' => 'Student name', 'source' => 'name', 'lines' => 0,
+                // One line; a long name gets a smaller font (fitOneLine)
+                'name' => $text(['label' => 'Student name', 'source' => 'name',
                     'x' => 33, 'y' => 28, 'w' => 24.4, 'h' => 9.5, 'size' => 3.2, 'color' => '#222222', 'bold' => true, 'upper' => true]),
                 'branch' => $text(['label' => 'Branch', 'source' => 'branch',
                     'x' => 33, 'y' => 38.2, 'w' => 42, 'h' => 4, 'size' => 2.8, 'color' => '#1d4ed8', 'bold' => true, 'upper' => true]),
@@ -285,6 +286,8 @@ class CardDesign
             if (!$field['on']) {
                 continue;
             }
+            $field = self::fitOneLine($field, $data);
+
             $items[$key] = $field + [
                 'key' => $key,
                 'style' => self::style($field),
@@ -300,6 +303,46 @@ class CardDesign
             'background' => self::backgroundSrc($design, $embed),
             'fields' => $items,
         ];
+    }
+
+    /**
+     * A one-line student value (e.g. the name) never wraps: when it is too
+     * long for its box the font is made smaller so the whole text fits
+     * (down to 45% of the chosen size). Widths are estimated from DejaVu Sans
+     * (the font of the card, the PDF and the PNG download).
+     */
+    public static function fitOneLine(array $field, array $data): array
+    {
+        if ($field['kind'] !== 'text' || $field['lines'] !== 1 || $field['source'] === null) {
+            return $field;
+        }
+
+        $text = trim(strip_tags((string) ($data[$field['source']] ?? '')));
+        if ($field['upper']) {
+            $text = mb_strtoupper($text);
+        }
+
+        if ($text === '' || $field['size'] <= 0) {
+            return $field;
+        }
+
+        // text width in em: dots and spaces are narrow, letters wide
+        $letter = $field['upper']
+            ? ($field['bold'] ? 0.74 : 0.68)
+            : ($field['bold'] ? 0.64 : 0.58);
+        $ems = 0.0;
+        foreach (mb_str_split($text) as $char) {
+            $ems += in_array($char, ['.', ',', ' ', "'", 'I', 'i', 'l', '-'], true) ? 0.38 : $letter;
+        }
+
+        $border = $field['frame'] !== '' ? 0.4 : 0;
+        $available = max(0.1, $field['w'] - 2 * $border - 0.4);
+
+        if ($ems * $field['size'] > $available) {
+            $field['size'] = round(max($field['size'] * 0.45, $available / $ems), 2);
+        }
+
+        return $field;
     }
 
     /**
