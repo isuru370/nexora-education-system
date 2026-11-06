@@ -15,6 +15,11 @@
     $branchSummary = $branchSummary ?? collect();
     $recentPayments = $recentPayments ?? collect();
     $dailyIncome = $dailyIncome ?? ['labels' => [], 'values' => []];
+    $incomeTrend = $incomeTrend ?? ['labels' => [], 'values' => []];
+
+    // Branch Admin: same dashboard, only their branch(es)
+    $branchView = $branchView ?? false;
+    $myBranches = $myBranches ?? collect();
 
     $money = fn ($value) => 'Rs. ' . number_format((float) $value, 2);
 
@@ -57,7 +62,14 @@
                 <div class="hero-left">
                     <span class="greeting-badge">{{ $greeting }}</span>
                     <h1 class="hero-title">Welcome back, {{ auth()->user()->name ?? 'Administrator' }}</h1>
-                    <p class="hero-subtitle">Here is what is happening at the institute today.</p>
+                    @if ($branchView)
+                        <p class="hero-subtitle">
+                            <i class="bi bi-diagram-3"></i> <strong>{{ $branchTitle }}</strong> &middot;
+                            here is what is happening at your branch today.
+                        </p>
+                    @else
+                        <p class="hero-subtitle">Here is what is happening at the institute today.</p>
+                    @endif
 
                     <div class="hero-stats-mini">
                         <div class="mini-stat">
@@ -94,6 +106,17 @@
                         </div>
                     </div>
                     <small class="hero-updated">Updated {{ $generatedAt ?? now()->format('h:i A') }}</small>
+
+                    @if ($branchView && $myBranches->count() > 1)
+                        <form method="GET" action="{{ route('dashboard') }}" class="hero-branch-picker">
+                            <select name="branch_id" class="form-select form-select-sm" aria-label="Branch" onchange="this.form.submit()">
+                                <option value="">All my branches</option>
+                                @foreach ($myBranches as $myBranch)
+                                    <option value="{{ $myBranch->id }}" {{ (int) ($selectedBranchId ?? 0) === (int) $myBranch->id ? 'selected' : '' }}>{{ $myBranch->name }}</option>
+                                @endforeach
+                            </select>
+                        </form>
+                    @endif
                 </div>
             </div>
         </div>
@@ -102,12 +125,27 @@
         {{-- ALERTS --}}
         {{-- ===================================================== --}}
         @include('dashboard.partials.auto-disabled-students')
-        @if (($showStudentCardWarning ?? false) || ($expiringStudentsCount ?? 0) > 0 || ($incompleteRegistrationCount ?? 0) > 0)
+        @php
+            $lowTemporaryCards = ($issuedTemporaryCardsLeft ?? null) !== null
+                && $issuedTemporaryCardsLeft < ($lowTemporaryCardThreshold ?? 20);
+        @endphp
+        @if (($showStudentCardWarning ?? false) || $lowTemporaryCards || ($expiringStudentsCount ?? 0) > 0 || ($incompleteRegistrationCount ?? 0) > 0)
             <div class="alerts-row mb-4">
                 @if ($showStudentCardWarning ?? false)
                     <a href="{{ \App\Support\CardAccess::canView() ? route('student-cards.index') : '#' }}" class="nx-alert nx-alert-amber">
                         <i class="bi bi-person-vcard"></i>
                         <span>Student cards are running low: <strong>{{ $availableStudentCardCount ?? 0 }}</strong> left</span>
+                        <i class="bi bi-chevron-right ms-auto"></i>
+                    </a>
+                @endif
+
+                @if ($lowTemporaryCards)
+                    <a href="{{ \App\Support\CardAccess::canView() ? route('temporary_id_cards.index') : '#' }}" class="nx-alert nx-alert-amber">
+                        <i class="bi bi-person-vcard"></i>
+                        <span>
+                            Only <strong>{{ $issuedTemporaryCardsLeft }}</strong> issued temporary cards left -
+                            issue more before registrations stop
+                        </span>
                         <i class="bi bi-chevron-right ms-auto"></i>
                     </a>
                 @endif
@@ -416,7 +454,41 @@
         {{-- YEARLY CHART + CARD STOCK --}}
         {{-- ===================================================== --}}
         <div class="row g-4 mb-4">
-            <div class="{{ \App\Support\CardMode::permanent() ? 'col-xl-9' : 'col-xl-12' }}">
+            <div class="col-xl-9">
+                @if ($branchView)
+                    {{-- Branch Admin: last 6 months of this branch (the yearly report is institute-wide) --}}
+                    <div class="nx-card h-100">
+                        <div class="nx-card-header">
+                            <div>
+                                <h5 class="nx-card-title"><i class="bi bi-bar-chart-line text-primary"></i> Last 6 Months</h5>
+                                <p class="nx-card-subtitle">Payments collected per month &middot; {{ $branchTitle }}</p>
+                            </div>
+                        </div>
+
+                        <div class="chart-box chart-box-lg">
+                            <canvas id="branchTrendChart"></canvas>
+                        </div>
+
+                        <div class="chart-stats">
+                            <div class="chart-stat">
+                                <span class="chart-stat-label">6-Month Total</span>
+                                <span class="chart-stat-value">{{ $money(array_sum($incomeTrend['values'])) }}</span>
+                            </div>
+                            <div class="chart-stat">
+                                <span class="chart-stat-label">Monthly Average</span>
+                                <span class="chart-stat-value">{{ $money(count($incomeTrend['values']) ? array_sum($incomeTrend['values']) / count($incomeTrend['values']) : 0) }}</span>
+                            </div>
+                            <div class="chart-stat">
+                                <span class="chart-stat-label">Active Enrollments</span>
+                                <span class="chart-stat-value">{{ number_format($stats['activeEnrollments'] ?? 0) }}</span>
+                            </div>
+                            <div class="chart-stat">
+                                <span class="chart-stat-label">Active Teachers</span>
+                                <span class="chart-stat-value">{{ number_format($stats['activeTeachers'] ?? 0) }}</span>
+                            </div>
+                        </div>
+                    </div>
+                @else
                 <div class="nx-card h-100">
                     <div class="nx-card-header">
                         <div>
@@ -458,6 +530,7 @@
                         </div>
                     </div>
                 </div>
+                @endif
             </div>
 
             @cardmode('permanent')
@@ -485,6 +558,34 @@
                         <span class="cell-sub d-block mt-1">Reorder when stock reaches 20</span>
                         @cardaccess('view')
                         <a href="{{ route('student-cards.index') }}" class="nx-link d-inline-block mt-2">Manage cards <i class="bi bi-arrow-right"></i></a>
+                        @endcardaccess
+                    </div>
+                </div>
+            </div>
+            @endcardmode
+
+            @cardmode('temporary')
+            <div class="col-xl-3">
+                <div class="nx-card h-100 p-3 d-flex flex-column">
+                    <div class="d-flex justify-content-between align-items-start">
+                        <span class="stat-label text-uppercase">Issued Temporary Cards Left</span>
+                        <div class="stat-icon-wrapper icon-amber"><i class="bi bi-person-vcard-fill"></i></div>
+                    </div>
+
+                    <h2 class="card-stock-number">{{ $issuedTemporaryCardsLeft ?? 0 }}</h2>
+
+                    <div class="my-2">
+                        @if ($lowTemporaryCards)
+                            <span class="nx-badge nx-badge-amber"><i class="bi bi-exclamation-triangle"></i> Issue more cards</span>
+                        @else
+                            <span class="nx-badge nx-badge-green"><i class="bi bi-check-circle"></i> Enough cards</span>
+                        @endif
+                    </div>
+
+                    <div class="mt-auto">
+                        <span class="cell-sub d-block">The next card is given automatically on registration</span>
+                        @cardaccess('view')
+                        <a href="{{ route('temporary_id_cards.index') }}" class="nx-link d-inline-block mt-2">Manage cards <i class="bi bi-arrow-right"></i></a>
                         @endcardaccess
                     </div>
                 </div>
@@ -892,6 +993,16 @@
             display: flex;
             align-items: center;
             gap: .4rem;
+        }
+
+        .hero-branch-picker {
+            margin-top: .5rem;
+            min-width: 200px;
+        }
+
+        .hero-branch-picker .form-select {
+            border-radius: 10px;
+            font-weight: 600;
         }
 
         .hero-updated {
@@ -1324,7 +1435,8 @@
             'use strict';
 
             const DAILY_INCOME = @json($dailyIncome);
-            const YEARLY_URL = @json(route('reports.institute-income.yearly'));
+            const YEARLY_URL = @json($branchView ? null : route('reports.institute-income.yearly'));
+            const INCOME_TREND = @json($incomeTrend);
 
             const COLORS = {
                 blue: '#2563eb',
@@ -1424,6 +1536,32 @@
                             backgroundColor: DAILY_INCOME.values.map((_, i) => i === lastIndex ? COLORS.green : COLORS.blue),
                             borderRadius: 6,
                             maxBarThickness: 32,
+                        }],
+                    },
+                    options: baseOptions,
+                });
+            }
+
+            /* ---------------------------------------------------------------
+             | Branch Admin: last 6 months of the branch
+             * ------------------------------------------------------------- */
+
+            const branchTrendCanvas = document.getElementById('branchTrendChart');
+
+            if (branchTrendCanvas) {
+                const lastIndex = INCOME_TREND.values.length - 1;
+
+                new Chart(branchTrendCanvas, {
+                    type: 'bar',
+                    data: {
+                        labels: INCOME_TREND.labels,
+                        datasets: [{
+                            label: 'Payments',
+                            data: INCOME_TREND.values,
+                            // Highlight this month
+                            backgroundColor: INCOME_TREND.values.map((_, i) => i === lastIndex ? COLORS.green : COLORS.blue),
+                            borderRadius: 8,
+                            maxBarThickness: 48,
                         }],
                     },
                     options: baseOptions,
