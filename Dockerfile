@@ -16,6 +16,11 @@ RUN php -r 'exit(version_compare(PHP_VERSION, "8.2.35", ">=") ? 0 : 1);' \
 RUN { echo 'expose_php=Off'; echo 'session.upload_progress.enabled=0'; } \
     > /usr/local/etc/php/conf.d/zz-security.ini
 
+# Upload limits: PHP's default is 2 MB per file, so a Card Designer
+# background (up to 5 MB) or a large photo failed with "failed to upload".
+RUN { echo 'upload_max_filesize=10M'; echo 'post_max_size=12M'; echo 'memory_limit=256M'; } \
+    > /usr/local/etc/php/conf.d/zz-uploads.ini
+
 # ----------------------------
 # Enable required Apache modules
 # ----------------------------

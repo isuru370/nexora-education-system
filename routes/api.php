@@ -147,6 +147,12 @@ Route::middleware([
         [StudentTemporaryRegistrationController::class, 'store']
     )->name('api.QuickStudentStore')->middleware('card.mode:temporary');
 
+    // The temporary card the next student will get (auto-assigned in order)
+    Route::get(
+        '/temporary-cards/next',
+        [StudentTemporaryRegistrationController::class, 'next']
+    )->name('api.temporary-cards.next')->middleware('card.mode:temporary');
+
     // Register a student with a permanent student card
     Route::post(
         '/student-new',

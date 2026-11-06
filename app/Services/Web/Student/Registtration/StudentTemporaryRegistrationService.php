@@ -44,9 +44,12 @@ class StudentTemporaryRegistrationService
             ->orderBy('name')
             ->get();
 
+        $nextCard = $this->studentTemporaryCardService->nextIssuedCard();
+        $issuedLeft = $this->studentTemporaryCardService->issuedLeftCount();
+
         return view(
             'student-temporary-registration.create',
-            compact('branches', 'grades', 'admissions')
+            compact('branches', 'grades', 'admissions', 'nextCard', 'issuedLeft')
         );
     }
 
@@ -104,6 +107,25 @@ class StudentTemporaryRegistrationService
             | Temporary QR Validation
             |--------------------------------------------------------------------------
             */
+
+            // Empty = give the next issued card automatically (TMP045, TMP046 ...)
+            // Typed = staff chose a different card (e.g. the next one was damaged)
+            if (empty($data['temporary_qr_code'])) {
+
+                $nextCard = $this->studentTemporaryCardService
+                    ->nextIssuedCard(true);
+
+                if (!$nextCard) {
+                    throw new RuntimeException(
+                        StudentTemporaryCardService::NONE_LEFT_MESSAGE
+                    );
+                }
+
+                $data['temporary_qr_code'] = $nextCard->temporary_id_number;
+            }
+
+            $data['temporary_qr_code_expire_date'] = $data['temporary_qr_code_expire_date']
+                ?? now('Asia/Colombo')->addDays(60);
 
             $error = $this->studentTemporaryCardService
                 ->validateTemporaryQrCode(

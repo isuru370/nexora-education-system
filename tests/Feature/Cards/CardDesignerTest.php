@@ -5,6 +5,7 @@ namespace Tests\Feature\Cards;
 use App\Models\User;
 use App\Support\CardDesign;
 use App\Support\CardMode;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
@@ -68,17 +69,72 @@ class CardDesignerTest extends TestCase
             ->assertOk()->assertSee('data-field="code"', false);
     }
 
-    public function test_designer_is_only_for_temporary_card_institutes(): void
+    public function test_each_card_mode_sees_only_its_own_designs(): void
+    {
+        $this->actingAs($this->super);
+
+        CardMode::set(CardMode::TEMPORARY);
+        $this->get('/card-designer')->assertOk()
+            ->assertSee('Student ID card (permanent)')->assertDontSee('Permanent card stock');
+        $this->get('/card-designer?type=stock')->assertOk()->assertSee('Student ID card (permanent)');
+        $this->put('/card-designer/stock', ['fields' => '{}'])->assertNotFound();
+        $this->get('/admin/setting')->assertOk()->assertSee('ID Card Designer');
+
+        CardMode::set(CardMode::PERMANENT);
+        $this->get('/card-designer')->assertOk()
+            ->assertSee('Permanent card stock')->assertDontSee('Temporary card (pre-printed)');
+        $this->put('/card-designer/temporary', ['fields' => '{}'])->assertNotFound();
+        $this->get('/admin/setting')->assertOk()->assertSee('ID Card Designer');
+    }
+
+    public function test_card_stock_has_its_own_template_and_layout_per_branch(): void
     {
         CardMode::set(CardMode::PERMANENT);
         $this->actingAs($this->super);
 
-        $this->get('/card-designer')->assertRedirect(route('students.index'));
-        $this->get('/admin/setting')->assertOk()->assertDontSee('ID Card Designer');
+        $b1 = (int) DB::table('branches')->orderBy('id')->value('id');
+        $b2 = (int) DB::table('branches')->insertGetId(['name' => 'Second Branch', 'created_at' => now(), 'updated_at' => now()]
+            + (Schema::hasColumn('branches', 'code') ? ['code' => 'B2X'] : []));
 
-        CardMode::set(CardMode::TEMPORARY);
-        $this->get('/card-designer')->assertOk();
-        $this->get('/admin/setting')->assertOk()->assertSee('ID Card Designer');
+        $this->get('/card-designer?type=stock&branch_id=' . $b2)->assertOk()
+            ->assertSee('Second Branch')->assertSee('data-field="qr"', false)->assertSee('data-field="code"', false);
+
+        // Branch 2: own template, QR moved
+        $this->put('/card-designer/stock', [
+            'branch_id' => $b2,
+            'fields' => json_encode(['qr' => ['x' => 5, 'y' => 6, 'w' => 20, 'h' => 20], 'code' => ['size' => 4.5]]),
+            'background' => UploadedFile::fake()->image('branch2.png', 856, 540),
+        ])->assertRedirect(route('card-designer.index', ['type' => 'stock', 'branch_id' => $b2]));
+
+        $two = CardDesign::get(CardDesign::STOCK, $b2);
+        $this->assertTrue($two['saved']);
+        $this->assertSame(5.0, (float) $two['fields']['qr']['x']);
+        $this->assertSame(4.5, (float) $two['fields']['code']['size']);
+        Storage::disk('public')->assertExists($two['background']);
+
+        // Branch 1 keeps the default
+        $one = CardDesign::get(CardDesign::STOCK, $b1);
+        $this->assertFalse($one['saved']);
+        $this->assertNull($one['background']);
+
+        // The card stock preview draws each card with its branch's design
+        foreach ([[$b1, 'SA90001'], [$b2, 'SA90002']] as [$branch, $code]) {
+            DB::table('student_cards')->insert(array_filter([
+                'branch_id' => $branch, 'qr_code' => $code, 'card_number' => $code, 'card_sequence' => (int) substr($code, -1), 'global_qr_sequence' => 90000 + (int) substr($code, -1), 'status' => 'available',
+                'created_at' => now(), 'updated_at' => now(),
+            ], fn ($v) => $v !== null));
+        }
+
+        $html = $this->get('/student-cards/preview')->assertOk()->getContent();
+        $this->assertStringContainsString('>SA90001<', $html);
+        $this->assertStringContainsString('>SA90002<', $html);
+        $this->assertStringContainsString(e($two['background']), $html);
+        $this->assertStringContainsString('left:5mm;top:6mm;width:20mm;height:20mm', $html);
+
+        // Reset only branch 2
+        $this->delete('/card-designer/stock', ['branch_id' => $b2])->assertRedirect();
+        $this->assertFalse(CardDesign::get(CardDesign::STOCK, $b2)['saved']);
+        Storage::disk('public')->assertMissing($two['background']);
     }
 
     public function test_default_design_has_no_hardcoded_institute_and_no_outside_qr_site(): void
@@ -94,7 +150,7 @@ class CardDesignerTest extends TestCase
         $permanent = view('id-cards.card', ['card' => CardDesign::card(CardDesign::PERMANENT, ['student_id' => 'S1', 'name' => 'A.B.SILVA'])])->render();
         $this->assertStringNotContainsString('qrserver', $permanent);
         $this->assertStringNotContainsString('MINIPALASA', $permanent);
-        $this->assertStringContainsString('A.B.<br>SILVA', $permanent);
+        $this->assertStringContainsString('>A.B.SILVA<', $permanent); // one line, no forced break
     }
 
     public function test_saving_moves_fields_and_keeps_them_on_the_card(): void
@@ -128,6 +184,34 @@ class CardDesignerTest extends TestCase
         DB::table('students')->where('id', $this->inst['s1'])->update(['permanent_qr_active' => false, 'is_active' => true]);
         $this->actingAs($this->super)->get('/generate-student-id')
             ->assertOk()->assertSee('nx-id-field-qr', false)->assertDontSee('qrserver');
+    }
+
+    public function test_save_form_is_not_blocked_by_the_browser(): void
+    {
+        // QR / photo boxes have font size 0 (helper box min 0.5): the browser
+        // used to block Save silently
+        $this->actingAs($this->super)->get('/card-designer?type=permanent')
+            ->assertOk()->assertSee('id="cdForm" novalidate', false);
+    }
+
+    public function test_student_name_stays_on_one_line_and_long_names_shrink(): void
+    {
+        $name = fn (string $value) => CardDesign::card('permanent', ['name' => $value])['fields']['name'];
+
+        // no forced break between the initials and the surname
+        $this->assertSame('A A I Fernando', $name('A A I  Fernando')['html']);
+        $this->assertSame('K.M.S. Perera', $name('K.M.S. Perera')['html']);
+
+        $short = $name('A.PERERA');
+        $this->assertStringContainsString('white-space:nowrap', $short['style']);
+        $this->assertSame(3.2, (float) $short['size']);
+
+        $long = $name('W.A.D.M. KARUNARATHNA');
+        $this->assertStringContainsString('white-space:nowrap', $long['style']);
+        $this->assertLessThan(3.2, $long['size']);
+        $this->assertGreaterThan(1.44, $long['size']);
+        // fits the 24.4 mm box (15 letters x 0.80 em + 6 dots/spaces x 0.40 em)
+        $this->assertLessThanOrEqual(24.4, (15 * 0.80 + 6 * 0.40) * $long['size']);
     }
 
     public function test_background_upload_and_reset(): void

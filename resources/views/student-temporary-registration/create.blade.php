@@ -180,6 +180,24 @@
             </div>
         @endif
 
+        {{-- REGISTERED: Custom ID + the card to give --}}
+        @if (session('registered_card'))
+            @php($registered = session('registered_card'))
+            <div class="alert alert-success mb-4 text-center" role="alert">
+                <div class="fw-semibold mb-2">{{ $registered['name'] ?? '' }}</div>
+                <div class="row g-3 justify-content-center">
+                    <div class="col-sm-6 col-lg-4">
+                        <small class="text-muted d-block">Custom ID</small>
+                        <div class="fw-bold" style="font-size: 2.2rem; letter-spacing: 1px;">{{ $registered['custom_id'] }}</div>
+                    </div>
+                    <div class="col-sm-6 col-lg-4">
+                        <small class="text-muted d-block">Give this card</small>
+                        <div class="fw-bold text-primary" style="font-size: 2.2rem; letter-spacing: 1px;">{{ $registered['temporary_qr_code'] }}</div>
+                    </div>
+                </div>
+            </div>
+        @endif
+
         {{-- ERROR MESSAGE --}}
         @if (session('error'))
             <div class="alert alert-danger alert-dismissible fade show mb-4"

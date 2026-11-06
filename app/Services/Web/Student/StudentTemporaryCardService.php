@@ -7,6 +7,39 @@ use App\Models\TemporaryIdCard;
 
 class StudentTemporaryCardService
 {
+    public const NONE_LEFT_MESSAGE = 'No issued temporary ID cards are left. Go to Temporary ID Cards, '
+        . 'download the next cards and mark them as Issued, then register again.';
+
+    /**
+     * The next card to give: the lowest-numbered ISSUED card
+     * (TMP045 before TMP046, TMP999 before TMP1000).
+     *
+     * $lock = true inside the registration transaction, so two staff
+     * registering at the same time never get the same card.
+     */
+    public function nextIssuedCard(bool $lock = false): ?TemporaryIdCard
+    {
+        $query = TemporaryIdCard::query()
+            ->where('status', 'issued')
+            ->whereNull('student_id')
+            ->orderByRaw('LENGTH(temporary_id_number)')
+            ->orderBy('temporary_id_number');
+
+        if ($lock) {
+            $query->lockForUpdate();
+        }
+
+        return $query->first();
+    }
+
+    public function issuedLeftCount(): int
+    {
+        return TemporaryIdCard::query()
+            ->where('status', 'issued')
+            ->whereNull('student_id')
+            ->count();
+    }
+
     /**
      * Assign temporary card to student.
      */

@@ -18,6 +18,11 @@ trait StudentRegistrationResponse
             'success' => true,
             'message' => 'Student registered successfully.',
             'student' => $result['student'],
+            // Shown big after registration: write the Custom ID, give this card
+            'card' => [
+                'custom_id' => $result['student']->custom_id ?? null,
+                'temporary_qr_code' => $result['student']->temporary_qr_code ?? null,
+            ],
             'admission_payment' => $payment ? [
                 'id' => $payment->id,
                 'receipt_number' => $payment->receipt_number,
