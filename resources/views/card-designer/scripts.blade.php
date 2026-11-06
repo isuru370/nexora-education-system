@@ -234,6 +234,11 @@
     document.getElementById('cdBackground').addEventListener('change', (e) => {
         const file = e.target.files[0];
         if (!file) return;
+        if (file.size > 5 * 1024 * 1024) {
+            e.target.value = '';
+            window.alert('This image is ' + (file.size / 1024 / 1024).toFixed(1) + ' MB. Please use a PNG or JPG under 5 MB.');
+            return;
+        }
         let img = bgImg();
         if (!img) {
             img = document.createElement('img');

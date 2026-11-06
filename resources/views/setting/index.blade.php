@@ -32,11 +32,9 @@
                             <a href="{{ route('payment-rules.index') }}" class="nx-btn nx-btn-light">
                                 <i class="bi bi-sliders"></i> Payment &amp; Attendance Rules
                             </a>
-                            @if (\App\Support\CardMode::temporary())
-                                <a href="{{ route('card-designer.index') }}" class="nx-btn nx-btn-light">
-                                    <i class="bi bi-person-badge"></i> ID Card Designer
-                                </a>
-                            @endif
+                            <a href="{{ route('card-designer.index') }}" class="nx-btn nx-btn-light">
+                                <i class="bi bi-person-badge"></i> ID Card Designer
+                            </a>
                         @endif
                     </div>
                     <div class="hero-date-time">

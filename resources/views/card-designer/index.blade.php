@@ -60,21 +60,42 @@
             <div class="alert alert-danger">{{ $errors->first() }}</div>
         @endif
 
-        <ul class="nav nav-pills cd-tabs mb-3">
-            @foreach (\App\Support\CardDesign::TYPES as $item)
-                <li class="nav-item">
-                    <a class="nav-link {{ $item === $type ? 'active' : '' }}"
-                        href="{{ route('card-designer.index', ['type' => $item]) }}">
-                        {{ \App\Support\CardDesign::LABELS[$item] }}
-                    </a>
-                </li>
-            @endforeach
-        </ul>
+        <div class="d-flex flex-wrap align-items-center gap-3 mb-3">
+            <ul class="nav nav-pills cd-tabs mb-0">
+                @foreach ($types as $item)
+                    <li class="nav-item">
+                        <a class="nav-link {{ $item === $type ? 'active' : '' }}"
+                            href="{{ route('card-designer.index', ['type' => $item]) }}">
+                            {{ \App\Support\CardDesign::LABELS[$item] }}
+                        </a>
+                    </li>
+                @endforeach
+            </ul>
 
-        <form method="POST" action="{{ route('card-designer.update', $type) }}" enctype="multipart/form-data" id="cdForm">
+            {{-- Card stock: each branch has its own template and layout --}}
+            @if ($branchId)
+                <form method="GET" action="{{ route('card-designer.index') }}" class="d-flex align-items-center gap-2 ms-auto">
+                    <input type="hidden" name="type" value="{{ $type }}">
+                    <label for="cdBranch" class="fw-semibold text-nowrap mb-0"><i class="bi bi-building"></i> Branch</label>
+                    <select id="cdBranch" name="branch_id" class="form-select" onchange="this.form.submit()">
+                        @foreach ($branches as $branch)
+                            <option value="{{ $branch->id }}" {{ (int) $branch->id === (int) $branchId ? 'selected' : '' }}>{{ $branch->name }}</option>
+                        @endforeach
+                    </select>
+                </form>
+            @endif
+        </div>
+
+        {{-- novalidate: the side-panel boxes (e.g. Font size = 0 on a QR/photo box) are
+             only helpers; the browser blocked Save on them without a message.
+             The server checks and corrects every value. --}}
+        <form method="POST" action="{{ route('card-designer.update', $type) }}" enctype="multipart/form-data" id="cdForm" novalidate>
             @csrf
             @method('PUT')
             <input type="hidden" name="fields" id="cdFields">
+            @if ($branchId)
+                <input type="hidden" name="branch_id" value="{{ $branchId }}">
+            @endif
             <input type="hidden" name="remove_background" id="cdRemoveBg" value="0">
 
             <div class="row g-4">
@@ -84,6 +105,9 @@
                             <div>
                                 <h5 class="nx-card-title"><i class="bi bi-credit-card-2-front text-primary"></i>
                                     {{ \App\Support\CardDesign::LABELS[$type] }}
+                                    @if ($branchId)
+                                        &middot; {{ optional($branches->firstWhere('id', $branchId))->name }}
+                                    @endif
                                     <small class="text-muted fw-normal">{{ $design['width'] }} x {{ $design['height'] }} mm</small>
                                 </h5>
                                 <p class="nx-card-subtitle">
@@ -215,6 +239,9 @@
                 onsubmit="return confirm('Go back to the default design? The uploaded template is removed.')">
                 @csrf
                 @method('DELETE')
+                @if ($branchId)
+                    <input type="hidden" name="branch_id" value="{{ $branchId }}">
+                @endif
                 <button type="submit" class="btn btn-link text-danger p-0">
                     <i class="bi bi-arrow-counterclockwise"></i> Reset the whole card to the default design
                 </button>
