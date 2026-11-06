@@ -30,18 +30,41 @@
 
             <div class="row g-3">
                 <div class="col-md-6">
-                    <label class="form-label fw-semibold">
-                        Temporary QR Code <span class="text-danger">*</span>
-                    </label>
+                    @if ($isEdit)
+                        <label class="form-label fw-semibold">Temporary QR Code</label>
 
-                    <input type="text" name="temporary_qr_code"
-                        class="form-control custom-input @error('temporary_qr_code') is-invalid @enderror"
-                        value="{{ old('temporary_qr_code', $student->temporary_qr_code ?? '') }}"
-                        placeholder="e.g., TMP001" {{ $isEdit ? 'readonly' : 'required' }}>
+                        <input type="text" name="temporary_qr_code"
+                            class="form-control custom-input"
+                            value="{{ $student->temporary_qr_code ?? '' }}" readonly>
 
-                    <small class="text-muted">
-                        {{ $isEdit ? 'Temporary QR Code cannot be changed after creation.' : 'Enter the issued temporary QR code.' }}
-                    </small>
+                        <small class="text-muted">Temporary QR Code cannot be changed after creation.</small>
+                    @else
+                        <label class="form-label fw-semibold">Temporary ID Card</label>
+
+                        @if (!empty($nextCard))
+                            <div class="d-flex align-items-center gap-2 mb-2">
+                                <span class="badge bg-success fs-6 px-3 py-2">
+                                    <i class="bi bi-magic me-1"></i> Auto: {{ $nextCard->temporary_id_number }}
+                                </span>
+                                <small class="text-muted">{{ $issuedLeft ?? 0 }} issued card(s) left</small>
+                            </div>
+                        @else
+                            <div class="alert alert-warning py-2 mb-2">
+                                <i class="bi bi-exclamation-triangle-fill me-1"></i>
+                                No issued temporary cards are left. Issue more cards in Temporary ID Cards first.
+                            </div>
+                        @endif
+
+                        <input type="text" name="temporary_qr_code"
+                            class="form-control custom-input @error('temporary_qr_code') is-invalid @enderror"
+                            value="{{ old('temporary_qr_code') }}"
+                            placeholder="Leave empty to give {{ $nextCard->temporary_id_number ?? 'the next card' }}">
+
+                        <small class="text-muted">
+                            The next issued card is given automatically. Type a card number only to give a different card
+                            (e.g. the next card is damaged).
+                        </small>
+                    @endif
 
                     @error('temporary_qr_code')
                         <div class="invalid-feedback d-block">{{ $message }}</div>

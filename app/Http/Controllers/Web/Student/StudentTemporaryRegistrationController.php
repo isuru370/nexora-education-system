@@ -41,6 +41,11 @@ class StudentTemporaryRegistrationController extends Controller
                     'success',
                     'Student created successfully.'
                 )
+                ->with('registered_card', [
+                    'custom_id' => $result['student']->custom_id,
+                    'temporary_qr_code' => $result['student']->temporary_qr_code,
+                    'name' => $result['student']->initial_name ?: $result['student']->full_name,
+                ])
                 ->with(
                     'portal_username',
                     $result['portal_username']

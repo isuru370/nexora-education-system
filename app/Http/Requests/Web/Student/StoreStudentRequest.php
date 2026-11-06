@@ -16,12 +16,25 @@ class StoreStudentRequest extends FormRequest
 
     protected function prepareForValidation(): void
     {
+        // Empty (or just "TMP" from the app's empty box) = the next issued
+        // card is given automatically. "45" / "tmp045" -> "TMP045".
+        $code = strtoupper(trim((string) $this->input('temporary_qr_code', '')));
+
+        if ($code === '' || $code === 'TMP') {
+            $code = null;
+        } elseif (ctype_digit($code)) {
+            $code = 'TMP' . str_pad($code, 3, '0', STR_PAD_LEFT);
+        } elseif (preg_match('/^TMP(\d+)$/', $code, $m)) {
+            $code = 'TMP' . str_pad($m[1], 3, '0', STR_PAD_LEFT);
+        }
+
         $this->merge([
             'admission' => $this->boolean('admission'),
 
-            'temporary_qr_code_expire_date' => $this->filled('temporary_qr_code')
-                ? Carbon::now('Asia/Colombo')->addDays(60)
-                : null,
+            'temporary_qr_code' => $code,
+
+            // Always 60 days from registration (auto or typed card)
+            'temporary_qr_code_expire_date' => Carbon::now('Asia/Colombo')->addDays(60),
         ]);
     }
 
@@ -49,7 +62,7 @@ class StoreStudentRequest extends FormRequest
             |--------------------------------------------------------------------------
             */
             'temporary_qr_code' => [
-                'required',
+                'nullable',
                 'string',
                 'regex:/^TMP\d{3,}$/',
                 'unique:students,temporary_qr_code',
@@ -81,7 +94,7 @@ class StoreStudentRequest extends FormRequest
             ],
 
             'temporary_qr_code_expire_date' => [
-                'required_with:temporary_qr_code',
+                'required',
                 'date',
             ],
 
