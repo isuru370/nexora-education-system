@@ -328,11 +328,11 @@ class CardDesign
 
         // text width in em: dots and spaces are narrow, letters wide
         $letter = $field['upper']
-            ? ($field['bold'] ? 0.74 : 0.68)
-            : ($field['bold'] ? 0.64 : 0.58);
+            ? ($field['bold'] ? 0.80 : 0.73)
+            : ($field['bold'] ? 0.69 : 0.62);
         $ems = 0.0;
         foreach (mb_str_split($text) as $char) {
-            $ems += in_array($char, ['.', ',', ' ', "'", 'I', 'i', 'l', '-'], true) ? 0.38 : $letter;
+            $ems += in_array($char, ['.', ',', ' ', "'", 'I', 'i', 'l', '-'], true) ? 0.40 : $letter;
         }
 
         $border = $field['frame'] !== '' ? 0.4 : 0;
@@ -438,6 +438,11 @@ class CardDesign
         }
 
         $value = $f['source'] === null ? $f['text'] : (string) ($data[$f['source']] ?? '');
+
+        // One-line name: exactly as saved (initial name), never split
+        if ($f['source'] === 'name' && $f['lines'] === 1) {
+            return e(trim(preg_replace('/\s+/u', ' ', $value)));
+        }
 
         if ($f['source'] === 'name') {
             [$first, $last] = self::nameLines($f['upper'] ? mb_strtoupper($value) : $value);

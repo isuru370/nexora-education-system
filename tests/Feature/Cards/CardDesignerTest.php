@@ -94,7 +94,7 @@ class CardDesignerTest extends TestCase
         $permanent = view('id-cards.card', ['card' => CardDesign::card(CardDesign::PERMANENT, ['student_id' => 'S1', 'name' => 'A.B.SILVA'])])->render();
         $this->assertStringNotContainsString('qrserver', $permanent);
         $this->assertStringNotContainsString('MINIPALASA', $permanent);
-        $this->assertStringContainsString('A.B.<br>SILVA', $permanent);
+        $this->assertStringContainsString('>A.B.SILVA<', $permanent); // one line, no forced break
     }
 
     public function test_saving_moves_fields_and_keeps_them_on_the_card(): void
@@ -142,6 +142,10 @@ class CardDesignerTest extends TestCase
     {
         $name = fn (string $value) => CardDesign::card('permanent', ['name' => $value])['fields']['name'];
 
+        // no forced break between the initials and the surname
+        $this->assertSame('A A I Fernando', $name('A A I  Fernando')['html']);
+        $this->assertSame('K.M.S. Perera', $name('K.M.S. Perera')['html']);
+
         $short = $name('A.PERERA');
         $this->assertStringContainsString('white-space:nowrap', $short['style']);
         $this->assertSame(3.2, (float) $short['size']);
@@ -150,8 +154,8 @@ class CardDesignerTest extends TestCase
         $this->assertStringContainsString('white-space:nowrap', $long['style']);
         $this->assertLessThan(3.2, $long['size']);
         $this->assertGreaterThan(1.44, $long['size']);
-        // fits the 24.4 mm box (15 letters x 0.74 em + 6 dots/spaces x 0.38 em)
-        $this->assertLessThanOrEqual(24.4, (15 * 0.74 + 6 * 0.38) * $long['size']);
+        // fits the 24.4 mm box (15 letters x 0.80 em + 6 dots/spaces x 0.40 em)
+        $this->assertLessThanOrEqual(24.4, (15 * 0.80 + 6 * 0.40) * $long['size']);
     }
 
     public function test_background_upload_and_reset(): void

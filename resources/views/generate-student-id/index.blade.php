@@ -90,6 +90,29 @@
        ID card design (mm-based) is preserved as-is.
        ============================================================ */
 
+    /* Download ID Card button on each student (was white text, no background) */
+    .download-single-btn {
+        background: linear-gradient(135deg, #1d4ed8, #2563eb);
+        border: none;
+        color: #fff !important;
+        font-weight: 600;
+        padding: 9px 12px;
+        border-radius: 10px;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.25);
+    }
+
+    .download-single-btn:hover:not(:disabled),
+    .download-single-btn:focus-visible {
+        background: linear-gradient(135deg, #1e40af, #1d4ed8);
+        color: #fff !important;
+        box-shadow: 0 6px 18px rgba(37, 99, 235, 0.35);
+    }
+
+    .download-single-btn:disabled {
+        opacity: 0.6;
+        cursor: wait;
+    }
+
     @font-face {
         font-family: 'Monbaiti';
         src: url('{{ asset('fonts/monbaiti.ttf') }}') format('truetype');
