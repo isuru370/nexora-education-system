@@ -156,7 +156,7 @@ class ExtraIncomeController extends Controller
             $validated['user_id'] = auth()->id();
 
             $validated['receipt_number'] =
-                ReceiptNumberService::generate();
+                app(ReceiptNumberService::class)->generate();
 
             $extraIncome = ExtraIncome::create($validated);
 
