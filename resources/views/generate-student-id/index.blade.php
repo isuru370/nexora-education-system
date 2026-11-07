@@ -90,6 +90,29 @@
        ID card design (mm-based) is preserved as-is.
        ============================================================ */
 
+    .id-download-note {
+        font-size: .78rem;
+        color: #92400e;
+        background: #fef3c7;
+        border: 1px solid #fde68a;
+        border-radius: 8px;
+        padding: 6px 10px;
+        line-height: 1.35;
+    }
+
+    /* Card fee popup (2nd download) */
+    .cf-overlay {
+        position: fixed; inset: 0; z-index: 2000; display: flex; align-items: center; justify-content: center;
+        background: rgba(15, 23, 42, .55); padding: 16px;
+    }
+    .cf-box {
+        background: #fff; color: #0f172a; border-radius: 16px; width: 100%; max-width: 440px;
+        box-shadow: 0 20px 50px rgba(15, 23, 42, .3); padding: 22px;
+    }
+    .cf-box h5 { font-weight: 800; margin-bottom: 4px; }
+    .cf-box .cf-sub { color: #64748b; font-size: .88rem; margin-bottom: 14px; }
+    .cf-box label { font-weight: 600; font-size: .85rem; margin-bottom: 4px; }
+
     /* Download ID Card button on each student (was white text, no background) */
     .download-single-btn {
         background: linear-gradient(135deg, #1d4ed8, #2563eb);

@@ -39,6 +39,7 @@ class StudentCardRegistrationService
 
         $admissions = Admission::query()
             ->active()
+            ->forRegistration()
             ->orderBy('name')
             ->get();
 

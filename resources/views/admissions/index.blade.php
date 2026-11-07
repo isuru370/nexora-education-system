@@ -151,7 +151,12 @@
                             <tr>
                                 <td class="row-number">{{ $admissions->firstItem() + $loop->index }}</td>
 
-                                <td class="cell-title">{{ $admission->name }}</td>
+                                <td class="cell-title">
+                                    {{ $admission->name }}
+                                    @if ($admission->for_card_replacement)
+                                        <span class="nx-badge nx-badge-amber ms-1"><i class="bi bi-person-vcard"></i> Card replacement</span>
+                                    @endif
+                                </td>
 
                                 <td class="amount-value">Rs. {{ number_format($admission->amount, 2) }}</td>
 

@@ -138,6 +138,18 @@
                 </small>
             </div>
 
+            {{-- Downloaded before -> the next download needs a card fee --}}
+            @php
+                $downloadInfo = ($downloads ?? collect())->get($student->id);
+            @endphp
+            @if ($downloadInfo)
+                <div class="id-download-note mb-2" data-downloaded-note="{{ $cardId }}">
+                    <i class="bi bi-arrow-repeat"></i>
+                    Downloaded {{ $downloadInfo->times }}&times; &middot; last {{ \Carbon\Carbon::parse($downloadInfo->last_at)->format('d M Y') }}
+                    <span class="d-block">Next download: card fee</span>
+                </div>
+            @endif
+
             {{-- ✅ Download ID Card Button --}}
             <button type="button"
                     class="btn download-btn text-white w-100 download-single-btn"
