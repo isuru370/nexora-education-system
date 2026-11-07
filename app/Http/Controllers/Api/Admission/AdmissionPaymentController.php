@@ -18,7 +18,13 @@ class AdmissionPaymentController extends Controller
     {
         try {
 
+            // ?purpose=card_replacement -> the lost-card fees; else registration items
             $admissions = Admission::active()
+                ->when(
+                    $request->query('purpose') === 'card_replacement',
+                    fn ($query) => $query->forCardReplacement(),
+                    fn ($query) => $query->forRegistration()
+                )
                 ->select('id', 'name', 'amount')
                 ->orderBy('name')
                 ->get();
