@@ -445,6 +445,16 @@
                             <span>Course Teacher Payments</span>
                         </button>
                     </div>
+                    @if (in_array($role, ['SUPER_ADMIN', 'BRANCH_ADMIN'], true))
+                    <div class="nav-item">
+                        <button type="button"
+                            class="nav-link-custom {{ request()->routeIs('course-owner-payments.*') ? 'active' : '' }}"
+                            data-route="course-owner-payments.index" data-href="{{ route('course-owner-payments.index') }}">
+                            <i class="bi bi-building-check"></i>
+                            <span>Course Owner Payments</span>
+                        </button>
+                    </div>
+                    @endif
                     <div class="nav-item">
                         <button type="button"
                             class="nav-link-custom {{ request()->routeIs('course-reports.*') ? 'active' : '' }}"

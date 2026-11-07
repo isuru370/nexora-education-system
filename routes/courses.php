@@ -62,6 +62,10 @@ Route::middleware(['auth', 'user.active', 'feature:courses'])->group(function ()
             ->where('type', 'daily|monthly|yearly|courses')->name('course-reports.show');
 
         Route::get('course-teacher-payments', [CourseTeacherPaymentController::class, 'index'])->name('course-teacher-payments.index');
+
+        // Every course's institute share, given to the owner (Super Admin + Branch Admin)
+        Route::get('course-owner-payments', [\App\Http\Controllers\Web\Course\CourseOwnerPayoutController::class, 'index'])
+            ->middleware('role:SUPER_ADMIN,BRANCH_ADMIN')->name('course-owner-payments.index');
         Route::get('course-teacher-payments/{teacher}', [CourseTeacherPaymentController::class, 'show'])
             ->whereNumber('teacher')->name('course-teacher-payments.show');
         Route::get('course-teacher-payouts/{courseTeacherPayout}/slip', [CourseTeacherPaymentController::class, 'slip'])
