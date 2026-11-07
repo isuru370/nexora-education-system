@@ -10,15 +10,18 @@ use Illuminate\Http\Request;
 
 class InstituteExpenseController extends Controller
 {
+    use \App\Http\Controllers\Concerns\BranchScoped;
+
     /**
      * Display all institute expenses.
      */
     public function index(Request $request)
     {
-        $query = InstitutePayment::with([
+        $query = $this->scopeToBranches(InstitutePayment::with([
             'user',
             'paymentReason',
-        ])->where('payment_type', 'expense');
+            'branch',
+        ])->where('payment_type', 'expense'));
 
         /*
         |--------------------------------------------------------------------------
@@ -240,9 +243,11 @@ class InstituteExpenseController extends Controller
             'name'
         )->get();
 
+        $branches = $this->formBranches();
+
         return view(
             'institute-expenses.create',
-            compact('reasons')
+            compact('reasons', 'branches')
         );
     }
 
@@ -285,7 +290,11 @@ class InstituteExpenseController extends Controller
                 : null
         );
 
+        $branchId = $this->branchIdFromRequest($request);
+
         InstitutePayment::create([
+            'branch_id' => $branchId,
+
             'amount' => $validated['amount'],
 
             'payment_date' => $validated['payment_date'],
@@ -321,6 +330,8 @@ class InstituteExpenseController extends Controller
     public function show(
         InstitutePayment $instituteExpense
     ) {
+        $this->authorizeBranch($instituteExpense);
+
         /*
         |--------------------------------------------------------------------------
         | Security Check
@@ -354,6 +365,8 @@ class InstituteExpenseController extends Controller
     public function edit(
         InstitutePayment $instituteExpense
     ) {
+        $this->authorizeBranch($instituteExpense);
+
         /*
         |--------------------------------------------------------------------------
         | Security Check
@@ -385,11 +398,14 @@ class InstituteExpenseController extends Controller
             'name'
         )->get();
 
+        $branches = $this->formBranches();
+
         return view(
             'institute-expenses.edit',
             compact(
                 'instituteExpense',
-                'reasons'
+                'reasons',
+                'branches'
             )
         );
     }
@@ -401,6 +417,8 @@ class InstituteExpenseController extends Controller
         Request $request,
         InstitutePayment $instituteExpense
     ) {
+        $this->authorizeBranch($instituteExpense);
+
         /*
         |--------------------------------------------------------------------------
         | Security Check
@@ -484,6 +502,8 @@ class InstituteExpenseController extends Controller
         );
 
         $instituteExpense->update([
+            'branch_id' => $this->branchIdFromRequest($request),
+
             'amount' => $validated['amount'],
 
             'payment_date' => $validated['payment_date'],
@@ -519,6 +539,8 @@ class InstituteExpenseController extends Controller
     public function destroy(
         InstitutePayment $instituteExpense
     ) {
+        $this->authorizeBranch($instituteExpense);
+
         /*
         |--------------------------------------------------------------------------
         | Security Check
@@ -562,6 +584,8 @@ class InstituteExpenseController extends Controller
     public function toggleStatus(
         InstitutePayment $instituteExpense
     ) {
+        $this->authorizeBranch($instituteExpense);
+
         /*
         |--------------------------------------------------------------------------
         | Security Check

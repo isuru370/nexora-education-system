@@ -794,7 +794,8 @@ Route::middleware([
 
 
 
-        Route::middleware('role:ADMIN')->group(function () {
+        // Branch Admin: only their branches (BranchScoped in the controller)
+        Route::middleware('role:ADMIN,BRANCH_ADMIN')->group(function () {
 
             Route::resource(
 
@@ -835,7 +836,8 @@ Route::middleware([
 
 
 
-        Route::middleware('role:ADMIN')->group(function () {
+        // Branch Admin: only their branches (BranchScoped in the controller)
+        Route::middleware('role:ADMIN,BRANCH_ADMIN')->group(function () {
 
 
 

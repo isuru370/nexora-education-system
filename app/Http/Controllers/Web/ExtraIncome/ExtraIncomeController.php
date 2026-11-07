@@ -11,6 +11,8 @@ use Illuminate\Validation\Rule;
 
 class ExtraIncomeController extends Controller
 {
+    use \App\Http\Controllers\Concerns\BranchScoped;
+
     /**
      * Display a listing of extra incomes.
      */
@@ -20,7 +22,7 @@ class ExtraIncomeController extends Controller
         $selectedYear = $request->year ?? now()->year;
         $selectedMonth = $request->month ?? now()->month;
 
-        $query = ExtraIncome::with('createdBy');
+        $query = $this->scopeToBranches(ExtraIncome::with(['createdBy', 'branch']));
 
         // 🔥 year filter
         $query->whereYear('income_date', $selectedYear);
@@ -96,7 +98,7 @@ class ExtraIncomeController extends Controller
      */
     public function create()
     {
-        return view('extra-incomes.create');
+        return view('extra-incomes.create', ['branches' => $this->formBranches()]);
     }
 
     /**
@@ -149,11 +151,14 @@ class ExtraIncomeController extends Controller
             ],
         ]);
 
+        $branchId = $this->branchIdFromRequest($request);
+
         DB::beginTransaction();
 
         try {
 
             $validated['user_id'] = auth()->id();
+            $validated['branch_id'] = $branchId;
 
             $validated['receipt_number'] =
                 app(ReceiptNumberService::class)->generate();
@@ -182,6 +187,8 @@ class ExtraIncomeController extends Controller
      */
     public function show(ExtraIncome $extraIncome)
     {
+        $this->authorizeBranch($extraIncome);
+
         $extraIncome->load('createdBy');
 
         return view('extra-incomes.show', compact(
@@ -194,9 +201,12 @@ class ExtraIncomeController extends Controller
      */
     public function edit(ExtraIncome $extraIncome)
     {
-        return view('extra-incomes.edit', compact(
-            'extraIncome'
-        ));
+        $this->authorizeBranch($extraIncome);
+
+        return view('extra-incomes.edit', [
+            'extraIncome' => $extraIncome,
+            'branches' => $this->formBranches(),
+        ]);
     }
 
     /**
@@ -204,6 +214,8 @@ class ExtraIncomeController extends Controller
      */
     public function update(Request $request, ExtraIncome $extraIncome)
     {
+        $this->authorizeBranch($extraIncome);
+
         $validated = $request->validate([
 
             'amount' => [
@@ -249,6 +261,8 @@ class ExtraIncomeController extends Controller
             ],
         ]);
 
+        $validated['branch_id'] = $this->branchIdFromRequest($request);
+
         DB::beginTransaction();
 
         try {
@@ -277,6 +291,8 @@ class ExtraIncomeController extends Controller
      */
     public function destroy(ExtraIncome $extraIncome)
     {
+        $this->authorizeBranch($extraIncome);
+
         DB::beginTransaction();
 
         try {

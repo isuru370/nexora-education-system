@@ -416,6 +416,8 @@
 
                     <div class="row g-4">
 
+                        @include('partials.branch-select', ['branches' => $branches ?? collect(), 'selected' => null, 'wrapperClass' => 'col-12'])
+
                         {{-- =====================================
                              AMOUNT
                         ====================================== --}}
