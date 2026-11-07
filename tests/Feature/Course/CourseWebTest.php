@@ -188,6 +188,7 @@ class CourseWebTest extends TestCase
         // Owner share: Super Admin + Branch Admin (an Admin cannot)
         $this->post("/courses/{$course->id}/owner-payouts", ['amount' => 100, 'payment_method' => 'cash'])->assertForbidden();
         $this->get("/courses/{$course->id}")->assertOk()->assertDontSee('Owner share');
+        $this->get('/course-owner-payments')->assertForbidden();
 
         $branchAdmin = \App\Models\User::forceCreate([
             'name' => 'Branch Head', 'email' => 'bh@test.lk', 'password' => 'password123', 'is_active' => 1,
@@ -217,6 +218,11 @@ class CourseWebTest extends TestCase
 
         $this->get("/courses/{$course->id}")->assertOk()
             ->assertSee('Owner share')->assertSee('Paid to owner')->assertSee('To owner')->assertSee('1,000.00');
+
+        // Owner Payments page: every course with its balance + history
+        $this->get('/courses')->assertOk()->assertSee('Owner Payments');
+        $this->get('/course-owner-payments')->assertOk()
+            ->assertSee($course->name)->assertSee('3,000.00')->assertSee('2,000.00')->assertSee('1,000.00')->assertSee('To owner');
 
         // Cancel: back to the institute balance
         $owner = \App\Models\CourseOwnerPayout::firstOrFail();

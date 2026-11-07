@@ -21,6 +21,9 @@
                     <a href="{{ route('course-payments.index') }}" class="nx-btn nx-btn-light"><i class="bi bi-receipt"></i> Course Payments</a>
                     @if ($canManage)
                         <a href="{{ route('course-teacher-payments.index') }}" class="nx-btn nx-btn-light"><i class="bi bi-person-badge"></i> Teacher Payments</a>
+                        @if (in_array(strtoupper((string) optional(auth()->user()->userType)->code), ['SUPER_ADMIN', 'BRANCH_ADMIN'], true))
+                            <a href="{{ route('course-owner-payments.index') }}" class="nx-btn nx-btn-light"><i class="bi bi-building-check"></i> Owner Payments</a>
+                        @endif
                         <a href="{{ route('courses.create') }}" class="nx-btn nx-btn-primary"><i class="bi bi-plus-lg"></i> New Course</a>
                     @endif
                 </div>

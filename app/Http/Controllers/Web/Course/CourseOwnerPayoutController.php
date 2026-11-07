@@ -19,6 +19,38 @@ class CourseOwnerPayoutController extends Controller
     {
     }
 
+    /**
+     * Owner Payments: each course of the user's branches with its institute
+     * share earned / given to the owner / balance, a Pay form and history.
+     */
+    public function index()
+    {
+        $courses = Course::query()
+            ->with('branch:id,name')
+            ->whereIn('branch_id', $this->branchIds())
+            ->orderByDesc('start_date')
+            ->orderBy('name')
+            ->get()
+            ->map(fn (Course $course) => ['course' => $course] + $this->earnings->instituteRow($course));
+
+        $payouts = CourseOwnerPayout::query()
+            ->with(['course:id,name,code', 'paidBy:id,name'])
+            ->whereIn('course_id', $courses->pluck('course.id'))
+            ->latest('id')
+            ->limit(100)
+            ->get();
+
+        return view('courses.owner-payments', [
+            'courses' => $courses,
+            'payouts' => $payouts,
+            'totals' => [
+                'earned' => round($courses->sum('earned'), 2),
+                'paid' => round($courses->sum('paid'), 2),
+                'balance' => round($courses->sum('balance'), 2),
+            ],
+        ]);
+    }
+
     public function store(Request $request, Course $course)
     {
         $this->checkCourse($course);
