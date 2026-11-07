@@ -185,9 +185,18 @@ class CourseWebTest extends TestCase
             ->first(fn ($r) => $r['teacher']->id === $this->inst['teacher']);
         $this->assertEquals([3500, 2000, 1500], [$teacher['earned'], $teacher['paid'], $teacher['balance']]);
 
-        // Owner share: Super Admin only
+        // Owner share: Super Admin + Branch Admin (an Admin cannot)
         $this->post("/courses/{$course->id}/owner-payouts", ['amount' => 100, 'payment_method' => 'cash'])->assertForbidden();
         $this->get("/courses/{$course->id}")->assertOk()->assertDontSee('Owner share');
+
+        $branchAdmin = \App\Models\User::forceCreate([
+            'name' => 'Branch Head', 'email' => 'bh@test.lk', 'password' => 'password123', 'is_active' => 1,
+            'user_type_id' => DB::table('user_types')->insertGetId(['name' => 'BRANCH_ADMIN', 'code' => 'BRANCH_ADMIN', 'is_active' => 1]),
+        ]);
+        DB::table('branch_users')->insert(['user_id' => $branchAdmin->id, 'branch_id' => $course->branch_id]);
+        $this->actingAs($branchAdmin)->get("/courses/{$course->id}")->assertOk()->assertSee('Owner share');
+        $this->post("/courses/{$course->id}/owner-payouts", ['amount' => 100, 'payment_method' => 'cash'])->assertSessionHasNoErrors();
+        \App\Models\CourseOwnerPayout::query()->delete();
 
         $super = \App\Models\User::forceCreate([
             'name' => 'Owner', 'email' => 'super@test.lk', 'password' => 'password123', 'is_active' => 1,

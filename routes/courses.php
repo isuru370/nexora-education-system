@@ -87,8 +87,8 @@ Route::middleware(['auth', 'user.active', 'feature:courses'])->group(function ()
             Route::patch('payouts/{courseTeacherPayout}/cancel', [CourseTeacherPaymentController::class, 'cancel'])
                 ->whereNumber('courseTeacherPayout')->name('payouts.cancel');
 
-            // Institute share handed to the owner: Super Admin only
-            Route::middleware('role:SUPER_ADMIN')->group(function () {
+            // Institute share handed to the owner: Super Admin + Branch Admin (own branch)
+            Route::middleware('role:SUPER_ADMIN,BRANCH_ADMIN')->group(function () {
                 Route::post('owner-payouts', [\App\Http\Controllers\Web\Course\CourseOwnerPayoutController::class, 'store'])->name('owner-payouts.store');
                 Route::patch('owner-payouts/{courseOwnerPayout}/cancel', [\App\Http\Controllers\Web\Course\CourseOwnerPayoutController::class, 'cancel'])
                     ->whereNumber('courseOwnerPayout')->name('owner-payouts.cancel');
