@@ -286,7 +286,15 @@ class ReceiptListService
                 'created_at',
                 'deleted_at',
             ])
-            ->whereIn('branch_id', $branchIds);
+            // extra income saved without a branch belongs to the whole
+            // institute: Super Admin / Admin see it too
+            ->where(function ($query) use ($branchIds) {
+                $query->whereIn('branch_id', $branchIds);
+
+                if (in_array(strtoupper((string) optional(optional(auth()->user())->userType)->code), ['SUPER_ADMIN', 'ADMIN'], true)) {
+                    $query->orWhereNull('branch_id');
+                }
+            });
 
         $this->applyCommonFilters($query, $filters);
 

@@ -542,6 +542,8 @@
 
                     <div class="row g-4">
 
+                        @include('partials.branch-select', ['branches' => $branches ?? collect(), 'selected' => $instituteExpense->branch_id, 'wrapperClass' => 'col-12'])
+
                         {{-- =====================================
                              AMOUNT
                         ====================================== --}}
