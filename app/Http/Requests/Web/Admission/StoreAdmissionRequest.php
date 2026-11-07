@@ -29,6 +29,7 @@ class StoreAdmissionRequest extends FormRequest
                 : $this->input('name'),
 
             'is_active' => $this->boolean('is_active'),
+            'for_card_replacement' => $this->boolean('for_card_replacement'),
         ]);
     }
 
@@ -50,6 +51,10 @@ class StoreAdmissionRequest extends FormRequest
             ],
 
             'is_active' => [
+                'boolean',
+            ],
+
+            'for_card_replacement' => [
                 'boolean',
             ],
 

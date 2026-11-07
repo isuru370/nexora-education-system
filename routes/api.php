@@ -133,6 +133,12 @@ Route::middleware([
         [StudentCardController::class, 'reAssign']
     )->name('api.card.reassign')->middleware(['role:' . CardAccess::MANAGE_ROLES, 'card.mode:permanent']);
 
+    // Fee items for a card re-assign (lost / damaged card)
+    Route::get(
+        '/card-replacement-fees',
+        [StudentCardController::class, 'replacementFees']
+    )->name('api.card.replacement-fees')->middleware(['role:' . CardAccess::MANAGE_ROLES]);
+
 
     /*
     |--------------------------------------------------------------------------

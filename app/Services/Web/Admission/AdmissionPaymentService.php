@@ -345,9 +345,11 @@ class AdmissionPaymentService
      */
     protected function syncStudentAdmissionFlag(Student $student): void
     {
+        // a card replacement fee is not the registration admission
         $hasPaid = AdmissionPayment::query()
             ->where('student_id', $student->id)
             ->where('status', AdmissionPayment::STATUS_PAID)
+            ->whereHas('admission', fn ($query) => $query->forRegistration())
             ->exists();
 
         if ((bool) $student->admission !== $hasPaid) {

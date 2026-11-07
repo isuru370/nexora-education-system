@@ -1499,6 +1499,16 @@ Route::prefix('generate-student-id')
                 'role:' . CardAccess::DOWNLOAD_ROLES,
             ]);
 
+        // Each download is recorded; from the 2nd one a card fee is chosen
+        Route::post('/{student}/download', 'recordDownload')
+            ->name('download')
+            ->middleware(['auth', 'user.active', 'role:' . CardAccess::DOWNLOAD_ROLES]);
+
+        // Bulk: only students never downloaded before
+        Route::post('/bulk-download', 'recordBulkDownload')
+            ->name('bulk-download')
+            ->middleware(['auth', 'user.active', 'role:' . CardAccess::DOWNLOAD_ROLES]);
+
     });
 
 /*
