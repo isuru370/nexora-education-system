@@ -794,7 +794,8 @@ Route::middleware([
 
 
 
-        Route::middleware('role:ADMIN')->group(function () {
+        // Branch Admin: only their branches (BranchScoped in the controller)
+        Route::middleware('role:ADMIN,BRANCH_ADMIN')->group(function () {
 
             Route::resource(
 
@@ -835,7 +836,8 @@ Route::middleware([
 
 
 
-        Route::middleware('role:ADMIN')->group(function () {
+        // Branch Admin: only their branches (BranchScoped in the controller)
+        Route::middleware('role:ADMIN,BRANCH_ADMIN')->group(function () {
 
 
 
@@ -1498,6 +1500,16 @@ Route::prefix('generate-student-id')
                 'user.active',
                 'role:' . CardAccess::DOWNLOAD_ROLES,
             ]);
+
+        // Each download is recorded; from the 2nd one a card fee is chosen
+        Route::post('/{student}/download', 'recordDownload')
+            ->name('download')
+            ->middleware(['auth', 'user.active', 'role:' . CardAccess::DOWNLOAD_ROLES]);
+
+        // Bulk: only students never downloaded before
+        Route::post('/bulk-download', 'recordBulkDownload')
+            ->name('bulk-download')
+            ->middleware(['auth', 'user.active', 'role:' . CardAccess::DOWNLOAD_ROLES]);
 
     });
 

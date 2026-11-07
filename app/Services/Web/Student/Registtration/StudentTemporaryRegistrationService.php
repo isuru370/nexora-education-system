@@ -41,6 +41,7 @@ class StudentTemporaryRegistrationService
 
         $admissions = Admission::query()
             ->active()
+            ->forRegistration()
             ->orderBy('name')
             ->get();
 

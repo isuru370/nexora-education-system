@@ -130,6 +130,21 @@
                     </div>
                 </div>
 
+                {{-- CARD REPLACEMENT --}}
+                <div class="toggle-switch mb-3">
+                    <div class="custom-checkbox">
+                        <input type="checkbox" name="for_card_replacement" value="1" id="forCardReplacement"
+                            {{ old('for_card_replacement', $admission->for_card_replacement) ? 'checked' : '' }}>
+                        <label for="forCardReplacement" class="toggle-label">
+                            <i class="bi bi-person-vcard"></i> Use for card replacement
+                        </label>
+                    </div>
+                    <div class="toggle-description">
+                        Offered when a lost / damaged ID card is replaced (re-assign a permanent card, or download
+                        a temporary-mode ID card again). Use Rs. 0 for a free replacement. Not shown at registration.
+                    </div>
+                </div>
+
                 {{-- ACTIONS --}}
                 <div class="nx-form-actions">
                     <a href="{{ route('admissions.index') }}" class="nx-btn nx-btn-light">
@@ -147,8 +162,8 @@
     <div class="text-center">
         <small class="cell-sub">
             <i class="bi bi-shield-check"></i>
-            Last updated: {{ $admission->updated_at->format('d M Y, h:i A') }} |
-            Created: {{ $admission->created_at->format('d M Y, h:i A') }}
+            Last updated: {{ optional($admission->updated_at)->format('d M Y, h:i A') }} |
+            Created: {{ optional($admission->created_at)->format('d M Y, h:i A') }}
         </small>
     </div>
 

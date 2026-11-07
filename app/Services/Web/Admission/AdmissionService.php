@@ -89,6 +89,7 @@ class AdmissionService
             'name' => $data['name'],
             'amount' => $data['amount'],
             'is_active' => (bool) ($data['is_active'] ?? false),
+            'for_card_replacement' => (bool) ($data['for_card_replacement'] ?? false),
             'note' => $data['note'] ?? null,
         ];
     }

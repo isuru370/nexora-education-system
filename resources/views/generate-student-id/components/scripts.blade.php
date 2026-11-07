@@ -15,6 +15,129 @@ document.addEventListener('DOMContentLoaded', function () {
     // STATE
     // ==================================================
     const selectedStudents = new Set();
+
+    // Card replacement fees (Admissions items ticked "Use for card replacement")
+    const CARD_FEES = @json(($cardFees ?? collect())->map(fn ($f) => ['id' => $f->id, 'name' => $f->name, 'amount' => (float) $f->amount])->values());
+    const DOWNLOAD_URL = @json(url('generate-student-id')) + '/';
+    const BULK_DOWNLOAD_URL = @json(route('generate-student-id.bulk-download'));
+    const ADD_FEE_URL = @json(route('admissions.create'));
+    const CSRF = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
+
+    async function postJson(url, body) {
+        const res = await fetch(url, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json', 'X-CSRF-TOKEN': CSRF },
+            body: JSON.stringify(body || {}),
+        });
+        let data = {};
+        try { data = await res.json(); } catch (e) {}
+        return { status: res.status, data };
+    }
+
+    const escapeHtml = (text) => String(text ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+    /**
+     * Ask which card fee to charge (2nd download). Resolves to
+     * {admission_id, payment_method} or null when cancelled.
+     */
+    function askCardFee(info, studentLabel) {
+        return new Promise(resolve => {
+            const overlay = document.createElement('div');
+            overlay.className = 'cf-overlay';
+
+            // No fee item yet: same popup, with a way to add one
+            if (!CARD_FEES.length) {
+                overlay.innerHTML = `
+                    <div class="cf-box" role="dialog" aria-modal="true" aria-labelledby="cfTitle">
+                        <h5 id="cfTitle"><i class="bi bi-person-vcard text-primary"></i> Card fee</h5>
+                        <div class="cf-sub">
+                            ${escapeHtml(studentLabel)}'s ID card was already downloaded. A card fee is needed to download it again,
+                            but no card fee is set up yet.
+                        </div>
+                        <div class="alert alert-warning small mb-4">
+                            Add one in <strong>Admissions &gt; New</strong>: tick <strong>Use for card replacement</strong>
+                            (Rs. 0 for a free card). Then refresh this page.
+                        </div>
+                        <div class="d-flex gap-2 justify-content-end">
+                            <button type="button" class="btn btn-light" data-cf="cancel">Close</button>
+                            <a href="${ADD_FEE_URL}" target="_blank" rel="noopener" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Add card fee</a>
+                        </div>
+                    </div>`;
+                overlay.addEventListener('click', e => {
+                    if (e.target === overlay || e.target.closest('[data-cf="cancel"]')) { overlay.remove(); resolve(null); }
+                });
+                document.body.appendChild(overlay);
+                return;
+            }
+
+            overlay.innerHTML = `
+                <div class="cf-box" role="dialog" aria-modal="true" aria-labelledby="cfTitle">
+                    <h5 id="cfTitle"><i class="bi bi-person-vcard text-primary"></i> Card fee</h5>
+                    <div class="cf-sub">
+                        ${escapeHtml(studentLabel)}'s ID card was already downloaded
+                        ${info.times ? escapeHtml(info.times) + ' time(s)' : ''}${info.last_at ? ' (last ' + escapeHtml(info.last_at) + ')' : ''}.
+                        Choose the fee for the new card.
+                    </div>
+                    <label for="cfItem">Fee</label>
+                    <select id="cfItem" class="form-select mb-3">
+                        ${CARD_FEES.map(f => `<option value="${f.id}">${escapeHtml(f.name)} - ${f.amount > 0 ? 'Rs. ' + f.amount.toFixed(2) : 'Free'}</option>`).join('')}
+                    </select>
+                    <label for="cfMethod">Payment method</label>
+                    <select id="cfMethod" class="form-select mb-4">
+                        <option value="cash" selected>Cash</option>
+                        <option value="bank_transfer">Bank transfer</option>
+                        <option value="card">Card</option>
+                        <option value="online">Online</option>
+                    </select>
+                    <div class="d-flex gap-2 justify-content-end">
+                        <button type="button" class="btn btn-light" data-cf="cancel">Cancel</button>
+                        <button type="button" class="btn btn-primary" data-cf="ok"><i class="bi bi-download"></i> Save fee &amp; download</button>
+                    </div>
+                </div>`;
+
+            const close = (value) => { overlay.remove(); resolve(value); };
+            overlay.addEventListener('click', e => {
+                if (e.target === overlay || e.target.closest('[data-cf="cancel"]')) close(null);
+                if (e.target.closest('[data-cf="ok"]')) {
+                    close({
+                        admission_id: Number(overlay.querySelector('#cfItem').value),
+                        payment_method: overlay.querySelector('#cfMethod').value,
+                    });
+                }
+            });
+            document.addEventListener('keydown', function onKey(e) {
+                if (e.key === 'Escape') { document.removeEventListener('keydown', onKey); close(null); }
+            });
+
+            document.body.appendChild(overlay);
+            overlay.querySelector('#cfItem').focus();
+        });
+    }
+
+    /**
+     * Record the download on the server. 1st time free; later ones ask for
+     * the card fee. Returns true when the card may be downloaded.
+     */
+    async function recordDownload(studentId, studentLabel) {
+        let res = await postJson(DOWNLOAD_URL + studentId + '/download');
+
+        if (res.status === 402 && res.data.payment_required) {
+            const fee = await askCardFee(res.data, studentLabel);
+            if (!fee) return false;
+
+            res = await postJson(DOWNLOAD_URL + studentId + '/download', fee);
+            if (res.status === 200 && res.data.payment) {
+                showToast(`Card fee saved: ${res.data.payment.item} (receipt ${res.data.payment.receipt_number})`, 'success');
+            }
+        }
+
+        if (res.status !== 200 || !res.data.success) {
+            showToast(res.data.message || 'Could not record the download. Try again.', 'error');
+            return false;
+        }
+
+        return true;
+    }
     let isBulkProcessing   = false;
     let isSingleProcessing = false;
 
@@ -166,6 +289,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
         isSingleProcessing = true;
 
+        // record it first (asks for the card fee from the 2nd download)
+        try {
+            const allowed = await recordDownload(cardId, studentKey);
+            if (!allowed) {
+                isSingleProcessing = false;
+                return;
+            }
+        } catch (error) {
+            isSingleProcessing = false;
+            showToast('Could not record the download: ' + error.message, 'error');
+            return;
+        }
+
         const originalText = buttonElement.innerHTML;
         buttonElement.innerHTML =
             '<i class="fas fa-spinner fa-spin"></i> Generating...';
@@ -241,6 +377,30 @@ document.addEventListener('DOMContentLoaded', function () {
         if (cards.length === 0) {
             isBulkProcessing = false;
             showToast('No valid cards found for download', 'error');
+            return;
+        }
+
+        // Only cards never downloaded before go in the ZIP; the others need a
+        // card fee and are downloaded one by one
+        try {
+            const res = await postJson(BULK_DOWNLOAD_URL, { ids: cards.map(c => Number(c.cardId)) });
+            if (res.status !== 200) throw new Error(res.data.message || 'server error');
+
+            const allowed = new Set((res.data.allowed || []).map(Number));
+            const skipped = cards.filter(c => !allowed.has(Number(c.cardId)));
+            cards.splice(0, cards.length, ...cards.filter(c => allowed.has(Number(c.cardId))));
+
+            if (skipped.length) {
+                showToast(`${skipped.length} card(s) skipped: already downloaded - download them one by one with the card fee (${skipped.map(c => c.key).join(', ')}).`, 'error');
+            }
+        } catch (error) {
+            isBulkProcessing = false;
+            showToast('Could not record the downloads: ' + error.message, 'error');
+            return;
+        }
+
+        if (cards.length === 0) {
+            isBulkProcessing = false;
             return;
         }
 
