@@ -186,6 +186,17 @@
                 </div>
             @endif
 
+            @if ($isTeacher)
+                <div class="nav-item">
+                    <button type="button"
+                        class="nav-link-custom {{ request()->routeIs('disabled-students.*') ? 'active' : '' }}"
+                        data-route="disabled-students.index" data-href="{{ route('disabled-students.index') }}">
+                        <i class="bi bi-person-slash"></i>
+                        <span>Disabled Students</span>
+                    </button>
+                </div>
+            @endif
+
             @if ($canTeachers)
                 <div class="nav-item">
                     <button type="button"
