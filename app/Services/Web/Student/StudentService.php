@@ -309,11 +309,27 @@ class StudentService
 
             $this->ensureStudentAccess($student);
 
-            $isActive = !$student->is_active;
+            // A disabled student (auto / batch closed) is blocked by
+            // student_disable too: activating clears both
+            $isActive = !$student->is_active || (bool) $student->student_disable;
 
-            $student->update([
-                'is_active' => $isActive,
-            ]);
+            $student->update($isActive
+                ? ['is_active' => true, 'student_disable' => false]
+                : ['is_active' => false]);
+
+            if ($isActive) {
+                \App\Models\StudentAutoDisable::query()
+                    ->where('student_id', $student->id)
+                    ->whereNull('reactivated_at')
+                    ->update(['reactivated_at' => now(), 'reactivated_by' => auth()->id()]);
+
+                \App\Models\StudentReactivation::create([
+                    'student_id' => $student->id,
+                    'branch_id' => $student->branch_id,
+                    'reason' => 'manual',
+                    'enabled_by' => auth()->id(),
+                ]);
+            }
 
             /*
              * When student is deactivated,

@@ -2700,6 +2700,22 @@ Route::prefix('teacher-salaries')
 |--------------------------------------------------------------------------
 */
 
+/*
+|--------------------------------------------------------------------------
+| Disabled Students: every disabled student (auto / batch closed / manual),
+| enable again. All staff, own branches.
+|--------------------------------------------------------------------------
+*/
+
+Route::prefix('disabled-students')
+    ->name('disabled-students.')
+    ->controller(\App\Http\Controllers\Web\Student\DisabledStudentController::class)
+    ->middleware(['auth', 'user.active', 'role:SUPER_ADMIN,ADMIN,BRANCH_ADMIN,USER,TEACHER'])
+    ->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('/enable', 'enable')->name('enable');
+    });
+
 Route::prefix('auto-disabled-students')
     ->name('auto-disabled-students.')
     ->controller(AutoDisabledStudentController::class)
