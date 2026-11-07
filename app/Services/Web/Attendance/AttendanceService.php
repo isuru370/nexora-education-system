@@ -7,6 +7,7 @@ use App\Models\Payment;
 use App\Models\Student;
 use App\Models\StudentAttendance;
 use App\Models\StudentClassEnrollment;
+use App\Services\Notification\AttendanceNotificationService;
 use Carbon\Carbon;
 use Throwable;
 
@@ -24,7 +25,8 @@ class AttendanceService
     public function __construct(
         AttendanceStudentFinder $studentFinder,
         AttendanceScheduleFinder $scheduleFinder,
-        AttendanceMarker $attendanceMarker
+        AttendanceMarker $attendanceMarker,
+        protected AttendanceNotificationService $attendanceNotification
     ) {
         $this->studentFinder = $studentFinder;
         $this->scheduleFinder = $scheduleFinder;
@@ -231,37 +233,18 @@ class AttendanceService
             */
 
             /*
- * =========================================================================
- * Attendance Success SMS
- * =========================================================================
- *
- * SMS sending currently disabled.
- *
- * Uncomment this block when you want to enable attendance SMS.
- */
+            |--------------------------------------------------------------------------
+            | 9. Tell the parent (SMS or parent-app push, as chosen in
+            |    Settings > Notifications). Used by the web page and the
+            |    staff app scan; a notification error never fails attendance.
+            |--------------------------------------------------------------------------
+            */
 
-            // if (!empty($student->guardian_mobile)) {
-            //     SendAttendanceSuccessSmsJob::dispatch(
-            //         $student->guardian_mobile,
-            //         'Attendance marked successfully for '
-            //             . $student->initial_name
-            //             . '.'
-            //     );
-            // }
-
-
-            /*
- * =========================================================================
- * Attendance Success Notification
- * =========================================================================
- *
- * Notification sending currently disabled.
- *
- * SendNotificationJob requires an existing Notification ID.
- * Therefore, uncomment this only after creating the Notification record.
- */
-
-            // SendNotificationJob::dispatch($notification->id);
+            $this->attendanceNotification->sendSuccess(
+                $student,
+                $markResult['attendance'],
+                $enrollment
+            );
 
             return [
                 'success' => true,

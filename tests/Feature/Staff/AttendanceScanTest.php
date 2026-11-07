@@ -5,6 +5,9 @@ namespace Tests\Feature\Staff;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Queue;
+use App\Jobs\SendAttendanceSuccessSmsJob;
+use App\Models\NotificationSetting;
 use Laravel\Sanctum\Sanctum;
 use Tests\Support\BuildsInstitute;
 use Tests\TestCase;
@@ -54,6 +57,36 @@ class AttendanceScanTest extends TestCase
         // scanning again does not mark twice
         $this->scan('S1')->assertJsonPath('data.attendance.already_marked', true);
         $this->assertSame(1, DB::table('student_attendances')->where('student_id', $this->inst['s1'])->where('class_schedule_id', $this->inst['schedule'])->count());
+    }
+
+    public function test_scan_sends_the_attendance_sms_once_when_sms_is_chosen(): void
+    {
+        Queue::fake();
+        DB::table('students')->where('id', $this->inst['s1'])->update(['guardian_mobile' => '0771234567']);
+        NotificationSetting::query()->updateOrCreate(
+            ['key' => NotificationSetting::ATTENDANCE],
+            ['label' => 'Attendance', 'is_enabled' => true, 'channel' => NotificationSetting::SMS]
+        );
+
+        $this->scan('S1')->assertStatus(201);
+        $this->scan('S1')->assertJsonPath('data.attendance.already_marked', true);
+
+        Queue::assertPushedOn('sms', SendAttendanceSuccessSmsJob::class);
+        Queue::assertPushed(SendAttendanceSuccessSmsJob::class, 1);
+    }
+
+    public function test_no_attendance_sms_when_turned_off(): void
+    {
+        Queue::fake();
+        DB::table('students')->where('id', $this->inst['s1'])->update(['guardian_mobile' => '0771234567']);
+        NotificationSetting::query()->updateOrCreate(
+            ['key' => NotificationSetting::ATTENDANCE],
+            ['label' => 'Attendance', 'is_enabled' => false, 'channel' => NotificationSetting::SMS]
+        );
+
+        $this->scan('S1')->assertStatus(201);
+
+        Queue::assertNotPushed(SendAttendanceSuccessSmsJob::class);
     }
 
     public function test_unpaid_and_partly_paid_students(): void
