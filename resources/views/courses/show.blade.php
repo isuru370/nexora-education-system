@@ -6,8 +6,8 @@
 @section('content')
 @php
     $canManage = in_array(strtoupper((string) optional(auth()->user()->userType)->code), ['SUPER_ADMIN', 'ADMIN', 'BRANCH_ADMIN'], true);
-    // institute share -> owner: Super Admin only
-    $canPayOwner = strtoupper((string) optional(auth()->user()->userType)->code) === 'SUPER_ADMIN';
+    // institute share -> owner: Super Admin + Branch Admin
+    $canPayOwner = in_array(strtoupper((string) optional(auth()->user()->userType)->code), ['SUPER_ADMIN', 'BRANCH_ADMIN'], true);
     $fmtTime = fn ($t) => \Carbon\Carbon::parse($t)->format('h:i A');
     $today = today();
 @endphp
