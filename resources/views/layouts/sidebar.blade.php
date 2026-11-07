@@ -67,8 +67,8 @@
 
             $canTeacherSalaries = $isBranchAdmin;
             $canOrganizerPayments = $isBranchAdmin;
-            $canExtraIncomes = $isAdmin;
-            $canInstituteExpenses = $isAdmin;
+            $canExtraIncomes = $isBranchAdmin;
+            $canInstituteExpenses = $isBranchAdmin;
             $canInstituteIncome = $isAdmin;
             $canReceipts = $isUser;
 
