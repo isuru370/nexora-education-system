@@ -185,6 +185,18 @@ class CourseWebTest extends TestCase
             ->first(fn ($r) => $r['teacher']->id === $this->inst['teacher']);
         $this->assertEquals([3500, 2000, 1500], [$teacher['earned'], $teacher['paid'], $teacher['balance']]);
 
+        // Owner share: Super Admin only
+        $this->post("/courses/{$course->id}/owner-payouts", ['amount' => 100, 'payment_method' => 'cash'])->assertForbidden();
+        $this->get("/courses/{$course->id}")->assertOk()->assertDontSee('Owner share');
+
+        $super = \App\Models\User::forceCreate([
+            'name' => 'Owner', 'email' => 'super@test.lk', 'password' => 'password123', 'is_active' => 1,
+            'user_type_id' => DB::table('user_types')->where('code', 'SUPER_ADMIN')->value('id')
+                ?? DB::table('user_types')->insertGetId(['name' => 'SUPER_ADMIN', 'code' => 'SUPER_ADMIN', 'is_active' => 1]),
+        ]);
+        DB::table('branch_users')->insert(['user_id' => $super->id, 'branch_id' => $course->branch_id]);
+        $this->actingAs($super);
+
         // Institute share 3,000 -> 2,000 given to the owner
         $this->post("/courses/{$course->id}/owner-payouts", ['amount' => 2000, 'payment_method' => 'cash', 'note' => 'To owner'])
             ->assertSessionHasNoErrors();
@@ -195,7 +207,7 @@ class CourseWebTest extends TestCase
         $this->assertEquals(['earned' => 3000, 'paid' => 2000, 'balance' => 1000], $row);
 
         $this->get("/courses/{$course->id}")->assertOk()
-            ->assertSee('Paid to owner')->assertSee('To owner')->assertSee('1,000.00');
+            ->assertSee('Owner share')->assertSee('Paid to owner')->assertSee('To owner')->assertSee('1,000.00');
 
         // Cancel: back to the institute balance
         $owner = \App\Models\CourseOwnerPayout::firstOrFail();
