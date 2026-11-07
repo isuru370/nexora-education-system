@@ -20,6 +20,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const CARD_FEES = @json(($cardFees ?? collect())->map(fn ($f) => ['id' => $f->id, 'name' => $f->name, 'amount' => (float) $f->amount])->values());
     const DOWNLOAD_URL = @json(url('generate-student-id')) + '/';
     const BULK_DOWNLOAD_URL = @json(route('generate-student-id.bulk-download'));
+    const ADD_FEE_URL = @json(route('admissions.create'));
     const CSRF = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content') || '';
 
     async function postJson(url, body) {
@@ -41,14 +42,34 @@ document.addEventListener('DOMContentLoaded', function () {
      */
     function askCardFee(info, studentLabel) {
         return new Promise(resolve => {
+            const overlay = document.createElement('div');
+            overlay.className = 'cf-overlay';
+
+            // No fee item yet: same popup, with a way to add one
             if (!CARD_FEES.length) {
-                alert('This card was already downloaded. Add a card fee first: Admissions > New > tick "Use for card replacement" (Rs. 0 for free).');
-                resolve(null);
+                overlay.innerHTML = `
+                    <div class="cf-box" role="dialog" aria-modal="true" aria-labelledby="cfTitle">
+                        <h5 id="cfTitle"><i class="bi bi-person-vcard text-primary"></i> Card fee</h5>
+                        <div class="cf-sub">
+                            ${escapeHtml(studentLabel)}'s ID card was already downloaded. A card fee is needed to download it again,
+                            but no card fee is set up yet.
+                        </div>
+                        <div class="alert alert-warning small mb-4">
+                            Add one in <strong>Admissions &gt; New</strong>: tick <strong>Use for card replacement</strong>
+                            (Rs. 0 for a free card). Then refresh this page.
+                        </div>
+                        <div class="d-flex gap-2 justify-content-end">
+                            <button type="button" class="btn btn-light" data-cf="cancel">Close</button>
+                            <a href="${ADD_FEE_URL}" target="_blank" rel="noopener" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Add card fee</a>
+                        </div>
+                    </div>`;
+                overlay.addEventListener('click', e => {
+                    if (e.target === overlay || e.target.closest('[data-cf="cancel"]')) { overlay.remove(); resolve(null); }
+                });
+                document.body.appendChild(overlay);
                 return;
             }
 
-            const overlay = document.createElement('div');
-            overlay.className = 'cf-overlay';
             overlay.innerHTML = `
                 <div class="cf-box" role="dialog" aria-modal="true" aria-labelledby="cfTitle">
                     <h5 id="cfTitle"><i class="bi bi-person-vcard text-primary"></i> Card fee</h5>
