@@ -162,8 +162,8 @@
     <div class="text-center">
         <small class="cell-sub">
             <i class="bi bi-shield-check"></i>
-            Last updated: {{ $admission->updated_at->format('d M Y, h:i A') }} |
-            Created: {{ $admission->created_at->format('d M Y, h:i A') }}
+            Last updated: {{ optional($admission->updated_at)->format('d M Y, h:i A') }} |
+            Created: {{ optional($admission->created_at)->format('d M Y, h:i A') }}
         </small>
     </div>
 
