@@ -33,6 +33,28 @@ class CardReplacementFeeTest extends TestCase
         $this->free = DB::table('admissions')->insertGetId(['name' => 'Free card', 'amount' => 0, 'is_active' => 1, 'for_card_replacement' => 1]);
     }
 
+    public function test_admissions_form_saves_the_card_replacement_tick(): void
+    {
+        $this->actingAs($this->inst['admin']);
+
+        $this->post('/admissions', ['name' => 'Lost card', 'amount' => 300, 'is_active' => 1, 'for_card_replacement' => 1])
+            ->assertRedirect();
+        $id = (int) DB::table('admissions')->where('name', 'Lost card')->value('id');
+        $this->assertSame(1, (int) DB::table('admissions')->where('id', $id)->value('for_card_replacement'));
+
+        // edit: tick on an existing item, then off again
+        $this->put('/admissions/' . $this->registration, ['name' => 'New registration', 'amount' => 1500, 'is_active' => 1, 'for_card_replacement' => 1])
+            ->assertRedirect();
+        $this->assertSame(1, (int) DB::table('admissions')->where('id', $this->registration)->value('for_card_replacement'));
+
+        $this->put('/admissions/' . $this->registration, ['name' => 'New registration', 'amount' => 1500, 'is_active' => 1])
+            ->assertRedirect();
+        $this->assertSame(0, (int) DB::table('admissions')->where('id', $this->registration)->value('for_card_replacement'));
+
+        $this->get('/admissions')->assertOk()->assertSee('Card replacement');
+        $this->get('/admissions/' . $id . '/edit')->assertOk()->assertSee('Use for card replacement');
+    }
+
     public function test_card_fees_are_kept_apart_from_registration_items(): void
     {
         Sanctum::actingAs($this->inst['admin']);

@@ -6,6 +6,8 @@
 @section('content')
 @php
     $canManage = in_array(strtoupper((string) optional(auth()->user()->userType)->code), ['SUPER_ADMIN', 'ADMIN', 'BRANCH_ADMIN'], true);
+    // institute share -> owner: Super Admin + Branch Admin
+    $canPayOwner = in_array(strtoupper((string) optional(auth()->user()->userType)->code), ['SUPER_ADMIN', 'BRANCH_ADMIN'], true);
     $fmtTime = fn ($t) => \Carbon\Carbon::parse($t)->format('h:i A');
     $today = today();
 @endphp
@@ -84,6 +86,14 @@
             <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#sessions" type="button" role="tab">Class days</button></li>
             <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#payments" type="button" role="tab">Payments</button></li>
             <li class="nav-item"><button class="nav-link" data-bs-toggle="tab" data-bs-target="#teachers" type="button" role="tab">Teachers</button></li>
+            @if ($canPayOwner)
+                <li class="nav-item">
+                    <button class="nav-link" data-bs-toggle="tab" data-bs-target="#owner" type="button" role="tab">
+                        <i class="bi bi-building-check"></i> Owner share
+                        @if ($institute['balance'] > 0)<span class="badge bg-warning text-dark ms-1">{{ number_format($institute['balance'], 0) }}</span>@endif
+                    </button>
+                </li>
+            @endif
         </ul>
 
         <div class="tab-content">
@@ -338,63 +348,6 @@
                     </div>
                 @endif
 
-                @if ($canManage && $institute['balance'] > 0)
-                    <div class="p-3 border-top">
-                        <form method="POST" action="{{ route('courses.owner-payouts.store', $course) }}" class="inline-form">
-                            @csrf
-                            <div>
-                                <label class="nx-label">Pay owner</label>
-                                <div class="cell-sub pt-2">Institute balance {{ number_format($institute['balance'], 2) }}</div>
-                            </div>
-                            <div>
-                                <label class="nx-label" for="owner_amount">Amount</label>
-                                <input id="owner_amount" type="number" step="0.01" min="1" max="{{ $institute['balance'] }}" name="amount"
-                                    value="{{ $institute['balance'] }}" class="form-control nx-input" required>
-                            </div>
-                            <div>
-                                <label class="nx-label" for="owner_method">Method</label>
-                                <select id="owner_method" name="payment_method" class="form-select nx-input">
-                                    @foreach (\App\Models\CoursePayment::METHODS as $method)
-                                        <option value="{{ $method }}">{{ ucwords(str_replace('_', ' ', $method)) }}</option>
-                                    @endforeach
-                                </select>
-                            </div>
-                            <div class="flex-grow-1">
-                                <label class="nx-label" for="owner_note">Note</label>
-                                <input id="owner_note" name="note" class="form-control nx-input" maxlength="500">
-                            </div>
-                            <div style="min-width:auto"><button class="nx-btn nx-btn-primary" type="submit" onclick="return confirm('Save: institute share given to the owner?')"><i class="bi bi-building-check"></i> Paid to owner</button></div>
-                        </form>
-                    </div>
-                @endif
-
-                @if ($ownerPayouts->count())
-                    <div class="table-responsive border-top">
-                        <table class="table premium-table mb-0">
-                            <thead><tr><th>Date</th><th>Paid to owner</th><th>Method</th><th class="text-end">Amount</th><th>By</th><th>Status</th><th class="text-end"></th></tr></thead>
-                            <tbody>
-                                @foreach ($ownerPayouts as $ownerPayout)
-                                    <tr class="{{ $ownerPayout->status === 'cancelled' ? 'row-muted' : '' }}">
-                                        <td>{{ $ownerPayout->paid_on->format('d M Y') }}</td>
-                                        <td>Institute share @if ($ownerPayout->note)<small class="cell-sub d-block">{{ $ownerPayout->note }}</small>@endif</td>
-                                        <td>{{ ucwords(str_replace('_', ' ', $ownerPayout->payment_method)) }}</td>
-                                        <td class="text-end money">{{ number_format($ownerPayout->amount, 2) }}</td>
-                                        <td><small>{{ $ownerPayout->paidBy->name ?? '' }}</small></td>
-                                        <td>@include('courses.partials.status-badge', ['status' => $ownerPayout->status])</td>
-                                        <td class="text-end">
-                                            @if ($canManage && $ownerPayout->status === 'paid')
-                                                <form method="POST" action="{{ route('courses.owner-payouts.cancel', [$course, $ownerPayout]) }}" onsubmit="return confirm('Cancel this payment to the owner?')">
-                                                    @csrf @method('PATCH')
-                                                    <button class="action-btn action-btn-danger" title="Cancel" aria-label="Cancel payment to owner"><i class="bi bi-x-circle-fill"></i></button>
-                                                </form>
-                                            @endif
-                                        </td>
-                                    </tr>
-                                @endforeach
-                            </tbody>
-                        </table>
-                    </div>
-                @endif
 
                 @if ($payouts->count())
                     <div class="table-responsive border-top">
@@ -424,6 +377,86 @@
                     </div>
                 @endif
             </div>
+
+            {{-- OWNER SHARE (Super Admin) --}}
+            @if ($canPayOwner)
+            <div class="tab-pane fade" id="owner" role="tabpanel">
+                <div class="p-3">
+                    <p class="cell-sub mb-3">
+                        The institute's {{ rtrim(rtrim(number_format($course->institutePercentage(), 2), '0'), '.') }}% of every course payment.
+                        Save here when it is handed to the owner.
+                    </p>
+                    <div class="row g-3 mb-1">
+                        <div class="col-md-4"><div class="nx-card p-3"><small class="cell-sub">Institute share earned</small><div class="fs-5 fw-bold money">{{ number_format($institute['earned'], 2) }}</div></div></div>
+                        <div class="col-md-4"><div class="nx-card p-3"><small class="cell-sub">Given to the owner</small><div class="fs-5 fw-bold money">{{ number_format($institute['paid'], 2) }}</div></div></div>
+                        <div class="col-md-4"><div class="nx-card p-3"><small class="cell-sub">Balance (not given yet)</small><div class="fs-5 fw-bold money {{ $institute['balance'] > 0 ? 'text-warning' : '' }}">{{ number_format($institute['balance'], 2) }}</div></div></div>
+                    </div>
+                </div>
+
+                @if ($institute['balance'] > 0)
+                    <div class="p-3 border-top">
+                        <form method="POST" action="{{ route('courses.owner-payouts.store', $course) }}" class="inline-form">
+                            @csrf
+                            <div>
+                                <label class="nx-label">Pay owner</label>
+                                <div class="cell-sub pt-2">Institute balance {{ number_format($institute['balance'], 2) }}</div>
+                            </div>
+                            <div>
+                                <label class="nx-label" for="owner_amount">Amount</label>
+                                <input id="owner_amount" type="number" step="0.01" min="1" max="{{ $institute['balance'] }}" name="amount"
+                                    value="{{ $institute['balance'] }}" class="form-control nx-input" required>
+                            </div>
+                            <div>
+                                <label class="nx-label" for="owner_method">Method</label>
+                                <select id="owner_method" name="payment_method" class="form-select nx-input">
+                                    @foreach (\App\Models\CoursePayment::METHODS as $method)
+                                        <option value="{{ $method }}">{{ ucwords(str_replace('_', ' ', $method)) }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="flex-grow-1">
+                                <label class="nx-label" for="owner_note">Note</label>
+                                <input id="owner_note" name="note" class="form-control nx-input" maxlength="500">
+                            </div>
+                            <div style="min-width:auto"><button class="nx-btn nx-btn-primary" type="submit" onclick="return confirm('Save: institute share given to the owner?')"><i class="bi bi-building-check"></i> Paid to owner</button></div>
+                        </form>
+                    </div>
+                @endif
+
+                @if ($institute['balance'] <= 0)
+                    <div class="p-3 border-top cell-sub">Nothing to give to the owner now.</div>
+                @endif
+
+                @if ($ownerPayouts->count())
+                    <div class="table-responsive border-top">
+                        <table class="table premium-table mb-0">
+                            <thead><tr><th>Date</th><th>Paid to owner</th><th>Method</th><th class="text-end">Amount</th><th>By</th><th>Status</th><th class="text-end"></th></tr></thead>
+                            <tbody>
+                                @foreach ($ownerPayouts as $ownerPayout)
+                                    <tr class="{{ $ownerPayout->status === 'cancelled' ? 'row-muted' : '' }}">
+                                        <td>{{ $ownerPayout->paid_on->format('d M Y') }}</td>
+                                        <td>Institute share @if ($ownerPayout->note)<small class="cell-sub d-block">{{ $ownerPayout->note }}</small>@endif</td>
+                                        <td>{{ ucwords(str_replace('_', ' ', $ownerPayout->payment_method)) }}</td>
+                                        <td class="text-end money">{{ number_format($ownerPayout->amount, 2) }}</td>
+                                        <td><small>{{ $ownerPayout->paidBy->name ?? '' }}</small></td>
+                                        <td>@include('courses.partials.status-badge', ['status' => $ownerPayout->status])</td>
+                                        <td class="text-end">
+                                            @if ($ownerPayout->status === 'paid')
+                                                <form method="POST" action="{{ route('courses.owner-payouts.cancel', [$course, $ownerPayout]) }}" onsubmit="return confirm('Cancel this payment to the owner?')">
+                                                    @csrf @method('PATCH')
+                                                    <button class="action-btn action-btn-danger" title="Cancel" aria-label="Cancel payment to owner"><i class="bi bi-x-circle-fill"></i></button>
+                                                </form>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                @endif
+            </div>
+            @endif
+
         </div>
     </div>
 </div>

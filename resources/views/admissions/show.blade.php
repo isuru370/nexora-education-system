@@ -116,7 +116,7 @@
                         <div class="timeline-icon"><i class="bi bi-plus-circle-fill"></i></div>
                         <div class="timeline-content">
                             <div class="timeline-event">Admission Created</div>
-                            <div class="timeline-date">{{ $admission->created_at->format('l, d F Y h:i A') }}</div>
+                            <div class="timeline-date">{{ optional($admission->created_at)->format('l, d F Y h:i A') }}</div>
                         </div>
                     </div>
 
@@ -125,7 +125,7 @@
                             <div class="timeline-icon"><i class="bi bi-pencil-square"></i></div>
                             <div class="timeline-content">
                                 <div class="timeline-event">Last Updated</div>
-                                <div class="timeline-date">{{ $admission->updated_at->format('l, d F Y h:i A') }}</div>
+                                <div class="timeline-date">{{ optional($admission->updated_at)->format('l, d F Y h:i A') }}</div>
                             </div>
                         </div>
                     @endif

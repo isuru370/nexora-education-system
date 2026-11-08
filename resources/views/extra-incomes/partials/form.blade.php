@@ -27,6 +27,8 @@
 @endphp
 
 <div class="row g-4">
+    @include('partials.branch-select', ['branches' => $branches ?? collect(), 'selected' => $extraIncome->branch_id ?? null])
+
 
     <div class="col-lg-6">
         <label class="form-label fw-semibold">

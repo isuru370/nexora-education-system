@@ -794,7 +794,8 @@ Route::middleware([
 
 
 
-        Route::middleware('role:ADMIN')->group(function () {
+        // Branch Admin: only their branches (BranchScoped in the controller)
+        Route::middleware('role:ADMIN,BRANCH_ADMIN')->group(function () {
 
             Route::resource(
 
@@ -835,7 +836,8 @@ Route::middleware([
 
 
 
-        Route::middleware('role:ADMIN')->group(function () {
+        // Branch Admin: only their branches (BranchScoped in the controller)
+        Route::middleware('role:ADMIN,BRANCH_ADMIN')->group(function () {
 
 
 
@@ -2709,6 +2711,21 @@ Route::prefix('teacher-salaries')
 | Auto-disabled students (nightly job: no attendance for 2 months)
 |--------------------------------------------------------------------------
 */
+
+/*
+|--------------------------------------------------------------------------
+| App Feedback (Super Admin): sent from the staff app, also emailed to Nexora
+|--------------------------------------------------------------------------
+*/
+
+Route::prefix('app-feedback')
+    ->name('app-feedback.')
+    ->controller(\App\Http\Controllers\Web\AppFeedback\AppFeedbackController::class)
+    ->middleware(['auth', 'user.active', 'role:SUPER_ADMIN'])
+    ->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::patch('/{appFeedback}', 'update')->whereNumber('appFeedback')->name('update');
+    });
 
 /*
 |--------------------------------------------------------------------------
