@@ -196,6 +196,9 @@ class InstituteExpenseController extends Controller
         | Pagination
         |--------------------------------------------------------------------------
         */
+        // All filtered rows (not only this page): paid = money spent
+        $paidTotal = (float) (clone $query)->reorder()->where('status', 'paid')->sum('amount');
+
         $expenses = $query
             ->paginate(15)
             ->appends($request->query());
@@ -229,7 +232,8 @@ class InstituteExpenseController extends Controller
             compact(
                 'expenses',
                 'users',
-                'reasons'
+                'reasons',
+                'paidTotal'
             )
         );
     }

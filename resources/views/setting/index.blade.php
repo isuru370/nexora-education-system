@@ -37,12 +37,14 @@
                             </a>
                         @endif
                     </div>
-                    <div class="hero-date-time">
-                        <div class="date-box">
-                            <i class="bi bi-database"></i>
-                            <span>Backup Management</span>
+                    @if ($settingsRole === 'SUPER_ADMIN')
+                        <div class="hero-date-time">
+                            <div class="date-box">
+                                <i class="bi bi-database"></i>
+                                <span>Backup Management</span>
+                            </div>
                         </div>
-                    </div>
+                    @endif
                 </div>
             </div>
         </div>
@@ -106,8 +108,10 @@
             @endif
         </div>
 
+        {{-- DATABASE BACKUP: Super Admin (Nexora) only --}}
+        @if ($settingsRole === 'SUPER_ADMIN')
         {{-- SECTION HEADER --}}
-        <div class="nx-section-header mb-3">
+        <div class="nx-section-header mb-3" id="backup">
             <h2 class="nx-section-title"><i class="bi bi-database text-primary"></i> Database Backup Management</h2>
             <p class="nx-section-subtitle">Manage your database backups securely</p>
         </div>
@@ -268,6 +272,7 @@
                 </div>
             @endif
         </div>
+        @endif
 
     </div>
 @endsection

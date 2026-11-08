@@ -796,7 +796,7 @@
 
                     <div class="text-center mt-4">
 
-                        <a href="{{ route('forgot_password.form') }}" class="custom-link">
+                        <a href="{{ route('forgot_password.form', ['restart' => 1]) }}" class="custom-link">
 
                             <i class="fas fa-arrow-left me-1"></i>
 

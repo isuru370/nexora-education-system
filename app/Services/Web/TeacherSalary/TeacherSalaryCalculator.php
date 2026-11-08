@@ -26,6 +26,11 @@ class TeacherSalaryCalculator
     public const PAY_WINDOW_DAYS = 5;
 
     /**
+     * How far back to look for class fees paid after a salary was paid.
+     */
+    public const CARRY_LOOKBACK_MONTHS = 12;
+
+    /**
      * @return array{0: Carbon, 1: Carbon}
      */
     public function monthRange(int $year, int $month): array
@@ -109,9 +114,72 @@ class TeacherSalaryCalculator
     }
 
     /**
+     * Class fees paid AFTER an earlier month's salary was paid (still dated in
+     * that month) are not in any salary yet: they go into the next salary.
+     * Only fees not already carried. Per teacher, for one branch, for a salary
+     * of $year/$month (looks at the months before it).
+     *
+     * @param  array<int>|null  $teacherIds
+     * @return Collection<int, array{amount: float, snapshot_ids: array<int>, months: array<string, float>}>
+     */
+    public function carryByTeacher(int $branchId, int $year, int $month, ?array $teacherIds = null): Collection
+    {
+        [$start] = $this->monthRange($year, $month);
+        $from = $start->copy()->subMonths(self::CARRY_LOOKBACK_MONTHS);
+        $key = $year * 100 + $month;
+        $fromKey = $from->year * 100 + $from->month;
+
+        // paid salaries of the earlier months: "teacher|Y-m" => paid_at
+        $paidAt = TeacherSalary::query()
+            ->where('branch_id', $branchId)
+            ->where('status', 'paid')
+            ->whereNotNull('paid_at')
+            ->whereRaw('(salary_year * 100 + salary_month) < ?', [$key])
+            ->whereRaw('(salary_year * 100 + salary_month) >= ?', [$fromKey])
+            ->when($teacherIds !== null, fn ($query) => $query->whereIn('teacher_id', $teacherIds))
+            ->get(['teacher_id', 'salary_year', 'salary_month', 'paid_at'])
+            ->mapWithKeys(fn (TeacherSalary $salary) => [
+                $salary->teacher_id . '|' . sprintf('%04d-%02d', $salary->salary_year, $salary->salary_month) => $salary->paid_at,
+            ]);
+
+        $result = collect();
+
+        if ($paidAt->isEmpty()) {
+            return $result;
+        }
+
+        PaymentSplitSnapshot::query()
+            ->where('branch_id', $branchId)
+            ->whereNull('carried_to_salary_id')
+            ->where('payment_date', '>=', $from)
+            ->where('payment_date', '<', $start)
+            ->whereIn('teacher_id', $teacherIds ?? $paidAt->keys()->map(fn ($k) => (int) explode('|', $k)[0])->unique()->values()->all())
+            ->orderBy('id')
+            ->get(['id', 'teacher_id', 'payment_date', 'teacher_amount'])
+            ->each(function (PaymentSplitSnapshot $snapshot) use ($paidAt, $result) {
+                $date = Carbon::parse($snapshot->payment_date);
+                $salaryPaidAt = $paidAt->get($snapshot->teacher_id . '|' . $date->format('Y-m'));
+
+                // paid after that month's salary was paid
+                if (!$salaryPaidAt || !$date->greaterThan($salaryPaidAt)) {
+                    return;
+                }
+
+                $row = $result->get($snapshot->teacher_id, ['amount' => 0.0, 'snapshot_ids' => [], 'months' => []]);
+                $row['amount'] = round($row['amount'] + (float) $snapshot->teacher_amount, 2);
+                $row['snapshot_ids'][] = (int) $snapshot->id;
+                $label = $date->format('Y-m');
+                $row['months'][$label] = round(($row['months'][$label] ?? 0) + (float) $snapshot->teacher_amount, 2);
+                $result->put($snapshot->teacher_id, $row);
+            });
+
+        return $result;
+    }
+
+    /**
      * Full calculation for one teacher in one branch and month.
      *
-     * @return array{gross: float, advance: float, deduction: float, other: float, welfare: float, total_deductions: float, net: float, available_limit: float}
+     * @return array{gross: float, carried: float, carried_months: array<string, float>, carried_snapshot_ids: array<int>, advance: float, deduction: float, other: float, welfare: float, total_deductions: float, net: float, available_limit: float}
      */
     public function forTeacher(int $teacherId, int $branchId, int $year, int $month): array
     {
@@ -121,25 +189,32 @@ class TeacherSalaryCalculator
         $deductions = $this->deductionsByTeacher($branchId, $year, $month, [$teacherId])
             ->get($teacherId, $this->emptyDeductions());
 
-        return $this->buildTotals($gross, $deductions);
+        $carry = $this->carryByTeacher($branchId, $year, $month, [$teacherId])->get($teacherId);
+
+        return $this->buildTotals($gross, $deductions, $carry);
     }
 
     /**
      * @param  array{advance: float, deduction: float, other: float, welfare?: float}  $deductions
+     * @param  array{amount: float, snapshot_ids: array<int>, months: array<string, float>}|null  $carry  earlier months' fees paid after their salary
      */
-    public function buildTotals(float $gross, array $deductions): array
+    public function buildTotals(float $gross, array $deductions, ?array $carry = null): array
     {
         $deductions += ['welfare' => 0.0];
+        $carried = round((float) ($carry['amount'] ?? 0), 2);
 
         $totalDeductions = round(
             $deductions['advance'] + $deductions['deduction'] + $deductions['other'] + $deductions['welfare'],
             2
         );
 
-        $net = round($gross - $totalDeductions, 2);
+        $net = round($gross + $carried - $totalDeductions, 2);
 
         return [
             'gross' => round($gross, 2),
+            'carried' => $carried,
+            'carried_months' => $carry['months'] ?? [],
+            'carried_snapshot_ids' => $carry['snapshot_ids'] ?? [],
             'advance' => $deductions['advance'],
             'deduction' => $deductions['deduction'],
             'other' => $deductions['other'],
@@ -199,7 +274,7 @@ class TeacherSalaryCalculator
                 . ' (last ' . self::PAY_WINDOW_DAYS . ' days of the month).';
         }
 
-        if ($totals['gross'] <= 0) {
+        if ($totals['gross'] + ($totals['carried'] ?? 0) <= 0) {
             return 'There are no earnings for this month.';
         }
 
