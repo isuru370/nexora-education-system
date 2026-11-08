@@ -113,6 +113,11 @@ Route::middleware([
 | Data is limited to the user's own branches by BranchAccessService.
 */
 
+// Staff app "Send Feedback": every signed-in user (teachers too)
+Route::post('/feedback', [\App\Http\Controllers\Api\Feedback\AppFeedbackController::class, 'store'])
+    ->middleware(['auth:sanctum', 'user.active', 'throttle:10,1'])
+    ->name('api.feedback.store');
+
 Route::middleware([
     'auth:sanctum',
     'user.active',

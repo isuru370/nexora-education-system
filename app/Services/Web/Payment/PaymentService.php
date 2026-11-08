@@ -6,6 +6,7 @@ use App\Services\Branch\BranchAccessService;
 use App\Models\Payment;
 use App\Services\Notification\PaymentNotificationService;
 use App\Support\HallFee;
+use App\Support\PaymentRules;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 
@@ -323,6 +324,11 @@ class PaymentService
             'payment' => $paymentData,
 
             'receipt' => $receipt,
+
+            /*
+            | Payment Rules: the staff app prints the receipt only when true.
+            */
+            'print_receipt' => PaymentRules::printReceipt(),
         ];
     }
 
@@ -788,6 +794,11 @@ class PaymentService
             'payments' => $paymentData,
 
             'receipt' => $receipt,
+
+            /*
+            | Payment Rules: the staff app prints the receipt only when true.
+            */
+            'print_receipt' => PaymentRules::printReceipt(),
 
             'count' => count(
                 $createdPayments

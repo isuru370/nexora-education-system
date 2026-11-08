@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Web\Setting;
 
 use App\Http\Controllers\Controller;
 use App\Models\NotificationSetting;
+use App\Support\TeacherSalaryEmail;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -22,7 +23,10 @@ class NotificationSettingController extends Controller
             ->orderBy('sort_order')
             ->get();
 
-        return view('setting.notifications', compact('settings'));
+        return view('setting.notifications', [
+            'settings' => $settings,
+            'teacherSalaryEmail' => TeacherSalaryEmail::enabled(),
+        ]);
     }
 
     public function update(Request $request): RedirectResponse
@@ -31,6 +35,7 @@ class NotificationSettingController extends Controller
             'settings' => ['required', 'array'],
             'settings.*.is_enabled' => ['nullable', 'boolean'],
             'settings.*.channel' => ['nullable', 'in:push,sms'],
+            'teacher_salary_email' => ['nullable', 'boolean'],
         ]);
 
         $changed = 0;
@@ -60,6 +65,16 @@ class NotificationSettingController extends Controller
         });
 
         NotificationSetting::clearCache();
+
+        // Teacher email: salary slip when a salary is paid (off by default)
+        if ($request->has('teacher_salary_email')) {
+            $emailOn = (bool) ($validated['teacher_salary_email'] ?? false);
+
+            if ($emailOn !== TeacherSalaryEmail::enabled()) {
+                TeacherSalaryEmail::save($emailOn);
+                $changed++;
+            }
+        }
 
         return redirect()
             ->route('admin.setting.notifications')

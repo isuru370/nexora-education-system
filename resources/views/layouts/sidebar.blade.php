@@ -186,6 +186,23 @@
                 </div>
             @endif
 
+            @if ($isSuperAdmin)
+                <div class="nav-item">
+                    <button type="button"
+                        class="nav-link-custom {{ request()->routeIs('app-feedback.*') ? 'active' : '' }}"
+                        data-route="app-feedback.index" data-href="{{ route('app-feedback.index') }}">
+                        <i class="bi bi-chat-square-heart"></i>
+                        <span>App Feedback</span>
+                        @php
+                            $newFeedback = \Illuminate\Support\Facades\Schema::hasTable('app_feedback')
+                                ? \App\Models\AppFeedback::query()->where('status', 'new')->count()
+                                : 0;
+                        @endphp
+                        @if ($newFeedback)<span class="badge bg-danger ms-auto">{{ $newFeedback }}</span>@endif
+                    </button>
+                </div>
+            @endif
+
             @if ($isTeacher)
                 <div class="nav-item">
                     <button type="button"

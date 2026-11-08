@@ -226,10 +226,11 @@ class PaymentRulesTest extends TestCase
             'custom_amount' => '0',
             'no_attendance' => '1',
             'tute' => '0',
+            'print_receipt' => '0',
         ])->assertRedirect('/payment-rules');
 
         $this->assertSame(
-            ['fee_option' => true, 'custom_amount' => false, 'no_attendance' => true, 'tute' => false],
+            ['fee_option' => true, 'custom_amount' => false, 'no_attendance' => true, 'tute' => false, 'print_receipt' => false],
             PaymentRules::all()
         );
 
@@ -239,5 +240,33 @@ class PaymentRulesTest extends TestCase
             ->assertSee('id="no_attendance" checked', false)
             ->assertDontSee('id="tute" checked', false)
             ->assertDontSee('@checked', false);
+    }
+
+    /* ---------- Print receipt ---------- */
+
+    private function bulkPay()
+    {
+        return $this->postJson('/api/new-payment/bulk-pay', ['payments' => [[
+            'code' => 'S2', 'enrollment_id' => $this->inst['e2'], 'amount' => 2000, 'discount_amount' => 0,
+            'payment_month' => '2026-11', 'paid_at' => null, 'payment_method' => 'cash', 'mark_method' => 'qr_mobile', 'note' => null,
+        ]]]);
+    }
+
+    public function test_receipt_printing_is_on_by_default(): void
+    {
+        $this->assertTrue(PaymentRules::printReceipt());
+        $this->bulkPay()->assertSuccessful()->assertJsonPath('data.print_receipt', true);
+    }
+
+    public function test_the_app_is_told_not_to_print_when_the_rule_is_off(): void
+    {
+        PaymentRules::save(['print_receipt' => false]);
+
+        $this->bulkPay()->assertSuccessful()->assertJsonPath('data.print_receipt', false);
+
+        // single payment response carries it too
+        PaymentRules::save(['print_receipt' => true]);
+        DB::table('payments')->delete();
+        $this->pay(2000)->assertSuccessful()->assertJsonPath('data.print_receipt', true);
     }
 }
