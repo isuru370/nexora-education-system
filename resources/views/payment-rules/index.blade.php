@@ -27,6 +27,11 @@
                 'title' => 'Tute with the payment',
                 'text' => 'The payment screen shows whether that month\'s tute was given, with an optional "Give tute" tick.',
             ],
+            'print_receipt' => [
+                'icon' => 'bi-printer text-success',
+                'title' => 'Print receipt after payment',
+                'text' => 'The staff app prints a receipt after a class fee payment. Turn off to save the payment without printing. A receipt can still be reprinted from Today Payments. On by default.',
+            ],
         ];
     @endphp
 
@@ -39,7 +44,7 @@
                     <h1 class="hero-title">Payment &amp; Attendance Rules</h1>
                     <p class="hero-subtitle">
                         Class fee options for this institute. They change the payment screens on the web and in the
-                        staff app. Everything is off by default. The attendance count for the month is always shown.
+                        staff app. Everything except receipt printing is off by default. The attendance count for the month is always shown.
                     </p>
                 </div>
                 <div class="hero-right">

@@ -27,6 +27,7 @@ class PaymentRulesController extends Controller
             'custom_amount' => ['nullable', 'boolean'],
             'no_attendance' => ['nullable', 'boolean'],
             'tute' => ['nullable', 'boolean'],
+            'print_receipt' => ['nullable', 'boolean'],
             'before_minutes' => ['nullable', 'integer', 'min:0', 'max:' . AttendanceRules::MAX_MINUTES],
             'after_minutes' => ['nullable', 'integer', 'min:0', 'max:' . AttendanceRules::MAX_MINUTES],
             'no_time_limit' => ['nullable', 'boolean'],
@@ -37,6 +38,7 @@ class PaymentRulesController extends Controller
             'custom_amount' => (bool) ($validated['custom_amount'] ?? false),
             'no_attendance' => (bool) ($validated['no_attendance'] ?? false),
             'tute' => (bool) ($validated['tute'] ?? false),
+            'print_receipt' => (bool) ($validated['print_receipt'] ?? false),
         ]);
 
         AttendanceRules::save([
