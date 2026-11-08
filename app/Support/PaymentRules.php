@@ -19,6 +19,8 @@ use Illuminate\Support\Facades\Cache;
  *                 unpaid ("No Attendance") and gets no payment reminder;
  *                 the cashier does not take a payment
  *  tute           the payment screen shows / gives that month's tute
+ *  print_receipt  the staff app prints a receipt after a payment
+ *                 (ON by default; a reprint is always possible)
  *
  * Stored as rows in system_settings (payment_*).
  */
@@ -31,7 +33,11 @@ class PaymentRules
         'custom_amount' => 'payment_custom_amount',
         'no_attendance' => 'payment_no_attendance',
         'tute' => 'payment_tute',
+        'print_receipt' => 'payment_print_receipt',
     ];
+
+    /** Rules that are ON until the institute turns them off. */
+    public const DEFAULT_ON = ['print_receipt'];
 
     public static function feeOption(): bool
     {
@@ -53,8 +59,13 @@ class PaymentRules
         return self::all()['tute'];
     }
 
+    public static function printReceipt(): bool
+    {
+        return self::all()['print_receipt'];
+    }
+
     /**
-     * @return array{fee_option: bool, custom_amount: bool, no_attendance: bool, tute: bool}
+     * @return array{fee_option: bool, custom_amount: bool, no_attendance: bool, tute: bool, print_receipt: bool}
      */
     public static function all(): array
     {
@@ -67,7 +78,8 @@ class PaymentRules
 
         $rules = [];
         foreach (self::KEYS as $name => $key) {
-            $rules[$name] = ($values[$key] ?? '0') === '1';
+            $default = in_array($name, self::DEFAULT_ON, true) ? '1' : '0';
+            $rules[$name] = ($values[$key] ?? $default) === '1';
         }
 
         return $rules;
