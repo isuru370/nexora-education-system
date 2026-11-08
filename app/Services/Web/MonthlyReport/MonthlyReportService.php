@@ -139,10 +139,11 @@ class MonthlyReportService
 
     /**
      * @param  string  $basis  self::BASIS_FEE_MONTH or self::BASIS_PAID_DATE
+     * @param  int|null  $branchId  only this branch (the salary email); null = every branch the user can see
      *
      * @throws DomainException
      */
-    public function teacherStudentPaymentReport(int $teacherId, int $year, int $month, string $basis): array
+    public function teacherStudentPaymentReport(int $teacherId, int $year, int $month, string $basis, ?int $branchId = null): array
     {
         if (!array_key_exists($basis, self::BASES)) {
             throw new DomainException('Invalid report type.');
@@ -174,6 +175,7 @@ class MonthlyReportService
             ->select('id', 'branch_id', 'class_name', 'grade_id', 'teacher_id', 'is_active')
             ->where('teacher_id', $teacherId)
             ->whereIn('branch_id', $this->branchAccessService->getBranchIds())
+            ->when($branchId !== null, fn ($query) => $query->where('branch_id', $branchId))
             ->where(function ($query) use ($inPeriod) {
                 $query->where('is_active', true)
                     ->orWhereHas('enrollments.payments', $inPeriod);
@@ -290,6 +292,7 @@ class MonthlyReportService
                 'month' => $month,
                 'basis' => $basis,
                 'basis_label' => self::BASES[$basis],
+                'branch_id' => $branchId,
             ],
             'summary' => $summary,
             'classes' => $reportClasses,

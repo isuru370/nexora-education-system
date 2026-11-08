@@ -308,6 +308,30 @@
                         Details
                     </a>
                 </div>
+
+                <!-- EMAIL SLIP (salary slip + student payments PDF to the teacher) -->
+                <div class="col-lg-3 col-md-6">
+                    @php
+                        $teacherEmail = \App\Support\TeacherSalaryEmail::addressOf($teacher->email);
+                    @endphp
+                    @if($isPaid && $teacherEmail)
+                        <form method="POST" action="{{ route('teacher-salaries.email-slip', $routeParams) }}"
+                            onsubmit="return confirm('Email the {{ $monthLabel }} salary slip to {{ $teacherEmail }}?');">
+                            @csrf
+                            <input type="hidden" name="branch_id" value="{{ $branchId }}">
+                            <button type="submit" class="btn btn-outline-primary action-btn-full" title="{{ $teacherEmail }}">
+                                <i class="bi bi-envelope-fill me-1"></i>
+                                Email Slip
+                            </button>
+                        </form>
+                    @else
+                        <button class="btn btn-outline-secondary action-btn-full" disabled
+                            title="{{ $isPaid ? 'Add the teacher\'s email first' : 'Pay the salary first' }}">
+                            <i class="bi bi-envelope me-1"></i>
+                            {{ $isPaid ? 'Email Slip (no email)' : 'Email Slip (Pay first)' }}
+                        </button>
+                    @endif
+                </div>
             </div>
 
             <div class="mt-4">

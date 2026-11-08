@@ -131,6 +131,49 @@
                 </div>
             @endforelse
         </div>
+
+        {{-- TEACHER EMAILS --}}
+        @php
+            $salaryEmailOn = (bool) old('teacher_salary_email', $teacherSalaryEmail);
+        @endphp
+        <div class="nx-card mb-4">
+            <div class="nx-card-header">
+                <div>
+                    <h5 class="nx-card-title"><i class="bi bi-envelope-fill text-primary"></i> Teacher emails</h5>
+                    <p class="nx-card-subtitle">Sent from the institute name to the teacher's email address.</p>
+                </div>
+            </div>
+
+            <div class="notify-row {{ $salaryEmailOn ? '' : 'is-off' }}" data-row>
+                <div class="stat-icon-wrapper icon-green notify-icon">
+                    <i class="bi bi-file-earmark-pdf-fill"></i>
+                </div>
+
+                <div class="notify-text">
+                    <div class="cell-title">Email salary slip to teacher</div>
+                    <small class="cell-sub d-block">
+                        When a salary is paid, the teacher gets the salary slip and the Student Payments
+                        (by collection date) report of that branch as PDFs. Teachers without an email are skipped.
+                    </small>
+                </div>
+
+                <div class="notify-channel">
+                    <span class="nx-badge nx-badge-blue"><i class="bi bi-envelope"></i> Email</span>
+                </div>
+
+                <div class="notify-switch">
+                    <input type="hidden" name="teacher_salary_email" value="0">
+                    <div class="form-check form-switch m-0">
+                        <input class="form-check-input" type="checkbox" role="switch" data-switch
+                            id="teacher_salary_email" name="teacher_salary_email" value="1"
+                            {{ $salaryEmailOn ? 'checked' : '' }}>
+                        <label class="form-check-label cell-sub" for="teacher_salary_email" data-switch-label>
+                            {{ $salaryEmailOn ? 'On' : 'Off' }}
+                        </label>
+                    </div>
+                </div>
+            </div>
+        </div>
     </form>
 
     <div class="nx-alert nx-alert-blue">
@@ -141,6 +184,7 @@
                 <li>Parent app notifications only reach parents who installed the app and logged in.</li>
                 <li>SMS is sent by the queue worker: <code>php artisan queue:work --queue=sms,default</code> must be running.</li>
                 <li>A failed notification never stops a registration, payment or attendance from being saved.</li>
+                <li>Teacher emails need the mail (SMTP) settings in the server <code>.env</code> (<code>MAIL_*</code>).</li>
             </ul>
         </div>
     </div>
