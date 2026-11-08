@@ -464,12 +464,12 @@
                         <div class="stat-badge">
 
                             <div class="label">
-                                Current Page Total
+                                Total Paid (all filtered)
                             </div>
 
                             <div class="value">
                                 Rs.
-                                {{ number_format($expenses->sum('amount'), 2) }}
+                                {{ number_format($paidTotal ?? 0, 2) }}
                             </div>
 
                         </div>

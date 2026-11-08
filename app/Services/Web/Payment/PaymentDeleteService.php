@@ -3,6 +3,8 @@
 namespace App\Services\Web\Payment;
 
 use App\Models\Payment;
+use App\Models\TeacherSalary;
+use Carbon\Carbon;
 use App\Services\Branch\BranchAccessService;
 use DomainException;
 use Illuminate\Support\Facades\DB;
@@ -50,6 +52,29 @@ class PaymentDeleteService
                 throw new DomainException(
                     'This payment can only be deleted within ' . self::DELETE_WINDOW_DAYS . ' days.'
                 );
+            }
+
+            // The teacher was already paid for this money: deleting it would
+            // change a paid salary (teacher overpaid, reports out of balance)
+            $snapshot = $payment->splitSnapshot;
+
+            if ($snapshot && $snapshot->teacher_id && $snapshot->payment_date) {
+                $month = Carbon::parse($snapshot->payment_date);
+
+                $salaryPaid = TeacherSalary::query()
+                    ->where('branch_id', $snapshot->branch_id)
+                    ->where('teacher_id', $snapshot->teacher_id)
+                    ->where('salary_year', $month->year)
+                    ->where('salary_month', $month->month)
+                    ->where('status', 'paid')
+                    ->exists();
+
+                if ($salaryPaid) {
+                    throw new DomainException(
+                        'The teacher salary for ' . $month->format('F Y')
+                        . ' is already paid, so this payment cannot be deleted.'
+                    );
+                }
             }
 
             // 1. Record who deleted it and why (no "updated" activity log)

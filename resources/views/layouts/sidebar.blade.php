@@ -209,6 +209,7 @@
                         ['Users', 'bi-person-circle', 'admin.users.index', ['admin.users.*'], $canUsers],
                         ['Close Batch (Grade)', 'bi-archive-fill', 'close-grade.index', ['close-grade.*'], $isAdmin],
                         ['Promote Class', 'bi-arrow-up-circle-fill', 'class-promotions.index', ['class-promotions.*'], $isAdmin],
+                        ['Staff App QR', 'bi-qr-code', 'app-setup.index', ['app-setup.*'], $isAdmin],
                         ['Activities', 'bi-clock-history', 'admin.activity-logs.index', ['admin.activity-logs.*'], $canActivityLogs],
                         ['Settings', 'bi-sliders2', 'admin.setting.index', ['admin.setting.*'], $isAdmin],
                     ],
@@ -221,7 +222,6 @@
                     'items' => [
                         ['Payment & Attendance Rules', 'bi-sliders', 'payment-rules.index', ['payment-rules.*'], $isSuperAdmin],
                         ['ID Card Designer', 'bi-person-badge', 'card-designer.index', ['card-designer.*'], $isSuperAdmin],
-                        ['Staff App QR', 'bi-qr-code', 'app-setup.index', ['app-setup.*'], $isSuperAdmin],
                         ['App Feedback', 'bi-chat-square-heart', 'app-feedback.index', ['app-feedback.*'], $isSuperAdmin, $newFeedback],
                         ['Database Backup', 'bi-database-fill', 'admin.setting.index', [], $isSuperAdmin, 0, '#backup'],
                         ['Laravel Logs', 'bi-file-earmark-code', 'logs.laravel.index', ['logs.laravel.*'], $isSuperAdmin],
