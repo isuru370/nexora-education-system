@@ -55,7 +55,8 @@ class ExtraIncomeController extends Controller
         }
 
         // 📊 statistics
-        $totalIncome = (clone $query)->sum('amount');
+        // Cancelled records are not income
+        $totalIncome = (clone $query)->where('status', '!=', 'cancelled')->sum('amount');
 
         $receivedIncome = (clone $query)
             ->where('status', 'received')

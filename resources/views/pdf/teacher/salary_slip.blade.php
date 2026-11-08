@@ -89,8 +89,13 @@
             @forelse ($slip['earnings'] as $row)
                 <tr>
                     <td>{{ $row['description'] }}</td>
-                    <td class="right">{{ $money($row['class_total']) }}</td>
-                    <td class="center">{{ rtrim(rtrim(number_format($row['teacher_percentage'], 2), '0'), '.') }}%</td>
+                    @if (isset($row['class_total']))
+                        <td class="right">{{ $money($row['class_total']) }}</td>
+                        <td class="center">{{ rtrim(rtrim(number_format($row['teacher_percentage'], 2), '0'), '.') }}%</td>
+                    @else
+                        <td class="right muted">-</td>
+                        <td class="center muted">-</td>
+                    @endif
                     <td class="right">{{ $money($row['amount']) }}</td>
                 </tr>
             @empty

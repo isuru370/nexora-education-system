@@ -35,6 +35,7 @@ class AppSetupQrTest extends TestCase
         $this->assertSame('https://savidyaedu.nexorait.lk/app-setup?key=' . AppSetup::key(), AppSetup::qrContent());
 
         $this->actingAs($this->inst['cashier'])->get('/app-setup-qr')->assertForbidden();
+        $this->actingAs($this->makeRoleUser('BRANCH_ADMIN', $this->inst['b1']))->get('/app-setup-qr')->assertForbidden();
     }
 
     public function test_the_app_can_verify_only_the_current_key(): void

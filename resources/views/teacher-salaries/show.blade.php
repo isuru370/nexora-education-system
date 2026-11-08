@@ -153,6 +153,17 @@
                         <h3>
                             LKR {{ number_format($data['teacher_earnings'] ?? 0, 2) }}
                         </h3>
+                        @if (($data['carried'] ?? 0) > 0)
+                            <small class="summary-sub d-block">
+                                + LKR {{ number_format($data['carried'], 2) }} balance from
+                                {{ collect(array_keys($data['carried_months'] ?? []))->map(fn ($p) => \Carbon\Carbon::parse($p . '-01')->format('M Y'))->implode(', ') ?: 'earlier months' }}
+                            </small>
+                        @endif
+                        @if (($data['paid_after_salary'] ?? 0) > 0)
+                            <small class="summary-sub d-block">
+                                LKR {{ number_format($data['paid_after_salary'], 2) }} paid after this salary: goes to the next salary
+                            </small>
+                        @endif
                     </div>
                 </div>
             </div>

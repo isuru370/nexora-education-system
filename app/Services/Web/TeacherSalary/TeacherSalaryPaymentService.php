@@ -2,6 +2,7 @@
 
 namespace App\Services\Web\TeacherSalary;
 
+use App\Models\PaymentSplitSnapshot;
 use App\Models\Teacher;
 use App\Models\TeacherPayment;
 use App\Models\TeacherSalary;
@@ -77,6 +78,7 @@ class TeacherSalaryPaymentService
             $values = [
                 'user_id' => auth()->id(),
                 'gross_amount' => $totals['gross'],
+                'carried_amount' => $totals['carried'],
                 'advance_deduction' => $totals['advance'],
                 'other_deduction' => round($totals['deduction'] + $totals['other'], 2),
                 'welfare_deduction' => $totals['welfare'],
@@ -94,16 +96,24 @@ class TeacherSalaryPaymentService
                 }
 
                 $record->fill($values)->save();
-
-                return $record->refresh();
+            } else {
+                $record = TeacherSalary::create($values + [
+                    'branch_id' => $branchId,
+                    'teacher_id' => $teacherId,
+                    'salary_year' => $year,
+                    'salary_month' => $month,
+                ]);
             }
 
-            return TeacherSalary::create($values + [
-                'branch_id' => $branchId,
-                'teacher_id' => $teacherId,
-                'salary_year' => $year,
-                'salary_month' => $month,
-            ]);
+            // Earlier months' fees paid after their salary: paid now, by this salary
+            if ($totals['carried_snapshot_ids']) {
+                PaymentSplitSnapshot::query()
+                    ->whereIn('id', $totals['carried_snapshot_ids'])
+                    ->whereNull('carried_to_salary_id')
+                    ->update(['carried_to_salary_id' => $record->id]);
+            }
+
+            return $record->refresh();
         });
     }
 
