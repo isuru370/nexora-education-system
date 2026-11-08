@@ -93,6 +93,9 @@ return [
     // Nexora IT (the app developer): shown on the public /privacy-policy page
     'nexora' => [
         'support_email' => env('NEXORA_SUPPORT_EMAIL'),
+
+        // Staff app "Send Feedback" is emailed here (empty = do not email)
+        'feedback_email' => env('NEXORA_FEEDBACK_EMAIL', 'info@nexorait.lk'),
     ],
 
     'firebase' => [

@@ -2714,6 +2714,21 @@ Route::prefix('teacher-salaries')
 
 /*
 |--------------------------------------------------------------------------
+| App Feedback (Super Admin): sent from the staff app, also emailed to Nexora
+|--------------------------------------------------------------------------
+*/
+
+Route::prefix('app-feedback')
+    ->name('app-feedback.')
+    ->controller(\App\Http\Controllers\Web\AppFeedback\AppFeedbackController::class)
+    ->middleware(['auth', 'user.active', 'role:SUPER_ADMIN'])
+    ->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::patch('/{appFeedback}', 'update')->whereNumber('appFeedback')->name('update');
+    });
+
+/*
+|--------------------------------------------------------------------------
 | Disabled Students: every disabled student (auto / batch closed / manual),
 | enable again. All staff, own branches.
 |--------------------------------------------------------------------------
