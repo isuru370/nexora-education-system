@@ -2996,7 +2996,7 @@ require __DIR__ . '/courses.php';
 
 Route::prefix('app-setup-qr')
     ->name('app-setup.')
-    ->middleware(['auth', 'user.active', 'role:SUPER_ADMIN'])
+    ->middleware(['auth', 'user.active', 'role:ADMIN'])
     ->controller(AppSetupController::class)
     ->group(function () {
         Route::get('/', 'index')->name('index');
