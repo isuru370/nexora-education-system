@@ -367,6 +367,9 @@ class TeacherSalaryService
 
         [$start, $end] = $this->calculator->monthRange($year, $month);
 
+        $record = $this->calculator->salaryRecord($teacherId, $branchId, $year, $month);
+        $isPaid = $record && $record->status === 'paid';
+
         $snapshots = PaymentSplitSnapshot::query()
             ->with([
                 'studentClass' => fn($query) => $query->withTrashed(),
@@ -376,6 +379,9 @@ class TeacherSalaryService
             ->where('branch_id', $branchId)
             ->where('teacher_id', $teacherId)
             ->whereBetween('payment_date', [$start, $end])
+            // A paid slip lists the payments that were in that salary, so the
+            // class rows add up to the paid amount (later payments are not in it)
+            ->when($isPaid && $record->paid_at, fn ($query) => $query->where('created_at', '<=', $record->paid_at))
             ->get();
 
         $earnings = [];
@@ -421,8 +427,6 @@ class TeacherSalaryService
         }
 
         $totals = $this->calculator->forTeacher($teacherId, $branchId, $year, $month);
-        $record = $this->calculator->salaryRecord($teacherId, $branchId, $year, $month);
-        $isPaid = $record && $record->status === 'paid';
 
         $deductions = [];
 
