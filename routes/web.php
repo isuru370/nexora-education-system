@@ -2697,6 +2697,11 @@ Route::prefix('teacher-salaries')
             ->where(['teacher' => '[0-9]+', 'year' => '[0-9]{4}', 'month' => '[0-9]{1,2}'])
             ->name('slip');
 
+        // Email the paid salary slip + student payments PDF to the teacher
+        Route::post('/{teacher}/{year}/{month}/email-slip', 'emailSlip')
+            ->where(['teacher' => '[0-9]+', 'year' => '[0-9]{4}', 'month' => '[0-9]{1,2}'])
+            ->name('email-slip');
+
         Route::get('/{teacher}/{year}/{month}/details', 'paymentDetailsView')
             ->where(['teacher' => '[0-9]+', 'year' => '[0-9]{4}', 'month' => '[0-9]{1,2}'])
             ->name('payment-details');
