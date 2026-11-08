@@ -216,6 +216,9 @@
                             {{-- GROSS --}}
                             <td class="text-end cell-title">
                                 {{ number_format($row['gross_earnings'] ?? 0, 2) }}
+                                @if (($row['carried'] ?? 0) > 0)
+                                    <small class="d-block text-success" title="Earlier months' fees paid after their salary">+ {{ number_format($row['carried'], 2) }} balance</small>
+                                @endif
                             </td>
 
                             {{-- ADVANCE --}}

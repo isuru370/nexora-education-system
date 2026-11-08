@@ -126,6 +126,86 @@ class TeacherSalaryAccuracyTest extends TestCase
         $this->assertDatabaseHas('payments', ['id' => $late, 'deleted_at' => null]);
     }
 
+    public function test_fee_paid_after_the_salary_goes_into_the_next_salary(): void
+    {
+        $this->classFee('S2', $this->inst['e2'], '2026-10');
+        $this->post('/teacher-salaries/' . $this->inst['teacher'] . '/pay', [
+            'branch_id' => $this->inst['b1'], 'year' => 2026, 'month' => 10,
+        ])->assertSessionHas('success');
+
+        // October 30: a fee after the October salary was paid
+        Carbon::setTestNow('2026-10-30 09:00:00');
+        $this->classFee('S1', $this->inst['e1'], '2026-11');
+
+        // the October page says it goes to the next salary
+        $october = app(TeacherSalaryService::class)->getTeacherSalaryDetails($this->inst['teacher'], $this->inst['b1'], 2026, 10);
+        $this->assertSame(1200.0, $october['teacher_earnings']);
+        $this->assertSame(1200.0, $october['paid_after_salary']);
+
+        // November: 2,000 fee in November + 1,200 balance from October
+        Carbon::setTestNow('2026-11-27 10:00:00');
+        $this->classFee('S2', $this->inst['e2'], '2026-11');
+
+        $calculator = app(TeacherSalaryCalculator::class);
+        $november = $calculator->forTeacher($this->inst['teacher'], $this->inst['b1'], 2026, 11);
+        $this->assertSame(1200.0, $november['gross']);
+        $this->assertSame(1200.0, $november['carried']);
+        $this->assertSame(['2026-10' => 1200.0], $november['carried_months']);
+        $this->assertSame(2400.0, $november['net']);
+
+        $list = app(TeacherSalaryService::class)->monthlyIncome($this->inst['b1'], 2026, 11);
+        $row = collect($list['data'])->firstWhere('teacher_id', $this->inst['teacher']);
+        $this->assertSame(1200.0, $row['carried']);
+        $this->assertSame(2400.0, $row['calculated_net']);
+
+        $slip = app(TeacherSalaryService::class)->salarySlip($this->inst['teacher'], $this->inst['b1'], 2026, 11);
+        $this->assertSame(2400.0, $slip['total_addition']);
+        $this->assertStringContainsString('Balance from October 2026', collect($slip['earnings'])->last()['description']);
+
+        $t = $this->inst['teacher'];
+        $b = $this->inst['b1'];
+        $this->get("/teacher-salaries/{$t}/2026/11?branch_id={$b}")->assertOk()->assertSee('balance from')->assertSee('Oct 2026');
+        $this->get("/teacher-salaries/{$t}/2026/10?branch_id={$b}")->assertOk()->assertSee('goes to the next salary');
+        $this->get("/teacher-salaries?branch_id={$b}&year=2026&month=11")->assertOk()->assertSee('1,200.00 balance');
+        $this->get("/teacher-salaries/{$t}/2026/11/slip?branch_id={$b}")->assertOk()->assertSee('Balance from October 2026');
+
+        $this->post('/teacher-salaries/' . $this->inst['teacher'] . '/pay', [
+            'branch_id' => $this->inst['b1'], 'year' => 2026, 'month' => 11,
+        ])->assertSessionHas('success');
+
+        $this->assertDatabaseHas('teacher_salaries', [
+            'teacher_id' => $this->inst['teacher'], 'salary_month' => 11,
+            'gross_amount' => 1200, 'carried_amount' => 1200, 'net_amount' => 2400,
+        ]);
+
+        // paid slip still shows the balance; it is not carried a second time
+        $slip = app(TeacherSalaryService::class)->salarySlip($this->inst['teacher'], $this->inst['b1'], 2026, 11);
+        $this->assertSame(2400.0, $slip['total_addition']);
+        $this->assertSame(2400.0, round(collect($slip['earnings'])->sum('amount'), 2));
+        $this->assertSame(0.0, $calculator->forTeacher($this->inst['teacher'], $this->inst['b1'], 2026, 12)['carried']);
+    }
+
+    public function test_imported_history_is_not_carried(): void
+    {
+        // old salary paid on 5 Nov for October, with October fees imported later
+        DB::table('teacher_salaries')->insert([
+            'branch_id' => $this->inst['b1'], 'teacher_id' => $this->inst['teacher'], 'user_id' => $this->inst['admin']->id,
+            'salary_year' => 2026, 'salary_month' => 9, 'gross_amount' => 1200, 'net_amount' => 1200,
+            'status' => 'paid', 'paid_at' => '2026-10-05 10:00:00', 'created_at' => now(), 'updated_at' => now(),
+        ]);
+        DB::table('payment_split_snapshots')->insert([
+            'branch_id' => $this->inst['b1'], 'payment_id' => DB::table('payments')->value('id'), 'class_fee' => 2000, 'total_fee' => 2000,
+            'student_class_id' => $this->inst['c1'], 'student_class_enrollment_id' => $this->inst['e1'],
+            'class_payment_config_id' => DB::table('class_payment_configs')->value('id'),
+            'teacher_id' => $this->inst['teacher'], 'payment_amount' => 2000, 'teacher_percentage' => 60,
+            'institution_percentage' => 40, 'teacher_amount' => 1200, 'institution_amount' => 800,
+            // dated in September (before the salary), created today by the import
+            'payment_date' => '2026-09-20 09:00:00', 'created_at' => now(), 'updated_at' => now(),
+        ]);
+
+        $this->assertSame(0.0, app(TeacherSalaryCalculator::class)->forTeacher($this->inst['teacher'], $this->inst['b1'], 2026, 10)['carried']);
+    }
+
     public function test_payment_can_be_deleted_while_the_salary_is_not_paid(): void
     {
         $payment = $this->classFee('S2', $this->inst['e2'], '2026-10');
