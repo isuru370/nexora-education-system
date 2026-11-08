@@ -83,10 +83,170 @@
         @endphp
 
 
-        <!-- MAIN SECTION -->
-        <div class="sidebar-section">
-            <div class="sidebar-section-title">MAIN MENU</div>
+        @php
+            /*
+            | Menu groups. Each item: label, icon, route (link), active (routeIs
+            | patterns), show (role flag above), badge (optional).
+            | Super Admin: everything + "Nexora Admin". Admin: whole institute.
+            | Branch Admin: their branch's daily work, staff, finance, reports.
+            */
+            $hasCourses = \App\Support\Features::enabled('courses');
+            $hasWelfare = \App\Support\Features::enabled('welfare');
 
+            $newFeedback = 0;
+            if ($isSuperAdmin && \Illuminate\Support\Facades\Schema::hasTable('app_feedback')) {
+                $newFeedback = \App\Models\AppFeedback::query()->where('status', 'new')->count();
+            }
+
+            $menu = [
+                [
+                    'key' => 'daily',
+                    'title' => 'Daily Work',
+                    'icon' => 'bi-lightning-charge-fill',
+                    'items' => [
+                        ['Today\'s Classes', 'bi-calendar2-check-fill', 'class-schedules.todayClasses', ['class-schedules.todayClasses'], $canTodayClasses],
+                        ['Attendance', 'bi-person-check-fill', 'new-attendance.index', ['new-attendance.*'], $canAttendance],
+                        ['Payments', 'bi-credit-card-fill', 'new-payment.index', ['new-payment.*'], $canPayments],
+                        ['Payments History', 'bi-piggy-bank-fill', 'payments.index', ['payments.*'], $canPaymentHistory],
+                        ['Timetable', 'bi-calendar3', 'class-time-table.weekly', ['class-time-table.*'], $canTimetable],
+                    ],
+                ],
+                [
+                    'key' => 'students',
+                    'title' => 'Students',
+                    'icon' => 'bi-people-fill',
+                    'items' => [
+                        ['Students', 'bi-people-fill', 'students.index', ['students.*'], $canStudents],
+                        ['Enrollments', 'bi-pencil-square', 'student-class-enrollments.index', ['student-class-enrollments.*'], $canEnrollments],
+                        ['Admissions', 'bi-person-plus-fill', 'admissions.index', ['admissions.*'], $canAdmissions],
+                        ['Admission Payments', 'bi-credit-card-2-front-fill', 'admission-payments.index', ['admission-payments.*'], $canAdmissionPayments],
+                        ['Payment Reminder', 'bi-bell-fill', 'payment-reminder.index', ['payment-reminder.*'], $canPaymentReminder],
+                        ['Disabled Students', 'bi-person-slash', 'disabled-students.index', ['disabled-students.*'], $isTeacher],
+                        ['Student Images', 'bi-images', 'admin.student-images.index', ['admin.student-images.*'], $canStudentImages],
+                    ],
+                ],
+                [
+                    'key' => 'cards',
+                    'title' => 'ID Cards',
+                    'icon' => 'bi-person-vcard-fill',
+                    'items' => [
+                        ['Student Cards', 'bi-person-vcard-fill', 'student-cards.index', ['student-cards.*'], $canStudentCards],
+                        ['Temporary Cards', 'bi-person-vcard', 'temporary_id_cards.index', ['temporary_id_cards.*'], $canTemporaryIdCards],
+                        ['Generate Student ID', 'bi-download', 'generate-student-id.index', ['generate-student-id.*'], $canGenerateStudentId],
+                    ],
+                ],
+                [
+                    'key' => 'academic',
+                    'title' => 'Academic',
+                    'icon' => 'bi-book-fill',
+                    'items' => [
+                        ['Classes', 'bi-book-fill', 'student-classes.index', ['student-classes.*'], $canStudentClasses],
+                        ['Class Schedule', 'bi-calendar-event-fill', 'class-schedules.index', ['class-schedules.index', 'class-schedules.create', 'class-schedules.edit', 'class-schedules.show'], $canClassSchedules],
+                        ['Student Class Mgmt', 'bi-person-workspace', 'student-class-management.index', ['student-class-management.*'], $canStudentClassManagement],
+                        ['Exams', 'bi-journal-check', 'admin.exams.index', ['admin.exams.*'], $canExams],
+                    ],
+                ],
+                [
+                    'key' => 'courses',
+                    'title' => 'Courses',
+                    'icon' => 'bi-mortarboard-fill',
+                    'items' => [
+                        ['Courses', 'bi-mortarboard-fill', 'courses.index', ['courses.*'], $hasCourses && $isUser],
+                        ['Course Enrollment', 'bi-person-plus-fill', 'course-desk.enroll', ['course-desk.enroll'], $hasCourses && $isUser],
+                        ['Course Attendance', 'bi-person-check-fill', 'course-desk.attendance', ['course-desk.attendance'], $hasCourses && $isUser],
+                        ['Course Payment', 'bi-cash-coin', 'course-desk.payment', ['course-desk.payment'], $hasCourses && $isUser],
+                        ['Course Payments History', 'bi-receipt-cutoff', 'course-payments.index', ['course-payments.*'], $hasCourses && $isUser],
+                        ['Course Teacher Payments', 'bi-person-badge-fill', 'course-teacher-payments.index', ['course-teacher-payments.*'], $hasCourses && $isBranchAdmin],
+                        ['Course Reports', 'bi-bar-chart-fill', ['course-reports.show', 'daily'], ['course-reports.*'], $hasCourses && $isBranchAdmin],
+                    ],
+                ],
+                [
+                    'key' => 'staff',
+                    'title' => 'Staff & Salary',
+                    'icon' => 'bi-person-badge-fill',
+                    'items' => [
+                        ['Teachers', 'bi-person-badge-fill', 'teachers.index', ['teachers.*'], $canTeachers],
+                        ['Teacher Salaries', 'bi-cash-stack', 'teacher-salaries.index', ['teacher-salaries.*'], $canTeacherSalaries],
+                        ['Teacher Welfare', 'bi-heart-pulse', 'welfare.index', ['welfare.index'], $hasWelfare && $canTeacherSalaries],
+                        ['Welfare Fund', 'bi-piggy-bank', 'welfare.fund', ['welfare.fund*'], $hasWelfare && $canTeacherSalaries],
+                        ['Organizers', 'bi-calendar-check-fill', 'organizers.index', ['organizers.*'], $canOrganizers],
+                        ['Organizer Payments', 'bi-wallet2', 'admin.organizer-payments.index', ['admin.organizer-payments.*'], $canOrganizerPayments],
+                    ],
+                ],
+                [
+                    'key' => 'finance',
+                    'title' => 'Finance',
+                    'icon' => 'bi-wallet-fill',
+                    'items' => [
+                        ['Extra Incomes', 'bi-plus-circle-fill', 'admin.extra-incomes.index', ['admin.extra-incomes.*'], $canExtraIncomes],
+                        ['Institute Expenses', 'bi-dash-circle-fill', 'admin.institute-expenses.index', ['admin.institute-expenses.*'], $canInstituteExpenses],
+                        ['Institute Income', 'bi-bar-chart-line-fill', 'reports.institute-income.index', ['reports.institute-income.*'], $canInstituteIncome],
+                        ['Receipts', 'bi-receipt', 'receipts.index', ['receipts.*'], $canReceipts],
+                    ],
+                ],
+                [
+                    'key' => 'reports',
+                    'title' => 'Reports',
+                    'icon' => 'bi-file-earmark-bar-graph-fill',
+                    'items' => [
+                        ['Collection Report', 'bi-file-earmark-bar-graph', 'reports.daily-collection.index', ['reports.daily-collection.*'], $canDailyReport],
+                        ['Monthly Report', 'bi-file-earmark-bar-graph', 'monthly-report.index', ['monthly-report.*'], $canMonthlyReport],
+                        ['Teacher Collection', 'bi-file-earmark-person', 'reports.teacher-collection.index', ['reports.teacher-collection.*'], $canTeacherReport],
+                        ['Card Scan vs Manual', 'bi-qr-code-scan', 'reports.manual-attendance.index', ['reports.manual-attendance.*'], $canMonthlyClassAttendanceReport],
+                        ['Class Attendance', 'bi-calendar-check', 'admin.monthly-class-attendance-report.index', ['admin.monthly-class-attendance-report.*'], $canMonthlyClassAttendanceReport],
+                        ['Monthly Collection', 'bi-cash-stack', 'reports.monthly-collection.index', ['reports.monthly-collection.*'], $canPaymentCollectionReport],
+                        ['Branch-wise Collection', 'bi-diagram-3', 'reports.branch-collection.index', ['reports.branch-collection.*'], $canBranchCollectionReport],
+                        ['Annual Report', 'bi-calendar-range', 'reports.annual.index', ['reports.annual.*'], $canAnnualReport],
+                    ],
+                ],
+                [
+                    'key' => 'admin',
+                    'title' => 'Administration',
+                    'icon' => 'bi-gear-fill',
+                    'items' => [
+                        ['Branches', 'bi-diagram-3', 'branches.index', ['branches.*'], $canBranches],
+                        ['System Users', 'bi-people-fill', 'admin.system-users.index', ['admin.system-users.*'], $canSystemUsers],
+                        ['Users', 'bi-person-circle', 'admin.users.index', ['admin.users.*'], $canUsers],
+                        ['Close Batch (Grade)', 'bi-archive-fill', 'close-grade.index', ['close-grade.*'], $isAdmin],
+                        ['Promote Class', 'bi-arrow-up-circle-fill', 'class-promotions.index', ['class-promotions.*'], $isAdmin],
+                        ['Activities', 'bi-clock-history', 'admin.activity-logs.index', ['admin.activity-logs.*'], $canActivityLogs],
+                        ['Settings', 'bi-sliders2', 'admin.setting.index', ['admin.setting.*'], $isAdmin],
+                    ],
+                ],
+                [
+                    'key' => 'nexora',
+                    'title' => 'Nexora Admin',
+                    'icon' => 'bi-shield-lock-fill',
+                    'nexora' => true,
+                    'items' => [
+                        ['Payment & Attendance Rules', 'bi-sliders', 'payment-rules.index', ['payment-rules.*'], $isSuperAdmin],
+                        ['ID Card Designer', 'bi-person-badge', 'card-designer.index', ['card-designer.*'], $isSuperAdmin],
+                        ['Staff App QR', 'bi-qr-code', 'app-setup.index', ['app-setup.*'], $isSuperAdmin],
+                        ['App Feedback', 'bi-chat-square-heart', 'app-feedback.index', ['app-feedback.*'], $isSuperAdmin, $newFeedback],
+                        ['Database Backup', 'bi-database-fill', 'admin.setting.index', [], $isSuperAdmin, 0, '#backup'],
+                        ['Laravel Logs', 'bi-file-earmark-code', 'logs.laravel.index', ['logs.laravel.*'], $isSuperAdmin],
+                    ],
+                ],
+            ];
+
+            // Visible items only; a group with nothing visible is not shown
+            foreach ($menu as $g => $group) {
+                $menu[$g]['items'] = array_values(array_filter($group['items'], fn ($item) => (bool) $item[4]));
+                $menu[$g]['open'] = false;
+
+                foreach ($menu[$g]['items'] as $i => $item) {
+                    $isActive = $item[3] && request()->routeIs(...$item[3]);
+                    $menu[$g]['items'][$i]['active'] = $isActive;
+                    $menu[$g]['items'][$i]['url'] = (is_array($item[2]) ? route($item[2][0], $item[2][1]) : route($item[2])) . ($item[6] ?? '');
+                    $menu[$g]['items'][$i]['route'] = is_array($item[2]) ? $item[2][0] : $item[2];
+                    $menu[$g]['open'] = $menu[$g]['open'] || $isActive;
+                }
+            }
+            $menu = array_values(array_filter($menu, fn ($group) => count($group['items']) > 0));
+        @endphp
+
+        {{-- DASHBOARD + MENU SEARCH --}}
+        <div class="sidebar-section sidebar-top">
             @if ($canDashboard)
                 <div class="nav-item">
                     <button type="button" class="nav-link-custom {{ request()->routeIs('dashboard') ? 'active' : '' }}"
@@ -97,663 +257,41 @@
                 </div>
             @endif
 
-            @if ($canBranches ?? false)
-                <div class="nav-item">
-                    <button type="button"
-                        class="nav-link-custom {{ request()->routeIs('branches.index') ? 'active' : '' }}"
-                        data-route="branches.index" data-href="{{ route('branches.index') }}">
-                        <i class="bi bi-diagram-3"></i>
-                        <span>Branches</span>
-                    </button>
-                </div>
-            @endif
-
-            @if ($canTimetable)
-                <div class="nav-item">
-                    <button type="button"
-                        class="nav-link-custom {{ request()->routeIs('class-time-table.weekly') ? 'active' : '' }}"
-                        data-route="class-time-table.weekly" data-href="{{ route('class-time-table.weekly') }}">
-                        <i class="bi bi-calendar3"></i>
-                        <span>Timetable</span>
-                    </button>
-                </div>
-            @endif
-
-            @if ($canTodayClasses)
-                <div class="nav-item">
-                    <button type="button"
-                        class="nav-link-custom {{ request()->routeIs('class-schedules.todayClasses') ? 'active' : '' }}"
-                        data-route="class-schedules.todayClasses"
-                        data-href="{{ route('class-schedules.todayClasses') }}">
-                        <i class="bi bi-calendar2-check-fill"></i>
-                        <span>Today's Classes</span>
-                    </button>
-                </div>
-            @endif
+            <div class="sidebar-search">
+                <i class="bi bi-search"></i>
+                <input type="search" id="sidebarSearch" placeholder="Search menu..." autocomplete="off"
+                    aria-label="Search menu">
+            </div>
         </div>
 
+        {{-- MENU GROUPS --}}
+        @foreach ($menu as $group)
+            <div class="sidebar-group {{ $group['open'] ? 'is-open' : '' }} {{ !empty($group['nexora']) ? 'is-nexora' : '' }}"
+                data-group="{{ $group['key'] }}">
+                <button type="button" class="sidebar-group-toggle" aria-expanded="{{ $group['open'] ? 'true' : 'false' }}">
+                    <i class="bi {{ $group['icon'] }}"></i>
+                    <span>{{ $group['title'] }}</span>
+                    <i class="bi bi-chevron-down sidebar-group-caret"></i>
+                </button>
 
-        <div class="sidebar-section">
-            <div class="sidebar-section-title">STUDENT SERVICES</div>
-
-            @if ($canAttendance)
-                <div class="nav-item">
-                    <button type="button"
-                        class="nav-link-custom {{ request()->routeIs('new-attendance.index') ? 'active' : '' }}"
-                        data-route="new-attendance.index" data-href="{{ route('new-attendance.index') }}">
-                        <i class="bi bi-calendar2-check-fill"></i>
-                        <span>Attendance</span>
-                    </button>
+                <div class="sidebar-group-items">
+                    @foreach ($group['items'] as $item)
+                        <div class="nav-item" data-label="{{ strtolower($item[0]) }}">
+                            <button type="button" class="nav-link-custom {{ $item['active'] ? 'active' : '' }}"
+                                data-route="{{ $item['route'] }}" data-href="{{ $item['url'] }}">
+                                <i class="bi {{ $item[1] }}"></i>
+                                <span>{{ $item[0] }}</span>
+                                @if (!empty($item[5]))
+                                    <span class="badge bg-danger ms-auto">{{ $item[5] }}</span>
+                                @endif
+                            </button>
+                        </div>
+                    @endforeach
                 </div>
-            @endif
+            </div>
+        @endforeach
 
-            @if ($canPayments)
-                <div class="nav-item">
-                    <button type="button"
-                        class="nav-link-custom {{ request()->routeIs('new-payment.index') ? 'active' : '' }}"
-                        data-route="new-payment.index" data-href="{{ route('new-payment.index') }}">
-                        <i class="bi bi-credit-card-fill"></i>
-                        <span>Payments</span>
-                    </button>
-                </div>
-            @endif
-
-            @if ($canPaymentHistory)
-                <div class="nav-item">
-                    <button type="button"
-                        class="nav-link-custom {{ request()->routeIs('payments.*') ? 'active' : '' }}"
-                        data-route="payments.index" data-href="{{ route('payments.index') }}">
-                        <i class="bi bi-piggy-bank-fill"></i>
-                        <span>Payments History</span>
-                    </button>
-                </div>
-            @endif
-        </div>
-
-
-        <!-- MANAGEMENT -->
-        <div class="sidebar-section">
-            <div class="sidebar-section-title">MANAGEMENT</div>
-
-            @if ($canStudents)
-                <div class="nav-item">
-                    <button type="button"
-                        class="nav-link-custom {{ request()->routeIs('students.*') ? 'active' : '' }}"
-                        data-route="students.index" data-href="{{ route('students.index') }}">
-                        <i class="bi bi-people-fill"></i>
-                        <span>Students</span>
-                    </button>
-                </div>
-            @endif
-
-            @if ($isSuperAdmin)
-                <div class="nav-item">
-                    <button type="button"
-                        class="nav-link-custom {{ request()->routeIs('app-feedback.*') ? 'active' : '' }}"
-                        data-route="app-feedback.index" data-href="{{ route('app-feedback.index') }}">
-                        <i class="bi bi-chat-square-heart"></i>
-                        <span>App Feedback</span>
-                        @php
-                            $newFeedback = \Illuminate\Support\Facades\Schema::hasTable('app_feedback')
-                                ? \App\Models\AppFeedback::query()->where('status', 'new')->count()
-                                : 0;
-                        @endphp
-                        @if ($newFeedback)<span class="badge bg-danger ms-auto">{{ $newFeedback }}</span>@endif
-                    </button>
-                </div>
-            @endif
-
-            @if ($isTeacher)
-                <div class="nav-item">
-                    <button type="button"
-                        class="nav-link-custom {{ request()->routeIs('disabled-students.*') ? 'active' : '' }}"
-                        data-route="disabled-students.index" data-href="{{ route('disabled-students.index') }}">
-                        <i class="bi bi-person-slash"></i>
-                        <span>Disabled Students</span>
-                    </button>
-                </div>
-            @endif
-
-            @if ($canTeachers)
-                <div class="nav-item">
-                    <button type="button"
-                        class="nav-link-custom {{ request()->routeIs('teachers.*') ? 'active' : '' }}"
-                        data-route="teachers.index" data-href="{{ route('teachers.index') }}">
-                        <i class="bi bi-person-badge-fill"></i>
-                        <span>Teachers</span>
-                    </button>
-                </div>
-            @endif
-
-            @if ($canOrganizers)
-                <div class="nav-item">
-                    <button type="button"
-                        class="nav-link-custom {{ request()->routeIs('organizers.*') ? 'active' : '' }}"
-                        data-route="organizers.index" data-href="{{ route('organizers.index') }}">
-                        <i class="bi bi-calendar-check-fill"></i>
-                        <span>Organizers</span>
-                    </button>
-                </div>
-            @endif
-
-            @if ($canStudentClassManagement)
-                <div class="nav-item">
-                    <button type="button"
-                        class="nav-link-custom {{ request()->routeIs('student-class-management.*') ? 'active' : '' }}"
-                        data-route="student-class-management.index"
-                        data-href="{{ route('student-class-management.index') }}">
-                        <i class="bi bi-person-workspace"></i>
-                        <span>Student Class Mgmt</span>
-                    </button>
-                </div>
-            @endif
-
-            @if ($canSystemUsers)
-                <div class="nav-item">
-                    <button type="button"
-                        class="nav-link-custom {{ request()->routeIs('admin.system-users.*') ? 'active' : '' }}"
-                        data-route="admin.system-users.index" data-href="{{ route('admin.system-users.index') }}">
-                        <i class="bi bi-people-fill"></i>
-                        <span>System User</span>
-                    </button>
-                </div>
-            @endif
-
-            @if ($canUsers)
-                <div class="nav-item">
-                    <button type="button"
-                        class="nav-link-custom {{ request()->routeIs('admin.users.*') ? 'active' : '' }}"
-                        data-route="admin.users.index" data-href="{{ route('admin.users.index') }}">
-                        <i class="bi bi-person-circle"></i>
-                        <span>Users</span>
-                    </button>
-                </div>
-            @endif
-        </div>
-
-
-        <div class="sidebar-section">
-            <div class="sidebar-section-title">STUDENT SERVICES</div>
-
-            @if ($canStudentImages)
-                <div class="nav-item">
-                    <button type="button"
-                        class="nav-link-custom {{ request()->routeIs('admin.student-images.*') ? 'active' : '' }}"
-                        data-route="admin.student-images.index" data-href="{{ route('admin.student-images.index') }}">
-                        <i class="bi bi-images"></i>
-                        <span>Student Images</span>
-                    </button>
-                </div>
-            @endif
-
-            @if ($canStudentCards)
-                <div class="nav-item">
-                    <button type="button"
-                        class="nav-link-custom {{ request()->routeIs('student-cards.*') ? 'active' : '' }}"
-                        data-route="student-cards.index" data-href="{{ route('student-cards.index') }}">
-                        <i class="bi bi-person-vcard-fill"></i>
-                        <span>Student Cards</span>
-                    </button>
-                </div>
-            @endif
-
-            @if ($canTemporaryIdCards)
-                <div class="nav-item">
-                    <button type="button"
-                        class="nav-link-custom {{ request()->routeIs('temporary_id_cards.*') ? 'active' : '' }}"
-                        data-route="temporary_id_cards.index" data-href="{{ route('temporary_id_cards.index') }}">
-                        <i class="bi bi-person-vcard-fill"></i>
-                        <span>Temporary Cards</span>
-                    </button>
-                </div>
-            @endif
-
-            @if ($canGenerateStudentId)
-                <div class="nav-item">
-                    <button type="button"
-                        class="nav-link-custom {{ request()->routeIs('generate-student-id.*') ? 'active' : '' }}"
-                        data-route="generate-student-id.index" data-href="{{ route('generate-student-id.index') }}">
-                        <i class="bi bi-person-vcard-fill"></i>
-                        <span>Generate Student ID</span>
-                    </button>
-                </div>
-            @endif
-        </div>
-
-
-        <!-- ACADEMIC -->
-        <div class="sidebar-section">
-            <div class="sidebar-section-title">ACADEMIC</div>
-
-            @if ($canStudentClasses)
-                <div class="nav-item">
-                    <button type="button"
-                        class="nav-link-custom {{ request()->routeIs('student-classes.*') ? 'active' : '' }}"
-                        data-route="student-classes.index" data-href="{{ route('student-classes.index') }}">
-                        <i class="bi bi-book-fill"></i>
-                        <span>Classes</span>
-                    </button>
-                </div>
-            @endif
-
-            @if ($canClassSchedules)
-                <div class="nav-item">
-                    <button type="button"
-                        class="nav-link-custom {{ request()->routeIs('class-schedules.*') ? 'active' : '' }}"
-                        data-route="class-schedules.index" data-href="{{ route('class-schedules.index') }}">
-                        <i class="bi bi-calendar-event-fill"></i>
-                        <span>Class Schedule</span>
-                    </button>
-                </div>
-            @endif
-
-            @if ($canEnrollments)
-                <div class="nav-item">
-                    <button type="button"
-                        class="nav-link-custom {{ request()->routeIs('student-class-enrollments.*') ? 'active' : '' }}"
-                        data-route="student-class-enrollments.index"
-                        data-href="{{ route('student-class-enrollments.index') }}">
-                        <i class="bi bi-pencil-square"></i>
-                        <span>Enrollments</span>
-                    </button>
-                </div>
-            @endif
-
-            @if ($isAdmin)
-                @if ($isSuperAdmin)
-                    <div class="nav-item">
-                        <button type="button"
-                            class="nav-link-custom {{ request()->routeIs('payment-rules.*') ? 'active' : '' }}"
-                            data-route="payment-rules.index" data-href="{{ route('payment-rules.index') }}">
-                            <i class="bi bi-sliders"></i>
-                            <span>Payment &amp; Attendance Rules</span>
-                        </button>
-                    </div>
-                    <div class="nav-item">
-                        <button type="button"
-                            class="nav-link-custom {{ request()->routeIs('card-designer.*') ? 'active' : '' }}"
-                            data-route="card-designer.index" data-href="{{ route('card-designer.index') }}">
-                            <i class="bi bi-person-badge"></i>
-                            <span>ID Card Designer</span>
-                        </button>
-                    </div>
-                @endif
-                <div class="nav-item">
-                    <button type="button"
-                        class="nav-link-custom {{ request()->routeIs('app-setup.*') ? 'active' : '' }}"
-                        data-route="app-setup.index" data-href="{{ route('app-setup.index') }}">
-                        <i class="bi bi-qr-code"></i>
-                        <span>Staff App QR</span>
-                    </button>
-                </div>
-                <div class="nav-item">
-                    <button type="button"
-                        class="nav-link-custom {{ request()->routeIs('close-grade.*') ? 'active' : '' }}"
-                        data-route="close-grade.index" data-href="{{ route('close-grade.index') }}">
-                        <i class="bi bi-archive-fill"></i>
-                        <span>Close Batch (Grade)</span>
-                    </button>
-                </div>
-                <div class="nav-item">
-                    <button type="button"
-                        class="nav-link-custom {{ request()->routeIs('class-promotions.*') ? 'active' : '' }}"
-                        data-route="class-promotions.index" data-href="{{ route('class-promotions.index') }}">
-                        <i class="bi bi-arrow-up-circle-fill"></i>
-                        <span>Promote Class</span>
-                    </button>
-                </div>
-            @endif
-        </div>
-
-
-        <!-- COURSES (feature "courses": only institutes that have it) -->
-        @feature('courses')
-            @if ($isUser)
-                <div class="sidebar-section">
-                    <div class="sidebar-section-title">COURSES</div>
-
-                    <div class="nav-item">
-                        <button type="button"
-                            class="nav-link-custom {{ request()->routeIs('courses.*') ? 'active' : '' }}"
-                            data-route="courses.index" data-href="{{ route('courses.index') }}">
-                            <i class="bi bi-mortarboard-fill"></i>
-                            <span>Courses</span>
-                        </button>
-                    </div>
-                    <div class="nav-item">
-                        <button type="button"
-                            class="nav-link-custom {{ request()->routeIs('course-desk.enroll') ? 'active' : '' }}"
-                            data-route="course-desk.enroll" data-href="{{ route('course-desk.enroll') }}">
-                            <i class="bi bi-person-plus-fill"></i>
-                            <span>Course Enrollment</span>
-                        </button>
-                    </div>
-                    <div class="nav-item">
-                        <button type="button"
-                            class="nav-link-custom {{ request()->routeIs('course-desk.attendance') ? 'active' : '' }}"
-                            data-route="course-desk.attendance" data-href="{{ route('course-desk.attendance') }}">
-                            <i class="bi bi-person-check-fill"></i>
-                            <span>Course Attendance</span>
-                        </button>
-                    </div>
-                    <div class="nav-item">
-                        <button type="button"
-                            class="nav-link-custom {{ request()->routeIs('course-desk.payment') ? 'active' : '' }}"
-                            data-route="course-desk.payment" data-href="{{ route('course-desk.payment') }}">
-                            <i class="bi bi-cash-coin"></i>
-                            <span>Course Payment</span>
-                        </button>
-                    </div>
-                    <div class="nav-item">
-                        <button type="button"
-                            class="nav-link-custom {{ request()->routeIs('course-payments.*') ? 'active' : '' }}"
-                            data-route="course-payments.index" data-href="{{ route('course-payments.index') }}">
-                            <i class="bi bi-receipt-cutoff"></i>
-                            <span>Course Payments History</span>
-                        </button>
-                    </div>
-
-                    @if ($isBranchAdmin)
-                    <div class="nav-item">
-                        <button type="button"
-                            class="nav-link-custom {{ request()->routeIs('course-teacher-payments.*') ? 'active' : '' }}"
-                            data-route="course-teacher-payments.index" data-href="{{ route('course-teacher-payments.index') }}">
-                            <i class="bi bi-person-badge-fill"></i>
-                            <span>Course Teacher Payments</span>
-                        </button>
-                    </div>
-                    <div class="nav-item">
-                        <button type="button"
-                            class="nav-link-custom {{ request()->routeIs('course-reports.*') ? 'active' : '' }}"
-                            data-route="course-reports.show" data-href="{{ route('course-reports.show', "daily") }}">
-                            <i class="bi bi-bar-chart-fill"></i>
-                            <span>Course Reports</span>
-                        </button>
-                    </div>
-                    @endif
-                </div>
-            @endif
-        @endfeature
-
-
-        <!-- EXAM -->
-        <div class="sidebar-section">
-            <div class="sidebar-section-title">EXAM</div>
-
-            @if ($canExams)
-                <div class="nav-item">
-                    <button type="button"
-                        class="nav-link-custom {{ request()->routeIs('admin.exams.*') ? 'active' : '' }}"
-                        data-route="admin.exams.index" data-href="{{ route('admin.exams.index') }}">
-                        <i class="bi bi-calendar-check"></i>
-                        <span>All Exams</span>
-                    </button>
-                </div>
-            @endif
-        </div>
-
-
-        <!-- STUDENT FINANCE -->
-        <div class="sidebar-section">
-            <div class="sidebar-section-title">STUDENT FINANCE</div>
-
-            @if ($canPayments)
-                <div class="nav-item">
-                    <button type="button"
-                        class="nav-link-custom {{ request()->routeIs('admissions.*') ? 'active' : '' }}"
-                        data-route="admissions.index" data-href="{{ route('admissions.index') }}">
-                        <i class="bi bi-credit-card-fill"></i>
-                        <span>Admissions</span>
-                    </button>
-                </div>
-            @endif
-
-            @if ($canPayments)
-                <div class="nav-item">
-                    <button type="button"
-                        class="nav-link-custom {{ request()->routeIs('admission-payments.*') ? 'active' : '' }}"
-                        data-route="admission-payments.index" data-href="{{ route('admission-payments.index') }}">
-                        <i class="bi bi-credit-card-fill"></i>
-                        <span>Admissions Payments</span>
-                    </button>
-                </div>
-            @endif
-
-            @if ($canPaymentReminder)
-                <div class="nav-item">
-                    <button type="button"
-                        class="nav-link-custom {{ request()->routeIs('payment-reminder.*') ? 'active' : '' }}"
-                        data-route="payment-reminder.index" data-href="{{ route('payment-reminder.index') }}">
-                        <i class="bi bi-bell-fill"></i>
-                        <span>Payment Reminder</span>
-                    </button>
-                </div>
-            @endif
-        </div>
-
-
-        <!-- INSTITUTE FINANCE -->
-        <div class="sidebar-section">
-            <div class="sidebar-section-title">INSTITUTE FINANCE</div>
-
-            @if ($canTeacherSalaries)
-                <div class="nav-item">
-                    <button type="button"
-                        class="nav-link-custom {{ request()->routeIs('teacher-salaries.*') ? 'active' : '' }}"
-                        data-route="teacher-salaries.index" data-href="{{ route('teacher-salaries.index') }}">
-                        <i class="bi bi-cash-stack"></i>
-                        <span>Teacher Salaries</span>
-                    </button>
-                </div>
-                @feature('welfare')
-                    <div class="nav-item">
-                        <button type="button"
-                            class="nav-link-custom {{ request()->routeIs('welfare.index') ? 'active' : '' }}"
-                            data-route="welfare.index" data-href="{{ route('welfare.index') }}">
-                            <i class="bi bi-heart-pulse"></i>
-                            <span>Teacher Welfare</span>
-                        </button>
-                    </div>
-                    <div class="nav-item">
-                        <button type="button"
-                            class="nav-link-custom {{ request()->routeIs('welfare.fund*') ? 'active' : '' }}"
-                            data-route="welfare.fund" data-href="{{ route('welfare.fund') }}">
-                            <i class="bi bi-piggy-bank"></i>
-                            <span>Welfare Fund</span>
-                        </button>
-                    </div>
-                @endfeature
-            @endif
-
-            @if ($canOrganizerPayments)
-                <div class="nav-item">
-                    <button type="button"
-                        class="nav-link-custom {{ request()->routeIs('admin.organizer-payments.index') ? 'active' : '' }}"
-                        data-route="admin.organizer-payments.index"
-                        data-href="{{ route('admin.organizer-payments.index') }}">
-                        <i class="bi bi-wallet2"></i>
-                        <span>Organizer Payments</span>
-                    </button>
-                </div>
-            @endif
-
-            @if ($canExtraIncomes)
-                <div class="nav-item">
-                    <button type="button"
-                        class="nav-link-custom {{ request()->routeIs('admin.extra-incomes.*') ? 'active' : '' }}"
-                        data-route="admin.extra-incomes.index" data-href="{{ route('admin.extra-incomes.index') }}">
-                        <i class="bi bi-cash-coin"></i>
-                        <span>Extra Incomes</span>
-                    </button>
-                </div>
-            @endif
-
-            @if ($canInstituteExpenses)
-                <div class="nav-item">
-                    <button type="button"
-                        class="nav-link-custom {{ request()->routeIs('admin.institute-expenses.*') ? 'active' : '' }}"
-                        data-route="admin.institute-expenses.index"
-                        data-href="{{ route('admin.institute-expenses.index') }}">
-                        <i class="bi bi-cash-coin"></i>
-                        <span>Institute Expenses</span>
-                    </button>
-                </div>
-            @endif
-
-            @if ($canInstituteIncome)
-                <div class="nav-item">
-                    <button type="button"
-                        class="nav-link-custom {{ request()->routeIs('reports.institute-income.*') ? 'active' : '' }}"
-                        data-route="reports.institute-income.index"
-                        data-href="{{ route('reports.institute-income.index') }}">
-                        <i class="bi bi-bar-chart-line-fill"></i>
-                        <span>Institute Income</span>
-                    </button>
-                </div>
-            @endif
-        </div>
-
-
-        <!-- RECEIPTS -->
-        <div class="sidebar-section">
-            <div class="sidebar-section-title">RECEIPTS</div>
-
-            @if ($canReceipts)
-                <div class="nav-item">
-                    <button type="button"
-                        class="nav-link-custom {{ request()->routeIs('receipts.*') ? 'active' : '' }}"
-                        data-route="receipts.index" data-href="{{ route('receipts.index') }}">
-                        <i class="bi bi-file-earmark-person"></i>
-                        <span>Receipts</span>
-                    </button>
-                </div>
-            @endif
-        </div>
-
-
-        <!-- REPORTS -->
-        <div class="sidebar-section">
-            <div class="sidebar-section-title">REPORTS</div>
-
-            @if ($canDailyReport)
-                <div class="nav-item">
-                    <button type="button"
-                        class="nav-link-custom {{ request()->routeIs('reports.daily-collection.*') ? 'active' : '' }}"
-                        data-route="reports.daily-collection.index"
-                        data-href="{{ route('reports.daily-collection.index') }}">
-                        <i class="bi bi-file-earmark-bar-graph"></i>
-                        <span>Collection Report</span>
-                    </button>
-                </div>
-            @endif
-
-            @if ($canMonthlyReport)
-                <div class="nav-item">
-                    <button type="button"
-                        class="nav-link-custom {{ request()->routeIs('monthly-report.*') ? 'active' : '' }}"
-                        data-route="monthly-report.index" data-href="{{ route('monthly-report.index') }}">
-                        <i class="bi bi-file-earmark-bar-graph"></i>
-                        <span>Monthly Report</span>
-                    </button>
-                </div>
-            @endif
-
-            @if ($canTeacherReport)
-                <div class="nav-item">
-                    <button type="button"
-                        class="nav-link-custom {{ request()->routeIs('reports.teacher-collection.*') ? 'active' : '' }}"
-                        data-route="reports.teacher-collection.index"
-                        data-href="{{ route('reports.teacher-collection.index') }}">
-                        <i class="bi bi-file-earmark-person"></i>
-                        <span>Teacher Collection</span>
-                    </button>
-                </div>
-            @endif
-
-            @if ($canMonthlyClassAttendanceReport)
-                <div class="nav-item">
-                    <button type="button"
-                        class="nav-link-custom {{ request()->routeIs('reports.manual-attendance.*') ? 'active' : '' }}"
-                        data-route="reports.manual-attendance.index"
-                        data-href="{{ route('reports.manual-attendance.index') }}">
-                        <i class="bi bi-qr-code-scan"></i>
-                        <span>Card Scan vs Manual</span>
-                    </button>
-                </div>
-            @endif
-
-            @if ($canMonthlyClassAttendanceReport)
-                <div class="nav-item">
-                    <button type="button"
-                        class="nav-link-custom {{ request()->routeIs('admin.monthly-class-attendance-report.*') ? 'active' : '' }}"
-                        data-route="admin.monthly-class-attendance-report.index"
-                        data-href="{{ route('admin.monthly-class-attendance-report.index') }}">
-                        <i class="bi bi-calendar-check"></i>
-                        <span>Monthly Class Attendance Report</span>
-                    </button>
-                </div>
-            @endif
-
-            @if ($canPaymentCollectionReport)
-                <div class="nav-item">
-                    <button type="button"
-                        class="nav-link-custom {{ request()->routeIs('reports.monthly-collection.*') ? 'active' : '' }}"
-                        data-route="reports.monthly-collection.index"
-                        data-href="{{ route('reports.monthly-collection.index') }}">
-                        <i class="bi bi-cash-stack"></i>
-                        <span>Monthly Collection</span>
-                    </button>
-                </div>
-            @endif
-            @if ($canBranchCollectionReport)
-                <div class="nav-item">
-                    <button type="button"
-                        class="nav-link-custom {{ request()->routeIs('reports.branch-collection.*') ? 'active' : '' }}"
-                        data-route="reports.branch-collection.index"
-                        data-href="{{ route('reports.branch-collection.index') }}">
-                        <i class="bi bi-diagram-3"></i>
-                        <span>Branch-wise Collection</span>
-                    </button>
-                </div>
-            @endif
-            @if ($canAnnualReport)
-                <div class="nav-item">
-                    <button type="button"
-                        class="nav-link-custom {{ request()->routeIs('reports.annual.*') ? 'active' : '' }}"
-                        data-route="reports.annual.index" data-href="{{ route('reports.annual.index') }}">
-                        <i class="bi bi-calendar-range"></i>
-                        <span>Annual Report</span>
-                    </button>
-                </div>
-            @endif
-        </div>
-
-
-        <div class="sidebar-section">
-            <div class="sidebar-section-title">RECENT ACTIVITIES</div>
-
-            @if ($canActivityLogs)
-                <div class="nav-item">
-                    <button type="button"
-                        class="nav-link-custom {{ request()->routeIs('admin.activity-logs.*') ? 'active' : '' }}"
-                        data-route="admin.activity-logs.index" data-href="{{ route('admin.activity-logs.index') }}">
-                        <i class="bi bi-file-earmark-text"></i>
-                        <span>Activities</span>
-                    </button>
-                </div>
-            @endif
-
-            @if ($isSuperAdmin)
-                <div class="nav-item">
-                    <button type="button"
-                        class="nav-link-custom {{ request()->routeIs('admin.logs.laravel.*') ? 'active' : '' }}"
-                        data-route="admin.logs.laravel.index" data-href="{{ route('logs.laravel.index') }}">
-                        <i class="bi bi-file-earmark-text"></i>
-                        <span>Laravel Logs</span>
-                    </button>
-                </div>
-            @endif
-        </div>
+        <div class="sidebar-search-empty" id="sidebarSearchEmpty">No menu found</div>
 
     </div>
 
@@ -928,6 +466,134 @@
         color: #fff;
     }
 
+    /* ---------- MENU SEARCH ---------- */
+    .sidebar-top {
+        margin-bottom: 1rem;
+    }
+
+    .sidebar-search {
+        position: relative;
+        margin-top: 0.6rem;
+    }
+
+    .sidebar-search i {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--nx-sidebar-title);
+        font-size: 0.85rem;
+    }
+
+    .sidebar-search input {
+        width: 100%;
+        padding: 0.55rem 0.8rem 0.55rem 2.1rem;
+        border-radius: var(--nx-sidebar-radius);
+        border: 1px solid rgba(255, 255, 255, .08);
+        background: rgba(255, 255, 255, .05);
+        color: #fff;
+        font-size: 0.85rem;
+        outline: none;
+    }
+
+    .sidebar-search input::placeholder {
+        color: var(--nx-sidebar-title);
+    }
+
+    .sidebar-search input:focus {
+        border-color: var(--nx-sidebar-active);
+        background: rgba(255, 255, 255, .08);
+    }
+
+    .sidebar-search-empty {
+        display: none;
+        color: var(--nx-sidebar-title);
+        font-size: 0.82rem;
+        padding: 0.5rem 0.9rem;
+    }
+
+    /* ---------- MENU GROUPS (open / close) ---------- */
+    .sidebar-group {
+        margin-bottom: 0.35rem;
+    }
+
+    .sidebar-group-toggle {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        width: 100%;
+        padding: 0.6rem 0.9rem;
+        border: none;
+        border-radius: var(--nx-sidebar-radius);
+        background: none;
+        color: var(--nx-sidebar-title);
+        font-family: inherit;
+        font-size: 0.74rem;
+        font-weight: 700;
+        letter-spacing: .8px;
+        text-transform: uppercase;
+        text-align: left;
+        cursor: pointer;
+        transition: background-color .15s ease, color .15s ease;
+    }
+
+    .sidebar-group-toggle:hover {
+        background: rgba(255, 255, 255, 0.04);
+        color: var(--nx-sidebar-text-hover);
+    }
+
+    .sidebar-group-toggle > i:first-child {
+        font-size: 0.95rem;
+        width: 22px;
+        flex-shrink: 0;
+    }
+
+    .sidebar-group-caret {
+        margin-left: auto;
+        font-size: 0.75rem;
+        transition: transform .2s ease;
+    }
+
+    .sidebar-group.is-open > .sidebar-group-toggle {
+        color: var(--nx-sidebar-text-hover);
+    }
+
+    .sidebar-group.is-open .sidebar-group-caret {
+        transform: rotate(180deg);
+    }
+
+    .sidebar-group-items {
+        display: none;
+        padding: 0.15rem 0 0.4rem 0.6rem;
+        margin-left: 1.15rem;
+        border-left: 1px solid rgba(255, 255, 255, .08);
+    }
+
+    .sidebar-group.is-open > .sidebar-group-items {
+        display: block;
+    }
+
+    .sidebar-group-items .nav-link-custom {
+        padding: 0.55rem 0.8rem;
+        font-size: 0.85rem;
+        gap: 12px;
+    }
+
+    .sidebar-group-items .nav-link-custom i {
+        font-size: 1rem;
+    }
+
+    /* Super Admin only group */
+    .sidebar-group.is-nexora {
+        margin-top: 0.9rem;
+        padding-top: 0.9rem;
+        border-top: 1px solid rgba(255, 255, 255, .08);
+    }
+
+    .sidebar-group.is-nexora > .sidebar-group-toggle {
+        color: #fbbf24;
+    }
+
     /* ---------- MOBILE ---------- */
     @media (max-width: 991px) {
         .sidebar {
@@ -1023,6 +689,103 @@
                 if (dashboardUrl && dashboardUrl !== '#') {
                     window.location.href = dashboardUrl;
                 }
+            });
+        }
+
+        // ---------- Menu groups: open / close (kept for this tab) ----------
+        const GROUPS_KEY = 'nexora_sidebar_groups';
+        const groups = document.querySelectorAll('#sidebar .sidebar-group');
+
+        function readOpenGroups() {
+            try {
+                return JSON.parse(sessionStorage.getItem(GROUPS_KEY) || 'null');
+            } catch (e) {
+                return null;
+            }
+        }
+
+        function saveOpenGroups() {
+            try {
+                const open = Array.from(groups)
+                    .filter(function(g) { return g.classList.contains('is-open'); })
+                    .map(function(g) { return g.getAttribute('data-group'); });
+                sessionStorage.setItem(GROUPS_KEY, JSON.stringify(open));
+            } catch (e) {}
+        }
+
+        function setOpen(group, open) {
+            group.classList.toggle('is-open', open);
+            const toggle = group.querySelector('.sidebar-group-toggle');
+            if (toggle) toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+        }
+
+        // groups the user opened before stay open; the current page's group is always open
+        const savedOpen = readOpenGroups();
+        if (Array.isArray(savedOpen)) {
+            groups.forEach(function(group) {
+                if (savedOpen.indexOf(group.getAttribute('data-group')) !== -1) {
+                    setOpen(group, true);
+                }
+            });
+        }
+
+        groups.forEach(function(group) {
+            const toggle = group.querySelector('.sidebar-group-toggle');
+            if (!toggle) return;
+
+            toggle.addEventListener('click', function() {
+                setOpen(group, !group.classList.contains('is-open'));
+                saveOpenGroups();
+            });
+        });
+
+        // ---------- Menu search ----------
+        const search = document.getElementById('sidebarSearch');
+        const searchEmpty = document.getElementById('sidebarSearchEmpty');
+        let openBeforeSearch = null;
+
+        if (search) {
+            search.addEventListener('input', function() {
+                const query = this.value.trim().toLowerCase();
+
+                if (query !== '' && openBeforeSearch === null) {
+                    openBeforeSearch = Array.from(groups).map(function(g) {
+                        return g.classList.contains('is-open');
+                    });
+                }
+
+                let found = 0;
+
+                groups.forEach(function(group, index) {
+                    let groupHits = 0;
+
+                    group.querySelectorAll('.nav-item').forEach(function(item) {
+                        const hit = query === '' || (item.getAttribute('data-label') || '').indexOf(query) !== -1;
+                        item.style.display = hit ? '' : 'none';
+                        if (hit) groupHits++;
+                    });
+
+                    if (query === '') {
+                        group.style.display = '';
+                        setOpen(group, openBeforeSearch ? openBeforeSearch[index] : group.classList.contains('is-open'));
+                    } else {
+                        group.style.display = groupHits ? '' : 'none';
+                        setOpen(group, groupHits > 0);
+                    }
+
+                    found += groupHits;
+                });
+
+                if (query === '') openBeforeSearch = null;
+                if (searchEmpty) searchEmpty.style.display = query !== '' && found === 0 ? 'block' : 'none';
+            });
+
+            // Enter opens the first match
+            search.addEventListener('keydown', function(e) {
+                if (e.key !== 'Enter') return;
+                const first = Array.from(document.querySelectorAll('#sidebar .sidebar-group .nav-item'))
+                    .find(function(item) { return item.style.display !== 'none'; });
+                if (first) first.querySelector('.nav-link-custom').click();
             });
         }
 
