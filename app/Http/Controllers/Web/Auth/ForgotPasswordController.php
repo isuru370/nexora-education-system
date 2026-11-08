@@ -13,11 +13,39 @@ use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\RateLimiter;
 use Throwable;
 
+/**
+ * Forgot password: email -> 6-digit OTP (10 min) -> new password.
+ *
+ * The step is kept in the session (reset_email, otp_verified_email), so a
+ * wrong OTP or a password mismatch stays on the same step. 5 wrong OTPs
+ * cancel the code. The new password can be set only from the browser that
+ * verified the OTP. After a reset the user's app logins (API tokens) end.
+ */
 class ForgotPasswordController extends Controller
 {
-    public function index()
+    /** Wrong OTP tries before the code is cancelled. */
+    public const MAX_OTP_ATTEMPTS = 5;
+
+    public function index(Request $request)
     {
+        // "Start again"
+        if ($request->boolean('restart')) {
+            $this->clearFlow($request);
+
+            return redirect()->route('forgot_password.form');
+        }
+
         return view('forgot-password.index');
+    }
+
+    protected function clearFlow(Request $request): void
+    {
+        $request->session()->forget(['reset_email', 'otp_verified_email']);
+    }
+
+    protected function otpAttemptsKey(string $email): string
+    {
+        return 'password-reset-verify:' . $email;
     }
 
     public function sendOtp(Request $request)
@@ -56,12 +84,13 @@ class ForgotPasswordController extends Controller
 
             Mail::to($user->email)->send(new PasswordResetMail($otp, $user->name));
 
+            RateLimiter::clear($this->otpAttemptsKey($email));
+            $request->session()->put('reset_email', $email);
+            $request->session()->forget('otp_verified_email');
+
             return redirect()
                 ->route('forgot_password.form')
-                ->with([
-                    'success' => 'OTP has been sent to your email address.',
-                    'reset_email' => $email,
-                ]);
+                ->with('success', 'OTP has been sent to your email address.');
         } catch (Throwable $e) {
             Log::error('Password reset OTP send failed', [
                 'email' => $email,
@@ -102,23 +131,42 @@ class ForgotPasswordController extends Controller
                     ->withInput();
             }
 
-            if (!Hash::check($request->otp, $record->otp)) {
+            $attemptsKey = $this->otpAttemptsKey($email);
+
+            if (RateLimiter::tooManyAttempts($attemptsKey, self::MAX_OTP_ATTEMPTS)) {
+                $record->delete();
+
                 return back()
-                    ->withErrors(['otp' => 'Invalid OTP.'])
-                    ->withInput();
+                    ->withErrors(['otp' => 'Too many wrong OTPs. Please request a new OTP.']);
             }
+
+            if (!Hash::check($request->otp, $record->otp)) {
+                RateLimiter::hit($attemptsKey, 600);
+                $left = self::MAX_OTP_ATTEMPTS - RateLimiter::attempts($attemptsKey);
+
+                if ($left <= 0) {
+                    $record->delete();
+
+                    return back()
+                        ->withErrors(['otp' => 'Too many wrong OTPs. Please request a new OTP.']);
+                }
+
+                return back()
+                    ->withErrors(['otp' => "Invalid OTP. {$left} " . ($left === 1 ? 'try' : 'tries') . ' left.']);
+            }
+
+            RateLimiter::clear($attemptsKey);
 
             $record->update([
                 'verified_at' => now(),
             ]);
 
+            $request->session()->put('reset_email', $email);
+            $request->session()->put('otp_verified_email', $email);
+
             return redirect()
                 ->route('forgot_password.form')
-                ->with([
-                    'success' => 'OTP verified successfully.',
-                    'reset_email' => $email,
-                    'otp_verified_email' => $email,
-                ]);
+                ->with('success', 'OTP verified successfully.');
         } catch (Throwable $e) {
             Log::error('OTP verification failed', [
                 'email' => $email,
@@ -138,6 +186,17 @@ class ForgotPasswordController extends Controller
         ]);
 
         $email = strtolower(trim($request->email));
+        $rateKey = 'password-reset-send:' . $email;
+
+        // same limit as "Send OTP": 3 emails in 10 minutes
+        if (RateLimiter::tooManyAttempts($rateKey, 3)) {
+            return back()
+                ->withErrors([
+                    'otp' => 'Too many OTP requests. Please try again later.',
+                ]);
+        }
+
+        RateLimiter::hit($rateKey, 600);
 
         try {
             $user = User::where('email', $email)->firstOrFail();
@@ -156,12 +215,13 @@ class ForgotPasswordController extends Controller
 
             Mail::to($user->email)->send(new PasswordResetMail($otp, $user->name));
 
+            RateLimiter::clear($this->otpAttemptsKey($email));
+            $request->session()->put('reset_email', $email);
+            $request->session()->forget('otp_verified_email');
+
             return redirect()
                 ->route('forgot_password.form')
-                ->with([
-                    'success' => 'OTP has been resent to your email address.',
-                    'reset_email' => $email,
-                ]);
+                ->with('success', 'OTP has been resent to your email address.');
         } catch (Throwable $e) {
             Log::error('Password reset OTP resend failed', [
                 'email' => $email,
@@ -184,6 +244,14 @@ class ForgotPasswordController extends Controller
         ]);
 
         $email = strtolower(trim($request->email));
+
+        // Only the browser that verified the OTP can set the new password
+        if ($request->session()->get('otp_verified_email') !== $email) {
+            return back()
+                ->withErrors([
+                    'email' => 'OTP verification required.',
+                ]);
+        }
 
         try {
             $otpRecord = PasswordResetOtp::where('email', $email)
@@ -209,10 +277,14 @@ class ForgotPasswordController extends Controller
             $user = User::where('email', $email)->firstOrFail();
 
             $user->update([
-                'password' => Hash::make($request->password),
+                'password' => $request->password,
             ]);
 
+            // Logged-in phones (staff app) must sign in with the new password
+            $user->tokens()->delete();
+
             PasswordResetOtp::where('email', $email)->delete();
+            $this->clearFlow($request);
 
             return redirect()
                 ->route('login')

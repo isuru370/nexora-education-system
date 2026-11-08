@@ -160,4 +160,22 @@ trait BuildsInstitute
             's1', 's2', 's3', 'e1', 'e2', 'e3', 'exam', 'schedule', 'n1', 'n2'
         );
     }
+
+    /** A SUPER_ADMIN (Nexora) user, or another role, for role checks. */
+    protected function makeRoleUser(string $code, ?int $branchId = null): User
+    {
+        $type = DB::table('user_types')->where('code', $code)->value('id')
+            ?? DB::table('user_types')->insertGetId(['name' => $code, 'code' => $code, 'is_active' => 1]);
+
+        $user = User::forceCreate([
+            'name' => $code, 'email' => strtolower($code) . '@test.lk', 'password' => 'password123',
+            'user_type_id' => $type, 'is_active' => 1,
+        ]);
+
+        if ($branchId !== null) {
+            DB::table('branch_users')->insert(['branch_id' => $branchId, 'user_id' => $user->id]);
+        }
+
+        return $user;
+    }
 }

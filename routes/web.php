@@ -323,13 +323,13 @@ Route::middleware([
 
         [LogController::class, 'index']
 
-    )->name('logs.laravel.index')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
+    )->name('logs.laravel.index')->middleware('role:SUPER_ADMIN');
 
 
 
     Route::get('/logs/laravel/content', [LogController::class, 'content'])
 
-        ->name('logs.laravel.content')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
+        ->name('logs.laravel.content')->middleware('role:SUPER_ADMIN');
 
 
 
@@ -339,7 +339,7 @@ Route::middleware([
 
         [LogController::class, 'clear']
 
-    )->name('logs.laravel.clear')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
+    )->name('logs.laravel.clear')->middleware('role:SUPER_ADMIN');
 
 
 
@@ -349,7 +349,7 @@ Route::middleware([
 
         [LogController::class, 'download']
 
-    )->name('logs.laravel.download')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
+    )->name('logs.laravel.download')->middleware('role:SUPER_ADMIN');
 
 
 
@@ -361,7 +361,7 @@ Route::middleware([
 
     )
 
-        ->name('logs.laravel.stats')->middleware('role:ADMIN,BRANCH_ADMIN,USER');
+        ->name('logs.laravel.stats')->middleware('role:SUPER_ADMIN');
 });
 
 
@@ -909,14 +909,13 @@ Route::middleware([
 
 
 
+            // Database backup: Super Admin (Nexora) only
             Route::get('setting/backup/export', [DatabaseBackupController::class, 'export'])
-
+                ->middleware('role:SUPER_ADMIN')
                 ->name('setting.backup.export');
 
-
-
             Route::post('setting/backup/import', [DatabaseBackupController::class, 'import'])
-
+                ->middleware('role:SUPER_ADMIN')
                 ->name('setting.backup.import');
 
             // Parent notifications: on / off + push or SMS (whole system)
@@ -2997,7 +2996,7 @@ require __DIR__ . '/courses.php';
 
 Route::prefix('app-setup-qr')
     ->name('app-setup.')
-    ->middleware(['auth', 'user.active', 'role:ADMIN'])
+    ->middleware(['auth', 'user.active', 'role:SUPER_ADMIN'])
     ->controller(AppSetupController::class)
     ->group(function () {
         Route::get('/', 'index')->name('index');
