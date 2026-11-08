@@ -4,6 +4,7 @@ namespace App\Services\Web\TeacherSalary;
 
 use App\Models\Branch;
 use App\Models\PaymentSplitSnapshot;
+use Carbon\Carbon;
 use App\Models\StudentClass;
 use App\Models\Teacher;
 use App\Models\TeacherPayment;
@@ -130,6 +131,9 @@ class TeacherSalaryService
             ->get()
             ->keyBy('teacher_id');
 
+        // Earlier months' fees paid after their salary: into this month's salary
+        $carryByTeacher = $this->calculator->carryByTeacher($branchId, $year, $month);
+
         // Active teachers of this branch + any teacher who has money in this branch this month
         $teacherIds = DB::table('teacher_branches')
             ->join('teachers', 'teachers.id', '=', 'teacher_branches.teacher_id')
@@ -140,6 +144,7 @@ class TeacherSalaryService
             ->merge($grossByTeacher->keys())
             ->merge($deductionsByTeacher->keys())
             ->merge($salaryRecords->keys())
+            ->merge($carryByTeacher->keys())
             ->map(fn($id) => (int) $id)
             ->unique()
             ->values();
@@ -167,15 +172,19 @@ class TeacherSalaryService
         ];
 
         foreach ($teachers as $teacher) {
-            $totals = $this->calculator->buildTotals(
-                (float) $grossByTeacher->get($teacher->id, 0.0),
-                $deductionsByTeacher->get($teacher->id, $this->calculator->emptyDeductions())
-            );
-
             /** @var TeacherSalary|null $record */
             $record = $salaryRecords->get($teacher->id);
 
             $isPaid = $record && $record->status === 'paid';
+
+            $totals = $this->calculator->buildTotals(
+                (float) $grossByTeacher->get($teacher->id, 0.0),
+                $deductionsByTeacher->get($teacher->id, $this->calculator->emptyDeductions()),
+                // a paid salary already took its balance (kept on the record)
+                $isPaid
+                    ? ['amount' => (float) $record->carried_amount, 'snapshot_ids' => [], 'months' => []]
+                    : $carryByTeacher->get($teacher->id)
+            );
             $dbNet = $record ? (float) $record->net_amount : null;
             $netPayable = $isPaid ? $dbNet : $totals['net'];
             $netDifference = $isPaid ? round($totals['net'] - $dbNet, 2) : 0;
@@ -186,6 +195,7 @@ class TeacherSalaryService
                 'teacher_name' => $teacher->full_name,
 
                 'gross_earnings' => $totals['gross'],
+                'carried' => $totals['carried'],
                 'advance' => $totals['advance'],
                 'deduction' => $totals['deduction'],
                 'other' => $totals['other'],
@@ -198,7 +208,7 @@ class TeacherSalaryService
                 'net_difference' => $netDifference,
             ];
 
-            $summary['gross_earnings'] += $totals['gross'];
+            $summary['gross_earnings'] += $totals['gross'] + $totals['carried'];
             $summary['total_advance'] += $totals['advance'];
             $summary['total_deduction'] += $totals['deduction'];
             $summary['total_other'] += $totals['other'];
@@ -276,7 +286,13 @@ class TeacherSalaryService
             'month_end' => min($end, now()->endOfDay())->toDateString(),
 
             'total_class_income' => round((float) $snapshotTotals->class_income, 2),
-            'teacher_earnings' => $totals['gross'],
+            // paid: what was paid for this month's fees
+            'teacher_earnings' => $isPaid ? (float) $record->gross_amount : $totals['gross'],
+            // paid: fees of this month that came after the salary -> next salary
+            'paid_after_salary' => $isPaid ? max(round($totals['gross'] - (float) $record->gross_amount, 2), 0) : 0.0,
+            // earlier months' fees paid after their salary (paid: what this salary took)
+            'carried' => $isPaid ? (float) $record->carried_amount : $totals['carried'],
+            'carried_months' => $isPaid ? $this->carriedMonths((int) $record->id) : $totals['carried_months'],
             'institute_earnings' => round((float) $snapshotTotals->institute_amount, 2),
             'organizer_earnings' => round((float) $snapshotTotals->organizer_amount, 2),
 
@@ -359,6 +375,22 @@ class TeacherSalaryService
     |--------------------------------------------------------------------------
     */
 
+    /**
+     * Balance a paid salary took from earlier months, per month ("2026-10" => amount).
+     *
+     * @return array<string, float>
+     */
+    public function carriedMonths(int $salaryId): array
+    {
+        return PaymentSplitSnapshot::query()
+            ->where('carried_to_salary_id', $salaryId)
+            ->get(['payment_date', 'teacher_amount'])
+            ->groupBy(fn ($snapshot) => Carbon::parse($snapshot->payment_date)->format('Y-m'))
+            ->map(fn ($rows) => round((float) $rows->sum('teacher_amount'), 2))
+            ->sortKeys()
+            ->all();
+    }
+
     public function salarySlip(int $teacherId, int $branchId, int $year, int $month): array
     {
         $this->assertBranchAccess($branchId);
@@ -366,6 +398,9 @@ class TeacherSalaryService
         $teacher = Teacher::withTrashed()->findOrFail($teacherId);
 
         [$start, $end] = $this->calculator->monthRange($year, $month);
+
+        $record = $this->calculator->salaryRecord($teacherId, $branchId, $year, $month);
+        $isPaid = $record && $record->status === 'paid';
 
         $snapshots = PaymentSplitSnapshot::query()
             ->with([
@@ -376,6 +411,9 @@ class TeacherSalaryService
             ->where('branch_id', $branchId)
             ->where('teacher_id', $teacherId)
             ->whereBetween('payment_date', [$start, $end])
+            // A paid slip lists the payments that were in that salary, so the
+            // class rows add up to the paid amount (later payments are not in it)
+            ->when($isPaid && $record->paid_at, fn ($query) => $query->where('payment_date', '<=', $record->paid_at))
             ->get();
 
         $earnings = [];
@@ -421,8 +459,16 @@ class TeacherSalaryService
         }
 
         $totals = $this->calculator->forTeacher($teacherId, $branchId, $year, $month);
-        $record = $this->calculator->salaryRecord($teacherId, $branchId, $year, $month);
-        $isPaid = $record && $record->status === 'paid';
+
+        // Earlier months' fees paid after their salary
+        $carriedMonths = $isPaid ? $this->carriedMonths((int) $record->id) : $totals['carried_months'];
+
+        foreach ($carriedMonths as $period => $amount) {
+            $earnings[] = [
+                'description' => 'Balance from ' . Carbon::parse($period . '-01')->format('F Y') . ' (paid after that salary)',
+                'amount' => $amount,
+            ];
+        }
 
         $deductions = [];
 
@@ -433,7 +479,9 @@ class TeacherSalaryService
         }
 
         // A paid slip must show the amounts that were actually paid
-        $totalAddition = $isPaid ? (float) $record->gross_amount : $totals['gross'];
+        $totalAddition = $isPaid
+            ? round((float) $record->gross_amount + (float) $record->carried_amount, 2)
+            : round($totals['gross'] + $totals['carried'], 2);
         $totalDeductions = $isPaid
             ? round((float) $record->advance_deduction + (float) $record->other_deduction + (float) $record->welfare_deduction, 2)
             : $totals['total_deductions'];

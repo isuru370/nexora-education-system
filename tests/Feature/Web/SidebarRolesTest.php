@@ -22,7 +22,7 @@ class SidebarRolesTest extends TestCase
         $this->buildInstitute();
     }
 
-    private const NEXORA_PAGES = ['/payment-rules', '/card-designer', '/app-setup-qr', '/app-feedback', '/logs/laravel'];
+    private const NEXORA_PAGES = ['/payment-rules', '/card-designer', '/app-feedback', '/logs/laravel'];
 
     public function test_nexora_pages_are_super_admin_only(): void
     {
@@ -43,7 +43,7 @@ class SidebarRolesTest extends TestCase
             ->assertOk()
             ->assertSee('Parent Notifications')
             ->assertDontSee('Database Backup Management')
-            ->assertDontSee('Staff App QR');
+            ->assertSee('Staff App QR');
 
         $this->actingAs($this->inst['admin'])->get('/admin/setting/backup/export')->assertForbidden();
         $this->actingAs($this->inst['admin'])->post('/admin/setting/backup/import')->assertForbidden();
@@ -79,10 +79,10 @@ class SidebarRolesTest extends TestCase
         }
 
         $admin = $this->sidebarOf($this->inst['admin']);
-        foreach (['Administration', 'Institute Income', 'Monthly Collection', 'Settings'] as $text) {
+        foreach (['Administration', 'Institute Income', 'Monthly Collection', 'Settings', 'Staff App QR'] as $text) {
             $this->assertStringContainsString($text, $admin);
         }
-        foreach (['Nexora Admin', 'Laravel Logs', 'ID Card Designer', 'Staff App QR', 'Database Backup'] as $text) {
+        foreach (['Nexora Admin', 'Laravel Logs', 'ID Card Designer', 'Database Backup'] as $text) {
             $this->assertStringNotContainsString($text, $admin);
         }
 
@@ -90,7 +90,7 @@ class SidebarRolesTest extends TestCase
         foreach (['Teacher Salaries', 'Institute Expenses', 'Extra Incomes', 'Branch-wise Collection'] as $text) {
             $this->assertStringContainsString($text, $branchAdmin);
         }
-        foreach (['Institute Income', 'Monthly Collection', 'Administration', 'Nexora Admin'] as $text) {
+        foreach (['Institute Income', 'Monthly Collection', 'Administration', 'Nexora Admin', 'Staff App QR'] as $text) {
             $this->assertStringNotContainsString($text, $branchAdmin);
         }
     }

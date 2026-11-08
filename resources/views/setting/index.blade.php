@@ -25,10 +25,10 @@
                         <a href="{{ route('admin.setting.sms-templates') }}" class="nx-btn nx-btn-light">
                             <i class="bi bi-chat-dots-fill"></i> SMS Messages
                         </a>
+                        <a href="{{ route('app-setup.index') }}" class="nx-btn nx-btn-light">
+                            <i class="bi bi-qr-code"></i> Staff App QR
+                        </a>
                         @if ($settingsRole === 'SUPER_ADMIN')
-                            <a href="{{ route('app-setup.index') }}" class="nx-btn nx-btn-light">
-                                <i class="bi bi-qr-code"></i> Staff App QR
-                            </a>
                             <a href="{{ route('payment-rules.index') }}" class="nx-btn nx-btn-light">
                                 <i class="bi bi-sliders"></i> Payment &amp; Attendance Rules
                             </a>
