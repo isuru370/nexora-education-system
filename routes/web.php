@@ -2697,6 +2697,11 @@ Route::prefix('teacher-salaries')
             ->where(['teacher' => '[0-9]+', 'year' => '[0-9]{4}', 'month' => '[0-9]{1,2}'])
             ->name('slip');
 
+        // Email the paid salary slip + student payments PDF to the teacher
+        Route::post('/{teacher}/{year}/{month}/email-slip', 'emailSlip')
+            ->where(['teacher' => '[0-9]+', 'year' => '[0-9]{4}', 'month' => '[0-9]{1,2}'])
+            ->name('email-slip');
+
         Route::get('/{teacher}/{year}/{month}/details', 'paymentDetailsView')
             ->where(['teacher' => '[0-9]+', 'year' => '[0-9]{4}', 'month' => '[0-9]{1,2}'])
             ->name('payment-details');
@@ -2711,6 +2716,21 @@ Route::prefix('teacher-salaries')
 | Auto-disabled students (nightly job: no attendance for 2 months)
 |--------------------------------------------------------------------------
 */
+
+/*
+|--------------------------------------------------------------------------
+| App Feedback (Super Admin): sent from the staff app, also emailed to Nexora
+|--------------------------------------------------------------------------
+*/
+
+Route::prefix('app-feedback')
+    ->name('app-feedback.')
+    ->controller(\App\Http\Controllers\Web\AppFeedback\AppFeedbackController::class)
+    ->middleware(['auth', 'user.active', 'role:SUPER_ADMIN'])
+    ->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::patch('/{appFeedback}', 'update')->whereNumber('appFeedback')->name('update');
+    });
 
 /*
 |--------------------------------------------------------------------------

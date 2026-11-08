@@ -6,6 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Web\TeacherSalary\PayTeacherSalaryRequest;
 use App\Http\Requests\Web\TeacherSalary\StoreTeacherPaymentRequest;
 use App\Http\Requests\Web\TeacherSalary\TeacherSalaryFilterRequest;
+use App\Jobs\SendTeacherSalarySlip;
+use App\Models\Teacher;
+use App\Models\TeacherSalary;
+use App\Support\TeacherSalaryEmail;
 use App\Services\Web\TeacherSalary\TeacherSalaryPaymentService;
 use App\Services\Web\TeacherSalary\TeacherSalaryService;
 use DomainException;
@@ -76,7 +80,7 @@ class TeacherSalaryController extends Controller
         $validated = $request->validated();
 
         try {
-            $this->paymentService->paySalary(
+            $salary = $this->paymentService->paySalary(
                 $teacher,
                 (int) $validated['branch_id'],
                 (int) $validated['year'],
@@ -92,8 +96,15 @@ class TeacherSalaryController extends Controller
             return back()->with('error', 'Failed to pay teacher salary.');
         }
 
+        $message = 'Salary paid successfully.';
+
+        // Settings > Notifications: email the slip to the teacher
+        if (TeacherSalaryEmail::enabled()) {
+            $message .= ' ' . $this->queueSlipEmail($salary);
+        }
+
         return back()->with([
-            'success' => 'Salary paid successfully.',
+            'success' => $message,
             'slip_open' => true,
             'slip_teacher' => $teacher,
             'slip_year' => (int) $validated['year'],
@@ -193,6 +204,56 @@ class TeacherSalaryController extends Controller
     | Helpers
     |--------------------------------------------------------------------------
     */
+
+    /**
+     * "Email slip" on a paid salary (also when the setting is off).
+     */
+    public function emailSlip(TeacherSalaryFilterRequest $request, int $teacher, int $year, int $month): RedirectResponse
+    {
+        $month = $this->validMonth($month);
+
+        try {
+            $branchId = $this->salaryService->resolveBranchId($request->branchId(), $teacher);
+        } catch (DomainException $e) {
+            return $this->toIndex($year, $month, \App\Support\ErrorDetail::safe($e));
+        }
+
+        $salary = TeacherSalary::query()
+            ->where('branch_id', $branchId)
+            ->where('teacher_id', $teacher)
+            ->where('salary_year', $year)
+            ->where('salary_month', $month)
+            ->where('status', 'paid')
+            ->first();
+
+        if (!$salary) {
+            return back()->with('error', 'Pay the salary first, then email the slip.');
+        }
+
+        $email = TeacherSalaryEmail::addressOf(optional(Teacher::withTrashed()->find($teacher))->email);
+
+        if (!$email) {
+            return back()->with('error', 'This teacher has no email address. Add it on the teacher page first.');
+        }
+
+        SendTeacherSalarySlip::dispatch($salary->id, (int) auth()->id());
+
+        return back()->with('success', "Salary slip will be emailed to {$email}.");
+    }
+
+    /** Queue the slip email; the sentence for the success message. */
+    protected function queueSlipEmail(TeacherSalary $salary): string
+    {
+        $email = TeacherSalaryEmail::addressOf(optional(Teacher::withTrashed()->find($salary->teacher_id))->email);
+
+        if (!$email) {
+            return 'Teacher has no email, slip not sent.';
+        }
+
+        SendTeacherSalarySlip::dispatch($salary->id, (int) auth()->id());
+
+        return "Salary slip will be emailed to {$email}.";
+    }
 
     protected function validMonth(int $month): int
     {
