@@ -22,9 +22,9 @@ class AppSetupQrTest extends TestCase
         config(['app.url' => 'https://savidyaedu.nexorait.lk']);
     }
 
-    public function test_admin_sees_the_qr_and_others_cannot(): void
+    public function test_super_admin_sees_the_qr_and_others_cannot(): void
     {
-        $this->actingAs($this->inst['admin'])
+        $this->actingAs($this->makeRoleUser('SUPER_ADMIN'))
             ->get('/app-setup-qr')
             ->assertOk()
             ->assertSee('Staff App QR')
@@ -35,6 +35,7 @@ class AppSetupQrTest extends TestCase
         $this->assertSame('https://savidyaedu.nexorait.lk/app-setup?key=' . AppSetup::key(), AppSetup::qrContent());
 
         $this->actingAs($this->inst['cashier'])->get('/app-setup-qr')->assertForbidden();
+        $this->actingAs($this->inst['admin'])->get('/app-setup-qr')->assertForbidden();
     }
 
     public function test_the_app_can_verify_only_the_current_key(): void
@@ -54,7 +55,7 @@ class AppSetupQrTest extends TestCase
     {
         $old = AppSetup::key();
 
-        $this->actingAs($this->inst['admin'])
+        $this->actingAs($this->makeRoleUser('SUPER_ADMIN'))
             ->post('/app-setup-qr/regenerate')
             ->assertRedirect('/app-setup-qr');
 

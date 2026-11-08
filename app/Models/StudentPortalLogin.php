@@ -59,9 +59,18 @@ class StudentPortalLogin extends Model
      */
     public function setPasswordAttribute($value): void
     {
-        if (!empty($value) && strlen($value) !== 60) {
-            $this->attributes['password'] = Hash::make($value);
+        if ($value === null || $value === '') {
+            return;
         }
+
+        $value = (string) $value;
+
+        // Already a hash (Hash::make / bcrypt / argon): keep it. Before, a
+        // 60-character value was dropped, so passwords set with Hash::make()
+        // were never saved (forgot password, admin change / new user).
+        $this->attributes['password'] = !empty(password_get_info($value)['algo'])
+            ? $value
+            : Hash::make($value);
     }
 
     /**
