@@ -70,8 +70,14 @@ class DailyCollectionReportService
 
         $showExpenses = !$this->collectorFilterActive($filter);
 
-        $income = [
-            'Class fee payments' => $studentTotal,
+        $income = ['Class fee payments' => $studentTotal];
+
+        // Course fees are cash collected too (institutes with courses)
+        if (feature('courses')) {
+            $income['Course fee payments'] = $this->sum($this->query->coursePayments($filter));
+        }
+
+        $income += [
             'Admission fees' => $admissionTotal,
             'Extra income' => $extraIncomeTotal,
         ];
@@ -82,6 +88,11 @@ class DailyCollectionReportService
             'Organizer payments' => $organizerPayments,
             'Institute expenses' => $instituteExpenses,
         ] : [];
+
+        if ($showExpenses && feature('courses')) {
+            $expenses['Course teacher payments'] = $this->sum($this->query->courseTeacherPayouts($filter));
+            $expenses['Course owner payments'] = $this->sum($this->query->courseOwnerPayouts($filter));
+        }
 
         $totalIncome = round(array_sum($income), 2);
         $totalExpenses = round(array_sum($expenses), 2);
