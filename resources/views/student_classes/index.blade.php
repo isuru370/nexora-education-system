@@ -89,6 +89,7 @@
             </div>
             <div class="header-buttons">
                 <a href="{{ route('student-classes.create') }}" class="nx-btn nx-btn-primary"><i class="bi bi-plus-lg"></i> Add Class</a>
+                <a href="{{ route('class-import.index') }}" class="nx-btn nx-btn-light"><i class="bi bi-filetype-csv"></i> Import / Update (CSV)</a>
                 <a href="{{ route('class-categories.index') }}" class="nx-btn nx-btn-light">Categories</a>
                 <a href="{{ route('class-halls.index') }}" class="nx-btn nx-btn-amber">Halls</a>
                 <a href="{{ route('student-classes.exportExcel') }}" class="nx-btn nx-btn-success"><i class="bi bi-file-earmark-excel-fill"></i> Excel</a>
@@ -145,6 +146,9 @@
                             <td class="row-number">{{ $loop->iteration + ($classes->currentPage() - 1) * $classes->perPage() }}</td>
                             <td>
                                 <div class="cell-title">{{ $class->class_name }}</div>
+                                @if (isset($classesWithFees) && !in_array($class->id, $classesWithFees, true))
+                                    <a href="{{ route('student-classes.edit', $class) }}" class="nx-badge nx-badge-amber text-decoration-none mt-1"><i class="bi bi-exclamation-triangle-fill"></i> Fees not set</a>
+                                @endif
                                 <small class="cell-sub">{{ ucfirst($class->class_type) }} / {{ $class->medium }}</small>
                             </td>
                             <td>
