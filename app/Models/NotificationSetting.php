@@ -30,9 +30,10 @@ class NotificationSetting extends Model
     public const COURSE_SCHEDULE = 'course_schedule';
     public const COURSE_PAYMENT = 'course_payment';
     public const COURSE_ATTENDANCE = 'course_attendance';
+    public const COURSE_INSTALLMENT_REMINDER = 'course_installment_reminder';
 
     /** Shown only when the institute has the "courses" feature. */
-    public const COURSE_KEYS = [self::COURSE_SCHEDULE, self::COURSE_PAYMENT, self::COURSE_ATTENDANCE];
+    public const COURSE_KEYS = [self::COURSE_SCHEDULE, self::COURSE_PAYMENT, self::COURSE_ATTENDANCE, self::COURSE_INSTALLMENT_REMINDER];
 
     protected const CACHE_KEY = 'notification_settings.v1';
 
@@ -48,6 +49,7 @@ class NotificationSetting extends Model
         self::COURSE_SCHEDULE => ['is_enabled' => true, 'channel' => self::SMS],
         self::COURSE_PAYMENT => ['is_enabled' => true, 'channel' => self::PUSH],
         self::COURSE_ATTENDANCE => ['is_enabled' => true, 'channel' => self::PUSH],
+        self::COURSE_INSTALLMENT_REMINDER => ['is_enabled' => true, 'channel' => self::PUSH],
     ];
 
     protected $fillable = [
