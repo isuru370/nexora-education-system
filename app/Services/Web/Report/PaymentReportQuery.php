@@ -2,6 +2,9 @@
 
 namespace App\Services\Web\Report;
 
+use App\Models\CourseTeacherPayout;
+use App\Models\CoursePayment;
+use App\Models\CourseOwnerPayout;
 use App\Models\AdmissionPayment;
 use App\Models\ExtraIncome;
 use App\Models\InstitutePayment;
@@ -168,6 +171,17 @@ class PaymentReportQuery
             ->tap(fn ($query) => $this->applyBranch($query, $filter));
     }
 
+    /** Completed course fee payments, by paid_at (institutes with courses) */
+    public function coursePayments(ReportFilter $filter): Builder
+    {
+        return CoursePayment::query()
+            ->where('status', 'completed')
+            ->whereIn('branch_id', $filter->branchIds)
+            ->whereBetween('paid_at', [$filter->from, $filter->to])
+            ->when($filter->collectedBy, fn ($query, $userId) => $query->where('user_id', $userId))
+            ->when($filter->paymentMethod, fn ($query, $method) => $query->where('payment_method', $method));
+    }
+
     /** Teacher / organizer / institute share of each student payment */
     public function splitSnapshots(ReportFilter $filter): Builder
     {
@@ -210,6 +224,24 @@ class PaymentReportQuery
             ->whereIn('payment_type', self::ORGANIZER_CASH_TYPES)
             ->whereBetween('payment_date', [$filter->from->toDateString(), $filter->to->toDateString()])
             ->tap(fn ($query) => $this->applyBranch($query, $filter));
+    }
+
+    /** Course teachers' share paid out, by paid_on */
+    public function courseTeacherPayouts(ReportFilter $filter): Builder
+    {
+        return CourseTeacherPayout::query()
+            ->where('status', 'paid')
+            ->whereIn('branch_id', $filter->branchIds)
+            ->whereBetween('paid_on', [$filter->from->toDateString(), $filter->to->toDateString()]);
+    }
+
+    /** Course owner's share paid out, by paid_on */
+    public function courseOwnerPayouts(ReportFilter $filter): Builder
+    {
+        return CourseOwnerPayout::query()
+            ->where('status', 'paid')
+            ->whereIn('branch_id', $filter->branchIds)
+            ->whereBetween('paid_on', [$filter->from->toDateString(), $filter->to->toDateString()]);
     }
 
     /** Institute running expenses */

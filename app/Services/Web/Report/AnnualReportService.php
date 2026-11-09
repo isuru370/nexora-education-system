@@ -24,6 +24,7 @@ class AnnualReportService
         'class_fees',
         'admission_fees',
         'extra_income',
+        'course_fees',
         'total_income',
         'teacher_share',
         'organizer_share',
@@ -32,6 +33,7 @@ class AnnualReportService
         'teacher_advances',
         'organizer_payments',
         'institute_expenses',
+        'course_payouts',
         'total_expenses',
         'net',
     ];
@@ -99,10 +101,16 @@ class AnnualReportService
         $organizerPayments = $this->sumByMonth($this->query->organizerPayments($filter), 'payment_date');
         $instituteExpenses = $this->sumByMonth($this->query->instituteExpenses($filter), 'payment_date');
 
+        // Course fees in, course teacher / owner payouts out (institutes with courses)
+        $hasCourses = feature('courses');
+        $courseFees = $hasCourses ? $this->sumByMonth($this->query->coursePayments($filter), 'paid_at') : collect();
+        $courseTeacherPayouts = $hasCourses ? $this->sumByMonth($this->query->courseTeacherPayouts($filter), 'paid_on') : collect();
+        $courseOwnerPayouts = $hasCourses ? $this->sumByMonth($this->query->courseOwnerPayouts($filter), 'paid_on') : collect();
+
         $year = (int) $filter->from->year;
         $lastMonth = (int) $filter->to->month;
 
-        $rows = collect(range(1, 12))->map(function (int $month) use ($year, $lastMonth, $fees, $split, $admissions, $extraIncome, $teacherSalaries, $teacherAdvances, $organizerPayments, $instituteExpenses) {
+        $rows = collect(range(1, 12))->map(function (int $month) use ($year, $lastMonth, $fees, $split, $admissions, $extraIncome, $teacherSalaries, $teacherAdvances, $organizerPayments, $instituteExpenses, $courseFees, $courseTeacherPayouts, $courseOwnerPayouts) {
             $fee = $fees->get($month);
             $share = $split->get($month);
 
@@ -123,10 +131,12 @@ class AnnualReportService
                 'teacher_advances' => round((float) $teacherAdvances->get($month, 0), 2),
                 'organizer_payments' => round((float) $organizerPayments->get($month, 0), 2),
                 'institute_expenses' => round((float) $instituteExpenses->get($month, 0), 2),
+                'course_fees' => round((float) $courseFees->get($month, 0), 2),
+                'course_payouts' => round((float) $courseTeacherPayouts->get($month, 0) + (float) $courseOwnerPayouts->get($month, 0), 2),
             ];
 
-            $row['total_income'] = round($row['class_fees'] + $row['admission_fees'] + $row['extra_income'], 2);
-            $row['total_expenses'] = round($row['teacher_salaries'] + $row['teacher_advances'] + $row['organizer_payments'] + $row['institute_expenses'], 2);
+            $row['total_income'] = round($row['class_fees'] + $row['course_fees'] + $row['admission_fees'] + $row['extra_income'], 2);
+            $row['total_expenses'] = round($row['teacher_salaries'] + $row['teacher_advances'] + $row['organizer_payments'] + $row['institute_expenses'] + $row['course_payouts'], 2);
             $row['net'] = round($row['total_income'] - $row['total_expenses'], 2);
 
             return $row;
@@ -175,6 +185,22 @@ class AnnualReportService
     /** Excel / PDF table */
     public function table(): array
     {
+        $table = $this->baseTable();
+
+        if (feature('courses')) {
+            $at = array_search('extra_income', $table['columns'], true) + 1;
+            array_splice($table['columns'], $at, 0, ['course_fees']);
+            array_splice($table['headings'], $at, 0, ['Course Fees (Rs.)']);
+            $at = array_search('institute_expenses', $table['columns'], true) + 1;
+            array_splice($table['columns'], $at, 0, ['course_payouts']);
+            array_splice($table['headings'], $at, 0, ['Course Payouts (Rs.)']);
+        }
+
+        return $table;
+    }
+
+    protected function baseTable(): array
+    {
         return [
             'headings' => [
                 'Month',
@@ -212,7 +238,7 @@ class AnnualReportService
                 'total_expenses',
                 'net',
             ],
-            'money' => self::MONEY,
+            'money' => feature('courses') ? self::MONEY : array_values(array_diff(self::MONEY, ['course_fees', 'course_payouts'])),
             'total' => 'total_income',
         ];
     }
