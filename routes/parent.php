@@ -3,6 +3,7 @@
 use App\Http\Controllers\Api\Parent\Attendance\StudentAttendanceController;
 use App\Http\Controllers\Api\Parent\Auth\ParentAuthController;
 use App\Http\Controllers\Api\Parent\ClassSchedule\ClassScheduleController;
+use App\Http\Controllers\Api\Parent\Course\CourseController;
 use App\Http\Controllers\Api\Parent\Dashboard\DashboardController;
 use App\Http\Controllers\Api\Parent\Exam\ExamController;
 use App\Http\Controllers\Api\Parent\FCM\FcmTokenController;
@@ -46,6 +47,11 @@ Route::prefix('v1')->group(function () {
         | Student profile (read only) + institute + card
         */
         Route::post('/profile', [ProfileController::class, 'show']);
+
+        /*
+        | Courses (fee, installments, class days, attendance)
+        */
+        Route::post('/courses', [CourseController::class, 'index']);
 
         /*
         | Firebase Cloud Messaging

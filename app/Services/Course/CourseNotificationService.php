@@ -74,6 +74,37 @@ class CourseNotificationService
         );
     }
 
+    /**
+     * Course installment due soon / today (parent app push or SMS).
+     *
+     * @param  array  $installment  one row of CourseFeeService::summary()['installments']
+     */
+    public function installmentReminder(CourseEnrollment $enrollment, array $installment, int $daysLeft): bool
+    {
+        $enrollment->loadMissing(['course', 'student']);
+
+        $when = $daysLeft <= 0 ? 'today' : "in {$daysLeft} day" . ($daysLeft === 1 ? '' : 's');
+
+        $body = "Course : {$enrollment->course->name}\n"
+            . "Installment {$installment['installment_no']} : Rs. " . number_format((float) $installment['remaining'], 2) . "\n"
+            . "Due date : {$installment['due_date']} ({$when})";
+
+        return $this->tell(
+            NotificationSetting::COURSE_INSTALLMENT_REMINDER,
+            $enrollment->student,
+            'Course installment due ' . $when,
+            $body,
+            NotificationType::PAYMENT,
+            [
+                'kind' => 'course_installment',
+                'course_id' => $enrollment->course_id,
+                'installment_no' => $installment['installment_no'],
+                'due_date' => $installment['due_date'],
+            ],
+            SendPaymentSms::class
+        );
+    }
+
     /** Marked present. @return bool told */
     public function attendanceMarked(CourseAttendance $attendance): bool
     {
