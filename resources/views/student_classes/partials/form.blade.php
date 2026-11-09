@@ -333,6 +333,50 @@
         </div>
 
         {{-- ================================================== --}}
+        {{-- CATEGORIES & FEES --}}
+        {{-- ================================================== --}}
+        @php
+            $feeBlocksSaved = $feeBlocks ?? [];
+            $feeBlocks = old('fees', $feeBlocksSaved);
+            if (!$isEdit && empty($feeBlocks)) {
+                $feeBlocks = [['category_id' => '', 'default' => 0, 'options' => [['label' => 'Normal', 'fee' => '']]]];
+            }
+            // students on each saved option (old() does not carry it)
+            $studentsOn = collect($feeBlocksSaved)->flatMap(fn ($b) => collect($b['options'])->mapWithKeys(fn ($o) => [$o['id'] => $o['students']]))->all();
+        @endphp
+        <div class="col-12">
+            <div class="section-card p-4">
+                <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
+                    <h6 class="section-title mb-0">
+                        <i class="bi bi-tags me-2"></i> Categories &amp; Fees *
+                    </h6>
+                    <small class="text-muted">Each category needs at least one fee option. ★ = the default option.</small>
+                </div>
+
+                @error('fees')
+                    <div class="alert alert-danger py-2">{{ $message }}</div>
+                @enderror
+
+                <div id="feeBlocks" data-next="{{ count($feeBlocks) }}">
+                    @foreach ($feeBlocks as $i => $block)
+                        @include('student_classes.partials.fee-block', ['i' => $i, 'block' => $block, 'categories' => $categories, 'studentsOn' => $studentsOn])
+                    @endforeach
+                </div>
+
+                <button type="button" class="btn btn-outline-primary custom-btn mt-2" data-add-block>
+                    <i class="bi bi-plus-lg me-1"></i> Add category
+                </button>
+
+                <template id="feeBlockTemplate">
+                    @include('student_classes.partials.fee-block', ['i' => '__I__', 'block' => ['category_id' => '', 'default' => 0, 'options' => [['label' => 'Normal', 'fee' => '']]], 'categories' => $categories, 'studentsOn' => []])
+                </template>
+                <template id="feeOptionTemplate">
+                    @include('student_classes.partials.fee-option', ['i' => '__I__', 'j' => '__J__', 'option' => ['label' => '', 'fee' => ''], 'checked' => false, 'studentsOn' => []])
+                </template>
+            </div>
+        </div>
+
+        {{-- ================================================== --}}
         {{-- STATUS --}}
         {{-- ================================================== --}}
         <div class="col-12">
@@ -385,6 +429,15 @@
 
 @push('styles')
 <style>
+    .fee-block { border: 1px solid #e2e8f0; border-radius: 20px; padding: 1rem 1.1rem; margin-bottom: 1rem; background: #f8fafc; }
+    .fee-block.is-off { opacity: .6; }
+    .fee-option { display: grid; grid-template-columns: 36px 1fr 170px auto; gap: .6rem; align-items: center; margin-top: .6rem; }
+    .fee-option .default-star { display: grid; place-items: center; cursor: pointer; }
+    .fee-option .default-star input { display: none; }
+    .fee-option .default-star i { font-size: 1.25rem; color: #cbd5e1; }
+    .fee-option .default-star input:checked + i { color: #f59e0b; }
+    .fee-option .students { font-size: .75rem; color: #b45309; }
+    @media (max-width: 640px) { .fee-option { grid-template-columns: 30px 1fr 110px auto; } }
     .section-card {
         background: #fff;
         border-radius: 24px;
@@ -426,3 +479,58 @@
     }
 </style>
 @endpush
+
+@push('scripts')
+<script>
+(() => {
+    const wrap = document.getElementById('feeBlocks');
+    if (!wrap) return;
+
+    const fromTemplate = (id, i, j) => {
+        const html = document.getElementById(id).innerHTML.replaceAll('__I__', i).replaceAll('__J__', j ?? 0);
+        const box = document.createElement('div');
+        box.innerHTML = html.trim();
+        return box.firstElementChild;
+    };
+
+    document.querySelector('[data-add-block]').addEventListener('click', () => {
+        const i = Number(wrap.dataset.next);
+        wrap.dataset.next = i + 1;
+        wrap.appendChild(fromTemplate('feeBlockTemplate', i));
+    });
+
+    wrap.addEventListener('click', (e) => {
+        const addOption = e.target.closest('[data-add-option]');
+        if (addOption) {
+            const block = addOption.closest('.fee-block');
+            const list = block.querySelector('.fee-options');
+            const j = Number(list.dataset.next);
+            list.dataset.next = j + 1;
+            list.appendChild(fromTemplate('feeOptionTemplate', block.dataset.index, j));
+            return;
+        }
+
+        const removeOption = e.target.closest('[data-remove-option]');
+        if (removeOption) {
+            const list = removeOption.closest('.fee-options');
+            if (list.querySelectorAll('.fee-option').length > 1) {
+                removeOption.closest('.fee-option').remove();
+            }
+            return;
+        }
+
+        const removeBlock = e.target.closest('[data-remove-block]');
+        if (removeBlock) {
+            removeBlock.closest('.fee-block').remove();
+        }
+    });
+
+    wrap.addEventListener('change', (e) => {
+        if (e.target.matches('[data-block-active]')) {
+            e.target.closest('.fee-block').classList.toggle('is-off', !e.target.checked);
+        }
+    });
+})();
+</script>
+@endpush
+
