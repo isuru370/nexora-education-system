@@ -5,6 +5,7 @@ namespace App\Services\Parent\Auth;
 use Laravel\Sanctum\PersonalAccessToken;
 use App\Models\FcmToken;
 use App\Models\StudentPortalLogin;
+use App\Services\Parent\Profile\StudentProfileService;
 use Illuminate\Support\Facades\Hash;
 
 class LoginService
@@ -12,7 +13,7 @@ class LoginService
     public function login(string $username, string $password): array
     {
         $user = StudentPortalLogin::query()
-            ->with(['student.grade'])
+            ->with(['student.grade', 'student.branch'])
             ->where('username', $username)
             ->where('is_active', true)
             ->first();
@@ -69,6 +70,11 @@ class LoginService
                 // ========== API token (same as the top-level "token") ==========
                 'token' => $token,
                 'token_type' => 'Bearer',
+
+                // ========== Institute + card ==========
+                'institute' => StudentProfileService::institute(),
+                'branch_name' => $student->branch?->name,
+                'card' => StudentProfileService::card($student),
 
                 // ========== Basic Information ==========
                 'student_id' => $student->id,
