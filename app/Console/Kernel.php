@@ -41,6 +41,11 @@ class Kernel extends ConsoleKernel
         $schedule->command('course-sessions:complete-finished')
             ->dailyAt('20:45')
             ->timezone('Asia/Colombo');
+
+        // Parents: unpaid course installment due in 3 days / today
+        $schedule->command('course-installments:remind')
+            ->dailyAt('09:00')
+            ->timezone('Asia/Colombo');
     }
 
     /**
