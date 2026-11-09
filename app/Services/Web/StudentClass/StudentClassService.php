@@ -7,6 +7,9 @@ use App\Models\ClassCategoryFee;
 use App\Models\Grade;
 use App\Models\Organizer;
 use App\Models\StudentClass;
+use App\Models\StudentClassEnrollment;
+use App\Models\ClassCategoryFeeOption;
+use App\Models\ClassCategory;
 use App\Models\Subject;
 use App\Models\Teacher;
 use App\Services\Branch\BranchAccessService;
@@ -106,10 +109,25 @@ class StudentClassService
             }
         }
 
+        $classes = $query->latest('student_classes.id')
+            ->paginate(10)
+            ->appends($request->query());
+
         return [
-            'classes' => $query->latest('student_classes.id')
-                ->paginate(10)
-                ->appends($request->query()),
+            'classes' => $classes,
+
+            // Classes that have at least one active fee option
+            'classesWithFees' => ClassCategoryFeeOption::query()
+                ->join('class_category_fees', 'class_category_fees.id', '=', 'class_category_fee_options.class_category_fee_id')
+                ->whereIn('class_category_fees.student_class_id', $classes->pluck('id'))
+                ->whereNull('class_category_fees.deleted_at')
+                ->where('class_category_fees.is_active', true)
+                ->whereNull('class_category_fee_options.deleted_at')
+                ->where('class_category_fee_options.is_active', true)
+                ->distinct()
+                ->pluck('class_category_fees.student_class_id')
+                ->map(fn ($id) => (int) $id)
+                ->all(),
 
             'branches' => $this->branchAccessService->getAccessibleBranches(),
 
@@ -128,6 +146,13 @@ class StudentClassService
         }
 
         return [
+            'categories' => ClassCategory::query()
+                ->where('is_active', true)
+                ->orderBy('category_name')
+                ->get(['id', 'category_name', 'code']),
+
+            'feeBlocks' => $this->feeBlocks($studentClass),
+
             'studentClass' => $studentClass,
             'paymentConfig' => $studentClass ? $studentClass->paymentConfig : null,
 
@@ -183,6 +208,8 @@ class StudentClassService
                 $studentClass,
                 $data
             );
+
+            $this->syncFees($studentClass, $data['fees'] ?? []);
 
             return $studentClass;
         });
@@ -261,8 +288,139 @@ class StudentClassService
                 $data
             );
 
+            if (array_key_exists('fees', $data)) {
+                $this->syncFees($studentClass, $data['fees']);
+            }
+
             return $studentClass->fresh();
         });
+    }
+
+    /**
+     * The class's categories and fee options for the form (with how many
+     * students are on each option).
+     */
+    protected function feeBlocks(?StudentClass $studentClass): array
+    {
+        if (!$studentClass) {
+            return [];
+        }
+
+        $students = StudentClassEnrollment::query()
+            ->where('student_class_id', $studentClass->id)
+            ->where('is_active', true)
+            ->selectRaw('class_category_fee_option_id, COUNT(*) as total')
+            ->groupBy('class_category_fee_option_id')
+            ->pluck('total', 'class_category_fee_option_id');
+
+        return ClassCategoryFee::query()
+            ->where('student_class_id', $studentClass->id)
+            ->with(['feeOptions' => fn ($q) => $q->orderBy('id')])
+            ->orderBy('id')
+            ->get()
+            ->map(function (ClassCategoryFee $fee) use ($students) {
+                $options = $fee->feeOptions->values();
+                $default = $options->search(fn ($o) => $o->is_default);
+
+                return [
+                    'id' => $fee->id,
+                    'category_id' => $fee->class_category_id,
+                    'is_active' => (bool) $fee->is_active,
+                    'default' => $default === false ? 0 : $default,
+                    'options' => $options->map(fn ($o) => [
+                        'id' => $o->id,
+                        'label' => $o->label,
+                        'fee' => (float) $o->fee,
+                        'is_active' => (bool) $o->is_active,
+                        'students' => (int) ($students[$o->id] ?? 0),
+                    ])->all(),
+                ];
+            })
+            ->all();
+    }
+
+    /**
+     * Save the form's "Categories & Fees". Nothing is deleted: categories
+     * and options not in the form stay as they are; options are turned off
+     * with is_active.
+     *
+     * @param  array<int, array>  $blocks
+     */
+    protected function syncFees(StudentClass $studentClass, array $blocks): void
+    {
+        foreach (array_values($blocks) as $block) {
+            $categoryFee = ClassCategoryFee::withTrashed()
+                ->where('student_class_id', $studentClass->id)
+                ->where('class_category_id', (int) $block['category_id'])
+                ->first();
+
+            $blockActive = (bool) ($block['is_active'] ?? true);
+
+            if (!$categoryFee) {
+                $categoryFee = ClassCategoryFee::create([
+                    'student_class_id' => $studentClass->id,
+                    'class_category_id' => (int) $block['category_id'],
+                    'is_active' => $blockActive,
+                ]);
+            } else {
+                if ($categoryFee->trashed()) {
+                    $categoryFee->restore();
+                }
+                $categoryFee->update(['is_active' => $blockActive]);
+            }
+
+            $saved = [];
+
+            foreach (array_values((array) ($block['options'] ?? [])) as $index => $row) {
+                $values = [
+                    'label' => trim((string) $row['label']),
+                    'fee' => round((float) $row['fee'], 2),
+                    'is_active' => (bool) ($row['is_active'] ?? true),
+                ];
+
+                $option = !empty($row['id'])
+                    ? ClassCategoryFeeOption::query()
+                        ->where('class_category_fee_id', $categoryFee->id)
+                        ->find((int) $row['id'])
+                    : null;
+
+                if (!empty($row['id']) && !$option) {
+                    throw ValidationException::withMessages([
+                        'fees' => 'A fee option does not belong to this class. Please reload the page.',
+                    ]);
+                }
+
+                if ($option) {
+                    $option->update($values);
+                } else {
+                    $option = ClassCategoryFeeOption::create($values + [
+                        'class_category_fee_id' => $categoryFee->id,
+                        'is_default' => false,
+                    ]);
+                }
+
+                $saved[$index] = $option;
+            }
+
+            // One default per category: the chosen one if active, else the first active
+            $chosen = $saved[(int) ($block['default'] ?? 0)] ?? null;
+            if (!$chosen || !$chosen->is_active) {
+                $chosen = ClassCategoryFeeOption::query()
+                    ->where('class_category_fee_id', $categoryFee->id)
+                    ->where('is_active', true)
+                    ->orderByDesc('is_default')
+                    ->orderBy('id')
+                    ->first();
+            }
+
+            ClassCategoryFeeOption::query()
+                ->where('class_category_fee_id', $categoryFee->id)
+                ->update(['is_default' => false]);
+
+            if ($chosen) {
+                ClassCategoryFeeOption::query()->whereKey($chosen->id)->update(['is_default' => true]);
+            }
+        }
     }
 
     /**

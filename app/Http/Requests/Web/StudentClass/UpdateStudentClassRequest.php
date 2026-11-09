@@ -7,6 +7,8 @@ use Illuminate\Validation\Rule;
 
 class UpdateStudentClassRequest extends FormRequest
 {
+    use ValidatesClassFees;
+
     public function authorize(): bool
     {
         return true;
@@ -14,7 +16,7 @@ class UpdateStudentClassRequest extends FormRequest
 
     public function rules(): array
     {
-        return [
+        return array_merge([
             'branch_id' => [
                 'sometimes',
                 'required',
@@ -69,8 +71,8 @@ class UpdateStudentClassRequest extends FormRequest
             'new_subject' => [
                 'nullable',
                 'required_without:subject_id',
-                'integer',
-                'exists:subjects,id',
+                'string',
+                'max:100',
             ],
 
             'organizer_id' => [
@@ -125,12 +127,19 @@ class UpdateStudentClassRequest extends FormRequest
                 'sometimes',
                 'boolean',
             ],
-        ];
+        ], $this->feeRules());
+    }
+
+    public function messages(): array
+    {
+        return $this->feeMessages();
     }
 
     public function withValidator($validator): void
     {
         $validator->after(function ($validator) {
+            $this->checkFees($validator);
+
             $teacherPercentage = (float) $this->input('teacher_percentage', 0);
             $organizerPercentage = (float) $this->input('organizer_percentage', 0);
             $institutionPercentage = (float) $this->input('institution_percentage', 0);
