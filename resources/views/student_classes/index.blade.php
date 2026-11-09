@@ -146,6 +146,9 @@
                             <td class="row-number">{{ $loop->iteration + ($classes->currentPage() - 1) * $classes->perPage() }}</td>
                             <td>
                                 <div class="cell-title">{{ $class->class_name }}</div>
+                                @if (isset($classesWithFees) && !in_array($class->id, $classesWithFees, true))
+                                    <a href="{{ route('student-classes.edit', $class) }}" class="nx-badge nx-badge-amber text-decoration-none mt-1"><i class="bi bi-exclamation-triangle-fill"></i> Fees not set</a>
+                                @endif
                                 <small class="cell-sub">{{ ucfirst($class->class_type) }} / {{ $class->medium }}</small>
                             </td>
                             <td>
