@@ -89,6 +89,7 @@
             </div>
             <div class="header-buttons">
                 <a href="{{ route('student-classes.create') }}" class="nx-btn nx-btn-primary"><i class="bi bi-plus-lg"></i> Add Class</a>
+                <a href="{{ route('class-import.index') }}" class="nx-btn nx-btn-light"><i class="bi bi-filetype-csv"></i> Import / Update (CSV)</a>
                 <a href="{{ route('class-categories.index') }}" class="nx-btn nx-btn-light">Categories</a>
                 <a href="{{ route('class-halls.index') }}" class="nx-btn nx-btn-amber">Halls</a>
                 <a href="{{ route('student-classes.exportExcel') }}" class="nx-btn nx-btn-success"><i class="bi bi-file-earmark-excel-fill"></i> Excel</a>
