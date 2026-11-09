@@ -3,11 +3,13 @@
 use App\Http\Controllers\Api\Parent\Attendance\StudentAttendanceController;
 use App\Http\Controllers\Api\Parent\Auth\ParentAuthController;
 use App\Http\Controllers\Api\Parent\ClassSchedule\ClassScheduleController;
+use App\Http\Controllers\Api\Parent\Course\CourseController;
 use App\Http\Controllers\Api\Parent\Dashboard\DashboardController;
 use App\Http\Controllers\Api\Parent\Exam\ExamController;
 use App\Http\Controllers\Api\Parent\FCM\FcmTokenController;
 use App\Http\Controllers\Api\Parent\Notification\ParentNotificationController;
 use App\Http\Controllers\Api\Parent\Payment\StudentPaymentController;
+use App\Http\Controllers\Api\Parent\Profile\ProfileController;
 use App\Http\Controllers\Api\Parent\Result\ResultController;
 use App\Http\Controllers\Api\Parent\Teacher\TeacherController;
 use Illuminate\Support\Facades\Route;
@@ -40,6 +42,16 @@ Route::prefix('v1')->group(function () {
         | Dashboard
         */
         Route::post('/dashboard', [DashboardController::class, 'fetchDashboardData']);
+
+        /*
+        | Student profile (read only) + institute + card
+        */
+        Route::post('/profile', [ProfileController::class, 'show']);
+
+        /*
+        | Courses (fee, installments, class days, attendance)
+        */
+        Route::post('/courses', [CourseController::class, 'index']);
 
         /*
         | Firebase Cloud Messaging

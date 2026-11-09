@@ -8,6 +8,8 @@ use App\Models\Payment;
 use App\Models\Student;
 use App\Models\StudentClassEnrollment;
 use App\Models\Notification;
+use App\Services\Parent\Course\StudentCourseService;
+use App\Services\Parent\Profile\StudentProfileService;
 use Carbon\Carbon;
 
 class DashboardService
@@ -21,6 +23,8 @@ class DashboardService
                 'id',
                 'custom_id',
                 'temporary_qr_code',
+                'temporary_qr_code_expire_date',
+                'permanent_qr_active',
                 'initial_name',
                 'img_url',
                 'grade_id',
@@ -246,6 +250,8 @@ class DashboardService
                 'status',
             ])
             ->where('student_id', $studentId)
+            // cancelled / refunded payments are not shown to parents
+            ->where('status', 'completed')
             ->with([
                 'enrollment:id,student_class_id',
                 'enrollment.studentClass:id,class_name',
@@ -288,8 +294,11 @@ class DashboardService
                     'temporary_qr_code' => $student->temporary_qr_code,
                     'initial_name' => $student->initial_name,
                     'grade' => $student->grade?->grade_name,
-                    'img_url' => $student->img_url,
+                    'card' => StudentProfileService::card($student),
+                    'img_url' => StudentProfileService::imageUrl($student->img_url),
                 ],
+
+                'institute' => StudentProfileService::institute(),
 
                 'total_classes' => $totalClasses,
 
@@ -308,6 +317,9 @@ class DashboardService
                 'upcoming_exams' => $upcomingExams,
 
                 'recent_payments' => $recentPayments,
+
+                // [] when the institute does not use courses
+                'courses' => app(StudentCourseService::class)->summary($studentId),
             ],
         ];
     }
