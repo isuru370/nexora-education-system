@@ -68,6 +68,7 @@ class ParentProfileTest extends TestCase
 
         DB::table('students')->where('id', $id)->update(['permanent_qr_active' => true]);
         $this->api('/profile')->assertJsonPath('data.card.qr_code', 'S1')->assertJsonPath('data.card.qr_type', 'permanent');
+        $this->assertStringStartsWith('data:image/svg+xml;base64,', $this->api('/profile')->json('data.card.qr_svg'));
 
         DB::table('students')->where('id', $id)->update([
             'permanent_qr_active' => false,

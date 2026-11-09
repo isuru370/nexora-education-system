@@ -68,6 +68,23 @@ class StudentProfileService
         ];
     }
 
+    /** The card QR as an SVG data URI (for the web portal), or null. */
+    public static function qrSvg(?string $code): ?string
+    {
+        if ($code === null || $code === '') {
+            return null;
+        }
+
+        try {
+            $svg = (string) \SimpleSoftwareIO\QrCode\Facades\QrCode::format('svg')
+                ->size(240)->margin(1)->errorCorrection('M')->generate($code);
+
+            return 'data:image/svg+xml;base64,' . base64_encode($svg);
+        } catch (\Throwable $e) {
+            return null;
+        }
+    }
+
     public function fetch(int $studentId): array
     {
         $student = Student::query()
@@ -164,7 +181,7 @@ class StudentProfileService
                     'mobile' => $student->guardian_mobile,
                 ],
 
-                'card' => self::card($student),
+                'card' => self::card($student) + ['qr_svg' => self::qrSvg(self::card($student)['qr_code'])],
 
                 'login' => [
                     'username' => $login?->username,
