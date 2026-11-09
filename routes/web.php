@@ -80,6 +80,7 @@ use App\Http\Controllers\Web\Student\StudentCardRegistrationController;
 use App\Http\Controllers\Web\Student\StudentController;
 use App\Http\Controllers\Web\Student\StudentTemporaryRegistrationController;
 use App\Http\Controllers\Web\StudentCard\StudentCardController;
+use App\Http\Controllers\Web\StudentClass\ClassImportController;
 use App\Http\Controllers\Web\StudentClass\StudentClassController;
 use App\Http\Controllers\Web\StudentClass\StudentClassManagementController;
 use App\Http\Controllers\Web\StudentClassEnrollment\StudentClassEnrollmentController;
@@ -1879,6 +1880,21 @@ Route::middleware([
         |--------------------------------------------------------------------------
         */
 
+
+/*
+| Classes -> categories -> fee options from a CSV (create + update)
+*/
+Route::prefix('class-import')
+    ->name('class-import.')
+    ->controller(ClassImportController::class)
+    ->middleware(['auth', 'role:ADMIN,BRANCH_ADMIN'])
+    ->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::get('/template', 'template')->name('template');
+        Route::get('/export', 'export')->name('export');
+        Route::post('/preview', 'preview')->name('preview')->middleware('throttle:30,1');
+        Route::post('/apply', 'apply')->name('apply');
+    });
 
 Route::prefix('student-classes')
     ->name('student-classes.')
