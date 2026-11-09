@@ -8,6 +8,7 @@ use App\Models\Payment;
 use App\Models\Student;
 use App\Models\StudentClassEnrollment;
 use App\Models\Notification;
+use App\Services\Parent\Course\StudentCourseService;
 use App\Services\Parent\Profile\StudentProfileService;
 use Carbon\Carbon;
 
@@ -316,6 +317,9 @@ class DashboardService
                 'upcoming_exams' => $upcomingExams,
 
                 'recent_payments' => $recentPayments,
+
+                // [] when the institute does not use courses
+                'courses' => app(StudentCourseService::class)->summary($studentId),
             ],
         ];
     }
