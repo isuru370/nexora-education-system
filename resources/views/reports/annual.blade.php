@@ -185,6 +185,7 @@
                             <th class="text-end">Class Fees</th>
                             <th class="text-end">Admission Fees</th>
                             <th class="text-end">Extra Income</th>
+                            @if (feature('courses'))<th class="text-end">Course Fees</th>@endif
                             <th class="text-end">Total Income</th>
                             <th style="min-width: 130px;">Income</th>
                             <th class="text-end">Expenses</th>
@@ -207,6 +208,7 @@
                                 <td class="text-end amount">{{ $money($row['class_fees']) }}</td>
                                 <td class="text-end amount">{{ $money($row['admission_fees']) }}</td>
                                 <td class="text-end amount">{{ $money($row['extra_income']) }}</td>
+                                @if (feature('courses'))<td class="text-end amount">{{ $money($row['course_fees']) }}</td>@endif
                                 <td class="text-end amount fw-bold">{{ $money($row['total_income']) }}</td>
                                 <td>
                                     <div class="nx-progress">
@@ -225,6 +227,7 @@
                             <td class="text-end amount">{{ $money($totals['class_fees']) }}</td>
                             <td class="text-end amount">{{ $money($totals['admission_fees']) }}</td>
                             <td class="text-end amount">{{ $money($totals['extra_income']) }}</td>
+                            @if (feature('courses'))<td class="text-end amount">{{ $money($totals['course_fees']) }}</td>@endif
                             <td class="text-end amount">{{ $money($totals['total_income']) }}</td>
                             <td></td>
                             <td class="text-end amount text-danger">{{ $money($totals['total_expenses']) }}</td>
@@ -252,6 +255,7 @@
                             <th class="text-end">Teacher Advances</th>
                             <th class="text-end">Organizer</th>
                             <th class="text-end">Institute</th>
+                            @if (feature('courses'))<th class="text-end">Course Payouts</th>@endif
                             <th class="text-end">Total</th>
                         </tr>
                     </thead>
@@ -263,6 +267,7 @@
                                 <td class="text-end amount">{{ $money($row['teacher_advances']) }}</td>
                                 <td class="text-end amount">{{ $money($row['organizer_payments']) }}</td>
                                 <td class="text-end amount">{{ $money($row['institute_expenses']) }}</td>
+                                @if (feature('courses'))<td class="text-end amount">{{ $money($row['course_payouts']) }}</td>@endif
                                 <td class="text-end amount fw-bold">{{ $money($row['total_expenses']) }}</td>
                             </tr>
                         @endforeach
@@ -274,6 +279,7 @@
                             <td class="text-end amount">{{ $money($totals['teacher_advances']) }}</td>
                             <td class="text-end amount">{{ $money($totals['organizer_payments']) }}</td>
                             <td class="text-end amount">{{ $money($totals['institute_expenses']) }}</td>
+                            @if (feature('courses'))<td class="text-end amount">{{ $money($totals['course_payouts']) }}</td>@endif
                             <td class="text-end amount">{{ $money($totals['total_expenses']) }}</td>
                         </tr>
                     </tfoot>
