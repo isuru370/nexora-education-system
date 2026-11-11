@@ -331,6 +331,10 @@ class TeacherScheduleService
                     'start_time' => substr((string) $session->start_time, 0, 5),
                     'end_time' => substr((string) $session->end_time, 0, 5),
                 ];
+
+                if (!array_key_exists('class_hall_id', $payload) && $session->class_hall_id) {
+                    $payload['class_hall_id'] = $session->class_hall_id;
+                }
             }
 
             $request->course_id = $course->id;
