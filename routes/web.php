@@ -936,6 +936,24 @@ Route::middleware([
             Route::post('setting/sms-templates/test', [SmsTemplateController::class, 'test'])
                 ->middleware('throttle:10,1')
                 ->name('setting.sms-templates.test');
+
+            // Teacher App: what teachers can do in the staff app + their class day requests
+            Route::get('setting/teacher-app', [\App\Http\Controllers\Web\TeacherApp\TeacherAppController::class, 'index'])
+                ->name('setting.teacher-app');
+
+            Route::put('setting/teacher-app', [\App\Http\Controllers\Web\TeacherApp\TeacherAppController::class, 'update'])
+                ->name('setting.teacher-app.update');
+
+            Route::get('setting/teacher-requests', [\App\Http\Controllers\Web\TeacherApp\TeacherAppController::class, 'requests'])
+                ->name('setting.teacher-requests');
+
+            Route::post('setting/teacher-requests/{id}/approve', [\App\Http\Controllers\Web\TeacherApp\TeacherAppController::class, 'approve'])
+                ->whereNumber('id')
+                ->name('setting.teacher-requests.approve');
+
+            Route::post('setting/teacher-requests/{id}/reject', [\App\Http\Controllers\Web\TeacherApp\TeacherAppController::class, 'reject'])
+                ->whereNumber('id')
+                ->name('setting.teacher-requests.reject');
         });
 
 
