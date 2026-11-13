@@ -648,6 +648,48 @@ Route::middleware([
             '/profile/change-password',
             [TeacherProfileController::class, 'changePassword']
         )->name('profile.change-password');
+
+        // What the institute lets teachers do (Settings > Teacher App)
+        Route::get('/features', [TeacherDashboardController::class, 'features'])->name('features');
+
+        // Attendance in own classes / courses, today ({type}: class | course)
+        Route::prefix('attendance')
+            ->name('attendance.')
+            ->middleware('teacher.rule:attendance')
+            ->controller(\App\Http\Controllers\Api\Teacher\TeacherAttendanceController::class)
+            ->group(function () {
+                Route::get('today', 'today')->name('today');
+                Route::get('{type}/{id}/students', 'students')->where(['type' => 'class|course', 'id' => '[0-9]+'])->name('students');
+                Route::post('{type}/{id}/mark', 'mark')->where(['type' => 'class|course', 'id' => '[0-9]+'])->name('mark');
+                Route::post('{type}/{id}/scan', 'scan')->where(['type' => 'class|course', 'id' => '[0-9]+'])->middleware('throttle:120,1')->name('scan');
+            });
+
+        // Change / add / cancel own class days (auto or admin approval)
+        Route::prefix('schedule')
+            ->name('schedule.')
+            ->middleware('teacher.rule:schedule')
+            ->controller(\App\Http\Controllers\Api\Teacher\TeacherScheduleController::class)
+            ->group(function () {
+                Route::get('/', 'index')->name('index');
+                Route::get('options', 'options')->name('options');
+                Route::get('requests', 'requests')->name('requests');
+                Route::post('requests', 'store')->middleware('throttle:30,1')->name('requests.store');
+                Route::delete('requests/{id}', 'withdraw')->whereNumber('id')->name('requests.withdraw');
+            });
+
+        // Own earnings, salary, deductions / welfare, student payments, courses
+        Route::prefix('payments')
+            ->name('payments.')
+            ->middleware('teacher.rule:payments')
+            ->controller(\App\Http\Controllers\Api\Teacher\TeacherPaymentController::class)
+            ->group(function () {
+                Route::get('branches', 'branches')->name('branches');
+                Route::get('month', 'month')->name('month');
+                Route::get('deductions', 'deductions')->name('deductions');
+                Route::get('history', 'history')->name('history');
+                Route::get('students', 'students')->name('students');
+                Route::get('courses', 'courses')->name('courses');
+            });
     });
 
 /*

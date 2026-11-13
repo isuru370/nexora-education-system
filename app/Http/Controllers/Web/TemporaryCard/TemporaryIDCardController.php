@@ -210,7 +210,7 @@ class TemporaryIDCardController extends Controller
     */
 
     /**
-     * Download PDF for a range of temporary ID cards.
+     * Download a range of temporary ID cards (PDF, or ZIP of PDFs).
      */
     public function downloadPdf(DownloadTemporaryCardPdfRequest $request)
     {
@@ -218,12 +218,15 @@ class TemporaryIDCardController extends Controller
 
         try {
 
-            $pdf = $this->temporaryCardService->generateRangePdf(
+            // Up to 120 cards: one PDF. More: a ZIP with a PDF for every 120.
+            $file = $this->temporaryCardService->downloadRange(
                 $validated['start'],
                 $validated['end']
             );
 
-            return $pdf->download('temporary-id-cards.pdf');
+            return response()
+                ->download($file['path'], $file['name'], ['Content-Type' => $file['type']])
+                ->deleteFileAfterSend(true);
 
         } catch (RuntimeException $e) {
 
