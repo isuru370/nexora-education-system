@@ -413,8 +413,12 @@ class TemporaryCardService
      */
     public function generateIssuedCardsPdf()
     {
+        // Thousands of rows: dompdf needs more than the default 256 MB
+        @ini_set('memory_limit', '1024M');
+        @set_time_limit(300);
+
         // Get all issued cards with student relationship
-        $cards = TemporaryIdCard::with(['student'])
+        $cards = TemporaryIdCard::with(['student.grade'])
             ->issued()
             ->orderBy('temporary_id_number')
             ->get();
@@ -449,7 +453,7 @@ class TemporaryCardService
         $cardsWithoutNumbers = $totalIssued - $cardsWithNumbers;
 
         // ====== Get student details for each card ======
-        $cardDetails = $cards->map(function ($card) {
+        $cardDetails = $cards->values()->map(function ($card) {
             return [
                 'temporary_id_number' => $card->temporary_id_number,
                 'card_number'         => $card->card_number,
@@ -465,8 +469,7 @@ class TemporaryCardService
                 'grade_name'          => $card->student && $card->student->grade
                     ? $card->student->grade->grade_name
                     : null,
-                'activated_at'        => $card->activated_at,
-                'created_at'          => $card->created_at,
+                'activated_at'        => $card->activated_at ? $card->activated_at->format('d M Y') : null,
                 'is_assigned'         => $card->student ? true : false,
             ];
         });
@@ -474,7 +477,6 @@ class TemporaryCardService
         return Pdf::loadView(
             'pdf.temporary-card.index',
             compact(
-                'cards',
                 'cardDetails',
                 'totalIssued',
                 'totalCards',
