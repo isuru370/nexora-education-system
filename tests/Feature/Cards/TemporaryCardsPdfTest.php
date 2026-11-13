@@ -25,7 +25,7 @@ class TemporaryCardsPdfTest extends TestCase
         for ($i = 1; $i <= 1500; $i++) {
             $rows[] = [
                 'temporary_id_number' => sprintf('TMP%05d', $i),
-                'card_number' => $i % 2 ? sprintf('C%05d', $i) : null,
+                'card_number' => sprintf('C%05d', $i),
                 'student_id' => $i === 1 ? $this->inst['s1'] : null,
                 'activated_at' => $i === 1 ? now() : null,
                 'status' => 'issued',
@@ -51,7 +51,7 @@ class TemporaryCardsPdfTest extends TestCase
 
         $rows = [];
         for ($i = 100; $i <= 229; $i++) {
-            $rows[] = ['temporary_id_number' => 'TMP' . $i, 'status' => 'pending', 'created_at' => now(), 'updated_at' => now()];
+            $rows[] = ['temporary_id_number' => 'TMP' . $i, 'card_number' => 'C' . $i, 'status' => 'pending', 'created_at' => now(), 'updated_at' => now()];
         }
         DB::table('temporary_id_cards')->insert($rows);
 
