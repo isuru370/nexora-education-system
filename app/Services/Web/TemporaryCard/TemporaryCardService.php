@@ -10,6 +10,12 @@ use RuntimeException;
 
 class TemporaryCardService
 {
+    /** Cards in one PDF (dompdf memory) and shown in the preview. */
+    public const PDF_CHUNK = 120;
+
+    /** Most cards in one download (several PDFs in a ZIP). */
+    public const RANGE_MAX = 1000;
+
     /*
     |--------------------------------------------------------------------------
     | INDEX - Search, Filter, Pagination & Counts
@@ -205,9 +211,9 @@ class TemporaryCardService
 
         $totalCards = ($endNum - $startNum) + 1;
 
-        if ($totalCards > 120) {
+        if ($totalCards > self::RANGE_MAX) {
             throw new RuntimeException(
-                'You can preview maximum 120 cards at once.'
+                'You can download maximum ' . self::RANGE_MAX . ' cards at once.'
             );
         }
 
@@ -235,7 +241,8 @@ class TemporaryCardService
             );
         }
 
-        $codes = $cards->map(function ($card) {
+        // Only the first PDF's cards are drawn on the page; the download has all
+        $codes = $cards->take(self::PDF_CHUNK)->map(function ($card) {
             return [
                 'id'          => $card->id,
                 'code'        => $card->temporary_id_number,
@@ -248,6 +255,8 @@ class TemporaryCardService
 
         return [
             'codes' => $codes,
+            'total' => $cards->count(),
+            'files' => (int) ceil($cards->count() / self::PDF_CHUNK),
             'start' => $startInput,
             'end'   => $endInput,
         ];
@@ -350,18 +359,92 @@ class TemporaryCardService
      */
     public function generateRangePdf(string $start, string $end)
     {
+        $cards = $this->rangeCards($start, $end);
+
+        if ($cards->count() > self::PDF_CHUNK) {
+            throw new RuntimeException('More than ' . self::PDF_CHUNK . ' cards: download them as a ZIP.');
+        }
+
+        $pdf = $this->cardsPdf($cards);
+        $this->markDownloaded($cards);
+
+        return $pdf;
+    }
+
+    /**
+     * Download a TMP range: one PDF up to 120 cards, otherwise a ZIP with
+     * a PDF for every 120 cards (TMP100-TMP219.pdf, ...).
+     *
+     * @return array{path: string, name: string, type: string}  a temp file, delete after sending
+     */
+    public function downloadRange(string $start, string $end): array
+    {
+        $cards = $this->rangeCards($start, $end);
+        $label = fn ($chunk) => $chunk->first()->temporary_id_number . '-' . $chunk->last()->temporary_id_number;
+
+        // dompdf keeps a lot in memory; each PDF is freed before the next
+        @ini_set('memory_limit', '1024M');
+        @set_time_limit(600);
+
+        if ($cards->count() <= self::PDF_CHUNK) {
+            $path = tempnam(sys_get_temp_dir(), 'tmpcards');
+            file_put_contents($path, $this->cardsPdf($cards)->output());
+            $this->markDownloaded($cards);
+
+            return ['path' => $path, 'name' => 'temporary-id-cards-' . $label($cards) . '.pdf', 'type' => 'application/pdf'];
+        }
+
+        if (!class_exists(\ZipArchive::class)) {
+            throw new RuntimeException('ZIP is not available on the server. Download 120 cards at a time.');
+        }
+
+        $zipPath = tempnam(sys_get_temp_dir(), 'tmpcards');
+        $zip = new \ZipArchive();
+
+        if ($zip->open($zipPath, \ZipArchive::OVERWRITE) !== true) {
+            throw new RuntimeException('Could not make the ZIP file.');
+        }
+
+        $parts = [];
+
+        foreach ($cards->chunk(self::PDF_CHUNK) as $chunk) {
+            $chunk = $chunk->values();
+            $part = tempnam(sys_get_temp_dir(), 'tmpcards');
+            $pdf = $this->cardsPdf($chunk);
+            file_put_contents($part, $pdf->output());
+            unset($pdf);
+            gc_collect_cycles();
+
+            $zip->addFile($part, 'temporary-id-cards-' . $label($chunk) . '.pdf');
+            $parts[] = $part;
+        }
+
+        $zip->close();
+
+        foreach ($parts as $part) {
+            @unlink($part);
+        }
+
+        $this->markDownloaded($cards);
+
+        return ['path' => $zipPath, 'name' => 'temporary-id-cards-' . $label($cards) . '.zip', 'type' => 'application/zip'];
+    }
+
+    /** Cards of a TMP range (up to RANGE_MAX), in number order. */
+    protected function rangeCards(string $start, string $end)
+    {
         $startNum = (int) preg_replace('/^TMP/i', '', strtoupper(trim($start)));
         $endNum   = (int) preg_replace('/^TMP/i', '', strtoupper(trim($end)));
 
-        if ($startNum > $endNum) {
+        if ($startNum < 1 || $startNum > $endNum) {
             throw new RuntimeException(
                 'Start TMP number must be smaller than End TMP number.'
             );
         }
 
-        if (($endNum - $startNum + 1) > 120) {
+        if (($endNum - $startNum + 1) > self::RANGE_MAX) {
             throw new RuntimeException(
-                'You can download maximum 120 cards at once.'
+                'You can download maximum ' . self::RANGE_MAX . ' cards at once.'
             );
         }
 
@@ -369,11 +452,20 @@ class TemporaryCardService
             return 'TMP' . str_pad($num, 3, '0', STR_PAD_LEFT);
         });
 
-        $cards = TemporaryIdCard::whereIn('temporary_id_number', $tmpNumbers)
-            ->orderByRaw("CAST(SUBSTRING(temporary_id_number, 4) AS UNSIGNED)")
-            ->get();
+        $cards = TemporaryIdCard::whereIn('temporary_id_number', $tmpNumbers)->get()
+            ->sortBy(fn ($card) => (int) preg_replace('/\D/', '', $card->temporary_id_number))
+            ->values();
 
-        $codes = $cards->map(function ($card, $index) {
+        if ($cards->isEmpty()) {
+            throw new RuntimeException('No cards found in this range.');
+        }
+
+        return $cards;
+    }
+
+    protected function cardsPdf($cards)
+    {
+        $codes = $cards->values()->map(function ($card, $index) {
             return [
                 'id'        => $card->id,
                 'number'    => $index + 1,
@@ -383,21 +475,24 @@ class TemporaryCardService
         });
 
         // dompdf (wkhtmltopdf is not installed on the servers)
-        $pdf = Pdf::loadView('temporary_id_cards.pdf', [
+        return Pdf::loadView('temporary_id_cards.pdf', [
             'codes' => $codes,
         ])
             ->setPaper('a4', 'landscape')
             ->setOption('dpi', 300)
             ->setOption('isRemoteEnabled', false);
+    }
 
-        // Update status to downloaded
-        TemporaryIdCard::whereIn('id', $cards->pluck('id'))
-            ->update([
-                'status'     => 'downloaded',
-                'updated_at' => now(),
-            ]);
-
-        return $pdf;
+    protected function markDownloaded($cards): void
+    {
+        foreach ($cards->pluck('id')->chunk(500) as $ids) {
+            TemporaryIdCard::whereIn('id', $ids)
+                ->where('status', 'pending')
+                ->update([
+                    'status'     => 'downloaded',
+                    'updated_at' => now(),
+                ]);
+        }
     }
 
     /*
