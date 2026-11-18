@@ -156,7 +156,7 @@
                 </div>
 
                 @if ($students->hasPages())
-                    <div class="tw:p-4!">{{ $students->links('pagination::bootstrap-4') }}</div>
+                    <div class="tw:p-4!">{{ $students->links('pagination.ui') }}</div>
                 @endif
             </div>
         </form>

@@ -18,6 +18,7 @@ const { compile } = await import(path.join(twDir, 'dist/lib.mjs'));
 const entries = {
     'resources/css/app.css': 'public/css/nexora.css', // app layout (with Bootstrap, no preflight)
     'resources/css/guest.css': 'public/css/guest.css', // login and other pages without Bootstrap
+    'resources/css/page.css': 'public/css/page.css', // stand-alone pages (forgot password ...): ui-kit + Tailwind
 };
 
 const sources = ['resources/views', 'public/js/nx-ui.js', 'app'];

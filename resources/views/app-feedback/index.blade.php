@@ -89,7 +89,7 @@
         @endforelse
 
         @if ($feedback->hasPages())
-            <div class="tw:mt-4!">{{ $feedback->links('pagination::bootstrap-4') }}</div>
+            <div class="tw:mt-4!">{{ $feedback->links('pagination.ui') }}</div>
         @endif
     </div>
 @endsection

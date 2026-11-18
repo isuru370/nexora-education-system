@@ -9,9 +9,6 @@
 
     <title>@yield('title', config('app.name'))</title>
 
-    <!-- Bootstrap: pages that are not moved to Tailwind yet -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
@@ -67,9 +64,6 @@
         </main>
 
     </div>
-
-    <!-- Bootstrap JS: pages that are not moved to Tailwind yet -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
     <script src="{{ asset('js/nx-ui.js') }}?v={{ @filemtime(public_path('js/nx-ui.js')) }}"></script>
 

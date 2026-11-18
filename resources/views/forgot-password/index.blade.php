@@ -10,7 +10,7 @@
     <title>Forgot Password - Minipalasa Education</title>
 
     <!-- Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/page.css') }}?v={{ @filemtime(public_path('css/page.css')) }}">
 
     <!-- FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -316,7 +316,7 @@
                 0 0 0 4px rgba(37, 99, 235, .10);
         }
 
-        .input-group-text {
+        .ui-input-group-text {
 
             background: transparent !important;
 
@@ -424,7 +424,7 @@
 
         /* ALERT */
 
-        .alert {
+        .ui-alert {
 
             border: none;
 
@@ -533,7 +533,7 @@
                 <!-- SUCCESS -->
                 @if(session('success'))
 
-                    <div class="alert alert-success mb-4">
+                    <div class="ui-alert ui-alert-success tw:mb-6!">
 
                         {{ session('success') }}
 
@@ -544,9 +544,9 @@
                 <!-- ERRORS -->
                 @if($errors->any())
 
-                    <div class="alert alert-danger mb-4">
+                    <div class="ui-alert ui-alert-danger tw:mb-6!">
 
-                        <ul class="mb-0 ps-3">
+                        <ul class="tw:mb-0! tw:pl-4!">
 
                             @foreach($errors->all() as $error)
 
@@ -587,19 +587,19 @@
 
                         @csrf
 
-                        <div class="mb-4">
+                        <div class="tw:mb-6!">
 
                             <label class="custom-label">
                                 Email Address
                             </label>
 
-                            <div class="input-group input-group-box">
+                            <div class="ui-input-group input-group-box">
 
-                                <span class="input-group-text">
+                                <span class="ui-input-group-text">
                                     <i class="fas fa-envelope"></i>
                                 </span>
 
-                                <input type="email" name="email" class="form-control custom-input"
+                                <input type="email" name="email" class="ui-form-control custom-input"
                                     placeholder="Enter your email" value="{{ old('email') }}" required>
 
                             </div>
@@ -608,7 +608,7 @@
 
                         <button type="submit" class="btn-primary-custom">
 
-                            <i class="fas fa-paper-plane me-2"></i>
+                            <i class="fas fa-paper-plane tw:mr-2!"></i>
 
                             Send OTP
 
@@ -647,46 +647,46 @@
 
                         <input type="hidden" name="email" value="{{ $resetEmail }}">
 
-                        <div class="mb-4">
+                        <div class="tw:mb-6!">
 
                             <label class="custom-label">
                                 Email Address
                             </label>
 
-                            <div class="input-group input-group-box">
+                            <div class="ui-input-group input-group-box">
 
-                                <span class="input-group-text">
+                                <span class="ui-input-group-text">
                                     <i class="fas fa-envelope"></i>
                                 </span>
 
-                                <input type="email" class="form-control custom-input" value="{{ $resetEmail }}" readonly>
+                                <input type="email" class="ui-form-control custom-input" value="{{ $resetEmail }}" readonly>
 
                             </div>
 
                         </div>
 
-                        <div class="mb-4">
+                        <div class="tw:mb-6!">
 
                             <label class="custom-label">
                                 OTP Code
                             </label>
 
-                            <div class="input-group input-group-box">
+                            <div class="ui-input-group input-group-box">
 
-                                <span class="input-group-text">
+                                <span class="ui-input-group-text">
                                     <i class="fas fa-shield-alt"></i>
                                 </span>
 
-                                <input type="text" name="otp" maxlength="6" class="form-control custom-input otp-input"
+                                <input type="text" name="otp" maxlength="6" class="ui-form-control custom-input otp-input"
                                     placeholder="000000" required {{ $step === 'reset' ? 'disabled' : '' }}>
 
                             </div>
 
                         </div>
 
-                        <button type="submit" class="btn-primary-custom mb-3" {{ $step === 'reset' ? 'disabled' : '' }}>
+                        <button type="submit" class="btn-primary-custom tw:mb-4!" {{ $step === 'reset' ? 'disabled' : '' }}>
 
-                            <i class="fas fa-check-circle me-2"></i>
+                            <i class="fas fa-check-circle tw:mr-2!"></i>
 
                             Verify OTP
 
@@ -702,7 +702,7 @@
 
                         <button type="submit" class="btn-outline-custom">
 
-                            <i class="fas fa-rotate me-2"></i>
+                            <i class="fas fa-rotate tw:mr-2!"></i>
 
                             Resend OTP
 
@@ -715,7 +715,7 @@
                 <!-- STEP 3 -->
                 @if($step === 'reset')
 
-                    <div class="step-box mt-4">
+                    <div class="step-box tw:mt-6!">
 
                         <div class="step-badge">
                             3
@@ -741,38 +741,38 @@
 
                         <input type="hidden" name="email" value="{{ $verifiedEmail }}">
 
-                        <div class="mb-4">
+                        <div class="tw:mb-6!">
 
                             <label class="custom-label">
                                 New Password
                             </label>
 
-                            <div class="input-group input-group-box">
+                            <div class="ui-input-group input-group-box">
 
-                                <span class="input-group-text">
+                                <span class="ui-input-group-text">
                                     <i class="fas fa-lock"></i>
                                 </span>
 
-                                <input type="password" name="password" class="form-control custom-input"
+                                <input type="password" name="password" class="ui-form-control custom-input"
                                     placeholder="Enter new password" required>
 
                             </div>
 
                         </div>
 
-                        <div class="mb-4">
+                        <div class="tw:mb-6!">
 
                             <label class="custom-label">
                                 Confirm Password
                             </label>
 
-                            <div class="input-group input-group-box">
+                            <div class="ui-input-group input-group-box">
 
-                                <span class="input-group-text">
+                                <span class="ui-input-group-text">
                                     <i class="fas fa-lock"></i>
                                 </span>
 
-                                <input type="password" name="password_confirmation" class="form-control custom-input"
+                                <input type="password" name="password_confirmation" class="ui-form-control custom-input"
                                     placeholder="Confirm password" required>
 
                             </div>
@@ -781,7 +781,7 @@
 
                         <button type="submit" class="btn-primary-custom">
 
-                            <i class="fas fa-key me-2"></i>
+                            <i class="fas fa-key tw:mr-2!"></i>
 
                             Reset Password
 
@@ -794,11 +794,11 @@
                 <!-- START AGAIN -->
                 @if($step !== 'send')
 
-                    <div class="text-center mt-4">
+                    <div class="tw:text-center! tw:mt-6!">
 
                         <a href="{{ route('forgot_password.form', ['restart' => 1]) }}" class="custom-link">
 
-                            <i class="fas fa-arrow-left me-1"></i>
+                            <i class="fas fa-arrow-left tw:mr-1!"></i>
 
                             Start Again
 

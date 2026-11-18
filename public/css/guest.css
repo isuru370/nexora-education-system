@@ -302,6 +302,9 @@
   .tw\:-mx-3 {
     margin-inline: calc(var(--tw-spacing) * -3);
   }
+  .tw\:mx-0 {
+    margin-inline: 0px;
+  }
   .tw\:mx-1\! {
     margin-inline: var(--tw-spacing) !important;
   }
@@ -568,6 +571,9 @@
   }
   .tw\:w-\[50\%\] {
     width: 50%;
+  }
+  .tw\:w-\[66\.66666667\%\] {
+    width: 66.66666667%;
   }
   .tw\:w-\[75\%\] {
     width: 75%;
@@ -989,6 +995,9 @@
   }
   .tw\:p-12\! {
     padding: calc(var(--tw-spacing) * 12) !important;
+  }
+  .tw\:px-0 {
+    padding-inline: 0px;
   }
   .tw\:px-0\! {
     padding-inline: 0px !important;

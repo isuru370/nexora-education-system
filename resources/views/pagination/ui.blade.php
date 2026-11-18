@@ -1,4 +1,4 @@
-{{-- Laravel's bootstrap-4 pagination with the ui-kit classes (pages moved to Tailwind): $items->links('pagination.ui') --}}
+{{-- Laravel's bootstrap-4 pagination with the ui-kit classes (the default pagination view, AppServiceProvider) --}}
 @if ($paginator->hasPages())
     <nav>
         <ul class="ui-pagination">
