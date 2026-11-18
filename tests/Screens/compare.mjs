@@ -28,7 +28,8 @@ function firstMoved(file) {
     };
     // 1) an element whose own styles changed
     for (let i = 0; i < n; i++) {
-        if (A[i][0] !== B[i][0]) return `element ${i}: \`${A[i][0]}\` → \`${B[i][0]}\``;
+        // class names change on purpose (Bootstrap -> Tailwind): only a different tag means the pages differ here
+        if (A[i][0].split(/[.#]/)[0] !== B[i][0].split(/[.#]/)[0]) return `element ${i}: \`${A[i][0]}\` → \`${B[i][0]}\``;
         const sa = A[i][5].split('|'), sb = B[i][5].split('|');
         const styles = PROPS.map((p, k) => (sa[k] !== sb[k] && p !== 'width' && p !== 'height' ? `${p}: ${sa[k]} → ${sb[k]}` : '')).filter(Boolean);
         if (styles.length) return desc(i, styles.join('; '));
