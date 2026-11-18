@@ -100,11 +100,11 @@
                             <small class="cell-sub tw:block! tw:mt-1!">Sends the portal login</small>
                         @else
                             <div class="channel-toggle" role="radiogroup" aria-label="{{ $setting->label }} channel">
-                                <input type="radio" class="btn-check" name="settings[{{ $key }}][channel]"
+                                <input type="radio" class="ui-btn-check" name="settings[{{ $key }}][channel]"
                                     id="{{ $key }}_push" value="push" {{ $channel === 'push' ? 'checked' : '' }}>
                                 <label for="{{ $key }}_push"><i class="bi bi-phone"></i> Parent app</label>
 
-                                <input type="radio" class="btn-check" name="settings[{{ $key }}][channel]"
+                                <input type="radio" class="ui-btn-check" name="settings[{{ $key }}][channel]"
                                     id="{{ $key }}_sms" value="sms" {{ $channel === 'sms' ? 'checked' : '' }}>
                                 <label for="{{ $key }}_sms"><i class="bi bi-chat-dots"></i> SMS</label>
                             </div>
@@ -233,16 +233,16 @@
         white-space: nowrap;
         margin: 0;
     }
-    .dashboard-page .channel-toggle .btn-check:checked + label {
+    .dashboard-page .channel-toggle .ui-btn-check:checked + label {
         background: var(--nx-card-bg);
         color: var(--nx-blue);
         box-shadow: var(--nx-shadow);
     }
-    .dashboard-page .channel-toggle .btn-check:focus-visible + label {
+    .dashboard-page .channel-toggle .ui-btn-check:focus-visible + label {
         outline: 2px solid var(--nx-blue);
         outline-offset: 1px;
     }
-    .dashboard-page .channel-toggle .btn-check:disabled + label { cursor: not-allowed; }
+    .dashboard-page .channel-toggle .ui-btn-check:disabled + label { cursor: not-allowed; }
 
     .dashboard-page .notify-switch { justify-self: end; }
     .dashboard-page .notify-switch .ui-form-check-input { width: 2.6em; height: 1.35em; cursor: pointer; }

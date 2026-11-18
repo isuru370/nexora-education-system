@@ -782,7 +782,7 @@ KIT = [
     'table-primary', 'table-active', 'table-group-divider',
     'badge',
     'list-group', 'list-group-flush', 'list-group-item', 'list-group-item-action', 'list-unstyled',
-    'btn', 'btn-sm', 'btn-lg', 'btn-link', 'btn-group', 'btn-group-sm',
+    'btn', 'btn-sm', 'btn-lg', 'btn-link', 'btn-group', 'btn-group-sm', 'btn-check',
     'btn-primary', 'btn-secondary', 'btn-success', 'btn-danger', 'btn-warning', 'btn-info', 'btn-light', 'btn-dark',
     'btn-outline-primary', 'btn-outline-secondary', 'btn-outline-success', 'btn-outline-danger',
     'btn-outline-warning', 'btn-outline-info', 'btn-outline-light', 'btn-outline-dark',

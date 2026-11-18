@@ -104,7 +104,7 @@
                                     @endif
                                 </td>
                                 <td>
-                                    <span class="ui-badge bg-{{ $badges[$r->status] ?? 'secondary' }}">{{ ucfirst($r->status) }}</span>
+                                    <span class="ui-badge {{ \App\Support\Ui::bg($badges[$r->status] ?? 'secondary', nx: true) }}">{{ ucfirst($r->status) }}</span>
                                     @if ($r->error)
                                         <small class="tw:block! tw:text-(color:--nx-red)!">{{ $r->error }}</small>
                                     @endif

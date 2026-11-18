@@ -1990,6 +1990,17 @@ textarea.ui-form-control-lg {
   display: inline-block;
   margin-right: 1rem;
 }
+.ui-btn-check {
+  position: absolute;
+  clip: rect(0, 0, 0, 0);
+  pointer-events: none;
+}
+.ui-btn-check[disabled] + .ui-btn,
+.ui-btn-check:disabled + .ui-btn {
+  pointer-events: none;
+  filter: none;
+  opacity: 0.65;
+}
 .ui-input-group {
   position: relative;
   display: flex;
@@ -2211,6 +2222,11 @@ textarea.ui-form-control.ui-is-invalid {
   background-color: var(--ui-btn-hover-bg);
   border-color: var(--ui-btn-hover-border-color);
 }
+.ui-btn-check + .ui-btn:hover {
+  color: var(--ui-btn-color);
+  background-color: var(--ui-btn-bg);
+  border-color: var(--ui-btn-border-color);
+}
 .ui-btn:focus-visible {
   color: var(--ui-btn-hover-color);
   background-color: var(--ui-btn-hover-bg);
@@ -2218,6 +2234,13 @@ textarea.ui-form-control.ui-is-invalid {
   outline: 0;
   box-shadow: var(--ui-btn-focus-box-shadow);
 }
+.ui-btn-check:focus-visible + .ui-btn {
+  border-color: var(--ui-btn-hover-border-color);
+  outline: 0;
+  box-shadow: var(--ui-btn-focus-box-shadow);
+}
+.ui-btn-check:checked + .ui-btn,
+:not(.ui-btn-check) + .ui-btn:active,
 .ui-btn:first-child:active,
 .ui-btn.active,
 .ui-btn.show {
@@ -2225,9 +2248,14 @@ textarea.ui-form-control.ui-is-invalid {
   background-color: var(--ui-btn-active-bg);
   border-color: var(--ui-btn-active-border-color);
 }
+.ui-btn-check:checked + .ui-btn:focus-visible,
+:not(.ui-btn-check) + .ui-btn:active:focus-visible,
 .ui-btn:first-child:active:focus-visible,
 .ui-btn.active:focus-visible,
 .ui-btn.show:focus-visible {
+  box-shadow: var(--ui-btn-focus-box-shadow);
+}
+.ui-btn-check:checked:focus-visible + .ui-btn {
   box-shadow: var(--ui-btn-focus-box-shadow);
 }
 .ui-btn:disabled,
@@ -2684,6 +2712,8 @@ fieldset:disabled .ui-btn {
   position: relative;
   flex: 1 1 auto;
 }
+.ui-btn-group > .ui-btn-check:checked + .ui-btn,
+.ui-btn-group > .ui-btn-check:focus + .ui-btn,
 .ui-btn-group > .ui-btn:hover,
 .ui-btn-group > .ui-btn:focus,
 .ui-btn-group > .ui-btn:active,
@@ -2693,6 +2723,7 @@ fieldset:disabled .ui-btn {
 .ui-btn-group {
   border-radius: 0.375rem;
 }
+.ui-btn-group > :not(.ui-btn-check:first-child) + .ui-btn,
 .ui-btn-group > .ui-btn-group:not(:first-child) {
   margin-left: calc(1px * -1);
 }
@@ -2702,6 +2733,7 @@ fieldset:disabled .ui-btn {
   border-bottom-right-radius: 0;
 }
 .ui-btn-group > .ui-btn:nth-child(n+3),
+.ui-btn-group > :not(.ui-btn-check) + .ui-btn,
 .ui-btn-group > .ui-btn-group:not(:first-child) > .ui-btn {
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;

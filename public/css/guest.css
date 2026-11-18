@@ -849,14 +849,14 @@
       border-color: color-mix(in oklab, var(--tw-color-white) 35%, transparent);
     }
   }
-  .tw\:\[border-right-color\:\#fff\]\! {
-    border-right-color: #fff !important;
+  .tw\:\[border-right-color\:rgba\(255\,255\,255\,0\.25\)\]\! {
+    border-right-color: rgba(255,255,255,0.25) !important;
   }
-  .tw\:\[border-bottom-color\:\#fff\]\! {
-    border-bottom-color: #fff !important;
+  .tw\:\[border-bottom-color\:rgba\(255\,255\,255\,0\.25\)\]\! {
+    border-bottom-color: rgba(255,255,255,0.25) !important;
   }
-  .tw\:\[border-left-color\:\#fff\]\! {
-    border-left-color: #fff !important;
+  .tw\:\[border-left-color\:rgba\(255\,255\,255\,0\.25\)\]\! {
+    border-left-color: rgba(255,255,255,0.25) !important;
   }
   .tw\:bg-\[\#d1e7dd\] {
     background-color: #d1e7dd;
@@ -1581,6 +1581,12 @@
   .tw\:\[background\:var\(--nx-blue\)\]\! {
     background: var(--nx-blue) !important;
   }
+  .tw\:\[background\:var\(--nx-green\)\]\! {
+    background: var(--nx-green) !important;
+  }
+  .tw\:\[background\:var\(--nx-muted\)\]\! {
+    background: var(--nx-muted) !important;
+  }
   .tw\:\[background\:var\(--nx-red\)\]\! {
     background: var(--nx-red) !important;
   }
@@ -1605,8 +1611,8 @@
   .tw\:\[border-top\:0_none_currentcolor\]\! {
     border-top: 0 none currentcolor !important;
   }
-  .tw\:\[border-top\:1px_solid_\#fff\]\! {
-    border-top: 1px solid #fff !important;
+  .tw\:\[border-top\:1px_solid_rgba\(255\,255\,255\,0\.25\)\]\! {
+    border-top: 1px solid rgba(255,255,255,0.25) !important;
   }
   .tw\:\[border\:0\]\! {
     border: 0 !important;
