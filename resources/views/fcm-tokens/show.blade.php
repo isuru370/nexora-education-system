@@ -154,7 +154,7 @@
                             <tr>
                                 <td class="label">Status</td>
                                 <td class="value">
-                                    <span class="ui-badge custom-badge bg-{{ $token->status_color }}">
+                                    <span class="ui-badge custom-badge {{ \App\Support\Ui::bg($token->status_color) }}">
                                         <i class="bi tw:mr-1! {{ $token->is_active ? 'bi-check-circle-fill' : 'bi-x-circle-fill' }}"></i>
                                         {{ $token->status_label }}
                                     </span>

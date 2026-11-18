@@ -438,7 +438,7 @@
 
                         </div>
 
-                        <div class="tw:text-center! tw:text-[.875em] tw:mt-4! tw:pt-2! tw:[border-top:1px_solid_#fff]! tw:[border-right-color:#fff]! tw:[border-bottom-color:#fff]! tw:[border-left-color:#fff]! border-opacity-25">
+                        <div class="tw:text-center! tw:text-[.875em] tw:mt-4! tw:pt-2! tw:[border-top:1px_solid_rgba(255,255,255,0.25)]! tw:[border-right-color:rgba(255,255,255,0.25)]! tw:[border-bottom-color:rgba(255,255,255,0.25)]! tw:[border-left-color:rgba(255,255,255,0.25)]!">
                             Temporary ID Card
                         </div>
 

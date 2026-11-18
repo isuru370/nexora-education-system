@@ -150,7 +150,7 @@
                                                 'cancelled' => 'bi-ban'
                                             ];
                                         @endphp
-                                        <span class="ui-badge custom-badge status-badge bg-{{ $statusColors[$notification->status] ?? 'secondary' }}">
+                                        <span class="ui-badge custom-badge status-badge {{ \App\Support\Ui::bg($statusColors[$notification->status] ?? 'secondary') }}">
                                             <i class="bi tw:mr-1! {{ $statusIcons[$notification->status] ?? 'bi-circle' }}"></i>
                                             {{ $notification->status_label }}
                                         </span>

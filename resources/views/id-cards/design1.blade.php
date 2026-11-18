@@ -6,7 +6,7 @@
     <title>ID Card - {{ $student['custom_id'] ?? 'Student' }}</title>
 
     <!-- Bootstrap 5 -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/page.css') }}?v={{ @filemtime(public_path('css/page.css')) }}">
 
     <!-- html2canvas -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
@@ -136,13 +136,13 @@
         <div class="loading-spinner"></div>
     </div>
 
-    <div class="container">
+    <div class="ui-container">
         <div class="id-card" id="idCard">
-            <div class="row h-100">
+            <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 tw:h-full!">
 
                 <!-- LEFT -->
-                <div class="col-8 d-flex flex-column">
-                    <div class="profile-box mt-1 ms-1">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:flex-[0_0_auto] tw:w-[66.66666667%] tw:flex! tw:flex-col!">
+                    <div class="profile-box tw:mt-1! tw:ml-1!">
                         @php
                             $defaultImage = asset('uploads/logo/logo.png');
                             $studentImage = isset($student['img_url'])
@@ -156,27 +156,27 @@
                             decoding="sync" crossorigin="anonymous" onerror="this.src='{{ $defaultImage }}'">
                     </div>
 
-                    <div class="ms-1 mt-3">
+                    <div class="tw:ml-1! tw:mt-4!">
                         <div class="student-id">{{ $student['custom_id'] ?? 'N/A' }}</div>
-                        <div class="student-name mt-1">
+                        <div class="student-name tw:mt-1!">
                             {{ ($student['fname'] ?? '') . ' ' . ($student['lname'] ?? '') }}
                         </div>
-                        <div class="address mt-1">
+                        <div class="address tw:mt-1!">
                             {{ $student['address'] ?? 'Address not available' }}
                         </div>
                     </div>
                 </div>
 
                 <!-- RIGHT -->
-                <div class="col-4 d-flex flex-column align-items-center">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:flex-[0_0_auto] tw:w-[33.33333333%] tw:flex! tw:flex-col! tw:items-center!">
                     @php
                         $qrData = $student['custom_id'] ?? 'N/A';
                         $qrUrl = 'https://api.qrserver.com/v1/create-qr-code/?size=600x600&data=' . urlencode($qrData);
                     @endphp
 
-                    <img src="{{ $qrUrl }}" class="qr-img mt-1" alt="QR Code" crossorigin="anonymous">
+                    <img src="{{ $qrUrl }}" class="qr-img tw:mt-1!" alt="QR Code" crossorigin="anonymous">
 
-                    <img src="{{ asset('uploads/logo/logo.png') }}" class="logo mt-auto mb-1" alt="Logo"
+                    <img src="{{ asset('uploads/logo/logo.png') }}" class="logo tw:mt-auto! tw:mb-1!" alt="Logo"
                         crossorigin="anonymous">
                 </div>
 
@@ -184,12 +184,12 @@
         </div>
 
         <!-- ACTIONS -->
-        <div class="text-center mt-4">
+        <div class="tw:text-center! tw:mt-6!">
             <button class="download-btn" onclick="downloadIDCard()">
                 Download ID Card
             </button>
 
-            <a href="{{ route('student-id-card.ganarateStudentId') }}" class="btn btn-secondary ms-2">
+            <a href="{{ route('student-id-card.ganarateStudentId') }}" class="ui-btn ui-btn-secondary tw:ml-2!">
                 Back
             </a>
         </div>
