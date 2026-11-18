@@ -64,10 +64,14 @@ jobs:
           cp head/tests/Screens/*.mjs tools/
 
       - name: Before (base branch)
-        run: bash head/tests/Screens/run.sh base 8101 "$PWD/shots/before"
+        run: |
+          set -o pipefail
+          bash head/tests/Screens/run.sh base 8101 "$PWD/shots/before" 2>&1 | tee before.log
 
       - name: After (this PR)
-        run: bash head/tests/Screens/run.sh head 8102 "$PWD/shots/after"
+        run: |
+          set -o pipefail
+          bash head/tests/Screens/run.sh head 8102 "$PWD/shots/after" 2>&1 | tee after.log
 
       - name: Compare
         run: |
@@ -93,11 +97,23 @@ jobs:
           git push -q origin ci-screens
 
       - name: Comment
-        if: github.event_name == 'pull_request'
+        if: always() && github.event_name == 'pull_request'
         env:
           GH_TOKEN: ${{ github.token }}
+          JOB_STATUS: ${{ job.status }}
         run: |
+          set +e
+          mkdir -p shots/changed; touch shots/changed/summary.md before.log after.log
           {
+            if [ "$JOB_STATUS" != "success" ]; then
+              echo "### ❌ Screenshots job failed"
+              for f in before.log after.log /tmp/serve-8101.log /tmp/serve-8102.log; do
+                [ -s "$f" ] || continue
+                echo; echo "<details><summary>$f</summary>"; echo; echo '```'
+                tail -c 6000 "$f" | sed -r "s/\x1B\[[0-9;]*[A-Za-z]//g"
+                echo '```'; echo "</details>"
+              done
+            fi
             echo "### 🖼️ Screenshots: before vs after"
             echo
             cat shots/changed/summary.md
