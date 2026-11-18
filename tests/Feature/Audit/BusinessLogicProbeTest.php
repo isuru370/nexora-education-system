@@ -89,4 +89,16 @@ class BusinessLogicProbeTest extends TestCase
         fwrite(STDERR, "\nPROBE parent notifications: single pay=$single bulk pay=" . ($sent - $single) . "\n");
         $this->assertTrue(true);
     }
+
+    public function test_probe_attendance_add_class_payload(): void
+    {
+        // same payload the Attendance page "Add class" modal sends
+        $res = $this->postJson(route('api.student-class-enrollments.store'), [
+            'student_id' => $this->inst['s3'], 'student_class_id' => $this->inst['c1'], 'class_category_fee_id' => $this->inst['f1'],
+            'is_free_card' => 0, 'custom_fee' => 1500, 'custom_fee_reason' => 'x', 'discount_percentage' => null, 'discount_reason' => null,
+            'enrolled_at' => '2026-10-28', 'note' => null,
+        ]);
+        fwrite(STDERR, "\nPROBE attendance add-class: HTTP " . $res->status() . ' ' . substr($res->getContent(), 0, 250) . "\n");
+        $this->assertTrue(true);
+    }
 }
