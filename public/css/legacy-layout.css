@@ -128,7 +128,8 @@
     }
 
     /* ---------- NAV ITEMS ---------- */
-    .nav-item {
+    .nav-item,
+    .ui-nav-item {
         margin-bottom: 0.25rem;
     }
 
