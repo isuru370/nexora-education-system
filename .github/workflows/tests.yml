@@ -27,6 +27,21 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 30
 
+    # sqlite: fast, like before. mysql: the production database
+    strategy:
+      fail-fast: false
+      matrix:
+        db: [sqlite, mysql]
+
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: nexora_test
+        ports: ['3306:3306']
+        options: --health-cmd="mysqladmin ping -proot" --health-interval=5s --health-timeout=5s --health-retries=20
+
     steps:
       - uses: actions/checkout@v4
         with:
@@ -39,7 +54,7 @@ jobs:
       - uses: shivammathur/setup-php@v2
         with:
           php-version: ${{ steps.php.outputs.version }}
-          extensions: gd, zip, intl, exif, bcmath, pdo_sqlite, sqlite3, mbstring, posix
+          extensions: gd, zip, intl, exif, bcmath, pdo_sqlite, sqlite3, pdo_mysql, mbstring, posix
           coverage: none
           tools: composer:v2
 
@@ -70,7 +85,7 @@ jobs:
         run: composer install --no-interaction --no-progress --prefer-dist 2>&1 | tee composer-output.txt
 
       - name: Commit the new composer.lock
-        if: steps.lock.outputs.update == 'true' && github.event_name != 'push'
+        if: steps.lock.outputs.update == 'true' && github.event_name != 'push' && matrix.db == 'sqlite'
         run: |
           if ! git diff --quiet composer.lock; then
             git config user.name "github-actions[bot]"
@@ -84,6 +99,26 @@ jobs:
         run: |
           cp .env.example .env
           php artisan key:generate --force
+
+      - name: Use MySQL
+        if: matrix.db == 'mysql'
+        run: |
+          {
+            echo "DB_CONNECTION=mysql"
+            echo "DB_HOST=127.0.0.1"
+            echo "DB_PORT=3306"
+            echo "DB_DATABASE=nexora_test"
+            echo "DB_USERNAME=root"
+            echo "DB_PASSWORD=root"
+          } >> "$GITHUB_ENV"
+
+      # The commands a deploy runs: migrations on a real MySQL and the caches
+      - name: Migrate and cache like a deploy
+        if: matrix.db == 'mysql'
+        run: |
+          php artisan migrate --force 2>&1 | tail -3
+          php artisan config:cache && php artisan route:cache && php artisan view:cache
+          php artisan optimize:clear
 
       - name: Run tests
         id: tests
@@ -101,7 +136,7 @@ jobs:
           set +e
           touch test-output.txt composer-output.txt
           {
-            if [ "$OUTCOME" = "success" ]; then echo "### ✅ Tests passed"; else echo "### ❌ Tests failed"; fi
+            if [ "$OUTCOME" = "success" ]; then echo "### ✅ Tests passed (${{ matrix.db }})"; else echo "### ❌ Tests failed (${{ matrix.db }})"; fi
             echo
             echo "PHP $(php -r 'echo PHP_VERSION;') · Laravel $(php artisan --version --no-ansi | grep -oP '[0-9.]+$') · commit ${GITHUB_SHA::7}"
             echo
@@ -134,4 +169,38 @@ jobs:
 
       - name: Fail the job when tests failed
         if: steps.tests.outcome != 'success'
+        run: exit 1
+
+  # The production image builds (PHP version, extensions, composer install)
+  docker:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref }}
+      - name: Build the image
+        id: build
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          docker build --pull -t nexora-test . 2>&1 | tail -40 | tee docker-output.txt
+          docker run --rm --entrypoint php nexora-test -v | head -1 | tee -a docker-output.txt
+      - name: Comment the result on the PR
+        if: always() && github.event_name == 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          OUTCOME: ${{ steps.build.outcome }}
+        run: |
+          set +e
+          {
+            if [ "$OUTCOME" = "success" ]; then echo "### ✅ Docker image builds"; else echo "### ❌ Docker image does not build"; fi
+            echo
+            echo '```'
+            tail -c 6000 docker-output.txt
+            echo '```'
+          } > comment.md
+          gh pr comment "${{ github.event.pull_request.number }}" --body-file comment.md
+      - name: Fail the job when the build failed
+        if: steps.build.outcome != 'success'
         run: exit 1
