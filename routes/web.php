@@ -937,6 +937,13 @@ Route::middleware([
                 ->middleware('throttle:10,1')
                 ->name('setting.sms-templates.test');
 
+            // Receipt: what the class payment receipt shows
+            Route::get('setting/receipt', [\App\Http\Controllers\Web\ReceiptSettings\ReceiptSettingsController::class, 'index'])
+                ->name('setting.receipt');
+
+            Route::put('setting/receipt', [\App\Http\Controllers\Web\ReceiptSettings\ReceiptSettingsController::class, 'update'])
+                ->name('setting.receipt.update');
+
             // Teacher App: what teachers can do in the staff app + their class day requests
             Route::get('setting/teacher-app', [\App\Http\Controllers\Web\TeacherApp\TeacherAppController::class, 'index'])
                 ->name('setting.teacher-app');
@@ -2718,8 +2725,10 @@ Route::prefix('teacher-salaries')
             ->where('teacher', '[0-9]+')
             ->name('payment.store');
 
+        // Advance / deduction / other records: only Admin (and Super Admin) delete
         Route::delete('/payments/{paymentId}', 'paymentDelete')
             ->where('paymentId', '[0-9]+')
+            ->middleware('role:ADMIN')
             ->name('payment-delete');
 
         Route::get('/{teacher}/{year}/{month}', 'show')

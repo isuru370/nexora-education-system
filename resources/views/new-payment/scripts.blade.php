@@ -999,17 +999,24 @@ document.addEventListener('DOMContentLoaded', function () {
         const student = receipt?.student_details || receipt?.student || {};
         const rows    = receipt?.classes || receipt?.payments || [];
 
+        // Settings > Receipt (missing = shown)
+        const rules = window.NX_RECEIPT || {};
+        const show  = (field) => rules[field] !== false;
+        const lines = (items) => items.filter(Boolean).join('');
+
         let html = `
             <div id="receipt-print-area" class="receipt-paper">
                 <div class="text-center">
-                    <strong>NEXORA EDU</strong><br>
+                    <strong>${escapeHtml(@json(strtoupper(config('app.name'))))}</strong><br>
                     PAYMENT RECEIPT
                 </div>
                 <div class="receipt-line"></div>
-                Student ID: ${escapeHtml(student.custom_id || '-')}<br>
-                Student: ${escapeHtml(student.name || student.initial_name || student.full_name || '-')}<br>
-                Date: ${escapeHtml(receipt.payment_date || '-')}<br>
-                Time: ${escapeHtml(receipt.payment_time || '-')}
+                ${lines([
+                    show('student_id') && `Student ID: ${escapeHtml(student.custom_id || '-')}<br>`,
+                    show('student_name') && `Student: ${escapeHtml(student.name || student.initial_name || student.full_name || '-')}<br>`,
+                    show('date') && `Date: ${escapeHtml(receipt.payment_date || '-')}<br>`,
+                    show('date') && `Time: ${escapeHtml(receipt.payment_time || '-')}<br>`,
+                ])}
                 <div class="receipt-line"></div>
         `;
 
@@ -1021,13 +1028,16 @@ document.addEventListener('DOMContentLoaded', function () {
             html += `
                 <div class="receipt-item">
                     <strong>${escapeHtml(row.class_name || '-')}</strong><br>
-                    Category: ${escapeHtml(row.category_name || row.category || '-')}<br>
-                    Grade: ${escapeHtml(row.grade || '-')}<br>
-                    Teacher: ${escapeHtml(row.teacher_name || row.teacher || '-')}<br>
-                    Month: ${escapeHtml(row.payment_month || '-')}<br>
-                    Receipt: ${escapeHtml(row.receipt_no || row.receipt_number || '-')}<br>
-                    Class Fee: Rs. ${formatMoney(classFee)}<br>
-                    ${hallFee > 0 ? `Hall Fee: Rs. ${formatMoney(hallFee)}<br>` : ''}
+                    ${lines([
+                        show('category') && `Category: ${escapeHtml(row.category_name || row.category || '-')}<br>`,
+                        show('grade') && `Grade: ${escapeHtml(row.grade || '-')}<br>`,
+                        show('teacher') && `Teacher: ${escapeHtml(row.teacher_name || row.teacher || '-')}<br>`,
+                        show('fee_option') && (row.fee_option_name || row.fee_option) && `Option: ${escapeHtml(row.fee_option_name || row.fee_option)}<br>`,
+                        show('month') && `Month: ${escapeHtml(row.payment_month || '-')}<br>`,
+                        show('receipt_number') && `Receipt: ${escapeHtml(row.receipt_no || row.receipt_number || '-')}<br>`,
+                        show('fees') && `Class Fee: Rs. ${formatMoney(classFee)}<br>`,
+                        show('fees') && hallFee > 0 && `Hall Fee: Rs. ${formatMoney(hallFee)}<br>`,
+                    ])}
                 </div>
                 <div class="receipt-line"></div>
             `;
@@ -1039,12 +1049,18 @@ document.addEventListener('DOMContentLoaded', function () {
 
         html += `
                 <div class="receipt-summary">
-                    ${totalHallFee > 0 ? `Hall Fee: Rs. ${formatMoney(totalHallFee)}<br>` : ''}
+                    ${show('fees') && totalHallFee > 0 ? `Hall Fee: Rs. ${formatMoney(totalHallFee)}<br>` : ''}
                     <strong>TOTAL FEE: Rs. ${formatMoney(totalFee)}</strong>
                 </div>
                 <div class="receipt-line"></div>
-                Payment: ${escapeHtml(receipt.payment_method || '-')}<br><br>
+                ${lines([
+                    show('classes_count') && `Classes Paid: ${rows.length}<br>`,
+                    show('payment_method') && `Payment: ${escapeHtml(receipt.payment_method || '-')}<br>`,
+                ])}
+                <br>
                 <div class="text-center">Thank You!</div>
+                ${show('keep_note') ? '<div class="text-center">Please keep this receipt</div>' : ''}
+                ${rules.footer ? `<div class="text-center">${escapeHtml(rules.footer)}</div>` : ''}
             </div>
         `;
 
