@@ -4,41 +4,41 @@
 @section('page-title', 'Student Images')
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-    <li class="breadcrumb-item"><a href="{{ route('students.index') }}">Students</a></li>
-    <li class="breadcrumb-item active">Student Images</li>
+    <li class="ui-breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
+    <li class="ui-breadcrumb-item"><a href="{{ route('students.index') }}">Students</a></li>
+    <li class="ui-breadcrumb-item active">Student Images</li>
 @endsection
 
 @section('content')
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <div class="row">
-        <div class="col-12">
-            <div class="card shadow-sm border-0">
-                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+    <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3">
+        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:flex-[0_0_auto] tw:w-[100%]">
+            <div class="ui-card tw:shadow-bs-sm! tw:[border:0]!">
+                <div class="ui-card-header tw:bg-bs-primary! tw:text-bs-white! tw:flex! tw:justify-between! tw:items-center!">
                     <div>
-                        <strong><i class="fas fa-images me-2"></i>Student Images Management</strong>
-                        <span class="badge bg-light text-primary ms-2">{{ $students->total() }} Students</span>
+                        <strong><i class="fas fa-images tw:mr-2!"></i>Student Images Management</strong>
+                        <span class="ui-badge tw:bg-bs-light! tw:text-bs-primary! tw:ml-2!">{{ $students->total() }} Students</span>
                     </div>
-                    <button class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#uploadImageModal">
-                        <i class="fas fa-camera me-1"></i>Update Image
+                    <button class="ui-btn ui-btn-light ui-btn-sm" data-nx-toggle="modal" data-nx-target="#uploadImageModal">
+                        <i class="fas fa-camera tw:mr-1!"></i>Update Image
                     </button>
                 </div>
                 
-                <div class="card-body">
+                <div class="ui-card-body">
                     <!-- Search Form -->
-                    <div class="row mb-4">
-                        <div class="col-md-12">
-                            <form method="GET" action="{{ route('students.images') }}" class="d-flex">
-                                <div class="input-group">
-                                    <input type="text" name="search" class="form-control" 
+                    <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 tw:mb-6!">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[100%]">
+                            <form method="GET" action="{{ route('students.images') }}" class="tw:flex!">
+                                <div class="ui-input-group">
+                                    <input type="text" name="search" class="ui-form-control" 
                                            placeholder="Search by ID, first name, or last name..."
                                            value="{{ request('search') }}">
-                                    <button class="btn btn-primary" type="submit">
+                                    <button class="ui-btn ui-btn-primary" type="submit">
                                         <i class="fas fa-search"></i>
                                     </button>
                                     @if(request('search'))
-                                        <a href="{{ route('students.images') }}" class="btn btn-outline-secondary">
+                                        <a href="{{ route('students.images') }}" class="ui-btn ui-btn-outline-secondary">
                                             <i class="fas fa-times"></i>
                                         </a>
                                     @endif
@@ -49,21 +49,21 @@
 
                     <!-- Student Images Grid -->
                     @if($students->count() > 0)
-                        <div class="row">
+                        <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3">
                             @foreach($students as $student)
-                                <div class="col-xl-3 col-lg-4 col-md-6 mb-4">
-                                    <div class="card student-card h-100 shadow-sm">
-                                        <div class="card-body text-center p-3">
+                                <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:lg:flex-[0_0_auto] tw:lg:w-[33.33333333%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%] tw:mb-6!">
+                                    <div class="ui-card student-card tw:h-full! tw:shadow-bs-sm!">
+                                        <div class="ui-card-body tw:text-center! tw:p-4!">
                                             <!-- Status Badge -->
-                                            <div class="position-absolute top-0 end-0 p-2">
-                                                <span class="badge {{ $student->img_url ? 'bg-success' : 'bg-warning' }}">
-                                                    <i class="fas {{ $student->img_url ? 'fa-check' : 'fa-times' }} me-1"></i>
+                                            <div class="tw:absolute! tw:top-0! tw:right-0! tw:p-2!">
+                                                <span class="ui-badge {{ $student->img_url ? 'tw:bg-bs-success!' : 'tw:bg-bs-warning!' }}">
+                                                    <i class="fas tw:mr-1! {{ $student->img_url ? 'fa-check' : 'fa-times' }}"></i>
                                                     {{ $student->img_url ? 'Has Image' : 'No Image' }}
                                                 </span>
                                             </div>
                                             
                                             <!-- Student Image -->
-                                            <div class="mb-3">
+                                            <div class="tw:mb-4!">
                                                 @php
                                                     $imageUrl = $student->img_url ?? '/uploads/logo/logo.png';
                                                     if ($student->img_url && !str_starts_with($student->img_url, 'http')) {
@@ -75,32 +75,32 @@
                                                     }
                                                 @endphp
                                                 <img src="{{ $imageUrl }}" 
-                                                     class="rounded-circle border"
+                                                     class="tw:rounded-[50%]! tw:bs-border!"
                                                      style="width: 120px; height: 120px; object-fit: cover;"
                                                      onerror="this.src='/uploads/logo/logo.png'"
                                                      alt="{{ $student->fname }} {{ $student->lname }}">
                                             </div>
                                             
                                             <!-- Student Info -->
-                                            <h6 class="card-title mb-1">{{ $student->fname }} {{ $student->lname }}</h6>
-                                            <p class="text-muted small mb-2">
-                                                <i class="fas fa-id-card me-1"></i> {{ $student->custom_id }}
+                                            <h6 class="ui-card-title tw:mb-1!">{{ $student->fname }} {{ $student->lname }}</h6>
+                                            <p class="tw:text-bs-secondary-color! tw:text-[.875em] tw:mb-2!">
+                                                <i class="fas fa-id-card tw:mr-1!"></i> {{ $student->custom_id }}
                                             </p>
                                             @if($student->grade)
-                                                <p class="text-muted small mb-3">
-                                                    <i class="fas fa-graduation-cap me-1"></i> {{ $student->grade->grade_name }}
+                                                <p class="tw:text-bs-secondary-color! tw:text-[.875em] tw:mb-4!">
+                                                    <i class="fas fa-graduation-cap tw:mr-1!"></i> {{ $student->grade->grade_name }}
                                                 </p>
                                             @endif
                                             
                                             <!-- Action Buttons -->
-                                            <div class="d-grid gap-2 mt-3">
-                                                <button class="btn btn-outline-primary btn-sm" 
+                                            <div class="tw:grid! tw:gap-2! tw:mt-4!">
+                                                <button class="ui-btn ui-btn-outline-primary ui-btn-sm" 
                                                         onclick="openUpdateModal('{{ $student->custom_id }}', '{{ $student->fname }} {{ $student->lname }}', '{{ $student->img_url ?? '' }}')">
-                                                    <i class="fas fa-camera me-1"></i> Update Image
+                                                    <i class="fas fa-camera tw:mr-1!"></i> Update Image
                                                 </button>
-                                                <button class="btn btn-outline-info btn-sm" 
+                                                <button class="ui-btn ui-btn-outline-info ui-btn-sm" 
                                                         onclick="viewStudentImage('{{ $student->custom_id }}', '{{ $student->fname }} {{ $student->lname }}', '{{ $student->img_url ?? '' }}')">
-                                                    <i class="fas fa-eye me-1"></i> View
+                                                    <i class="fas fa-eye tw:mr-1!"></i> View
                                                 </button>
                                             </div>
                                         </div>
@@ -110,22 +110,22 @@
                         </div>
                         
                         <!-- Pagination with Bootstrap Styling -->
-                        <div class="row mt-4">
-                            <div class="col-md-12">
+                        <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 tw:mt-6!">
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[100%]">
                                 <!-- Bootstrap Pagination -->
                                 @if($students->hasPages())
                                 <nav aria-label="Page navigation">
-                                    <ul class="pagination justify-content-center mb-0">
+                                    <ul class="ui-pagination tw:justify-center! tw:mb-0!">
                                         {{-- Previous Page Link --}}
                                         @if($students->onFirstPage())
-                                            <li class="page-item disabled">
-                                                <span class="page-link">
+                                            <li class="ui-page-item disabled">
+                                                <span class="ui-page-link">
                                                     <i class="fas fa-chevron-left"></i>
                                                 </span>
                                             </li>
                                         @else
-                                            <li class="page-item">
-                                                <a class="page-link" href="{{ $students->previousPageUrl() }}" rel="prev">
+                                            <li class="ui-page-item">
+                                                <a class="ui-page-link" href="{{ $students->previousPageUrl() }}" rel="prev">
                                                     <i class="fas fa-chevron-left"></i>
                                                 </a>
                                             </li>
@@ -148,12 +148,12 @@
 
                                         {{-- First Page Link --}}
                                         @if($start > 1)
-                                            <li class="page-item">
-                                                <a class="page-link" href="{{ $students->url(1) }}">1</a>
+                                            <li class="ui-page-item">
+                                                <a class="ui-page-link" href="{{ $students->url(1) }}">1</a>
                                             </li>
                                             @if($start > 2)
-                                                <li class="page-item disabled">
-                                                    <span class="page-link">...</span>
+                                                <li class="ui-page-item disabled">
+                                                    <span class="ui-page-link">...</span>
                                                 </li>
                                             @endif
                                         @endif
@@ -161,12 +161,12 @@
                                         {{-- Page Number Links --}}
                                         @for($i = $start; $i <= $end; $i++)
                                             @if($i == $current)
-                                                <li class="page-item active">
-                                                    <span class="page-link">{{ $i }}</span>
+                                                <li class="ui-page-item active">
+                                                    <span class="ui-page-link">{{ $i }}</span>
                                                 </li>
                                             @else
-                                                <li class="page-item">
-                                                    <a class="page-link" href="{{ $students->url($i) }}">{{ $i }}</a>
+                                                <li class="ui-page-item">
+                                                    <a class="ui-page-link" href="{{ $students->url($i) }}">{{ $i }}</a>
                                                 </li>
                                             @endif
                                         @endfor
@@ -174,25 +174,25 @@
                                         {{-- Last Page Link --}}
                                         @if($end < $last)
                                             @if($end < $last - 1)
-                                                <li class="page-item disabled">
-                                                    <span class="page-link">...</span>
+                                                <li class="ui-page-item disabled">
+                                                    <span class="ui-page-link">...</span>
                                                 </li>
                                             @endif
-                                            <li class="page-item">
-                                                <a class="page-link" href="{{ $students->url($last) }}">{{ $last }}</a>
+                                            <li class="ui-page-item">
+                                                <a class="ui-page-link" href="{{ $students->url($last) }}">{{ $last }}</a>
                                             </li>
                                         @endif
 
                                         {{-- Next Page Link --}}
                                         @if($students->hasMorePages())
-                                            <li class="page-item">
-                                                <a class="page-link" href="{{ $students->nextPageUrl() }}" rel="next">
+                                            <li class="ui-page-item">
+                                                <a class="ui-page-link" href="{{ $students->nextPageUrl() }}" rel="next">
                                                     <i class="fas fa-chevron-right"></i>
                                                 </a>
                                             </li>
                                         @else
-                                            <li class="page-item disabled">
-                                                <span class="page-link">
+                                            <li class="ui-page-item disabled">
+                                                <span class="ui-page-link">
                                                     <i class="fas fa-chevron-right"></i>
                                                 </span>
                                             </li>
@@ -201,12 +201,12 @@
                                 </nav>
                                 @endif
                                 
-                                <div class="text-center text-muted mt-3">
+                                <div class="tw:text-center! tw:text-bs-secondary-color! tw:mt-4!">
                                     <small>
                                         Showing {{ $students->firstItem() }} to {{ $students->lastItem() }} 
                                         of {{ $students->total() }} entries
                                         @if(request('search'))
-                                            <span class="ms-2">(Filtered)</span>
+                                            <span class="tw:ml-2!">(Filtered)</span>
                                         @endif
                                     </small>
                                 </div>
@@ -214,13 +214,13 @@
                         </div>
                     @else
                         <!-- No Students Found -->
-                        <div class="text-center py-5">
-                            <i class="fas fa-users fa-3x text-muted mb-3"></i>
-                            <h4 class="text-muted">No Students Found</h4>
+                        <div class="tw:text-center! tw:py-12!">
+                            <i class="fas fa-users fa-3x tw:text-bs-secondary-color! tw:mb-4!"></i>
+                            <h4 class="tw:text-bs-secondary-color!">No Students Found</h4>
                             @if(request('search'))
-                                <p class="text-muted">No students match your search criteria</p>
-                                <a href="{{ route('students.images') }}" class="btn btn-primary mt-2">
-                                    <i class="fas fa-arrow-left me-1"></i> Back to All Students
+                                <p class="tw:text-bs-secondary-color!">No students match your search criteria</p>
+                                <a href="{{ route('students.images') }}" class="ui-btn ui-btn-primary tw:mt-2!">
+                                    <i class="fas fa-arrow-left tw:mr-1!"></i> Back to All Students
                                 </a>
                             @endif
                         </div>
@@ -231,20 +231,20 @@
     </div>
 
     <!-- Upload Image Modal -->
-    <div class="modal fade" id="uploadImageModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title">
-                        <i class="fas fa-camera me-2"></i>Update Student Image
+    <div class="ui-modal ui-fade" id="uploadImageModal" tabindex="-1" aria-hidden="true">
+        <div class="ui-modal-dialog ui-modal-lg">
+            <div class="ui-modal-content">
+                <div class="ui-modal-header tw:bg-bs-primary! tw:text-bs-white!">
+                    <h5 class="ui-modal-title">
+                        <i class="fas fa-camera tw:mr-2!"></i>Update Student Image
                     </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="ui-btn-close ui-btn-close-white" data-nx-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
+                <div class="ui-modal-body">
                     <!-- Student Selection -->
-                    <div class="mb-4">
-                        <label class="form-label">Select Student <span class="text-danger">*</span></label>
-                        <select class="form-select" id="studentSelect" name="student_id" required>
+                    <div class="tw:mb-6!">
+                        <label class="ui-form-label">Select Student <span class="tw:text-bs-danger!">*</span></label>
+                        <select class="ui-form-select" id="studentSelect" name="student_id" required>
                             <option value="">Choose a student...</option>
                             @foreach($allStudents as $student)
                                 <option value="{{ $student->custom_id }}" data-img="{{ $student->img_url ?? '' }}">
@@ -255,117 +255,117 @@
                     </div>
 
                     <!-- Current Image Preview -->
-                    <div class="mb-4" id="currentImageSection" style="display: none;">
-                        <label class="form-label">Current Image</label>
-                        <div class="text-center">
-                            <img id="currentStudentImage" class="img-thumbnail rounded"
+                    <div class="tw:mb-6!" id="currentImageSection" style="display: none;">
+                        <label class="ui-form-label">Current Image</label>
+                        <div class="tw:text-center!">
+                            <img id="currentStudentImage" class="ui-img-thumbnail tw:rounded-bs!"
                                 style="width: 150px; height: 150px; object-fit: cover;"
                                 onerror="this.src='/uploads/logo/logo.png'">
                         </div>
                     </div>
 
                     <!-- Image Upload Section -->
-                    <div class="card">
-                        <div class="card-header bg-secondary text-white">
+                    <div class="ui-card">
+                        <div class="ui-card-header tw:bg-bs-secondary! tw:text-bs-white!">
                             <strong>Select New Image Method</strong>
                         </div>
-                        <div class="card-body">
+                        <div class="ui-card-body">
                             <!-- New Image Preview -->
-                            <div class="text-center mb-3">
-                                <img id="imagePreview" class="img-thumbnail rounded"
+                            <div class="tw:text-center! tw:mb-4!">
+                                <img id="imagePreview" class="ui-img-thumbnail tw:rounded-bs!"
                                     style="width: 200px; height: 200px; object-fit: cover; display: none;"
                                     onerror="this.src='/uploads/logo/logo.png'">
-                                <div id="imagePlaceholder" class="text-muted p-4 border rounded">
-                                    <i class="fas fa-user fa-3x mb-3"></i>
-                                    <p class="mb-0">New image will appear here</p>
+                                <div id="imagePlaceholder" class="tw:text-bs-secondary-color! tw:p-6! tw:bs-border! tw:rounded-bs!">
+                                    <i class="fas fa-user fa-3x tw:mb-4!"></i>
+                                    <p class="tw:mb-0!">New image will appear here</p>
                                 </div>
                             </div>
 
                             <!-- Image Upload Tabs -->
-                            <ul class="nav nav-tabs" id="imageUploadTabs" role="tablist">
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link active" id="camera-tab" data-bs-toggle="tab"
-                                        data-bs-target="#camera" type="button" role="tab">
-                                        <i class="fas fa-camera me-1"></i>Camera
+                            <ul class="ui-nav ui-nav-tabs" id="imageUploadTabs" role="tablist">
+                                <li class="ui-nav-item" role="presentation">
+                                    <button class="ui-nav-link active" id="camera-tab" data-nx-toggle="tab"
+                                        data-nx-target="#camera" type="button" role="tab">
+                                        <i class="fas fa-camera tw:mr-1!"></i>Camera
                                     </button>
                                 </li>
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link" id="upload-tab" data-bs-toggle="tab"
-                                        data-bs-target="#upload" type="button" role="tab">
-                                        <i class="fas fa-upload me-1"></i>Browse
+                                <li class="ui-nav-item" role="presentation">
+                                    <button class="ui-nav-link" id="upload-tab" data-nx-toggle="tab"
+                                        data-nx-target="#upload" type="button" role="tab">
+                                        <i class="fas fa-upload tw:mr-1!"></i>Browse
                                     </button>
                                 </li>
-                                <li class="nav-item" role="presentation">
-                                    <button class="nav-link" id="quick-image-tab" data-bs-toggle="tab"
-                                        data-bs-target="#quick-image" type="button" role="tab">
-                                        <i class="fas fa-bolt me-1"></i>Quick Image
+                                <li class="ui-nav-item" role="presentation">
+                                    <button class="ui-nav-link" id="quick-image-tab" data-nx-toggle="tab"
+                                        data-nx-target="#quick-image" type="button" role="tab">
+                                        <i class="fas fa-bolt tw:mr-1!"></i>Quick Image
                                     </button>
                                 </li>
                             </ul>
 
                             <!-- Tab Content -->
-                            <div class="tab-content p-3 border border-top-0" id="imageUploadTabsContent">
+                            <div class="ui-tab-content tw:p-4! tw:[border-top:0_none_currentcolor]! tw:[border-right:1px_solid_#dee2e6]! tw:[border-bottom:1px_solid_#dee2e6]! tw:[border-left:1px_solid_#dee2e6]!" id="imageUploadTabsContent">
                                 <!-- Camera Tab -->
-                                <div class="tab-pane fade show active" id="camera" role="tabpanel">
+                                <div class="ui-tab-pane ui-fade show active" id="camera" role="tabpanel">
                                     <div id="cameraWrapper" style="display: none">
-                                        <video id="cameraView" width="100%" autoplay muted class="rounded border"
+                                        <video id="cameraView" width="100%" autoplay muted class="tw:rounded-bs! tw:bs-border!"
                                             style="max-height: 200px;"></video>
-                                        <div class="d-flex gap-2 mt-2">
-                                            <button class="btn btn-success flex-fill" type="button" id="captureBtn">
-                                                <i class="fas fa-camera me-2"></i>Capture
+                                        <div class="tw:flex! tw:gap-2! tw:mt-2!">
+                                            <button class="ui-btn ui-btn-success tw:[flex:1_1_auto]!" type="button" id="captureBtn">
+                                                <i class="fas fa-camera tw:mr-2!"></i>Capture
                                             </button>
-                                            <button class="btn btn-secondary" type="button" id="closeCameraBtn">
+                                            <button class="ui-btn ui-btn-secondary" type="button" id="closeCameraBtn">
                                                 <i class="fas fa-times"></i>
                                             </button>
                                         </div>
                                     </div>
-                                    <button class="btn btn-outline-primary w-100" type="button" id="openCameraBtn">
-                                        <i class="fas fa-camera me-2"></i>Enable Camera
+                                    <button class="ui-btn ui-btn-outline-primary tw:w-full!" type="button" id="openCameraBtn">
+                                        <i class="fas fa-camera tw:mr-2!"></i>Enable Camera
                                     </button>
-                                    <p id="cameraError" class="text-danger mt-2 small" style="display: none"></p>
+                                    <p id="cameraError" class="tw:text-bs-danger! tw:mt-2! tw:text-[.875em]" style="display: none"></p>
                                 </div>
 
                                 <!-- File Upload Tab -->
-                                <div class="tab-pane fade" id="upload" role="tabpanel">
-                                    <div class="file-upload-area border rounded p-3 text-center bg-light"
+                                <div class="ui-tab-pane ui-fade" id="upload" role="tabpanel">
+                                    <div class="file-upload-area tw:bs-border! tw:rounded-bs! tw:p-4! tw:text-center! tw:bg-bs-light!"
                                          onclick="document.getElementById('fileInput').click()"
                                          style="cursor: pointer;">
-                                        <i class="fas fa-cloud-upload-alt fa-2x text-muted mb-3"></i>
-                                        <p class="text-muted mb-2">Click to browse or drag & drop</p>
-                                        <p class="text-muted small">Maximum file size: 5MB</p>
-                                        <input type="file" id="fileInput" accept="image/*" class="d-none">
+                                        <i class="fas fa-cloud-upload-alt fa-2x tw:text-bs-secondary-color! tw:mb-4!"></i>
+                                        <p class="tw:text-bs-secondary-color! tw:mb-2!">Click to browse or drag & drop</p>
+                                        <p class="tw:text-bs-secondary-color! tw:text-[.875em]">Maximum file size: 5MB</p>
+                                        <input type="file" id="fileInput" accept="image/*" class="tw:hidden!">
                                     </div>
                                 </div>
 
                                 <!-- Quick Image Tab -->
-                                <div class="tab-pane fade" id="quick-image" role="tabpanel">
-                                    <div class="mb-3">
-                                        <label class="form-label">Search Quick Image by Custom ID</label>
-                                        <div class="input-group">
-                                            <input type="text" id="quickImageSearch" class="form-control"
+                                <div class="ui-tab-pane ui-fade" id="quick-image" role="tabpanel">
+                                    <div class="tw:mb-4!">
+                                        <label class="ui-form-label">Search Quick Image by Custom ID</label>
+                                        <div class="ui-input-group">
+                                            <input type="text" id="quickImageSearch" class="ui-form-control"
                                                 placeholder="Enter custom ID...">
-                                            <button class="btn btn-outline-primary" type="button" id="searchQuickImage">
+                                            <button class="ui-btn ui-btn-outline-primary" type="button" id="searchQuickImage">
                                                 <i class="fas fa-search"></i>
                                             </button>
                                         </div>
                                     </div>
-                                    <div id="quickImageResults" class="mt-3">
-                                        <p class="text-muted text-center">Search for quick images above</p>
+                                    <div id="quickImageResults" class="tw:mt-4!">
+                                        <p class="tw:text-bs-secondary-color! tw:text-center!">Search for quick images above</p>
                                     </div>
                                 </div>
                             </div>
 
                             <!-- Selected Image Info -->
-                            <div id="selectedImageInfo" class="mt-3 p-2 bg-light rounded" style="display: none">
-                                <small class="text-muted" id="imageSource"></small>
+                            <div id="selectedImageInfo" class="tw:mt-4! tw:p-2! tw:bg-bs-light! tw:rounded-bs!" style="display: none">
+                                <small class="tw:text-bs-secondary-color!" id="imageSource"></small>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-success" id="uploadImageBtn" disabled>
-                        <i class="fas fa-save me-2"></i>Update Image
+                <div class="ui-modal-footer">
+                    <button type="button" class="ui-btn ui-btn-secondary" data-nx-dismiss="modal">Cancel</button>
+                    <button type="button" class="ui-btn ui-btn-success" id="uploadImageBtn" disabled>
+                        <i class="fas fa-save tw:mr-2!"></i>Update Image
                     </button>
                 </div>
             </div>
@@ -373,49 +373,49 @@
     </div>
 
     <!-- View Image Modal -->
-    <div class="modal fade" id="viewImageModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header bg-info text-white">
-                    <h5 class="modal-title" id="viewImageTitle">
-                        <i class="fas fa-image me-2"></i>Student Image
+    <div class="ui-modal ui-fade" id="viewImageModal" tabindex="-1" aria-hidden="true">
+        <div class="ui-modal-dialog ui-modal-lg">
+            <div class="ui-modal-content">
+                <div class="ui-modal-header tw:bg-bs-info! tw:text-bs-white!">
+                    <h5 class="ui-modal-title" id="viewImageTitle">
+                        <i class="fas fa-image tw:mr-2!"></i>Student Image
                     </h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"
+                    <button type="button" class="ui-btn-close ui-btn-close-white" data-nx-dismiss="modal"
                         aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-md-6 text-center mb-3">
+                <div class="ui-modal-body">
+                    <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:text-center! tw:mb-4!">
                             <h6>Current Image</h6>
-                            <img id="viewImage" src="" class="img-fluid rounded border" 
+                            <img id="viewImage" src="" class="ui-img-fluid tw:rounded-bs! tw:bs-border!" 
                                  style="max-height: 300px; object-fit: cover;"
                                  onerror="this.src='/uploads/logo/logo.png'">
                         </div>
-                        <div class="col-md-6">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
                             <h6>Student Details</h6>
-                            <div class="mb-3">
+                            <div class="tw:mb-4!">
                                 <strong>Student ID:</strong> 
-                                <span id="viewStudentId" class="badge bg-primary ms-2"></span>
+                                <span id="viewStudentId" class="ui-badge tw:bg-bs-primary! tw:ml-2!"></span>
                             </div>
-                            <div class="mb-3">
+                            <div class="tw:mb-4!">
                                 <strong>Name:</strong> 
-                                <span id="viewStudentName" class="fw-bold ms-2"></span>
+                                <span id="viewStudentName" class="tw:font-bold! tw:ml-2!"></span>
                             </div>
-                            <div class="mb-3">
+                            <div class="tw:mb-4!">
                                 <strong>Image Status:</strong> 
-                                <span id="viewImageStatus" class="badge ms-2"></span>
+                                <span id="viewImageStatus" class="ui-badge tw:ml-2!"></span>
                             </div>
-                            <div class="mt-4">
-                                <button type="button" class="btn btn-warning btn-sm w-100"
+                            <div class="tw:mt-6!">
+                                <button type="button" class="ui-btn ui-btn-warning ui-btn-sm tw:w-full!"
                                         onclick="updateCurrentStudentImage()">
-                                    <i class="fas fa-camera me-2"></i>Update This Student's Image
+                                    <i class="fas fa-camera tw:mr-2!"></i>Update This Student's Image
                                 </button>
                             </div>
                         </div>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <div class="ui-modal-footer">
+                    <button type="button" class="ui-btn ui-btn-secondary" data-nx-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
@@ -469,11 +469,11 @@
         }
 
         /* Bootstrap Pagination Custom Styles */
-        .pagination {
+        .ui-pagination {
             margin-bottom: 0;
         }
 
-        .page-item .page-link {
+        .ui-page-item .ui-page-link {
             color: #495057;
             background-color: #fff;
             border: 1px solid #dee2e6;
@@ -483,26 +483,26 @@
             transition: all 0.2s ease;
         }
 
-        .page-item .page-link:hover {
+        .ui-page-item .ui-page-link:hover {
             color: #0d6efd;
             background-color: #e9ecef;
             border-color: #dee2e6;
         }
 
-        .page-item.active .page-link {
+        .ui-page-item.active .ui-page-link {
             color: #fff;
             background-color: #0d6efd;
             border-color: #0d6efd;
         }
 
-        .page-item.disabled .page-link {
+        .ui-page-item.disabled .ui-page-link {
             color: #6c757d;
             background-color: #fff;
             border-color: #dee2e6;
             opacity: 0.6;
         }
 
-        .page-link i {
+        .ui-page-link i {
             font-size: 0.875rem;
         }
     </style>
@@ -535,7 +535,7 @@
         }
         
         // Show modal
-        const modal = new bootstrap.Modal(document.getElementById('uploadImageModal'));
+        const modal = new NxUi.Modal(document.getElementById('uploadImageModal'));
         modal.show();
     }
 
@@ -562,21 +562,21 @@
         // Set status badge
         if (imageUrl && imageUrl !== '') {
             viewImageStatus.textContent = 'Has Image';
-            viewImageStatus.className = 'badge bg-success';
+            viewImageStatus.className = 'ui-badge tw:bg-bs-success!';
         } else {
             viewImageStatus.textContent = 'No Image';
-            viewImageStatus.className = 'badge bg-warning';
+            viewImageStatus.className = 'ui-badge tw:bg-bs-warning!';
         }
         
         // Show modal
-        const modal = new bootstrap.Modal(document.getElementById('viewImageModal'));
+        const modal = new NxUi.Modal(document.getElementById('viewImageModal'));
         modal.show();
     }
 
     // Update current student's image from view modal
     function updateCurrentStudentImage() {
         // Close view modal
-        const viewModal = bootstrap.Modal.getInstance(document.getElementById('viewImageModal'));
+        const viewModal = NxUi.Modal.getInstance(document.getElementById('viewImageModal'));
         if (viewModal) viewModal.hide();
         
         // Open update modal
@@ -740,7 +740,7 @@
         const resultsContainer = document.getElementById('quickImageResults');
 
         if (images.length === 0) {
-            resultsContainer.innerHTML = '<p class="text-muted text-center">No quick images found</p>';
+            resultsContainer.innerHTML = '<p class="tw:text-bs-secondary-color! tw:text-center!">No quick images found</p>';
             return;
         }
 
@@ -751,15 +751,15 @@
             }
 
             return `
-                <div class="quick-image-item card mb-2 p-2" onclick="selectQuickImage(${img.id}, '${imageUrl}', '${img.custom_id || 'No ID'}')">
-                    <div class="row g-2 align-items-center">
-                        <div class="col-3">
-                            <img src="${imageUrl}" class="img-fluid rounded" style="height: 60px; object-fit: cover;"
+                <div class="quick-image-item ui-card tw:mb-2! tw:p-2!" onclick="selectQuickImage(${img.id}, '${imageUrl}', '${img.custom_id || 'No ID'}')">
+                    <div class="tw:flex tw:flex-wrap tw:-mt-2 tw:-mx-1 tw:items-center!">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-1 tw:mt-2 tw:flex-[0_0_auto] tw:w-[25%]">
+                            <img src="${imageUrl}" class="ui-img-fluid tw:rounded-bs!" style="height: 60px; object-fit: cover;"
                                  onerror="this.src='/uploads/logo/logo.png'">
                         </div>
-                        <div class="col-9">
-                            <small class="fw-bold">ID: ${img.custom_id || 'No ID'}</small><br>
-                            <small class="text-muted">Grade: ${img.grade?.grade_name || 'N/A'}</small>
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-1 tw:mt-2 tw:flex-[0_0_auto] tw:w-[75%]">
+                            <small class="tw:font-bold!">ID: ${img.custom_id || 'No ID'}</small><br>
+                            <small class="tw:text-bs-secondary-color!">Grade: ${img.grade?.grade_name || 'N/A'}</small>
                         </div>
                     </div>
                 </div>
@@ -847,7 +847,7 @@
             const uploadBtn = document.getElementById('uploadImageBtn');
             const originalText = uploadBtn.innerHTML;
             uploadBtn.disabled = true;
-            uploadBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Updating...';
+            uploadBtn.innerHTML = '<i class="fas fa-spinner fa-spin tw:mr-2!"></i>Updating...';
 
             const response = await fetch(`/api/students/update_image/${selectedStudentId}`, {
                 method: 'POST',
@@ -872,7 +872,7 @@
                 showAlert('Student image updated successfully!', 'success');
 
                 // Close modal
-                const modal = bootstrap.Modal.getInstance(document.getElementById('uploadImageModal'));
+                const modal = NxUi.Modal.getInstance(document.getElementById('uploadImageModal'));
                 if (modal) modal.hide();
 
                 // Refresh page to show updated image
@@ -914,18 +914,18 @@
     // ================= UTILITY FUNCTIONS =================
     function showAlert(message, type) {
         // Remove existing alerts
-        document.querySelectorAll('.alert:not(.alert-info)').forEach(alert => {
+        document.querySelectorAll('.ui-alert:not(.ui-alert-info)').forEach(alert => {
             alert.remove();
         });
 
         const alertDiv = document.createElement('div');
-        alertDiv.className = `alert alert-${type} alert-dismissible fade show`;
+        alertDiv.className = `ui-alert ui-alert-${type} ui-alert-dismissible ui-fade show`;
         alertDiv.innerHTML = `
             ${message}
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            <button type="button" class="ui-btn-close" data-nx-dismiss="alert"></button>
         `;
 
-        document.querySelector('.card-body').insertBefore(alertDiv, document.querySelector('.card-body').firstChild);
+        document.querySelector('.ui-card-body').insertBefore(alertDiv, document.querySelector('.ui-card-body').firstChild);
 
         setTimeout(() => {
             if (alertDiv.parentNode) {

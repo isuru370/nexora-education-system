@@ -10,7 +10,10 @@ import bs2tw
 
 util = json.load(open(bs2tw.MAP_FILE))['utilities']
 bs = open(sys.argv[1]).read()
-built = open(os.path.join(bs2tw.ROOT, 'public/css/nexora.css')).read()
+import subprocess
+_all = sorted({t for v in util.values() for t in v})
+built = subprocess.run(['node', os.path.join(os.path.dirname(os.path.abspath(__file__)), 'twbuild.mjs')], input=json.dumps(_all),
+                       capture_output=True, text=True, check=True).stdout
 
 def bs_pos(c):
     m = re.search(r'(?m)^\s*\.%s\s*[{,]' % re.escape(c), bs)
@@ -41,7 +44,7 @@ for f in sys.argv[2:]:
         toks = [t for t in m.group(1).split() if t in util and '{' not in t]
         for i, a in enumerate(toks):
             for b in toks[i + 1:]:
-                if (a, b) in seen or not (props(a) & props(b)):
+                if (a, b) in seen or not (props(a) & props(b)) or (bs2tw.BORDER_TOK.match(a) and bs2tw.BORDER_TOK.match(b)):
                     continue
                 seen.add((a, b))
                 ba, bb = bs_pos(a), bs_pos(b)

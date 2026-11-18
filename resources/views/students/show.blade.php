@@ -25,27 +25,27 @@
     <div class="student-details-page">
 
         <!-- HERO -->
-        <div class="hero-card mb-4">
+        <div class="hero-card tw:mb-6!">
             <div class="hero-content">
-                <div class="d-flex align-items-center gap-3">
+                <div class="tw:flex! tw:items-center! tw:gap-4!">
                     <div class="profile-avatar">
                         {{ strtoupper(substr($student->full_name, 0, 1)) }}
                     </div>
 
                     <div>
-                        <h4 class="mb-1 fw-bold">{{ $student->full_name }}</h4>
-                        <p class="mb-0 text-muted">{{ $student->custom_id }}</p>
+                        <h4 class="tw:mb-1! tw:font-bold!">{{ $student->full_name }}</h4>
+                        <p class="tw:mb-0! tw:text-bs-secondary-color!">{{ $student->custom_id }}</p>
                     </div>
                 </div>
 
                 <div class="hero-actions">
-                    <a href="{{ route('students.edit', $student) }}" class="btn btn-warning custom-btn">
-                        <i class="bi bi-pencil-fill me-1"></i>
+                    <a href="{{ route('students.edit', $student) }}" class="ui-btn ui-btn-warning custom-btn">
+                        <i class="bi bi-pencil-fill tw:mr-1!"></i>
                         Edit
                     </a>
 
-                    <a href="{{ route('students.index') }}" class="btn btn-outline-secondary custom-btn">
-                        <i class="bi bi-arrow-left me-1"></i>
+                    <a href="{{ route('students.index') }}" class="ui-btn ui-btn-outline-secondary custom-btn">
+                        <i class="bi bi-arrow-left tw:mr-1!"></i>
                         Back
                     </a>
                 </div>
@@ -53,8 +53,8 @@
         </div>
 
         <!-- STATS -->
-        <div class="row g-4 mb-4">
-            <div class="col-xl-3 col-md-6">
+        <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3 tw:mb-6!">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%]">
                 <div class="stats-card">
                     <div class="stats-icon blue">
                         <i class="bi bi-person-badge-fill"></i>
@@ -66,7 +66,7 @@
                 </div>
             </div>
 
-            <div class="col-xl-3 col-md-6">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%]">
                 <div class="stats-card">
                     <div class="stats-icon green">
                         <i class="bi bi-phone-fill"></i>
@@ -78,7 +78,7 @@
                 </div>
             </div>
 
-            <div class="col-xl-3 col-md-6">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%]">
                 <div class="stats-card">
                     <div class="stats-icon orange">
                         <i class="bi bi-book-fill"></i>
@@ -90,14 +90,14 @@
                 </div>
             </div>
 
-            <div class="col-xl-3 col-md-6">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%]">
                 <div class="stats-card">
                     <div class="stats-icon red">
                         <i class="bi bi-shield-check"></i>
                     </div>
                     <div>
                         <h3>
-                            <span class="badge {{ $student->is_active ? 'bg-success' : 'bg-secondary' }} custom-badge">
+                            <span class="ui-badge custom-badge {{ $student->is_active ? 'tw:bg-bs-success!' : 'tw:bg-bs-secondary!' }}">
                                 {{ $student->is_active ? 'Active' : 'Inactive' }}
                             </span>
                         </h3>
@@ -107,22 +107,22 @@
             </div>
         </div>
 
-        <div class="row g-4">
+        <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3">
 
             <!-- LEFT SIDE -->
-            <div class="col-lg-6">
-                <div class="info-card h-100">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[50%]">
+                <div class="info-card tw:h-full!">
                     <div class="section-header">
-                        <h6 class="mb-0 fw-bold">Student Profile</h6>
+                        <h6 class="tw:mb-0! tw:font-bold!">Student Profile</h6>
                         <span class="section-pill">Basic Info</span>
                     </div>
 
-                    <div class="text-center mb-4">
+                    <div class="tw:text-center! tw:mb-6!">
                         <img src="{{ $studentImage }}" alt="{{ $student->full_name }}"
-                            class="student-profile-image shadow-sm" onerror="this.src='{{ asset('images/male.png') }}'">
+                            class="student-profile-image tw:shadow-bs-sm!" onerror="this.src='{{ asset('images/male.png') }}'">
 
-                        <h5 class="fw-bold mt-3 mb-0">{{ $student->full_name }}</h5>
-                        <small class="text-muted">{{ $student->custom_id }}</small>
+                        <h5 class="tw:font-bold! tw:mt-4! tw:mb-0!">{{ $student->full_name }}</h5>
+                        <small class="tw:text-bs-secondary-color!">{{ $student->custom_id }}</small>
                     </div>
 
                     <div class="info-list">
@@ -157,10 +157,10 @@
             </div>
 
             <!-- RIGHT SIDE -->
-            <div class="col-lg-6">
-                <div class="info-card h-100">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[50%]">
+                <div class="info-card tw:h-full!">
                     <div class="section-header">
-                        <h6 class="mb-0 fw-bold">Class & QR Information</h6>
+                        <h6 class="tw:mb-0! tw:font-bold!">Class & QR Information</h6>
                         <span class="section-pill">Enrollment</span>
                     </div>
 
@@ -173,7 +173,7 @@
                         <div class="info-row">
                             <span class="label">Class Type</span>
                             <span class="value">
-                                <span class="badge bg-info text-dark custom-badge">
+                                <span class="ui-badge tw:bg-bs-info! tw:text-bs-dark! custom-badge">
                                     {{ ucfirst($student->class_type ?? 'N/A') }}
                                 </span>
                             </span>
@@ -188,9 +188,9 @@
                             <span class="label">QR Type</span>
                             <span class="value">
                                 @if($student->permanent_qr_active)
-                                    <span class="badge bg-success custom-badge">Permanent QR</span>
+                                    <span class="ui-badge tw:bg-bs-success! custom-badge">Permanent QR</span>
                                 @else
-                                    <span class="badge bg-warning text-dark custom-badge">Temporary QR</span>
+                                    <span class="ui-badge tw:bg-bs-warning! tw:text-bs-dark! custom-badge">Temporary QR</span>
                                 @endif
                             </span>
                         </div>
@@ -210,18 +210,18 @@
                             <span class="label">QR Expire</span>
                             <span class="value">
                                 @if($student->permanent_qr_active)
-                                    <span class="text-muted">Not applicable</span>
+                                    <span class="tw:text-bs-secondary-color!">Not applicable</span>
                                 @else
                                     @if($daysLeft !== null)
                                         @if($daysLeft < 0)
-                                            <span class="text-danger fw-bold">Expired {{ abs($daysLeft) }} day(s) ago</span>
+                                            <span class="tw:text-bs-danger! tw:font-bold!">Expired {{ abs($daysLeft) }} day(s) ago</span>
                                         @elseif($daysLeft == 0)
-                                            <span class="text-warning fw-bold">Expires today</span>
+                                            <span class="tw:text-bs-warning! tw:font-bold!">Expires today</span>
                                         @else
-                                            <span class="text-muted">Expires in {{ $daysLeft }} day(s)</span>
+                                            <span class="tw:text-bs-secondary-color!">Expires in {{ $daysLeft }} day(s)</span>
                                         @endif
                                     @else
-                                        <span class="text-muted">N/A</span>
+                                        <span class="tw:text-bs-secondary-color!">N/A</span>
                                     @endif
                                 @endif
                             </span>
@@ -231,10 +231,10 @@
             </div>
 
             <!-- CONTACT -->
-            <div class="col-lg-6">
-                <div class="info-card h-100">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[50%]">
+                <div class="info-card tw:h-full!">
                     <div class="section-header">
-                        <h6 class="mb-0 fw-bold">Contact Information</h6>
+                        <h6 class="tw:mb-0! tw:font-bold!">Contact Information</h6>
                         <span class="section-pill">Reach</span>
                     </div>
 
@@ -258,10 +258,10 @@
             </div>
 
             <!-- STATUS -->
-            <div class="col-lg-6">
-                <div class="info-card h-100">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[50%]">
+                <div class="info-card tw:h-full!">
                     <div class="section-header">
-                        <h6 class="mb-0 fw-bold">Account Status</h6>
+                        <h6 class="tw:mb-0! tw:font-bold!">Account Status</h6>
                         <span class="section-pill">Flags</span>
                     </div>
 
@@ -269,7 +269,7 @@
                         <div class="info-row">
                             <span class="label">Active</span>
                             <span class="value">
-                                <span class="badge {{ $student->is_active ? 'bg-success' : 'bg-secondary' }} custom-badge">
+                                <span class="ui-badge custom-badge {{ $student->is_active ? 'tw:bg-bs-success!' : 'tw:bg-bs-secondary!' }}">
                                     {{ $student->is_active ? 'Active' : 'Inactive' }}
                                 </span>
                             </span>
@@ -279,9 +279,9 @@
                             <span class="label">Disabled</span>
                             <span class="value">
                                 @if($student->student_disable)
-                                    <span class="badge bg-danger custom-badge">Disabled</span>
+                                    <span class="ui-badge tw:bg-bs-danger! custom-badge">Disabled</span>
                                 @else
-                                    <span class="badge bg-success custom-badge">Enabled</span>
+                                    <span class="ui-badge tw:bg-bs-success! custom-badge">Enabled</span>
                                 @endif
                             </span>
                         </div>
@@ -290,9 +290,9 @@
                             <span class="label">Admission</span>
                             <span class="value">
                                 @if($student->admission)
-                                    <span class="badge bg-primary custom-badge">Admission Paid</span>
+                                    <span class="ui-badge tw:bg-bs-primary! custom-badge">Admission Paid</span>
                                 @else
-                                    <span class="badge bg-light text-dark border custom-badge">Admission Pending</span>
+                                    <span class="ui-badge tw:bg-bs-light! tw:text-bs-dark! tw:bs-border! custom-badge">Admission Pending</span>
                                 @endif
                             </span>
                         </div>
@@ -301,10 +301,10 @@
             </div>
 
             <!-- ADDRESS -->
-            <div class="col-12">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:flex-[0_0_auto] tw:w-[100%]">
                 <div class="info-card">
                     <div class="section-header">
-                        <h6 class="mb-0 fw-bold">Address Information</h6>
+                        <h6 class="tw:mb-0! tw:font-bold!">Address Information</h6>
                         <span class="section-pill">Location</span>
                     </div>
 
@@ -322,10 +322,10 @@
             </div>
 
             <!-- GUARDIAN -->
-            <div class="col-12">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:flex-[0_0_auto] tw:w-[100%]">
                 <div class="info-card">
                     <div class="section-header">
-                        <h6 class="mb-0 fw-bold">Guardian Information</h6>
+                        <h6 class="tw:mb-0! tw:font-bold!">Guardian Information</h6>
                         <span class="section-pill">Family</span>
                     </div>
 
@@ -550,7 +550,7 @@
                 width: 100%;
             }
 
-            .hero-actions .btn {
+            .hero-actions .ui-btn {
                 flex: 1;
             }
 
