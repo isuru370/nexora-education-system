@@ -184,7 +184,7 @@ jobs:
         continue-on-error: true
         run: |
           set -o pipefail
-          docker build --pull -t nexora-test . 2>&1 | tail -40 | tee docker-output.txt
+          docker build --pull --progress=plain -t nexora-test . 2>&1 | sed -r "s/\x1B\[[0-9;]*[A-Za-z]//g" | tail -25 | tee docker-output.txt
           docker run --rm --entrypoint php nexora-test -v | head -1 | tee -a docker-output.txt
       - name: Comment the result on the PR
         if: always() && github.event_name == 'pull_request'
