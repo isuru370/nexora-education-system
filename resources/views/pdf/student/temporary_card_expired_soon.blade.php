@@ -226,7 +226,7 @@
         $criticalCount = 0;
 
         foreach ($students as $student) {
-            $daysLeft = now()->diffInDays(
+            $daysLeft = (int) now()->diffInDays(
                 \Carbon\Carbon::parse($student->temporary_qr_code_expire_date),
                 false
             );
@@ -284,7 +284,7 @@
             @forelse($students as $index => $student)
                 @php
                     $expireDate = \Carbon\Carbon::parse($student->temporary_qr_code_expire_date);
-                    $daysLeft = now()->diffInDays($expireDate, false);
+                    $daysLeft = (int) now()->diffInDays($expireDate, false);
                     $isExpired = $daysLeft < 0;
                     $isCritical = !$isExpired && $daysLeft <= 3;
                     $rowClass = $isExpired ? 'row-expired' : ($isCritical ? 'row-expired' : 'row-expiring');
