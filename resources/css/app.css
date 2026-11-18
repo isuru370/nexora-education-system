@@ -1,0 +1,45 @@
+/*
+ * nexoraEDU web styles (app layout). Built into public/css/nexora.css by
+ *   npm run css        (node resources/css/build.mjs)
+ *
+ * While pages move from Bootstrap to Tailwind both are loaded, and the
+ * cascade stays exactly as it was:
+ * - nothing is in a cascade layer (Bootstrap, the old styles and the page
+ *   styles keep competing by specificity and order, as before)
+ * - Tailwind classes use the tw: prefix (tw:flex, tw:md:grid-cols-2 ...),
+ *   so they never clash with Bootstrap class names
+ * When the last page is moved, Bootstrap, the old styles and the prefix go.
+ */
+
+@import "./nexora/legacy.css";
+
+@import "tailwindcss/theme.css" prefix(tw);
+@import "./nexora/components.css";
+@import "tailwindcss/utilities.css";
+
+@theme {
+    /* Bootstrap's breakpoints, so pages keep the same layout */
+    --breakpoint-sm: 576px;
+    --breakpoint-md: 768px;
+    --breakpoint-lg: 992px;
+    --breakpoint-xl: 1200px;
+    --breakpoint-2xl: 1400px;
+
+    --font-sans: 'Inter', sans-serif;
+
+    /* nx design tokens */
+    --color-nx-navy: #0f172a;
+    --color-nx-text: #1e2640;
+    --color-nx-muted: #6b7590;
+    --color-nx-border: #e5e9f0;
+    --color-nx-blue: #2563eb;
+    --color-nx-blue-soft: #eef3ff;
+    --color-nx-red: #dc2626;
+
+    /* sidebar */
+    --color-nx-side-1: #141c3a;
+    --color-nx-side-2: #1a2344;
+    --color-nx-side-3: #1e293b;
+    --color-nx-side-title: #8894b3;
+    --color-nx-side-text: #b8c2da;
+}
