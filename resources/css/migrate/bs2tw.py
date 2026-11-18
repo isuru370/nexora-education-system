@@ -435,7 +435,14 @@ def build_map(bootstrap_css):
             out += names
         if out:
             utilities[cls] = out
-    json.dump({'utilities': utilities}, open(MAP_FILE, 'w'), indent=1, sort_keys=True)
+    css_text = open(bootstrap_css).read()
+    border_order = {}
+    for cls in utilities:
+        if BORDER_TOK.match(cls):
+            m = re.search(r'(?m)^\.%s\s*\{' % re.escape(cls), css_text)
+            if m:
+                border_order[cls] = m.start()
+    json.dump({'utilities': utilities, 'border_order': border_order}, open(MAP_FILE, 'w'), indent=1, sort_keys=True)
     print('%d utility classes -> %s' % (len(utilities), MAP_FILE))
 
 
@@ -455,6 +462,7 @@ NX_BADGE = {
     'bg-primary': ['tw:[background:var(--nx-blue)]!'],
 }
 
+GRID_ANY = re.compile(r'^(row|col(-(sm|md|lg|xl|xxl))?(-(auto|\d+))?|g[xy]?(-(sm|md|lg|xl|xxl))?-\d|row-cols(-(sm|md|lg|xl|xxl))?-(auto|\d)|offset(-(sm|md|lg|xl|xxl))?-\d+)$')
 GRID_COL = re.compile(r'^col(?:-(sm|md|lg|xl|xxl))?(?:-(auto|\d+))?$')
 GUTTER = re.compile(r'^g([xy])?(?:-(sm|md|lg|xl|xxl))?-(\d)$')
 GUTTERS = {'0': Fraction(0), '1': Fraction(1, 4), '2': Fraction(1, 2), '3': Fraction(1), '4': Fraction(3, 2), '5': Fraction(3)}
@@ -466,6 +474,8 @@ class Converter:
         self.util = data['utilities']
         self.nx_scope = nx_scope
         self.problems = []
+        load_bs_colors()
+        load_border_order()
 
     def warn(self, where, msg):
         self.problems.append('%s: %s' % (where, msg))
@@ -491,44 +501,70 @@ class Converter:
         return [tok]
 
     # ---- a whole static class list on one element
-    def classes(self, toks, where='', row_parent=None):
-        """row_parent: gutters of the parent .row ({bp: (gx, gy)}) when this element is a direct child."""
+    def classes(self, toks, where='', row_parent=None, ui_grid=False):
+        """row_parent: gutters of the parent .row ({bp: (gx, gy)}) when this element is a direct
+        child of a row moved to Tailwind. ui_grid: a row with no columns in the markup (they come
+        from JavaScript): it and its columns use the ui-kit grid (.ui-row / .ui-col-*)."""
         static = set(toks)
         out = []
         extra = []
-        # grid row
-        if 'row' in static:
-            gut = self.gutters(toks)
-            extra += self.row_classes(gut)
+        if 'row' in static and not ui_grid:
+            extra += self.row_classes(self.gutters(toks))
         if row_parent is not None:
             extra += self.col_classes(toks, row_parent, where)
+        op = [t for t in toks if re.fullmatch(r'bg-opacity-\d+', t)]
+        borders = [t for t in toks if BORDER_TOK.match(t) and t in self.util]
+        merged = self.merge_borders(borders) if len(borders) > 1 else None
         for tok in toks:
-            if tok == 'row' or GUTTER.match(tok) or GRID_COL.match(tok) or re.match(r'^offset-', tok):
-                if GRID_COL.match(tok) and row_parent is None:
-                    self.warn(where, 'col class outside a .row: ' + tok)
-                    out.append(tok)
-                if re.match(r'^offset-', tok):
-                    self.warn(where, 'offset not supported: ' + tok)
-                    out.append(tok)
+            if merged is not None and tok in borders:
+                if tok == borders[0]:
+                    out += merged
                 continue
-            if tok in ('bg-opacity-10', 'bg-opacity-25', 'bg-opacity-50', 'bg-opacity-75'):
+            if GRID_ANY.match(tok):
+                if tok == 'row' or GUTTER.match(tok):
+                    if ui_grid:
+                        out.append('ui-' + tok)
+                elif row_parent is not None and GRID_COL.match(tok):
+                    pass  # done by col_classes
+                else:
+                    out.append('ui-' + tok)  # column of a ui-row (filled by JS)
+                continue
+            if tok in op:
                 continue
             mapped = self.token(tok, static, where)
-            # bg-X + bg-opacity-N
-            op = [t for t in toks if t.startswith('bg-opacity-')]
-            if op and tok.startswith('bg-') and mapped and mapped[0].startswith('tw:bg-['):
-                pass
-            if op and re.fullmatch(r'bg-(primary|secondary|success|danger|warning|info|light|dark|white|black)', tok):
-                color = re.search(r'\[background-color:(#[0-9a-f]+)\]|bg-\[(#[0-9a-f]+)\]', ' '.join(mapped))
-                if color:
-                    c = color.group(1) or color.group(2)
-                    a = int(op[0].split('-')[-1]) / 100
-                    rgb = tuple(int(c[i:i + 2], 16) for i in (1, 3, 5)) if len(c) == 7 else None
-                    if rgb:
-                        mapped = ['tw:[background-color:rgba(%d,%d,%d,%s)]!' % (rgb + (('%g' % a),))]
+            m = re.fullmatch(r'bg-(primary|secondary|success|danger|warning|info|light|dark|white|black)', tok)
+            if op and m:
+                c = BS_COLORS.get(m.group(1))
+                a = int(op[0].split('-')[-1]) / 100
+                if c:
+                    mapped = ['tw:bg-[rgba(%d,%d,%d,%s)]!' % (hex_rgb(c) + ('%g' % a,))]
             out += mapped
-        # Bootstrap order for display: d-none wins over d-inline-* (see map)
         return dedupe(extra + out)
+
+    def merge_borders(self, toks):
+        """Several border classes on one element: Tailwind does not keep Bootstrap's order for
+        them (border then border-primary ...), so work out the final border here."""
+        sides = ('top', 'right', 'bottom', 'left')
+        cur = {side: {} for side in sides}
+        order = sorted(toks, key=lambda t: BORDER_ORDER.get(t, 0))
+        for t in order:
+            for cls in self.util[t]:
+                m = re.fullmatch(r'tw:\[([\w-]+):(.*)\]!', cls)
+                if m:
+                    prop, val = m.group(1), m.group(2).replace('_', ' ')
+                else:
+                    prop, val = BORDER_NAMED.get(cls, (None, None))
+                    if prop is None:
+                        return None
+                apply_border(cur, prop, val)
+        out = []
+        if all(cur[x] == cur['top'] for x in sides):
+            out.append(border_class('border', cur['top']))
+        else:
+            for x in sides:
+                if cur[x]:
+                    out.append(border_class('border-' + x, cur[x]))
+        return out
 
     def gutters(self, toks):
         gut = {'': [Fraction(3, 2), Fraction(0)]}
@@ -594,10 +630,10 @@ class Converter:
         return out
 
     # ---- a class="" value that may hold Blade
-    def class_value(self, value, where='', row_parent=None):
+    def class_value(self, value, where='', row_parent=None, ui_grid=False):
         parts = re.split(r'(\{\{.*?\}\}|\{!!.*?!!\}|@\w+(?:\((?:[^()]|\([^()]*\))*\))?)', value, flags=re.S)
         static = [t for i, p in enumerate(parts) if i % 2 == 0 for t in p.split()]
-        mapped = self.classes(static, where, row_parent)
+        mapped = self.classes(static, where, row_parent, ui_grid)
         # dynamic parts: map quoted class names inside the expression
         dyn = []
         for i, p in enumerate(parts):
@@ -616,13 +652,73 @@ class Converter:
             toks = body.split()
             new = []
             for t in toks:
-                if GRID_COL.match(t) or t == 'row':
-                    self.warn(where, 'grid class in an expression: ' + t)
-                    new.append(t)
+                if GRID_ANY.match(t):
+                    new.append('ui-' + t)
                 else:
                     new += self.token(t, set(static) | set(toks), where)
             return q + ' '.join(dedupe(new)) + q
         return re.sub(r'(["\'])((?:(?!\1).)*)\1', rep, text)
+
+
+BORDER_TOK = re.compile(r'^border(-(top|end|bottom|start|0|1|2|3|4|5|primary|secondary|success|danger|warning|info|light|dark|black|white|[a-z]+-subtle))*$')
+BORDER_ORDER = {}   # Bootstrap's order of the border classes (later wins)
+BORDER_NAMED = {}   # tw class -> (prop, value) for the named ones
+
+
+def apply_border(cur, prop, val):
+    sides = ('top', 'right', 'bottom', 'left')
+    m = re.fullmatch(r'border(?:-(top|right|bottom|left))?(?:-(width|style|color))?', prop)
+    which = [m.group(1)] if m.group(1) else list(sides)
+    if m.group(2):
+        for x in which:
+            cur[x][m.group(2)] = val
+        return
+    parts = val.split()
+    width, style, color = '0', 'none', 'currentcolor'
+    if val.strip() not in ('0', 'none'):
+        for p_ in parts:
+            if re.fullmatch(r'[\d.]+(px|rem|em)?', p_):
+                width = p_
+            elif p_ in ('solid', 'dashed', 'dotted', 'double', 'none', 'hidden'):
+                style = p_
+            else:
+                color = p_
+    for x in which:
+        cur[x] = {'width': width, 'style': style, 'color': color}
+
+
+def border_class(prop, d):
+    if set(d) == {'width', 'style', 'color'}:
+        return 'tw:[%s:%s_%s_%s]!' % (prop, d['width'], d['style'], d['color'])
+    return ' '.join('tw:[%s-%s:%s]!' % (prop, k, v) for k, v in d.items())
+
+
+def load_border_order():
+    if BORDER_ORDER or not os.path.exists(THEME_FILE):
+        return
+    data = json.load(open(MAP_FILE))
+    BORDER_ORDER.update(data.get('border_order', {}))
+    theme = dict(re.findall(r'--color-(bs-[\w-]+):\s*([^;]+);', open(THEME_FILE).read()))
+    for util, prop, val in re.findall(r'@utility ([\w-]+) \{\s*([\w-]+): ([^;]+);', open(THEME_FILE).read()):
+        BORDER_NAMED['tw:%s!' % util] = (prop, val)
+    for name, val in theme.items():
+        BORDER_NAMED['tw:border-%s!' % name] = ('border-color', val)
+
+
+BS_COLORS = {}
+
+
+def hex_rgb(c):
+    c = c.lstrip('#')
+    if len(c) == 3:
+        c = ''.join(x * 2 for x in c)
+    return tuple(int(c[i:i + 2], 16) for i in (0, 2, 4))
+
+
+def load_bs_colors():
+    if os.path.exists(THEME_FILE):
+        for name, v in re.findall(r'--color-bs-([\w-]+):\s*(#[0-9a-f]+);', open(THEME_FILE).read()):
+            BS_COLORS[name] = v
 
 
 def sp(short, val):
@@ -678,7 +774,7 @@ KIT = [
     'dropdown-menu-end',
     'modal', 'modal-dialog', 'modal-content', 'modal-header', 'modal-title', 'modal-body', 'modal-footer',
     'modal-dialog-centered', 'modal-dialog-scrollable', 'modal-sm', 'modal-lg', 'modal-xl', 'modal-backdrop',
-    'modal-fullscreen',
+    'modal-fullscreen', 'modal-static',
     'fade', 'collapse', 'collapsing',
     'img-fluid', 'img-thumbnail',
     'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'lead', 'mark', 'display-1', 'display-2', 'display-3', 'display-4',
@@ -690,6 +786,8 @@ STATE = {'active', 'disabled', 'show', 'showing', 'hiding', 'open'}
 def build_kit(bootstrap_css):
     rules = parse_css(open(bootstrap_css).read())
     kit = set(KIT)
+    # the grid too, for rows filled by JavaScript (see Converter.classes)
+    kit |= {c for c in re.findall(r'\.([a-zA-Z][\w-]*)', open(bootstrap_css).read()) if GRID_ANY.match(c)}
     root = {}
     for media, sel, decls in rules:
         if sel.startswith(':root') and not media:
@@ -754,53 +852,204 @@ TAG = re.compile(r'<(/?)([a-zA-Z][\w-]*)((?:\s+(?:[^\s"\'<>/=]+)(?:\s*=\s*(?:"[^
 CLASS_ATTR = re.compile(r'(\bclass\s*=\s*)("([^"]*)"|\'([^\']*)\')', re.S)
 
 
-def convert_markup(text, conv, fname):
-    """Walk the HTML (outside <script>/<style>), rewrite class attributes with grid context."""
-    out = []
-    pos = 0
-    stack = []  # (tag, gutters-if-row)
-    # blank out things that are not markup so tags inside them are not seen
-    masked = mask(text)
+def walk(masked):
+    """Elements in (masked) markup: [{m, tag, parent, children}] (children = element count)."""
+    els = []
+    stack = []
     for m in TAG.finditer(masked):
-        closing, tag, attrs, selfclose = m.group(1), m.group(2).lower(), m.group(3), m.group(4)
-        line = text.count('\n', 0, m.start()) + 1
-        where = '%s:%d' % (fname, line)
+        closing, tag, selfclose = m.group(1), m.group(2).lower(), m.group(4)
         if closing:
-            # pop to the matching tag
             for i in range(len(stack) - 1, -1, -1):
-                if stack[i][0] == tag:
-                    if i != len(stack) - 1:
-                        conv.warn(where, 'unbalanced </%s> (Blade @if around tags?)' % tag)
+                if els[stack[i]]['tag'] == tag:
                     del stack[i:]
                     break
             continue
-        parent_row = stack[-1][1] if stack else None
-        real_attrs = text[m.start(3):m.end(3)]
-        cm = CLASS_ATTR.search(real_attrs)
-        gut = None
+        parent = stack[-1] if stack else None
+        els.append({'m': m, 'tag': tag, 'parent': parent, 'children': 0})
+        if parent is not None:
+            els[parent]['children'] += 1
+        if not selfclose and tag not in VOID:
+            stack.append(len(els) - 1)
+    return els
+
+
+def markup_edits(text, masked, conv, where_of, js=False):
+    """[(start, end, new)] class attribute rewrites for the markup in text."""
+    els = walk(masked)
+    info = []  # per element: gutters if a Tailwind row, 'ui' if a ui-kit row, else None
+    edits = []
+    for el in els:
+        m = el['m']
+        where = where_of(m.start())
+        attrs = text[m.start(3):m.end(3)]
+        cm = CLASS_ATTR.search(attrs)
+        parent = info[el['parent']] if el['parent'] is not None else None
+        parent_row = parent if isinstance(parent, dict) else None
+        value = None
         if cm:
             value = cm.group(3) if cm.group(3) is not None else cm.group(4)
+        static = re.sub(r'\{\{.*?\}\}|\{!!.*?!!\}|\$\{(?:[^{}]|\{[^{}]*\})*\}', ' ', value or '').split()
+        mine = None
+        ui_grid = False
+        if 'row' in static:
+            if el['children'] and '${' not in (value or '') and not js_children(el, els, text):
+                mine = conv.gutters(static)
+            else:
+                ui_grid = True
+                mine = 'ui'
+        info.append(mine)
+        if cm:
             quote = '"' if cm.group(3) is not None else "'"
-            static = re.sub(r'\{\{.*?\}\}|\{!!.*?!!\}', ' ', value).split()
-            if 'row' in static:
-                gut = conv.gutters(static)
-            new = conv.class_value(value, where, parent_row)
-            if new != value:
-                a0 = m.start(3) + cm.start(2)
-                out.append(text[pos:a0])
-                out.append(quote + new + quote)
-                pos = m.start(3) + cm.end(2)
-        elif parent_row is not None and tag not in ('template',):
-            # a direct child of .row with no class: give it the .row > * styles
+            a0 = m.start(3) + cm.start(2)
+            if js and '${' in value:
+                # only the plain parts: ${...} may hold other templates
+                pos = 0
+                for part in re.split(r'(\$\{(?:[^{}]|\{(?:[^{}]|\{[^{}]*\})*\})*\})', value):
+                    if part.startswith('${'):
+                        if '`' not in part:
+                            new = conv.expr(part, where, static)
+                            if new != part:
+                                edits.append((a0 + 1 + pos, a0 + 1 + pos + len(part), new))
+                        pos += len(part)
+                        continue
+                    toks = part.split()
+                    if toks:
+                        lead = part[:len(part) - len(part.lstrip())]
+                        trail = part[len(part.rstrip()):]
+                        new = lead + ' '.join(conv.classes(toks, where, parent_row, ui_grid)) + trail
+                        if new != part:
+                            edits.append((a0 + 1 + pos, a0 + 1 + pos + len(part), new))
+                    pos += len(part)
+            else:
+                new = conv.class_value(value, where, parent_row, ui_grid)
+                if new != value:
+                    edits.append((a0, m.start(3) + cm.end(2), quote + new + quote))
+        elif parent_row is not None and el['tag'] != 'template':
+            # a direct child of a Tailwind row with no class: give it the .row > * styles
             new = ' '.join(conv.classes([], where, parent_row))
             a0 = m.start(2) + len(m.group(2))
-            out.append(text[pos:a0])
-            out.append(' class="%s"' % new)
-            pos = a0
-        if not selfclose and tag not in VOID:
-            stack.append((tag, gut))
-    out.append(text[pos:])
-    return ''.join(out)
+            edits.append((a0, a0, ' class="%s"' % new))
+    return edits
+
+
+def js_children(el, els, text):
+    """True when the row's content also comes from Blade loops of partials we cannot see (none here)."""
+    return False
+
+
+def apply_edits(text, edits):
+    for start, end, new in sorted(edits, key=lambda e: e[0], reverse=True):
+        text = text[:start] + new + text[end:]
+    return text
+
+
+def convert_markup(text, conv, fname):
+    """Rewrite class attributes in the HTML (outside <script>/<style>), with grid context."""
+    def where_of(i):
+        return '%s:%d' % (fname, text.count('\n', 0, i) + 1)
+    return apply_edits(text, markup_edits(text, mask(text), conv, where_of))
+
+
+def js_templates(body):
+    """[(start, end, [(s, e) of ${...}])] for each `template literal` content in JS source."""
+    out = []
+    i, n = 0, len(body)
+    stack = []  # open templates: [start, holes, brace depth when in ${}]
+
+    def skip_string(i, q):
+        i += 1
+        while i < n and body[i] != q:
+            i += 2 if body[i] == '\\' else 1
+        return i + 1
+    while i < n:
+        ch = body[i]
+        top = stack[-1] if stack else None
+        in_tpl = top is not None and top[2] is None
+        if in_tpl:
+            if ch == '\\':
+                i += 2
+                continue
+            if ch == '`':
+                out.append((top[0], i, top[1]))
+                stack.pop()
+                if stack and stack[-1][2] is not None:
+                    pass
+                i += 1
+                continue
+            if body.startswith('${', i):
+                top[2] = 0
+                top[1].append([i, None])
+                i += 2
+                continue
+            i += 1
+            continue
+        # code (top level or inside ${ })
+        if ch in '"\'':
+            i = skip_string(i, ch)
+            continue
+        if body.startswith('//', i):
+            j = body.find('\n', i)
+            i = n if j < 0 else j
+            continue
+        if body.startswith('/*', i):
+            j = body.find('*/', i)
+            i = n if j < 0 else j + 2
+            continue
+        if ch == '`':
+            stack.append([i + 1, [], None])
+            i += 1
+            continue
+        if top is not None:
+            if ch == '{':
+                top[2] += 1
+            elif ch == '}':
+                if top[2] == 0:
+                    top[1][-1][1] = i + 1
+                    top[2] = None
+                else:
+                    top[2] -= 1
+        i += 1
+    return [(s, e, [(a, b if b else e) for a, b in holes]) for s, e, holes in out]
+
+
+def convert_js_templates(text, conv, fname):
+    def in_script(m):
+        body = m.group(2)
+        line0 = text.count('\n', 0, m.start(2))
+
+        def where_of(i):
+            return '%s:%d' % (fname, line0 + body.count('\n', 0, i) + 1)
+        edits = []
+        for s_, e_, holes in js_templates(body):
+            masked = list(body)
+            for i in range(len(body)):
+                if i < s_ or i >= e_:
+                    if masked[i] != '\n':
+                        masked[i] = ' '
+            for a, b in holes:
+                for i in range(a, min(b, len(body))):
+                    if masked[i] != '\n':
+                        masked[i] = 'X' if 0 else ' '
+            masked = ''.join(masked)
+            # keep ${...} inside attribute values visible as text so CLASS_ATTR sees them
+            for ed in markup_edits_js(body, masked, holes, conv, where_of):
+                edits.append(ed)
+        return m.group(1) + apply_edits(body, edits) + m.group(3)
+    return re.sub(r'(<script\b[^>]*>)(.*?)(</script>)', in_script, text, flags=re.S | re.I)
+
+
+def markup_edits_js(body, masked, holes, conv, where_of):
+    # tags are found in the masked text (holes blanked); attributes are read from the real text,
+    # but a hole inside a tag's attributes would be blank in masked: put a placeholder there
+    m2 = list(masked)
+    for a, b in holes:
+        # inside a tag? (an unclosed < before it on the masked text)
+        before = masked[:a]
+        lt, gt = before.rfind('<'), before.rfind('>')
+        if lt > gt:
+            for i in range(a, b):
+                m2[i] = 'X' if body[i] != '\n' else '\n'
+    return markup_edits(body, ''.join(m2), conv, where_of, js=True)
 
 
 def mask(text):
@@ -841,9 +1090,9 @@ def convert_scripts(text, conv, fname):
                         lead = ' ' if p[:1].isspace() else ''
                         trail = ' ' if p[-1:].isspace() else ''
                         toks = p.split()
-                        new.append(lead + ' '.join(conv.classes(toks, where(mm.start()))) + trail if toks else p)
+                        new.append(lead + ' '.join(conv.classes(toks, where(mm.start()), None, True)) + trail if toks else p)
                 return mm.group(1) + q + ''.join(new) + q
-            return mm.group(1) + q + ' '.join(conv.classes(val.split(), where(mm.start()))) + q
+            return mm.group(1) + q + ' '.join(conv.classes(val.split(), where(mm.start()), None, True)) + q
         body = re.sub(r'(class\s*=\s*\\?)(["\'])((?:(?!\2)[^<>])*?)\\?\2', cls_attr, body)
 
         def cl(mm):
@@ -852,7 +1101,31 @@ def convert_scripts(text, conv, fname):
         body = re.sub(r'(classList\.(?:add|remove|toggle|contains|replace))\(([^()]*)\)', cl, body)
 
         def cname(mm):
-            return mm.group(1) + conv.expr(mm.group(2), where(mm.start()))
+            lit = mm.group(2)
+            if lit[0] != '`':
+                return mm.group(1) + conv.expr(lit, where(mm.start()))
+            parts = re.split(r'(\$\{[^}]*\})', lit[1:-1])
+            out = []
+            for i, part in enumerate(parts):
+                if i % 2:
+                    out.append(conv.expr(part, where(mm.start())))
+                    continue
+                toks = part.split()
+                partial = toks[-1] if toks and part.endswith('-') and i + 1 < len(parts) else None
+                if partial:
+                    toks = toks[:-1]
+                mapped = conv.classes(toks, where(mm.start()), None, True) if toks else []
+                if partial:
+                    if any(k.startswith(partial) for k in KIT):
+                        mapped.append('ui-' + partial)
+                    else:
+                        if any(k.startswith(partial) for k in conv.util):
+                            conv.warn(where(mm.start()), 'class built from a variable: ' + partial + '${...}')
+                        mapped.append(partial)
+                lead = ' ' if part[:1].isspace() else ''
+                trail = ' ' if part[-1:].isspace() and not partial else ''
+                out.append(lead + ' '.join(mapped) + trail if (toks or partial) else part)
+            return mm.group(1) + '`' + ''.join(out) + '`'
         body = re.sub(r'(\.className\s*[+]?=\s*)((["\'`])[^"\'`]*\3)', cname, body)
 
         def selector(mm):
@@ -900,14 +1173,28 @@ def convert_php_strings(text, conv, fname):
     return text
 
 
+def convert_js_api(text, conv, fname):
+    """Bootstrap JS -> public/js/nx-ui.js (same API names for modals)."""
+    text = re.sub(r'data-bs-(toggle|target|dismiss|backdrop|keyboard)(\s*=)', r'data-nx-\1\2', text)
+    text = re.sub(r'\[data-bs-(toggle|target|dismiss)', r'[data-nx-\1', text)
+    text = re.sub(r'\bbootstrap\.Modal\b', 'NxUi.Modal', text)
+    text = re.sub(r'\b(show|shown|hide|hidden)\.bs\.(modal|tab)\b', r'\1.nx.\2', text)
+    for m in re.finditer(r'\bbootstrap\.\w+|data-bs-\w+', text):
+        line = text.count('\n', 0, m.start()) + 1
+        conv.warn('%s:%d' % (fname, line), 'Bootstrap JS left: ' + m.group(0))
+    return text
+
+
 def convert_file(path, nx_scope=False):
     conv = Converter(nx_scope)
     text = open(path).read()
     fname = os.path.relpath(path, ROOT)
     text = convert_markup(text, conv, fname)
+    text = convert_js_templates(text, conv, fname)
     text = convert_scripts(text, conv, fname)
     text = convert_styles(text, conv, fname)
     convert_php_strings(text, conv, fname)
+    text = convert_js_api(text, conv, fname)
     open(path, 'w').write(text)
     return conv.problems
 

@@ -4,108 +4,108 @@
 @section('page-title', 'Quick Images Management')
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-    <li class="breadcrumb-item active">Quick Images</li>
+    <li class="ui-breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
+    <li class="ui-breadcrumb-item active">Quick Images</li>
 @endsection
 
 @section('content')
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <div class="row">
+    <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3">
         <!-- LEFT: Upload Section -->
-        <div class="col-md-4">
-            <div class="card shadow-sm border-0">
-                <div class="card-header bg-primary text-white">
-                    <strong><i class="fas fa-upload me-2"></i>Upload Quick Image</strong>
+        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
+            <div class="ui-card tw:shadow-bs-sm! tw:[border:0]!">
+                <div class="ui-card-header tw:bg-bs-primary! tw:text-bs-white!">
+                    <strong><i class="fas fa-upload tw:mr-2!"></i>Upload Quick Image</strong>
                 </div>
-                <div class="card-body">
+                <div class="ui-card-body">
 
                     <!-- Preview Section -->
-                    <div class="text-center mb-4">
-                        <div class="preview-container position-relative">
-                            <img id="previewImg" class="img-thumbnail rounded shadow-sm"
+                    <div class="tw:text-center! tw:mb-6!">
+                        <div class="preview-container tw:relative!">
+                            <img id="previewImg" class="ui-img-thumbnail tw:rounded-bs! tw:shadow-bs-sm!"
                                 style="width: 100%; max-width: 300px; display: none;">
-                            <div id="previewPlaceholder" class="text-muted p-4 border rounded">
-                                <i class="fas fa-image fa-3x mb-3"></i>
-                                <p class="mb-0">Image preview will appear here</p>
+                            <div id="previewPlaceholder" class="tw:text-bs-secondary-color! tw:p-6! tw:bs-border! tw:rounded-bs!">
+                                <i class="fas fa-image fa-3x tw:mb-4!"></i>
+                                <p class="tw:mb-0!">Image preview will appear here</p>
                             </div>
                         </div>
                     </div>
 
                     <!-- Camera Section -->
-                    <div class="mb-4">
-                        <label class="form-label fw-semibold">Camera Capture</label>
-                        <div id="cameraWrapper" class="border rounded p-3 bg-light" style="display: none">
-                            <video id="cameraView" width="100%" autoplay muted class="rounded border"
+                    <div class="tw:mb-6!">
+                        <label class="ui-form-label tw:font-semibold!">Camera Capture</label>
+                        <div id="cameraWrapper" class="tw:bs-border! tw:rounded-bs! tw:p-4! tw:bg-bs-light!" style="display: none">
+                            <video id="cameraView" width="100%" autoplay muted class="tw:rounded-bs! tw:bs-border!"
                                 style="max-height: 200px;"></video>
-                            <div class="d-flex gap-2 mt-2">
-                                <button class="btn btn-success flex-fill" id="captureBtn">
-                                    <i class="fas fa-camera me-2"></i>Capture
+                            <div class="tw:flex! tw:gap-2! tw:mt-2!">
+                                <button class="ui-btn ui-btn-success tw:[flex:1_1_auto]!" id="captureBtn">
+                                    <i class="fas fa-camera tw:mr-2!"></i>Capture
                                 </button>
-                                <button class="btn btn-secondary" id="closeCameraBtn">
+                                <button class="ui-btn ui-btn-secondary" id="closeCameraBtn">
                                     <i class="fas fa-times"></i>
                                 </button>
                             </div>
                         </div>
-                        <button class="btn btn-outline-primary w-100" id="openCameraBtn">
-                            <i class="fas fa-camera me-2"></i>Enable Camera
+                        <button class="ui-btn ui-btn-outline-primary tw:w-full!" id="openCameraBtn">
+                            <i class="fas fa-camera tw:mr-2!"></i>Enable Camera
                         </button>
-                        <p id="cameraError" class="text-danger mt-2 small" style="display: none"></p>
+                        <p id="cameraError" class="tw:text-bs-danger! tw:mt-2! tw:text-[.875em]" style="display: none"></p>
                     </div>
 
                     <!-- File Upload Section -->
-                    <div class="mb-4">
-                        <label class="form-label fw-semibold">Upload from Device</label>
-                        <div class="file-upload-area border rounded p-4 text-center bg-light">
-                            <i class="fas fa-cloud-upload-alt fa-2x text-muted mb-3"></i>
-                            <p class="text-muted mb-2">Click to browse or drag & drop</p>
-                            <input type="file" id="imageInput" accept="image/*" class="d-none">
-                            <button class="btn btn-outline-secondary btn-sm"
+                    <div class="tw:mb-6!">
+                        <label class="ui-form-label tw:font-semibold!">Upload from Device</label>
+                        <div class="file-upload-area tw:bs-border! tw:rounded-bs! tw:p-6! tw:text-center! tw:bg-bs-light!">
+                            <i class="fas fa-cloud-upload-alt fa-2x tw:text-bs-secondary-color! tw:mb-4!"></i>
+                            <p class="tw:text-bs-secondary-color! tw:mb-2!">Click to browse or drag & drop</p>
+                            <input type="file" id="imageInput" accept="image/*" class="tw:hidden!">
+                            <button class="ui-btn ui-btn-outline-secondary ui-btn-sm"
                                 onclick="document.getElementById('imageInput').click()">
-                                <i class="fas fa-folder-open me-2"></i>Browse Files
+                                <i class="fas fa-folder-open tw:mr-2!"></i>Browse Files
                             </button>
                         </div>
                     </div>
 
                     <!-- Grade Dropdown -->
-                    <div class="mb-4">
-                        <label class="form-label fw-semibold">Select Grade</label>
-                        <select id="gradeSelect" class="form-select">
+                    <div class="tw:mb-6!">
+                        <label class="ui-form-label tw:font-semibold!">Select Grade</label>
+                        <select id="gradeSelect" class="ui-form-select">
                             <option value="">Loading grades...</option>
                         </select>
                     </div>
 
                     <!-- Save Button -->
-                    <button class="btn btn-success w-100 py-2 fw-semibold" id="saveBtn" disabled>
-                        <i class="fas fa-save me-2"></i>Save Quick Image
+                    <button class="ui-btn ui-btn-success tw:w-full! tw:py-2! tw:font-semibold!" id="saveBtn" disabled>
+                        <i class="fas fa-save tw:mr-2!"></i>Save Quick Image
                     </button>
                 </div>
             </div>
         </div>
 
         <!-- RIGHT: Quick Images List -->
-        <div class="col-md-8">
-            <div class="card shadow-sm border-0">
-                <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                    <strong><i class="fas fa-images me-2"></i>Quick Images List</strong>
-                    <span class="badge bg-light text-primary" id="imageCount">0 images</span>
+        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[66.66666667%]">
+            <div class="ui-card tw:shadow-bs-sm! tw:[border:0]!">
+                <div class="ui-card-header tw:bg-bs-primary! tw:text-bs-white! tw:flex! tw:justify-between! tw:items-center!">
+                    <strong><i class="fas fa-images tw:mr-2!"></i>Quick Images List</strong>
+                    <span class="ui-badge tw:bg-bs-light! tw:text-bs-primary!" id="imageCount">0 images</span>
                 </div>
-                <div class="card-body">
+                <div class="ui-card-body">
 
                     <!-- Filters -->
-                    <div class="row mb-4">
-                        <div class="col-md-6">
-                            <label class="form-label fw-semibold">Filter by Grade</label>
-                            <select id="filterGrade" class="form-select">
+                    <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 tw:mb-6!">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
+                            <label class="ui-form-label tw:font-semibold!">Filter by Grade</label>
+                            <select id="filterGrade" class="ui-form-select">
                                 <option value="">All Grades</option>
                             </select>
                         </div>
-                        <div class="col-md-6">
-                            <label class="form-label fw-semibold">Search by Custom ID</label>
-                            <div class="input-group">
-                                <input type="text" id="searchCustomId" class="form-control"
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
+                            <label class="ui-form-label tw:font-semibold!">Search by Custom ID</label>
+                            <div class="ui-input-group">
+                                <input type="text" id="searchCustomId" class="ui-form-control"
                                     placeholder="Enter custom ID...">
-                                <button class="btn btn-outline-secondary" type="button" id="clearSearch">
+                                <button class="ui-btn ui-btn-outline-secondary" type="button" id="clearSearch">
                                     <i class="fas fa-times"></i>
                                 </button>
                             </div>
@@ -113,27 +113,27 @@
                     </div>
 
                     <!-- Images Grid -->
-                    <div id="loadingState" class="text-center py-4">
-                        <div class="spinner-border text-primary" role="status">
-                            <span class="visually-hidden">Loading...</span>
+                    <div id="loadingState" class="tw:text-center! tw:py-6!">
+                        <div class="ui-spinner-border tw:text-bs-primary!" role="status">
+                            <span class="tw:sr-only">Loading...</span>
                         </div>
-                        <p class="text-muted mt-2">Loading quick images...</p>
+                        <p class="tw:text-bs-secondary-color! tw:mt-2!">Loading quick images...</p>
                     </div>
 
-                    <div id="imagesContainer" class="row g-3" style="display: none;">
+                    <div id="imagesContainer" class="ui-row ui-g-3" style="display: none;">
                         <!-- Images will be loaded here -->
                     </div>
 
                     <!-- Empty State -->
-                    <div id="emptyState" class="text-center py-5" style="display: none;">
-                        <i class="fas fa-images fa-4x text-muted mb-3"></i>
-                        <h5 class="text-muted">No Quick Images Found</h5>
-                        <p class="text-muted">Upload your first quick image to get started.</p>
+                    <div id="emptyState" class="tw:text-center! tw:py-12!" style="display: none;">
+                        <i class="fas fa-images fa-4x tw:text-bs-secondary-color! tw:mb-4!"></i>
+                        <h5 class="tw:text-bs-secondary-color!">No Quick Images Found</h5>
+                        <p class="tw:text-bs-secondary-color!">Upload your first quick image to get started.</p>
                     </div>
 
                     <!-- Error State -->
-                    <div id="errorState" class="alert alert-danger text-center" style="display: none;">
-                        <i class="fas fa-exclamation-triangle me-2"></i>
+                    <div id="errorState" class="ui-alert ui-alert-danger tw:text-center!" style="display: none;">
+                        <i class="fas fa-exclamation-triangle tw:mr-2!"></i>
                         <span id="errorText">Failed to load quick images</span>
                     </div>
                 </div>
@@ -162,15 +162,15 @@
             justify-content: center;
         }
 
-        .card {
+        .ui-card {
             transition: transform 0.2s ease;
         }
 
-        .card:hover {
+        .ui-card:hover {
             transform: translateY(-2px);
         }
 
-        .alert.position-fixed {
+        .ui-alert.toast-alert {
             animation: slideInRight 0.3s ease;
         }
 
@@ -433,7 +433,7 @@
             try {
                 const saveBtn = document.getElementById('saveBtn');
                 saveBtn.disabled = true;
-                saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Saving...';
+                saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin tw:mr-2!"></i>Saving...';
 
                 const res = await fetch('/api/quick-photos', {
                     method: 'POST',
@@ -470,7 +470,7 @@
             } finally {
                 const saveBtn = document.getElementById('saveBtn');
                 saveBtn.disabled = false;
-                saveBtn.innerHTML = '<i class="fas fa-save me-2"></i>Save Quick Image';
+                saveBtn.innerHTML = '<i class="fas fa-save tw:mr-2!"></i>Save Quick Image';
             }
         });
 
@@ -529,7 +529,7 @@
 
             photos.forEach(item => {
                 const col = document.createElement('div');
-                col.className = 'col-md-6 col-lg-4';
+                col.className = 'ui-col-md-6 ui-col-lg-4';
 
                 // FIX: Use image URL directly from API response
                 let imageUrl = item.quick_img || item.image_url || '';
@@ -544,8 +544,8 @@
                 const fullImageUrl = imageUrl + cacheBuster;
 
                 col.innerHTML = `
-                        <div class="card h-100 shadow-sm quick-image-card">
-                            <img src="${fullImageUrl}" class="card-img-top" 
+                        <div class="ui-card tw:h-full! tw:shadow-bs-sm! quick-image-card">
+                            <img src="${fullImageUrl}" class="ui-card-img-top" 
                                  style="height: 200px; object-fit: cover; width: 100%;" 
                                  alt="Quick image for ${item.grade?.grade_name || 'Unknown'}"
                                  onerror="this.src='https://via.placeholder.com/300x200?text=Image+Not+Found'">
@@ -554,14 +554,14 @@
                                     <small>ID: ${item.custom_id}</small>
                                 </div>
                             ` : ''}
-                            <div class="card-body">
-                                <h6 class="card-title">Grade ${item.grade?.grade_name || 'N/A'}</h6>
-                                <span class="badge ${item.is_active ? 'bg-success' : 'bg-secondary'}">
+                            <div class="ui-card-body">
+                                <h6 class="ui-card-title">Grade ${item.grade?.grade_name || 'N/A'}</h6>
+                                <span class="ui-badge ${item.is_active ? 'tw:bg-bs-success!' : 'tw:bg-bs-secondary!'}">
                                     ${item.is_active ? 'Active' : 'Inactive'}
                                 </span>
                                 ${item.custom_id ? `
-                                    <div class="mt-2">
-                                        <small class="text-muted">Custom ID: ${item.custom_id}</small>
+                                    <div class="tw:mt-2!">
+                                        <small class="tw:text-bs-secondary-color!">Custom ID: ${item.custom_id}</small>
                                     </div>
                                 ` : ''}
                             </div>
@@ -628,7 +628,7 @@
             }
 
             const alertDiv = document.createElement('div');
-            alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+            alertDiv.className = `ui-alert ui-alert-${type} ui-alert-dismissible ui-fade show tw:fixed! toast-alert`;
             alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px; max-width: 500px;';
 
             const icon = type === 'success' ? 'fa-check-circle' :
@@ -636,13 +636,13 @@
                     type === 'info' ? 'fa-info-circle' : 'fa-times-circle';
 
             alertDiv.innerHTML = `
-                    <div class="d-flex align-items-start">
-                        <i class="fas ${icon} fa-lg me-3 mt-1"></i>
-                        <div class="flex-grow-1">
+                    <div class="tw:flex! tw:items-start!">
+                        <i class="fas ${icon} fa-lg tw:mr-4! tw:mt-1!"></i>
+                        <div class="tw:grow!">
                             <strong>${type === 'success' ? 'Success!' : type === 'warning' ? 'Warning!' : type === 'info' ? 'Info:' : 'Error!'}</strong> 
                             <span>${message}</span>
                         </div>
-                        <button type="button" class="btn-close ms-2" data-bs-dismiss="alert"></button>
+                        <button type="button" class="ui-btn-close tw:ml-2!" data-nx-dismiss="alert"></button>
                     </div>
                 `;
 

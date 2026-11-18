@@ -7,7 +7,7 @@
 <div class="dashboard-page">
 
     {{-- HERO --}}
-    <div class="hero-section mb-4">
+    <div class="hero-section tw:mb-6!">
         <div class="hero-content">
             <div class="hero-left">
                 <span class="greeting-badge">nexoraEDU</span>
@@ -50,7 +50,7 @@
     </div>
 
     {{-- KPI CARDS --}}
-    <div class="stats-grid mb-4">
+    <div class="stats-grid tw:mb-6!">
 
         <div class="nx-card stat-card">
             <div class="stat-icon-wrapper icon-blue"><i class="bi bi-people-fill"></i></div>
@@ -99,27 +99,27 @@
 
     {{-- BRANCH-WISE COUNTS --}}
     @if (isset($statistics['branch_wise_counts']) && $statistics['branch_wise_counts']->isNotEmpty())
-        <div class="nx-card mb-4">
+        <div class="nx-card tw:mb-6!">
             <div class="nx-card-header">
                 <div>
-                    <h5 class="nx-card-title"><i class="bi bi-diagram-3 text-primary"></i> Branches</h5>
+                    <h5 class="nx-card-title"><i class="bi bi-diagram-3 tw:text-(color:--nx-blue)!"></i> Branches</h5>
                     <p class="nx-card-subtitle">Student count per institute branch</p>
                 </div>
             </div>
-            <div class="table-responsive">
-                <table class="table premium-table mb-0">
+            <div class="ui-table-responsive">
+                <table class="ui-table premium-table tw:mb-0!">
                     <thead>
                         <tr>
                             <th>Branch</th>
                             <th>Code</th>
-                            <th class="text-end">Students</th>
+                            <th class="tw:text-right!">Students</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($statistics['branch_wise_counts'] as $branch)
                             <tr>
                                 <td class="cell-title">
-                                    <i class="bi bi-building me-1 text-muted"></i>
+                                    <i class="bi bi-building tw:mr-1! tw:text-(color:--nx-muted)!"></i>
                                     {{ $branch->name }}
                                 </td>
                                 <td>
@@ -131,7 +131,7 @@
                                         <span class="cell-sub">—</span>
                                     @endif
                                 </td>
-                                <td class="text-end"><strong>{{ $branch->students_count }}</strong></td>
+                                <td class="tw:text-right!"><strong>{{ $branch->students_count }}</strong></td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -141,11 +141,11 @@
     @endif
 
     {{-- MAIN CARD --}}
-    <div class="nx-card mb-4">
+    <div class="nx-card tw:mb-6!">
 
         <div class="nx-card-header">
             <div>
-                <h5 class="nx-card-title"><i class="bi bi-people-fill text-primary"></i> Students Management</h5>
+                <h5 class="nx-card-title"><i class="bi bi-people-fill tw:text-(color:--nx-blue)!"></i> Students Management</h5>
                 <p class="nx-card-subtitle">Manage all student information and QR status</p>
             </div>
 
@@ -180,18 +180,18 @@
         {{-- SEARCH --}}
         <div class="nx-search">
             <form method="GET" action="{{ route('students.index') }}">
-                <div class="row g-3">
-                    <div class="col-lg-5">
+                <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[41.66666667%]">
                         <div class="search-input-wrapper">
                             <i class="bi bi-search"></i>
-                            <input type="text" name="search" class="form-control custom-input"
+                            <input type="text" name="search" class="ui-form-control custom-input"
                                 placeholder="Search name / mobile / QR / custom ID..."
                                 value="{{ request('search') }}">
                         </div>
                     </div>
 
-                    <div class="col-lg-3">
-                        <select name="grade_id" class="form-select custom-input">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[25%]">
+                        <select name="grade_id" class="ui-form-select custom-input">
                             <option value="">All Grades</option>
                             @foreach ($grades as $grade)
                                 <option value="{{ $grade->id }}"
@@ -202,14 +202,14 @@
                         </select>
                     </div>
 
-                    <div class="col-lg-2">
-                        <button type="submit" class="nx-btn nx-btn-primary w-100">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[16.66666667%]">
+                        <button type="submit" class="nx-btn nx-btn-primary tw:w-full!">
                             <i class="bi bi-search"></i> Search
                         </button>
                     </div>
 
-                    <div class="col-lg-2">
-                        <a href="{{ route('students.index') }}" class="nx-btn nx-btn-light w-100">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[16.66666667%]">
+                        <a href="{{ route('students.index') }}" class="nx-btn nx-btn-light tw:w-full!">
                             Reset
                         </a>
                     </div>
@@ -218,8 +218,8 @@
         </div>
 
         {{-- TABLE --}}
-        <div class="table-responsive">
-            <table class="table premium-table mb-0">
+        <div class="ui-table-responsive">
+            <table class="ui-table premium-table tw:mb-0!">
                 <thead>
                     <tr>
                         <th>#</th>
@@ -228,7 +228,7 @@
                         <th>Grade</th>
                         <th>QR Details</th>
                         <th>Status</th>
-                        <th class="text-end">Actions</th>
+                        <th class="tw:text-right!">Actions</th>
                     </tr>
                 </thead>
 
@@ -248,7 +248,7 @@
                             </td>
 
                             <td>
-                                <div class="d-flex align-items-center gap-3">
+                                <div class="tw:flex! tw:items-center! tw:gap-4!">
                                     <img src="{{ $studentImage }}" class="student-avatar"
                                         onerror="this.src='{{ asset('images/default-student.png') }}'">
                                     <div>
@@ -265,23 +265,23 @@
 
                             <td>
                                 <div class="cell-title">{{ $student->grade->grade_name ?? 'N/A' }}</div>
-                                <span class="nx-badge nx-badge-blue mt-1">{{ ucfirst($student->class_type) }}</span>
+                                <span class="nx-badge nx-badge-blue tw:mt-1!">{{ ucfirst($student->class_type) }}</span>
                             </td>
 
                             <td>
                                 @if ($student->permanent_qr_active == 1)
-                                    <span class="nx-badge nx-badge-green mb-1">Permanent QR</span>
+                                    <span class="nx-badge nx-badge-green tw:mb-1!">Permanent QR</span>
                                     <div class="cell-title">{{ $student->custom_id }}</div>
                                 @else
-                                    <span class="nx-badge nx-badge-amber mb-1">Temporary QR</span>
+                                    <span class="nx-badge nx-badge-amber tw:mb-1!">Temporary QR</span>
                                     <div class="cell-title">{{ $student->temporary_qr_code }}</div>
 
                                     @if ($daysLeft < 0)
-                                        <small class="cell-sub text-danger fw-semibold d-block">Expired</small>
+                                        <small class="cell-sub tw:text-(color:--nx-red)! tw:font-semibold! tw:block!">Expired</small>
                                     @elseif ($daysLeft == 0)
-                                        <small class="cell-sub text-warning fw-semibold d-block">Expires Today</small>
+                                        <small class="cell-sub tw:text-(color:--nx-amber)! tw:font-semibold! tw:block!">Expires Today</small>
                                     @else
-                                        <small class="cell-sub d-block">{{ $daysLeft }} days left</small>
+                                        <small class="cell-sub tw:block!">{{ $daysLeft }} days left</small>
                                     @endif
                                 @endif
                             </td>
@@ -296,11 +296,11 @@
                                 @endif
 
                                 @if ($student->admission)
-                                    <span class="nx-badge nx-badge-blue mt-1 d-block">Admission Paid</span>
+                                    <span class="nx-badge nx-badge-blue tw:mt-1! tw:block!">Admission Paid</span>
                                 @endif
                             </td>
 
-                            <td class="text-end">
+                            <td class="tw:text-right!">
                                 <div class="action-buttons">
                                     <a href="{{ route('students.show', $student) }}" class="action-btn" title="View" aria-label="View">
                                         <i class="bi bi-eye-fill"></i>
@@ -335,8 +335,8 @@
                     @empty
                         <tr>
                             <td colspan="7" class="empty-table">
-                                <i class="bi bi-person-x fs-2 d-block mb-2"></i>
-                                <strong class="d-block">No students found</strong>
+                                <i class="bi bi-person-x tw:text-[length:calc(1.325rem_+_0.9vw)]! tw:xl:text-[length:2rem]! tw:block! tw:mb-2!"></i>
+                                <strong class="tw:block!">No students found</strong>
                                 <span class="cell-sub">Try adjusting your search filters</span>
                             </td>
                         </tr>
@@ -345,8 +345,8 @@
             </table>
         </div>
 
-        <div class="p-3 border-top">
-            {{ $students->links() }}
+        <div class="tw:p-4! tw:bs-border-t!">
+            {{ $students->links('pagination.ui') }}
         </div>
     </div>
 
