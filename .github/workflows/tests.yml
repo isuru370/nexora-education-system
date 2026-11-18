@@ -85,6 +85,9 @@ jobs:
           cp .env.example .env
           php artisan key:generate --force
 
+      - name: Load every test class
+        run: bash tests/ci/load-classes.sh 2>&1 | sed "s#$GITHUB_WORKSPACE/##g" | tee load-output.txt
+
       - name: Run tests
         id: tests
         continue-on-error: true
@@ -99,7 +102,7 @@ jobs:
           OUTCOME: ${{ steps.tests.outcome }}
         run: |
           set +e
-          touch test-output.txt composer-output.txt
+          touch test-output.txt composer-output.txt load-output.txt
           {
             if [ "$OUTCOME" = "success" ]; then echo "### ✅ Tests passed"; else echo "### ❌ Tests failed"; fi
             echo
@@ -108,6 +111,15 @@ jobs:
             echo '```'
             grep -E "Tests:|Time:" test-output.txt | tail -2
             echo '```'
+            if grep -q "Fatal\|Error" load-output.txt 2>/dev/null; then
+              echo
+              echo "<details><summary>Test classes that do not load</summary>"
+              echo
+              echo '```'
+              head -c 20000 load-output.txt
+              echo '```'
+              echo "</details>"
+            fi
             if [ "$OUTCOME" != "success" ]; then
               echo
               echo "<details><summary>Failures</summary>"
