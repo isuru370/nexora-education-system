@@ -30,7 +30,7 @@ class MonthlyReportPdfTest extends TestCase
         $this->actingAs($this->inst['admin']);
     }
 
-    protected function query(): string
+    protected function reportQuery(): string
     {
         return '?teacher_id=' . $this->inst['teacher'] . '&year=2026&month=10';
     }
@@ -38,7 +38,7 @@ class MonthlyReportPdfTest extends TestCase
     public function test_student_payment_pdf_downloads_for_both_bases(): void
     {
         foreach (['fee-month', 'paid-date'] as $basis) {
-            $response = $this->get("/monthly-report/student-payments/{$basis}/pdf" . $this->query());
+            $response = $this->get("/monthly-report/student-payments/{$basis}/pdf" . $this->reportQuery());
 
             $response->assertOk();
             $this->assertSame('application/pdf', $response->headers->get('content-type'));
