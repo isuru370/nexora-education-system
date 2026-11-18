@@ -1,21 +1,21 @@
 /*
- * nexoraEDU web styles. Built into public/css/nexora.css by
+ * nexoraEDU web styles (app layout). Built into public/css/nexora.css by
  *   npm run css        (node resources/css/build.mjs)
  *
- * While pages move from Bootstrap to Tailwind both are loaded:
- * - Bootstrap and the old styles live in the "bootstrap" layer (lowest)
+ * While pages move from Bootstrap to Tailwind both are loaded, and the
+ * cascade stays exactly as it was:
+ * - nothing is in a cascade layer (Bootstrap, the old styles and the page
+ *   styles keep competing by specificity and order, as before)
  * - Tailwind classes use the tw: prefix (tw:flex, tw:md:grid-cols-2 ...),
- *   so they never clash with Bootstrap class names, and win over it
- * When the last page is moved, Bootstrap and the prefix go away.
+ *   so they never clash with Bootstrap class names
+ * When the last page is moved, Bootstrap, the old styles and the prefix go.
  */
 
-@layer bootstrap, theme, base, components, utilities;
+@import "./nexora/legacy.css";
 
-@import "tailwindcss/theme.css" layer(theme) prefix(tw);
-@import "tailwindcss/utilities.css" layer(utilities);
-
-@import "./nexora/legacy.css" layer(bootstrap);
-@import "./nexora/components.css" layer(components);
+@import "tailwindcss/theme.css" prefix(tw);
+@import "./nexora/components.css";
+@import "tailwindcss/utilities.css";
 
 @theme {
     /* Bootstrap's breakpoints, so pages keep the same layout */

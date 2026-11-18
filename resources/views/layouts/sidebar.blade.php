@@ -1,7 +1,7 @@
 {{-- Class names "sidebar" / nav-link-custom / sidebar-group stay: the JS
      below and page print styles use them. --}}
 <aside id="sidebar"
-    class="sidebar tw:fixed tw:inset-y-0 tw:left-0 tw:z-[1030] tw:flex tw:w-[280px] tw:flex-col tw:border-r tw:border-white/6 tw:bg-linear-to-b tw:from-nx-side-1 tw:via-nx-side-2 tw:to-nx-side-3 tw:shadow-[6px_0_25px_rgba(0,0,0,0.20)] tw:transition-all tw:duration-300 tw:max-lg:transform-[translateX(-100%)] tw:max-lg:[&.show]:transform-none">
+    class="sidebar tw:fixed tw:inset-y-0 tw:left-0 tw:z-[1030] tw:flex tw:w-[280px] tw:flex-col tw:border-r tw:border-white/6 tw:bg-[linear-gradient(180deg,var(--tw-color-nx-side-1)_0%,var(--tw-color-nx-side-2)_50%,var(--tw-color-nx-side-3)_100%)] tw:shadow-[6px_0_25px_rgba(0,0,0,0.20)] tw:transition-all tw:duration-300 tw:max-lg:transform-[translateX(-100%)] tw:max-lg:[&.show]:transform-none">
 
     <!-- SIDEBAR HEADER -->
     <div class="tw:shrink-0 tw:border-b tw:border-white/6 tw:px-5 tw:py-6">

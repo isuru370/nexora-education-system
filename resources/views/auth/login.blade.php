@@ -9,403 +9,49 @@
 
     <title>Login - {{ config('app.name', 'Nexora Education') }}</title>
 
-    {{-- Bootstrap --}}
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
-
     {{-- Bootstrap Icons (nx standard) --}}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
 
     {{-- Google Font (nx standard) --}}
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 
-    <style>
-        /* ============================================================
-           Login — Nexora theme aligned
-           Glassmorphism identity preserved.
-           ============================================================ */
-
-        :root {
-            --nx-login-navy: #0f172a;
-            --nx-login-blue: #1d4ed8;
-            --nx-login-blue-light: #3b82f6;
-            --nx-login-text: #f1f5f9;
-            --nx-login-muted: rgba(255, 255, 255, .72);
-            --nx-login-border: rgba(255, 255, 255, .12);
-            --nx-login-radius: 12px;
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        html, body {
-            min-height: 100vh;
-        }
-
-        body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
-            background:
-                radial-gradient(circle at top left, rgba(29, 78, 216, .28), transparent 40%),
-                radial-gradient(circle at bottom right, rgba(59, 130, 246, .18), transparent 40%),
-                linear-gradient(135deg, #020617, #0f172a, #1e3a8a);
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-            position: relative;
-            color: var(--nx-login-text);
-        }
-
-        /* FLOATING BACKGROUND CIRCLES */
-        .floating-bg {
-            position: absolute;
-            inset: 0;
-            overflow: hidden;
-            pointer-events: none;
-        }
-
-        .floating-circle {
-            position: absolute;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, .05);
-            animation: float 10s infinite ease-in-out;
-        }
-
-        .floating-circle:nth-child(1) {
-            width: 240px;
-            height: 240px;
-            top: -60px;
-            left: -60px;
-        }
-
-        .floating-circle:nth-child(2) {
-            width: 180px;
-            height: 180px;
-            bottom: -50px;
-            right: -40px;
-            animation-delay: 2s;
-        }
-
-        .floating-circle:nth-child(3) {
-            width: 120px;
-            height: 120px;
-            top: 50%;
-            left: 12%;
-            animation-delay: 1s;
-        }
-
-        .floating-circle:nth-child(4) {
-            width: 90px;
-            height: 90px;
-            top: 18%;
-            right: 20%;
-            animation-delay: 3s;
-        }
-
-        @keyframes float {
-            0%   { transform: translateY(0); }
-            50%  { transform: translateY(-25px); }
-            100% { transform: translateY(0); }
-        }
-
-        /* LOGIN WRAPPER */
-        .login-wrapper {
-            width: 100%;
-            max-width: 460px;
-            position: relative;
-            z-index: 5;
-            padding: 20px;
-        }
-
-        /* LOGIN CARD */
-        .login-card {
-            position: relative;
-            overflow: hidden;
-            border-radius: var(--nx-login-radius);
-            background: rgba(255, 255, 255, .08);
-            border: 1px solid var(--nx-login-border);
-            backdrop-filter: blur(22px);
-            -webkit-backdrop-filter: blur(22px);
-            box-shadow:
-                0 20px 50px rgba(0, 0, 0, .45),
-                inset 0 1px 0 rgba(255, 255, 255, .08);
-            color: var(--nx-login-text);
-        }
-
-        .login-card::before {
-            content: '';
-            position: absolute;
-            width: 280px;
-            height: 280px;
-            background: rgba(59, 130, 246, .14);
-            border-radius: 50%;
-            top: -120px;
-            right: -120px;
-            pointer-events: none;
-        }
-
-        /* HEADER */
-        .login-header {
-            position: relative;
-            padding: 45px 40px 25px;
-            text-align: center;
-        }
-
-        .logo-box {
-            width: 84px;
-            height: 84px;
-            margin: 0 auto 24px;
-            border-radius: var(--nx-login-radius);
-            background: linear-gradient(135deg, var(--nx-login-blue), var(--nx-login-blue-light));
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            box-shadow: 0 10px 25px rgba(29, 78, 216, .45);
-        }
-
-        .logo-box i {
-            font-size: 38px;
-            color: #fff;
-        }
-
-        .brand-title {
-            font-size: 1.75rem;
-            font-weight: 800;
-            letter-spacing: -.3px;
-            margin-bottom: 10px;
-            color: #fff;
-        }
-
-        .brand-subtitle {
-            color: var(--nx-login-muted);
-            font-size: .9rem;
-            line-height: 1.6;
-            margin: 0;
-        }
-
-        /* BODY */
-        .login-body {
-            padding: 20px 40px 40px;
-        }
-
-        /* LABELS */
-        .login-label {
-            display: block;
-            font-weight: 700;
-            margin-bottom: 10px;
-            font-size: .8rem;
-            color: #cbd5e1;
-            text-transform: uppercase;
-            letter-spacing: .04em;
-        }
-
-        /* INPUT GROUP */
-        .custom-input-group {
-            background: rgba(255, 255, 255, .07);
-            border: 1px solid var(--nx-login-border);
-            border-radius: var(--nx-login-radius);
-            overflow: hidden;
-            transition: border-color .15s ease, box-shadow .15s ease;
-        }
-
-        .custom-input-group:focus-within {
-            border-color: rgba(59, 130, 246, .7);
-            box-shadow: 0 0 0 3px rgba(29, 78, 216, .18);
-        }
-
-        .custom-input-group .input-group-text {
-            background: transparent;
-            border: none;
-            color: #cbd5e1;
-            padding-left: 18px;
-            font-size: 1rem;
-        }
-
-        .custom-input {
-            background: transparent !important;
-            border: none !important;
-            color: #fff !important;
-            height: 54px;
-            font-size: .92rem;
-        }
-
-        .custom-input::placeholder {
-            color: rgba(255, 255, 255, .45);
-        }
-
-        .custom-input:focus {
-            box-shadow: none !important;
-        }
-
-        .custom-input:-webkit-autofill,
-        .custom-input:-webkit-autofill:hover,
-        .custom-input:-webkit-autofill:focus {
-            -webkit-text-fill-color: #fff;
-            transition: background-color 9999s ease-in-out 0s;
-        }
-
-        /* PASSWORD BUTTON */
-        .toggle-password {
-            border: none;
-            background: transparent;
-            color: #cbd5e1;
-            padding: 0 18px;
-            cursor: pointer;
-            transition: color .15s ease;
-        }
-
-        .toggle-password:hover {
-            color: #fff;
-        }
-
-        /* REMEMBER / CHECKBOX */
-        .form-check-input {
-            background-color: transparent;
-            border: 1px solid rgba(255, 255, 255, .35);
-            cursor: pointer;
-        }
-
-        .form-check-input:checked {
-            background-color: var(--nx-login-blue);
-            border-color: var(--nx-login-blue);
-        }
-
-        .form-check-input:focus {
-            box-shadow: 0 0 0 3px rgba(29, 78, 216, .25);
-            border-color: var(--nx-login-blue);
-        }
-
-        .form-check-label {
-            color: #cbd5e1;
-            cursor: pointer;
-            font-size: .85rem;
-        }
-
-        /* LOGIN BUTTON */
-        .btn-login {
-            width: 100%;
-            height: 54px;
-            border: none;
-            border-radius: var(--nx-login-radius);
-            background: linear-gradient(135deg, var(--nx-login-blue), var(--nx-login-blue-light));
-            color: #fff;
-            font-size: .95rem;
-            font-weight: 700;
-            transition: transform .15s ease, box-shadow .15s ease;
-            box-shadow: 0 12px 30px rgba(29, 78, 216, .35);
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: .5rem;
-        }
-
-        .btn-login:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 16px 35px rgba(29, 78, 216, .45);
-            color: #fff;
-        }
-
-        /* LINKS */
-        .custom-link {
-            color: #bfdbfe;
-            text-decoration: none;
-            transition: color .15s ease;
-            font-size: .85rem;
-        }
-
-        .custom-link:hover {
-            color: #fff;
-            text-decoration: underline;
-        }
-
-        /* ALERT */
-        .login-alert {
-            background: rgba(185, 28, 28, .18);
-            border: 1px solid rgba(185, 28, 28, .35);
-            border-radius: var(--nx-login-radius);
-            color: #fecaca;
-            padding: 1rem 1.25rem;
-            margin-bottom: 1.5rem;
-            font-size: .85rem;
-        }
-
-        .login-alert ul {
-            margin: 0;
-            padding-left: 1.25rem;
-        }
-
-        /* FOOTER */
-        .footer-text {
-            margin-top: 28px;
-            text-align: center;
-            color: rgba(255, 255, 255, .55);
-            font-size: .82rem;
-        }
-
-        /* RESPONSIVE */
-        @media (max-width: 576px) {
-            .login-card {
-                border-radius: 10px;
-            }
-
-            .login-header {
-                padding: 35px 25px 20px;
-            }
-
-            .login-body {
-                padding: 20px 25px 30px;
-            }
-
-            .brand-title {
-                font-size: 1.4rem;
-            }
-
-            .logo-box {
-                width: 72px;
-                height: 72px;
-            }
-
-            .logo-box i {
-                font-size: 32px;
-            }
-        }
-    </style>
+    {{-- Tailwind (no Bootstrap on this page): npm run css --}}
+    <link rel="stylesheet" href="{{ asset('css/guest.css') }}?v={{ @filemtime(public_path('css/guest.css')) }}">
 </head>
 
-<body>
+<body class="tw:relative tw:flex tw:min-h-screen tw:items-center tw:justify-center tw:overflow-hidden tw:bg-[radial-gradient(circle_at_top_left,rgba(29,78,216,.28),transparent_40%),radial-gradient(circle_at_bottom_right,rgba(59,130,246,.18),transparent_40%),linear-gradient(135deg,#020617,#0f172a,#1e3a8a)] tw:font-sans tw:text-[#f1f5f9]">
 
     {{-- FLOATING BACKGROUND --}}
-    <div class="floating-bg">
-        <div class="floating-circle"></div>
-        <div class="floating-circle"></div>
-        <div class="floating-circle"></div>
-        <div class="floating-circle"></div>
+    @php $circle = 'tw:absolute tw:rounded-full tw:bg-white/5 tw:animate-[float_10s_infinite_ease-in-out]'; @endphp
+    <div class="tw:pointer-events-none tw:absolute tw:inset-0 tw:overflow-hidden">
+        <div class="{{ $circle }} tw:-top-[60px] tw:-left-[60px] tw:h-[240px] tw:w-[240px]"></div>
+        <div class="{{ $circle }} tw:-right-[40px] tw:-bottom-[50px] tw:h-[180px] tw:w-[180px] tw:[animation-delay:2s]"></div>
+        <div class="{{ $circle }} tw:top-1/2 tw:left-[12%] tw:h-[120px] tw:w-[120px] tw:[animation-delay:1s]"></div>
+        <div class="{{ $circle }} tw:top-[18%] tw:right-[20%] tw:h-[90px] tw:w-[90px] tw:[animation-delay:3s]"></div>
     </div>
 
     {{-- LOGIN WRAPPER --}}
-    <div class="login-wrapper">
-        <div class="login-card">
+    <div class="tw:relative tw:z-[5] tw:w-full tw:max-w-[460px] tw:p-5">
+        <div class="tw:relative tw:overflow-hidden tw:rounded-[12px] tw:border tw:border-white/12 tw:bg-white/8 tw:text-[#f1f5f9] tw:shadow-[0_20px_50px_rgba(0,0,0,.45),inset_0_1px_0_rgba(255,255,255,.08)] tw:backdrop-blur-[22px] tw:before:pointer-events-none tw:before:absolute tw:before:-top-[120px] tw:before:-right-[120px] tw:before:h-[280px] tw:before:w-[280px] tw:before:rounded-full tw:before:bg-[rgba(59,130,246,.14)] tw:max-sm:rounded-[10px]">
 
             {{-- HEADER --}}
-            <div class="login-header">
-                <div class="logo-box">
-                    <i class="bi bi-mortarboard-fill"></i>
+            <div class="tw:relative tw:px-10 tw:pt-[45px] tw:pb-[25px] tw:text-center tw:max-sm:px-[25px] tw:max-sm:pt-[35px] tw:max-sm:pb-5">
+                <div class="tw:mx-auto tw:mb-6 tw:flex tw:h-[84px] tw:w-[84px] tw:items-center tw:justify-center tw:rounded-[12px] tw:bg-[linear-gradient(135deg,#1d4ed8,#3b82f6)] tw:shadow-[0_10px_25px_rgba(29,78,216,.45)] tw:max-sm:h-[72px] tw:max-sm:w-[72px]">
+                    <i class="bi bi-mortarboard-fill tw:text-[38px] tw:text-white tw:max-sm:text-[32px]"></i>
                 </div>
-                <h1 class="brand-title">NEXORAIT EDU</h1>
-                <p class="brand-subtitle">
+                <h1 class="tw:mb-[10px] tw:text-[1.75rem] tw:leading-[1.2] tw:font-extrabold tw:tracking-[-.3px] tw:text-white tw:max-sm:text-[1.4rem]">NEXORAIT EDU</h1>
+                <p class="tw:m-0 tw:text-[.9rem] tw:leading-[1.6] tw:text-white/72">
                     Modern Student Management System for smart educational institutes.
                 </p>
             </div>
 
             {{-- BODY --}}
-            <div class="login-body">
+            <div class="tw:px-10 tw:pt-5 tw:pb-10 tw:max-sm:px-[25px] tw:max-sm:pb-[30px]">
 
                 {{-- ERRORS --}}
                 @if ($errors->any())
-                    <div class="login-alert" role="alert">
-                        <ul>
+                    <div class="tw:mb-6 tw:rounded-[12px] tw:border tw:border-[rgba(185,28,28,.35)] tw:bg-[rgba(185,28,28,.18)] tw:px-5 tw:py-4 tw:text-[.85rem] tw:text-[#fecaca]" role="alert">
+                        <ul class="tw:m-0 tw:list-disc tw:pl-5">
                             @foreach ($errors->all() as $error)
                                 <li>{{ $error }}</li>
                             @endforeach
@@ -413,19 +59,27 @@
                     </div>
                 @endif
 
+                @php
+                    $label = 'tw:mb-[10px] tw:block tw:text-[.8rem] tw:font-bold tw:tracking-[.04em] tw:text-[#cbd5e1] tw:uppercase';
+                    $group = 'tw:relative tw:flex tw:w-full tw:flex-wrap tw:items-stretch tw:overflow-hidden tw:rounded-[12px] tw:border tw:border-white/12 tw:bg-white/7 tw:transition-[border-color,box-shadow] tw:duration-150 tw:focus-within:border-[rgba(59,130,246,.7)] tw:focus-within:shadow-[0_0_0_3px_rgba(29,78,216,.18)]';
+                    $groupIcon = 'tw:flex tw:items-center tw:py-[.375rem] tw:pr-3 tw:pl-[18px] tw:text-center tw:text-[1rem] tw:whitespace-nowrap tw:text-[#cbd5e1]';
+                    $input = 'nx-glass-input tw:block tw:h-[54px] tw:w-[1%] tw:min-w-0 tw:flex-auto tw:appearance-none tw:bg-transparent tw:px-3 tw:py-[.375rem] tw:text-[.92rem] tw:text-white tw:outline-none tw:placeholder:text-white/45';
+                    $link = 'tw:text-[.85rem] tw:text-[#bfdbfe] tw:no-underline tw:transition-colors tw:duration-150 tw:hover:text-white tw:hover:underline';
+                @endphp
+
                 {{-- FORM --}}
                 <form method="POST" action="{{ route('login') }}">
                     @csrf
 
                     {{-- EMAIL --}}
-                    <div class="mb-4">
-                        <label class="login-label" for="email">Email Address</label>
-                        <div class="input-group custom-input-group">
-                            <span class="input-group-text">
+                    <div class="tw:mb-6">
+                        <label class="{{ $label }}" for="email">Email Address</label>
+                        <div class="{{ $group }}">
+                            <span class="{{ $groupIcon }}">
                                 <i class="bi bi-envelope-fill"></i>
                             </span>
                             <input type="email" name="email" id="email"
-                                class="form-control custom-input"
+                                class="{{ $input }}"
                                 placeholder="Enter your email"
                                 required
                                 value="{{ old('email', request()->boolean('demo') ? config('demo.email') : '') }}">
@@ -433,43 +87,46 @@
                     </div>
 
                     {{-- PASSWORD --}}
-                    <div class="mb-4">
-                        <label class="login-label" for="password">Password</label>
-                        <div class="input-group custom-input-group">
-                            <span class="input-group-text">
+                    <div class="tw:mb-6">
+                        <label class="{{ $label }}" for="password">Password</label>
+                        <div class="{{ $group }}">
+                            <span class="{{ $groupIcon }}">
                                 <i class="bi bi-lock-fill"></i>
                             </span>
                             <input type="password" name="password" id="password"
-                                class="form-control custom-input"
+                                class="{{ $input }}"
                                 placeholder="Enter your password"
                                 required
                                 value="{{ request()->boolean('demo') ? config('demo.password') : '' }}">
-                            <button type="button" class="toggle-password" onclick="togglePassword()" aria-label="Toggle password visibility">
+                            <button type="button" onclick="togglePassword()" aria-label="Toggle password visibility"
+                                class="tw:cursor-pointer tw:bg-transparent tw:px-[18px] tw:text-[#cbd5e1] tw:transition-colors tw:duration-150 tw:hover:text-white">
                                 <i class="bi bi-eye-fill" id="eyeIcon"></i>
                             </button>
                         </div>
                     </div>
 
                     {{-- REMEMBER / FORGOT --}}
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <div class="form-check">
-                            <input type="checkbox" class="form-check-input" id="remember">
-                            <label class="form-check-label" for="remember">Remember Me</label>
+                    <div class="tw:mb-6 tw:flex tw:items-center tw:justify-between">
+                        <div class="tw:mb-[.125rem] tw:block tw:min-h-6 tw:pl-[1.5em]">
+                            <input type="checkbox" id="remember"
+                                class="nx-check tw:float-left tw:-ml-[1.5em] tw:mt-[.25em] tw:h-[1em] tw:w-[1em] tw:shrink-0 tw:cursor-pointer tw:appearance-none tw:rounded-[.25em] tw:border tw:border-white/35 tw:bg-transparent tw:bg-contain tw:bg-center tw:bg-no-repeat tw:align-top tw:[print-color-adjust:exact] tw:checked:border-[#1d4ed8] tw:checked:bg-[#1d4ed8] tw:focus:border-[#1d4ed8] tw:focus:shadow-[0_0_0_3px_rgba(29,78,216,.25)] tw:focus:outline-none">
+                            <label class="tw:cursor-pointer tw:text-[.85rem] tw:text-[#cbd5e1]" for="remember">Remember Me</label>
                         </div>
-                        <a href="forgot-password" class="custom-link">Forgot Password?</a>
+                        <a href="forgot-password" class="{{ $link }}">Forgot Password?</a>
                     </div>
 
                     {{-- LOGIN BUTTON --}}
-                    <button type="submit" class="btn-login">
+                    <button type="submit"
+                        class="tw:inline-flex tw:h-[54px] tw:w-full tw:cursor-pointer tw:items-center tw:justify-center tw:gap-2 tw:rounded-[12px] tw:bg-[linear-gradient(135deg,#1d4ed8,#3b82f6)] tw:text-[.95rem] tw:font-bold tw:text-white tw:shadow-[0_12px_30px_rgba(29,78,216,.35)] tw:transition-[transform,box-shadow] tw:duration-150 tw:hover:transform-[translateY(-2px)] tw:hover:shadow-[0_16px_35px_rgba(29,78,216,.45)]">
                         <i class="bi bi-box-arrow-in-right"></i>
                         Login to Dashboard
                     </button>
                 </form>
 
                 {{-- FOOTER --}}
-                <div class="footer-text">
+                <div class="tw:mt-7 tw:text-center tw:text-[.82rem] tw:text-white/55">
                     Need help?
-                    <a href="{{ route('contact_administrator') }}" class="custom-link">
+                    <a href="{{ route('contact_administrator') }}" class="{{ $link }}">
                         Contact Administrator
                     </a>
                 </div>

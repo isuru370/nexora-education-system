@@ -9,12 +9,8 @@
 
     <title>@yield('title', config('app.name'))</title>
 
-    {{-- Bootstrap goes in the lowest cascade layer while pages move to
-         Tailwind (see resources/css/app.css) --}}
-    <style>
-        @layer bootstrap, theme, base, components, utilities;
-        @import url("https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css") layer(bootstrap);
-    </style>
+    <!-- Bootstrap: pages that are not moved to Tailwind yet -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -23,7 +19,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
         rel="stylesheet">
 
-    {{-- Tailwind (tw: classes) + the nx-* design system: npm run css --}}
+    {{-- Old layout styles + nx-* design system + Tailwind (tw: classes): npm run css --}}
     <link rel="stylesheet" href="{{ asset('css/nexora.css') }}?v={{ @filemtime(public_path('css/nexora.css')) }}">
 
     @stack('styles')
@@ -31,6 +27,9 @@
 </head>
 
 <body>
+
+    {{-- Old sidebar / navbar styles: here, after the page styles, as before --}}
+    <link rel="stylesheet" href="{{ asset('css/legacy-layout.css') }}?v={{ @filemtime(public_path('css/legacy-layout.css')) }}">
 
     <div class="tw:flex tw:min-h-screen">
 
