@@ -171,38 +171,25 @@
                                     <option value="1">Yes</option>
                                 </select>
                             </div>
-                            <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
-                                <label class="nx-label">Custom Fee</label>
-                                <input type="number" step="0.01" min="0" id="modalCustomFee" class="ui-form-control nx-input">
-                            </div>
-                            <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
-                                <label class="nx-label">Discount %</label>
-                                <input type="number" step="0.01" min="0" max="100" id="modalDiscountPercentage" class="ui-form-control nx-input">
-                            </div>
-                            <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
-                                <label class="nx-label">Custom Fee Reason</label>
-                                <select id="modalCustomFeeReason" class="ui-form-select nx-input">
-                                    <option value="">Select Reason</option>
-                                    <option value="Student enrolled in multiple categories">Student enrolled in multiple categories</option>
-                                    <option value="Special Discount">Special Discount</option>
-                                    <option value="Scholarship">Scholarship</option>
-                                    <option value="Sibling Discount">Sibling Discount</option>
-                                    <option value="Staff Child">Staff Child</option>
-                                    <option value="Promotional">Promotional</option>
-                                    <option value="Other">Other</option>
-                                </select>
-                            </div>
-                            <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
-                                <label class="nx-label">Discount Reason</label>
-                                <select id="modalDiscountReason" class="ui-form-select nx-input">
-                                    <option value="">Select Reason</option>
-                                    <option value="Half Card">Half Card</option>
-                                    <option value="Special Discount">Special Discount</option>
-                                    <option value="Scholarship">Scholarship</option>
-                                    <option value="Sibling Discount">Sibling Discount</option>
-                                    <option value="Staff Child">Staff Child</option>
-                                    <option value="Promotional">Promotional</option>
-                                    <option value="Other">Other</option>
+                            @php
+                                // fee options of this class category (the fee the student pays)
+                                $addClassFeeOptions = \App\Models\ClassCategoryFeeOption::query()
+                                    ->where('class_category_fee_id', (int) request('class_category_fee_id'))
+                                    ->where('is_active', true)
+                                    ->orderByDesc('is_default')
+                                    ->orderByDesc('fee')
+                                    ->get(['id', 'label', 'fee', 'is_default']);
+                            @endphp
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[66.66666667%]">
+                                <label class="nx-label">Fee Option <span class="tw:text-bs-danger!">*</span></label>
+                                <select id="modalFeeOption" class="ui-form-select nx-input">
+                                    @forelse ($addClassFeeOptions as $feeOption)
+                                        <option value="{{ $feeOption->id }}" @selected($feeOption->is_default)>
+                                            {{ $feeOption->label }} - Rs. {{ number_format((float) $feeOption->fee, 2) }}
+                                        </option>
+                                    @empty
+                                        <option value="">No active fee option for this class category</option>
+                                    @endforelse
                                 </select>
                             </div>
                             <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
@@ -442,10 +429,7 @@
             const modalClassName = document.getElementById('modalClassName');
             const modalCategoryName = document.getElementById('modalCategoryName');
             const modalIsFreeCard = document.getElementById('modalIsFreeCard');
-            const modalCustomFee = document.getElementById('modalCustomFee');
-            const modalCustomFeeReason = document.getElementById('modalCustomFeeReason');
-            const modalDiscountPercentage = document.getElementById('modalDiscountPercentage');
-            const modalDiscountReason = document.getElementById('modalDiscountReason');
+            const modalFeeOption = document.getElementById('modalFeeOption');
             const modalEnrolledAt = document.getElementById('modalEnrolledAt');
 
             let html5QrCode = null;
@@ -901,10 +885,8 @@
                 modalCategoryName.textContent = currentEnrollment?.category_name || '-';
 
                 modalIsFreeCard.value = '0';
-                modalCustomFee.value = '';
-                modalCustomFeeReason.value = '';
-                modalDiscountPercentage.value = '';
-                modalDiscountReason.value = '';
+                // the default option (first in the list)
+                if (modalFeeOption && modalFeeOption.options.length) modalFeeOption.selectedIndex = 0;
                 modalEnrolledAt.value = new Date().toISOString().slice(0, 10);
 
                 addClassModal?.show();
@@ -916,6 +898,11 @@
                     return;
                 }
 
+                if (!modalFeeOption || !modalFeeOption.value) {
+                    showAlert('warning', 'This class category has no active fee option. Add one first.');
+                    return;
+                }
+
                 try {
                     saveClassBtn.disabled = true;
                     saveClassBtn.innerHTML = '<span class="ui-spinner-border ui-spinner-border-sm tw:mr-1!"></span>Saving...';
@@ -924,11 +911,8 @@
                         student_id: currentStudent.id,
                         student_class_id: studentClassId,
                         class_category_fee_id: classCategoryFeeId,
+                        class_category_fee_option_id: modalFeeOption && modalFeeOption.value ? Number(modalFeeOption.value) : null,
                         is_free_card: modalIsFreeCard.value === '1' ? 1 : 0,
-                        custom_fee: modalCustomFee.value || null,
-                        custom_fee_reason: modalCustomFeeReason.value || null,
-                        discount_percentage: modalDiscountPercentage.value || null,
-                        discount_reason: modalDiscountReason.value || null,
                         enrolled_at: modalEnrolledAt.value || null,
                         note: null,
                     };

@@ -75,6 +75,15 @@
                 <form method="GET" action="{{ route('admin.organizer-payments.index') }}" class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2 tw:items-end!">
 
                     <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%] tw:lg:flex-[0_0_auto] tw:lg:w-[25%]">
+                        <label class="nx-label">Branch</label>
+                        <select name="branch_id" class="ui-form-select nx-input">
+                            @foreach ($branches as $branchOption)
+                                <option value="{{ $branchOption->id }}" @selected((int) $branchOption->id === (int) $branchId)>{{ $branchOption->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%] tw:lg:flex-[0_0_auto] tw:lg:w-[25%]">
                         <label class="nx-label">Year</label>
                         <input type="number" name="year" value="{{ $selectedYear }}"
                             class="ui-form-control nx-input"
@@ -250,6 +259,7 @@
                                                 'organizer' => $row['organizer_id'],
                                                 'year' => $selectedYear,
                                                 'month' => $selectedMonth,
+                                                'branch_id' => $branchId,
                                             ]) }}" class="action-btn action-btn-success" title="Pay Salary" aria-label="Pay Salary">
                                                 <i class="bi bi-cash-coin"></i>
                                             </a>
@@ -258,6 +268,7 @@
                                                 'organizer' => $row['organizer_id'],
                                                 'year' => $selectedYear,
                                                 'month' => $selectedMonth,
+                                                'branch_id' => $branchId,
                                             ]) }}" target="_blank" class="action-btn" title="Print Salary Slip" aria-label="Print Salary Slip">
                                                 <i class="bi bi-printer-fill"></i>
                                             </a>
@@ -290,6 +301,7 @@
                             <form method="POST"
                                 action="{{ route('admin.organizer-payments.adjustment-store', $row['organizer_id']) }}">
                                 @csrf
+                                <input type="hidden" name="branch_id" value="{{ $branchId }}">
 
                                 <div class="ui-modal-header">
                                     <div>
