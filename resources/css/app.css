@@ -11,9 +11,13 @@
  * When the last page is moved, Bootstrap, the old styles and the prefix go.
  */
 
+/* Bootstrap components as .ui-* (generated), where Bootstrap was: before the old styles */
+@import "./nexora/ui-kit.css";
 @import "./nexora/legacy.css";
 
 @import "tailwindcss/theme.css" prefix(tw);
+/* Bootstrap colours / radii / shadows (generated): tw:text-bs-primary, tw:shadow-bs-sm ... */
+@import "./bootstrap-theme.css";
 @import "./nexora/components.css";
 @import "tailwindcss/utilities.css";
 
