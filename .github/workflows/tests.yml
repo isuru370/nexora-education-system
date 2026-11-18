@@ -90,7 +90,7 @@ jobs:
         continue-on-error: true
         run: |
           set -o pipefail
-          php artisan test --without-tty --no-ansi 2>&1 | tee test-output.txt
+          php artisan test --without-tty 2>&1 | sed -r "s/\x1B\[[0-9;]*[A-Za-z]//g" | tee test-output.txt
 
       - name: Comment the result on the PR
         if: always() && github.event_name == 'pull_request'
