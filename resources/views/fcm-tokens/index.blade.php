@@ -8,8 +8,8 @@
 <div class="fcm-tokens-page">
 
     {{-- STATS --}}
-    <div class="row g-4 mb-4">
-        <div class="col-xl-2 col-md-4">
+    <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3 tw:mb-6!">
+        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%] tw:xl:flex-[0_0_auto] tw:xl:w-[16.66666667%]">
             <div class="stats-card">
                 <div class="stats-icon purple">
                     <i class="bi bi-device"></i>
@@ -21,7 +21,7 @@
             </div>
         </div>
 
-        <div class="col-xl-2 col-md-4">
+        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%] tw:xl:flex-[0_0_auto] tw:xl:w-[16.66666667%]">
             <div class="stats-card">
                 <div class="stats-icon green">
                     <i class="bi bi-check-circle-fill"></i>
@@ -33,7 +33,7 @@
             </div>
         </div>
 
-        <div class="col-xl-2 col-md-4">
+        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%] tw:xl:flex-[0_0_auto] tw:xl:w-[16.66666667%]">
             <div class="stats-card">
                 <div class="stats-icon red">
                     <i class="bi bi-x-circle-fill"></i>
@@ -45,7 +45,7 @@
             </div>
         </div>
 
-        <div class="col-xl-2 col-md-4">
+        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%] tw:xl:flex-[0_0_auto] tw:xl:w-[16.66666667%]">
             <div class="stats-card">
                 <div class="stats-icon blue">
                     <i class="bi bi-phone"></i>
@@ -57,19 +57,19 @@
             </div>
         </div>
 
-        <div class="col-xl-2 col-md-4">
+        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%] tw:xl:flex-[0_0_auto] tw:xl:w-[16.66666667%]">
             <div class="stats-card">
                 <div class="stats-icon teal">
                     <i class="bi bi-apple"></i>
                 </div>
                 <div>
-                    <h3>{{ $stats['ios'] }} <small class="text-muted fs-6">/ {{ $stats['web'] ?? 0 }}</small></h3>
+                    <h3>{{ $stats['ios'] }} <small class="tw:text-bs-secondary-color! tw:text-[length:1rem]!">/ {{ $stats['web'] ?? 0 }}</small></h3>
                     <p>iOS / Web</p>
                 </div>
             </div>
         </div>
 
-        <div class="col-xl-2 col-md-4">
+        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%] tw:xl:flex-[0_0_auto] tw:xl:w-[16.66666667%]">
             <div class="stats-card">
                 <div class="stats-icon orange">
                     <i class="bi bi-people-fill"></i>
@@ -93,15 +93,15 @@
             </div>
 
             <div class="header-buttons">
-                <a href="{{ route('admin.fcm-tokens.export', request()->query()) }}" class="btn btn-success custom-btn">
+                <a href="{{ route('admin.fcm-tokens.export', request()->query()) }}" class="ui-btn ui-btn-success custom-btn">
                     <i class="bi bi-file-earmark-excel-fill"></i>
                     Export
                 </a>
 
-                <form action="{{ route('admin.fcm-tokens.delete-inactive') }}" method="POST" class="d-inline">
+                <form action="{{ route('admin.fcm-tokens.delete-inactive') }}" method="POST" class="tw:[display:inline]!">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" class="btn btn-danger custom-btn"
+                    <button type="submit" class="ui-btn ui-btn-danger custom-btn"
                             onclick="return confirm('Delete all inactive tokens?')">
                         <i class="bi bi-trash-fill"></i>
                         Delete Inactive
@@ -112,15 +112,15 @@
 
         {{-- ALERT --}}
         @if(session('success'))
-            <div class="alert alert-success custom-alert">
-                <i class="bi bi-check-circle-fill me-2"></i>
+            <div class="ui-alert ui-alert-success custom-alert">
+                <i class="bi bi-check-circle-fill tw:mr-2!"></i>
                 {{ session('success') }}
             </div>
         @endif
 
         @if(session('warning'))
-            <div class="alert alert-warning custom-alert">
-                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <div class="ui-alert ui-alert-warning custom-alert">
+                <i class="bi bi-exclamation-triangle-fill tw:mr-2!"></i>
                 {{ session('warning') }}
             </div>
         @endif
@@ -128,26 +128,26 @@
         {{-- SEARCH / FILTER --}}
         <div class="search-card">
             <form method="GET" action="{{ route('admin.fcm-tokens.index') }}">
-                <div class="row g-3 align-items-center">
-                    <div class="col-lg-4">
+                <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2 tw:items-center!">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[33.33333333%]">
                         <div class="search-input-wrapper">
                             <i class="bi bi-search"></i>
-                            <input type="text" name="search" class="form-control custom-input"
+                            <input type="text" name="search" class="ui-form-control custom-input"
                                 placeholder="Search by token, device, student..."
                                 value="{{ request('search') }}">
                         </div>
                     </div>
 
-                    <div class="col-lg-2">
-                        <select name="status" class="form-select custom-input">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[16.66666667%]">
+                        <select name="status" class="ui-form-select custom-input">
                             <option value="">All Status</option>
                             <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Active</option>
                             <option value="inactive" {{ request('status') == 'inactive' ? 'selected' : '' }}>Inactive</option>
                         </select>
                     </div>
 
-                    <div class="col-lg-2">
-                        <select name="device_type" class="form-select custom-input">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[16.66666667%]">
+                        <select name="device_type" class="ui-form-select custom-input">
                             <option value="">All Devices</option>
                             <option value="android" {{ request('device_type') == 'android' ? 'selected' : '' }}>Android</option>
                             <option value="ios" {{ request('device_type') == 'ios' ? 'selected' : '' }}>iOS</option>
@@ -155,15 +155,15 @@
                         </select>
                     </div>
 
-                    <div class="col-lg-2">
-                        <button class="btn btn-primary w-100 custom-btn" type="submit">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[16.66666667%]">
+                        <button class="ui-btn ui-btn-primary tw:w-full! custom-btn" type="submit">
                             <i class="bi bi-funnel-fill"></i>
                             Filter
                         </button>
                     </div>
 
-                    <div class="col-lg-2">
-                        <a href="{{ route('admin.fcm-tokens.index') }}" class="btn btn-light border w-100 custom-btn">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[16.66666667%]">
+                        <a href="{{ route('admin.fcm-tokens.index') }}" class="ui-btn ui-btn-light tw:bs-border! tw:w-full! custom-btn">
                             Reset
                         </a>
                     </div>
@@ -172,8 +172,8 @@
         </div>
 
         {{-- TABLE --}}
-        <div class="table-responsive">
-            <table class="table custom-table align-middle">
+        <div class="ui-table-responsive">
+            <table class="ui-table custom-table tw:align-middle!">
                 <thead>
                     <tr>
                         <th>#</th>
@@ -183,7 +183,7 @@
                         <th>Status</th>
                         <th>Last Login</th>
                         <th>Created</th>
-                        <th class="text-end">Actions</th>
+                        <th class="tw:text-right!">Actions</th>
                     </tr>
                 </thead>
 
@@ -195,7 +195,7 @@
                             </td>
 
                             <td>
-                                <div class="d-flex align-items-center gap-3">
+                                <div class="tw:flex! tw:items-center! tw:gap-4!">
                                     <div class="user-avatar" style="background: linear-gradient(135deg, #4f46e5, #7c3aed);">
                                         {{ strtoupper(substr($token->student->initial_name ?? 'S', 0, 1)) }}
                                     </div>
@@ -203,7 +203,7 @@
                                         <div class="user-name">
                                             {{ $token->student->initial_name ?? 'Unknown' }}
                                         </div>
-                                        <small class="text-muted">
+                                        <small class="tw:text-bs-secondary-color!">
                                             ID: {{ $token->student->custom_id ?? $token->student_id }}
                                         </small>
                                     </div>
@@ -212,24 +212,24 @@
 
                             <td>
                                 <div>
-                                    <i class="bi {{ $token->device_icon }} me-1"></i>
-                                    <span class="fw-semibold">{{ $token->device_type_label }}</span>
+                                    <i class="bi tw:mr-1! {{ $token->device_icon }}"></i>
+                                    <span class="tw:font-semibold!">{{ $token->device_type_label }}</span>
                                     @if($token->device_name)
                                         <br>
-                                        <small class="text-muted">{{ $token->device_name }}</small>
+                                        <small class="tw:text-bs-secondary-color!">{{ $token->device_name }}</small>
                                     @endif
                                     @if($token->app_version)
                                         <br>
-                                        <small class="text-muted">v{{ $token->app_version }}</small>
+                                        <small class="tw:text-bs-secondary-color!">v{{ $token->app_version }}</small>
                                     @endif
                                 </div>
                             </td>
 
                             <td>
                                 <div>
-                                    <code class="bg-light p-1 rounded">{{ $token->masked_token }}</code>
+                                    <code class="tw:bg-bs-light! tw:p-1! tw:rounded-bs!">{{ $token->masked_token }}</code>
                                     <br>
-                                    <button class="btn btn-sm btn-outline-secondary mt-1 copy-btn"
+                                    <button class="ui-btn ui-btn-sm ui-btn-outline-secondary tw:mt-1! copy-btn"
                                             data-token="{{ $token->token }}"
                                             onclick="copyToken(this)">
                                         <i class="bi bi-clipboard"></i> Copy
@@ -238,8 +238,8 @@
                             </td>
 
                             <td>
-                                <span class="badge custom-badge bg-{{ $token->status_color }}">
-                                    <i class="bi {{ $token->is_active ? 'bi-check-circle-fill' : 'bi-x-circle-fill' }} me-1"></i>
+                                <span class="ui-badge custom-badge bg-{{ $token->status_color }}">
+                                    <i class="bi tw:mr-1! {{ $token->is_active ? 'bi-check-circle-fill' : 'bi-x-circle-fill' }}"></i>
                                     {{ $token->status_label }}
                                 </span>
                             </td>
@@ -247,16 +247,16 @@
                             <td>
                                 {{ $token->last_login_at?->format('Y-m-d') ?? 'Never' }}
                                 <br>
-                                <small class="text-muted">{{ $token->last_login_at?->format('H:i') ?? '' }}</small>
+                                <small class="tw:text-bs-secondary-color!">{{ $token->last_login_at?->format('H:i') ?? '' }}</small>
                             </td>
 
                             <td>
                                 {{ $token->created_at->format('Y-m-d') }}
                                 <br>
-                                <small class="text-muted">{{ $token->created_at->format('H:i') }}</small>
+                                <small class="tw:text-bs-secondary-color!">{{ $token->created_at->format('H:i') }}</small>
                             </td>
 
-                            <td class="text-end">
+                            <td class="tw:text-right!">
                                 <div class="action-buttons">
                                     <a href="{{ route('admin.fcm-tokens.show', $token->id) }}"
                                         class="action-btn view-btn" title="View">
@@ -265,7 +265,7 @@
 
                                     @if($token->is_active)
                                         <form action="{{ route('admin.fcm-tokens.deactivate', $token->id) }}"
-                                              method="POST" class="d-inline">
+                                              method="POST" class="tw:[display:inline]!">
                                             @csrf
                                             <button type="submit" class="action-btn cancel-btn"
                                                     onclick="return confirm('Deactivate this token?')" title="Deactivate">
@@ -274,7 +274,7 @@
                                         </form>
                                     @else
                                         <form action="{{ route('admin.fcm-tokens.activate', $token->id) }}"
-                                              method="POST" class="d-inline">
+                                              method="POST" class="tw:[display:inline]!">
                                             @csrf
                                             <button type="submit" class="action-btn retry-btn"
                                                     onclick="return confirm('Activate this token?')" title="Activate">
@@ -284,7 +284,7 @@
                                     @endif
 
                                     <form action="{{ route('admin.fcm-tokens.destroy', $token->id) }}"
-                                          method="POST" class="d-inline">
+                                          method="POST" class="tw:[display:inline]!">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="action-btn delete-btn"
@@ -297,7 +297,7 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="8" class="text-center py-5 text-muted">
+                            <td colspan="8" class="tw:text-center! tw:py-12! tw:text-bs-secondary-color!">
                                 <div class="empty-state">
                                     <i class="bi bi-device"></i>
                                     <h5>No FCM Tokens Found</h5>
@@ -311,7 +311,7 @@
         </div>
 
         {{-- PAGINATION --}}
-        <div class="mt-4">
+        <div class="tw:mt-6!">
             {{ $tokens->links() }}
         </div>
     </div>

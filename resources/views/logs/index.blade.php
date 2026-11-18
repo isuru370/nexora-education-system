@@ -14,7 +14,7 @@
             <div class="alert-premium success">
                 <i class="bi bi-check-circle-fill"></i>
                 <span>{{ session('success') }}</span>
-                <button type="button" class="alert-close" data-bs-dismiss="alert">
+                <button type="button" class="alert-close" data-nx-dismiss="alert">
                     <i class="bi bi-x-lg"></i>
                 </button>
             </div>
@@ -24,7 +24,7 @@
             <div class="alert-premium danger">
                 <i class="bi bi-exclamation-triangle-fill"></i>
                 <span>{{ session('error') }}</span>
-                <button type="button" class="alert-close" data-bs-dismiss="alert">
+                <button type="button" class="alert-close" data-nx-dismiss="alert">
                     <i class="bi bi-x-lg"></i>
                 </button>
             </div>
@@ -34,7 +34,7 @@
             <div class="alert-premium warning">
                 <i class="bi bi-exclamation-triangle-fill"></i>
                 <span>{{ $error }}</span>
-                <button type="button" class="alert-close" data-bs-dismiss="alert">
+                <button type="button" class="alert-close" data-nx-dismiss="alert">
                     <i class="bi bi-x-lg"></i>
                 </button>
             </div>
@@ -151,8 +151,8 @@
                         <span>Download</span>
                     </button>
 
-                    <button type="button" class="btn-premium btn-danger" id="clearBtn" data-bs-toggle="modal"
-                        data-bs-target="#clearLogsModal">
+                    <button type="button" class="btn-premium ui-btn-danger" id="clearBtn" data-nx-toggle="modal"
+                        data-nx-target="#clearLogsModal">
                         <i class="bi bi-trash"></i>
                         <span>Clear</span>
                     </button>
@@ -306,8 +306,8 @@
     {{-- ============================================= --}}
     {{-- CLEAR LOG MODAL --}}
     {{-- ============================================= --}}
-    <div class="modal fade" id="clearLogsModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
+    <div class="ui-modal ui-fade" id="clearLogsModal" tabindex="-1" aria-hidden="true">
+        <div class="ui-modal-dialog ui-modal-dialog-centered">
             <div class="modal-content-premium">
                 <div class="modal-header-premium">
                     <div class="modal-header-left">
@@ -319,7 +319,7 @@
                             <p class="modal-subtitle-premium">This action cannot be undone</p>
                         </div>
                     </div>
-                    <button type="button" class="modal-close-premium" data-bs-dismiss="modal">
+                    <button type="button" class="modal-close-premium" data-nx-dismiss="modal">
                         <i class="bi bi-x-lg"></i>
                     </button>
                 </div>
@@ -349,14 +349,14 @@
                 </div>
 
                 <div class="modal-footer-premium">
-                    <button type="button" class="btn-premium btn-secondary" data-bs-dismiss="modal">
+                    <button type="button" class="btn-premium ui-btn-secondary" data-nx-dismiss="modal">
                         Cancel
                     </button>
 
                     <form action="{{ route('logs.laravel.clear') }}" method="POST" id="clearForm">
                         @csrf
                         <input type="hidden" name="file" value="{{ $selectedFile ?? '' }}">
-                        <button type="submit" class="btn-premium btn-danger" id="confirmClearBtn" disabled>
+                        <button type="submit" class="btn-premium ui-btn-danger" id="confirmClearBtn" disabled>
                             <i class="bi bi-trash"></i>
                             Yes, Clear Log
                         </button>
@@ -756,21 +756,21 @@
             box-shadow: 0 4px 16px rgba(16, 185, 129, 0.35);
         }
 
-        .btn-danger {
+        .ui-btn-danger {
             background: linear-gradient(135deg, #ef4444, #f87171);
             color: #fff;
         }
 
-        .btn-danger:hover {
+        .ui-btn-danger:hover {
             box-shadow: 0 4px 16px rgba(239, 68, 68, 0.35);
         }
 
-        .btn-secondary {
+        .ui-btn-secondary {
             background: #f1f5f9;
             color: #475569;
         }
 
-        .btn-secondary:hover {
+        .ui-btn-secondary:hover {
             background: #e2e8f0;
         }
 

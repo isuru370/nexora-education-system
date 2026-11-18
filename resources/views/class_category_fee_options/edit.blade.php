@@ -7,7 +7,7 @@
 <div class="dashboard-page">
 
     {{-- HERO --}}
-    <div class="hero-section mb-4">
+    <div class="hero-section tw:mb-6!">
         <div class="hero-content">
             <div class="hero-left">
                 <span class="greeting-badge">nexoraEDU</span>
@@ -27,15 +27,15 @@
     </div>
 
     {{-- FORM CARD --}}
-    <div class="nx-card mb-4">
+    <div class="nx-card tw:mb-6!">
         <div class="nx-card-header">
             <div>
-                <h5 class="nx-card-title"><i class="bi bi-pencil-square text-primary"></i> Edit Fee Option</h5>
+                <h5 class="nx-card-title"><i class="bi bi-pencil-square tw:text-(color:--nx-blue)!"></i> Edit Fee Option</h5>
                 <p class="nx-card-subtitle">Update the predefined fee option</p>
             </div>
         </div>
 
-        <div class="p-3 p-md-4">
+        <div class="tw:p-4! tw:md:p-6!">
             <form action="{{ route('class-category-fee-options.update', [
                     'classCategoryFeeId' => $classCategoryFee->id,
                     'id' => $feeOption->id,

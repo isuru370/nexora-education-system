@@ -7,7 +7,7 @@
 {{-- ============================================ --}}
 {{-- SECTION: Branch Information --}}
 {{-- ============================================ --}}
-<div class="section-header mb-3">
+<div class="section-header tw:mb-4!">
     <div class="section-icon icon-blue"><i class="bi bi-building"></i></div>
     <div>
         <h5 class="section-title">Branch Information</h5>
@@ -15,10 +15,10 @@
     </div>
 </div>
 
-<div class="row g-3 mb-4">
+<div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2 tw:mb-6!">
 
     {{-- NAME --}}
-    <div class="col-12">
+    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:flex-[0_0_auto] tw:w-[100%]">
         <label for="name" class="nx-label">
             Branch Name <span style="color: var(--nx-red);">*</span>
         </label>
@@ -28,7 +28,7 @@
                 value="{{ old('name', $branch->name ?? '') }}"
                 required maxlength="150"
                 placeholder="Enter branch name"
-                class="form-control nx-input @error('name') is-invalid @enderror">
+                class="ui-form-control nx-input @error('name') ui-is-invalid @enderror">
         </div>
         @error('name')
             <div class="nx-error"><i class="bi bi-exclamation-circle"></i> {{ $message }}</div>
@@ -37,7 +37,7 @@
 
     {{-- CODE (readonly in edit) --}}
     @if (isset($branch))
-        <div class="col-12">
+        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:flex-[0_0_auto] tw:w-[100%]">
             <label class="nx-label">Branch Code</label>
             <div class="code-display">
                 <span class="id-badge" style="font-size: .85rem;">
@@ -51,7 +51,7 @@
     @endif
 
     {{-- ADDRESS 1 --}}
-    <div class="col-12">
+    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:flex-[0_0_auto] tw:w-[100%]">
         <label for="address1" class="nx-label">Address Line 1</label>
         <div class="nx-input-group">
             <span class="nx-input-group-text"><i class="bi bi-geo-alt"></i></span>
@@ -59,7 +59,7 @@
                 value="{{ old('address1', $branch->address1 ?? '') }}"
                 maxlength="150"
                 placeholder="Street / Building"
-                class="form-control nx-input @error('address1') is-invalid @enderror">
+                class="ui-form-control nx-input @error('address1') ui-is-invalid @enderror">
         </div>
         @error('address1')
             <div class="nx-error"><i class="bi bi-exclamation-circle"></i> {{ $message }}</div>
@@ -67,26 +67,26 @@
     </div>
 
     {{-- ADDRESS 2 --}}
-    <div class="col-md-6">
+    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
         <label for="address2" class="nx-label">Address Line 2</label>
         <input type="text" id="address2" name="address2"
             value="{{ old('address2', $branch->address2 ?? '') }}"
             maxlength="150"
             placeholder="City / Area"
-            class="form-control nx-input @error('address2') is-invalid @enderror">
+            class="ui-form-control nx-input @error('address2') ui-is-invalid @enderror">
         @error('address2')
             <div class="nx-error"><i class="bi bi-exclamation-circle"></i> {{ $message }}</div>
         @enderror
     </div>
 
     {{-- ADDRESS 3 --}}
-    <div class="col-md-6">
+    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
         <label for="address3" class="nx-label">Address Line 3</label>
         <input type="text" id="address3" name="address3"
             value="{{ old('address3', $branch->address3 ?? '') }}"
             maxlength="150"
             placeholder="District / Province"
-            class="form-control nx-input @error('address3') is-invalid @enderror">
+            class="ui-form-control nx-input @error('address3') ui-is-invalid @enderror">
         @error('address3')
             <div class="nx-error"><i class="bi bi-exclamation-circle"></i> {{ $message }}</div>
         @enderror
@@ -96,7 +96,7 @@
 {{-- ============================================ --}}
 {{-- SECTION: Contact Information --}}
 {{-- ============================================ --}}
-<div class="section-header mb-3 pt-3 border-top">
+<div class="section-header tw:mb-4! tw:pt-4! tw:bs-border-t!">
     <div class="section-icon icon-green"><i class="bi bi-telephone-fill"></i></div>
     <div>
         <h5 class="section-title">Contact Information</h5>
@@ -104,10 +104,10 @@
     </div>
 </div>
 
-<div class="row g-3 mb-4">
+<div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2 tw:mb-6!">
 
     {{-- MOBILE --}}
-    <div class="col-md-6">
+    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
         <label for="mobile" class="nx-label">Mobile Number</label>
         <div class="nx-input-group">
             <span class="nx-input-group-text"><i class="bi bi-phone"></i></span>
@@ -115,7 +115,7 @@
                 value="{{ old('mobile', $branch->mobile ?? '') }}"
                 maxlength="20"
                 placeholder="07XXXXXXXX"
-                class="form-control nx-input @error('mobile') is-invalid @enderror">
+                class="ui-form-control nx-input @error('mobile') ui-is-invalid @enderror">
         </div>
         @error('mobile')
             <div class="nx-error"><i class="bi bi-exclamation-circle"></i> {{ $message }}</div>
@@ -123,7 +123,7 @@
     </div>
 
     {{-- EMAIL --}}
-    <div class="col-md-6">
+    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
         <label for="email" class="nx-label">Email Address</label>
         <div class="nx-input-group">
             <span class="nx-input-group-text"><i class="bi bi-envelope"></i></span>
@@ -131,7 +131,7 @@
                 value="{{ old('email', $branch->email ?? '') }}"
                 maxlength="150"
                 placeholder="branch@example.com"
-                class="form-control nx-input @error('email') is-invalid @enderror">
+                class="ui-form-control nx-input @error('email') ui-is-invalid @enderror">
         </div>
         @error('email')
             <div class="nx-error"><i class="bi bi-exclamation-circle"></i> {{ $message }}</div>
@@ -143,7 +143,7 @@
 {{-- SECTION: Status (Edit Mode Only) --}}
 {{-- ============================================ --}}
 @if (isset($branch))
-    <div class="section-header mb-3 pt-3 border-top">
+    <div class="section-header tw:mb-4! tw:pt-4! tw:bs-border-t!">
         <div class="section-icon icon-amber"><i class="bi bi-toggle-on"></i></div>
         <div>
             <h5 class="section-title">Branch Status</h5>
@@ -153,14 +153,14 @@
 
     <input type="hidden" name="is_active" value="0">
 
-    <div class="toggle-switch mb-3">
+    <div class="toggle-switch tw:mb-4!">
         <input
             type="checkbox"
             id="is_active"
             name="is_active"
             value="1"
             {{ old('is_active', $branch->is_active) ? 'checked' : '' }}
-            class="form-check-input flex-shrink-0"
+            class="ui-form-check-input tw:shrink-0!"
             style="width: 3em; height: 1.5em; cursor: pointer;">
         <label for="is_active" class="toggle-content">
             <span class="toggle-label">Active Branch</span>

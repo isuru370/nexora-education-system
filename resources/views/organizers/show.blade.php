@@ -18,13 +18,13 @@
 
         <!-- HERO -->
 
-        <div class="hero-card mb-4">
+        <div class="hero-card tw:mb-6!">
 
             <div class="hero-content">
 
 
 
-                <div class="d-flex align-items-center gap-3">
+                <div class="tw:flex! tw:items-center! tw:gap-4!">
 
                     <div class="profile-avatar">
 
@@ -36,9 +36,9 @@
 
                     <div>
 
-                        <h4 class="mb-1 fw-bold">{{ $organizer->name }}</h4>
+                        <h4 class="tw:mb-1! tw:font-bold!">{{ $organizer->name }}</h4>
 
-                        <p class="mb-0 text-muted">
+                        <p class="tw:mb-0! tw:text-bs-secondary-color!">
 
                             Organizer Profile
 
@@ -54,9 +54,9 @@
 
 
 
-                    <a href="{{ route('organizers.edit', $organizer) }}" class="btn btn-warning custom-btn">
+                    <a href="{{ route('organizers.edit', $organizer) }}" class="ui-btn ui-btn-warning custom-btn">
 
-                        <i class="bi bi-pencil-fill me-1"></i>
+                        <i class="bi bi-pencil-fill tw:mr-1!"></i>
 
                         Edit
 
@@ -64,9 +64,9 @@
 
 
 
-                    <a href="{{ route('organizers.index') }}" class="btn btn-outline-secondary custom-btn">
+                    <a href="{{ route('organizers.index') }}" class="ui-btn ui-btn-outline-secondary custom-btn">
 
-                        <i class="bi bi-arrow-left me-1"></i>
+                        <i class="bi bi-arrow-left tw:mr-1!"></i>
 
                         Back
 
@@ -84,11 +84,11 @@
 
         <!-- STATS -->
 
-        <div class="row g-4 mb-4">
+        <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3 tw:mb-6!">
 
 
 
-            <div class="col-xl-3 col-md-6">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%]">
 
                 <div class="stats-card">
 
@@ -114,7 +114,7 @@
 
 
 
-            <div class="col-xl-3 col-md-6">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%]">
 
                 <div class="stats-card">
 
@@ -140,7 +140,7 @@
 
 
 
-            <div class="col-xl-3 col-md-6">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%]">
 
                 <div class="stats-card">
 
@@ -166,7 +166,7 @@
 
 
 
-            <div class="col-xl-3 col-md-6">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%]">
 
                 <div class="stats-card">
 
@@ -182,7 +182,7 @@
 
                         <h3>
 
-                            <span class="badge {{ $organizer->is_active ? 'bg-success' : 'bg-secondary' }} custom-badge">
+                            <span class="ui-badge custom-badge {{ $organizer->is_active ? 'tw:bg-bs-success!' : 'tw:bg-bs-secondary!' }}">
 
                                 {{ $organizer->is_active ? 'Active' : 'Inactive' }}
 
@@ -208,21 +208,21 @@
 
         <!-- CONTENT -->
 
-        <div class="row g-4">
+        <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3">
 
 
 
             <!-- BASIC -->
 
-            <div class="col-lg-6">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[50%]">
 
-                <div class="info-card h-100">
+                <div class="info-card tw:h-full!">
 
 
 
                     <div class="section-header">
 
-                        <h6 class="mb-0 fw-bold">Basic Information</h6>
+                        <h6 class="tw:mb-0! tw:font-bold!">Basic Information</h6>
 
                         <span class="section-pill">Profile</span>
 
@@ -266,11 +266,11 @@
                                 <span class="label">Assigned Branches</span>
                                 <span class="value">
                                     @forelse($organizer->branches as $branch)
-                                        <span class="badge bg-primary me-1 mb-1">
+                                        <span class="ui-badge tw:bg-bs-primary! tw:mr-1! tw:mb-1!">
                                             {{ $branch->name }}
                                         </span>
                                     @empty
-                                        <span class="text-muted">No branches assigned</span>
+                                        <span class="tw:text-bs-secondary-color!">No branches assigned</span>
                                     @endforelse
                                 </span>
                             </div>
@@ -289,15 +289,15 @@
 
             <!-- CONTACT -->
 
-            <div class="col-lg-6">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[50%]">
 
-                <div class="info-card h-100">
+                <div class="info-card tw:h-full!">
 
 
 
                     <div class="section-header">
 
-                        <h6 class="mb-0 fw-bold">Contact Information</h6>
+                        <h6 class="tw:mb-0! tw:font-bold!">Contact Information</h6>
 
                         <span class="section-pill">Reach</span>
 
@@ -341,7 +341,7 @@
 
             <!-- NOTE -->
 
-            <div class="col-12">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:flex-[0_0_auto] tw:w-[100%]">
 
                 <div class="info-card">
 
@@ -349,7 +349,7 @@
 
                     <div class="section-header">
 
-                        <h6 class="mb-0 fw-bold">Organizer Note</h6>
+                        <h6 class="tw:mb-0! tw:font-bold!">Organizer Note</h6>
 
                         <span class="section-pill">Additional</span>
 
@@ -373,7 +373,7 @@
 
             <!-- STATUS -->
 
-            <div class="col-12">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:flex-[0_0_auto] tw:w-[100%]">
 
                 <div class="info-card">
 
@@ -381,7 +381,7 @@
 
                     <div class="section-header">
 
-                        <h6 class="mb-0 fw-bold">Account Status</h6>
+                        <h6 class="tw:mb-0! tw:font-bold!">Account Status</h6>
 
                         <span class="section-pill">System</span>
 
@@ -389,11 +389,11 @@
 
 
 
-                    <div class="d-flex align-items-center gap-2 flex-wrap">
+                    <div class="tw:flex! tw:items-center! tw:gap-2! tw:flex-wrap!">
 
 
 
-                        <span class="badge {{ $organizer->is_active ? 'bg-success' : 'bg-secondary' }} custom-badge">
+                        <span class="ui-badge custom-badge {{ $organizer->is_active ? 'tw:bg-bs-success!' : 'tw:bg-bs-secondary!' }}">
 
                             {{ $organizer->is_active ? 'Active' : 'Inactive' }}
 
@@ -401,7 +401,7 @@
 
 
 
-                        <span class="text-muted small">
+                        <span class="tw:text-bs-secondary-color! tw:text-[.875em]">
 
                             Organizer visibility and payment availability status.
 
@@ -815,7 +815,7 @@
 
 
 
-            .hero-actions .btn {
+            .hero-actions .ui-btn {
 
                 flex: 1;
 

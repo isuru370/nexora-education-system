@@ -7,7 +7,7 @@
 <div class="dashboard-page">
 
     {{-- HERO --}}
-    <div class="hero-section mb-4">
+    <div class="hero-section tw:mb-6!">
         <div class="hero-content">
             <div class="hero-left">
                 <span class="greeting-badge">
@@ -32,7 +32,7 @@
     </div>
 
     {{-- INFO BOX --}}
-    <div class="nx-alert nx-alert-blue mb-4">
+    <div class="nx-alert nx-alert-blue tw:mb-6!">
         <i class="bi bi-info-circle-fill"></i>
         <span>
             Update the admission details below. Fields marked with
@@ -42,7 +42,7 @@
 
     {{-- WARNING IF INACTIVE --}}
     @if (!$admission->is_active)
-        <div class="nx-alert nx-alert-amber mb-4">
+        <div class="nx-alert nx-alert-amber tw:mb-6!">
             <i class="bi bi-exclamation-triangle-fill"></i>
             <span>
                 This admission is currently <strong>Inactive</strong>.
@@ -52,72 +52,72 @@
     @endif
 
     {{-- FORM CARD --}}
-    <div class="nx-card mb-4">
+    <div class="nx-card tw:mb-6!">
 
         <div class="nx-card-header">
             <div>
-                <h5 class="nx-card-title"><i class="bi bi-journal-text text-primary"></i> Edit Admission Information</h5>
+                <h5 class="nx-card-title"><i class="bi bi-journal-text tw:text-(color:--nx-blue)!"></i> Edit Admission Information</h5>
                 <p class="nx-card-subtitle">Update the admission fee structure</p>
             </div>
         </div>
 
-        <div class="p-3 p-md-4">
+        <div class="tw:p-4! tw:md:p-6!">
             <form action="{{ route('admissions.update', $admission) }}" method="POST">
                 @csrf
                 @method('PUT')
 
                 {{-- NAME --}}
-                <div class="nx-form-group mb-3">
+                <div class="nx-form-group tw:mb-4!">
                     <label class="nx-label">
                         <i class="bi bi-tag-fill"></i> Admission Name <span style="color: var(--nx-red);">*</span>
                     </label>
                     <input type="text" name="name"
-                        class="form-control nx-input @error('name') is-invalid @enderror"
+                        class="ui-form-control nx-input @error('name') ui-is-invalid @enderror"
                         value="{{ old('name', $admission->name) }}"
                         placeholder="Enter admission name (e.g., Primary Admission, Secondary Admission)">
                     @error('name')
-                        <div class="invalid-feedback d-block">
+                        <div class="ui-invalid-feedback tw:block!">
                             <i class="bi bi-exclamation-triangle-fill"></i> {{ $message }}
                         </div>
                     @enderror
                 </div>
 
                 {{-- AMOUNT --}}
-                <div class="nx-form-group mb-3">
+                <div class="nx-form-group tw:mb-4!">
                     <label class="nx-label">
                         <i class="bi bi-cash-stack"></i> Amount <span style="color: var(--nx-red);">*</span>
                     </label>
                     <div class="currency-input">
                         <span class="currency-symbol">Rs.</span>
                         <input type="number" step="0.01" name="amount"
-                            class="form-control nx-input @error('amount') is-invalid @enderror"
+                            class="ui-form-control nx-input @error('amount') ui-is-invalid @enderror"
                             value="{{ old('amount', $admission->amount) }}"
                             placeholder="0.00">
                     </div>
                     @error('amount')
-                        <div class="invalid-feedback d-block">
+                        <div class="ui-invalid-feedback tw:block!">
                             <i class="bi bi-exclamation-triangle-fill"></i> {{ $message }}
                         </div>
                     @enderror
                 </div>
 
                 {{-- NOTE --}}
-                <div class="nx-form-group mb-3">
+                <div class="nx-form-group tw:mb-4!">
                     <label class="nx-label">
                         <i class="bi bi-chat-text-fill"></i> Note (Optional)
                     </label>
                     <textarea name="note" rows="4"
-                        class="form-control nx-input @error('note') is-invalid @enderror"
+                        class="ui-form-control nx-input @error('note') ui-is-invalid @enderror"
                         placeholder="Enter any additional notes or description about this admission...">{{ old('note', $admission->note) }}</textarea>
                     @error('note')
-                        <div class="invalid-feedback d-block">
+                        <div class="ui-invalid-feedback tw:block!">
                             <i class="bi bi-exclamation-triangle-fill"></i> {{ $message }}
                         </div>
                     @enderror
                 </div>
 
                 {{-- STATUS TOGGLE --}}
-                <div class="toggle-switch mb-3">
+                <div class="toggle-switch tw:mb-4!">
                     <div class="custom-checkbox">
                         <input type="checkbox" name="is_active" value="1" id="isActive"
                             {{ old('is_active', $admission->is_active) ? 'checked' : '' }}>
@@ -131,7 +131,7 @@
                 </div>
 
                 {{-- CARD REPLACEMENT --}}
-                <div class="toggle-switch mb-3">
+                <div class="toggle-switch tw:mb-4!">
                     <div class="custom-checkbox">
                         <input type="checkbox" name="for_card_replacement" value="1" id="forCardReplacement"
                             {{ old('for_card_replacement', $admission->for_card_replacement) ? 'checked' : '' }}>
@@ -159,7 +159,7 @@
     </div>
 
     {{-- FOOTER --}}
-    <div class="text-center">
+    <div class="tw:text-center!">
         <small class="cell-sub">
             <i class="bi bi-shield-check"></i>
             Last updated: {{ optional($admission->updated_at)->format('d M Y, h:i A') }} |

@@ -14,23 +14,23 @@
         <div class="main-card-header">
             <div>
                 <h4>
-                    <i class="bi bi-phone text-primary me-2"></i>
+                    <i class="bi bi-phone tw:text-bs-primary! tw:mr-2!"></i>
                     FCM Token Details
                 </h4>
                 <p>View device token information and manage status</p>
             </div>
 
             <div class="header-buttons">
-                <a href="{{ route('admin.fcm-tokens.index') }}" class="btn btn-secondary custom-btn">
+                <a href="{{ route('admin.fcm-tokens.index') }}" class="ui-btn ui-btn-secondary custom-btn">
                     <i class="bi bi-arrow-left"></i>
                     Back to List
                 </a>
 
                 @if($token->is_active)
                     <form action="{{ route('admin.fcm-tokens.deactivate', $token->id) }}"
-                          method="POST" class="d-inline">
+                          method="POST" class="tw:[display:inline]!">
                         @csrf
-                        <button type="submit" class="btn btn-warning custom-btn"
+                        <button type="submit" class="ui-btn ui-btn-warning custom-btn"
                                 onclick="return confirm('Deactivate this token?')">
                             <i class="bi bi-pause-circle-fill"></i>
                             Deactivate
@@ -38,9 +38,9 @@
                     </form>
                 @else
                     <form action="{{ route('admin.fcm-tokens.activate', $token->id) }}"
-                          method="POST" class="d-inline">
+                          method="POST" class="tw:[display:inline]!">
                         @csrf
-                        <button type="submit" class="btn btn-success custom-btn"
+                        <button type="submit" class="ui-btn ui-btn-success custom-btn"
                                 onclick="return confirm('Activate this token?')">
                             <i class="bi bi-play-circle-fill"></i>
                             Activate
@@ -49,10 +49,10 @@
                 @endif
 
                 <form action="{{ route('admin.fcm-tokens.destroy', $token->id) }}"
-                      method="POST" class="d-inline">
+                      method="POST" class="tw:[display:inline]!">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" class="btn btn-danger custom-btn"
+                    <button type="submit" class="ui-btn ui-btn-danger custom-btn"
                             onclick="return confirm('Delete this token permanently?')">
                         <i class="bi bi-trash-fill"></i>
                         Delete
@@ -63,32 +63,32 @@
 
         {{-- ALERT --}}
         @if(session('success'))
-            <div class="alert alert-success custom-alert">
-                <i class="bi bi-check-circle-fill me-2"></i>
+            <div class="ui-alert ui-alert-success custom-alert">
+                <i class="bi bi-check-circle-fill tw:mr-2!"></i>
                 {{ session('success') }}
             </div>
         @endif
 
         @if(session('warning'))
-            <div class="alert alert-warning custom-alert">
-                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <div class="ui-alert ui-alert-warning custom-alert">
+                <i class="bi bi-exclamation-triangle-fill tw:mr-2!"></i>
                 {{ session('warning') }}
             </div>
         @endif
 
-        <div class="row g-4">
+        <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3">
 
             {{-- LEFT COLUMN --}}
-            <div class="col-lg-8">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[66.66666667%]">
                 <div class="detail-card">
                     <h5 class="detail-title">
-                        <i class="bi bi-key text-primary me-2"></i>
+                        <i class="bi bi-key tw:text-bs-primary! tw:mr-2!"></i>
                         Token
                     </h5>
                     <div class="detail-content">
                         <code class="token-full">{{ $token->token }}</code>
                         <br>
-                        <button class="btn btn-sm btn-primary mt-2 copy-btn"
+                        <button class="ui-btn ui-btn-sm ui-btn-primary tw:mt-2! copy-btn"
                                 data-token="{{ $token->token }}"
                                 onclick="copyToken(this)">
                             <i class="bi bi-clipboard"></i> Copy Full Token
@@ -98,7 +98,7 @@
 
                 <div class="detail-card">
                     <h5 class="detail-title">
-                        <i class="bi bi-person-fill text-primary me-2"></i>
+                        <i class="bi bi-person-fill tw:text-bs-primary! tw:mr-2!"></i>
                         Student Information
                     </h5>
                     <div class="detail-content">
@@ -107,13 +107,13 @@
                                 {{ strtoupper(substr($token->student->initial_name ?? 'S', 0, 1)) }}
                             </div>
                             <div class="student-details">
-                                <h5 class="mb-1">{{ $token->student->initial_name ?? 'Unknown Student' }}</h5>
-                                <p class="text-muted mb-1">
-                                    <i class="bi bi-person-badge me-1"></i>
+                                <h5 class="tw:mb-1!">{{ $token->student->initial_name ?? 'Unknown Student' }}</h5>
+                                <p class="tw:text-bs-secondary-color! tw:mb-1!">
+                                    <i class="bi bi-person-badge tw:mr-1!"></i>
                                     ID: {{ $token->student->custom_id ?? 'N/A' }}
                                 </p>
                                 <a href="{{ route('admin.students.show', $token->student_id) }}"
-                                   class="btn btn-sm btn-outline-primary">
+                                   class="ui-btn ui-btn-sm ui-btn-outline-primary">
                                     <i class="bi bi-eye"></i> View Student
                                 </a>
                             </div>
@@ -123,11 +123,11 @@
             </div>
 
             {{-- RIGHT COLUMN --}}
-            <div class="col-lg-4">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[33.33333333%]">
                 <div class="detail-sidebar">
                     <div class="detail-card">
                         <h5 class="detail-title">
-                            <i class="bi bi-info-circle text-primary me-2"></i>
+                            <i class="bi bi-info-circle tw:text-bs-primary! tw:mr-2!"></i>
                             Details
                         </h5>
 
@@ -139,7 +139,7 @@
                             <tr>
                                 <td class="label">Device Type</td>
                                 <td class="value">
-                                    <i class="bi {{ $token->device_icon }} me-1"></i>
+                                    <i class="bi tw:mr-1! {{ $token->device_icon }}"></i>
                                     {{ $token->device_type_label }}
                                 </td>
                             </tr>
@@ -154,8 +154,8 @@
                             <tr>
                                 <td class="label">Status</td>
                                 <td class="value">
-                                    <span class="badge custom-badge bg-{{ $token->status_color }}">
-                                        <i class="bi {{ $token->is_active ? 'bi-check-circle-fill' : 'bi-x-circle-fill' }} me-1"></i>
+                                    <span class="ui-badge custom-badge bg-{{ $token->status_color }}">
+                                        <i class="bi tw:mr-1! {{ $token->is_active ? 'bi-check-circle-fill' : 'bi-x-circle-fill' }}"></i>
                                         {{ $token->status_label }}
                                     </span>
                                 </td>
@@ -240,27 +240,27 @@
             box-shadow: 0 8px 25px rgba(0,0,0,0.1);
         }
 
-        .btn-secondary.custom-btn {
+        .ui-btn-secondary.custom-btn {
             background: #f1f5f9;
             color: #475569;
             border: 1px solid #e2e8f0;
         }
 
-        .btn-secondary.custom-btn:hover {
+        .ui-btn-secondary.custom-btn:hover {
             background: #e2e8f0;
         }
 
-        .btn-warning.custom-btn {
+        .ui-btn-warning.custom-btn {
             background: #f59e0b;
             color: #fff;
         }
 
-        .btn-success.custom-btn {
+        .ui-btn-success.custom-btn {
             background: #10b981;
             color: #fff;
         }
 
-        .btn-danger.custom-btn {
+        .ui-btn-danger.custom-btn {
             background: #ef4444;
             color: #fff;
         }
@@ -385,17 +385,17 @@
             gap: .3rem;
         }
 
-        .bg-success {
+        .bs-bg-success {
             background-color: #10b981 !important;
             color: #fff;
         }
 
-        .bg-danger {
+        .bs-bg-danger {
             background-color: #ef4444 !important;
             color: #fff;
         }
 
-        .bg-warning {
+        .bs-bg-warning {
             background-color: #f59e0b !important;
             color: #fff;
         }

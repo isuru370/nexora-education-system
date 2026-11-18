@@ -27,7 +27,7 @@
     {{-- ===================================================== --}}
     {{-- SECTION: Class & Category --}}
     {{-- ===================================================== --}}
-    <div class="section-header mb-3">
+    <div class="section-header tw:mb-4!">
         <div class="section-icon icon-blue"><i class="bi bi-journal-bookmark-fill"></i></div>
         <div>
             <h5 class="section-title">Class &amp; Category</h5>
@@ -35,16 +35,16 @@
         </div>
     </div>
 
-    <div class="row g-3 mb-4">
+    <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2 tw:mb-6!">
 
         {{-- CLASS --}}
-        <div class="col-md-6">
+        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
             <label for="student_class_id" class="nx-label">
                 Class <span style="color: var(--nx-red);">*</span>
             </label>
 
             <select name="student_class_id" id="student_class_id"
-                class="form-select nx-input @error('student_class_id') is-invalid @enderror"
+                class="ui-form-select nx-input @error('student_class_id') ui-is-invalid @enderror"
                 required
                 {{ $feeData ? 'disabled' : '' }}>
 
@@ -70,13 +70,13 @@
         </div>
 
         {{-- CATEGORY --}}
-        <div class="col-md-6">
+        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
             <label for="class_category_id" class="nx-label">
                 Category <span style="color: var(--nx-red);">*</span>
             </label>
 
             <select name="class_category_id" id="class_category_id"
-                class="form-select nx-input @error('class_category_id') is-invalid @enderror"
+                class="ui-form-select nx-input @error('class_category_id') ui-is-invalid @enderror"
                 required>
 
                 <option value="">Select Category</option>
@@ -101,7 +101,7 @@
     {{-- ===================================================== --}}
     {{-- SECTION: Status --}}
     {{-- ===================================================== --}}
-    <div class="section-header mb-3 pt-3 border-top">
+    <div class="section-header tw:mb-4! tw:pt-4! tw:bs-border-t!">
         <div class="section-icon icon-amber"><i class="bi bi-toggles"></i></div>
         <div>
             <h5 class="section-title">Status</h5>
@@ -109,13 +109,13 @@
         </div>
     </div>
 
-    <div class="row g-3 mb-4">
-        <div class="col-md-6">
+    <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2 tw:mb-6!">
+        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
             <input type="hidden" name="is_active" value="0">
 
             <div class="toggle-switch">
                 <input type="checkbox" name="is_active" value="1" id="is_active"
-                    class="form-check-input flex-shrink-0"
+                    class="ui-form-check-input tw:shrink-0!"
                     style="width: 3em; height: 1.5em; cursor: pointer;"
                     {{ $isActiveInput ? 'checked' : '' }}>
                 <label for="is_active" class="toggle-content">
@@ -125,7 +125,7 @@
             </div>
 
             @error('is_active')
-                <div class="nx-error mt-2"><i class="bi bi-exclamation-circle"></i> {{ $message }}</div>
+                <div class="nx-error tw:mt-2!"><i class="bi bi-exclamation-circle"></i> {{ $message }}</div>
             @enderror
         </div>
     </div>
@@ -133,7 +133,7 @@
     {{-- ===================================================== --}}
     {{-- SECTION: Note --}}
     {{-- ===================================================== --}}
-    <div class="section-header mb-3 pt-3 border-top">
+    <div class="section-header tw:mb-4! tw:pt-4! tw:bs-border-t!">
         <div class="section-icon icon-blue"><i class="bi bi-chat-text-fill"></i></div>
         <div>
             <h5 class="section-title">Additional Note</h5>
@@ -141,10 +141,10 @@
         </div>
     </div>
 
-    <div class="mb-4">
+    <div class="tw:mb-6!">
         <label for="note" class="nx-label">Note</label>
         <textarea name="note" id="note" rows="4"
-            class="form-control nx-input @error('note') is-invalid @enderror"
+            class="ui-form-control nx-input @error('note') ui-is-invalid @enderror"
             placeholder="Optional note">{{ $noteValue }}</textarea>
         @error('note')
             <div class="nx-error"><i class="bi bi-exclamation-circle"></i> {{ $message }}</div>
