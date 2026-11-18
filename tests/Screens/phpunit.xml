@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Only for the screenshots fixture: the database comes from .env -->
+<phpunit bootstrap="../../vendor/autoload.php" colors="false">
+    <testsuites>
+        <testsuite name="Screens">
+            <directory suffix="Test.php">.</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>

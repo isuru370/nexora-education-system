@@ -1,0 +1,107 @@
+# Before / after screenshots of every page, for UI changes (Bootstrap ->
+# Tailwind). Changed pages are pushed to the ci-screens branch and listed
+# in a PR comment.
+name: screens
+
+on:
+  pull_request:
+    paths:
+      - 'resources/views/**'
+      - 'resources/css/**'
+      - 'public/css/**'
+      - 'public/js/**'
+      - 'tests/Screens/**'
+      - '.github/workflows/screens.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: screens-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  screens:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - name: This PR
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref }}
+          path: head
+
+      - name: The base branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.base_ref || 'main' }}
+          path: base
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.3'
+          extensions: gd, zip, intl, exif, bcmath, pdo_sqlite, sqlite3, mbstring, posix
+          coverage: none
+          tools: composer:v2
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      - name: Playwright and image tools
+        run: |
+          mkdir -p tools && cd tools
+          npm init -y > /dev/null
+          npm install --silent playwright@1.49.1 pixelmatch@6.0.0 pngjs@7.0.0 sharp@0.33.5
+          npx playwright install --with-deps chromium > /dev/null
+          echo "NODE_PATH=$PWD/node_modules" >> "$GITHUB_ENV"
+
+      - name: Same screenshot scripts for both
+        run: |
+          rm -rf base/tests/Screens && cp -r head/tests/Screens base/tests/Screens
+          cp head/tests/Screens/*.mjs tools/
+
+      - name: Before (base branch)
+        run: bash head/tests/Screens/run.sh base 8101 "$PWD/shots/before"
+
+      - name: After (this PR)
+        run: bash head/tests/Screens/run.sh head 8102 "$PWD/shots/after"
+
+      - name: Compare
+        run: |
+          cd tools
+          node compare.mjs ../shots/before ../shots/after ../shots/changed | tail -5
+
+      - name: Push the changed pages to ci-screens
+        if: github.event_name == 'pull_request'
+        run: |
+          dir="pr-${{ github.event.pull_request.number }}"
+          cd head
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git fetch origin ci-screens:ci-screens 2>/dev/null || true
+          if git rev-parse --verify ci-screens >/dev/null 2>&1; then
+            git worktree add ../screens-branch ci-screens
+          else
+            git worktree add --orphan -b ci-screens ../screens-branch
+          fi
+          cd ../screens-branch
+          rm -rf "$dir" && mkdir -p "$dir" && cp ../shots/changed/* "$dir"/ 2>/dev/null || true
+          git add -A && git commit -qm "Screens for $dir (${GITHUB_SHA::7})" || true
+          git push -q origin ci-screens
+
+      - name: Comment
+        if: github.event_name == 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          {
+            echo "### 🖼️ Screenshots: before vs after"
+            echo
+            cat shots/changed/summary.md
+            echo
+            echo "Images: branch \`ci-screens\`, folder \`pr-${{ github.event.pull_request.number }}\`"
+          } > comment.md
+          cd head && gh pr comment "${{ github.event.pull_request.number }}" --body-file ../comment.md
