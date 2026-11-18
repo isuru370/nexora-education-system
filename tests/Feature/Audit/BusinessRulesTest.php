@@ -70,7 +70,7 @@ class BusinessRulesTest extends TestCase
         ]);
 
         $this->pay('S1', $new, 1000)
-            ->assertStatus(422)
+            ->assertStatus(409)
             ->assertJsonPath('message', 'Payment already completed for this class and month.');
 
         // November is a new month on the new option
