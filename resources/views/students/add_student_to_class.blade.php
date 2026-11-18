@@ -4,29 +4,29 @@
 @section('page-title', 'Add Students to Class')
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-    <li class="breadcrumb-item"><a href="{{ route('class_rooms.index') }}">Classes</a></li>
-    <li class="breadcrumb-item active">Add Students</li>
+    <li class="ui-breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
+    <li class="ui-breadcrumb-item"><a href="{{ route('class_rooms.index') }}">Classes</a></li>
+    <li class="ui-breadcrumb-item active">Add Students</li>
 @endsection
 
 @section('content')
-    <div class="container-fluid">
+    <div class="ui-container-fluid">
         <!-- Class Information Section -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header bg-primary text-white">
-                        <h5 class="card-title mb-0">
-                            <i class="fas fa-chalkboard-teacher me-2"></i>Class Information
+        <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 tw:mb-6!">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:flex-[0_0_auto] tw:w-[100%]">
+                <div class="ui-card">
+                    <div class="ui-card-header tw:bg-bs-primary! tw:text-bs-white!">
+                        <h5 class="ui-card-title tw:mb-0!">
+                            <i class="fas fa-chalkboard-teacher tw:mr-2!"></i>Class Information
                         </h5>
                     </div>
-                    <div class="card-body">
+                    <div class="ui-card-body">
                         <div id="classInfo">
-                            <div class="text-center py-3">
-                                <div class="spinner-border text-primary" role="status">
-                                    <span class="visually-hidden">Loading...</span>
+                            <div class="tw:text-center! tw:py-4!">
+                                <div class="ui-spinner-border tw:text-bs-primary!" role="status">
+                                    <span class="tw:sr-only">Loading...</span>
                                 </div>
-                                <p class="mt-2 mb-0">Loading class information...</p>
+                                <p class="tw:mt-2! tw:mb-0!">Loading class information...</p>
                             </div>
                         </div>
                     </div>
@@ -35,21 +35,21 @@
         </div>
 
         <!-- Class Categories Section -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header bg-info text-white">
-                        <h5 class="card-title mb-0">
-                            <i class="fas fa-tags me-2"></i>Available Categories
+        <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 tw:mb-6!">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:flex-[0_0_auto] tw:w-[100%]">
+                <div class="ui-card">
+                    <div class="ui-card-header tw:bg-bs-info! tw:text-bs-white!">
+                        <h5 class="ui-card-title tw:mb-0!">
+                            <i class="fas fa-tags tw:mr-2!"></i>Available Categories
                         </h5>
                     </div>
-                    <div class="card-body">
+                    <div class="ui-card-body">
                         <div id="classCategories">
-                            <div class="text-center py-3">
-                                <div class="spinner-border text-info" role="status">
-                                    <span class="visually-hidden">Loading...</span>
+                            <div class="tw:text-center! tw:py-4!">
+                                <div class="ui-spinner-border tw:text-bs-info!" role="status">
+                                    <span class="tw:sr-only">Loading...</span>
                                 </div>
-                                <p class="mt-2 mb-0">Loading class categories...</p>
+                                <p class="tw:mt-2! tw:mb-0!">Loading class categories...</p>
                             </div>
                         </div>
                     </div>
@@ -58,36 +58,36 @@
         </div>
 
         <!-- Students Selection Section -->
-        <div class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header bg-success text-white">
-                        <h5 class="card-title mb-0">
-                            <i class="fas fa-user-plus me-2"></i>Select Students
+        <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:flex-[0_0_auto] tw:w-[100%]">
+                <div class="ui-card">
+                    <div class="ui-card-header tw:bg-bs-success! tw:text-bs-white!">
+                        <h5 class="ui-card-title tw:mb-0!">
+                            <i class="fas fa-user-plus tw:mr-2!"></i>Select Students
                         </h5>
                     </div>
-                    <div class="card-body">
+                    <div class="ui-card-body">
                         <!-- Search and Filters -->
-                        <div class="row mb-4">
-                            <div class="col-md-4">
-                                <label class="form-label">Search Students</label>
-                                <div class="input-group">
-                                    <input type="text" id="studentSearch" class="form-control"
+                        <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 tw:mb-6!">
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
+                                <label class="ui-form-label">Search Students</label>
+                                <div class="ui-input-group">
+                                    <input type="text" id="studentSearch" class="ui-form-control"
                                         placeholder="Search by name or ID...">
-                                    <button class="btn btn-outline-secondary" type="button" id="clearSearch">
+                                    <button class="ui-btn ui-btn-outline-secondary" type="button" id="clearSearch">
                                         <i class="fas fa-times"></i>
                                     </button>
                                 </div>
                             </div>
-                            <div class="col-md-4">
-                                <label class="form-label">Filter by Grade</label>
-                                <select class="form-select" id="gradeFilter">
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
+                                <label class="ui-form-label">Filter by Grade</label>
+                                <select class="ui-form-select" id="gradeFilter">
                                     <option value="">All Grades</option>
                                 </select>
                             </div>
-                            <div class="col-md-4">
-                                <label class="form-label">Records Per Page</label>
-                                <select class="form-select" id="recordsPerPage">
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
+                                <label class="ui-form-label">Records Per Page</label>
+                                <select class="ui-form-select" id="recordsPerPage">
                                     <option value="10">10 per page</option>
                                     <option value="25">25 per page</option>
                                     <option value="50">50 per page</option>
@@ -97,45 +97,45 @@
                         </div>
 
                         <!-- Selected Category Info -->
-                        <div id="selectedCategoryInfo" class="alert alert-warning mb-4" style="display: none;">
-                            <div class="d-flex justify-content-between align-items-center">
+                        <div id="selectedCategoryInfo" class="ui-alert ui-alert-warning tw:mb-6!" style="display: none;">
+                            <div class="tw:flex! tw:justify-between! tw:items-center!">
                                 <div>
                                     <strong>Selected Category:</strong>
-                                    <span id="selectedCategoryName" class="fw-bold"></span> -
-                                    Fee: Rs. <span id="selectedCategoryFee" class="fw-bold"></span>
+                                    <span id="selectedCategoryName" class="tw:font-bold!"></span> -
+                                    Fee: Rs. <span id="selectedCategoryFee" class="tw:font-bold!"></span>
                                 </div>
-                                <button class="btn btn-sm btn-outline-danger" onclick="clearSelection()">
-                                    <i class="fas fa-times me-1"></i>Clear
+                                <button class="ui-btn ui-btn-sm ui-btn-outline-danger" onclick="clearSelection()">
+                                    <i class="fas fa-times tw:mr-1!"></i>Clear
                                 </button>
                             </div>
                         </div>
 
                         <!-- Enrolled Students Action Bar -->
-                        <div id="enrolledActions" class="alert alert-info mb-3" style="display: none;">
-                            <div class="d-flex justify-content-between align-items-center">
+                        <div id="enrolledActions" class="ui-alert ui-alert-info tw:mb-4!" style="display: none;">
+                            <div class="tw:flex! tw:justify-between! tw:items-center!">
                                 <div>
                                     <strong>Enrolled Students Management:</strong>
-                                    <span id="selectedEnrolledCount" class="badge bg-primary ms-2">0 selected</span>
+                                    <span id="selectedEnrolledCount" class="ui-badge tw:bg-bs-primary! tw:ml-2!">0 selected</span>
                                 </div>
-                                <div class="d-flex gap-2">
-                                    <button class="btn btn-sm btn-warning" id="deactivateEnrolledBtn"
+                                <div class="tw:flex! tw:gap-2!">
+                                    <button class="ui-btn ui-btn-sm ui-btn-warning" id="deactivateEnrolledBtn"
                                         onclick="bulkDeactivateStudents()" disabled>
-                                        <i class="fas fa-user-minus me-1"></i>Deactivate Selected
+                                        <i class="fas fa-user-minus tw:mr-1!"></i>Deactivate Selected
                                     </button>
-                                    <button class="btn btn-sm btn-outline-secondary" onclick="clearEnrolledSelections()">
-                                        <i class="fas fa-times me-1"></i>Clear
+                                    <button class="ui-btn ui-btn-sm ui-btn-outline-secondary" onclick="clearEnrolledSelections()">
+                                        <i class="fas fa-times tw:mr-1!"></i>Clear
                                     </button>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Students Table -->
-                        <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead class="table-success">
+                        <div class="ui-table-responsive">
+                            <table class="ui-table ui-table-hover">
+                                <thead class="ui-table-success">
                                     <tr>
                                         <th width="50">
-                                            <input type="checkbox" id="selectAllStudents" class="form-check-input">
+                                            <input type="checkbox" id="selectAllStudents" class="ui-form-check-input">
                                         </th>
                                         <th width="80">#</th>
                                         <th>Student ID</th>
@@ -153,33 +153,33 @@
                         </div>
 
                         <!-- Loading State -->
-                        <div id="studentsLoading" class="text-center py-4">
-                            <div class="spinner-border text-success" role="status">
-                                <span class="visually-hidden">Loading...</span>
+                        <div id="studentsLoading" class="tw:text-center! tw:py-6!">
+                            <div class="ui-spinner-border tw:text-bs-success!" role="status">
+                                <span class="tw:sr-only">Loading...</span>
                             </div>
-                            <p class="mt-2 text-muted">Loading students...</p>
+                            <p class="tw:mt-2! tw:text-bs-secondary-color!">Loading students...</p>
                         </div>
 
                         <!-- Empty State -->
-                        <div id="studentsEmpty" class="text-center py-5 d-none">
-                            <div class="empty-state-icon mb-3">
-                                <i class="fas fa-users fa-3x text-muted"></i>
+                        <div id="studentsEmpty" class="tw:text-center! tw:py-12! tw:hidden!">
+                            <div class="empty-state-icon tw:mb-4!">
+                                <i class="fas fa-users fa-3x tw:text-bs-secondary-color!"></i>
                             </div>
-                            <h4 class="text-muted">No Students Found</h4>
-                            <p class="text-muted">No active students match your search criteria.</p>
+                            <h4 class="tw:text-bs-secondary-color!">No Students Found</h4>
+                            <p class="tw:text-bs-secondary-color!">No active students match your search criteria.</p>
                         </div>
 
                         <!-- Pagination -->
-                        <div id="studentsPagination" class="d-none">
-                            <div class="row align-items-center">
-                                <div class="col-md-6">
-                                    <div class="text-muted" id="paginationInfo">
+                        <div id="studentsPagination" class="tw:hidden!">
+                            <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 tw:items-center!">
+                                <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
+                                    <div class="tw:text-bs-secondary-color!" id="paginationInfo">
                                         Showing 0 to 0 of 0 entries
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
                                     <nav aria-label="Students pagination">
-                                        <ul class="pagination justify-content-end mb-0" id="paginationControls">
+                                        <ul class="ui-pagination tw:justify-end! tw:mb-0!" id="paginationControls">
                                             <!-- Pagination controls will be inserted here -->
                                         </ul>
                                     </nav>
@@ -188,22 +188,22 @@
                         </div>
 
                         <!-- Action Buttons -->
-                        <div class="row mt-4">
-                            <div class="col-12">
-                                <div class="d-flex justify-content-between align-items-center">
+                        <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 tw:mt-6!">
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:flex-[0_0_auto] tw:w-[100%]">
+                                <div class="tw:flex! tw:justify-between! tw:items-center!">
                                     <div>
-                                        <span id="selectedCount" class="badge bg-primary fs-6">0 students selected</span>
+                                        <span id="selectedCount" class="ui-badge tw:bg-bs-primary! tw:text-[length:1rem]!">0 students selected</span>
                                     </div>
-                                    <div class="d-flex gap-2">
-                                        <button class="btn btn-outline-primary" onclick="loadStudents()">
-                                            <i class="fas fa-sync-alt me-2"></i>Refresh
+                                    <div class="tw:flex! tw:gap-2!">
+                                        <button class="ui-btn ui-btn-outline-primary" onclick="loadStudents()">
+                                            <i class="fas fa-sync-alt tw:mr-2!"></i>Refresh
                                         </button>
-                                        <button class="btn btn-secondary" onclick="clearAllSelections()">
-                                            <i class="fas fa-times me-2"></i>Clear All
+                                        <button class="ui-btn ui-btn-secondary" onclick="clearAllSelections()">
+                                            <i class="fas fa-times tw:mr-2!"></i>Clear All
                                         </button>
-                                        <button class="btn btn-success" id="addStudentsBtn" onclick="addStudentsToClass()"
+                                        <button class="ui-btn ui-btn-success" id="addStudentsBtn" onclick="addStudentsToClass()"
                                             disabled>
-                                            <i class="fas fa-user-plus me-2"></i>Add Selected Students
+                                            <i class="fas fa-user-plus tw:mr-2!"></i>Add Selected Students
                                         </button>
                                     </div>
                                 </div>
@@ -273,27 +273,27 @@
 
                 if (classData) {
                     document.getElementById('classInfo').innerHTML = `
-                    <div class="row">
-                        <div class="col-md-3">
+                    <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[25%]">
                             <strong>Class Name:</strong><br>
-                            <span class="fs-5 fw-bold text-primary">${classData.class_name}</span>
+                            <span class="tw:text-[length:1.25rem]! tw:font-bold! tw:text-bs-primary!">${classData.class_name}</span>
                         </div>
-                        <div class="col-md-3">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[25%]">
                             <strong>Teacher:</strong><br>
-                            <span class="fs-6">${classData.teacher ? classData.teacher.fname + ' ' + classData.teacher.lname : 'N/A'}</span>
-                            <br><small class="text-muted">${classData.teacher ? classData.teacher.custom_id : ''}</small>
+                            <span class="tw:text-[length:1rem]!">${classData.teacher ? classData.teacher.fname + ' ' + classData.teacher.lname : 'N/A'}</span>
+                            <br><small class="tw:text-bs-secondary-color!">${classData.teacher ? classData.teacher.custom_id : ''}</small>
                         </div>
-                        <div class="col-md-2">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[16.66666667%]">
                             <strong>Subject:</strong><br>
-                            <span class="badge bg-light text-dark border">${classData.subject ? classData.subject.subject_name : 'N/A'}</span>
+                            <span class="ui-badge tw:bg-bs-light! tw:text-bs-dark! tw:bs-border!">${classData.subject ? classData.subject.subject_name : 'N/A'}</span>
                         </div>
-                        <div class="col-md-2">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[16.66666667%]">
                             <strong>Grade:</strong><br>
-                            <span class="badge bg-primary">${classData.grade ? 'Grade ' + classData.grade.grade_name : 'N/A'}</span>
+                            <span class="ui-badge tw:bg-bs-primary!">${classData.grade ? 'Grade ' + classData.grade.grade_name : 'N/A'}</span>
                         </div>
-                        <div class="col-md-2">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[16.66666667%]">
                             <strong>Status:</strong><br>
-                            <span class="badge ${classData.is_active ? 'bg-success' : 'bg-secondary'}">
+                            <span class="ui-badge ${classData.is_active ? 'tw:bg-bs-success!' : 'tw:bg-bs-secondary!'}">
                                 ${classData.is_active ? 'Active' : 'Inactive'}
                             </span>
                         </div>
@@ -306,7 +306,7 @@
             } catch (error) {
                 console.error('Error loading class info:', error);
                 document.getElementById('classInfo').innerHTML = `
-                <div class="alert alert-danger">
+                <div class="ui-alert ui-alert-danger">
                     Failed to load class information: ${error.message}
                 </div>
             `;
@@ -319,8 +319,8 @@
 
             if (!categories || categories.length === 0) {
                 container.innerHTML = `
-                        <div class="alert alert-warning">
-                            <i class="fas fa-exclamation-triangle me-2"></i>
+                        <div class="ui-alert ui-alert-warning">
+                            <i class="fas fa-exclamation-triangle tw:mr-2!"></i>
                             No categories available for this class.
                         </div>
                     `;
@@ -332,15 +332,15 @@
                 const fee = category.fees || 0;
 
                 return `
-                        <div class="col-md-4 mb-3">
-                            <div class="card category-card" onclick="selectCategory(${category.id}, '${categoryName}', ${fee})">
-                                <div class="card-body">
-                                    <h6 class="card-title">${categoryName}</h6>
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <span class="badge bg-success badge-fee">
-                                            <i class="fas fa-rupee-sign me-1"></i>${fee.toFixed(2)}
+                        <div class="ui-col-md-4 tw:mb-4!">
+                            <div class="ui-card category-card" onclick="selectCategory(${category.id}, '${categoryName}', ${fee})">
+                                <div class="ui-card-body">
+                                    <h6 class="ui-card-title">${categoryName}</h6>
+                                    <div class="tw:flex! tw:justify-between! tw:items-center!">
+                                        <span class="ui-badge tw:bg-bs-success! badge-fee">
+                                            <i class="fas fa-rupee-sign tw:mr-1!"></i>${fee.toFixed(2)}
                                         </span>
-                                        <small class="text-muted">Click to select</small>
+                                        <small class="tw:text-bs-secondary-color!">Click to select</small>
                                     </div>
                                 </div>
                             </div>
@@ -349,7 +349,7 @@
             }).join('');
 
             // Wrap in row
-            container.innerHTML = `<div class="row">${container.innerHTML}</div>`;
+            container.innerHTML = `<div class="ui-row">${container.innerHTML}</div>`;
         }
 
         // Select Category
@@ -486,13 +486,13 @@
             tbody.innerHTML = '';
 
             if (filteredStudents.length === 0) {
-                emptyState.classList.remove('d-none');
-                paginationContainer.classList.add('d-none');
+                emptyState.classList.remove('tw:hidden!');
+                paginationContainer.classList.add('tw:hidden!');
                 return;
             }
 
-            emptyState.classList.add('d-none');
-            paginationContainer.classList.remove('d-none');
+            emptyState.classList.add('tw:hidden!');
+            paginationContainer.classList.remove('tw:hidden!');
 
             // Calculate pagination
             const totalPages = Math.ceil(filteredStudents.length / studentsRecordsPerPage);
@@ -519,30 +519,30 @@
 
                     if (enrollment.status === 1) {
                         rowClass = 'enrollment-active';
-                        statusBadge = '<span class="badge bg-success">Enrolled (Active)</span>';
+                        statusBadge = '<span class="ui-badge tw:bg-bs-success!">Enrolled (Active)</span>';
                         disabled = 'disabled';
                         tooltip = 'title="Already enrolled and active"';
                         enrollmentCheckbox = `
-                                <input type="checkbox" class="form-check-input enrollment-checkbox" 
+                                <input type="checkbox" class="ui-form-check-input enrollment-checkbox" 
                                        value="${student.id}" ${isEnrolledChecked}
                                        onchange="toggleEnrolledStudentSelection(${student.id}, this.checked)">
                             `;
                         actionButtons = `
-                                <button class="btn btn-sm btn-warning" onclick="deactivateSingleStudent(${enrollment.enrollmentId}, ${student.id})" title="Deactivate Student">
+                                <button class="ui-btn ui-btn-sm ui-btn-warning" onclick="deactivateSingleStudent(${enrollment.enrollmentId}, ${student.id})" title="Deactivate Student">
                                     <i class="fas fa-user-minus"></i>
                                 </button>
                             `;
                     } else {
                         rowClass = 'enrollment-inactive';
-                        statusBadge = '<span class="badge bg-warning text-dark">Enrolled (Inactive)</span>';
+                        statusBadge = '<span class="ui-badge tw:bg-bs-warning! tw:text-bs-dark!">Enrolled (Inactive)</span>';
                         disabled = 'disabled';
                         tooltip = 'title="Already enrolled but inactive"';
                         actionButtons = `
-                                <span class="text-muted">Inactive</span>
+                                <span class="tw:text-bs-secondary-color!">Inactive</span>
                             `;
                     }
                 } else {
-                    statusBadge = '<span class="badge bg-secondary">Not Enrolled</span>';
+                    statusBadge = '<span class="ui-badge tw:bg-bs-secondary!">Not Enrolled</span>';
                     tooltip = 'title="Available for enrollment"';
                     actionButtons = '';
                 }
@@ -551,19 +551,19 @@
                         <tr class="student-row ${rowClass} ${isSelected ? 'selected' : ''}" ${tooltip}>
                             <td>
                                 ${enrollmentCheckbox}
-                                <input type="checkbox" class="form-check-input student-checkbox" 
+                                <input type="checkbox" class="ui-form-check-input student-checkbox" 
                                        value="${student.id}" ${isSelected ? 'checked' : ''} ${disabled}
                                        onchange="toggleStudentSelection(${student.id}, this.checked, ${enrollment ? 'true' : 'false'})">
                             </td>
-                            <td class="fw-bold text-muted">${actualIndex + 1}</td>
+                            <td class="tw:font-bold! tw:text-bs-secondary-color!">${actualIndex + 1}</td>
                             <td>
-                                <span class="badge bg-secondary">${student.custom_id}</span>
+                                <span class="ui-badge tw:bg-bs-secondary!">${student.custom_id}</span>
                             </td>
                             <td>
                                 <strong>${student.initial_name}</strong>
                             </td>
                             <td>
-                                <span class="badge bg-info">${student.grade ? 'Grade ' + student.grade.grade_name : 'N/A'}</span>
+                                <span class="ui-badge tw:bg-bs-info!">${student.grade ? 'Grade ' + student.grade.grade_name : 'N/A'}</span>
                             </td>
                             <td>${student.mobile || 'N/A'}</td>
                             <td>${statusBadge}</td>
@@ -652,8 +652,8 @@
 
             // Previous button
             const prevButton = `
-                    <li class="page-item ${studentsCurrentPage === 1 ? 'disabled' : ''}">
-                        <a class="page-link" href="#" onclick="changePage(${studentsCurrentPage - 1})" aria-label="Previous">
+                    <li class="ui-page-item ${studentsCurrentPage === 1 ? 'disabled' : ''}">
+                        <a class="ui-page-link" href="#" onclick="changePage(${studentsCurrentPage - 1})" aria-label="Previous">
                             <span aria-hidden="true">&laquo;</span>
                         </a>
                     </li>
@@ -671,8 +671,8 @@
 
             for (let i = startPage; i <= endPage; i++) {
                 const pageItem = `
-                        <li class="page-item ${i === studentsCurrentPage ? 'active' : ''}">
-                            <a class="page-link" href="#" onclick="changePage(${i})">${i}</a>
+                        <li class="ui-page-item ${i === studentsCurrentPage ? 'active' : ''}">
+                            <a class="ui-page-link" href="#" onclick="changePage(${i})">${i}</a>
                         </li>
                     `;
                 paginationContainer.innerHTML += pageItem;
@@ -680,8 +680,8 @@
 
             // Next button
             const nextButton = `
-                    <li class="page-item ${studentsCurrentPage === totalPages ? 'disabled' : ''}">
-                        <a class="page-link" href="#" onclick="changePage(${studentsCurrentPage + 1})" aria-label="Next">
+                    <li class="ui-page-item ${studentsCurrentPage === totalPages ? 'disabled' : ''}">
+                        <a class="ui-page-link" href="#" onclick="changePage(${studentsCurrentPage + 1})" aria-label="Next">
                             <span aria-hidden="true">&raquo;</span>
                         </a>
                     </li>
@@ -698,7 +698,7 @@
             renderStudentsTable();
 
             // Scroll to top of table
-            document.getElementById('studentsTableBody').closest('.table-responsive').scrollIntoView({
+            document.getElementById('studentsTableBody').closest('.ui-table-responsive').scrollIntoView({
                 behavior: 'smooth',
                 block: 'start'
             });
@@ -825,7 +825,7 @@
 
             try {
                 deactivateBtn.disabled = true;
-                deactivateBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Deactivating...';
+                deactivateBtn.innerHTML = '<i class="fas fa-spinner fa-spin tw:mr-1!"></i>Deactivating...';
 
                 const requestData = {
                     student_class_ids: enrollmentIds
@@ -930,7 +930,7 @@
 
             try {
                 addBtn.disabled = true;
-                addBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Adding Students...';
+                addBtn.innerHTML = '<i class="fas fa-spinner fa-spin tw:mr-2!"></i>Adding Students...';
 
                 const studentsArray = Array.from(selectedStudents).map(studentId => ({
                     student_id: studentId
@@ -1023,29 +1023,29 @@
         }
 
         function showStudentsLoading() {
-            document.getElementById('studentsLoading').classList.remove('d-none');
-            document.getElementById('studentsTableBody').closest('.table-responsive').classList.add('d-none');
-            document.getElementById('studentsPagination').classList.add('d-none');
+            document.getElementById('studentsLoading').classList.remove('tw:hidden!');
+            document.getElementById('studentsTableBody').closest('.ui-table-responsive').classList.add('tw:hidden!');
+            document.getElementById('studentsPagination').classList.add('tw:hidden!');
         }
 
         function hideStudentsLoading() {
-            document.getElementById('studentsLoading').classList.add('d-none');
-            document.getElementById('studentsTableBody').closest('.table-responsive').classList.remove('d-none');
+            document.getElementById('studentsLoading').classList.add('tw:hidden!');
+            document.getElementById('studentsTableBody').closest('.ui-table-responsive').classList.remove('tw:hidden!');
         }
 
         function showStudentsEmptyState() {
-            document.getElementById('studentsEmpty').classList.remove('d-none');
-            document.getElementById('studentsTableBody').closest('.table-responsive').classList.add('d-none');
-            document.getElementById('studentsPagination').classList.add('d-none');
+            document.getElementById('studentsEmpty').classList.remove('tw:hidden!');
+            document.getElementById('studentsTableBody').closest('.ui-table-responsive').classList.add('tw:hidden!');
+            document.getElementById('studentsPagination').classList.add('tw:hidden!');
         }
 
         function showAlert(message, type) {
             const alertDiv = document.createElement('div');
-            alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+            alertDiv.className = `ui-alert ui-alert-${type} ui-alert-dismissible ui-fade show tw:fixed!`;
             alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
             alertDiv.innerHTML = `
                     <strong>${type === 'success' ? 'Success!' : type === 'warning' ? 'Warning!' : 'Error!'}</strong> ${message}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    <button type="button" class="ui-btn-close" data-nx-dismiss="alert"></button>
                 `;
 
             document.body.appendChild(alertDiv);

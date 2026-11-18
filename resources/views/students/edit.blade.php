@@ -41,7 +41,7 @@
             padding: 1.5rem;
         }
 
-        .alert {
+        .ui-alert {
             border-radius: 18px;
         }
 
@@ -57,7 +57,7 @@
             transform: translateY(-2px);
         }
 
-        .btn-primary {
+        .ui-btn-primary {
             background: linear-gradient(135deg, #2563eb, #3b82f6);
         }
 
@@ -128,7 +128,7 @@
                 width: 100%;
             }
 
-            .hero-actions .btn {
+            .hero-actions .ui-btn {
                 flex: 1;
             }
         }
@@ -141,13 +141,13 @@
         <div class="hero-card">
             <div class="hero-content">
                 <div>
-                    <h4 class="mb-1 fw-bold">Edit Student</h4>
-                    <p class="mb-0 text-muted">Update student information carefully</p>
+                    <h4 class="tw:mb-1! tw:font-bold!">Edit Student</h4>
+                    <p class="tw:mb-0! tw:text-bs-secondary-color!">Update student information carefully</p>
                 </div>
 
                 <div class="hero-actions">
-                    <a href="{{ route('students.index') }}" class="btn btn-outline-secondary custom-btn">
-                        <i class="bi bi-arrow-left me-1"></i> Back
+                    <a href="{{ route('students.index') }}" class="ui-btn ui-btn-outline-secondary custom-btn">
+                        <i class="bi bi-arrow-left tw:mr-1!"></i> Back
                     </a>
                 </div>
             </div>
@@ -156,15 +156,15 @@
         <div class="main-card">
 
             @if ($errors->any())
-                <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
-                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                <div class="ui-alert ui-alert-danger ui-alert-dismissible ui-fade show tw:mb-6!" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill tw:mr-2!"></i>
                     <strong>Please fix the following errors:</strong>
-                    <ul class="mb-0 mt-2">
+                    <ul class="tw:mb-0! tw:mt-2!">
                         @foreach ($errors->all() as $error)
                             <li>{{ $error }}</li>
                         @endforeach
                     </ul>
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    <button type="button" class="ui-btn-close" data-nx-dismiss="alert"></button>
                 </div>
             @endif
 
