@@ -107,7 +107,7 @@ jobs:
           {
             if [ "$JOB_STATUS" != "success" ]; then
               echo "### ❌ Screenshots job failed"
-              for f in before.log after.log /tmp/serve-8101.log /tmp/serve-8102.log; do
+              for f in before.log after.log /tmp/serve-8101.log /tmp/serve-8102.log base/storage/logs/laravel.log head/storage/logs/laravel.log; do
                 [ -s "$f" ] || continue
                 echo; echo "<details><summary>$f</summary>"; echo; echo '```'
                 tail -c 6000 "$f" | sed -r "s/\x1B\[[0-9;]*[A-Za-z]//g"
