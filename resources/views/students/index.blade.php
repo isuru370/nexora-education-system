@@ -236,7 +236,7 @@
                     @forelse ($students as $student)
                         @php
                             $expireDate = $student->temporary_qr_code_expire_date;
-                            $daysLeft = $expireDate ? now()->diffInDays($expireDate, false) : null;
+                            $daysLeft = $expireDate ? (int) now()->diffInDays($expireDate, false) : null;
                             $studentImage = $student->img_url
                                 ? asset('storage/' . $student->img_url)
                                 : asset('images/default-student.png');

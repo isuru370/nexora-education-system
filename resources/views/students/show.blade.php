@@ -19,7 +19,7 @@
         }
 
         $expireDate = $student->temporary_qr_code_expire_date;
-        $daysLeft = $expireDate ? now()->diffInDays($expireDate, false) : null;
+        $daysLeft = $expireDate ? (int) now()->diffInDays($expireDate, false) : null;
     @endphp
 
     <div class="student-details-page">

@@ -792,7 +792,7 @@
                                         $expiresAt = $student->temporary_qr_code_expire_date
                                             ? \Carbon\Carbon::parse($student->temporary_qr_code_expire_date)
                                             : null;
-                                        $daysLeft = $expiresAt ? today()->diffInDays($expiresAt, false) : null;
+                                        $daysLeft = $expiresAt ? (int) today()->diffInDays($expiresAt, false) : null;
                                     @endphp
                                     <tr>
                                         <td>
