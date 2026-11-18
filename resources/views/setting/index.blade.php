@@ -28,6 +28,9 @@
                         <a href="{{ route('app-setup.index') }}" class="nx-btn nx-btn-light">
                             <i class="bi bi-qr-code"></i> Staff App QR
                         </a>
+                        <a href="{{ route('admin.setting.receipt') }}" class="nx-btn nx-btn-light">
+                            <i class="bi bi-receipt"></i> Receipt
+                        </a>
                         <a href="{{ route('admin.setting.teacher-app') }}" class="nx-btn nx-btn-light">
                             <i class="bi bi-person-video3"></i> Teacher App
                             @if (($teacherRequests = \App\Models\TeacherScheduleRequest::query()->where('status', 'pending')->count()) > 0)

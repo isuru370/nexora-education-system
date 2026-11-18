@@ -285,6 +285,12 @@
                                             <i class="bi bi-lock-fill me-1"></i>
                                             Delete
                                         </button>
+                                    @elseif (!auth()->user()->isAdmin())
+                                        <button class="btn btn-sm btn-secondary action-btn" disabled
+                                            title="Only an Admin can delete this record">
+                                            <i class="bi bi-lock-fill me-1"></i>
+                                            Admin only
+                                        </button>
                                     @else
                                         <form method="POST"
                                             action="{{ route('teacher-salaries.payment-delete', $payment->id) }}"
