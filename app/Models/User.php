@@ -63,6 +63,15 @@ class User extends Authenticatable
     }
 
     /**
+     * Admin or Super Admin (Super Admin can do everything an Admin can).
+     */
+    public function isAdmin(): bool
+    {
+        return $this->userType
+            && in_array($this->userType->code, ['ADMIN', 'SUPER_ADMIN'], true);
+    }
+
+    /**
      * System user profile.
      */
     public function systemUser(): HasOne
