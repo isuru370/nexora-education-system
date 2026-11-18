@@ -82,25 +82,25 @@
         {{-- HERO --}}
         {{-- ========================================================= --}}
 
-        <div class="hero-card mb-4">
+        <div class="hero-card tw:mb-6!">
 
             <div class="hero-content">
 
                 <div>
 
-                    <a href="{{ url()->previous() }}" class="btn btn-outline-secondary custom-btn mb-3">
+                    <a href="{{ url()->previous() }}" class="ui-btn ui-btn-outline-secondary custom-btn tw:mb-4!">
 
-                        <i class="bi bi-arrow-left me-1"></i>
+                        <i class="bi bi-arrow-left tw:mr-1!"></i>
 
                         Back to Summary
 
                     </a>
 
-                    <h3 class="fw-bold mb-1">
+                    <h3 class="tw:font-bold! tw:mb-1!">
                         Category Wise Student Payment Details
                     </h3>
 
-                    <p class="text-muted mb-0">
+                    <p class="tw:text-bs-secondary-color! tw:mb-0!">
                         {{ $reportMonth }} Payment Details
                     </p>
 
@@ -109,36 +109,36 @@
 
                 <div class="hero-actions">
 
-                    <button onclick="window.print()" class="btn btn-primary custom-btn">
+                    <button onclick="window.print()" class="ui-btn ui-btn-primary custom-btn">
 
-                        <i class="bi bi-printer me-1"></i>
+                        <i class="bi bi-printer tw:mr-1!"></i>
 
                         Print Report
 
                     </button>
 
 
-                    <button class="btn btn-outline-success custom-btn" disabled>
+                    <button class="ui-btn ui-btn-outline-success custom-btn" disabled>
 
-                        <i class="bi bi-file-earmark-excel me-1"></i>
+                        <i class="bi bi-file-earmark-excel tw:mr-1!"></i>
 
                         Export Excel
 
                     </button>
 
 
-                    <button class="btn btn-outline-danger custom-btn" disabled>
+                    <button class="ui-btn ui-btn-outline-danger custom-btn" disabled>
 
-                        <i class="bi bi-file-earmark-pdf me-1"></i>
+                        <i class="bi bi-file-earmark-pdf tw:mr-1!"></i>
 
                         Export PDF
 
                     </button>
 
 
-                    <button class="btn btn-outline-dark custom-btn" disabled>
+                    <button class="ui-btn ui-btn-outline-dark custom-btn" disabled>
 
-                        <i class="bi bi-download me-1"></i>
+                        <i class="bi bi-download tw:mr-1!"></i>
 
                         Download
 
@@ -155,14 +155,14 @@
         {{-- SUMMARY CARDS --}}
         {{-- ========================================================= --}}
 
-        <div class="row g-3 mb-4">
+        <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2 tw:mb-6!">
 
             {{-- Total Students --}}
-            <div class="col-6 col-md-2">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:flex-[0_0_auto] tw:w-[50%] tw:md:flex-[0_0_auto] tw:md:w-[16.66666667%]">
 
                 <div class="summary-card summary-blue">
 
-                    <div class="card-body text-center">
+                    <div class="ui-card-body tw:text-center!">
 
                         <small class="summary-label">
                             Total Students
@@ -180,11 +180,11 @@
 
 
             {{-- Paid --}}
-            <div class="col-6 col-md-2">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:flex-[0_0_auto] tw:w-[50%] tw:md:flex-[0_0_auto] tw:md:w-[16.66666667%]">
 
                 <div class="summary-card summary-green">
 
-                    <div class="card-body text-center">
+                    <div class="ui-card-body tw:text-center!">
 
                         <small class="summary-label">
                             Paid
@@ -205,11 +205,11 @@
 
 
             {{-- Unpaid --}}
-            <div class="col-6 col-md-2">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:flex-[0_0_auto] tw:w-[50%] tw:md:flex-[0_0_auto] tw:md:w-[16.66666667%]">
 
                 <div class="summary-card summary-red">
 
-                    <div class="card-body text-center">
+                    <div class="ui-card-body tw:text-center!">
 
                         <small class="summary-label">
                             Unpaid
@@ -227,11 +227,11 @@
 
 
             {{-- Free Card --}}
-            <div class="col-6 col-md-2">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:flex-[0_0_auto] tw:w-[50%] tw:md:flex-[0_0_auto] tw:md:w-[16.66666667%]">
 
                 <div class="summary-card summary-info">
 
-                    <div class="card-body text-center">
+                    <div class="ui-card-body tw:text-center!">
 
                         <small class="summary-label">
                             Free Card
@@ -249,11 +249,11 @@
 
 
             {{-- Collection --}}
-            <div class="col-6 col-md-2">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:flex-[0_0_auto] tw:w-[50%] tw:md:flex-[0_0_auto] tw:md:w-[16.66666667%]">
 
                 <div class="summary-card summary-dark">
 
-                    <div class="card-body text-center">
+                    <div class="ui-card-body tw:text-center!">
 
                         <small class="summary-label">
                             Collection
@@ -273,9 +273,9 @@
                         </small>
 
 
-                        <div class="progress mt-2" style="height: 4px;">
+                        <div class="ui-progress tw:mt-2!" style="height: 4px;">
 
-                            <div class="progress-bar bg-success" style="width: {{ $collectionPercent }}%">
+                            <div class="ui-progress-bar tw:bg-bs-success!" style="width: {{ $collectionPercent }}%">
                             </div>
 
                         </div>
@@ -299,11 +299,11 @@
 
                 <div>
 
-                    <h4 class="mb-1 fw-bold">
+                    <h4 class="tw:mb-1! tw:font-bold!">
                         Student Payment Details
                     </h4>
 
-                    <p class="mb-0 text-muted">
+                    <p class="tw:mb-0! tw:text-bs-secondary-color!">
                         Monthly collection breakdown by student
                     </p>
 
@@ -312,18 +312,18 @@
 
                 <div class="header-actions">
 
-                    <button class="btn btn-outline-primary custom-btn" disabled>
+                    <button class="ui-btn ui-btn-outline-primary custom-btn" disabled>
 
-                        <i class="bi bi-funnel me-1"></i>
+                        <i class="bi bi-funnel tw:mr-1!"></i>
 
                         Advanced Filter
 
                     </button>
 
 
-                    <button class="btn btn-outline-warning custom-btn" disabled>
+                    <button class="ui-btn ui-btn-outline-warning custom-btn" disabled>
 
-                        <i class="bi bi-bell me-1"></i>
+                        <i class="bi bi-bell tw:mr-1!"></i>
 
                         Send Reminder
 
@@ -338,9 +338,9 @@
             {{-- TABLE --}}
             {{-- ===================================================== --}}
 
-            <div class="table-responsive">
+            <div class="ui-table-responsive">
 
-                <table class="table custom-table align-middle mb-0">
+                <table class="ui-table custom-table tw:align-middle! tw:mb-0!">
 
                     <thead>
 
@@ -448,9 +448,9 @@
                                 <td>
 
                                     @if ($student['is_free_card'] ?? false)
-                                        <span class="badge bg-dark custom-badge">
+                                        <span class="ui-badge tw:bg-bs-dark! custom-badge">
 
-                                            <i class="bi bi-ticket-perforated me-1"></i>
+                                            <i class="bi bi-ticket-perforated tw:mr-1!"></i>
 
                                             Free Card
 
@@ -458,15 +458,15 @@
                                     @else
                                         <div>
 
-                                            <span class="badge bg-primary custom-badge">
+                                            <span class="ui-badge tw:bg-bs-primary! custom-badge">
 
-                                                <i class="bi bi-tag me-1"></i>
+                                                <i class="bi bi-tag tw:mr-1!"></i>
 
                                                 {{ $feeOptionLabel }}
 
                                             </span>
 
-                                            <small class="d-block text-muted mt-1">
+                                            <small class="tw:block! tw:text-bs-secondary-color! tw:mt-1!">
 
                                                 Option Fee:
                                                 LKR {{ number_format($feeOptionFee, 2) }}
@@ -480,10 +480,10 @@
 
 
                                 {{-- Final Fee --}}
-                                <td class="text-end">
+                                <td class="tw:text-right!">
 
                                     @if ($student['is_free_card'] ?? false)
-                                        <span class="text-muted">
+                                        <span class="tw:text-bs-secondary-color!">
                                             LKR 0.00
                                         </span>
                                     @else
@@ -499,17 +499,17 @@
 
 
                                 {{-- Paid Amount --}}
-                                <td class="text-end">
+                                <td class="tw:text-right!">
 
                                     @if ($paidAmount > 0)
-                                        <span class="text-success fw-bold">
+                                        <span class="tw:text-bs-success! tw:font-bold!">
 
                                             LKR
                                             {{ number_format($paidAmount, 2) }}
 
                                         </span>
                                     @else
-                                        <span class="text-danger">
+                                        <span class="tw:text-bs-danger!">
 
                                             LKR 0.00
 
@@ -520,22 +520,22 @@
 
 
                                 {{-- Status --}}
-                                <td class="text-center">
+                                <td class="tw:text-center!">
 
                                     @if ($student['is_free_card'] ?? false)
-                                        <span class="badge bg-info custom-badge">
+                                        <span class="ui-badge tw:bg-bs-info! custom-badge">
 
                                             🎫 Free Card
 
                                         </span>
                                     @elseif($paidAmount >= $finalFee)
-                                        <span class="badge bg-success custom-badge">
+                                        <span class="ui-badge tw:bg-bs-success! custom-badge">
 
                                             ✓ Paid
 
                                         </span>
                                     
-                                        <span class="badge bg-danger custom-badge">
+                                        <span class="ui-badge tw:bg-bs-danger! custom-badge">
 
                                             ✗ Unpaid
 
@@ -546,16 +546,16 @@
 
 
                                 {{-- Free Card --}}
-                                <td class="text-center">
+                                <td class="tw:text-center!">
 
                                     @if ($student['is_free_card'] ?? false)
-                                        <span class="badge bg-info custom-badge">
+                                        <span class="ui-badge tw:bg-bs-info! custom-badge">
 
                                             Yes
 
                                         </span>
                                     @else
-                                        <span class="badge bg-secondary custom-badge">
+                                        <span class="ui-badge tw:bg-bs-secondary! custom-badge">
 
                                             No
 
@@ -566,13 +566,13 @@
 
 
                                 {{-- Actions --}}
-                                <td class="text-center">
+                                <td class="tw:text-center!">
 
-                                    <div class="d-flex justify-content-center gap-1 flex-wrap">
+                                    <div class="tw:flex! tw:justify-center! tw:gap-1! tw:flex-wrap!">
 
                                         {{-- Payment History --}}
                                         <button type="button"
-                                            class="btn btn-sm btn-outline-success action-btn view-payments-btn"
+                                            class="ui-btn ui-btn-sm ui-btn-outline-success action-btn view-payments-btn"
                                             data-student-name="{{ isset($student['student']['initial_name']) ? $student['student']['initial_name'] : (isset($student['student']['full_name']) ? $student['student']['full_name'] : 'Student') }}"
                                             data-payments='@json($student['payments'] ?? [])' title="View Payment History">
 
@@ -582,7 +582,7 @@
 
 
                                         {{-- Student Profile --}}
-                                        <button type="button" class="btn btn-sm btn-outline-primary action-btn" disabled
+                                        <button type="button" class="ui-btn ui-btn-sm ui-btn-outline-primary action-btn" disabled
                                             title="Future Feature">
 
                                             <i class="bi bi-person"></i>
@@ -591,7 +591,7 @@
 
 
                                         {{-- SMS Reminder --}}
-                                        <button type="button" class="btn btn-sm btn-outline-warning action-btn" disabled
+                                        <button type="button" class="ui-btn ui-btn-sm ui-btn-outline-warning action-btn" disabled
                                             title="SMS Reminder - Future Feature">
 
                                             <i class="bi bi-chat-dots"></i>
@@ -600,7 +600,7 @@
 
 
                                         {{-- Receipt --}}
-                                        <button type="button" class="btn btn-sm btn-outline-dark action-btn" disabled
+                                        <button type="button" class="ui-btn ui-btn-sm ui-btn-outline-dark action-btn" disabled
                                             title="Receipt Download - Future Feature">
 
                                             <i class="bi bi-download"></i>
@@ -617,9 +617,9 @@
 
                             <tr>
 
-                                <td colspan="10" class="text-center py-5 text-muted">
+                                <td colspan="10" class="tw:text-center! tw:py-12! tw:text-bs-secondary-color!">
 
-                                    <i class="bi bi-inbox fs-1 d-block mb-2">
+                                    <i class="bi bi-inbox tw:text-[length:calc(1.375rem_+_1.5vw)]! tw:xl:text-[length:2.5rem]! tw:block! tw:mb-2!">
                                     </i>
 
                                     No students found for this category.
@@ -637,18 +637,18 @@
                     {{-- ================================================= --}}
 
                     @if ($totalStudents > 0)
-                        <tfoot class="table-light">
+                        <tfoot class="ui-table-light">
 
                             <tr>
 
-                                <td colspan="5" class="fw-bold text-end">
+                                <td colspan="5" class="tw:font-bold! tw:text-right!">
 
                                     Total:
 
                                 </td>
 
 
-                                <td class="fw-bold text-end">
+                                <td class="tw:font-bold! tw:text-right!">
 
                                     LKR
                                     {{ number_format($totalExpected, 2) }}
@@ -656,7 +656,7 @@
                                 </td>
 
 
-                                <td class="fw-bold text-end">
+                                <td class="tw:font-bold! tw:text-right!">
 
                                     LKR
                                     {{ number_format($totalCollected, 2) }}
@@ -682,11 +682,11 @@
 
             @if (isset($pagination) && $pagination['total'] > $pagination['per_page'])
 
-                <div class="card-footer bg-white py-3">
+                <div class="ui-card-footer tw:bg-bs-white! tw:py-4!">
 
-                    <div class="d-flex justify-content-between align-items-center flex-wrap gap-2">
+                    <div class="tw:flex! tw:justify-between! tw:items-center! tw:flex-wrap! tw:gap-2!">
 
-                        <div class="text-muted small">
+                        <div class="tw:text-bs-secondary-color! tw:text-[.875em]">
 
                             Showing
                             {{ $paginationFrom }}
@@ -704,14 +704,13 @@
 
                         <nav aria-label="Page navigation">
 
-                            <ul class="pagination pagination-sm mb-0">
+                            <ul class="ui-pagination ui-pagination-sm tw:mb-0!">
 
                                 {{-- Previous --}}
                                 <li
-                                    class="page-item
-                                    {{ $pagination['current_page'] == 1 ? 'disabled' : '' }}">
+                                    class="ui-page-item {{ $pagination['current_page'] == 1 ? 'disabled' : '' }}">
 
-                                    <a class="page-link"
+                                    <a class="ui-page-link"
                                         href="{{ $pagination['current_page'] > 1
                                             ? url()->current() . '?page=' . ($pagination['current_page'] - 1) . '&per_page=' . $pagination['per_page']
                                             : '#' }}">
@@ -737,9 +736,9 @@
                                 {{-- First Page --}}
                                 @if ($start > 1)
 
-                                    <li class="page-item">
+                                    <li class="ui-page-item">
 
-                                        <a class="page-link"
+                                        <a class="ui-page-link"
                                             href="{{ url()->current() }}?page=1&per_page={{ $pagination['per_page'] }}">
 
                                             1
@@ -750,9 +749,9 @@
 
 
                                     @if ($start > 2)
-                                        <li class="page-item disabled">
+                                        <li class="ui-page-item disabled">
 
-                                            <span class="page-link">
+                                            <span class="ui-page-link">
                                                 ...
                                             </span>
 
@@ -765,10 +764,9 @@
                                 {{-- Pages --}}
                                 @for ($i = $start; $i <= $end; $i++)
                                     <li
-                                        class="page-item
-                                        {{ $pagination['current_page'] == $i ? 'active' : '' }}">
+                                        class="ui-page-item {{ $pagination['current_page'] == $i ? 'active' : '' }}">
 
-                                        <a class="page-link"
+                                        <a class="ui-page-link"
                                             href="{{ url()->current() }}?page={{ $i }}&per_page={{ $pagination['per_page'] }}">
 
                                             {{ $i }}
@@ -783,9 +781,9 @@
                                 @if ($end < $pagination['last_page'])
 
                                     @if ($end < $pagination['last_page'] - 1)
-                                        <li class="page-item disabled">
+                                        <li class="ui-page-item disabled">
 
-                                            <span class="page-link">
+                                            <span class="ui-page-link">
                                                 ...
                                             </span>
 
@@ -793,9 +791,9 @@
                                     @endif
 
 
-                                    <li class="page-item">
+                                    <li class="ui-page-item">
 
-                                        <a class="page-link"
+                                        <a class="ui-page-link"
                                             href="{{ url()->current() }}?page={{ $pagination['last_page'] }}&per_page={{ $pagination['per_page'] }}">
 
                                             {{ $pagination['last_page'] }}
@@ -809,10 +807,9 @@
 
                                 {{-- Next --}}
                                 <li
-                                    class="page-item
-                                    {{ $pagination['current_page'] == $pagination['last_page'] ? 'disabled' : '' }}">
+                                    class="ui-page-item {{ $pagination['current_page'] == $pagination['last_page'] ? 'disabled' : '' }}">
 
-                                    <a class="page-link"
+                                    <a class="ui-page-link"
                                         href="{{ $pagination['current_page'] < $pagination['last_page']
                                             ? url()->current() . '?page=' . ($pagination['current_page'] + 1) . '&per_page=' . $pagination['per_page']
                                             : '#' }}">
@@ -842,17 +839,17 @@
         {{-- PAYMENT HISTORY MODAL --}}
         {{-- ========================================================= --}}
 
-        <div class="modal fade" id="paymentModal" tabindex="-1" aria-hidden="true">
+        <div class="ui-modal ui-fade" id="paymentModal" tabindex="-1" aria-hidden="true">
 
-            <div class="modal-dialog modal-lg modal-dialog-centered">
+            <div class="ui-modal-dialog ui-modal-lg ui-modal-dialog-centered">
 
-                <div class="modal-content border-0 shadow-lg rounded-4">
+                <div class="ui-modal-content tw:[border:0]! tw:shadow-bs-lg! tw:rounded-bs-xl!">
 
-                    <div class="modal-header bg-success text-white">
+                    <div class="ui-modal-header tw:bg-bs-success! tw:text-bs-white!">
 
-                        <h5 class="modal-title fw-bold">
+                        <h5 class="ui-modal-title tw:font-bold!">
 
-                            <i class="bi bi-receipt me-2"></i>
+                            <i class="bi bi-receipt tw:mr-2!"></i>
 
                             Payment History -
 
@@ -861,19 +858,19 @@
                         </h5>
 
 
-                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal">
+                        <button type="button" class="ui-btn-close ui-btn-close-white" data-nx-dismiss="modal">
                         </button>
 
                     </div>
 
 
-                    <div class="modal-body">
+                    <div class="ui-modal-body">
 
-                        <div class="table-responsive">
+                        <div class="ui-table-responsive">
 
-                            <table class="table table-sm table-bordered align-middle">
+                            <table class="ui-table ui-table-sm ui-table-bordered tw:align-middle!">
 
-                                <thead class="table-light">
+                                <thead class="ui-table-light">
 
                                     <tr>
 
@@ -910,7 +907,7 @@
 
                                     <tr>
 
-                                        <td colspan="6" class="text-center text-muted py-4">
+                                        <td colspan="6" class="tw:text-center! tw:text-bs-secondary-color! tw:py-6!">
 
                                             Select a student to view payments
 
@@ -927,9 +924,9 @@
                     </div>
 
 
-                    <div class="modal-footer">
+                    <div class="ui-modal-footer">
 
-                        <button type="button" class="btn btn-secondary custom-btn" data-bs-dismiss="modal">
+                        <button type="button" class="ui-btn ui-btn-secondary custom-btn" data-nx-dismiss="modal">
 
                             Close
 
@@ -948,52 +945,52 @@
         {{-- PAYMENT GUIDE --}}
         {{-- ========================================================= --}}
 
-        <div class="mt-4">
+        <div class="tw:mt-6!">
 
-            <div class="alert alert-info custom-alert mb-0">
+            <div class="ui-alert ui-alert-info custom-alert tw:mb-0!">
 
-                <i class="bi bi-info-circle-fill me-2"></i>
+                <i class="bi bi-info-circle-fill tw:mr-2!"></i>
 
                 <strong>
                     Payment Status Guide:
                 </strong>
 
 
-                <div class="row mt-2 g-2">
+                <div class="tw:flex tw:flex-wrap tw:-mt-2 tw:-mx-1 tw:mt-2!">
 
-                    <div class="col-md-3">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-1 tw:mt-2 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[25%]">
 
-                        <span class="badge bg-success custom-badge">
+                        <span class="ui-badge tw:bg-bs-success! custom-badge">
                             ✓ Paid
                         </span>
 
-                        <small class="d-block text-muted mt-1">
+                        <small class="tw:block! tw:text-bs-secondary-color! tw:mt-1!">
                             Full payment completed
                         </small>
 
                     </div>
 
 
-                    <div class="col-md-3">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-1 tw:mt-2 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[25%]">
 
-                        <span class="badge bg-info custom-badge">
+                        <span class="ui-badge tw:bg-bs-info! custom-badge">
                             🎫 Free Card
                         </span>
 
-                        <small class="d-block text-muted mt-1">
+                        <small class="tw:block! tw:text-bs-secondary-color! tw:mt-1!">
                             Free student (no fee)
                         </small>
 
                     </div>
 
 
-                    <div class="col-md-3">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-1 tw:mt-2 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[25%]">
 
-                        <span class="badge bg-danger custom-badge">
+                        <span class="ui-badge tw:bg-bs-danger! custom-badge">
                             ✗ Unpaid
                         </span>
 
-                        <small class="d-block text-muted mt-1">
+                        <small class="tw:block! tw:text-bs-secondary-color! tw:mt-1!">
                             No payment received
                         </small>
 
@@ -1079,7 +1076,7 @@
         }
 
 
-        .summary-card .card-body {
+        .summary-card .ui-card-body {
             padding: 1rem;
         }
 
@@ -1200,7 +1197,7 @@
         }
 
 
-        .badge {
+        .ui-badge {
             border-radius: 10px;
             padding: .5rem .7rem;
             font-size: .75rem;
@@ -1254,31 +1251,31 @@
         }
 
 
-        .progress {
+        .ui-progress {
             background-color: #e9ecef;
             border-radius: 10px;
             overflow: hidden;
         }
 
 
-        .progress-bar {
+        .ui-progress-bar {
             border-radius: 10px;
             transition: width 0.5s ease;
         }
 
 
-        .table-responsive {
+        .ui-table-responsive {
             border-radius: 20px;
             overflow: auto;
         }
 
 
-        .pagination {
+        .ui-pagination {
             gap: .35rem;
         }
 
 
-        .page-link {
+        .ui-page-link {
             border: none;
             min-width: 42px;
             height: 42px;
@@ -1292,12 +1289,12 @@
         }
 
 
-        .page-item.active .page-link {
+        .ui-page-item.active .ui-page-link {
             background: linear-gradient(135deg, #2563eb, #3b82f6);
         }
 
 
-        .page-link:hover {
+        .ui-page-link:hover {
             background: #eff6ff;
             color: #2563eb;
         }
@@ -1318,8 +1315,8 @@
             }
 
 
-            .hero-actions .btn,
-            .header-actions .btn {
+            .hero-actions .ui-btn,
+            .header-actions .ui-btn {
                 flex: 1;
             }
 
@@ -1328,10 +1325,10 @@
 
         @media print {
 
-            .btn,
-            .badge,
-            .alert,
-            .pagination,
+            .ui-btn,
+            .ui-badge,
+            .ui-alert,
+            .ui-pagination,
             .custom-alert,
             .sidebar,
             .navbar {
@@ -1380,7 +1377,7 @@
 
 
             const paymentModal =
-                new bootstrap.Modal(paymentModalEl);
+                new NxUi.Modal(paymentModalEl);
 
 
             document
@@ -1450,7 +1447,7 @@
 
 
                                 row.insertCell(1)
-                                    .className = 'text-end';
+                                    .className = 'tw:text-right!';
 
 
                                 row.insertCell(1)
@@ -1497,11 +1494,11 @@
 
 
                             cell.className =
-                                'text-center py-4 text-muted';
+                                'tw:text-center! tw:py-6! tw:text-bs-secondary-color!';
 
 
                             cell.innerHTML =
-                                '<i class="bi bi-inbox fs-4 d-block mb-2"></i>' +
+                                '<i class="bi bi-inbox tw:text-[length:calc(1.275rem_+_0.3vw)]! tw:xl:text-[length:1.5rem]! tw:block! tw:mb-2!"></i>' +
                                 'No payment records found.';
 
                         }

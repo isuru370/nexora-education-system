@@ -4,7 +4,7 @@
 
 @section('content')
 
-<div class="container-fluid">
+<div class="ui-container-fluid">
 
     {{-- ============================================
          PRINTABLE PHYSICAL ID CARD (Hidden on screen)
@@ -24,32 +24,32 @@
     @endif
 
     {{-- Header --}}
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="tw:flex! tw:justify-between! tw:items-center! tw:mb-6!">
         <div>
-            <h2 class="fw-bold">
-                <i class="bi bi-person-vcard-fill text-primary"></i>
+            <h2 class="tw:font-bold!">
+                <i class="bi bi-person-vcard-fill tw:text-bs-primary!"></i>
                 Student Card Details
             </h2>
-            <p class="text-muted mb-0">
+            <p class="tw:text-bs-secondary-color! tw:mb-0!">
                 View student card information.
             </p>
         </div>
-        <div class="d-flex gap-2">
-            <a href="{{ route('student-cards.index') }}" class="btn btn-secondary">
+        <div class="tw:flex! tw:gap-2!">
+            <a href="{{ route('student-cards.index') }}" class="ui-btn ui-btn-secondary">
                 <i class="bi bi-arrow-left"></i>
                 Back
             </a>
         </div>
     </div>
 
-    <div class="row g-4">
+    <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3">
         {{-- Student Profile Card --}}
-        <div class="col-lg-4">
-            <div class="card shadow-sm border-0 rounded-4 overflow-hidden">
+        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[33.33333333%]">
+            <div class="ui-card tw:shadow-bs-sm! tw:[border:0]! tw:rounded-bs-xl! tw:overflow-hidden!">
                 {{-- Card Header with Gradient --}}
-                <div class="card-header bg-gradient-primary text-white py-4" style="background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);">
-                    <div class="text-center">
-                        <div class="position-relative d-inline-block">
+                <div class="ui-card-header bg-gradient-primary tw:text-bs-white! tw:py-6!" style="background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);">
+                    <div class="tw:text-center!">
+                        <div class="tw:relative! tw:[display:inline-block]!">
                             {{-- Student Photo --}}
                             @if($card->student && $card->student->img_url)
                                 @php
@@ -72,55 +72,55 @@
                                 @endphp
                                 <img src="{{ $fullImageUrl }}"
                                      alt="{{ $card->student->initial_name }}"
-                                     class="rounded-circle border border-3 border-white shadow-sm"
+                                     class="tw:rounded-[50%]! tw:[border:3px_solid_#fff]! tw:shadow-bs-sm!"
                                      style="width: 100px; height: 100px; object-fit: cover;"
                                      onerror="this.onerror=null; this.src='{{ asset('images/default-avatar.png') }}';">
                             @else
-                                <div class="rounded-circle border border-3 border-white bg-light d-flex align-items-center justify-content-center mx-auto"
+                                <div class="tw:rounded-[50%]! tw:[border:3px_solid_#fff]! tw:bg-bs-light! tw:flex! tw:items-center! tw:justify-center! tw:mx-auto!"
                                      style="width: 100px; height: 100px;">
-                                    <i class="bi bi-person fs-1 text-secondary"></i>
+                                    <i class="bi bi-person tw:text-[length:calc(1.375rem_+_1.5vw)]! tw:xl:text-[length:2.5rem]! tw:text-bs-secondary!"></i>
                                 </div>
                             @endif
 
                             {{-- Status Badge on Photo --}}
-                            <span class="position-absolute bottom-0 end-0">
+                            <span class="tw:absolute! tw:bottom-0! tw:right-0!">
                                 @if($card->status == 'assigned')
-                                    <span class="badge bg-success rounded-pill px-3 py-2 border border-white">
-                                        <i class="bi bi-check-circle-fill me-1"></i> Active
+                                    <span class="ui-badge tw:bg-bs-success! tw:rounded-bs-pill! tw:px-4! tw:py-2! tw:[border:1px_solid_#fff]!">
+                                        <i class="bi bi-check-circle-fill tw:mr-1!"></i> Active
                                     </span>
                                 @elseif($card->status == 'lost')
-                                    <span class="badge bg-danger rounded-pill px-3 py-2 border border-white">
-                                        <i class="bi bi-x-circle-fill me-1"></i> Lost
+                                    <span class="ui-badge tw:bg-bs-danger! tw:rounded-bs-pill! tw:px-4! tw:py-2! tw:[border:1px_solid_#fff]!">
+                                        <i class="bi bi-x-circle-fill tw:mr-1!"></i> Lost
                                     </span>
                                 @elseif($card->status == 'damaged')
-                                    <span class="badge bg-warning rounded-pill px-3 py-2 border border-white">
-                                        <i class="bi bi-exclamation-triangle-fill me-1"></i> Damaged
+                                    <span class="ui-badge tw:bg-bs-warning! tw:rounded-bs-pill! tw:px-4! tw:py-2! tw:[border:1px_solid_#fff]!">
+                                        <i class="bi bi-exclamation-triangle-fill tw:mr-1!"></i> Damaged
                                     </span>
                                 @else
-                                    <span class="badge bg-secondary rounded-pill px-3 py-2 border border-white">
+                                    <span class="ui-badge tw:bg-bs-secondary! tw:rounded-bs-pill! tw:px-4! tw:py-2! tw:[border:1px_solid_#fff]!">
                                         {{ ucfirst($card->status) }}
                                     </span>
                                 @endif
                             </span>
                         </div>
 
-                        <h4 class="fw-bold mt-3 mb-1 text-white">
+                        <h4 class="tw:font-bold! tw:mt-4! tw:mb-1! tw:text-bs-white!">
                             {{ $card->student ? $card->student->initial_name : 'Not Assigned' }}
                         </h4>
                         @if($card->student)
-                            <p class="text-white-50 mb-0">
-                                <i class="bi bi-person-badge me-1"></i>
+                            <p class="tw:text-[rgba(255,255,255,0.5)]! tw:mb-0!">
+                                <i class="bi bi-person-badge tw:mr-1!"></i>
                                 {{ $card->student->custom_id ?? 'ID: ' . $card->student->id }}
                             </p>
                         @endif
                     </div>
                 </div>
 
-                <div class="card-body p-4">
+                <div class="ui-card-body tw:p-6!">
                     @if($card->student)
                         {{-- QR Code Preview --}}
-                        <div class="text-center mb-4">
-                            <div class="bg-light p-3 rounded-3 d-inline-block">
+                        <div class="tw:text-center! tw:mb-6!">
+                            <div class="tw:bg-bs-light! tw:p-4! tw:rounded-bs-lg! tw:[display:inline-block]!">
                                 @if($card->qr_code)
                                     <div class="qr-code-preview" style="width: 120px; height: 120px; background: white; display: flex; align-items: center; justify-content: center; margin: 0 auto;">
                                         @if(class_exists('SimpleSoftwareIO\QrCode\Facades\QrCode'))
@@ -132,53 +132,53 @@
                                         @endif
                                     </div>
                                 @else
-                                    <div class="bg-white d-flex align-items-center justify-content-center" style="width: 120px; height: 120px;">
-                                        <i class="bi bi-qr-code fs-1 text-muted"></i>
+                                    <div class="tw:bg-bs-white! tw:flex! tw:items-center! tw:justify-center!" style="width: 120px; height: 120px;">
+                                        <i class="bi bi-qr-code tw:text-[length:calc(1.375rem_+_1.5vw)]! tw:xl:text-[length:2.5rem]! tw:text-bs-secondary-color!"></i>
                                     </div>
                                 @endif
                             </div>
-                            <p class="text-muted small mt-2 mb-0">
-                                <i class="bi bi-qr-code me-1"></i>
+                            <p class="tw:text-bs-secondary-color! tw:text-[.875em] tw:mt-2! tw:mb-0!">
+                                <i class="bi bi-qr-code tw:mr-1!"></i>
                                 {{ $card->qr_code ?? 'No QR Code' }}
                             </p>
                         </div>
 
                         {{-- Student Information Grid --}}
-                        <div class="row g-3">
-                            <div class="col-6">
+                        <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2">
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:flex-[0_0_auto] tw:w-[50%]">
                                 <div class="info-item">
-                                    <label class="text-muted small text-uppercase fw-semibold d-block">Student ID</label>
-                                    <p class="fw-semibold mb-0">{{ $card->student->custom_id ?? '#' . $card->student->id }}</p>
+                                    <label class="tw:text-bs-secondary-color! tw:text-[.875em] tw:uppercase! tw:font-semibold! tw:block!">Student ID</label>
+                                    <p class="tw:font-semibold! tw:mb-0!">{{ $card->student->custom_id ?? '#' . $card->student->id }}</p>
                                 </div>
                             </div>
-                            <div class="col-6">
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:flex-[0_0_auto] tw:w-[50%]">
                                 <div class="info-item">
-                                    <label class="text-muted small text-uppercase fw-semibold d-block">Grade</label>
-                                    <p class="fw-semibold mb-0">
+                                    <label class="tw:text-bs-secondary-color! tw:text-[.875em] tw:uppercase! tw:font-semibold! tw:block!">Grade</label>
+                                    <p class="tw:font-semibold! tw:mb-0!">
                                         @if($card->student->grade)
-                                            <span class="badge bg-info text-white">{{ $card->student->grade->grade_name }}</span>
+                                            <span class="ui-badge tw:bg-bs-info! tw:text-bs-white!">{{ $card->student->grade->grade_name }}</span>
                                         @else
-                                            <span class="text-muted">-</span>
+                                            <span class="tw:text-bs-secondary-color!">-</span>
                                         @endif
                                     </p>
                                 </div>
                             </div>
-                            <div class="col-12">
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:flex-[0_0_auto] tw:w-[100%]">
                                 <div class="info-item">
-                                    <label class="text-muted small text-uppercase fw-semibold d-block">
-                                        <i class="bi bi-telephone me-1"></i> Mobile
+                                    <label class="tw:text-bs-secondary-color! tw:text-[.875em] tw:uppercase! tw:font-semibold! tw:block!">
+                                        <i class="bi bi-telephone tw:mr-1!"></i> Mobile
                                     </label>
-                                    <p class="fw-semibold mb-0">
+                                    <p class="tw:font-semibold! tw:mb-0!">
                                         {{ $card->student->mobile ?? 'Not provided' }}
                                     </p>
                                 </div>
                             </div>
-                            <div class="col-12">
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:flex-[0_0_auto] tw:w-[100%]">
                                 <div class="info-item">
-                                    <label class="text-muted small text-uppercase fw-semibold d-block">
-                                        <i class="bi bi-envelope me-1"></i> Email
+                                    <label class="tw:text-bs-secondary-color! tw:text-[.875em] tw:uppercase! tw:font-semibold! tw:block!">
+                                        <i class="bi bi-envelope tw:mr-1!"></i> Email
                                     </label>
-                                    <p class="fw-semibold mb-0">
+                                    <p class="tw:font-semibold! tw:mb-0!">
                                         {{ $card->student->email ?? 'Not provided' }}
                                     </p>
                                 </div>
@@ -186,25 +186,25 @@
                         </div>
 
                         {{-- Active Classes --}}
-                        <div class="mt-4">
-                            <label class="text-muted small text-uppercase fw-semibold d-block mb-2">
-                                <i class="bi bi-book me-1"></i> Active Classes
+                        <div class="tw:mt-6!">
+                            <label class="tw:text-bs-secondary-color! tw:text-[.875em] tw:uppercase! tw:font-semibold! tw:block! tw:mb-2!">
+                                <i class="bi bi-book tw:mr-1!"></i> Active Classes
                             </label>
                             @php
                                 $activeEnrollments = $card->student->enrollments->where('is_active', true);
                             @endphp
                             @if($activeEnrollments->isEmpty())
-                                <p class="text-muted mb-0">No active classes</p>
+                                <p class="tw:text-bs-secondary-color! tw:mb-0!">No active classes</p>
                             @else
-                                <div class="d-flex flex-wrap gap-2">
+                                <div class="tw:flex! tw:flex-wrap! tw:gap-2!">
                                     @foreach($activeEnrollments as $enrollment)
                                         <div class="class-badge">
-                                            <span class="badge bg-primary bg-gradient px-3 py-2 rounded-pill">
-                                                <i class="bi bi-bookmark-fill me-1"></i>
+                                            <span class="ui-badge tw:bg-bs-primary! tw:[background-image:linear-gradient(180deg,_rgba(255,255,255,0.15),_rgba(255,255,255,0))]! tw:px-4! tw:py-2! tw:rounded-bs-pill!">
+                                                <i class="bi bi-bookmark-fill tw:mr-1!"></i>
                                                 {{ $enrollment->studentClass->class_name }}
                                             </span>
                                             @if($enrollment->category)
-                                                <span class="badge bg-secondary bg-gradient px-3 py-2 rounded-pill ms-1">
+                                                <span class="ui-badge tw:bg-bs-secondary! tw:[background-image:linear-gradient(180deg,_rgba(255,255,255,0.15),_rgba(255,255,255,0))]! tw:px-4! tw:py-2! tw:rounded-bs-pill! tw:ml-1!">
                                                     {{ $enrollment->category->category_name }}
                                                 </span>
                                             @endif
@@ -215,22 +215,22 @@
                         </div>
 
                         {{-- Guardian Information --}}
-                        <div class="mt-4 pt-3 border-top">
-                            <label class="text-muted small text-uppercase fw-semibold d-block mb-2">
-                                <i class="bi bi-person-lines-fill me-1"></i> Guardian
+                        <div class="tw:mt-6! tw:pt-4! tw:bs-border-t!">
+                            <label class="tw:text-bs-secondary-color! tw:text-[.875em] tw:uppercase! tw:font-semibold! tw:block! tw:mb-2!">
+                                <i class="bi bi-person-lines-fill tw:mr-1!"></i> Guardian
                             </label>
-                            <div class="row">
-                                <div class="col-12">
-                                    <p class="mb-1">
+                            <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3">
+                                <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:flex-[0_0_auto] tw:w-[100%]">
+                                    <p class="tw:mb-1!">
                                         <strong>{{ $card->student->guardian_fname ?? '' }} {{ $card->student->guardian_lname ?? '' }}</strong>
                                     </p>
-                                    <p class="text-muted small mb-0">
-                                        <i class="bi bi-telephone me-1"></i>
+                                    <p class="tw:text-bs-secondary-color! tw:text-[.875em] tw:mb-0!">
+                                        <i class="bi bi-telephone tw:mr-1!"></i>
                                         {{ $card->student->guardian_mobile ?? 'Not provided' }}
                                     </p>
                                     @if($card->student->guardian_nic)
-                                        <p class="text-muted small mb-0">
-                                            <i class="bi bi-card-text me-1"></i>
+                                        <p class="tw:text-bs-secondary-color! tw:text-[.875em] tw:mb-0!">
+                                            <i class="bi bi-card-text tw:mr-1!"></i>
                                             NIC: {{ $card->student->guardian_nic }}
                                         </p>
                                     @endif
@@ -238,9 +238,9 @@
                             </div>
                         </div>
                     @else
-                        <div class="text-center py-5">
-                            <i class="bi bi-person-x fs-1 text-muted"></i>
-                            <p class="text-muted mt-2">This card has not been assigned to a student.</p>
+                        <div class="tw:text-center! tw:py-12!">
+                            <i class="bi bi-person-x tw:text-[length:calc(1.375rem_+_1.5vw)]! tw:xl:text-[length:2.5rem]! tw:text-bs-secondary-color!"></i>
+                            <p class="tw:text-bs-secondary-color! tw:mt-2!">This card has not been assigned to a student.</p>
                         </div>
                     @endif
                 </div>
@@ -248,85 +248,85 @@
         </div>
 
         {{-- Card Information & Details --}}
-        <div class="col-lg-8">
-            <div class="row g-4">
+        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[66.66666667%]">
+            <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3">
                 {{-- Card Details --}}
-                <div class="col-12">
-                    <div class="card shadow-sm border-0 rounded-4">
-                        <div class="card-header bg-white border-0 pt-4">
-                            <h5 class="mb-0 fw-bold">
-                                <i class="bi bi-credit-card-2-front text-primary me-2"></i>
+                <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:flex-[0_0_auto] tw:w-[100%]">
+                    <div class="ui-card tw:shadow-bs-sm! tw:[border:0]! tw:rounded-bs-xl!">
+                        <div class="ui-card-header tw:bg-bs-white! tw:[border:0]! tw:pt-6!">
+                            <h5 class="tw:mb-0! tw:font-bold!">
+                                <i class="bi bi-credit-card-2-front tw:text-bs-primary! tw:mr-2!"></i>
                                 Card Information
                             </h5>
                         </div>
-                        <div class="card-body pt-0">
-                            <div class="row g-4">
-                                <div class="col-md-4">
-                                    <div class="info-card p-3 bg-light rounded-3">
-                                        <label class="text-muted small text-uppercase fw-semibold d-block">Card Number</label>
-                                        <p class="fs-5 fw-bold mb-0 text-primary">
-                                            <i class="bi bi-hash me-1"></i>
+                        <div class="ui-card-body tw:pt-0!">
+                            <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3">
+                                <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
+                                    <div class="info-card tw:p-4! tw:bg-bs-light! tw:rounded-bs-lg!">
+                                        <label class="tw:text-bs-secondary-color! tw:text-[.875em] tw:uppercase! tw:font-semibold! tw:block!">Card Number</label>
+                                        <p class="tw:text-[length:1.25rem]! tw:font-bold! tw:mb-0! tw:text-bs-primary!">
+                                            <i class="bi bi-hash tw:mr-1!"></i>
                                             {{ $card->card_number }}
                                         </p>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
-                                    <div class="info-card p-3 bg-light rounded-3">
-                                        <label class="text-muted small text-uppercase fw-semibold d-block">Status</label>
+                                <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
+                                    <div class="info-card tw:p-4! tw:bg-bs-light! tw:rounded-bs-lg!">
+                                        <label class="tw:text-bs-secondary-color! tw:text-[.875em] tw:uppercase! tw:font-semibold! tw:block!">Status</label>
                                         @if ($card->status == 'available')
-                                            <span class="badge bg-success bg-gradient fs-6 px-4 py-2">
-                                                <i class="bi bi-check-circle me-1"></i> Available
+                                            <span class="ui-badge tw:bg-bs-success! tw:[background-image:linear-gradient(180deg,_rgba(255,255,255,0.15),_rgba(255,255,255,0))]! tw:text-[length:1rem]! tw:px-6! tw:py-2!">
+                                                <i class="bi bi-check-circle tw:mr-1!"></i> Available
                                             </span>
                                         @elseif($card->status == 'assigned')
-                                            <span class="badge bg-primary bg-gradient fs-6 px-4 py-2">
-                                                <i class="bi bi-person-check me-1"></i> Assigned
+                                            <span class="ui-badge tw:bg-bs-primary! tw:[background-image:linear-gradient(180deg,_rgba(255,255,255,0.15),_rgba(255,255,255,0))]! tw:text-[length:1rem]! tw:px-6! tw:py-2!">
+                                                <i class="bi bi-person-check tw:mr-1!"></i> Assigned
                                             </span>
                                         @elseif($card->status == 'lost')
-                                            <span class="badge bg-danger bg-gradient fs-6 px-4 py-2">
-                                                <i class="bi bi-x-circle me-1"></i> Lost
+                                            <span class="ui-badge tw:bg-bs-danger! tw:[background-image:linear-gradient(180deg,_rgba(255,255,255,0.15),_rgba(255,255,255,0))]! tw:text-[length:1rem]! tw:px-6! tw:py-2!">
+                                                <i class="bi bi-x-circle tw:mr-1!"></i> Lost
                                             </span>
                                         @elseif($card->status == 'damaged')
-                                            <span class="badge bg-warning bg-gradient fs-6 px-4 py-2">
-                                                <i class="bi bi-exclamation-triangle me-1"></i> Damaged
+                                            <span class="ui-badge tw:bg-bs-warning! tw:[background-image:linear-gradient(180deg,_rgba(255,255,255,0.15),_rgba(255,255,255,0))]! tw:text-[length:1rem]! tw:px-6! tw:py-2!">
+                                                <i class="bi bi-exclamation-triangle tw:mr-1!"></i> Damaged
                                             </span>
                                         @else
-                                            <span class="badge bg-secondary bg-gradient fs-6 px-4 py-2">
+                                            <span class="ui-badge tw:bg-bs-secondary! tw:[background-image:linear-gradient(180deg,_rgba(255,255,255,0.15),_rgba(255,255,255,0))]! tw:text-[length:1rem]! tw:px-6! tw:py-2!">
                                                 {{ ucfirst($card->status) }}
                                             </span>
                                         @endif
                                     </div>
                                 </div>
-                                <div class="col-md-4">
-                                    <div class="info-card p-3 bg-light rounded-3">
-                                        <label class="text-muted small text-uppercase fw-semibold d-block">Current Card</label>
+                                <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
+                                    <div class="info-card tw:p-4! tw:bg-bs-light! tw:rounded-bs-lg!">
+                                        <label class="tw:text-bs-secondary-color! tw:text-[.875em] tw:uppercase! tw:font-semibold! tw:block!">Current Card</label>
                                         @if ($card->is_current)
-                                            <span class="badge bg-success bg-gradient fs-6 px-4 py-2">
-                                                <i class="bi bi-star-fill me-1"></i> Active
+                                            <span class="ui-badge tw:bg-bs-success! tw:[background-image:linear-gradient(180deg,_rgba(255,255,255,0.15),_rgba(255,255,255,0))]! tw:text-[length:1rem]! tw:px-6! tw:py-2!">
+                                                <i class="bi bi-star-fill tw:mr-1!"></i> Active
                                             </span>
                                         @else
-                                            <span class="badge bg-secondary bg-gradient fs-6 px-4 py-2">
-                                                <i class="bi bi-clock me-1"></i> Inactive
+                                            <span class="ui-badge tw:bg-bs-secondary! tw:[background-image:linear-gradient(180deg,_rgba(255,255,255,0.15),_rgba(255,255,255,0))]! tw:text-[length:1rem]! tw:px-6! tw:py-2!">
+                                                <i class="bi bi-clock tw:mr-1!"></i> Inactive
                                             </span>
                                         @endif
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="info-card p-3 bg-light rounded-3">
-                                        <label class="text-muted small text-uppercase fw-semibold d-block">Issued Date</label>
-                                        <p class="fw-semibold mb-0">
-                                            <i class="bi bi-calendar-event me-1"></i>
+                                <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
+                                    <div class="info-card tw:p-4! tw:bg-bs-light! tw:rounded-bs-lg!">
+                                        <label class="tw:text-bs-secondary-color! tw:text-[.875em] tw:uppercase! tw:font-semibold! tw:block!">Issued Date</label>
+                                        <p class="tw:font-semibold! tw:mb-0!">
+                                            <i class="bi bi-calendar-event tw:mr-1!"></i>
                                             {{ optional($card->issued_at)->format('d M Y') }}
-                                            <span class="text-muted small d-block">
+                                            <span class="tw:text-bs-secondary-color! tw:text-[.875em] tw:block!">
                                                 {{ optional($card->issued_at)->format('h:i A') }}
                                             </span>
                                         </p>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="info-card p-3 bg-light rounded-3">
-                                        <label class="text-muted small text-uppercase fw-semibold d-block">QR Code</label>
-                                        <p class="fw-semibold mb-0">
-                                            <code class="bg-white p-1 rounded">{{ $card->qr_code ?? 'N/A' }}</code>
+                                <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
+                                    <div class="info-card tw:p-4! tw:bg-bs-light! tw:rounded-bs-lg!">
+                                        <label class="tw:text-bs-secondary-color! tw:text-[.875em] tw:uppercase! tw:font-semibold! tw:block!">QR Code</label>
+                                        <p class="tw:font-semibold! tw:mb-0!">
+                                            <code class="tw:bg-bs-white! tw:p-1! tw:rounded-bs!">{{ $card->qr_code ?? 'N/A' }}</code>
                                         </p>
                                     </div>
                                 </div>
@@ -337,47 +337,47 @@
 
                 {{-- Enrollment Summary --}}
                 @if($card->student)
-                <div class="col-12">
-                    <div class="card shadow-sm border-0 rounded-4">
-                        <div class="card-header bg-white border-0 pt-4">
-                            <h5 class="mb-0 fw-bold">
-                                <i class="bi bi-clock-history text-primary me-2"></i>
+                <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:flex-[0_0_auto] tw:w-[100%]">
+                    <div class="ui-card tw:shadow-bs-sm! tw:[border:0]! tw:rounded-bs-xl!">
+                        <div class="ui-card-header tw:bg-bs-white! tw:[border:0]! tw:pt-6!">
+                            <h5 class="tw:mb-0! tw:font-bold!">
+                                <i class="bi bi-clock-history tw:text-bs-primary! tw:mr-2!"></i>
                                 Enrollment Summary
                             </h5>
                         </div>
-                        <div class="card-body pt-0">
-                            <div class="row g-3">
+                        <div class="ui-card-body tw:pt-0!">
+                            <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2">
                                 @php
                                     $enrollments = $card->student->enrollments;
                                     $activeCount = $enrollments->where('is_active', true)->count();
                                     $totalEnrollments = $enrollments->count();
                                 @endphp
-                                <div class="col-md-4">
-                                    <div class="stat-card text-center p-3 bg-primary bg-opacity-10 rounded-3">
-                                        <h3 class="mb-0 text-primary">{{ $activeCount }}</h3>
-                                        <p class="text-muted small mb-0">Active Classes</p>
+                                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
+                                    <div class="stat-card tw:text-center! tw:p-4! tw:bg-[rgba(13,110,253,0.1)]! tw:rounded-bs-lg!">
+                                        <h3 class="tw:mb-0! tw:text-bs-primary!">{{ $activeCount }}</h3>
+                                        <p class="tw:text-bs-secondary-color! tw:text-[.875em] tw:mb-0!">Active Classes</p>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
-                                    <div class="stat-card text-center p-3 bg-success bg-opacity-10 rounded-3">
-                                        <h3 class="mb-0 text-success">{{ $totalEnrollments }}</h3>
-                                        <p class="text-muted small mb-0">Total Enrollments</p>
+                                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
+                                    <div class="stat-card tw:text-center! tw:p-4! tw:bg-[rgba(25,135,84,0.1)]! tw:rounded-bs-lg!">
+                                        <h3 class="tw:mb-0! tw:text-bs-success!">{{ $totalEnrollments }}</h3>
+                                        <p class="tw:text-bs-secondary-color! tw:text-[.875em] tw:mb-0!">Total Enrollments</p>
                                     </div>
                                 </div>
-                                <div class="col-md-4">
-                                    <div class="stat-card text-center p-3 bg-info bg-opacity-10 rounded-3">
-                                        <h3 class="mb-0 text-info">{{ $enrollments->where('is_active', false)->count() }}</h3>
-                                        <p class="text-muted small mb-0">Completed/Inactive</p>
+                                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
+                                    <div class="stat-card tw:text-center! tw:p-4! tw:bg-[rgba(13,202,240,0.1)]! tw:rounded-bs-lg!">
+                                        <h3 class="tw:mb-0! tw:text-bs-info!">{{ $enrollments->where('is_active', false)->count() }}</h3>
+                                        <p class="tw:text-bs-secondary-color! tw:text-[.875em] tw:mb-0!">Completed/Inactive</p>
                                     </div>
                                 </div>
                             </div>
 
                             {{-- Recent Enrollments List --}}
                             @if($enrollments->isNotEmpty())
-                            <div class="mt-3">
-                                <label class="text-muted small text-uppercase fw-semibold d-block mb-2">Recent Enrollments</label>
-                                <div class="table-responsive">
-                                    <table class="table table-sm table-hover mb-0">
+                            <div class="tw:mt-4!">
+                                <label class="tw:text-bs-secondary-color! tw:text-[.875em] tw:uppercase! tw:font-semibold! tw:block! tw:mb-2!">Recent Enrollments</label>
+                                <div class="ui-table-responsive">
+                                    <table class="ui-table ui-table-sm ui-table-hover tw:mb-0!">
                                         <thead>
                                             <tr>
                                                 <th>Class</th>
@@ -392,16 +392,16 @@
                                                     <td>{{ $enrollment->studentClass->class_name ?? 'N/A' }}</td>
                                                     <td>
                                                         @if($enrollment->category)
-                                                            <span class="badge bg-secondary">{{ $enrollment->category->category_name }}</span>
+                                                            <span class="ui-badge tw:bg-bs-secondary!">{{ $enrollment->category->category_name }}</span>
                                                         @else
-                                                            <span class="text-muted">-</span>
+                                                            <span class="tw:text-bs-secondary-color!">-</span>
                                                         @endif
                                                     </td>
                                                     <td>
                                                         @if($enrollment->is_active)
-                                                            <span class="badge bg-success">Active</span>
+                                                            <span class="ui-badge tw:bg-bs-success!">Active</span>
                                                         @else
-                                                            <span class="badge bg-secondary">Inactive</span>
+                                                            <span class="ui-badge tw:bg-bs-secondary!">Inactive</span>
                                                         @endif
                                                     </td>
                                                     <td>{{ optional($enrollment->enrolled_at)->format('d M Y') ?? '-' }}</td>
@@ -465,10 +465,6 @@
     .info-card:hover {
         transform: translateY(-2px);
         box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    }
-
-    .rounded-4 {
-        border-radius: 1rem;
     }
 
     .qr-code-preview {

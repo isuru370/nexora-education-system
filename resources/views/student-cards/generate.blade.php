@@ -8,8 +8,8 @@
     <div class="halls-page">
 
         <!-- STATS -->
-        <div class="row g-4 mb-4">
-            <div class="col-xl-4 col-md-6">
+        <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3 tw:mb-6!">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[33.33333333%]">
                 <div class="stats-card">
                     <div class="stats-icon blue">
                         <i class="bi bi-person-vcard-fill"></i>
@@ -21,7 +21,7 @@
                 </div>
             </div>
 
-            <div class="col-xl-4 col-md-6">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[33.33333333%]">
                 <div class="stats-card">
                     <div class="stats-icon green">
                         <i class="bi bi-check-circle-fill"></i>
@@ -34,7 +34,7 @@
             </div>
 
             {{-- Next Sequence Stat - Branch එක තෝරන විට update වේ --}}
-            <div class="col-xl-4 col-md-6">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[33.33333333%]">
                 <div class="stats-card">
                     <div class="stats-icon purple">
                         <i class="bi bi-sort-numeric-up"></i>
@@ -42,7 +42,7 @@
                     <div>
                         <h3 id="nextSequenceStat">-</h3>
                         <p>Next Card Sequence</p>
-                        <small class="text-muted" id="nextSequenceBranchLabel">
+                        <small class="tw:text-bs-secondary-color!" id="nextSequenceBranchLabel">
                             <i class="bi bi-building"></i> Select a branch
                         </small>
                     </div>
@@ -61,7 +61,7 @@
                 </div>
 
                 <div class="header-buttons">
-                    <a href="{{ route('student-cards.index') }}" class="btn btn-light border custom-btn">
+                    <a href="{{ route('student-cards.index') }}" class="ui-btn ui-btn-light tw:bs-border! custom-btn">
                         <i class="bi bi-arrow-left"></i>
                         Back to Inventory
                     </a>
@@ -70,24 +70,24 @@
 
             <!-- ALERT MESSAGES -->
             @if (session('success'))
-                <div class="alert alert-success alert-dismissible fade show custom-alert">
+                <div class="ui-alert ui-alert-success ui-alert-dismissible ui-fade show custom-alert">
                     <i class="bi bi-check-circle-fill"></i>
                     {{ session('success') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    <button type="button" class="ui-btn-close" data-nx-dismiss="alert"></button>
                 </div>
             @endif
 
             @if (session('error'))
-                <div class="alert alert-danger alert-dismissible fade show custom-alert">
+                <div class="ui-alert ui-alert-danger ui-alert-dismissible ui-fade show custom-alert">
                     <i class="bi bi-exclamation-triangle-fill"></i>
                     {{ session('error') }}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    <button type="button" class="ui-btn-close" data-nx-dismiss="alert"></button>
                 </div>
             @endif
 
             <!-- GENERATION FORM -->
-            <div class="row justify-content-center">
-                <div class="col-lg-8 col-xl-6">
+            <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 tw:justify-center!">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[66.66666667%] tw:xl:flex-[0_0_auto] tw:xl:w-[50%]">
                     <div class="form-card">
                         <form method="POST" action="{{ route('student-cards.generate.store') }}">
                             @csrf
@@ -95,15 +95,15 @@
                             <div class="form-body">
 
                                 {{-- ===================== BRANCH SELECTION ===================== --}}
-                                <div class="form-group mb-4">
-                                    <label for="branch_id" class="form-label fw-bold">
-                                        <i class="bi bi-building me-1"></i>
+                                <div class="form-group tw:mb-6!">
+                                    <label for="branch_id" class="ui-form-label tw:font-bold!">
+                                        <i class="bi bi-building tw:mr-1!"></i>
                                         Select Branch
-                                        <span class="text-danger">*</span>
+                                        <span class="tw:text-bs-danger!">*</span>
                                     </label>
 
                                     <select id="branch_id" name="branch_id"
-                                        class="form-select custom-input @error('branch_id') is-invalid @enderror"
+                                        class="ui-form-select custom-input @error('branch_id') ui-is-invalid @enderror"
                                         required>
                                         <option value="">-- Select Branch --</option>
 
@@ -118,97 +118,97 @@
                                     </select>
 
                                     @error('branch_id')
-                                        <div class="invalid-feedback">{{ $message }}</div>
+                                        <div class="ui-invalid-feedback">{{ $message }}</div>
                                     @enderror
 
-                                    <small class="text-muted d-block mt-2">
-                                        <i class="bi bi-info-circle me-1"></i>
+                                    <small class="tw:text-bs-secondary-color! tw:block! tw:mt-2!">
+                                        <i class="bi bi-info-circle tw:mr-1!"></i>
                                         Card numbers and QR codes will be generated based on the selected branch.
                                     </small>
                                 </div>
 
                                 <!-- Quantity Input -->
-                                <div class="form-group mb-4">
-                                    <label for="quantity" class="form-label fw-bold">
-                                        <i class="bi bi-hash me-1"></i>
+                                <div class="form-group tw:mb-6!">
+                                    <label for="quantity" class="ui-form-label tw:font-bold!">
+                                        <i class="bi bi-hash tw:mr-1!"></i>
                                         Number of Cards
-                                        <span class="text-danger">*</span>
+                                        <span class="tw:text-bs-danger!">*</span>
                                     </label>
 
                                     <input type="number" id="quantity" name="quantity"
-                                        class="form-control custom-input @error('quantity') is-invalid @enderror"
+                                        class="ui-form-control custom-input @error('quantity') ui-is-invalid @enderror"
                                         min="1" max="1000" value="{{ old('quantity', 100) }}" required>
 
                                     @error('quantity')
-                                        <div class="invalid-feedback">
-                                            <i class="bi bi-exclamation-circle me-1"></i>
+                                        <div class="ui-invalid-feedback">
+                                            <i class="bi bi-exclamation-circle tw:mr-1!"></i>
                                             {{ $message }}
                                         </div>
                                     @enderror
 
-                                    <div class="d-flex justify-content-between mt-2">
-                                        <small class="text-muted">
-                                            <i class="bi bi-info-circle me-1"></i>
+                                    <div class="tw:flex! tw:justify-between! tw:mt-2!">
+                                        <small class="tw:text-bs-secondary-color!">
+                                            <i class="bi bi-info-circle tw:mr-1!"></i>
                                             Enter number of cards to generate (1-1000)
                                         </small>
-                                        <small class="text-muted">
-                                            <i class="bi bi-clock me-1"></i>
+                                        <small class="tw:text-bs-secondary-color!">
+                                            <i class="bi bi-clock tw:mr-1!"></i>
                                             Estimated time: <span id="estTime">10</span> seconds
                                         </small>
                                     </div>
                                 </div>
 
                                 <!-- Quick Select Buttons -->
-                                <div class="form-group mb-4">
-                                    <label class="form-label fw-bold">
-                                        <i class="bi bi-grid-3x3-gap-fill me-1"></i>
+                                <div class="form-group tw:mb-6!">
+                                    <label class="ui-form-label tw:font-bold!">
+                                        <i class="bi bi-grid-3x3-gap-fill tw:mr-1!"></i>
                                         Quick Select
                                     </label>
-                                    <div class="d-flex flex-wrap gap-2">
-                                        <button type="button" class="btn quick-btn" onclick="setQuantity(10)">10</button>
-                                        <button type="button" class="btn quick-btn" onclick="setQuantity(25)">25</button>
-                                        <button type="button" class="btn quick-btn" onclick="setQuantity(50)">50</button>
-                                        <button type="button" class="btn quick-btn active"
+                                    <div class="tw:flex! tw:flex-wrap! tw:gap-2!">
+                                        <button type="button" class="ui-btn quick-btn" onclick="setQuantity(10)">10</button>
+                                        <button type="button" class="ui-btn quick-btn" onclick="setQuantity(25)">25</button>
+                                        <button type="button" class="ui-btn quick-btn" onclick="setQuantity(50)">50</button>
+                                        <button type="button" class="ui-btn quick-btn active"
                                             onclick="setQuantity(100)">100</button>
-                                        <button type="button" class="btn quick-btn" onclick="setQuantity(250)">250</button>
-                                        <button type="button" class="btn quick-btn" onclick="setQuantity(500)">500</button>
-                                        <button type="button" class="btn quick-btn"
+                                        <button type="button" class="ui-btn quick-btn" onclick="setQuantity(250)">250</button>
+                                        <button type="button" class="ui-btn quick-btn" onclick="setQuantity(500)">500</button>
+                                        <button type="button" class="ui-btn quick-btn"
                                             onclick="setQuantity(1000)">1000</button>
                                     </div>
                                 </div>
 
                                 <!-- Card Format Preview -->
-                                <div class="preview-card mb-4">
-                                    <h6 class="fw-bold mb-3">
-                                        <i class="bi bi-eye me-2"></i>
+                                <div class="preview-card tw:mb-6!">
+                                    <h6 class="tw:font-bold! tw:mb-4!">
+                                        <i class="bi bi-eye tw:mr-2!"></i>
                                         Card Format Preview
-                                        <span class="badge bg-primary custom-badge ms-2" id="branchPreviewBadge"
+                                        <span class="ui-badge tw:bg-bs-primary! custom-badge tw:ml-2!" id="branchPreviewBadge"
                                             style="display: none;">
                                             <i class="bi bi-building"></i>
                                             <span id="branchPreviewName">-</span>
                                         </span>
                                     </h6>
 
-                                    <div class="row g-3">
-                                        <div class="col-md-6">
+                                    <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2">
+                                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
                                             <div class="preview-item">
-                                                <small class="text-muted d-block">First Card Number</small>
-                                                <strong class="text-primary" id="previewCardNumber">
+                                                <small class="tw:text-bs-secondary-color! tw:block!">First Card Number</small>
+                                                <strong class="tw:text-bs-primary!" id="previewCardNumber">
                                                     {{ config('student_card.card_prefix') }}-XXX-000001
                                                 </strong>
-                                                <small class="text-muted d-block mt-1">
+                                                <small class="tw:text-bs-secondary-color! tw:block! tw:mt-1!">
                                                     Format: {{ config('student_card.card_prefix') }} + Branch Code + 6-digit sequence
                                                 </small>
                                             </div>
                                         </div>
 
-                                        <div class="col-md-6">
+                                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
                                             <div class="preview-item">
-                                                <small class="text-muted d-block">First QR Code</small>
-                                                <strong class="text-success" id="previewQrCode">
+                                                <small class="tw:text-bs-secondary-color! tw:block!">First QR Code</small>
+                                                <strong class="tw:text-bs-success!" id="previewQrCode">
                                                     {{ config('student_card.qr_prefix') }}000001
                                                 </strong>
-                                                <small class="text-muted d-block mt-1">
+                                                <small class="tw:text-bs-secondary-color! tw:block! tw:mt-1!">
                                                     Format: {{ config('student_card.qr_prefix') }} + global sequence
                                                     (auto-increment)
                                                 </small>
@@ -217,20 +217,20 @@
                                     </div>
 
                                     {{-- Last Card Preview --}}
-                                    <div class="row g-3 mt-2">
-                                        <div class="col-md-6">
+                                    <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2 tw:mt-2!">
+                                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
                                             <div class="preview-item">
-                                                <small class="text-muted d-block">Last Card Number</small>
-                                                <strong class="text-primary" id="previewLastCardNumber">
+                                                <small class="tw:text-bs-secondary-color! tw:block!">Last Card Number</small>
+                                                <strong class="tw:text-bs-primary!" id="previewLastCardNumber">
                                                     {{ config('student_card.card_prefix') }}-XXX-000100
                                                 </strong>
                                             </div>
                                         </div>
 
-                                        <div class="col-md-6">
+                                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
                                             <div class="preview-item">
-                                                <small class="text-muted d-block">Last QR Code</small>
-                                                <strong class="text-success" id="previewLastQrCode">
+                                                <small class="tw:text-bs-secondary-color! tw:block!">Last QR Code</small>
+                                                <strong class="tw:text-bs-success!" id="previewLastQrCode">
                                                     {{ config('student_card.qr_prefix') }}000100
                                                 </strong>
                                             </div>
@@ -239,23 +239,23 @@
                                 </div>
 
                                 <!-- Information Alert -->
-                                <div class="alert custom-alert-info">
-                                    <div class="d-flex">
-                                        <div class="me-3">
-                                            <i class="bi bi-info-circle-fill fs-4"></i>
+                                <div class="ui-alert custom-alert-info">
+                                    <div class="tw:flex!">
+                                        <div class="tw:mr-4!">
+                                            <i class="bi bi-info-circle-fill tw:text-[length:calc(1.275rem_+_0.3vw)]! tw:xl:text-[length:1.5rem]!"></i>
                                         </div>
                                         <div>
-                                            <h6 class="alert-heading fw-bold">What happens next?</h6>
-                                            <p class="mb-1">
+                                            <h6 class="ui-alert-heading tw:font-bold!">What happens next?</h6>
+                                            <p class="tw:mb-1!">
                                                 Each generated card will receive:
                                             </p>
-                                            <ul class="mb-0 ps-3">
+                                            <ul class="tw:mb-0! tw:pl-4!">
                                                 <li>A unique <strong>Card Number</strong>
                                                     (branch-wise sequence)</li>
                                                 <li>A unique <strong>QR Code</strong>
                                                     (global sequence)</li>
                                                 <li>Status set to <span
-                                                        class="badge bg-success custom-badge">Available</span></li>
+                                                        class="ui-badge tw:bg-bs-success! custom-badge">Available</span></li>
                                                 <li>Assigned to the selected <strong>Branch</strong></li>
                                             </ul>
                                         </div>
@@ -263,14 +263,14 @@
                                 </div>
 
                                 <!-- Warning for large batches -->
-                                <div class="alert custom-alert-warning d-none" id="largeBatchWarning">
-                                    <div class="d-flex">
-                                        <div class="me-3">
-                                            <i class="bi bi-exclamation-triangle-fill fs-4"></i>
+                                <div class="ui-alert custom-alert-warning tw:hidden!" id="largeBatchWarning">
+                                    <div class="tw:flex!">
+                                        <div class="tw:mr-4!">
+                                            <i class="bi bi-exclamation-triangle-fill tw:text-[length:calc(1.275rem_+_0.3vw)]! tw:xl:text-[length:1.5rem]!"></i>
                                         </div>
                                         <div>
-                                            <h6 class="alert-heading fw-bold">Large Batch Notice</h6>
-                                            <p class="mb-0">
+                                            <h6 class="ui-alert-heading tw:font-bold!">Large Batch Notice</h6>
+                                            <p class="tw:mb-0!">
                                                 Generating a large number of cards may take a few moments.
                                                 Please do not close the browser while processing.
                                             </p>
@@ -280,20 +280,20 @@
                             </div>
 
                             <div class="form-footer">
-                                <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                                <div class="tw:flex! tw:justify-between! tw:items-center! tw:flex-wrap! tw:gap-4!">
                                     <div>
-                                        <span class="text-muted" id="cardCountText">
-                                            <i class="bi bi-card-list me-1"></i>
+                                        <span class="tw:text-bs-secondary-color!" id="cardCountText">
+                                            <i class="bi bi-card-list tw:mr-1!"></i>
                                             Generating <strong id="cardCount">{{ old('quantity', 100) }}</strong> card(s)
                                         </span>
                                     </div>
-                                    <div class="d-flex gap-2">
+                                    <div class="tw:flex! tw:gap-2!">
                                         <a href="{{ route('student-cards.index') }}"
-                                            class="btn btn-light border custom-btn">
+                                            class="ui-btn ui-btn-light tw:bs-border! custom-btn">
                                             <i class="bi bi-x-circle"></i>
                                             Cancel
                                         </a>
-                                        <button type="submit" class="btn btn-primary custom-btn" id="generateBtn">
+                                        <button type="submit" class="ui-btn ui-btn-primary custom-btn" id="generateBtn">
                                             <i class="bi bi-plus-circle"></i>
                                             Generate Cards
                                         </button>
@@ -444,9 +444,9 @@
             if (!warning) return;
 
             if (parseInt(value) > 250) {
-                warning.classList.remove('d-none');
+                warning.classList.remove('tw:hidden!');
             } else {
-                warning.classList.add('d-none');
+                warning.classList.add('tw:hidden!');
             }
         }
 
@@ -549,7 +549,7 @@
             // Branch change listener
             branchSelect.addEventListener('change', function() {
                 if (this.value) {
-                    this.classList.remove('is-invalid');
+                    this.classList.remove('ui-is-invalid');
                 }
                 loadBranchSequences(this.value);
             });
@@ -582,7 +582,7 @@
                 // Branch validation
                 if (!branchSelect.value) {
                     e.preventDefault();
-                    branchSelect.classList.add('is-invalid');
+                    branchSelect.classList.add('ui-is-invalid');
                     branchSelect.focus();
                     alert('Please select a branch before generating cards.');
                     return false;
@@ -591,7 +591,7 @@
                 // Loading state
                 generateBtn.disabled = true;
                 generateBtn.innerHTML = `
-                    <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                    <span class="ui-spinner-border ui-spinner-border-sm tw:mr-2!" role="status" aria-hidden="true"></span>
                     Generating...
                 `;
             });
@@ -781,15 +781,15 @@
             box-shadow: 0 0 0 4px rgba(37, 99, 235, .10);
         }
 
-        .custom-input.is-invalid {
+        .custom-input.ui-is-invalid {
             border-color: #ef4444;
         }
 
-        .custom-input.is-invalid:focus {
+        .custom-input.ui-is-invalid:focus {
             box-shadow: 0 0 0 4px rgba(239, 68, 68, .10);
         }
 
-        .form-label {
+        .ui-form-label {
             color: #0f172a;
             margin-bottom: 0.5rem;
             font-size: 0.95rem;

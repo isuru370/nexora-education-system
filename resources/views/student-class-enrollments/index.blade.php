@@ -9,7 +9,7 @@
     {{-- ===================================================== --}}
     {{-- HERO --}}
     {{-- ===================================================== --}}
-    <div class="hero-section mb-4">
+    <div class="hero-section tw:mb-6!">
         <div class="hero-content">
             <div class="hero-left">
                 <span class="greeting-badge">nexoraEDU</span>
@@ -49,7 +49,7 @@
     {{-- ===================================================== --}}
     {{-- KPI CARDS --}}
     {{-- ===================================================== --}}
-    <div class="stats-grid mb-4">
+    <div class="stats-grid tw:mb-6!">
 
         <div class="nx-card stat-card">
             <div class="stat-icon-wrapper icon-blue"><i class="bi bi-journal-bookmark-fill"></i></div>
@@ -91,11 +91,11 @@
     {{-- ===================================================== --}}
     {{-- MAIN CARD --}}
     {{-- ===================================================== --}}
-    <div class="nx-card mb-4">
+    <div class="nx-card tw:mb-6!">
 
         <div class="nx-card-header">
             <div>
-                <h5 class="nx-card-title"><i class="bi bi-people-fill text-primary"></i> Student Class Enrollments</h5>
+                <h5 class="nx-card-title"><i class="bi bi-people-fill tw:text-(color:--nx-blue)!"></i> Student Class Enrollments</h5>
                 <p class="nx-card-subtitle">Manage class-wise enrollment, fee options and student counts</p>
             </div>
 
@@ -112,18 +112,18 @@
         {{-- SEARCH --}}
         <div class="nx-search">
             <form method="GET" action="{{ route('student-class-enrollments.index') }}">
-                <div class="row g-3">
-                    <div class="col-lg-8">
+                <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[66.66666667%]">
                         <div class="search-input-wrapper">
                             <i class="bi bi-search"></i>
-                            <input type="text" name="search" class="form-control custom-input"
+                            <input type="text" name="search" class="ui-form-control custom-input"
                                 placeholder="Search by class, grade, subject, teacher..."
                                 value="{{ request('search') }}">
                         </div>
                     </div>
 
-                    <div class="col-lg-2">
-                        <select name="per_page" class="form-select custom-input">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[16.66666667%]">
+                        <select name="per_page" class="ui-form-select custom-input">
                             @foreach ([10, 20, 50, 100] as $count)
                                 <option value="{{ $count }}"
                                     {{ (int) request('per_page', 10) === $count ? 'selected' : '' }}>
@@ -133,21 +133,21 @@
                         </select>
                     </div>
 
-                    <div class="col-lg-1">
-                        <button type="submit" class="nx-btn nx-btn-primary w-100">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[8.33333333%]">
+                        <button type="submit" class="nx-btn nx-btn-primary tw:w-full!">
                             <i class="bi bi-search"></i>
                         </button>
                     </div>
 
-                    <div class="col-lg-1">
-                        <a href="{{ route('student-class-enrollments.index') }}" class="nx-btn nx-btn-light w-100">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[8.33333333%]">
+                        <a href="{{ route('student-class-enrollments.index') }}" class="nx-btn nx-btn-light tw:w-full!">
                             Reset
                         </a>
                     </div>
                 </div>
 
                 @if (request('search') || request('per_page'))
-                    <div class="mt-3">
+                    <div class="tw:mt-4!">
                         <a href="{{ route('student-class-enrollments.index') }}" class="nx-btn nx-btn-light">
                             <i class="bi bi-x-circle"></i> Clear Filter
                         </a>
@@ -159,7 +159,7 @@
         {{-- CLASSES LIST --}}
         @forelse($classes as $class)
 
-            <div class="class-card mb-4">
+            <div class="class-card tw:mb-6!">
 
                 {{-- CLASS HEADER --}}
                 <div class="class-card-header">
@@ -168,7 +168,7 @@
                             {{ $class->class_name }}
 
                             @if ($class->branch)
-                                <span class="nx-badge nx-badge-blue ms-2">
+                                <span class="nx-badge nx-badge-blue tw:ml-2!">
                                     <i class="bi bi-building"></i> {{ $class->branch->name }}
                                 </span>
                             @endif
@@ -191,18 +191,18 @@
                 </div>
 
                 {{-- CATEGORY TABLE --}}
-                <div class="table-responsive">
-                    <table class="table premium-table mb-0">
+                <div class="ui-table-responsive">
+                    <table class="ui-table premium-table tw:mb-0!">
                         <thead>
                             <tr>
                                 <th>Category</th>
                                 <th>Fee Options</th>
-                                <th class="text-center">Total</th>
-                                <th class="text-center">Active</th>
-                                <th class="text-center">Inactive</th>
-                                <th class="text-center">Free Card</th>
-                                <th class="text-center">Status</th>
-                                <th width="120" class="text-end">Action</th>
+                                <th class="tw:text-center!">Total</th>
+                                <th class="tw:text-center!">Active</th>
+                                <th class="tw:text-center!">Inactive</th>
+                                <th class="tw:text-center!">Free Card</th>
+                                <th class="tw:text-center!">Status</th>
+                                <th width="120" class="tw:text-right!">Action</th>
                             </tr>
                         </thead>
 
@@ -224,11 +224,11 @@
                                         </span>
 
                                         @if (optional($fee->category)->code)
-                                            <span class="id-badge ms-1">{{ $fee->category->code }}</span>
+                                            <span class="id-badge tw:ml-1!">{{ $fee->category->code }}</span>
                                         @endif
 
                                         @if (!$fee->is_active)
-                                            <span class="nx-badge nx-badge-gray ms-1">Inactive</span>
+                                            <span class="nx-badge nx-badge-gray tw:ml-1!">Inactive</span>
                                         @endif
                                     </td>
 
@@ -254,27 +254,27 @@
                                     </td>
 
                                     {{-- TOTAL --}}
-                                    <td class="text-center">
+                                    <td class="tw:text-center!">
                                         <span class="nx-badge nx-badge-blue">{{ $stats ? $stats->total_count : 0 }}</span>
                                     </td>
 
                                     {{-- ACTIVE --}}
-                                    <td class="text-center">
+                                    <td class="tw:text-center!">
                                         <span class="nx-badge nx-badge-green">{{ $stats ? $stats->active_count : 0 }}</span>
                                     </td>
 
                                     {{-- INACTIVE --}}
-                                    <td class="text-center">
+                                    <td class="tw:text-center!">
                                         <span class="nx-badge nx-badge-gray">{{ $stats ? $stats->inactive_count : 0 }}</span>
                                     </td>
 
                                     {{-- FREE CARD --}}
-                                    <td class="text-center">
+                                    <td class="tw:text-center!">
                                         <span class="nx-badge nx-badge-amber">{{ $stats ? $stats->free_card_count : 0 }}</span>
                                     </td>
 
                                     {{-- STATUS --}}
-                                    <td class="text-center">
+                                    <td class="tw:text-center!">
                                         @if ($fee->is_active)
                                             <span class="nx-badge nx-badge-green">Active</span>
                                         @else
@@ -283,7 +283,7 @@
                                     </td>
 
                                     {{-- ACTION --}}
-                                    <td class="text-end">
+                                    <td class="tw:text-right!">
                                         @if ($fee->category)
                                             <div class="action-buttons">
                                                 <a href="{{ route('student-class-enrollments.category-students', [
@@ -302,8 +302,8 @@
                             @empty
                                 <tr>
                                     <td colspan="8" class="empty-table">
-                                        <i class="bi bi-people fs-2 d-block mb-2"></i>
-                                        <strong class="d-block">No Categories Found</strong>
+                                        <i class="bi bi-people tw:text-[length:calc(1.325rem_+_0.9vw)]! tw:xl:text-[length:2rem]! tw:block! tw:mb-2!"></i>
+                                        <strong class="tw:block!">No Categories Found</strong>
                                         <span class="cell-sub">This class has no category fees yet</span>
                                     </td>
                                 </tr>
@@ -316,13 +316,13 @@
 
         @empty
             <div class="empty-table">
-                <i class="bi bi-info-circle fs-2 d-block mb-2"></i>
-                <strong class="d-block">No enrolled classes found.</strong>
+                <i class="bi bi-info-circle tw:text-[length:calc(1.325rem_+_0.9vw)]! tw:xl:text-[length:2rem]! tw:block! tw:mb-2!"></i>
+                <strong class="tw:block!">No enrolled classes found.</strong>
             </div>
         @endforelse
 
         {{-- PAGINATION --}}
-        <div class="p-3 border-top">
+        <div class="tw:p-4! tw:bs-border-t!">
             {{ $classes->appends(request()->query())->links() }}
         </div>
 

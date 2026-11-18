@@ -633,6 +633,19 @@ class Converter:
     def class_value(self, value, where='', row_parent=None, ui_grid=False):
         parts = re.split(r'(\{\{.*?\}\}|\{!!.*?!!\}|@\w+(?:\((?:[^()]|\([^()]*\))*\))?)', value, flags=re.S)
         static = [t for i, p in enumerate(parts) if i % 2 == 0 for t in p.split()]
+        if any(i % 2 == 1 and p.startswith('@') for i, p in enumerate(parts)):
+            # @if / @error ... @endif inside the value: keep every class where it is
+            out = []
+            for i, p in enumerate(parts):
+                if i % 2 == 1:
+                    out.append(self.expr(p, where, static) if not p.startswith('@') else p)
+                elif p.split():
+                    lead = ' ' if p[:1].isspace() else ''
+                    trail = ' ' if p[-1:].isspace() else ''
+                    out.append(lead + ' '.join(self.classes(p.split(), where, row_parent, ui_grid)) + trail)
+                else:
+                    out.append(p)
+            return ''.join(out)
         mapped = self.classes(static, where, row_parent, ui_grid)
         # dynamic parts: map quoted class names inside the expression
         dyn = []
@@ -881,13 +894,14 @@ def markup_edits(text, masked, conv, where_of, js=False):
     for el in els:
         m = el['m']
         where = where_of(m.start())
-        attrs = text[m.start(3):m.end(3)]
-        cm = CLASS_ATTR.search(attrs)
+        # find class="" in the masked text (Blade / ${} inside it are X-ed out), read the real value
+        cm = CLASS_ATTR.search(masked[m.start(3):m.end(3)])
         parent = info[el['parent']] if el['parent'] is not None else None
         parent_row = parent if isinstance(parent, dict) else None
         value = None
         if cm:
-            value = cm.group(3) if cm.group(3) is not None else cm.group(4)
+            v0 = m.start(3) + cm.start(2) + 1
+            value = text[v0:m.start(3) + cm.end(2) - 1]
         static = re.sub(r'\{\{.*?\}\}|\{!!.*?!!\}|\$\{(?:[^{}]|\{[^{}]*\})*\}', ' ', value or '').split()
         mine = None
         ui_grid = False
@@ -899,7 +913,7 @@ def markup_edits(text, masked, conv, where_of, js=False):
                 mine = 'ui'
         info.append(mine)
         if cm:
-            quote = '"' if cm.group(3) is not None else "'"
+            quote = text[m.start(3) + cm.start(2)]
             a0 = m.start(3) + cm.start(2)
             if js and '${' in value:
                 # only the plain parts: ${...} may hold other templates
@@ -1061,7 +1075,26 @@ def mask(text):
     t = re.sub(r'(<script\b[^>]*>)(.*?)(</script>)', lambda m: m.group(1) + blank_inner(m.group(2)) + m.group(3), t, flags=re.S | re.I)
     t = re.sub(r'(<style\b[^>]*>)(.*?)(</style>)', lambda m: m.group(1) + blank_inner(m.group(2)) + m.group(3), t, flags=re.S | re.I)
     t = re.sub(r'\{\{.*?\}\}|\{!!.*?!!\}', lambda m: 'X' * len(m.group(0)) if '\n' not in m.group(0) else blank(m), t, flags=re.S)
-    return t
+    return mask_directives(t)
+
+
+def mask_directives(t):
+    """@json(...), @error('x') ...: X-ed out (they may hold quotes inside attributes)."""
+    out = list(t)
+    for m in re.finditer(r'@\w+\(', t):
+        depth, i = 0, m.end() - 1
+        while i < len(t):
+            if t[i] == '(':
+                depth += 1
+            elif t[i] == ')':
+                depth -= 1
+                if depth == 0:
+                    break
+            i += 1
+        for k in range(m.start(), min(i + 1, len(t))):
+            if out[k] != '\n':
+                out[k] = 'X'
+    return ''.join(out)
 
 
 def blank_inner(s):
@@ -1098,7 +1131,7 @@ def convert_scripts(text, conv, fname):
         def cl(mm):
             args = mm.group(2)
             return mm.group(1) + '(' + conv.expr(args, where(mm.start())) + ')'
-        body = re.sub(r'(classList\.(?:add|remove|toggle|contains|replace))\(([^()]*)\)', cl, body)
+        body = re.sub(r'(classList\.(?:add|remove|toggle|contains|replace)|\.(?:addClass|removeClass|toggleClass|hasClass))\(([^()]*)\)', cl, body)
 
         def cname(mm):
             lit = mm.group(2)
@@ -1132,7 +1165,7 @@ def convert_scripts(text, conv, fname):
             sel = mm.group(2)
             new = re.sub(r'\.([a-zA-Z][\w-]*)', lambda x: '.' + rename_selector_class(x.group(1), conv, where(mm.start())), sel)
             return mm.group(1) + new + mm.group(3)
-        body = re.sub(r'((?:querySelector(?:All)?|closest|matches)\(\s*["\'])([^"\']+)(["\'])', selector, body)
+        body = re.sub(r'((?:querySelector(?:All)?|closest|matches|\$|jQuery|\.find|\.parents|\.children|\.siblings|\.next|\.prev|\.is|\.not|\.filter)\(\s*["\'])([^"\']+)(["\'])', selector, body)
         return m.group(1) + body + m.group(3)
     return re.sub(r'(<script\b[^>]*>)(.*?)(</script>)', in_script, text, flags=re.S | re.I)
 

@@ -11,7 +11,7 @@
     <div class="dashboard-page">
 
         {{-- HERO --}}
-        <div class="hero-section mb-4">
+        <div class="hero-section tw:mb-6!">
             <div class="hero-content">
                 <div class="hero-left">
                     <span class="greeting-badge">nexoraEDU</span>
@@ -29,15 +29,15 @@
 
         {{-- ALERTS --}}
         @if (session('success'))
-            <div class="nx-alert nx-alert-green mb-4"><i class="bi bi-check-circle-fill"></i><span>{{ session('success') }}</span></div>
+            <div class="nx-alert nx-alert-green tw:mb-6!"><i class="bi bi-check-circle-fill"></i><span>{{ session('success') }}</span></div>
         @endif
         @if (session('error'))
-            <div class="nx-alert nx-alert-red mb-4"><i class="bi bi-exclamation-circle-fill"></i><span>{{ session('error') }}</span></div>
+            <div class="nx-alert nx-alert-red tw:mb-6!"><i class="bi bi-exclamation-circle-fill"></i><span>{{ session('error') }}</span></div>
         @endif
 
         {{-- STUDENT INFO --}}
-        <div class="nx-card mb-4">
-            <div class="p-3 p-md-4">
+        <div class="nx-card tw:mb-6!">
+            <div class="tw:p-4! tw:md:p-6!">
                 <div class="student-info-header">
                     <div class="student-avatar">
                         @if ($student->img_url)
@@ -60,7 +60,7 @@
                                 <span><i class="bi bi-building"></i> <strong>Branch:</strong> {{ $branchNames->join(', ') }}</span>
                             @endif
                             <span>
-                                <i class="bi bi-circle-fill {{ $student->is_active ? 'text-success' : 'text-danger' }}"></i>
+                                <i class="bi bi-circle-fill {{ $student->is_active ? 'tw:text-(color:--nx-green)!' : 'tw:text-(color:--nx-red)!' }}"></i>
                                 {{ $student->is_active ? 'Active' : 'Inactive' }}
                             </span>
                         </div>
@@ -79,16 +79,16 @@
         </div>
 
         {{-- CLASSES CARD --}}
-        <div class="nx-card mb-4">
+        <div class="nx-card tw:mb-6!">
             <div class="nx-card-header">
                 <div>
-                    <h5 class="nx-card-title"><i class="bi bi-journal-bookmark-fill text-primary"></i> Enrolled Classes</h5>
+                    <h5 class="nx-card-title"><i class="bi bi-journal-bookmark-fill tw:text-(color:--nx-blue)!"></i> Enrolled Classes</h5>
                     <p class="nx-card-subtitle">Manage class enrollments for this student</p>
                 </div>
                 <div class="header-buttons">
                     @if (count($classes) > 0)
                         <form action="{{ route('student-class-management.toggle-all-classes', $student->getKey()) }}"
-                            method="POST" class="d-inline"
+                            method="POST" class="tw:[display:inline]!"
                             onsubmit="return confirm('Are you sure you want to toggle all classes status?');">
                             @csrf @method('PATCH')
                             @php
@@ -104,8 +104,8 @@
             </div>
 
             @if (count($classes) > 0)
-                <div class="table-responsive">
-                    <table class="table premium-table mb-0">
+                <div class="ui-table-responsive">
+                    <table class="ui-table premium-table tw:mb-0!">
                         <thead>
                             <tr>
                                 <th>#</th>
@@ -115,7 +115,7 @@
                                 <th>Payment</th>
                                 <th>Status</th>
                                 <th>Enrolled</th>
-                                <th width="210" class="text-end">Actions</th>
+                                <th width="210" class="tw:text-right!">Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -124,7 +124,7 @@
                                     <td class="row-number">{{ $index + 1 }}</td>
                                     <td>
                                         <div class="cell-title">{{ $class['class_name'] }}</div>
-                                        <div class="cell-sub mt-1"><i class="bi bi-tag"></i> {{ $class['category_name'] }}</div>
+                                        <div class="cell-sub tw:mt-1!"><i class="bi bi-tag"></i> {{ $class['category_name'] }}</div>
                                         <div class="cell-sub"><i class="bi bi-mortarboard"></i> {{ $class['grade_name'] }}</div>
                                         <div class="cell-sub"><i class="bi bi-person-badge"></i> {{ $class['teacher_initials'] ?? 'N/A' }}</div>
                                         <div class="cell-sub">
@@ -164,12 +164,12 @@
                                         @else
                                             <span class="nx-badge nx-badge-red">Inactive</span>
                                             @if ($class['left_at'])
-                                                <small class="cell-sub d-block mt-1">Left: {{ $class['left_at'] }}</small>
+                                                <small class="cell-sub tw:block! tw:mt-1!">Left: {{ $class['left_at'] }}</small>
                                             @endif
                                         @endif
                                     </td>
                                     <td><small class="cell-sub">{{ $class['enrolled_at'] ?? 'N/A' }}</small></td>
-                                    <td class="text-end">
+                                    <td class="tw:text-right!">
                                         <div class="action-buttons">
                                             <a href="{{ route('student-class-management.payment', [
                                                 'studentId' => $student->getKey(),
@@ -195,7 +195,7 @@
                                             @if ($class['is_active'])
                                                 <form method="POST"
                                                     action="{{ route('student-class-management.toggle-class', $class['enrollment_id']) }}"
-                                                    class="d-inline" onsubmit="return confirm('Deactivate this class?');">
+                                                    class="tw:[display:inline]!" onsubmit="return confirm('Deactivate this class?');">
                                                     @csrf @method('PATCH')
                                                     <input type="hidden" name="is_active" value="0">
                                                     <button type="submit" class="action-btn action-btn-danger" title="Deactivate" aria-label="Deactivate">
@@ -205,7 +205,7 @@
                                             @else
                                                 <form method="POST"
                                                     action="{{ route('student-class-management.toggle-class', $class['enrollment_id']) }}"
-                                                    class="d-inline" onsubmit="return confirm('Activate this class?');">
+                                                    class="tw:[display:inline]!" onsubmit="return confirm('Activate this class?');">
                                                     @csrf @method('PATCH')
                                                     <input type="hidden" name="is_active" value="1">
                                                     <button type="submit" class="action-btn action-btn-success" title="Activate" aria-label="Activate">
@@ -222,8 +222,8 @@
                 </div>
             @else
                 <div class="empty-table">
-                    <i class="bi bi-journal-bookmark fs-2 d-block mb-2"></i>
-                    <strong class="d-block">No Classes Enrolled</strong>
+                    <i class="bi bi-journal-bookmark tw:text-[length:calc(1.325rem_+_0.9vw)]! tw:xl:text-[length:2rem]! tw:block! tw:mb-2!"></i>
+                    <strong class="tw:block!">No Classes Enrolled</strong>
                     <span class="cell-sub">This student is not enrolled in any class yet.</span>
                 </div>
             @endif
@@ -278,8 +278,6 @@
         color: var(--nx-muted);
     }
     .dashboard-page .student-meta span i { margin-right: .3rem; }
-    .dashboard-page .student-meta .text-success { color: var(--nx-green) !important; }
-    .dashboard-page .student-meta .text-danger { color: var(--nx-red) !important; }
     .dashboard-page .student-actions { display: flex; gap: .5rem; flex-wrap: wrap; }
     .dashboard-page .fee-amount {
         color: var(--nx-green);

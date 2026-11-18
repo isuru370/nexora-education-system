@@ -86,12 +86,12 @@
             font-weight: 600;
         }
 
-        .table thead th {
+        .ui-table thead th {
             white-space: nowrap;
             font-size: .875rem;
         }
 
-        .table tbody td {
+        .ui-table tbody td {
             vertical-align: middle;
         }
 
@@ -128,7 +128,7 @@
                 width: 100%;
             }
 
-            .hero-actions .btn {
+            .hero-actions .ui-btn {
                 flex: 1;
             }
 
@@ -146,43 +146,43 @@
         <div class="hero-card">
             <div class="hero-content">
                 <div>
-                    <h4 class="fw-bold mb-2">
+                    <h4 class="tw:font-bold! tw:mb-2!">
                         {{ $studentClass->class_name }}
                     </h4>
 
-                    <div class="text-muted">
+                    <div class="tw:text-bs-secondary-color!">
                         {{ ucfirst($studentClass->class_type) }}
-                        <span class="mx-1">·</span>
+                        <span class="tw:mx-1!">·</span>
                         {{ $studentClass->medium }}
                     </div>
 
                     @if ($studentClass->branch)
-                        <div class="mt-2">
-                            <i class="bi bi-building me-1"></i>
-                            <span class="text-muted">Branch:</span>
+                        <div class="tw:mt-2!">
+                            <i class="bi bi-building tw:mr-1!"></i>
+                            <span class="tw:text-bs-secondary-color!">Branch:</span>
                             <strong>{{ $studentClass->branch->name }}</strong>
                         </div>
                     @endif
                 </div>
 
                 <div class="hero-actions">
-                    <a href="{{ route('student-classes.edit', $studentClass) }}" class="btn btn-warning custom-btn">
-                        <i class="bi bi-pencil-square me-1"></i>
+                    <a href="{{ route('student-classes.edit', $studentClass) }}" class="ui-btn ui-btn-warning custom-btn">
+                        <i class="bi bi-pencil-square tw:mr-1!"></i>
                         Edit Class
                     </a>
 
-                    <a href="{{ route('student-classes.index') }}" class="btn btn-outline-secondary custom-btn">
-                        <i class="bi bi-arrow-left me-1"></i>
+                    <a href="{{ route('student-classes.index') }}" class="ui-btn ui-btn-outline-secondary custom-btn">
+                        <i class="bi bi-arrow-left tw:mr-1!"></i>
                         Back
                     </a>
                 </div>
             </div>
         </div>
 
-        <div class="row g-4">
+        <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3">
 
             {{-- Class Information --}}
-            <div class="col-lg-6">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[50%]">
                 <div class="info-card">
                     <h6 class="section-title">
                         <i class="bi bi-journal-bookmark"></i>
@@ -227,7 +227,7 @@
             </div>
 
             {{-- Teacher Information --}}
-            <div class="col-lg-6">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[50%]">
                 <div class="info-card">
                     <h6 class="section-title">
                         <i class="bi bi-person-badge"></i>
@@ -265,7 +265,7 @@
             </div>
 
             {{-- Payment Configuration --}}
-            <div class="col-12">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:flex-[0_0_auto] tw:w-[100%]">
                 <div class="info-card">
                     <h6 class="section-title">
                         <i class="bi bi-cash-coin"></i>
@@ -277,35 +277,35 @@
                             $paymentConfig = $studentClass->paymentConfig;
                         @endphp
 
-                        <div class="row g-3">
-                            <div class="col-md-4">
-                                <div class="border rounded-4 p-3 h-100">
+                        <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2">
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
+                                <div class="tw:bs-border! tw:rounded-bs-xl! tw:p-4! tw:h-full!">
                                     <div class="detail-label">Teacher Percentage</div>
-                                    <h4 class="fw-bold mt-2 mb-0">
+                                    <h4 class="tw:font-bold! tw:mt-2! tw:mb-0!">
                                         {{ number_format($paymentConfig->teacher_percentage, 2) }}%
                                     </h4>
                                 </div>
                             </div>
 
-                            <div class="col-md-4">
-                                <div class="border rounded-4 p-3 h-100">
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
+                                <div class="tw:bs-border! tw:rounded-bs-xl! tw:p-4! tw:h-full!">
                                     <div class="detail-label">Organizer Percentage</div>
-                                    <h4 class="fw-bold mt-2 mb-0">
+                                    <h4 class="tw:font-bold! tw:mt-2! tw:mb-0!">
                                         {{ number_format($paymentConfig->organizer_percentage, 2) }}%
                                     </h4>
                                 </div>
                             </div>
 
-                            <div class="col-md-4">
-                                <div class="border rounded-4 p-3 h-100">
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
+                                <div class="tw:bs-border! tw:rounded-bs-xl! tw:p-4! tw:h-full!">
                                     <div class="detail-label">Institution Percentage</div>
-                                    <h4 class="fw-bold mt-2 mb-0">
+                                    <h4 class="tw:font-bold! tw:mt-2! tw:mb-0!">
                                         {{ number_format($paymentConfig->institution_percentage, 2) }}%
                                     </h4>
                                 </div>
                             </div>
 
-                            <div class="col-md-4">
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
                                 <div class="detail-item">
                                     <span class="detail-label">Organizer</span>
                                     <span class="detail-value">
@@ -314,7 +314,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-4">
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
                                 <div class="detail-item">
                                     <span class="detail-label">Effective From</span>
                                     <span class="detail-value">
@@ -325,7 +325,7 @@
                                 </div>
                             </div>
 
-                            <div class="col-md-4">
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
                                 <div class="detail-item">
                                     <span class="detail-label">Effective To</span>
                                     <span class="detail-value">
@@ -334,17 +334,17 @@
                                 </div>
                             </div>
 
-                            <div class="col-12 mt-3">
-                                <span class="detail-label me-2">Payment Status:</span>
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:flex-[0_0_auto] tw:w-[100%] tw:mt-4!">
+                                <span class="detail-label tw:mr-2!">Payment Status:</span>
 
-                                <span class="badge {{ $paymentConfig->is_active ? 'bg-success' : 'bg-secondary' }}">
+                                <span class="ui-badge {{ $paymentConfig->is_active ? 'tw:bg-bs-success!' : 'tw:bg-bs-secondary!' }}">
                                     {{ $paymentConfig->is_active ? 'Active' : 'Inactive' }}
                                 </span>
                             </div>
                         </div>
                     @else
-                        <div class="alert alert-warning mb-0">
-                            <i class="bi bi-exclamation-triangle me-1"></i>
+                        <div class="ui-alert ui-alert-warning tw:mb-0!">
+                            <i class="bi bi-exclamation-triangle tw:mr-1!"></i>
                             Payment configuration has not been set for this class.
                         </div>
                     @endif
@@ -352,7 +352,7 @@
             </div>
 
             {{-- Class Status --}}
-            <div class="col-12">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:flex-[0_0_auto] tw:w-[100%]">
                 <div class="info-card">
                     <h6 class="section-title">
                         <i class="bi bi-toggle-on"></i>
@@ -360,14 +360,14 @@
                     </h6>
 
                     <div class="status-badges">
-                        <span class="badge {{ $studentClass->is_active ? 'bg-success' : 'bg-secondary' }} px-3 py-2">
-                            <i class="bi bi-circle-fill me-1"></i>
+                        <span class="ui-badge tw:px-4! tw:py-2! {{ $studentClass->is_active ? 'tw:bg-bs-success!' : 'tw:bg-bs-secondary!' }}">
+                            <i class="bi bi-circle-fill tw:mr-1!"></i>
                             {{ $studentClass->is_active ? 'Active' : 'Inactive' }}
                         </span>
 
                         <span
-                            class="badge {{ $studentClass->is_ongoing ? 'bg-primary' : 'bg-light text-dark border' }} px-3 py-2">
-                            <i class="bi bi-calendar-check me-1"></i>
+                            class="ui-badge tw:px-4! tw:py-2! {{ $studentClass->is_ongoing ? 'tw:bg-bs-primary!' : 'tw:bg-bs-light! tw:text-bs-dark! tw:bs-border!' }}">
+                            <i class="bi bi-calendar-check tw:mr-1!"></i>
                             {{ $studentClass->is_ongoing ? 'Ongoing' : 'Not Ongoing' }}
                         </span>
                     </div>
@@ -376,7 +376,7 @@
 
             {{-- Class Category Fees --}}
             {{-- Class Category Fees --}}
-            <div class="col-12">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:flex-[0_0_auto] tw:w-[100%]">
                 <div class="info-card">
                     <h6 class="section-title">
                         <i class="bi bi-tags"></i>
@@ -385,66 +385,66 @@
 
                     @if ($categoryFees->count())
                         @foreach ($categoryFees as $fee)
-                            <div class="category-fee-card mb-4">
+                            <div class="category-fee-card tw:mb-6!">
 
                                 {{-- Category Header --}}
                                 <div
-                                    class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3 pb-3 border-bottom">
+                                    class="tw:flex! tw:justify-between! tw:items-start! tw:flex-wrap! tw:gap-2! tw:mb-4! tw:pb-4! tw:bs-border-b!">
                                     <div>
-                                        <h5 class="fw-bold mb-1">
+                                        <h5 class="tw:font-bold! tw:mb-1!">
                                             {{ optional($fee->category)->category_name ?? 'N/A' }}
 
                                             @if (optional($fee->category)->code)
-                                                <span class="badge bg-secondary ms-2">
+                                                <span class="ui-badge tw:bg-bs-secondary! tw:ml-2!">
                                                     {{ $fee->category->code }}
                                                 </span>
                                             @endif
                                         </h5>
 
-                                        <div class="text-muted small">
+                                        <div class="tw:text-bs-secondary-color! tw:text-[.875em]">
                                             Fee Category #{{ $loop->iteration }}
                                         </div>
                                     </div>
 
-                                    <span class="badge {{ $fee->is_active ? 'bg-success' : 'bg-secondary' }} px-3 py-2">
-                                        <i class="bi bi-circle-fill me-1"></i>
+                                    <span class="ui-badge tw:px-4! tw:py-2! {{ $fee->is_active ? 'tw:bg-bs-success!' : 'tw:bg-bs-secondary!' }}">
+                                        <i class="bi bi-circle-fill tw:mr-1!"></i>
                                         {{ $fee->is_active ? 'Active' : 'Inactive' }}
                                     </span>
                                 </div>
 
                                 {{-- Fee Options --}}
-                                <div class="mb-3">
-                                    <div class="text-muted small fw-semibold mb-2">
-                                        <i class="bi bi-list-ul me-1"></i>
+                                <div class="tw:mb-4!">
+                                    <div class="tw:text-bs-secondary-color! tw:text-[.875em] tw:font-semibold! tw:mb-2!">
+                                        <i class="bi bi-list-ul tw:mr-1!"></i>
                                         Fee Options
                                     </div>
 
                                     @if ($fee->activeFeeOptions->count())
-                                        <div class="row g-2">
+                                        <div class="tw:flex tw:flex-wrap tw:-mt-2 tw:-mx-1">
                                             @foreach ($fee->activeFeeOptions as $option)
-                                                <div class="col-md-6">
+                                                <div class="tw:shrink-0 tw:max-w-full tw:px-1 tw:mt-2 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
                                                     <div
-                                                        class="fee-option-box d-flex justify-content-between align-items-center p-3 rounded-3 border">
+                                                        class="fee-option-box tw:flex! tw:justify-between! tw:items-center! tw:p-4! tw:rounded-bs-lg! tw:bs-border!">
 
                                                         <div>
-                                                            <div class="fw-bold">
+                                                            <div class="tw:font-bold!">
                                                                 {{ $option->label }}
                                                             </div>
 
                                                             @if ($option->note)
-                                                                <div class="text-muted small mt-1">
+                                                                <div class="tw:text-bs-secondary-color! tw:text-[.875em] tw:mt-1!">
                                                                     {{ $option->note }}
                                                                 </div>
                                                             @endif
                                                         </div>
 
-                                                        <div class="text-end">
-                                                            <div class="fw-bold text-primary">
+                                                        <div class="tw:text-right!">
+                                                            <div class="tw:font-bold! tw:text-bs-primary!">
                                                                 Rs. {{ number_format($option->fee, 2) }}
                                                             </div>
 
                                                             @if ($option->is_default)
-                                                                <span class="badge bg-success mt-1">
+                                                                <span class="ui-badge tw:bg-bs-success! tw:mt-1!">
                                                                     Default
                                                                 </span>
                                                             @endif
@@ -455,8 +455,8 @@
                                             @endforeach
                                         </div>
                                     @else
-                                        <div class="alert alert-warning mb-0 py-2">
-                                            <i class="bi bi-info-circle me-1"></i>
+                                        <div class="ui-alert ui-alert-warning tw:mb-0! tw:py-2!">
+                                            <i class="bi bi-info-circle tw:mr-1!"></i>
                                             No active fee options for this category.
                                         </div>
                                     @endif
@@ -464,8 +464,8 @@
 
                                 {{-- Note --}}
                                 @if ($fee->note)
-                                    <div class="text-muted small">
-                                        <i class="bi bi-sticky me-1"></i>
+                                    <div class="tw:text-bs-secondary-color! tw:text-[.875em]">
+                                        <i class="bi bi-sticky tw:mr-1!"></i>
                                         <strong>Note:</strong>
                                         {{ $fee->note }}
                                     </div>
@@ -474,8 +474,8 @@
                             </div>
                         @endforeach
                     @else
-                        <div class="alert alert-warning mb-0">
-                            <i class="bi bi-info-circle me-1"></i>
+                        <div class="ui-alert ui-alert-warning tw:mb-0!">
+                            <i class="bi bi-info-circle tw:mr-1!"></i>
                             No category fees have been added for this class.
                         </div>
                     @endif

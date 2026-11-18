@@ -5,17 +5,17 @@
 
 @section('content')
 
-<div class="container-fluid">
+<div class="ui-container-fluid">
 
     {{-- Page Header --}}
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="tw:flex! tw:justify-between! tw:items-center! tw:mb-6!">
 
         <div>
-            <h4 class="fw-bold mb-1">
+            <h4 class="tw:font-bold! tw:mb-1!">
                 Edit Student Enrollment
             </h4>
 
-            <p class="text-muted mb-0">
+            <p class="tw:text-bs-secondary-color! tw:mb-0!">
                 {{ $enrollment->student->custom_id ?? '-' }}
                 -
                 {{ $enrollment->student->initial_name ?? '-' }}
@@ -24,8 +24,8 @@
 
         <div>
             <a href="{{ route('student-class-enrollments.show', $enrollment) }}"
-               class="btn btn-outline-secondary">
-                <i class="bi bi-arrow-left me-1"></i>
+               class="ui-btn ui-btn-outline-secondary">
+                <i class="bi bi-arrow-left tw:mr-1!"></i>
                 Back
             </a>
         </div>
@@ -36,11 +36,11 @@
     {{-- Validation Errors --}}
     @if ($errors->any())
 
-        <div class="alert alert-danger border-0 shadow-sm rounded-4">
+        <div class="ui-alert ui-alert-danger tw:[border:0]! tw:shadow-bs-sm! tw:rounded-bs-xl!">
 
             <strong>Please fix the following errors:</strong>
 
-            <ul class="mb-0 mt-2">
+            <ul class="tw:mb-0! tw:mt-2!">
 
                 @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
@@ -54,9 +54,9 @@
 
 
     {{-- Edit Form --}}
-    <div class="card border-0 shadow-sm rounded-4">
+    <div class="ui-card tw:[border:0]! tw:shadow-bs-sm! tw:rounded-bs-xl!">
 
-        <div class="card-body p-4">
+        <div class="ui-card-body tw:p-6!">
 
             <form action="{{ route('student-class-enrollments.update', $enrollment) }}"
                   method="POST">

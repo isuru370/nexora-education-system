@@ -15,6 +15,8 @@
  *             JS: NxUi.Modal.getOrCreateInstance(el).show() / .hide()
  *             events on the modal: show.nx.modal shown.nx.modal hide.nx.modal hidden.nx.modal
  *             data-nx-backdrop="static" / data-nx-keyboard="false" as in Bootstrap
+ *   Collapse  <button data-nx-toggle="collapse" data-nx-target="#box">  <div class="ui-collapse" id="box">
+ *             JS: NxUi.collapse(el [, open])
  *   Tabs      <button data-nx-toggle="tab" data-nx-target="#pane"> (or href="#pane")
  *             panes: <div class="ui-tab-content"><div class="ui-tab-pane ui-fade" id="pane">
  *
@@ -251,6 +253,48 @@
         emit(toggle, 'shown.nx.tab', previous);
     }
 
+    // ------------------------------------------------------------ collapse
+
+    function setCollapseToggles(target, open) {
+        document.querySelectorAll('[data-nx-toggle="collapse"]').forEach(function (t) {
+            if (targetOf(t) === target) {
+                t.classList.toggle('collapsed', !open);
+                t.setAttribute('aria-expanded', open ? 'true' : 'false');
+            }
+        });
+    }
+
+    function collapse(el, open) {
+        if (typeof el === 'string') el = document.querySelector(el);
+        if (!el || el.classList.contains('ui-collapsing')) return;
+        var shown = el.classList.contains('show');
+        if (open === undefined) open = !shown;
+        if (open === shown) return;
+        if (!emit(el, (open ? 'show' : 'hide') + '.nx.collapse')) return;
+
+        setCollapseToggles(el, open);
+        if (open) {
+            el.classList.remove('ui-collapse');
+            el.classList.add('ui-collapsing');
+            el.style.height = '0';
+            reflow(el);
+            el.style.height = el.scrollHeight + 'px';
+        } else {
+            el.style.height = el.getBoundingClientRect().height + 'px';
+            reflow(el);
+            el.classList.add('ui-collapsing');
+            el.classList.remove('ui-collapse', 'show');
+            el.style.height = '';
+        }
+        setTimeout(function () {
+            el.classList.remove('ui-collapsing');
+            el.classList.add('ui-collapse');
+            if (open) el.classList.add('show');
+            el.style.height = '';
+            emit(el, (open ? 'shown' : 'hidden') + '.nx.collapse');
+        }, 350);
+    }
+
     // -------------------------------------------------------------- alerts
 
     function fadeOut(el) {
@@ -297,6 +341,12 @@
             return;
         }
 
+        if (kind === 'collapse') {
+            event.preventDefault();
+            collapse(targetOf(toggle));
+            return;
+        }
+
         if (kind === 'tab' || kind === 'pill') {
             event.preventDefault();
             showTab(toggle);
@@ -332,5 +382,5 @@
     // page at that moment close after 5 s, as before
     autoClose();
 
-    window.NxUi = { closeMenus: closeMenus, fadeOut: fadeOut, Modal: Modal, showTab: showTab };
+    window.NxUi = { closeMenus: closeMenus, fadeOut: fadeOut, Modal: Modal, showTab: showTab, collapse: collapse };
 })();

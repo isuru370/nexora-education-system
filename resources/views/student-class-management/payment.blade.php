@@ -7,7 +7,7 @@
 <div class="dashboard-page">
 
     {{-- HERO --}}
-    <div class="hero-section mb-4">
+    <div class="hero-section tw:mb-6!">
         <div class="hero-content">
             <div class="hero-left">
                 <span class="greeting-badge">nexoraEDU</span>
@@ -25,7 +25,7 @@
     </div>
 
     {{-- SUMMARY --}}
-    <div class="stats-grid mb-4">
+    <div class="stats-grid tw:mb-6!">
         <div class="nx-card stat-card">
             <div class="stat-icon-wrapper icon-blue"><i class="bi bi-file-earmark-text"></i></div>
             <div class="stat-info">
@@ -53,7 +53,7 @@
         <div class="nx-card stat-card">
             @php $status = $data['payment_status'] ?? 'unpaid'; @endphp
             <div class="stat-icon-wrapper {{ $status === 'paid' ? 'icon-green' : 'icon-red' }}">
-                <i class="bi bi-{{ $status === 'paid' ? 'check-circle-fill' : 'x-circle-fill' }}"></i>
+                <i class="bi bi- {{ $status === 'paid' ? 'check-circle-fill' : 'x-circle-fill' }}"></i>
             </div>
             <div class="stat-info">
                 <span class="stat-label">Overall Status</span>
@@ -66,18 +66,18 @@
     </div>
 
     {{-- MONTH-WISE PAYMENT --}}
-    <div class="nx-card mb-4">
+    <div class="nx-card tw:mb-6!">
         <div class="nx-card-header">
             <div>
-                <h5 class="nx-card-title"><i class="bi bi-calendar3 text-primary"></i> Month-wise Payment</h5>
+                <h5 class="nx-card-title"><i class="bi bi-calendar3 tw:text-(color:--nx-blue)!"></i> Month-wise Payment</h5>
                 <p class="nx-card-subtitle">Payment status from the student's enrollment month</p>
             </div>
             <span class="nx-badge nx-badge-blue">{{ ($data['monthly_payments'] ?? collect())->count() }} Months</span>
         </div>
 
         @if (($data['monthly_payments'] ?? collect())->count() > 0)
-            <div class="table-responsive">
-                <table class="table premium-table mb-0">
+            <div class="ui-table-responsive">
+                <table class="ui-table premium-table tw:mb-0!">
                     <thead>
                         <tr>
                             <th>#</th>
@@ -121,7 +121,7 @@
                                 <td>
                                     @if (($month['payments'] ?? collect())->count() > 0)
                                         <button type="button" class="nx-btn nx-btn-light payment-count-btn"
-                                            data-bs-toggle="collapse" data-bs-target="#monthPayments{{ $index }}"
+                                            data-nx-toggle="collapse" data-nx-target="#monthPayments{{ $index }}"
                                             aria-expanded="false" aria-controls="monthPayments{{ $index }}">
                                             <i class="bi bi-receipt"></i>
                                             {{ $month['payments']->count() }}
@@ -136,12 +136,12 @@
 
                             @if (($month['payments'] ?? collect())->count() > 0)
                                 <tr class="payment-details-row">
-                                    <td colspan="7" class="p-0">
-                                        <div class="collapse" id="monthPayments{{ $index }}">
+                                    <td colspan="7" class="tw:p-0!">
+                                        <div class="ui-collapse" id="monthPayments{{ $index }}">
                                             <div class="monthly-payment-panel">
                                                 <div class="panel-title"><i class="bi bi-receipt-cutoff"></i> Payment Records — {{ $month['month_name'] ?? 'N/A' }}</div>
-                                                <div class="table-responsive">
-                                                    <table class="table premium-table inner-table mb-0">
+                                                <div class="ui-table-responsive">
+                                                    <table class="ui-table premium-table inner-table tw:mb-0!">
                                                         <thead>
                                                             <tr>
                                                                 <th>#</th><th>Receipt No</th><th>Paid At</th><th>Amount</th>
@@ -193,25 +193,25 @@
             </div>
         @else
             <div class="empty-table">
-                <i class="bi bi-wallet2 fs-2 d-block mb-2"></i>
-                <strong class="d-block">No Payment Information</strong>
+                <i class="bi bi-wallet2 tw:text-[length:calc(1.325rem_+_0.9vw)]! tw:xl:text-[length:2rem]! tw:block! tw:mb-2!"></i>
+                <strong class="tw:block!">No Payment Information</strong>
                 <span class="cell-sub">No payment information was found from the enrollment month.</span>
             </div>
         @endif
     </div>
 
     {{-- ALL PAYMENT TRANSACTIONS --}}
-    <div class="nx-card mb-4">
+    <div class="nx-card tw:mb-6!">
         <div class="nx-card-header">
             <div>
-                <h5 class="nx-card-title"><i class="bi bi-receipt text-primary"></i> Payment Transactions</h5>
+                <h5 class="nx-card-title"><i class="bi bi-receipt tw:text-(color:--nx-blue)!"></i> Payment Transactions</h5>
                 <p class="nx-card-subtitle">All payment transactions for this enrollment</p>
             </div>
             <span class="nx-badge nx-badge-blue">{{ ($data['payments'] ?? collect())->count() }} Records</span>
         </div>
         @if (($data['payments'] ?? collect())->count() > 0)
-            <div class="table-responsive">
-                <table class="table premium-table mb-0">
+            <div class="ui-table-responsive">
+                <table class="ui-table premium-table tw:mb-0!">
                     <thead>
                         <tr>
                             <th>#</th><th>Payment Month</th><th>Receipt No</th><th>Paid At</th>
@@ -246,22 +246,22 @@
             </div>
         @else
             <div class="empty-table">
-                <i class="bi bi-wallet2 fs-2 d-block mb-2"></i>
-                <strong class="d-block">No Payments Found</strong>
+                <i class="bi bi-wallet2 tw:text-[length:calc(1.325rem_+_0.9vw)]! tw:xl:text-[length:2rem]! tw:block! tw:mb-2!"></i>
+                <strong class="tw:block!">No Payments Found</strong>
                 <span class="cell-sub">No payment records were found for this enrollment.</span>
             </div>
         @endif
     </div>
 
     {{-- ENROLLMENT INFORMATION --}}
-    <div class="nx-card mb-4">
+    <div class="nx-card tw:mb-6!">
         <div class="nx-card-header">
             <div>
-                <h5 class="nx-card-title"><i class="bi bi-info-circle text-primary"></i> Enrollment Information</h5>
+                <h5 class="nx-card-title"><i class="bi bi-info-circle tw:text-(color:--nx-blue)!"></i> Enrollment Information</h5>
                 <p class="nx-card-subtitle">Class and enrollment details</p>
             </div>
         </div>
-        <div class="p-3">
+        <div class="tw:p-4!">
             <div class="detail-grid">
                 <div class="detail-item"><span class="detail-label">Student ID</span><strong class="detail-value">{{ $data['student']->custom_id ?? 'N/A' }}</strong></div>
                 <div class="detail-item"><span class="detail-label">Class</span><strong class="detail-value">{{ $data['class']->class_name ?? 'N/A' }}</strong></div>
