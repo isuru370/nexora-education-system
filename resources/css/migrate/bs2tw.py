@@ -678,7 +678,7 @@ KIT = [
     'dropdown-menu-end',
     'modal', 'modal-dialog', 'modal-content', 'modal-header', 'modal-title', 'modal-body', 'modal-footer',
     'modal-dialog-centered', 'modal-dialog-scrollable', 'modal-sm', 'modal-lg', 'modal-xl', 'modal-backdrop',
-    'modal-fullscreen',
+    'modal-fullscreen', 'modal-static',
     'fade', 'collapse', 'collapsing',
     'img-fluid', 'img-thumbnail',
     'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'lead', 'mark', 'display-1', 'display-2', 'display-3', 'display-4',
@@ -900,6 +900,18 @@ def convert_php_strings(text, conv, fname):
     return text
 
 
+def convert_js_api(text, conv, fname):
+    """Bootstrap JS -> public/js/nx-ui.js (same API names for modals)."""
+    text = re.sub(r'data-bs-(toggle|target|dismiss|backdrop|keyboard)(\s*=)', r'data-nx-\1\2', text)
+    text = re.sub(r'\[data-bs-(toggle|target|dismiss)', r'[data-nx-\1', text)
+    text = re.sub(r'\bbootstrap\.Modal\b', 'NxUi.Modal', text)
+    text = re.sub(r'\b(show|shown|hide|hidden)\.bs\.(modal|tab)\b', r'\1.nx.\2', text)
+    for m in re.finditer(r'\bbootstrap\.\w+|data-bs-\w+', text):
+        line = text.count('\n', 0, m.start()) + 1
+        conv.warn('%s:%d' % (fname, line), 'Bootstrap JS left: ' + m.group(0))
+    return text
+
+
 def convert_file(path, nx_scope=False):
     conv = Converter(nx_scope)
     text = open(path).read()
@@ -908,6 +920,7 @@ def convert_file(path, nx_scope=False):
     text = convert_scripts(text, conv, fname)
     text = convert_styles(text, conv, fname)
     convert_php_strings(text, conv, fname)
+    text = convert_js_api(text, conv, fname)
     open(path, 'w').write(text)
     return conv.problems
 
