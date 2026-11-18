@@ -63,6 +63,7 @@ class Kernel extends HttpKernel
         'role' => \App\Http\Middleware\CheckUserRole::class,
         'staff.branch' => \App\Http\Middleware\EnsureStaffBranchAccess::class,
         'feature' => \App\Http\Middleware\EnsureFeatureEnabled::class,
+        'teacher.rule' => \App\Http\Middleware\TeacherAppRule::class,
         'card.mode' => \App\Http\Middleware\EnsureCardMode::class,
         
 

@@ -33,7 +33,7 @@ class TeacherDashboardController extends Controller
             return response()->json([
                 'success' => true,
                 'message' => 'Teacher dashboard loaded successfully.',
-                'data' => $dashboard,
+                'data' => $dashboard + ['features' => \App\Support\TeacherAppRules::features()],
             ]);
 
         } catch (Throwable $e) {
@@ -50,5 +50,15 @@ class TeacherDashboardController extends Controller
                 'message' => 'Unable to load teacher dashboard.',
             ], 500);
         }
+    }
+
+    /** What the institute lets teachers do (Settings > Teacher App). */
+    public function features(): JsonResponse
+    {
+        return response()->json([
+            'success' => true,
+            'message' => 'Features loaded.',
+            'data' => \App\Support\TeacherAppRules::features(),
+        ]);
     }
 }

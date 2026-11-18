@@ -291,78 +291,21 @@
             </tr>
         </thead>
         <tbody>
-            @forelse ($cardDetails as $index => $card)
+            {{-- Plain cells only: thousands of rows must fit in memory --}}
+            @foreach ($cardDetails as $index => $card)
                 <tr>
                     <td class="text-center">{{ $index + 1 }}</td>
-                    <td class="text-center">
-                        <span class="temp-id">{{ $card['temporary_id_number'] }}</span>
-                    </td>
-                    <td class="text-center">
-                        @if($card['card_number'])
-                            <span class="card-number">{{ $card['card_number'] }}</span>
-                        @else
-                            <span style="color: #94a3b8;">—</span>
-                        @endif
-                    </td>
-                    <td>
-                        @if($card['is_assigned'])
-                            <span class="student-name">{{ $card['student_name'] ?? 'N/A' }}</span>
-                        @else
-                            <span style="color: #94a3b8;">Not assigned</span>
-                        @endif
-                    </td>
-                    <td>
-                        @if($card['is_assigned'] && $card['student_id'])
-                            <span>{{ $card['student_id'] }}</span>
-                        @else
-                            <span style="color: #94a3b8;">—</span>
-                        @endif
-                    </td>
-                    <td>
-                        @if($card['is_assigned'] && $card['guardian_mobile'])
-                            {{ $card['guardian_mobile'] }}
-                        @else
-                            <span style="color: #94a3b8;">—</span>
-                        @endif
-                    </td>
-                    <td>
-                        @if($card['is_assigned'] && $card['student_mobile'])
-                            {{ $card['student_mobile'] }}
-                        @else
-                            <span style="color: #94a3b8;">—</span>
-                        @endif
-                    </td>
-                    <td>
-                        @if($card['is_assigned'] && $card['grade_name'])
-                            {{ $card['grade_name'] }}
-                        @else
-                            <span style="color: #94a3b8;">—</span>
-                        @endif
-                    </td>
-                    <td class="text-center">
-                        @if($card['activated_at'])
-                            {{ $card['activated_at']->format('d M Y') }}
-                            <div style="font-size: 7px; color: #64748b;">{{ $card['activated_at']->format('h:i A') }}</div>
-                        @else
-                            <span style="color: #94a3b8;">—</span>
-                        @endif
-                    </td>
-                    <td class="text-center">
-                        @if($card['is_assigned'])
-                            <span class="badge-active" style="background: #dcfce7; color: #166534; padding: 3px 10px; border-radius: 12px; font-size: 7px; font-weight: 600; display: inline-block;">✓ Active</span>
-                        @else
-                            <span class="badge-issued">✓ Issued</span>
-                        @endif
-                    </td>
+                    <td class="text-center temp-id">{{ $card['temporary_id_number'] }}</td>
+                    <td class="text-center">{{ $card['card_number'] ?: '—' }}</td>
+                    <td>{{ $card['is_assigned'] ? ($card['student_name'] ?: 'N/A') : 'Not assigned' }}</td>
+                    <td>{{ $card['student_id'] ?: '—' }}</td>
+                    <td>{{ $card['guardian_mobile'] ?: '—' }}</td>
+                    <td>{{ $card['student_mobile'] ?: '—' }}</td>
+                    <td>{{ $card['grade_name'] ?: '—' }}</td>
+                    <td class="text-center">{{ $card['activated_at'] ?: '—' }}</td>
+                    <td class="text-center">{{ $card['is_assigned'] ? 'Active' : 'Issued' }}</td>
                 </tr>
-            @empty
-                <tr>
-                    <td colspan="10" class="text-center" style="padding: 40px; color: #94a3b8;">
-                        <span style="font-size: 14px;">📭</span><br>
-                        <span style="font-size: 12px; margin-top: 8px; display: block;">No issued temporary ID cards found.</span>
-                    </td>
-                </tr>
-            @endforelse
+            @endforeach
         </tbody>
     </table>
 

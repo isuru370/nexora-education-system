@@ -63,7 +63,10 @@ class StudentController extends Controller
             ], 200);
 
         } catch (Throwable $e) {
-            report($e);
+            // A wrong / typed QR is normal use, not a server error
+            if (! $e instanceof \RuntimeException) {
+                report($e);
+            }
 
             return response()->json([
                 'success' => false,
