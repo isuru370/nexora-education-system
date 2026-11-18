@@ -156,7 +156,8 @@
             padding: 1.5rem 1rem;
         }
 
-        .nav-item {
+        .nav-item,
+        .ui-nav-item {
             margin-bottom: 0.35rem;
         }
 
@@ -771,9 +772,11 @@
         box-shadow: 0 0 0 3px var(--nx-blue-soft) !important;
     }
 
-    .dashboard-page .custom-input.is-invalid { border-color: var(--nx-red); }
+    .dashboard-page .custom-input.is-invalid,
+    .dashboard-page .custom-input.ui-is-invalid { border-color: var(--nx-red); }
 
-    .dashboard-page .invalid-feedback {
+    .dashboard-page .invalid-feedback,
+    .dashboard-page .ui-invalid-feedback {
         font-size: .75rem;
         color: var(--nx-red);
         margin-top: .3rem;

@@ -46,7 +46,7 @@
         padding: 1.5rem;
     }
 
-    .alert {
+    .ui-alert {
         border-radius: 18px;
     }
 
@@ -62,7 +62,7 @@
         transform: translateY(-2px);
     }
 
-    .btn-primary {
+    .ui-btn-primary {
         background: linear-gradient(135deg, #2563eb, #3b82f6);
     }
 
@@ -131,7 +131,7 @@
             width: 100%;
         }
 
-        .hero-actions .btn {
+        .hero-actions .ui-btn {
             flex: 1;
         }
     }
@@ -147,15 +147,15 @@
     <div class="hero-card">
         <div class="hero-content">
             <div>
-                <h4 class="mb-1 fw-bold">Create New Student</h4>
-                <p class="mb-0 text-muted">
-                    Required fields are marked with <span class="text-danger">*</span>
+                <h4 class="tw:mb-1! tw:font-bold!">Create New Student</h4>
+                <p class="tw:mb-0! tw:text-bs-secondary-color!">
+                    Required fields are marked with <span class="tw:text-bs-danger!">*</span>
                 </p>
             </div>
 
             <div class="hero-actions">
-                <a href="{{ route('students.index') }}" class="btn btn-outline-secondary custom-btn">
-                    <i class="bi bi-arrow-left me-1"></i> Back
+                <a href="{{ route('students.index') }}" class="ui-btn ui-btn-outline-secondary custom-btn">
+                    <i class="bi bi-arrow-left tw:mr-1!"></i> Back
                 </a>
             </div>
         </div>
@@ -169,30 +169,30 @@
 
         {{-- SUCCESS MESSAGE --}}
         @if (session('success'))
-            <div class="alert alert-success alert-dismissible fade show mb-4"
+            <div class="ui-alert ui-alert-success ui-alert-dismissible ui-fade show tw:mb-6!"
                  role="alert">
-                <i class="bi bi-check-circle-fill me-2"></i>
+                <i class="bi bi-check-circle-fill tw:mr-2!"></i>
                 {{ session('success') }}
 
                 <button type="button"
-                        class="btn-close"
-                        data-bs-dismiss="alert"></button>
+                        class="ui-btn-close"
+                        data-nx-dismiss="alert"></button>
             </div>
         @endif
 
         {{-- REGISTERED: Custom ID + the card to give --}}
         @if (session('registered_card'))
             @php($registered = session('registered_card'))
-            <div class="alert alert-success mb-4 text-center" role="alert">
-                <div class="fw-semibold mb-2">{{ $registered['name'] ?? '' }}</div>
-                <div class="row g-3 justify-content-center">
-                    <div class="col-sm-6 col-lg-4">
-                        <small class="text-muted d-block">Custom ID</small>
-                        <div class="fw-bold" style="font-size: 2.2rem; letter-spacing: 1px;">{{ $registered['custom_id'] }}</div>
+            <div class="ui-alert ui-alert-success tw:mb-6! tw:text-center!" role="alert">
+                <div class="tw:font-semibold! tw:mb-2!">{{ $registered['name'] ?? '' }}</div>
+                <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2 tw:justify-center!">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:sm:flex-[0_0_auto] tw:sm:w-[50%] tw:lg:flex-[0_0_auto] tw:lg:w-[33.33333333%]">
+                        <small class="tw:text-bs-secondary-color! tw:block!">Custom ID</small>
+                        <div class="tw:font-bold!" style="font-size: 2.2rem; letter-spacing: 1px;">{{ $registered['custom_id'] }}</div>
                     </div>
-                    <div class="col-sm-6 col-lg-4">
-                        <small class="text-muted d-block">Give this card</small>
-                        <div class="fw-bold text-primary" style="font-size: 2.2rem; letter-spacing: 1px;">{{ $registered['temporary_qr_code'] }}</div>
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:sm:flex-[0_0_auto] tw:sm:w-[50%] tw:lg:flex-[0_0_auto] tw:lg:w-[33.33333333%]">
+                        <small class="tw:text-bs-secondary-color! tw:block!">Give this card</small>
+                        <div class="tw:font-bold! tw:text-bs-primary!" style="font-size: 2.2rem; letter-spacing: 1px;">{{ $registered['temporary_qr_code'] }}</div>
                     </div>
                 </div>
             </div>
@@ -200,14 +200,14 @@
 
         {{-- ERROR MESSAGE --}}
         @if (session('error'))
-            <div class="alert alert-danger alert-dismissible fade show mb-4"
+            <div class="ui-alert ui-alert-danger ui-alert-dismissible ui-fade show tw:mb-6!"
                  role="alert">
-                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                <i class="bi bi-exclamation-triangle-fill tw:mr-2!"></i>
                 {{ session('error') }}
 
                 <button type="button"
-                        class="btn-close"
-                        data-bs-dismiss="alert"></button>
+                        class="ui-btn-close"
+                        data-nx-dismiss="alert"></button>
             </div>
         @endif
 
@@ -216,29 +216,29 @@
 
         {{-- VALIDATION ERRORS --}}
         @if ($errors->any())
-            <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
-                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <div class="ui-alert ui-alert-danger ui-alert-dismissible ui-fade show tw:mb-6!" role="alert">
+                <i class="bi bi-exclamation-triangle-fill tw:mr-2!"></i>
                 <strong>Please fix the following errors:</strong>
-                <ul class="mb-0 mt-2">
+                <ul class="tw:mb-0! tw:mt-2!">
                     @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
                     @endforeach
                 </ul>
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <button type="button" class="ui-btn-close" data-nx-dismiss="alert"></button>
             </div>
         @endif
 
         {{-- PORTAL CREDENTIALS --}}
         @if(session('portal_username') && session('portal_password'))
-            <div class="alert alert-info alert-dismissible fade show mb-4" role="alert">
-                <i class="bi bi-person-check-fill me-2"></i>
+            <div class="ui-alert ui-alert-info ui-alert-dismissible ui-fade show tw:mb-6!" role="alert">
+                <i class="bi bi-person-check-fill tw:mr-2!"></i>
                 <strong>Student Portal Login Created</strong><br>
                 <strong>Username:</strong> {{ session('portal_username') }}<br>
                 <strong>Password:</strong> {{ session('portal_password') }}
-                <small class="text-danger d-block mt-2">
+                <small class="tw:text-bs-danger! tw:block! tw:mt-2!">
                     <i class="bi bi-exclamation-circle"></i> Save this password. It will not be shown again.
                 </small>
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <button type="button" class="ui-btn-close" data-nx-dismiss="alert"></button>
             </div>
         @endif
 

@@ -5,19 +5,19 @@
 
 @section('content')
 
-    <div class="container-fluid">
+    <div class="ui-container-fluid">
 
         {{-- =========================================================
         HEADER
     ========================================================== --}}
-        <div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+        <div class="tw:flex! tw:justify-between! tw:items-center! tw:mb-6! tw:flex-wrap! tw:gap-4!">
 
             <div>
-                <h4 class="fw-bold mb-1">
+                <h4 class="tw:font-bold! tw:mb-1!">
                     Enrollment Details
                 </h4>
 
-                <p class="text-muted mb-0">
+                <p class="tw:text-bs-secondary-color! tw:mb-0!">
                     {{ optional($studentClassEnrollment->student)->custom_id ?? '-' }}
                     -
                     {{ optional($studentClassEnrollment->student)->initial_name ?? '-' }}
@@ -25,17 +25,17 @@
             </div>
 
 
-            <div class="d-flex gap-2 flex-wrap">
+            <div class="tw:flex! tw:gap-2! tw:flex-wrap!">
 
                 {{-- Toggle Active --}}
                 <form method="POST" action="{{ route('student-class-enrollments.toggle-active', $studentClassEnrollment) }}"
-                    class="d-inline">
+                    class="tw:[display:inline]!">
                     @csrf
                     @method('PATCH')
 
                     <button type="submit"
-                        class="btn {{ $studentClassEnrollment->is_active ? 'btn-warning' : 'btn-success' }}">
-                        <i class="bi bi-{{ $studentClassEnrollment->is_active ? 'pause-circle' : 'play-circle' }} me-1"></i>
+                        class="ui-btn {{ $studentClassEnrollment->is_active ? 'ui-btn-warning' : 'ui-btn-success' }}">
+                        <i class="bi bi- tw:mr-1! {{ $studentClassEnrollment->is_active ? 'pause-circle' : 'play-circle' }}"></i>
                         {{ $studentClassEnrollment->is_active ? 'Deactivate' : 'Activate' }}
                     </button>
                 </form>
@@ -44,12 +44,12 @@
                 {{-- Leave (only if active) --}}
                 @if ($studentClassEnrollment->is_active)
                     <form method="POST" action="{{ route('student-class-enrollments.leave', $studentClassEnrollment) }}"
-                        class="d-inline" onsubmit="return confirm('Mark this student as left from class?');">
+                        class="tw:[display:inline]!" onsubmit="return confirm('Mark this student as left from class?');">
                         @csrf
                         @method('PATCH')
 
-                        <button type="submit" class="btn btn-outline-danger">
-                            <i class="bi bi-box-arrow-right me-1"></i>
+                        <button type="submit" class="ui-btn ui-btn-outline-danger">
+                            <i class="bi bi-box-arrow-right tw:mr-1!"></i>
                             Leave
                         </button>
                     </form>
@@ -57,28 +57,28 @@
 
 
                 {{-- Edit --}}
-                <a href="{{ route('student-class-enrollments.edit', $studentClassEnrollment) }}" class="btn btn-primary">
-                    <i class="bi bi-pencil-square me-1"></i>
+                <a href="{{ route('student-class-enrollments.edit', $studentClassEnrollment) }}" class="ui-btn ui-btn-primary">
+                    <i class="bi bi-pencil-square tw:mr-1!"></i>
                     Edit
                 </a>
 
 
                 {{-- Delete --}}
                 <form method="POST" action="{{ route('student-class-enrollments.destroy', $studentClassEnrollment) }}"
-                    class="d-inline" onsubmit="return confirm('Are you sure you want to delete this enrollment?');">
+                    class="tw:[display:inline]!" onsubmit="return confirm('Are you sure you want to delete this enrollment?');">
                     @csrf
                     @method('DELETE')
 
-                    <button type="submit" class="btn btn-outline-danger">
-                        <i class="bi bi-trash me-1"></i>
+                    <button type="submit" class="ui-btn ui-btn-outline-danger">
+                        <i class="bi bi-trash tw:mr-1!"></i>
                         Delete
                     </button>
                 </form>
 
 
                 {{-- Back --}}
-                <a href="{{ route('student-class-enrollments.index') }}" class="btn btn-secondary">
-                    <i class="bi bi-arrow-left me-1"></i>
+                <a href="{{ route('student-class-enrollments.index') }}" class="ui-btn ui-btn-secondary">
+                    <i class="bi bi-arrow-left tw:mr-1!"></i>
                     Back
                 </a>
 
@@ -89,32 +89,32 @@
         {{-- =========================================================
         STUDENT / CLASS INFORMATION
     ========================================================== --}}
-        <div class="row g-4">
+        <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3">
 
 
             {{-- =====================================================
             BRANCH INFORMATION
         ====================================================== --}}
-            <div class="col-lg-6">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-header bg-white border-0 pt-4 px-4">
-                        <h5 class="fw-bold mb-0">
-                            <i class="bi bi-building text-info me-2"></i>
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[50%]">
+                <div class="ui-card tw:[border:0]! tw:shadow-bs-sm! tw:h-full!">
+                    <div class="ui-card-header tw:bg-bs-white! tw:[border:0]! tw:pt-6! tw:px-6!">
+                        <h5 class="tw:font-bold! tw:mb-0!">
+                            <i class="bi bi-building tw:text-bs-info! tw:mr-2!"></i>
                             Branch Information
                         </h5>
                     </div>
 
-                    <div class="card-body px-4">
+                    <div class="ui-card-body tw:px-6!">
                         <div class="info-row">
                             <span class="info-label">Branch</span>
                             <span class="info-value">
                                 @if ($studentClassEnrollment->branch)
-                                    <span class="badge bg-info text-dark">
+                                    <span class="ui-badge tw:bg-bs-info! tw:text-bs-dark!">
                                         {{ $studentClassEnrollment->branch->name }}
                                     </span>
 
                                     @if ($studentClassEnrollment->branch->code)
-                                        <span class="badge bg-light text-dark border ms-1">
+                                        <span class="ui-badge tw:bg-bs-light! tw:text-bs-dark! tw:bs-border! tw:ml-1!">
                                             {{ $studentClassEnrollment->branch->code }}
                                         </span>
                                     @endif
@@ -140,16 +140,16 @@
             {{-- =====================================================
             STUDENT INFORMATION
         ====================================================== --}}
-            <div class="col-lg-6">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-header bg-white border-0 pt-4 px-4">
-                        <h5 class="fw-bold mb-0">
-                            <i class="bi bi-person-circle text-primary me-2"></i>
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[50%]">
+                <div class="ui-card tw:[border:0]! tw:shadow-bs-sm! tw:h-full!">
+                    <div class="ui-card-header tw:bg-bs-white! tw:[border:0]! tw:pt-6! tw:px-6!">
+                        <h5 class="tw:font-bold! tw:mb-0!">
+                            <i class="bi bi-person-circle tw:text-bs-primary! tw:mr-2!"></i>
                             Student Information
                         </h5>
                     </div>
 
-                    <div class="card-body px-4">
+                    <div class="ui-card-body tw:px-6!">
                         <div class="info-row">
                             <span class="info-label">Student ID</span>
                             <span class="info-value">
@@ -176,9 +176,9 @@
                             <span class="info-label">Enrollment Status</span>
                             <span class="info-value">
                                 @if ($studentClassEnrollment->is_active)
-                                    <span class="badge bg-success">Active</span>
+                                    <span class="ui-badge tw:bg-bs-success!">Active</span>
                                 @else
-                                    <span class="badge bg-secondary">Inactive</span>
+                                    <span class="ui-badge tw:bg-bs-secondary!">Inactive</span>
                                 @endif
                             </span>
                         </div>
@@ -187,9 +187,9 @@
                             <span class="info-label">Free Card</span>
                             <span class="info-value">
                                 @if ($studentClassEnrollment->is_free_card)
-                                    <span class="badge bg-success">Yes</span>
+                                    <span class="ui-badge tw:bg-bs-success!">Yes</span>
                                 @else
-                                    <span class="badge bg-light text-dark border">No</span>
+                                    <span class="ui-badge tw:bg-bs-light! tw:text-bs-dark! tw:bs-border!">No</span>
                                 @endif
                             </span>
                         </div>
@@ -201,16 +201,16 @@
             {{-- =====================================================
             CLASS INFORMATION
         ====================================================== --}}
-            <div class="col-lg-6">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-header bg-white border-0 pt-4 px-4">
-                        <h5 class="fw-bold mb-0">
-                            <i class="bi bi-journal-bookmark-fill text-primary me-2"></i>
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[50%]">
+                <div class="ui-card tw:[border:0]! tw:shadow-bs-sm! tw:h-full!">
+                    <div class="ui-card-header tw:bg-bs-white! tw:[border:0]! tw:pt-6! tw:px-6!">
+                        <h5 class="tw:font-bold! tw:mb-0!">
+                            <i class="bi bi-journal-bookmark-fill tw:text-bs-primary! tw:mr-2!"></i>
                             Class Information
                         </h5>
                     </div>
 
-                    <div class="card-body px-4">
+                    <div class="ui-card-body tw:px-6!">
                         <div class="info-row">
                             <span class="info-label">Class</span>
                             <span class="info-value">
@@ -246,16 +246,16 @@
             {{-- =====================================================
             FEE INFORMATION
         ====================================================== --}}
-            <div class="col-lg-6">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-header bg-white border-0 pt-4 px-4">
-                        <h5 class="fw-bold mb-0">
-                            <i class="bi bi-cash-stack text-success me-2"></i>
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[50%]">
+                <div class="ui-card tw:[border:0]! tw:shadow-bs-sm! tw:h-full!">
+                    <div class="ui-card-header tw:bg-bs-white! tw:[border:0]! tw:pt-6! tw:px-6!">
+                        <h5 class="tw:font-bold! tw:mb-0!">
+                            <i class="bi bi-cash-stack tw:text-bs-success! tw:mr-2!"></i>
                             Fee Information
                         </h5>
                     </div>
 
-                    <div class="card-body px-4">
+                    <div class="ui-card-body tw:px-6!">
                         {{-- Category --}}
                         <div class="info-row">
                             <span class="info-label">Category</span>
@@ -263,7 +263,7 @@
                                 {{ optional(optional($studentClassEnrollment->classCategoryFee)->category)->category_name ?? '-' }}
 
                                 @if (optional(optional($studentClassEnrollment->classCategoryFee)->category)->code)
-                                    <span class="badge bg-light text-dark border ms-1">
+                                    <span class="ui-badge tw:bg-bs-light! tw:text-bs-dark! tw:bs-border! tw:ml-1!">
                                         {{ $studentClassEnrollment->classCategoryFee->category->code }}
                                     </span>
                                 @endif
@@ -275,11 +275,11 @@
                             <span class="info-label">Fee Option</span>
                             <span class="info-value">
                                 @if ($studentClassEnrollment->classCategoryFeeOption)
-                                    <span class="badge bg-primary">
+                                    <span class="ui-badge tw:bg-bs-primary!">
                                         {{ $studentClassEnrollment->classCategoryFeeOption->label }}
                                     </span>
                                 @else
-                                    <span class="text-muted">-</span>
+                                    <span class="tw:text-bs-secondary-color!">-</span>
                                 @endif
                             </span>
                         </div>
@@ -298,15 +298,15 @@
                         {{-- Final Fee --}}
                         <div class="info-row">
                             <span class="info-label">Final Fee</span>
-                            <span class="info-value fw-bold text-primary">
+                            <span class="info-value tw:font-bold! tw:text-bs-primary!">
                                 Rs. {{ number_format((float) $studentClassEnrollment->final_fee, 2) }}
                             </span>
                         </div>
 
                         {{-- Free Card Alert --}}
                         @if ($studentClassEnrollment->is_free_card)
-                            <div class="alert alert-success mt-3 mb-0">
-                                <i class="bi bi-check-circle-fill me-1"></i>
+                            <div class="ui-alert ui-alert-success tw:mt-4! tw:mb-0!">
+                                <i class="bi bi-check-circle-fill tw:mr-1!"></i>
                                 This student has a free card.
                                 <strong>No fee is required.</strong>
                             </div>
@@ -319,20 +319,20 @@
             {{-- =====================================================
             PAYMENT INFORMATION
         ====================================================== --}}
-            <div class="col-lg-6">
-                <div class="card border-0 shadow-sm h-100">
-                    <div class="card-header bg-white border-0 pt-4 px-4">
-                        <h5 class="fw-bold mb-0">
-                            <i class="bi bi-wallet2 text-warning me-2"></i>
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[50%]">
+                <div class="ui-card tw:[border:0]! tw:shadow-bs-sm! tw:h-full!">
+                    <div class="ui-card-header tw:bg-bs-white! tw:[border:0]! tw:pt-6! tw:px-6!">
+                        <h5 class="tw:font-bold! tw:mb-0!">
+                            <i class="bi bi-wallet2 tw:text-bs-warning! tw:mr-2!"></i>
                             Payment Information
                         </h5>
                     </div>
 
-                    <div class="card-body px-4">
+                    <div class="ui-card-body tw:px-6!">
                         {{-- Paid --}}
                         <div class="info-row">
                             <span class="info-label">Paid Amount</span>
-                            <span class="info-value text-success fw-bold">
+                            <span class="info-value tw:text-bs-success! tw:font-bold!">
                                 Rs. {{ number_format((float) $studentClassEnrollment->paid_amount, 2) }}
                             </span>
                         </div>
@@ -340,7 +340,7 @@
                         {{-- Balance --}}
                         <div class="info-row">
                             <span class="info-label">Balance</span>
-                            <span class="info-value text-danger fw-bold">
+                            <span class="info-value tw:text-bs-danger! tw:font-bold!">
                                 Rs. {{ number_format((float) $studentClassEnrollment->balance, 2) }}
                             </span>
                         </div>
@@ -354,13 +354,13 @@
                                 @endphp
 
                                 @if ($paymentStatus === 'paid')
-                                    <span class="badge bg-success">Paid</span>
+                                    <span class="ui-badge tw:bg-bs-success!">Paid</span>
                                 @elseif($paymentStatus === 'partial')
-                                    <span class="badge bg-warning text-dark">Partial</span>
+                                    <span class="ui-badge tw:bg-bs-warning! tw:text-bs-dark!">Partial</span>
                                 @elseif($paymentStatus === 'unpaid')
-                                    <span class="badge bg-danger">Unpaid</span>
+                                    <span class="ui-badge tw:bg-bs-danger!">Unpaid</span>
                                 @else
-                                    <span class="badge bg-secondary">{{ ucfirst($paymentStatus) }}</span>
+                                    <span class="ui-badge tw:bg-bs-secondary!">{{ ucfirst($paymentStatus) }}</span>
                                 @endif
                             </span>
                         </div>
@@ -370,7 +370,7 @@
                             <div class="info-row">
                                 <span class="info-label">Payments Count</span>
                                 <span class="info-value">
-                                    <span class="badge bg-primary">
+                                    <span class="ui-badge tw:bg-bs-primary!">
                                         {{ $studentClassEnrollment->payments->count() }}
                                     </span>
                                 </span>
@@ -384,19 +384,19 @@
             {{-- =====================================================
             ENROLLMENT INFORMATION
         ====================================================== --}}
-            <div class="col-12">
-                <div class="card border-0 shadow-sm">
-                    <div class="card-header bg-white border-0 pt-4 px-4">
-                        <h5 class="fw-bold mb-0">
-                            <i class="bi bi-calendar-check text-primary me-2"></i>
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:flex-[0_0_auto] tw:w-[100%]">
+                <div class="ui-card tw:[border:0]! tw:shadow-bs-sm!">
+                    <div class="ui-card-header tw:bg-bs-white! tw:[border:0]! tw:pt-6! tw:px-6!">
+                        <h5 class="tw:font-bold! tw:mb-0!">
+                            <i class="bi bi-calendar-check tw:text-bs-primary! tw:mr-2!"></i>
                             Enrollment Information
                         </h5>
                     </div>
 
-                    <div class="card-body px-4">
-                        <div class="row">
+                    <div class="ui-card-body tw:px-6!">
+                        <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3">
                             {{-- Enrollment ID --}}
-                            <div class="col-md-4">
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
                                 <div class="info-row">
                                     <span class="info-label">Enrollment ID</span>
                                     <span class="info-value">
@@ -406,7 +406,7 @@
                             </div>
 
                             {{-- Enrolled At --}}
-                            <div class="col-md-4">
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
                                 <div class="info-row">
                                     <span class="info-label">Enrolled At</span>
                                     <span class="info-value">
@@ -416,7 +416,7 @@
                             </div>
 
                             {{-- Left At --}}
-                            <div class="col-md-4">
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
                                 <div class="info-row">
                                     <span class="info-label">Left At</span>
                                     <span class="info-value">
@@ -426,7 +426,7 @@
                             </div>
 
                             {{-- Created At --}}
-                            <div class="col-md-4">
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
                                 <div class="info-row">
                                     <span class="info-label">Created At</span>
                                     <span class="info-value">
@@ -436,7 +436,7 @@
                             </div>
 
                             {{-- Updated At --}}
-                            <div class="col-md-4">
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
                                 <div class="info-row">
                                     <span class="info-label">Updated At</span>
                                     <span class="info-value">
@@ -447,11 +447,11 @@
 
                             {{-- Deleted At --}}
                             @if ($studentClassEnrollment->deleted_at)
-                                <div class="col-md-4">
+                                <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
                                     <div class="info-row">
                                         <span class="info-label">Deleted At</span>
                                         <span class="info-value">
-                                            <span class="badge bg-danger">
+                                            <span class="ui-badge tw:bg-bs-danger!">
                                                 {{ $studentClassEnrollment->deleted_at->format('Y-m-d H:i') }}
                                             </span>
                                         </span>
@@ -460,8 +460,8 @@
                             @endif
 
                             {{-- Note --}}
-                            <div class="col-12 mt-3">
-                                <div class="info-row align-items-start">
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:flex-[0_0_auto] tw:w-[100%] tw:mt-4!">
+                                <div class="info-row tw:items-start!">
                                     <span class="info-label">Note</span>
                                     <span class="info-value">
                                         {{ $studentClassEnrollment->note ?? '-' }}
@@ -485,11 +485,11 @@
 ============================================================= --}}
 @push('styles')
     <style>
-        .card {
+        .ui-card {
             border-radius: 18px;
         }
 
-        .card-header {
+        .ui-card-header {
             border-radius: 18px 18px 0 0 !important;
         }
 
@@ -519,7 +519,7 @@
             text-align: right;
         }
 
-        .badge {
+        .ui-badge {
             border-radius: 8px;
             padding: .45rem .7rem;
             font-size: .75rem;

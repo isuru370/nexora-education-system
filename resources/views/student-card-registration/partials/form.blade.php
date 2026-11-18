@@ -17,31 +17,31 @@
     }
 @endphp
 
-<div class="row g-4">
+<div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3">
 
     {{-- =========================================================
         STUDENT CARD QR CODE
     ========================================================== --}}
-    <div class="col-12">
-        <div class="section-card p-4">
+    <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:flex-[0_0_auto] tw:w-[100%]">
+        <div class="section-card tw:p-6!">
             <h6 class="section-title">
-                <i class="bi bi-credit-card me-2"></i>
+                <i class="bi bi-credit-card tw:mr-2!"></i>
                 Student Card Information
             </h6>
 
 
-            <div class="row g-3">
-                <div class="col-md-6">
-                    <label class="form-label fw-semibold">
-                        Student Card QR Code <span class="text-danger">*</span>
+            <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
+                    <label class="ui-form-label tw:font-semibold!">
+                        Student Card QR Code <span class="tw:text-bs-danger!">*</span>
                     </label>
 
                     <input type="text" name="card_qr_code" id="card_qr_code"
-                        class="form-control custom-input @error('card_qr_code') is-invalid @enderror"
+                        class="ui-form-control custom-input @error('card_qr_code') ui-is-invalid @enderror"
                         value="{{ old('card_qr_code', $isEdit ? $student->custom_id : '') }}"
                         placeholder="Scan or Enter Student Card QR Code" {{ $isEdit ? 'readonly' : '' }} required>
 
-                    <small class="text-muted">
+                    <small class="tw:text-bs-secondary-color!">
                         @if ($isEdit)
                             Student Card QR Code cannot be changed while editing.
                         @else
@@ -50,7 +50,7 @@
                     </small>
 
                     @error('card_qr_code')
-                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                        <div class="ui-invalid-feedback tw:block!">{{ $message }}</div>
                     @enderror
                 </div>
             </div>
@@ -61,40 +61,40 @@
     {{-- =========================================================
         STUDENT IMAGE
     ========================================================== --}}
-    <div class="col-12">
-        <div class="section-card p-4">
+    <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:flex-[0_0_auto] tw:w-[100%]">
+        <div class="section-card tw:p-6!">
             <h6 class="section-title">
-                <i class="bi bi-image me-2"></i> Student Image
+                <i class="bi bi-image tw:mr-2!"></i> Student Image
             </h6>
 
-            <div class="row g-3 align-items-start">
-                <div class="col-md-3">
+            <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2 tw:items-start!">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[25%]">
                     <div class="image-preview-wrapper">
                         <img id="imagePreview" src="{{ $studentImage }}" alt="Student Image" class="image-preview"
                             onerror="this.src='{{ asset('storage/uploads/male.png') }}'">
                     </div>
                 </div>
 
-                <div class="col-md-9">
-                    <label class="form-label fw-semibold">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[75%]">
+                    <label class="ui-form-label tw:font-semibold!">
                         {{ $isEdit ? 'Update Student Image' : 'Upload Student Image' }}
-                        <small class="text-muted fw-normal">(Optional)</small>
+                        <small class="tw:text-bs-secondary-color! tw:font-normal!">(Optional)</small>
                     </label>
 
                     <input type="file" name="image" id="imageInput"
-                        class="form-control custom-input @error('image') is-invalid @enderror"
+                        class="ui-form-control custom-input @error('image') ui-is-invalid @enderror"
                         accept="image/jpeg,image/jpg,image/png,image/webp" capture="environment">
 
-                    <small class="text-muted d-block mt-2">
+                    <small class="tw:text-bs-secondary-color! tw:block! tw:mt-2!">
                         <i class="bi bi-info-circle"></i> Allowed: JPG, JPEG, PNG, WEBP. Max: 5MB.
                     </small>
 
                     @error('image')
-                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                        <div class="ui-invalid-feedback tw:block!">{{ $message }}</div>
                     @enderror
 
-                    <button type="button" class="btn btn-outline-danger btn-sm mt-3" id="removeImageBtn">
-                        <i class="bi bi-trash me-1"></i>
+                    <button type="button" class="ui-btn ui-btn-outline-danger ui-btn-sm tw:mt-4!" id="removeImageBtn">
+                        <i class="bi bi-trash tw:mr-1!"></i>
                         {{ $isEdit ? 'Reset to Default' : 'Remove' }}
                     </button>
                 </div>
@@ -106,102 +106,102 @@
     {{-- =========================================================
         STUDENT INFORMATION
     ========================================================== --}}
-    <div class="col-12">
-        <div class="section-card p-4">
+    <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:flex-[0_0_auto] tw:w-[100%]">
+        <div class="section-card tw:p-6!">
             <h6 class="section-title">
-                <i class="bi bi-person-badge me-2"></i> Student Information
+                <i class="bi bi-person-badge tw:mr-2!"></i> Student Information
             </h6>
 
-            <div class="row g-3">
+            <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2">
 
-                <div class="col-md-6">
-                    <label class="form-label fw-semibold">Full Name <span class="text-danger">*</span></label>
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
+                    <label class="ui-form-label tw:font-semibold!">Full Name <span class="tw:text-bs-danger!">*</span></label>
                     <input type="text" name="full_name"
-                        class="form-control custom-input @error('full_name') is-invalid @enderror"
+                        class="ui-form-control custom-input @error('full_name') ui-is-invalid @enderror"
                         value="{{ old('full_name', $student->full_name ?? '') }}" required
                         placeholder="Enter full name">
                     @error('full_name')
-                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                        <div class="ui-invalid-feedback tw:block!">{{ $message }}</div>
                     @enderror
                 </div>
 
-                <div class="col-md-6">
-                    <label class="form-label fw-semibold">Initial Name <span class="text-danger">*</span></label>
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
+                    <label class="ui-form-label tw:font-semibold!">Initial Name <span class="tw:text-bs-danger!">*</span></label>
                     <input type="text" name="initial_name"
-                        class="form-control custom-input @error('initial_name') is-invalid @enderror"
+                        class="ui-form-control custom-input @error('initial_name') ui-is-invalid @enderror"
                         value="{{ old('initial_name', $student->initial_name ?? '') }}" required
                         placeholder="e.g., J.D. Smith">
                     @error('initial_name')
-                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                        <div class="ui-invalid-feedback tw:block!">{{ $message }}</div>
                     @enderror
                 </div>
 
-                <div class="col-md-4">
-                    <label class="form-label fw-semibold">Mobile <span class="text-danger">*</span></label>
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
+                    <label class="ui-form-label tw:font-semibold!">Mobile <span class="tw:text-bs-danger!">*</span></label>
                     <input type="tel" name="mobile"
-                        class="form-control custom-input @error('mobile') is-invalid @enderror"
+                        class="ui-form-control custom-input @error('mobile') ui-is-invalid @enderror"
                         value="{{ old('mobile', $student->mobile ?? '') }}" pattern="[0-9]{10,15}" required
                         placeholder="07XXXXXXXX">
                     @error('mobile')
-                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                        <div class="ui-invalid-feedback tw:block!">{{ $message }}</div>
                     @enderror
                 </div>
 
-                <div class="col-md-4">
-                    <label class="form-label fw-semibold">
-                        WhatsApp Mobile <small class="text-muted fw-normal">(Optional)</small>
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
+                    <label class="ui-form-label tw:font-semibold!">
+                        WhatsApp Mobile <small class="tw:text-bs-secondary-color! tw:font-normal!">(Optional)</small>
                     </label>
                     <input type="tel" name="whatsapp_mobile"
-                        class="form-control custom-input @error('whatsapp_mobile') is-invalid @enderror"
+                        class="ui-form-control custom-input @error('whatsapp_mobile') ui-is-invalid @enderror"
                         value="{{ old('whatsapp_mobile', $student->whatsapp_mobile ?? '') }}" pattern="[0-9]{10,15}"
                         placeholder="07XXXXXXXX">
                     @error('whatsapp_mobile')
-                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                        <div class="ui-invalid-feedback tw:block!">{{ $message }}</div>
                     @enderror
                 </div>
 
-                <div class="col-md-4">
-                    <label class="form-label fw-semibold">
-                        Email <small class="text-muted fw-normal">(Optional)</small>
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
+                    <label class="ui-form-label tw:font-semibold!">
+                        Email <small class="tw:text-bs-secondary-color! tw:font-normal!">(Optional)</small>
                     </label>
                     <input type="email" name="email"
-                        class="form-control custom-input @error('email') is-invalid @enderror"
+                        class="ui-form-control custom-input @error('email') ui-is-invalid @enderror"
                         value="{{ old('email', $student->email ?? '') }}" placeholder="student@example.com">
                     @error('email')
-                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                        <div class="ui-invalid-feedback tw:block!">{{ $message }}</div>
                     @enderror
                 </div>
 
-                <div class="col-md-4">
-                    <label class="form-label fw-semibold">
-                        NIC <small class="text-muted fw-normal">(Optional)</small>
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
+                    <label class="ui-form-label tw:font-semibold!">
+                        NIC <small class="tw:text-bs-secondary-color! tw:font-normal!">(Optional)</small>
                     </label>
                     <input type="text" name="nic"
-                        class="form-control custom-input @error('nic') is-invalid @enderror"
+                        class="ui-form-control custom-input @error('nic') ui-is-invalid @enderror"
                         value="{{ old('nic', $student->nic ?? '') }}" placeholder="National ID">
                     @error('nic')
-                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                        <div class="ui-invalid-feedback tw:block!">{{ $message }}</div>
                     @enderror
                 </div>
 
-                <div class="col-md-4">
-                    <label class="form-label fw-semibold">
-                        Birthday <small class="text-muted fw-normal">(Optional)</small>
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
+                    <label class="ui-form-label tw:font-semibold!">
+                        Birthday <small class="tw:text-bs-secondary-color! tw:font-normal!">(Optional)</small>
                     </label>
                     <input type="date" name="bday"
-                        class="form-control custom-input @error('bday') is-invalid @enderror"
+                        class="ui-form-control custom-input @error('bday') ui-is-invalid @enderror"
                         value="{{ old('bday', !empty($student?->bday) ? \Carbon\Carbon::parse($student->bday)->format('Y-m-d') : '') }}">
                     @error('bday')
-                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                        <div class="ui-invalid-feedback tw:block!">{{ $message }}</div>
                     @enderror
                 </div>
 
-                <div class="col-md-4">
-                    <label class="form-label fw-semibold">
-                        Gender <span class="text-danger">*</span>
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
+                    <label class="ui-form-label tw:font-semibold!">
+                        Gender <span class="tw:text-bs-danger!">*</span>
                     </label>
 
-                    <select name="gender" class="form-select custom-input @error('gender') is-invalid @enderror"
+                    <select name="gender" class="ui-form-select custom-input @error('gender') ui-is-invalid @enderror"
                         required>
                         <option value="">Select Gender</option>
                         <option value="male"
@@ -215,10 +215,10 @@
                         </option>
                     </select>
 
-                    <small class="text-muted d-block mt-1">Used for profile and reports.</small>
+                    <small class="tw:text-bs-secondary-color! tw:block! tw:mt-1!">Used for profile and reports.</small>
 
                     @error('gender')
-                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                        <div class="ui-invalid-feedback tw:block!">{{ $message }}</div>
                     @enderror
                 </div>
             </div>
@@ -229,45 +229,45 @@
     {{-- =========================================================
         ADDRESS INFORMATION
     ========================================================== --}}
-    <div class="col-12">
-        <div class="section-card p-4">
+    <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:flex-[0_0_auto] tw:w-[100%]">
+        <div class="section-card tw:p-6!">
             <h6 class="section-title">
-                <i class="bi bi-house-door me-2"></i> Address Information
+                <i class="bi bi-house-door tw:mr-2!"></i> Address Information
             </h6>
 
-            <div class="row g-3">
-                <div class="col-12">
-                    <label class="form-label fw-semibold">Address Line 1 <span class="text-danger">*</span></label>
+            <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:flex-[0_0_auto] tw:w-[100%]">
+                    <label class="ui-form-label tw:font-semibold!">Address Line 1 <span class="tw:text-bs-danger!">*</span></label>
                     <input type="text" name="address1"
-                        class="form-control custom-input @error('address1') is-invalid @enderror"
+                        class="ui-form-control custom-input @error('address1') ui-is-invalid @enderror"
                         value="{{ old('address1', $student->address1 ?? '') }}" required
                         placeholder="Street address">
                     @error('address1')
-                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                        <div class="ui-invalid-feedback tw:block!">{{ $message }}</div>
                     @enderror
                 </div>
 
-                <div class="col-md-6">
-                    <label class="form-label fw-semibold">
-                        Address Line 2 <small class="text-muted fw-normal">(Optional)</small>
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
+                    <label class="ui-form-label tw:font-semibold!">
+                        Address Line 2 <small class="tw:text-bs-secondary-color! tw:font-normal!">(Optional)</small>
                     </label>
                     <input type="text" name="address2"
-                        class="form-control custom-input @error('address2') is-invalid @enderror"
+                        class="ui-form-control custom-input @error('address2') ui-is-invalid @enderror"
                         value="{{ old('address2', $student->address2 ?? '') }}" placeholder="City / Town">
                     @error('address2')
-                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                        <div class="ui-invalid-feedback tw:block!">{{ $message }}</div>
                     @enderror
                 </div>
 
-                <div class="col-md-6">
-                    <label class="form-label fw-semibold">
-                        Address Line 3 <small class="text-muted fw-normal">(Optional)</small>
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
+                    <label class="ui-form-label tw:font-semibold!">
+                        Address Line 3 <small class="tw:text-bs-secondary-color! tw:font-normal!">(Optional)</small>
                     </label>
                     <input type="text" name="address3"
-                        class="form-control custom-input @error('address3') is-invalid @enderror"
+                        class="ui-form-control custom-input @error('address3') ui-is-invalid @enderror"
                         value="{{ old('address3', $student->address3 ?? '') }}" placeholder="Postal code / District">
                     @error('address3')
-                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                        <div class="ui-invalid-feedback tw:block!">{{ $message }}</div>
                     @enderror
                 </div>
             </div>
@@ -278,57 +278,57 @@
     {{-- =========================================================
         GUARDIAN INFORMATION
     ========================================================== --}}
-    <div class="col-12">
-        <div class="section-card p-4">
+    <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:flex-[0_0_auto] tw:w-[100%]">
+        <div class="section-card tw:p-6!">
             <h6 class="section-title">
-                <i class="bi bi-shield-lock me-2"></i> Guardian Information
+                <i class="bi bi-shield-lock tw:mr-2!"></i> Guardian Information
             </h6>
 
-            <div class="row g-3">
-                <div class="col-md-4">
-                    <label class="form-label fw-semibold">
-                        Guardian First Name <small class="text-muted fw-normal">(Optional)</small>
+            <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
+                    <label class="ui-form-label tw:font-semibold!">
+                        Guardian First Name <small class="tw:text-bs-secondary-color! tw:font-normal!">(Optional)</small>
                     </label>
                     <input type="text" name="guardian_fname"
-                        class="form-control custom-input @error('guardian_fname') is-invalid @enderror"
+                        class="ui-form-control custom-input @error('guardian_fname') ui-is-invalid @enderror"
                         value="{{ old('guardian_fname', $student->guardian_fname ?? '') }}" placeholder="First name">
                     @error('guardian_fname')
-                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                        <div class="ui-invalid-feedback tw:block!">{{ $message }}</div>
                     @enderror
                 </div>
 
-                <div class="col-md-4">
-                    <label class="form-label fw-semibold">
-                        Guardian Last Name <small class="text-muted fw-normal">(Optional)</small>
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
+                    <label class="ui-form-label tw:font-semibold!">
+                        Guardian Last Name <small class="tw:text-bs-secondary-color! tw:font-normal!">(Optional)</small>
                     </label>
                     <input type="text" name="guardian_lname"
-                        class="form-control custom-input @error('guardian_lname') is-invalid @enderror"
+                        class="ui-form-control custom-input @error('guardian_lname') ui-is-invalid @enderror"
                         value="{{ old('guardian_lname', $student->guardian_lname ?? '') }}" placeholder="Last name">
                     @error('guardian_lname')
-                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                        <div class="ui-invalid-feedback tw:block!">{{ $message }}</div>
                     @enderror
                 </div>
 
-                <div class="col-md-4">
-                    <label class="form-label fw-semibold">
-                        Guardian NIC <small class="text-muted fw-normal">(Optional)</small>
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
+                    <label class="ui-form-label tw:font-semibold!">
+                        Guardian NIC <small class="tw:text-bs-secondary-color! tw:font-normal!">(Optional)</small>
                     </label>
                     <input type="text" name="guardian_nic"
-                        class="form-control custom-input @error('guardian_nic') is-invalid @enderror"
+                        class="ui-form-control custom-input @error('guardian_nic') ui-is-invalid @enderror"
                         value="{{ old('guardian_nic', $student->guardian_nic ?? '') }}" placeholder="Guardian NIC">
                     @error('guardian_nic')
-                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                        <div class="ui-invalid-feedback tw:block!">{{ $message }}</div>
                     @enderror
                 </div>
 
-                <div class="col-md-4">
-                    <label class="form-label fw-semibold">Guardian Mobile <span class="text-danger">*</span></label>
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
+                    <label class="ui-form-label tw:font-semibold!">Guardian Mobile <span class="tw:text-bs-danger!">*</span></label>
                     <input type="tel" name="guardian_mobile"
-                        class="form-control custom-input @error('guardian_mobile') is-invalid @enderror"
+                        class="ui-form-control custom-input @error('guardian_mobile') ui-is-invalid @enderror"
                         value="{{ old('guardian_mobile', $student->guardian_mobile ?? '') }}" pattern="[0-9]{10,15}"
                         required placeholder="Guardian contact">
                     @error('guardian_mobile')
-                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                        <div class="ui-invalid-feedback tw:block!">{{ $message }}</div>
                     @enderror
                 </div>
             </div>
@@ -339,22 +339,22 @@
     {{-- =========================================================
         CLASS INFORMATION (Branch + Grade + Class Type)
     ========================================================== --}}
-    <div class="col-12">
-        <div class="section-card p-4">
+    <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:flex-[0_0_auto] tw:w-[100%]">
+        <div class="section-card tw:p-6!">
             <h6 class="section-title">
-                <i class="bi bi-book me-2"></i> Class Information
+                <i class="bi bi-book tw:mr-2!"></i> Class Information
             </h6>
 
-            <div class="row g-3">
+            <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2">
 
                 {{-- ✅ BRANCH DROPDOWN (Before Grade) --}}
-                <div class="col-md-4">
-                    <label class="form-label fw-semibold">
-                        Main Branch <span class="text-danger">*</span>
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
+                    <label class="ui-form-label tw:font-semibold!">
+                        Main Branch <span class="tw:text-bs-danger!">*</span>
                     </label>
 
                     <select name="branch_id" id="branch_id"
-                        class="form-select custom-input @error('branch_id') is-invalid @enderror" required>
+                        class="ui-form-select custom-input @error('branch_id') ui-is-invalid @enderror" required>
                         <option value="">Select Branch</option>
 
                         @foreach ($branches as $branch)
@@ -368,23 +368,23 @@
                         @endforeach
                     </select>
 
-                    <small class="text-muted d-block mt-1">
+                    <small class="tw:text-bs-secondary-color! tw:block! tw:mt-1!">
                         Select the student's main education branch.
                     </small>
 
                     @error('branch_id')
-                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                        <div class="ui-invalid-feedback tw:block!">{{ $message }}</div>
                     @enderror
                 </div>
 
 
                 {{-- GRADE --}}
-                <div class="col-md-4">
-                    <label class="form-label fw-semibold">
-                        Grade <span class="text-danger">*</span>
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
+                    <label class="ui-form-label tw:font-semibold!">
+                        Grade <span class="tw:text-bs-danger!">*</span>
                     </label>
 
-                    <select name="grade_id" class="form-select custom-input @error('grade_id') is-invalid @enderror"
+                    <select name="grade_id" class="ui-form-select custom-input @error('grade_id') ui-is-invalid @enderror"
                         required>
                         <option value="">Select Grade</option>
 
@@ -395,60 +395,60 @@
                         @endforeach
                     </select>
 
-                    <small class="text-muted d-block mt-1">
+                    <small class="tw:text-bs-secondary-color! tw:block! tw:mt-1!">
                         Select the student's class grade.
                     </small>
 
                     @error('grade_id')
-                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                        <div class="ui-invalid-feedback tw:block!">{{ $message }}</div>
                     @enderror
                 </div>
 
 
                 {{-- CLASS TYPE --}}
-                <div class="col-md-4">
-                    <label class="form-label fw-semibold">
-                        Class Type <span class="text-danger">*</span>
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
+                    <label class="ui-form-label tw:font-semibold!">
+                        Class Type <span class="tw:text-bs-danger!">*</span>
                     </label>
 
                     <select name="class_type"
-                        class="form-select custom-input @error('class_type') is-invalid @enderror" required>
+                        class="ui-form-select custom-input @error('class_type') ui-is-invalid @enderror" required>
                         <option value="offline" @if (old('class_type', $student->class_type ?? 'offline') === 'offline') selected @endif>Offline</option>
                         <option value="online" @if (old('class_type', $student->class_type ?? '') === 'online') selected @endif>Online</option>
                         <option value="hybrid" @if (old('class_type', $student->class_type ?? '') === 'hybrid') selected @endif>Hybrid</option>
                     </select>
 
-                    <small class="text-muted d-block mt-1">
+                    <small class="tw:text-bs-secondary-color! tw:block! tw:mt-1!">
                         Choose how this student attends classes.
                     </small>
 
                     @error('class_type')
-                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                        <div class="ui-invalid-feedback tw:block!">{{ $message }}</div>
                     @enderror
                 </div>
 
 
                 {{-- STUDENT SCHOOL --}}
-                <div class="col-md-4">
-                    <label class="form-label fw-semibold">
-                        Student School <small class="text-muted fw-normal">(Optional)</small>
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
+                    <label class="ui-form-label tw:font-semibold!">
+                        Student School <small class="tw:text-bs-secondary-color! tw:font-normal!">(Optional)</small>
                     </label>
                     <input type="text" name="student_school"
-                        class="form-control custom-input @error('student_school') is-invalid @enderror"
+                        class="ui-form-control custom-input @error('student_school') ui-is-invalid @enderror"
                         value="{{ old('student_school', $student->student_school ?? '') }}"
                         placeholder="School name">
                     @error('student_school')
-                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                        <div class="ui-invalid-feedback tw:block!">{{ $message }}</div>
                     @enderror
                 </div>
 
 
                 {{-- ADMISSION SWITCH --}}
-                <div class="col-12">
-                    <div class="form-check form-switch mt-2">
-                        <input class="form-check-input" type="checkbox" name="admission" value="1"
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:flex-[0_0_auto] tw:w-[100%]">
+                    <div class="ui-form-check ui-form-switch tw:mt-2!">
+                        <input class="ui-form-check-input" type="checkbox" name="admission" value="1"
                             id="admission" {{ $showAdmissionFields ? 'checked' : '' }}>
-                        <label class="form-check-label fw-semibold ms-2" for="admission">
+                        <label class="ui-form-check-label tw:font-semibold! tw:ml-2!" for="admission">
                             Admission Paid
                         </label>
                     </div>
@@ -456,9 +456,9 @@
 
 
                 {{-- ADMISSION SELECT --}}
-                <div class="col-md-6 mt-3 {{ $showAdmissionFields ? '' : 'd-none' }}" id="admissionBox">
-                    <label class="form-label fw-semibold">Select Admission</label>
-                    <select name="admission_id" id="admissionSelect" class="form-select custom-input">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:mt-4! {{ $showAdmissionFields ? '' : 'tw:hidden!' }}" id="admissionBox">
+                    <label class="ui-form-label tw:font-semibold!">Select Admission</label>
+                    <select name="admission_id" id="admissionSelect" class="ui-form-select custom-input">
                         <option value="">Select Admission</option>
                         @foreach ($admissions as $admission)
                             <option value="{{ $admission->id }}" data-amount="{{ $admission->amount }}"
@@ -471,9 +471,9 @@
 
 
                 {{-- PAYMENT AMOUNT --}}
-                <div class="col-md-6 mt-3 {{ $showAdmissionFields ? '' : 'd-none' }}" id="paymentAmountBox">
-                    <label class="form-label fw-semibold">Admission Payment Amount</label>
-                    <input type="number" name="amount" id="amountInput" class="form-control custom-input" readonly
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:mt-4! {{ $showAdmissionFields ? '' : 'tw:hidden!' }}" id="paymentAmountBox">
+                    <label class="ui-form-label tw:font-semibold!">Admission Payment Amount</label>
+                    <input type="number" name="amount" id="amountInput" class="ui-form-control custom-input" readonly
                         value="{{ $selectedAmount }}">
                 </div>
 
@@ -485,12 +485,12 @@
     {{-- =========================================================
         FORM ACTIONS
     ========================================================== --}}
-    <div class="col-12 d-flex justify-content-end gap-2 pt-2">
-        <a href="{{ route('students.index') }}" class="btn btn-outline-secondary px-4 custom-btn">
-            <i class="bi bi-x-lg me-1"></i> Cancel
+    <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:flex-[0_0_auto] tw:w-[100%] tw:flex! tw:justify-end! tw:gap-2! tw:pt-2!">
+        <a href="{{ route('students.index') }}" class="ui-btn ui-btn-outline-secondary tw:px-6! custom-btn">
+            <i class="bi bi-x-lg tw:mr-1!"></i> Cancel
         </a>
-        <button type="submit" class="btn btn-primary px-4 custom-btn">
-            <i class="bi bi-save me-1"></i> {{ $buttonText ?? 'Save Student' }}
+        <button type="submit" class="ui-btn ui-btn-primary tw:px-6! custom-btn">
+            <i class="bi bi-save tw:mr-1!"></i> {{ $buttonText ?? 'Save Student' }}
         </button>
     </div>
 
@@ -513,8 +513,8 @@
             function toggleAdmissionFields() {
                 if (!admissionCheckbox) return;
                 const show = admissionCheckbox.checked;
-                if (admissionBox) admissionBox.classList.toggle('d-none', !show);
-                if (paymentAmountBox) paymentAmountBox.classList.toggle('d-none', !show);
+                if (admissionBox) admissionBox.classList.toggle('tw:hidden!', !show);
+                if (paymentAmountBox) paymentAmountBox.classList.toggle('tw:hidden!', !show);
             }
 
             if (admissionCheckbox) {

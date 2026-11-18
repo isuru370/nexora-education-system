@@ -7,7 +7,7 @@
 <div class="dashboard-page">
 
     {{-- HERO --}}
-    <div class="hero-section mb-4">
+    <div class="hero-section tw:mb-6!">
         <div class="hero-content">
             <div class="hero-left">
                 <span class="greeting-badge">nexoraEDU</span>
@@ -45,7 +45,7 @@
     </div>
 
     {{-- KPI CARDS --}}
-    <div class="stats-grid mb-4">
+    <div class="stats-grid tw:mb-6!">
         <div class="nx-card stat-card">
             <div class="stat-icon-wrapper icon-blue"><i class="bi bi-people-fill"></i></div>
             <div class="stat-info">
@@ -81,24 +81,24 @@
     </div>
 
     {{-- MAIN CARD --}}
-    <div class="nx-card mb-4">
+    <div class="nx-card tw:mb-6!">
         <div class="nx-card-header">
             <div>
-                <h5 class="nx-card-title"><i class="bi bi-person-workspace text-primary"></i> Search & Manage</h5>
+                <h5 class="nx-card-title"><i class="bi bi-person-workspace tw:text-(color:--nx-blue)!"></i> Search & Manage</h5>
                 <p class="nx-card-subtitle">Search students by name, mobile number, custom ID or QR code and manage their class enrollments</p>
             </div>
         </div>
 
         {{-- ALERTS --}}
-        <div class="p-3">
+        <div class="tw:p-4!">
             @if (session('success'))
-                <div class="nx-alert nx-alert-green mb-3"><i class="bi bi-check-circle-fill"></i><span>{{ session('success') }}</span></div>
+                <div class="nx-alert nx-alert-green tw:mb-4!"><i class="bi bi-check-circle-fill"></i><span>{{ session('success') }}</span></div>
             @endif
             @if (session('error'))
-                <div class="nx-alert nx-alert-red mb-3"><i class="bi bi-exclamation-circle-fill"></i><span>{{ session('error') }}</span></div>
+                <div class="nx-alert nx-alert-red tw:mb-4!"><i class="bi bi-exclamation-circle-fill"></i><span>{{ session('error') }}</span></div>
             @endif
             @if (session('info'))
-                <div class="nx-alert nx-alert-blue mb-3"><i class="bi bi-info-circle-fill"></i><span>{{ session('info') }}</span></div>
+                <div class="nx-alert nx-alert-blue tw:mb-4!"><i class="bi bi-info-circle-fill"></i><span>{{ session('info') }}</span></div>
             @endif
         </div>
 
@@ -106,22 +106,22 @@
         <div class="nx-search">
             <form method="POST" action="{{ route('student-class-management.search') }}">
                 @csrf
-                <div class="row g-3">
-                    <div class="col-lg-10">
+                <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[83.33333333%]">
                         <div class="search-input-wrapper">
                             <i class="bi bi-search"></i>
                             <input type="text" name="search"
-                                class="form-control custom-input @error('search') is-invalid @enderror"
+                                class="ui-form-control custom-input @error('search') ui-is-invalid @enderror"
                                 placeholder="Search by Name, Mobile, Custom ID or QR code..."
                                 value="{{ old('search') }}" autocomplete="off" autofocus required>
-                            @error('search')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                            @error('search')<div class="ui-invalid-feedback">{{ $message }}</div>@enderror
                         </div>
                     </div>
-                    <div class="col-lg-2">
-                        <button type="submit" class="nx-btn nx-btn-primary w-100"><i class="bi bi-search"></i> Search</button>
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[16.66666667%]">
+                        <button type="submit" class="nx-btn nx-btn-primary tw:w-full!"><i class="bi bi-search"></i> Search</button>
                     </div>
                 </div>
-                <div class="mt-3">
+                <div class="tw:mt-4!">
                     <small class="cell-sub">
                         <i class="bi bi-info-circle"></i>
                         Search using <strong>Student Name</strong>, <strong>Mobile Number</strong>,
@@ -133,23 +133,23 @@
         </div>
 
         {{-- QUICK ACTIONS --}}
-        <div class="p-3">
-            <div class="row g-3">
-                <div class="col-md-4">
+        <div class="tw:p-4!">
+            <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
                     <a href="{{ route('student-class-management.assign-form') }}" class="nx-quick-action">
                         <div class="qa-icon icon-blue"><i class="bi bi-person-plus"></i></div>
                         <div class="qa-content"><h6>Assign Class</h6><small>Enroll student in a class</small></div>
                         <i class="bi bi-chevron-right qa-arrow"></i>
                     </a>
                 </div>
-                <div class="col-md-4">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
                     <a href="{{ route('students.index') }}" class="nx-quick-action">
                         <div class="qa-icon icon-green"><i class="bi bi-list-ul"></i></div>
                         <div class="qa-content"><h6>All Students</h6><small>View all students</small></div>
                         <i class="bi bi-chevron-right qa-arrow"></i>
                     </a>
                 </div>
-                <div class="col-md-4">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
                     <a href="{{ route('student-classes.index') }}" class="nx-quick-action">
                         <div class="qa-icon icon-violet"><i class="bi bi-journal-bookmark-fill"></i></div>
                         <div class="qa-content"><h6>All Classes</h6><small>View all classes</small></div>

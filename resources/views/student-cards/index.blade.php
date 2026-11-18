@@ -8,10 +8,10 @@
     <div class="halls-page">
 
         {{-- ===================== STATS (Global / Branch-wise) ===================== --}}
-        <div class="row g-4 mb-4">
+        <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3 tw:mb-6!">
 
             {{-- Total Cards --}}
-            <div class="col-xl-3 col-md-6">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%]">
                 <div class="stats-card">
                     <div class="stats-icon blue">
                         <i class="bi bi-person-vcard-fill"></i>
@@ -24,7 +24,7 @@
             </div>
 
             {{-- Available --}}
-            <div class="col-xl-3 col-md-6">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%]">
                 <div class="stats-card">
                     <div class="stats-icon green">
                         <i class="bi bi-check-circle-fill"></i>
@@ -37,7 +37,7 @@
             </div>
 
             {{-- Assigned --}}
-            <div class="col-xl-3 col-md-6">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%]">
                 <div class="stats-card">
                     <div class="stats-icon blue">
                         <i class="bi bi-person-check-fill"></i>
@@ -50,7 +50,7 @@
             </div>
 
             {{-- Lost / Damaged --}}
-            <div class="col-xl-3 col-md-6">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%]">
                 <div class="stats-card">
                     <div class="stats-icon red">
                         <i class="bi bi-exclamation-triangle-fill"></i>
@@ -68,10 +68,10 @@
 
         {{-- ===================== BRANCH-WISE SUMMARY ===================== --}}
         @if (!empty($branchCardSummary) && count($branchCardSummary) > 0)
-            <div class="row g-3 mb-4">
+            <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2 tw:mb-6!">
 
                 @foreach ($branchCardSummary as $branch)
-                    <div class="col-xl-4 col-md-6">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[33.33333333%]">
 
                         <div class="branch-summary-card">
 
@@ -125,7 +125,7 @@
                                 <div class="branch-stat">
                                     <span class="stat-dot total"></span>
                                     <span class="stat-label">Total</span>
-                                    <span class="stat-value fw-bold">{{ $branch['total_cards'] }}</span>
+                                    <span class="stat-value tw:font-bold!">{{ $branch['total_cards'] }}</span>
                                 </div>
 
                             </div>
@@ -154,7 +154,7 @@
 
 
                     @cardaccess('generate')
-                    <a href="{{ route('student-cards.generate') }}" class="btn btn-primary custom-btn">
+                    <a href="{{ route('student-cards.generate') }}" class="ui-btn ui-btn-primary custom-btn">
                         <i class="bi bi-plus-circle"></i>
                         Generate Cards
                     </a>
@@ -163,7 +163,7 @@
 
 
                     @cardaccess('download')
-                    <a href="{{ route('student-cards.preview') }}" class="btn btn-success custom-btn">
+                    <a href="{{ route('student-cards.preview') }}" class="ui-btn ui-btn-success custom-btn">
                         <i class="bi bi-eye"></i>
                         Preview
                     </a>
@@ -176,26 +176,26 @@
             {{-- ===================== ALERTS ===================== --}}
 
             @if (session('success'))
-                <div class="alert alert-success alert-dismissible fade show custom-alert">
+                <div class="ui-alert ui-alert-success ui-alert-dismissible ui-fade show custom-alert">
                     <i class="bi bi-check-circle-fill"></i>
                     {{ session('success') }}
-                    <button class="btn-close" data-bs-dismiss="alert"></button>
+                    <button class="ui-btn-close" data-nx-dismiss="alert"></button>
                 </div>
             @endif
 
             @if (session('error'))
-                <div class="alert alert-danger alert-dismissible fade show custom-alert">
+                <div class="ui-alert ui-alert-danger ui-alert-dismissible ui-fade show custom-alert">
                     <i class="bi bi-exclamation-circle-fill"></i>
                     {{ session('error') }}
-                    <button class="btn-close" data-bs-dismiss="alert"></button>
+                    <button class="ui-btn-close" data-nx-dismiss="alert"></button>
                 </div>
             @endif
 
             @if (session('warning'))
-                <div class="alert alert-warning alert-dismissible fade show custom-alert">
+                <div class="ui-alert ui-alert-warning ui-alert-dismissible ui-fade show custom-alert">
                     <i class="bi bi-exclamation-triangle-fill"></i>
                     {{ session('warning') }}
-                    <button class="btn-close" data-bs-dismiss="alert"></button>
+                    <button class="ui-btn-close" data-nx-dismiss="alert"></button>
                 </div>
             @endif
 
@@ -205,24 +205,24 @@
 
                 <form method="GET" action="{{ route('student-cards.index') }}">
 
-                    <div class="row g-3">
+                    <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2">
 
                         {{-- Search Input --}}
-                        <div class="col-lg-4 col-md-6">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:lg:flex-[0_0_auto] tw:lg:w-[33.33333333%]">
 
                             <div class="search-input-wrapper">
                                 <i class="bi bi-search"></i>
 
-                                <input type="text" name="search" class="form-control custom-input"
+                                <input type="text" name="search" class="ui-form-control custom-input"
                                     placeholder="Search by Card Number or QR Code" value="{{ request('search') }}">
                             </div>
 
                         </div>
 
                         {{-- Branch Filter --}}
-                        <div class="col-lg-3 col-md-6">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:lg:flex-[0_0_auto] tw:lg:w-[25%]">
 
-                            <select name="branch_id" class="form-select custom-input">
+                            <select name="branch_id" class="ui-form-select custom-input">
                                 <option value="">All Branches</option>
 
                                 @foreach ($branches ?? [] as $branch)
@@ -236,9 +236,9 @@
                         </div>
 
                         {{-- Status Filter --}}
-                        <div class="col-lg-2 col-md-6">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:lg:flex-[0_0_auto] tw:lg:w-[16.66666667%]">
 
-                            <select name="status" class="form-select custom-input">
+                            <select name="status" class="ui-form-select custom-input">
 
                                 <option value="">All Status</option>
 
@@ -267,9 +267,9 @@
                         </div>
 
                         {{-- Search Button --}}
-                        <div class="col-lg-2 col-md-6">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:lg:flex-[0_0_auto] tw:lg:w-[16.66666667%]">
 
-                            <button type="submit" class="btn btn-primary w-100 custom-btn">
+                            <button type="submit" class="ui-btn ui-btn-primary tw:w-full! custom-btn">
                                 <i class="bi bi-search"></i>
                                 Search
                             </button>
@@ -277,9 +277,9 @@
                         </div>
 
                         {{-- Reset Button --}}
-                        <div class="col-lg-1 col-md-6">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:lg:flex-[0_0_auto] tw:lg:w-[8.33333333%]">
 
-                            <a href="{{ route('student-cards.index') }}" class="btn btn-light border w-100 custom-btn"
+                            <a href="{{ route('student-cards.index') }}" class="ui-btn ui-btn-light tw:bs-border! tw:w-full! custom-btn"
                                 title="Reset">
                                 <i class="bi bi-arrow-counterclockwise"></i>
                             </a>
@@ -294,9 +294,9 @@
 
             {{-- ===================== TABLE ===================== --}}
 
-            <div class="table-responsive">
+            <div class="ui-table-responsive">
 
-                <table class="table custom-table align-middle">
+                <table class="ui-table custom-table tw:align-middle!">
 
                     <thead>
                         <tr>
@@ -307,7 +307,7 @@
                             <th>Student</th>
                             <th>Status</th>
                             <th>Issued Date</th>
-                            <th class="text-end">Action</th>
+                            <th class="tw:text-right!">Action</th>
                         </tr>
                     </thead>
 
@@ -322,7 +322,7 @@
 
                                 {{-- Card Number --}}
                                 <td>
-                                    <div class="d-flex align-items-center gap-3">
+                                    <div class="tw:flex! tw:items-center! tw:gap-4!">
                                         <div class="card-avatar">
                                             <i class="bi bi-person-vcard"></i>
                                         </div>
@@ -349,7 +349,7 @@
                                             {{ $card->branch->name }}
                                         </span>
                                     @else
-                                        <span class="text-muted">-</span>
+                                        <span class="tw:text-bs-secondary-color!">-</span>
                                     @endif
                                 </td>
 
@@ -357,11 +357,11 @@
                                 <td>
                                     @if ($card->student)
                                         <a href="{{ route('students.show', $card->student->id) }}"
-                                            class="text-decoration-none fw-semibold text-primary">
+                                            class="tw:[text-decoration:none]! tw:font-semibold! tw:text-bs-primary!">
                                             {{ $card->student->initial_name }}
                                         </a>
                                     @else
-                                        <span class="text-muted">
+                                        <span class="tw:text-bs-secondary-color!">
                                             Not Assigned
                                         </span>
                                     @endif
@@ -371,27 +371,27 @@
                                 <td>
                                     @switch($card->status)
                                         @case('available')
-                                            <span class="badge bg-success custom-badge">Available</span>
+                                            <span class="ui-badge tw:bg-bs-success! custom-badge">Available</span>
                                         @break
 
                                         @case('assigned')
-                                            <span class="badge bg-primary custom-badge">Assigned</span>
+                                            <span class="ui-badge tw:bg-bs-primary! custom-badge">Assigned</span>
                                         @break
 
                                         @case('lost')
-                                            <span class="badge bg-danger custom-badge">Lost</span>
+                                            <span class="ui-badge tw:bg-bs-danger! custom-badge">Lost</span>
                                         @break
 
                                         @case('damaged')
-                                            <span class="badge bg-warning text-dark custom-badge">Damaged</span>
+                                            <span class="ui-badge tw:bg-bs-warning! tw:text-bs-dark! custom-badge">Damaged</span>
                                         @break
 
                                         @case('inactive')
-                                            <span class="badge bg-secondary custom-badge">Inactive</span>
+                                            <span class="ui-badge tw:bg-bs-secondary! custom-badge">Inactive</span>
                                         @break
 
                                         @default
-                                            <span class="badge bg-secondary custom-badge">
+                                            <span class="ui-badge tw:bg-bs-secondary! custom-badge">
                                                 {{ ucfirst($card->status) }}
                                             </span>
                                     @endswitch
@@ -403,7 +403,7 @@
                                 </td>
 
                                 {{-- Action --}}
-                                <td class="text-end">
+                                <td class="tw:text-right!">
                                     <a href="{{ route('student-cards.show', $card->id) }}" class="action-btn view-btn"
                                         title="View Card">
                                         <i class="bi bi-eye-fill"></i>
@@ -415,17 +415,17 @@
                             @empty
 
                                 <tr>
-                                    <td colspan="8" class="text-center py-5">
+                                    <td colspan="8" class="tw:text-center! tw:py-12!">
                                         <div class="empty-state">
                                             <i class="bi bi-inbox"></i>
                                             <h5>No Student Cards Found</h5>
-                                            <p class="text-muted">
+                                            <p class="tw:text-bs-secondary-color!">
                                                 There are no student cards available.
                                             </p>
 
                                             @cardaccess('generate')
                                                 <a href="{{ route('student-cards.generate') }}"
-                                                    class="btn btn-primary custom-btn mt-3">
+                                                    class="ui-btn ui-btn-primary custom-btn tw:mt-4!">
                                                     <i class="bi bi-plus-circle"></i>
                                                     Generate Cards
                                                 </a>
@@ -444,9 +444,9 @@
                 {{-- ===================== PAGINATION ===================== --}}
 
                 @if ($cards->hasPages())
-                    <div class="d-flex justify-content-between align-items-center mt-4 flex-wrap gap-3">
+                    <div class="tw:flex! tw:justify-between! tw:items-center! tw:mt-6! tw:flex-wrap! tw:gap-4!">
 
-                        <div class="text-muted">
+                        <div class="tw:text-bs-secondary-color!">
                             Showing
                             {{ $cards->firstItem() }}
                             to
@@ -890,13 +890,13 @@
                             PAGINATION
                         ==========================*/
 
-            .pagination .page-link {
+            .ui-pagination .ui-page-link {
                 border: none;
                 margin: 0 3px;
                 border-radius: 10px !important;
             }
 
-            .pagination .page-item.active .page-link {
+            .ui-pagination .ui-page-item.active .ui-page-link {
                 background: #2563eb;
             }
 
@@ -915,7 +915,7 @@
                     width: 100%;
                 }
 
-                .header-buttons .btn {
+                .header-buttons .ui-btn {
                     flex: 1;
                 }
 

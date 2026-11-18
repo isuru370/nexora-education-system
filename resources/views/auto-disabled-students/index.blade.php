@@ -10,7 +10,7 @@
 
     <div class="dashboard-page">
 
-        <div class="hero-section mb-4">
+        <div class="hero-section tw:mb-6!">
             <div class="hero-content">
                 <div class="hero-left">
                     <span class="greeting-badge">nexoraEDU</span>
@@ -21,7 +21,7 @@
                         puts the student back in the same classes.
                     </p>
                 </div>
-                <div class="hero-right d-flex flex-column align-items-end gap-2">
+                <div class="hero-right tw:flex! tw:flex-col! tw:items-end! tw:gap-2!">
                     @if ($lastRun)
                         <small class="hero-updated">
                             Last run: <strong>{{ \Carbon\Carbon::parse($lastRun['date'])->format('d M Y') }}</strong>
@@ -36,34 +36,34 @@
         </div>
 
         {{-- Filters --}}
-        <div class="nx-card mb-4">
-            <div class="p-3">
-                <form method="GET" action="{{ route('auto-disabled-students.index') }}" class="row g-3 align-items-end">
-                    <div class="col-lg-3 col-md-6">
+        <div class="nx-card tw:mb-6!">
+            <div class="tw:p-4!">
+                <form method="GET" action="{{ route('auto-disabled-students.index') }}" class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2 tw:items-end!">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:lg:flex-[0_0_auto] tw:lg:w-[25%]">
                         <label class="nx-label" for="ads-search">Search student</label>
-                        <input type="text" id="ads-search" name="search" class="form-control nx-input"
+                        <input type="text" id="ads-search" name="search" class="ui-form-control nx-input"
                             value="{{ $filters['search'] ?? '' }}" placeholder="ID, name or mobile">
                     </div>
-                    <div class="col-lg-2 col-md-6">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:lg:flex-[0_0_auto] tw:lg:w-[16.66666667%]">
                         <label class="nx-label" for="ads-from">From</label>
-                        <input type="date" id="ads-from" name="from" class="form-control nx-input" value="{{ $from->toDateString() }}">
+                        <input type="date" id="ads-from" name="from" class="ui-form-control nx-input" value="{{ $from->toDateString() }}">
                     </div>
-                    <div class="col-lg-2 col-md-6">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:lg:flex-[0_0_auto] tw:lg:w-[16.66666667%]">
                         <label class="nx-label" for="ads-to">To</label>
-                        <input type="date" id="ads-to" name="to" class="form-control nx-input" value="{{ $to->toDateString() }}">
+                        <input type="date" id="ads-to" name="to" class="ui-form-control nx-input" value="{{ $to->toDateString() }}">
                     </div>
-                    <div class="col-lg-2 col-md-6">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:lg:flex-[0_0_auto] tw:lg:w-[16.66666667%]">
                         <label class="nx-label" for="ads-status">Status</label>
-                        <select id="ads-status" name="status" class="form-select nx-input">
+                        <select id="ads-status" name="status" class="ui-form-select nx-input">
                             <option value="">All</option>
                             <option value="inactive" {{ ($filters['status'] ?? '') === 'inactive' ? 'selected' : '' }}>Still inactive</option>
                             <option value="reactivated" {{ ($filters['status'] ?? '') === 'reactivated' ? 'selected' : '' }}>Re-activated</option>
                         </select>
                     </div>
                     @if ($branches->count() > 1)
-                        <div class="col-lg-2 col-md-6">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:lg:flex-[0_0_auto] tw:lg:w-[16.66666667%]">
                             <label class="nx-label" for="ads-branch">Branch</label>
-                            <select id="ads-branch" name="branch_id" class="form-select nx-input">
+                            <select id="ads-branch" name="branch_id" class="ui-form-select nx-input">
                                 <option value="">All</option>
                                 @foreach ($branches as $branch)
                                     <option value="{{ $branch->id }}" {{ (int) ($filters['branch_id'] ?? 0) === (int) $branch->id ? 'selected' : '' }}>{{ $branch->name }}</option>
@@ -71,23 +71,23 @@
                             </select>
                         </div>
                     @endif
-                    <div class="col-lg-1 col-md-6">
-                        <button type="submit" class="nx-btn nx-btn-primary w-100"><i class="bi bi-funnel"></i></button>
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:lg:flex-[0_0_auto] tw:lg:w-[8.33333333%]">
+                        <button type="submit" class="nx-btn nx-btn-primary tw:w-full!"><i class="bi bi-funnel"></i></button>
                     </div>
                 </form>
             </div>
         </div>
 
-        <div class="nx-card mb-4">
+        <div class="nx-card tw:mb-6!">
             <div class="nx-card-header">
                 <div>
-                    <h5 class="nx-card-title"><i class="bi bi-person-x text-danger"></i> {{ $range }}</h5>
+                    <h5 class="nx-card-title"><i class="bi bi-person-x tw:text-(color:--nx-red)!"></i> {{ $range }}</h5>
                     <p class="nx-card-subtitle">{{ $records->total() }} students</p>
                 </div>
             </div>
 
-            <div class="table-responsive">
-                <table class="table premium-table mb-0 align-middle">
+            <div class="ui-table-responsive">
+                <table class="ui-table premium-table tw:mb-0! tw:align-middle!">
                     <thead>
                         <tr>
                             <th>Student</th>
@@ -96,7 +96,7 @@
                             <th>Last payment</th>
                             <th>Taken out of</th>
                             <th>Disabled</th>
-                            <th class="text-end"></th>
+                            <th class="tw:text-right!"></th>
                         </tr>
                     </thead>
                     <tbody>
@@ -109,8 +109,8 @@
                             @endphp
                             <tr>
                                 <td>
-                                    <div class="d-flex align-items-center gap-2">
-                                        <img src="{{ $img }}" alt="" width="38" height="38" class="rounded-circle object-fit-cover"
+                                    <div class="tw:flex! tw:items-center! tw:gap-2!">
+                                        <img src="{{ $img }}" alt="" width="38" height="38" class="tw:rounded-[50%]! tw:[-o-object-fit:cover]! tw:object-cover!"
                                             onerror="this.style.visibility='hidden'">
                                         <div>
                                             <div class="cell-title">{{ optional($student)->initial_name ?? '-' }}</div>
@@ -131,7 +131,7 @@
                                         <div>{{ $record->last_attendance_at->format('d M Y') }}</div>
                                         <small class="cell-sub">{{ $record->last_attendance_class }}</small>
                                     @else
-                                        <span class="text-muted">Never</span>
+                                        <span class="tw:text-(color:--nx-muted)!">Never</span>
                                     @endif
                                 </td>
                                 <td>
@@ -140,24 +140,24 @@
                                             <small class="cell-sub">for {{ optional($record->last_payment_month)->format('M Y') }}</small></div>
                                         <small class="cell-sub">{{ $record->last_payment_at->format('d M Y') }} &middot; {{ $record->last_payment_class }}</small>
                                     @else
-                                        <span class="text-muted">Never</span>
+                                        <span class="tw:text-(color:--nx-muted)!">Never</span>
                                     @endif
                                 </td>
                                 <td>
                                     @forelse ($record->classes ?? [] as $class)
-                                        <div class="small">{{ $class['class_name'] }}<span class="text-muted">{{ $class['category'] ? ' (' . $class['category'] . ')' : '' }}</span></div>
+                                        <div class="tw:text-[.875em]">{{ $class['class_name'] }}<span class="tw:text-(color:--nx-muted)!">{{ $class['category'] ? ' (' . $class['category'] . ')' : '' }}</span></div>
                                     @empty
-                                        <span class="text-muted">-</span>
+                                        <span class="tw:text-(color:--nx-muted)!">-</span>
                                     @endforelse
                                 </td>
                                 <td>
                                     <div>{{ $record->disabled_at->format('d M Y') }}</div>
                                     @if ($record->reactivated_at)
                                         <span class="nx-badge nx-badge-green">Re-activated {{ $record->reactivated_at->format('d M') }}</span>
-                                        <small class="cell-sub d-block">{{ optional($record->reactivatedBy)->name }}</small>
+                                        <small class="cell-sub tw:block!">{{ optional($record->reactivatedBy)->name }}</small>
                                     @endif
                                 </td>
-                                <td class="text-end">
+                                <td class="tw:text-right!">
                                     @if (!$record->reactivated_at)
                                         <form method="POST" action="{{ route('auto-disabled-students.reactivate', $record->id) }}"
                                             onsubmit="return confirm('Re-activate {{ e(optional($student)->initial_name) }} and put them back in their {{ count($record->classes ?? []) }} class(es)?')">
@@ -170,14 +170,14 @@
                                 </td>
                             </tr>
                         @empty
-                            <tr><td colspan="7" class="text-center text-muted py-4">No students were disabled in this period.</td></tr>
+                            <tr><td colspan="7" class="tw:text-center! tw:text-(color:--nx-muted)! tw:py-6!">No students were disabled in this period.</td></tr>
                         @endforelse
                     </tbody>
                 </table>
             </div>
 
             @if ($records->hasPages())
-                <div class="p-3">{{ $records->links() }}</div>
+                <div class="tw:p-4!">{{ $records->links() }}</div>
             @endif
         </div>
     </div>

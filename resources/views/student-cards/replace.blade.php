@@ -14,19 +14,19 @@
         <div class="main-card-header">
             <div>
                 <h4>
-                    <i class="bi bi-person-vcard-fill text-primary me-2"></i>
+                    <i class="bi bi-person-vcard-fill tw:text-bs-primary! tw:mr-2!"></i>
                     Student Card Details
                 </h4>
                 <p>View student card information</p>
             </div>
 
             <div class="header-buttons">
-                <a href="{{ route('student-cards.index') }}" class="btn btn-light border custom-btn">
+                <a href="{{ route('student-cards.index') }}" class="ui-btn ui-btn-light tw:bs-border! custom-btn">
                     <i class="bi bi-arrow-left"></i>
                     Back to Inventory
                 </a>
                 @if($card->status == 'assigned' && $card->student)
-                    <a href="#" class="btn btn-primary custom-btn" target="_blank">
+                    <a href="#" class="ui-btn ui-btn-primary custom-btn" target="_blank">
                         <i class="bi bi-printer"></i>
                         Print Card
                     </a>
@@ -36,30 +36,30 @@
 
         <!-- ALERT MESSAGES -->
         @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show custom-alert">
+            <div class="ui-alert ui-alert-success ui-alert-dismissible ui-fade show custom-alert">
                 <i class="bi bi-check-circle-fill"></i>
                 {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <button type="button" class="ui-btn-close" data-nx-dismiss="alert"></button>
             </div>
         @endif
 
         @if(session('error'))
-            <div class="alert alert-danger alert-dismissible fade show custom-alert">
+            <div class="ui-alert ui-alert-danger ui-alert-dismissible ui-fade show custom-alert">
                 <i class="bi bi-exclamation-triangle-fill"></i>
                 {{ session('error') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <button type="button" class="ui-btn-close" data-nx-dismiss="alert"></button>
             </div>
         @endif
 
         <!-- CONTENT -->
-        <div class="row g-4">
+        <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3">
             {{-- Student Profile Card --}}
-            <div class="col-lg-4">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[33.33333333%]">
                 <div class="profile-card">
                     {{-- Card Header with Gradient --}}
                     <div class="profile-header">
-                        <div class="text-center">
-                            <div class="position-relative d-inline-block">
+                        <div class="tw:text-center!">
+                            <div class="tw:relative! tw:[display:inline-block]!">
                                 {{-- Student Photo --}}
                                 @if($card->student && $card->student->img_url)
                                     @php
@@ -81,38 +81,38 @@
                                          onerror="this.onerror=null; this.src='{{ asset('images/default-avatar.png') }}';">
                                 @else
                                     <div class="profile-image-placeholder">
-                                        <i class="bi bi-person fs-1"></i>
+                                        <i class="bi bi-person tw:text-[length:calc(1.375rem_+_1.5vw)]! tw:xl:text-[length:2.5rem]!"></i>
                                     </div>
                                 @endif
                                 
                                 {{-- Status Badge on Photo --}}
-                                <span class="position-absolute bottom-0 end-0">
+                                <span class="tw:absolute! tw:bottom-0! tw:right-0!">
                                     @if($card->status == 'assigned')
-                                        <span class="badge bg-success custom-badge border border-white">
-                                            <i class="bi bi-check-circle-fill me-1"></i> Active
+                                        <span class="ui-badge tw:bg-bs-success! custom-badge tw:[border:1px_solid_#fff]!">
+                                            <i class="bi bi-check-circle-fill tw:mr-1!"></i> Active
                                         </span>
                                     @elseif($card->status == 'lost')
-                                        <span class="badge bg-danger custom-badge border border-white">
-                                            <i class="bi bi-x-circle-fill me-1"></i> Lost
+                                        <span class="ui-badge tw:bg-bs-danger! custom-badge tw:[border:1px_solid_#fff]!">
+                                            <i class="bi bi-x-circle-fill tw:mr-1!"></i> Lost
                                         </span>
                                     @elseif($card->status == 'damaged')
-                                        <span class="badge bg-warning text-dark custom-badge border border-white">
-                                            <i class="bi bi-exclamation-triangle-fill me-1"></i> Damaged
+                                        <span class="ui-badge tw:bg-bs-warning! tw:text-bs-dark! custom-badge tw:[border:1px_solid_#fff]!">
+                                            <i class="bi bi-exclamation-triangle-fill tw:mr-1!"></i> Damaged
                                         </span>
                                     @else
-                                        <span class="badge bg-secondary custom-badge border border-white">
+                                        <span class="ui-badge tw:bg-bs-secondary! custom-badge tw:[border:1px_solid_#fff]!">
                                             {{ ucfirst($card->status) }}
                                         </span>
                                     @endif
                                 </span>
                             </div>
                             
-                            <h4 class="fw-bold mt-3 mb-1 text-white">
+                            <h4 class="tw:font-bold! tw:mt-4! tw:mb-1! tw:text-bs-white!">
                                 {{ $card->student ? $card->student->full_name : 'Not Assigned' }}
                             </h4>
                             @if($card->student)
-                                <p class="text-white-50 mb-0">
-                                    <i class="bi bi-person-badge me-1"></i>
+                                <p class="tw:text-[rgba(255,255,255,0.5)]! tw:mb-0!">
+                                    <i class="bi bi-person-badge tw:mr-1!"></i>
                                     {{ $card->student->custom_id ?? 'ID: ' . $card->student->id }}
                                 </p>
                             @endif
@@ -122,7 +122,7 @@
                     <div class="profile-body">
                         @if($card->student)
                             {{-- QR Code Preview --}}
-                            <div class="text-center mb-4">
+                            <div class="tw:text-center! tw:mb-6!">
                                 <div class="qr-wrapper">
                                     @if($card->qr_code)
                                         <div class="qr-code-preview">
@@ -136,12 +136,12 @@
                                         </div>
                                     @else
                                         <div class="qr-placeholder">
-                                            <i class="bi bi-qr-code fs-1 text-muted"></i>
+                                            <i class="bi bi-qr-code tw:text-[length:calc(1.375rem_+_1.5vw)]! tw:xl:text-[length:2.5rem]! tw:text-bs-secondary-color!"></i>
                                         </div>
                                     @endif
                                 </div>
-                                <p class="text-muted small mt-2 mb-0">
-                                    <i class="bi bi-qr-code me-1"></i>
+                                <p class="tw:text-bs-secondary-color! tw:text-[.875em] tw:mt-2! tw:mb-0!">
+                                    <i class="bi bi-qr-code tw:mr-1!"></i>
                                     {{ $card->qr_code ?? 'No QR Code' }}
                                 </p>
                             </div>
@@ -156,15 +156,15 @@
                                     <label class="info-label">Grade</label>
                                     <p class="info-value">
                                         @if($card->student->grade)
-                                            <span class="badge bg-info custom-badge">{{ $card->student->grade->grade_name }}</span>
+                                            <span class="ui-badge tw:bg-bs-info! custom-badge">{{ $card->student->grade->grade_name }}</span>
                                         @else
-                                            <span class="text-muted">-</span>
+                                            <span class="tw:text-bs-secondary-color!">-</span>
                                         @endif
                                     </p>
                                 </div>
                                 <div class="info-item full-width">
                                     <label class="info-label">
-                                        <i class="bi bi-telephone me-1"></i> Mobile
+                                        <i class="bi bi-telephone tw:mr-1!"></i> Mobile
                                     </label>
                                     <p class="info-value">
                                         {{ $card->student->mobile ?? 'Not provided' }}
@@ -172,7 +172,7 @@
                                 </div>
                                 <div class="info-item full-width">
                                     <label class="info-label">
-                                        <i class="bi bi-envelope me-1"></i> Email
+                                        <i class="bi bi-envelope tw:mr-1!"></i> Email
                                     </label>
                                     <p class="info-value">
                                         {{ $card->student->email ?? 'Not provided' }}
@@ -183,21 +183,21 @@
                             {{-- Active Classes --}}
                             <div class="section-divider">
                                 <label class="info-label">
-                                    <i class="bi bi-book me-1"></i> Active Classes
+                                    <i class="bi bi-book tw:mr-1!"></i> Active Classes
                                 </label>
                                 @php
                                     $activeEnrollments = $card->student->enrollments->where('is_active', true);
                                 @endphp
                                 @if($activeEnrollments->isEmpty())
-                                    <p class="text-muted mb-0">No active classes</p>
+                                    <p class="tw:text-bs-secondary-color! tw:mb-0!">No active classes</p>
                                 @else
                                     <div class="class-badges">
                                         @foreach($activeEnrollments as $enrollment)
                                             <span class="class-badge-item">
-                                                <i class="bi bi-bookmark-fill me-1"></i>
+                                                <i class="bi bi-bookmark-fill tw:mr-1!"></i>
                                                 {{ $enrollment->studentClass->class_name }}
                                                 @if($enrollment->category)
-                                                    <span class="badge bg-secondary custom-badge ms-1">
+                                                    <span class="ui-badge tw:bg-bs-secondary! custom-badge tw:ml-1!">
                                                         {{ $enrollment->category->category_name }}
                                                     </span>
                                                 @endif
@@ -210,19 +210,19 @@
                             {{-- Guardian Information --}}
                             <div class="section-divider">
                                 <label class="info-label">
-                                    <i class="bi bi-person-lines-fill me-1"></i> Guardian
+                                    <i class="bi bi-person-lines-fill tw:mr-1!"></i> Guardian
                                 </label>
                                 <div class="guardian-info">
                                     <p class="guardian-name">
                                         {{ $card->student->guardian_fname ?? '' }} {{ $card->student->guardian_lname ?? '' }}
                                     </p>
                                     <p class="guardian-detail">
-                                        <i class="bi bi-telephone me-1"></i>
+                                        <i class="bi bi-telephone tw:mr-1!"></i>
                                         {{ $card->student->guardian_mobile ?? 'Not provided' }}
                                     </p>
                                     @if($card->student->guardian_nic)
                                         <p class="guardian-detail">
-                                            <i class="bi bi-card-text me-1"></i>
+                                            <i class="bi bi-card-text tw:mr-1!"></i>
                                             NIC: {{ $card->student->guardian_nic }}
                                         </p>
                                     @endif
@@ -240,81 +240,81 @@
             </div>
 
             {{-- Card Information & Details --}}
-            <div class="col-lg-8">
-                <div class="row g-4">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[66.66666667%]">
+                <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3">
                     {{-- Card Details --}}
-                    <div class="col-12">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:flex-[0_0_auto] tw:w-[100%]">
                         <div class="detail-card">
                             <div class="detail-card-header">
-                                <h5 class="mb-0 fw-bold">
-                                    <i class="bi bi-credit-card-2-front text-primary me-2"></i>
+                                <h5 class="tw:mb-0! tw:font-bold!">
+                                    <i class="bi bi-credit-card-2-front tw:text-bs-primary! tw:mr-2!"></i>
                                     Card Information
                                 </h5>
                             </div>
                             <div class="detail-card-body">
-                                <div class="row g-4">
-                                    <div class="col-md-4">
+                                <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3">
+                                    <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
                                         <div class="detail-info-item">
                                             <label class="detail-info-label">Card Number</label>
-                                            <p class="detail-info-value text-primary">
-                                                <i class="bi bi-hash me-1"></i>
+                                            <p class="detail-info-value tw:text-bs-primary!">
+                                                <i class="bi bi-hash tw:mr-1!"></i>
                                                 {{ $card->card_number }}
                                             </p>
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
                                         <div class="detail-info-item">
                                             <label class="detail-info-label">Status</label>
                                             @if ($card->status == 'available')
-                                                <span class="badge bg-success custom-badge-lg">
-                                                    <i class="bi bi-check-circle me-1"></i> Available
+                                                <span class="ui-badge tw:bg-bs-success! custom-badge-lg">
+                                                    <i class="bi bi-check-circle tw:mr-1!"></i> Available
                                                 </span>
                                             @elseif($card->status == 'assigned')
-                                                <span class="badge bg-primary custom-badge-lg">
-                                                    <i class="bi bi-person-check me-1"></i> Assigned
+                                                <span class="ui-badge tw:bg-bs-primary! custom-badge-lg">
+                                                    <i class="bi bi-person-check tw:mr-1!"></i> Assigned
                                                 </span>
                                             @elseif($card->status == 'lost')
-                                                <span class="badge bg-danger custom-badge-lg">
-                                                    <i class="bi bi-x-circle me-1"></i> Lost
+                                                <span class="ui-badge tw:bg-bs-danger! custom-badge-lg">
+                                                    <i class="bi bi-x-circle tw:mr-1!"></i> Lost
                                                 </span>
                                             @elseif($card->status == 'damaged')
-                                                <span class="badge bg-warning text-dark custom-badge-lg">
-                                                    <i class="bi bi-exclamation-triangle me-1"></i> Damaged
+                                                <span class="ui-badge tw:bg-bs-warning! tw:text-bs-dark! custom-badge-lg">
+                                                    <i class="bi bi-exclamation-triangle tw:mr-1!"></i> Damaged
                                                 </span>
                                             @else
-                                                <span class="badge bg-secondary custom-badge-lg">
+                                                <span class="ui-badge tw:bg-bs-secondary! custom-badge-lg">
                                                     {{ ucfirst($card->status) }}
                                                 </span>
                                             @endif
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
                                         <div class="detail-info-item">
                                             <label class="detail-info-label">Current Card</label>
                                             @if ($card->is_current)
-                                                <span class="badge bg-success custom-badge-lg">
-                                                    <i class="bi bi-star-fill me-1"></i> Active
+                                                <span class="ui-badge tw:bg-bs-success! custom-badge-lg">
+                                                    <i class="bi bi-star-fill tw:mr-1!"></i> Active
                                                 </span>
                                             @else
-                                                <span class="badge bg-secondary custom-badge-lg">
-                                                    <i class="bi bi-clock me-1"></i> Inactive
+                                                <span class="ui-badge tw:bg-bs-secondary! custom-badge-lg">
+                                                    <i class="bi bi-clock tw:mr-1!"></i> Inactive
                                                 </span>
                                             @endif
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
                                         <div class="detail-info-item">
                                             <label class="detail-info-label">Issued Date</label>
                                             <p class="detail-info-value">
-                                                <i class="bi bi-calendar-event me-1"></i>
+                                                <i class="bi bi-calendar-event tw:mr-1!"></i>
                                                 {{ optional($card->issued_at)->format('d M Y') }}
-                                                <span class="text-muted d-block small">
+                                                <span class="tw:text-bs-secondary-color! tw:block! tw:text-[.875em]">
                                                     {{ optional($card->issued_at)->format('h:i A') }}
                                                 </span>
                                             </p>
                                         </div>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
                                         <div class="detail-info-item">
                                             <label class="detail-info-label">QR Code</label>
                                             <p class="detail-info-value">
@@ -329,11 +329,11 @@
 
                     {{-- Enrollment Summary --}}
                     @if($card->student)
-                    <div class="col-12">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:flex-[0_0_auto] tw:w-[100%]">
                         <div class="detail-card">
                             <div class="detail-card-header">
-                                <h5 class="mb-0 fw-bold">
-                                    <i class="bi bi-clock-history text-primary me-2"></i>
+                                <h5 class="tw:mb-0! tw:font-bold!">
+                                    <i class="bi bi-clock-history tw:text-bs-primary! tw:mr-2!"></i>
                                     Enrollment Summary
                                 </h5>
                             </div>
@@ -344,22 +344,22 @@
                                     $totalEnrollments = $enrollments->count();
                                     $inactiveCount = $enrollments->where('is_active', false)->count();
                                 @endphp
-                                <div class="row g-3">
-                                    <div class="col-md-4">
+                                <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2">
+                                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
                                         <div class="stat-card-primary">
-                                            <h3 class="stat-number text-primary">{{ $activeCount }}</h3>
+                                            <h3 class="stat-number tw:text-bs-primary!">{{ $activeCount }}</h3>
                                             <p class="stat-label">Active Classes</p>
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
                                         <div class="stat-card-success">
-                                            <h3 class="stat-number text-success">{{ $totalEnrollments }}</h3>
+                                            <h3 class="stat-number tw:text-bs-success!">{{ $totalEnrollments }}</h3>
                                             <p class="stat-label">Total Enrollments</p>
                                         </div>
                                     </div>
-                                    <div class="col-md-4">
+                                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
                                         <div class="stat-card-info">
-                                            <h3 class="stat-number text-info">{{ $inactiveCount }}</h3>
+                                            <h3 class="stat-number tw:text-bs-info!">{{ $inactiveCount }}</h3>
                                             <p class="stat-label">Completed/Inactive</p>
                                         </div>
                                     </div>
@@ -368,9 +368,9 @@
                                 {{-- Recent Enrollments List --}}
                                 @if($enrollments->isNotEmpty())
                                 <div class="enrollment-table-wrapper">
-                                    <label class="info-label mb-2">Recent Enrollments</label>
-                                    <div class="table-responsive">
-                                        <table class="table custom-table-sm">
+                                    <label class="info-label tw:mb-2!">Recent Enrollments</label>
+                                    <div class="ui-table-responsive">
+                                        <table class="ui-table custom-table-sm">
                                             <thead>
                                                 <tr>
                                                     <th>Class</th>
@@ -382,19 +382,19 @@
                                             <tbody>
                                                 @foreach($enrollments->take(5) as $enrollment)
                                                     <tr>
-                                                        <td class="fw-semibold">{{ $enrollment->studentClass->class_name ?? 'N/A' }}</td>
+                                                        <td class="tw:font-semibold!">{{ $enrollment->studentClass->class_name ?? 'N/A' }}</td>
                                                         <td>
                                                             @if($enrollment->category)
-                                                                <span class="badge bg-secondary custom-badge">{{ $enrollment->category->category_name }}</span>
+                                                                <span class="ui-badge tw:bg-bs-secondary! custom-badge">{{ $enrollment->category->category_name }}</span>
                                                             @else
-                                                                <span class="text-muted">-</span>
+                                                                <span class="tw:text-bs-secondary-color!">-</span>
                                                             @endif
                                                         </td>
                                                         <td>
                                                             @if($enrollment->is_active)
-                                                                <span class="badge bg-success custom-badge">Active</span>
+                                                                <span class="ui-badge tw:bg-bs-success! custom-badge">Active</span>
                                                             @else
-                                                                <span class="badge bg-secondary custom-badge">Inactive</span>
+                                                                <span class="ui-badge tw:bg-bs-secondary! custom-badge">Inactive</span>
                                                             @endif
                                                         </td>
                                                         <td>{{ optional($enrollment->enrolled_at)->format('d M Y') ?? '-' }}</td>
@@ -411,39 +411,39 @@
                     @endif
 
                     {{-- Actions --}}
-                    <div class="col-12">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:flex-[0_0_auto] tw:w-[100%]">
                         <div class="detail-card">
                             <div class="detail-card-header">
-                                <h5 class="mb-0 fw-bold">
-                                    <i class="bi bi-tools text-primary me-2"></i>
+                                <h5 class="tw:mb-0! tw:font-bold!">
+                                    <i class="bi bi-tools tw:text-bs-primary! tw:mr-2!"></i>
                                     Actions
                                 </h5>
                             </div>
                             <div class="detail-card-body">
-                                <div class="d-flex flex-wrap gap-2">
+                                <div class="tw:flex! tw:flex-wrap! tw:gap-2!">
                                     @if ($card->status == 'assigned' && $card->student)
                                         @cardaccess('manage')
-                                        <a href="{{ route('student-cards.replace', $card->id) }}" class="btn btn-warning custom-btn">
+                                        <a href="{{ route('student-cards.replace', $card->id) }}" class="ui-btn ui-btn-warning custom-btn">
                                             <i class="bi bi-arrow-repeat"></i>
                                             Replace Card
                                         </a>
 
                                         <a href="{{ route('student-cards.lost', $card->id) }}" 
-                                           class="btn btn-danger custom-btn"
+                                           class="ui-btn ui-btn-danger custom-btn"
                                            onclick="return confirm('Are you sure you want to mark this card as lost?')">
                                             <i class="bi bi-x-circle"></i>
                                             Mark Lost
                                         </a>
 
                                         <a href="{{ route('student-cards.damaged', $card->id) }}" 
-                                           class="btn btn-dark custom-btn"
+                                           class="ui-btn ui-btn-dark custom-btn"
                                            onclick="return confirm('Are you sure you want to mark this card as damaged?')">
                                             <i class="bi bi-exclamation-triangle"></i>
                                             Mark Damaged
                                         </a>
 
                                         <a href="{{ route('student-cards.deactivate', $card->id) }}" 
-                                           class="btn btn-secondary custom-btn"
+                                           class="ui-btn ui-btn-secondary custom-btn"
                                            onclick="return confirm('Are you sure you want to deactivate this card?')">
                                             <i class="bi bi-slash-circle"></i>
                                             Deactivate
@@ -451,13 +451,13 @@
                                         @endcardaccess
 
                                         @if($card->student)
-                                            <a href="{{ route('admin.students.show', $card->student->id) }}" class="btn btn-info custom-btn text-white">
+                                            <a href="{{ route('admin.students.show', $card->student->id) }}" class="ui-btn ui-btn-info custom-btn tw:text-bs-white!">
                                                 <i class="bi bi-person"></i>
                                                 View Student Profile
                                             </a>
                                         @endif
                                     @elseif($card->status == 'available')
-                                        <a href="{{ route('student-cards.assign', $card->id) }}" class="btn btn-primary custom-btn">
+                                        <a href="{{ route('student-cards.assign', $card->id) }}" class="ui-btn ui-btn-primary custom-btn">
                                             <i class="bi bi-person-plus"></i>
                                             Assign to Student
                                         </a>
@@ -950,7 +950,7 @@
                 this.style.display = 'none';
                 const placeholder = document.createElement('div');
                 placeholder.className = 'profile-image-placeholder';
-                placeholder.innerHTML = '<i class="bi bi-person fs-1"></i>';
+                placeholder.innerHTML = '<i class="bi bi-person tw:text-[length:calc(1.375rem_+_1.5vw)]! tw:xl:text-[length:2.5rem]!"></i>';
                 this.parentNode.appendChild(placeholder);
             });
         });

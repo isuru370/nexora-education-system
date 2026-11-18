@@ -8,8 +8,8 @@
 <div class="halls-page">
 
     <!-- STATS -->
-    <div class="row g-4 mb-4">
-        <div class="col-xl-3 col-md-6">
+    <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3 tw:mb-6!">
+        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%]">
             <div class="stats-card">
                 <div class="stats-icon green">
                     <i class="bi bi-check-circle-fill"></i>
@@ -21,7 +21,7 @@
             </div>
         </div>
 
-        <div class="col-xl-3 col-md-6">
+        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%]">
             <div class="stats-card">
                 <div class="stats-icon orange">
                     <i class="bi bi-person-x-fill"></i>
@@ -33,13 +33,13 @@
             </div>
         </div>
 
-        <div class="col-xl-3 col-md-6">
+        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%]">
             <div class="stats-card">
                 <div class="stats-icon blue">
                     <i class="bi bi-clock-history"></i>
                 </div>
                 <div>
-                    <h6 class="fw-bold mb-0">
+                    <h6 class="tw:font-bold! tw:mb-0!">
                         {{ optional(\App\Models\StudentCard::latest()->first())->created_at?->format('d M Y') ?? 'N/A' }}
                     </h6>
                     <p>Last Generated</p>
@@ -47,7 +47,7 @@
             </div>
         </div>
 
-        <div class="col-xl-3 col-md-6">
+        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%]">
             <div class="stats-card">
                 <div class="stats-icon purple">
                     <i class="bi bi-sort-numeric-up"></i>
@@ -68,19 +68,19 @@
             <div>
                 <h4>Available Student Cards</h4>
                 <p>Cards that are ready to be assigned to students. 
-                    <span class="badge bg-success ms-1">{{ $cards->total() }} available</span>
+                    <span class="ui-badge tw:bg-bs-success! tw:ml-1!">{{ $cards->total() }} available</span>
                 </p>
             </div>
 
             <div class="header-buttons">
                 @cardaccess('generate')
-                <a href="{{ route('student-cards.generate') }}" class="btn btn-primary custom-btn">
+                <a href="{{ route('student-cards.generate') }}" class="ui-btn ui-btn-primary custom-btn">
                     <i class="bi bi-plus-circle"></i>
                     Generate Cards
                 </a>
                 @endcardaccess
 
-                <a href="{{ route('student-cards.index') }}" class="btn btn-light border custom-btn">
+                <a href="{{ route('student-cards.index') }}" class="ui-btn ui-btn-light tw:bs-border! custom-btn">
                     <i class="bi bi-arrow-left"></i>
                     Back to Inventory
                 </a>
@@ -89,50 +89,50 @@
 
         <!-- ALERT MESSAGES -->
         @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show custom-alert">
+            <div class="ui-alert ui-alert-success ui-alert-dismissible ui-fade show custom-alert">
                 <i class="bi bi-check-circle-fill"></i>
                 {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <button type="button" class="ui-btn-close" data-nx-dismiss="alert"></button>
             </div>
         @endif
 
         @if(session('error'))
-            <div class="alert alert-danger alert-dismissible fade show custom-alert">
+            <div class="ui-alert ui-alert-danger ui-alert-dismissible ui-fade show custom-alert">
                 <i class="bi bi-exclamation-triangle-fill"></i>
                 {{ session('error') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <button type="button" class="ui-btn-close" data-nx-dismiss="alert"></button>
             </div>
         @endif
 
         @if(session('warning'))
-            <div class="alert alert-warning alert-dismissible fade show custom-alert">
+            <div class="ui-alert ui-alert-warning ui-alert-dismissible ui-fade show custom-alert">
                 <i class="bi bi-exclamation-triangle-fill"></i>
                 {{ session('warning') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <button type="button" class="ui-btn-close" data-nx-dismiss="alert"></button>
             </div>
         @endif
 
         <!-- SEARCH -->
         <div class="search-card">
             <form method="GET" action="{{ route('student-cards.available') }}">
-                <div class="row g-3">
-                    <div class="col-lg-7">
+                <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[58.33333333%]">
                         <div class="search-input-wrapper">
                             <i class="bi bi-search"></i>
-                            <input type="text" name="keyword" class="form-control custom-input"
+                            <input type="text" name="keyword" class="ui-form-control custom-input"
                                 placeholder="Search by Card Number or QR Code..." 
                                 value="{{ request('keyword') }}">
                         </div>
                     </div>
 
-                    <div class="col-lg-2">
-                        <button type="submit" class="btn btn-primary w-100 custom-btn">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[16.66666667%]">
+                        <button type="submit" class="ui-btn ui-btn-primary tw:w-full! custom-btn">
                             <i class="bi bi-search"></i> Search
                         </button>
                     </div>
 
-                    <div class="col-lg-3">
-                        <a href="{{ route('student-cards.available') }}" class="btn btn-light border w-100 custom-btn">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[25%]">
+                        <a href="{{ route('student-cards.available') }}" class="ui-btn ui-btn-light tw:bs-border! tw:w-full! custom-btn">
                             <i class="bi bi-arrow-counterclockwise"></i> Reset
                         </a>
                     </div>
@@ -141,8 +141,8 @@
         </div>
 
         <!-- TABLE -->
-        <div class="table-responsive">
-            <table class="table custom-table align-middle">
+        <div class="ui-table-responsive">
+            <table class="ui-table custom-table tw:align-middle!">
                 <thead>
                     <tr>
                         <th>#</th>
@@ -151,7 +151,7 @@
                         <th>Sequence</th>
                         <th>Created</th>
                         <th>Status</th>
-                        <th class="text-end">Action</th>
+                        <th class="tw:text-right!">Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -161,7 +161,7 @@
 
                             <!-- CARD NUMBER -->
                             <td>
-                                <div class="d-flex align-items-center gap-3">
+                                <div class="tw:flex! tw:items-center! tw:gap-4!">
                                     <div class="card-avatar">
                                         <i class="bi bi-credit-card"></i>
                                     </div>
@@ -180,7 +180,7 @@
 
                             <!-- SEQUENCE -->
                             <td>
-                                <span class="badge bg-info custom-badge">{{ $card->card_sequence }}</span>
+                                <span class="ui-badge tw:bg-bs-info! custom-badge">{{ $card->card_sequence }}</span>
                             </td>
 
                             <!-- CREATED -->
@@ -190,19 +190,19 @@
 
                             <!-- STATUS -->
                             <td>
-                                <span class="badge bg-success custom-badge">Available</span>
+                                <span class="ui-badge tw:bg-bs-success! custom-badge">Available</span>
                             </td>
 
                             <!-- ACTION -->
-                            <td class="text-end">
+                            <td class="tw:text-right!">
                                 <div class="action-buttons">
                                     <button type="button"
                                         class="action-btn toggle-btn assign-card-btn"
                                         data-card-id="{{ $card->id }}"
                                         data-card-number="{{ $card->card_number }}"
                                         data-card-qr="{{ $card->qr_code }}"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#assignCardModal"
+                                        data-nx-toggle="modal"
+                                        data-nx-target="#assignCardModal"
                                         title="Assign to Student">
                                         <i class="bi bi-person-plus-fill"></i>
                                     </button>
@@ -216,13 +216,13 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="7" class="text-center py-5 text-muted">
+                            <td colspan="7" class="tw:text-center! tw:py-12! tw:text-bs-secondary-color!">
                                 <div class="empty-state">
                                     <i class="bi bi-inbox"></i>
                                     <h5>No Available Cards Found</h5>
                                     <p>Generate new cards or change your search criteria.</p>
                                     @cardaccess('generate')
-                                    <a href="{{ route('student-cards.generate') }}" class="btn btn-primary custom-btn mt-3">
+                                    <a href="{{ route('student-cards.generate') }}" class="ui-btn ui-btn-primary custom-btn tw:mt-4!">
                                         <i class="bi bi-plus-circle"></i> Generate Cards Now
                                     </a>
                                     @endcardaccess
@@ -236,8 +236,8 @@
 
         <!-- PAGINATION -->
         @if($cards->hasPages())
-            <div class="d-flex justify-content-between align-items-center mt-4 flex-wrap gap-3">
-                <div class="text-muted">
+            <div class="tw:flex! tw:justify-between! tw:items-center! tw:mt-6! tw:flex-wrap! tw:gap-4!">
+                <div class="tw:text-bs-secondary-color!">
                     Showing {{ $cards->firstItem() }} to {{ $cards->lastItem() }} 
                     of {{ $cards->total() }} results
                 </div>
@@ -251,48 +251,48 @@
 </div>
 
 <!-- Assign Card Modal -->
-<div class="modal fade"
+<div class="ui-modal ui-fade"
      id="assignCardModal"
      tabindex="-1"
      aria-labelledby="assignCardModalLabel"
      aria-hidden="true">
-    <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="ui-modal-dialog ui-modal-lg ui-modal-dialog-centered">
         <form method="POST" action="{{ route('student-cards.assign') }}" id="assignForm">
             @csrf
-            <div class="modal-content border-0 shadow-lg">
-                <div class="modal-header custom-modal-header">
-                    <h5 class="modal-title fw-bold" id="assignCardModalLabel">
-                        <i class="bi bi-person-vcard-fill me-2"></i>
+            <div class="ui-modal-content tw:[border:0]! tw:shadow-bs-lg!">
+                <div class="ui-modal-header custom-modal-header">
+                    <h5 class="ui-modal-title tw:font-bold!" id="assignCardModalLabel">
+                        <i class="bi bi-person-vcard-fill tw:mr-2!"></i>
                         Assign Student Card
                     </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <button type="button" class="ui-btn-close" data-nx-dismiss="modal"></button>
                 </div>
 
-                <div class="modal-body p-4">
+                <div class="ui-modal-body tw:p-6!">
                     <!-- Selected Card Info -->
-                    <div class="alert alert-info custom-alert-info">
-                        <div class="d-flex align-items-center">
-                            <i class="bi bi-info-circle-fill me-2 fs-4"></i>
+                    <div class="ui-alert ui-alert-info custom-alert-info">
+                        <div class="tw:flex! tw:items-center!">
+                            <i class="bi bi-info-circle-fill tw:mr-2! tw:text-[length:calc(1.275rem_+_0.3vw)]! tw:xl:text-[length:1.5rem]!"></i>
                             <div>
                                 <strong>Assigning Card:</strong>
-                                <span id="selectedCardInfo" class="fw-bold">-</span>
-                                <span class="text-muted">|</span>
-                                <span id="selectedCardQr" class="fw-bold">-</span>
+                                <span id="selectedCardInfo" class="tw:font-bold!">-</span>
+                                <span class="tw:text-bs-secondary-color!">|</span>
+                                <span id="selectedCardQr" class="tw:font-bold!">-</span>
                             </div>
                         </div>
                     </div>
 
-                    <div class="row g-3">
+                    <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2">
                         <!-- Card Selection -->
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold">
-                                <i class="bi bi-credit-card me-1"></i>
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
+                            <label class="ui-form-label tw:font-bold!">
+                                <i class="bi bi-credit-card tw:mr-1!"></i>
                                 Card
-                                <span class="text-danger">*</span>
+                                <span class="tw:text-bs-danger!">*</span>
                             </label>
                             <select name="card_id"
                                     id="cardSelect"
-                                    class="form-select custom-input select2"
+                                    class="ui-form-select custom-input select2"
                                     required>
                                 <option value="">Select Card...</option>
                                 @foreach($cards as $card)
@@ -302,20 +302,20 @@
                                 @endforeach
                             </select>
                             @error('card_id')
-                                <div class="text-danger small mt-1">{{ $message }}</div>
+                                <div class="tw:text-bs-danger! tw:text-[.875em] tw:mt-1!">{{ $message }}</div>
                             @enderror
                         </div>
 
                         <!-- Student Selection -->
-                        <div class="col-md-6">
-                            <label class="form-label fw-bold">
-                                <i class="bi bi-person me-1"></i>
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
+                            <label class="ui-form-label tw:font-bold!">
+                                <i class="bi bi-person tw:mr-1!"></i>
                                 Student
-                                <span class="text-danger">*</span>
+                                <span class="tw:text-bs-danger!">*</span>
                             </label>
                             <select name="student_id"
                                     id="studentSelect"
-                                    class="form-select custom-input select2"
+                                    class="ui-form-select custom-input select2"
                                     required>
                                 <option value="">Select Student...</option>
                                 @foreach($students as $student)
@@ -327,30 +327,30 @@
                                             ({{ $student->admission_no }})
                                         @endif
                                         @if($student->currentCard)
-                                            <span class="text-warning">- Has Card: {{ $student->currentCard->card_number }}</span>
+                                            <span class="tw:text-bs-warning!">- Has Card: {{ $student->currentCard->card_number }}</span>
                                         @endif
                                     </option>
                                 @endforeach
                             </select>
                             @error('student_id')
-                                <div class="text-danger small mt-1">{{ $message }}</div>
+                                <div class="tw:text-bs-danger! tw:text-[.875em] tw:mt-1!">{{ $message }}</div>
                             @enderror
                         </div>
                     </div>
 
                     <!-- Warning for students with current card -->
-                    <div class="alert alert-warning mt-3 d-none custom-alert-warning" id="studentHasCardWarning">
-                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    <div class="ui-alert ui-alert-warning tw:mt-4! tw:hidden! custom-alert-warning" id="studentHasCardWarning">
+                        <i class="bi bi-exclamation-triangle-fill tw:mr-2!"></i>
                         <span id="studentHasCardMessage">This student already has a current card. Assigning a new card will replace the existing one.</span>
                     </div>
                 </div>
 
-                <div class="modal-footer border-0">
-                    <button type="button" class="btn btn-light border custom-btn" data-bs-dismiss="modal">
+                <div class="ui-modal-footer tw:[border:0]!">
+                    <button type="button" class="ui-btn ui-btn-light tw:bs-border! custom-btn" data-nx-dismiss="modal">
                         <i class="bi bi-x-circle"></i>
                         Cancel
                     </button>
-                    <button type="submit" class="btn btn-primary custom-btn" id="assignSubmitBtn">
+                    <button type="submit" class="ui-btn ui-btn-primary custom-btn" id="assignSubmitBtn">
                         <i class="bi bi-check-circle"></i>
                         Assign Card
                     </button>
@@ -390,7 +390,7 @@ $(document).ready(function () {
         }
 
         $('#studentSelect').val(null).trigger('change');
-        $('#studentHasCardWarning').addClass('d-none');
+        $('#studentHasCardWarning').addClass('tw:hidden!');
 
         setTimeout(function() {
             $('#studentSelect').next('.select2-container').find('.select2-selection').click();
@@ -404,25 +404,25 @@ $(document).ready(function () {
         let cardNumber = selectedOption.data('card-number') || '';
 
         if (hasCard) {
-            $('#studentHasCardWarning').removeClass('d-none');
+            $('#studentHasCardWarning').removeClass('tw:hidden!');
             $('#studentHasCardMessage').text(
                 'This student already has a current card (' + cardNumber +
                 '). Assigning a new card will replace the existing one.'
             );
         } else {
-            $('#studentHasCardWarning').addClass('d-none');
+            $('#studentHasCardWarning').addClass('tw:hidden!');
         }
     });
 
     // Reset modal when closed
-    $('#assignCardModal').on('hidden.bs.modal', function () {
+    $('#assignCardModal').on('hidden.nx.modal', function () {
         $('#cardSelect').val(null).trigger('change');
         $('#studentSelect').val(null).trigger('change');
-        $('#studentHasCardWarning').addClass('d-none');
+        $('#studentHasCardWarning').addClass('tw:hidden!');
         $('#selectedCardInfo').text('-');
         $('#selectedCardQr').text('-');
-        $('.is-invalid').removeClass('is-invalid');
-        $('.invalid-feedback').remove();
+        $('.ui-is-invalid').removeClass('ui-is-invalid');
+        $('.ui-invalid-feedback').remove();
     });
 
     // Form submit validation
@@ -432,10 +432,10 @@ $(document).ready(function () {
 
         if (!cardId) {
             e.preventDefault();
-            $('#cardSelect').addClass('is-invalid');
-            if (!$('#cardSelect').next('.invalid-feedback').length) {
+            $('#cardSelect').addClass('ui-is-invalid');
+            if (!$('#cardSelect').next('.ui-invalid-feedback').length) {
                 $('#cardSelect').after(
-                    '<div class="invalid-feedback d-block">Please select a card.</div>'
+                    '<div class="ui-invalid-feedback tw:block!">Please select a card.</div>'
                 );
             }
             return false;
@@ -443,10 +443,10 @@ $(document).ready(function () {
 
         if (!studentId) {
             e.preventDefault();
-            $('#studentSelect').addClass('is-invalid');
-            if (!$('#studentSelect').next('.invalid-feedback').length) {
+            $('#studentSelect').addClass('ui-is-invalid');
+            if (!$('#studentSelect').next('.ui-invalid-feedback').length) {
                 $('#studentSelect').after(
-                    '<div class="invalid-feedback d-block">Please select a student.</div>'
+                    '<div class="ui-invalid-feedback tw:block!">Please select a student.</div>'
                 );
             }
             return false;
@@ -455,22 +455,22 @@ $(document).ready(function () {
         let submitBtn = $('#assignSubmitBtn');
         submitBtn.prop('disabled', true);
         submitBtn.html(`
-            <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+            <span class="ui-spinner-border ui-spinner-border-sm tw:mr-2!" role="status" aria-hidden="true"></span>
             Assigning...
         `);
     });
 
     // Clear validation errors on change
     $('#cardSelect, #studentSelect').on('change', function() {
-        $(this).removeClass('is-invalid');
-        $(this).next('.invalid-feedback').remove();
+        $(this).removeClass('ui-is-invalid');
+        $(this).next('.ui-invalid-feedback').remove();
     });
 });
 
 // Show modal on page load if there are errors
 @if($errors->any())
     $(document).ready(function() {
-        let modal = new bootstrap.Modal(document.getElementById('assignCardModal'));
+        let modal = new NxUi.Modal(document.getElementById('assignCardModal'));
         modal.show();
 
         @if(old('card_id'))
@@ -821,17 +821,17 @@ $(document).ready(function () {
         border-radius: 16px 16px 0 0;
         padding: 1.5rem;
     }
-    .custom-modal-header .btn-close {
+    .custom-modal-header .ui-btn-close {
         filter: brightness(0) invert(1);
     }
 
-    .modal-content {
+    .ui-modal-content {
         border-radius: 16px;
         overflow: hidden;
     }
 
     /* ===== PAGINATION ===== */
-    .pagination .page-link {
+    .ui-pagination .ui-page-link {
         border-radius: 10px !important;
         border: none;
         padding: 0.6rem 1rem;
@@ -840,11 +840,11 @@ $(document).ready(function () {
         margin: 0 3px;
         transition: all .2s ease;
     }
-    .pagination .page-link:hover {
+    .ui-pagination .ui-page-link:hover {
         background: #eef2f7;
         color: #0f172a;
     }
-    .pagination .page-item.active .page-link {
+    .ui-pagination .ui-page-item.active .ui-page-link {
         background: #2563eb;
         color: #fff;
         box-shadow: 0 4px 12px rgba(37, 99, 235, .30);
@@ -915,7 +915,7 @@ $(document).ready(function () {
     }
 
     @media(max-width: 576px) {
-        .table-responsive {
+        .ui-table-responsive {
             font-size: 0.85rem;
         }
 
