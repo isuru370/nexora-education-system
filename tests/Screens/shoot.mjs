@@ -49,6 +49,23 @@ const name = (url) => (url.replace(/^\//, '').replace(/[^a-zA-Z0-9]+/g, '_') || 
     await context.close();
 }
 
+function layout() {
+    const props = ['display', 'position', 'box-sizing', 'width', 'height', 'margin-top', 'margin-right', 'margin-bottom', 'margin-left',
+        'padding-top', 'padding-right', 'padding-bottom', 'padding-left', 'border-top-width', 'border-bottom-width',
+        'font-size', 'font-weight', 'line-height', 'color', 'background-color', 'gap', 'flex', 'text-align'];
+    const out = [];
+    for (const el of document.body.querySelectorAll('*')) {
+        if (el.closest('#sidebar')) continue;
+        const r = el.getBoundingClientRect();
+        const cs = getComputedStyle(el);
+        const id = el.id ? '#' + el.id : '';
+        const cls = typeof el.className === 'string' ? el.className.trim().split(/\s+/).filter((c) => c && !c.startsWith('tw:')).slice(0, 3).map((c) => '.' + c).join('') : '';
+        out.push([el.tagName.toLowerCase() + id + cls, Math.round(r.x), Math.round(r.y + scrollY), Math.round(r.width), Math.round(r.height),
+            props.map((p) => cs.getPropertyValue(p)).join('|')]);
+    }
+    return out;
+}
+
 for (const [label, viewport] of [['desktop', { width: 1366, height: 900 }], ['mobile', { width: 390, height: 844 }]]) {
     const { context, page } = await session(viewport);
     const list = label === 'mobile' ? urls.slice(0, 25) : urls;
@@ -58,6 +75,8 @@ for (const [label, viewport] of [['desktop', { width: 1366, height: 900 }], ['mo
             await page.goto(base + url, { waitUntil: 'networkidle', timeout: 20000 });
             await page.waitForTimeout(200);
             await page.screenshot({ path: path.join(outDir, `${label}__${name(url)}.png`), fullPage: true });
+            // element boxes + a few styles, to find what moved when the picture changes
+            fs.writeFileSync(path.join(outDir, `${label}__${name(url)}.json`), JSON.stringify(await page.evaluate(layout)));
         } catch (e) {
             console.log(`skip ${url}: ${e.message.split('\n')[0]}`);
         }

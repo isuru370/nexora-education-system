@@ -13,6 +13,25 @@ fs.mkdirSync(outDir, { recursive: true });
 const files = [...new Set([...fs.readdirSync(beforeDir), ...fs.readdirSync(afterDir)])].filter(f => f.endsWith('.png')).sort();
 const rows = [];
 
+// the first element (document order) whose box or style is not the same
+const PROPS = ['display', 'position', 'box-sizing', 'width', 'height', 'margin-top', 'margin-right', 'margin-bottom', 'margin-left',
+    'padding-top', 'padding-right', 'padding-bottom', 'padding-left', 'border-top-width', 'border-bottom-width',
+    'font-size', 'font-weight', 'line-height', 'color', 'background-color', 'gap', 'flex', 'text-align'];
+function firstMoved(file) {
+    const ja = path.join(beforeDir, file.replace('.png', '.json')), jb = path.join(afterDir, file.replace('.png', '.json'));
+    if (!fs.existsSync(ja) || !fs.existsSync(jb)) return '';
+    const A = JSON.parse(fs.readFileSync(ja, 'utf8')), B = JSON.parse(fs.readFileSync(jb, 'utf8'));
+    for (let i = 0; i < Math.min(A.length, B.length); i++) {
+        const a = A[i], b = B[i];
+        const sa = a[5].split('|'), sb = b[5].split('|');
+        const styles = PROPS.map((p, k) => (sa[k] !== sb[k] && p !== 'width' && p !== 'height' ? `${p}: ${sa[k]} → ${sb[k]}` : '')).filter(Boolean);
+        if (a[1] !== b[1] || a[2] !== b[2] || a[3] !== b[3] || a[4] !== b[4] || styles.length) {
+            return `\`${b[0]}\` ${a[3]}×${a[4]}@${a[1]},${a[2]} → ${b[3]}×${b[4]}@${b[1]},${b[2]} ${styles.join('; ')}`.slice(0, 300);
+        }
+    }
+    return A.length !== B.length ? `elements ${A.length} → ${B.length}` : '';
+}
+
 for (const file of files) {
     const a = path.join(beforeDir, file), b = path.join(afterDir, file);
     if (!fs.existsSync(a) || !fs.existsSync(b)) { rows.push([file, fs.existsSync(a) ? 'missing after' : 'new page', 100]); continue; }
@@ -30,6 +49,7 @@ for (const file of files) {
         const left = await sharp(a).resize({ width: Math.round(imgA.width * scale) }).toBuffer();
         const right = await sharp(b).resize({ width: Math.round(imgB.width * scale) }).toBuffer();
         const w = Math.round(width * scale), h = Math.round(height * scale);
+        rows[rows.length - 1].push(firstMoved(file));
         await sharp({ create: { width: w * 2 + 20, height: h, channels: 3, background: '#ff00ff' } })
             .composite([{ input: left, left: 0, top: 0 }, { input: right, left: w + 20, top: 0 }])
             .jpeg({ quality: 70 })
@@ -41,9 +61,9 @@ rows.sort((x, y) => y[2] - x[2]);
 const md = [
     `${files.length} screenshots, **${rows.length} changed** (left: before, right: after)`,
     '',
-    '| Page | Height | Changed |',
-    '|---|---|---|',
-    ...rows.map(([f, h, p]) => `| ${f.replace('.png', '')} | ${h} | ${p}% |`),
+    '| Page | Height | Changed | First element that differs |',
+    '|---|---|---|---|',
+    ...rows.map(([f, h, p, m]) => `| ${f.replace('.png', '')} | ${h} | ${p}% | ${(m || '').replace(/\|/g, '/')} |`),
 ].join('\n');
 fs.writeFileSync(path.join(outDir, 'summary.md'), md + '\n');
 console.log(md);

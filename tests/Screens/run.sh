@@ -27,7 +27,8 @@ php artisan key:generate --force -q
 php artisan storage:link -q || true
 
 php vendor/bin/phpunit -c tests/Screens/phpunit.xml
-php artisan serve --host=127.0.0.1 --port="$port" > "/tmp/serve-$(basename "$dir").log" 2>&1 &
+# several workers: one slow page does not block the others
+PHP_CLI_SERVER_WORKERS=4 php artisan serve --host=127.0.0.1 --port="$port" > "/tmp/serve-$(basename "$dir").log" 2>&1 &
 server=$!
 for i in $(seq 1 30); do curl -s -o /dev/null "http://127.0.0.1:$port/login" && break; sleep 1; done
 
