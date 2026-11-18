@@ -114,7 +114,9 @@ jobs:
               echo
               echo '```'
               # every failed test with its message (cut to fit a comment)
-              grep -A12 -E "^\s+(FAILED|•|⨯)|FAILED " test-output.txt | head -c 55000 || tail -c 55000 test-output.txt
+              FAILS=$(grep -A12 -E "^\s+(FAILED|•|⨯)|FAILED " test-output.txt | head -c 50000)
+              if [ -n "$FAILS" ]; then echo "$FAILS"; else tail -c 50000 test-output.txt; fi
+              echo "--- output: $(wc -l < test-output.txt) lines"
               echo '```'
               echo "</details>"
             fi
