@@ -286,7 +286,7 @@
                     <i class="bi bi-chevron-down tw:ml-auto tw:text-[0.75rem] tw:transition-transform tw:duration-200 tw:group-[.is-open]:rotate-180"></i>
                 </button>
 
-                <div class="tw:ml-[1.15rem] tw:hidden tw:border-l tw:border-white/8 tw:pt-[0.15rem] tw:pb-[0.4rem] tw:pl-[0.6rem] tw:group-[.is-open]:block">
+                <div class="sidebar-group-items tw:ml-[1.15rem] tw:hidden tw:border-l tw:border-white/8 tw:pt-[0.15rem] tw:pb-[0.4rem] tw:pl-[0.6rem] tw:group-[.is-open]:block">
                     @foreach ($group['items'] as $item)
                         <div class="nav-item tw:mb-1" data-label="{{ strtolower($item[0]) }}">
                             <button type="button"
