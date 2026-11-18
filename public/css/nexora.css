@@ -3169,7 +3169,7 @@ body {
 .sidebar-nav {
   padding: 1.5rem 1rem;
 }
-.nav-item, .ui-nav-item {
+.nav-item {
   margin-bottom: 0.35rem;
 }
 .nav-link-custom {
@@ -4255,6 +4255,9 @@ body {
 .tw\:my-2\! {
   margin-block: calc(var(--tw-spacing) * 2) !important;
 }
+.tw\:my-4\! {
+  margin-block: calc(var(--tw-spacing) * 4) !important;
+}
 .tw\:my-\[0\.4rem\] {
   margin-block: 0.4rem;
 }
@@ -4350,6 +4353,9 @@ body {
 }
 .tw\:mb-6\! {
   margin-bottom: calc(var(--tw-spacing) * 6) !important;
+}
+.tw\:mb-12\! {
+  margin-bottom: calc(var(--tw-spacing) * 12) !important;
 }
 .tw\:mb-\[\.125rem\] {
   margin-bottom: .125rem;
@@ -4558,6 +4564,9 @@ body {
 .tw\:shrink-0 {
   flex-shrink: 0;
 }
+.tw\:shrink-0\! {
+  flex-shrink: 0 !important;
+}
 .tw\:grow\! {
   flex-grow: 1 !important;
 }
@@ -4660,6 +4669,9 @@ body {
 }
 .tw\:self-center\! {
   align-self: center !important;
+}
+.tw\:self-start\! {
+  align-self: flex-start !important;
 }
 .tw\:truncate {
   overflow: hidden;
@@ -5168,6 +5180,9 @@ body {
 .tw\:text-left {
   text-align: left;
 }
+.tw\:text-left\! {
+  text-align: left !important;
+}
 .tw\:text-right {
   text-align: right;
 }
@@ -5439,6 +5454,9 @@ body {
 .tw\:text-white {
   color: var(--tw-color-white);
 }
+.tw\:text-white\! {
+  color: var(--tw-color-white) !important;
+}
 .tw\:text-white\/55 {
   color: var(--tw-color-white);
   @supports (color: color-mix(in lab, red, red)) {
@@ -5450,6 +5468,12 @@ body {
   @supports (color: color-mix(in lab, red, red)) {
     color: color-mix(in oklab, var(--tw-color-white) 72%, transparent);
   }
+}
+.tw\:capitalize\! {
+  text-transform: capitalize !important;
+}
+.tw\:lowercase\! {
+  text-transform: lowercase !important;
 }
 .tw\:uppercase {
   text-transform: uppercase;
@@ -5596,6 +5620,9 @@ body {
 }
 .tw\:\[animation-delay\:3s\] {
   animation-delay: 3s;
+}
+.tw\:\[background\:var\(--nx-amber\)\]\! {
+  background: var(--nx-amber) !important;
 }
 .tw\:\[background\:var\(--nx-blue\)\]\! {
   background: var(--nx-blue) !important;
@@ -5854,8 +5881,14 @@ body {
   .tw\:sm\:block {
     display: block;
   }
+  .tw\:sm\:w-\[41\.66666667\%\] {
+    width: 41.66666667%;
+  }
   .tw\:sm\:w-\[50\%\] {
     width: 50%;
+  }
+  .tw\:sm\:w-\[58\.33333333\%\] {
+    width: 58.33333333%;
   }
   .tw\:sm\:flex-\[0_0_auto\] {
     flex: 0 0 auto;
@@ -5873,6 +5906,9 @@ body {
   }
   .tw\:md\:mb-0\! {
     margin-bottom: 0px !important;
+  }
+  .tw\:md\:grid\! {
+    display: grid !important;
   }
   .tw\:md\:w-\[8\.33333333\%\] {
     width: 8.33333333%;
@@ -5925,6 +5961,9 @@ body {
   .tw\:md\:px-4\! {
     padding-inline: calc(var(--tw-spacing) * 4) !important;
   }
+  .tw\:md\:text-left\! {
+    text-align: left !important;
+  }
   .tw\:md\:text-right\! {
     text-align: right !important;
   }
@@ -5957,6 +5996,9 @@ body {
   .tw\:lg\:w-\[66\.66666667\%\] {
     width: 66.66666667%;
   }
+  .tw\:lg\:w-\[75\%\] {
+    width: 75%;
+  }
   .tw\:lg\:w-\[83\.33333333\%\] {
     width: 83.33333333%;
   }
@@ -5965,6 +6007,9 @@ body {
   }
   .tw\:lg\:flex-row\! {
     flex-direction: row !important;
+  }
+  .tw\:lg\:justify-end\! {
+    justify-content: flex-end !important;
   }
 }
 @media (width >= 1200px) {

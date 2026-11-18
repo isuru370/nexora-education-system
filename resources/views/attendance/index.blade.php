@@ -7,7 +7,7 @@
     <div class="dashboard-page">
 
         {{-- HERO --}}
-        <div class="hero-section mb-4">
+        <div class="hero-section tw:mb-6!">
             <div class="hero-content">
                 <div class="hero-left">
                     <span class="greeting-badge">nexoraEDU</span>
@@ -24,60 +24,60 @@
         </div>
 
         {{-- ALERT --}}
-        <div id="attendanceAlert" class="alert alert-info d-none nx-alert" data-persist-alert="true" role="alert">
-            <div class="d-flex align-items-start gap-2">
-                <i class="bi bi-info-circle-fill fs-5 mt-1" id="alertIcon"></i>
-                <div class="flex-grow-1">
+        <div id="attendanceAlert" class="ui-alert ui-alert-info tw:hidden! nx-alert" data-persist-alert="true" role="alert">
+            <div class="tw:flex! tw:items-start! tw:gap-2!">
+                <i class="bi bi-info-circle-fill tw:text-[length:1.25rem]! tw:mt-1!" id="alertIcon"></i>
+                <div class="tw:grow!">
                     <strong id="alertTitle">Info</strong>
-                    <div id="alertMessage" class="mt-1"></div>
+                    <div id="alertMessage" class="tw:mt-1!"></div>
                 </div>
-                <button type="button" class="btn-close" aria-label="Close"
+                <button type="button" class="ui-btn-close" aria-label="Close"
                     onclick="document.getElementById('attendanceAlert').classList.add('d-none')"></button>
             </div>
         </div>
 
-        <div class="row g-4">
+        <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3">
             {{-- QR READER --}}
-            <div class="col-lg-4">
-                <div class="nx-card h-100">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[33.33333333%]">
+                <div class="nx-card tw:h-full!">
                     <div class="nx-card-header">
-                        <h5 class="nx-card-title"><i class="bi bi-qr-code-scan text-primary"></i> QR Reader</h5>
+                        <h5 class="nx-card-title"><i class="bi bi-qr-code-scan tw:text-(color:--nx-blue)!"></i> QR Reader</h5>
                         <span class="nx-badge nx-badge-blue">Live</span>
                     </div>
-                    <div class="p-3">
-                        <ul class="nav nav-pills nx-pills mb-3" role="tablist">
-                            <li class="nav-item me-2">
-                                <button class="nav-link active" data-bs-toggle="tab" data-bs-target="#scanTab" type="button">Scan QR</button>
+                    <div class="bs-p-3 tw:p-4!">
+                        <ul class="ui-nav ui-nav-pills nx-pills tw:mb-4!" role="tablist">
+                            <li class="ui-nav-item tw:mr-2!">
+                                <button class="ui-nav-link active" data-nx-toggle="tab" data-nx-target="#scanTab" type="button">Scan QR</button>
                             </li>
-                            <li class="nav-item">
-                                <button class="nav-link" data-bs-toggle="tab" data-bs-target="#manualTab" type="button">Manual Entry</button>
+                            <li class="ui-nav-item">
+                                <button class="ui-nav-link" data-nx-toggle="tab" data-nx-target="#manualTab" type="button">Manual Entry</button>
                             </li>
                         </ul>
-                        <div class="tab-content">
-                            <div class="tab-pane fade show active" id="scanTab">
+                        <div class="ui-tab-content">
+                            <div class="ui-tab-pane ui-fade show active" id="scanTab">
                                 <div id="qr-reader" class="qr-reader-box"></div>
-                                <div class="d-grid gap-2 mt-3">
+                                <div class="tw:grid! tw:gap-2! tw:mt-4!">
                                     <button type="button" class="nx-btn nx-btn-primary" id="startScannerBtn">
                                         <i class="bi bi-camera-fill"></i> Start Scanner
                                     </button>
-                                    <button type="button" class="nx-btn nx-btn-light d-none" id="stopScannerBtn">
+                                    <button type="button" class="nx-btn nx-btn-light tw:hidden!" id="stopScannerBtn">
                                         <i class="bi bi-stop-circle"></i> Stop Scanner
                                     </button>
                                 </div>
-                                <small class="cell-sub d-block mt-3">Camera scanning requires HTTPS or localhost.</small>
+                                <small class="cell-sub tw:block! tw:mt-4!">Camera scanning requires HTTPS or localhost.</small>
                             </div>
-                            <div class="tab-pane fade" id="manualTab">
+                            <div class="ui-tab-pane ui-fade" id="manualTab">
                                 <form id="manualQrForm" autocomplete="off">
                                     @csrf
-                                    <div class="mb-3">
+                                    <div class="tw:mb-4!">
                                         <label for="manualQrCode" class="nx-label">Student QR / Code</label>
                                         <div class="nx-input-group">
                                             <span class="nx-input-group-text"><i class="bi bi-upc-scan"></i></span>
-                                            <input type="text" class="form-control nx-input" id="manualQrCode"
+                                            <input type="text" class="ui-form-control nx-input" id="manualQrCode"
                                                 placeholder="Enter QR code" maxlength="150">
                                         </div>
                                     </div>
-                                    <div class="d-grid">
+                                    <div class="tw:grid!">
                                         <button type="submit" class="nx-btn nx-btn-success" id="manualReadBtn">
                                             <i class="bi bi-person-check-fill"></i> Read Student
                                         </button>
@@ -90,37 +90,37 @@
             </div>
 
             {{-- RIGHT SIDE --}}
-            <div class="col-lg-8">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[66.66666667%]">
                 <div id="emptyStateCard" class="nx-card">
                     <div class="empty-state-box">
                         <div class="empty-icon"><i class="bi bi-qr-code-scan"></i></div>
                         <h5 class="empty-title">No Student Selected</h5>
-                        <p class="cell-sub mb-0">Scan a QR code or enter a student code manually.</p>
+                        <p class="cell-sub tw:mb-0!">Scan a QR code or enter a student code manually.</p>
                     </div>
                 </div>
 
-                <div id="studentDetailsCard" class="nx-card d-none mb-4">
+                <div id="studentDetailsCard" class="nx-card tw:hidden! tw:mb-6!">
                     <div class="nx-card-header">
-                        <h5 class="nx-card-title"><i class="bi bi-person-badge text-primary"></i> Student Details</h5>
+                        <h5 class="nx-card-title"><i class="bi bi-person-badge tw:text-(color:--nx-blue)!"></i> Student Details</h5>
                         <span class="nx-badge nx-badge-gray" id="qrTypeBadge">-</span>
                     </div>
-                    <div class="p-3">
-                        <div class="row align-items-center g-4">
-                            <div class="col-md-3 text-center">
+                    <div class="bs-p-3 tw:p-4!">
+                        <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3 tw:items-center!">
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[25%] tw:text-center!">
                                 <img id="studentImage" src="{{ asset('storage/uploads/male.png') }}" class="student-image" alt="Student Image">
                             </div>
-                            <div class="col-md-9">
-                                <div class="row g-3">
-                                    <div class="col-md-6">
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[75%]">
+                                <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2">
+                                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
                                         <div class="detail-box"><small class="cell-sub">Student ID</small><div class="detail-value" id="studentId">-</div></div>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
                                         <div class="detail-box"><small class="cell-sub">Name</small><div class="detail-value" id="studentName">-</div></div>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
                                         <div class="detail-box"><small class="cell-sub">Mobile</small><div class="detail-value" id="studentMobile">-</div></div>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
                                         <div class="detail-box"><small class="cell-sub">Guardian Mobile</small><div class="detail-value" id="guardianMobile">-</div></div>
                                     </div>
                                 </div>
@@ -129,59 +129,59 @@
                     </div>
                 </div>
 
-                <div id="attendanceDetailsCard" class="nx-card d-none">
+                <div id="attendanceDetailsCard" class="nx-card tw:hidden!">
                     <div class="nx-card-header">
-                        <h5 class="nx-card-title"><i class="bi bi-clipboard-check text-primary"></i> Attendance Details</h5>
+                        <h5 class="nx-card-title"><i class="bi bi-clipboard-check tw:text-(color:--nx-blue)!"></i> Attendance Details</h5>
                         <span class="nx-badge nx-badge-green">Ready</span>
                     </div>
-                    <div class="p-3"><div id="attendanceDetailsContent"></div></div>
+                    <div class="bs-p-3 tw:p-4!"><div id="attendanceDetailsContent"></div></div>
                 </div>
 
-                <div id="errorDetailsCard" class="nx-card mt-4 d-none">
+                <div id="errorDetailsCard" class="nx-card tw:mt-6! tw:hidden!">
                     <div class="nx-card-header nx-card-header-danger">
-                        <h5 class="nx-card-title text-white"><i class="bi bi-exclamation-triangle-fill"></i> Error Details</h5>
+                        <h5 class="nx-card-title tw:text-bs-white!"><i class="bi bi-exclamation-triangle-fill"></i> Error Details</h5>
                     </div>
-                    <div class="p-3"><div id="errorDetails"></div></div>
+                    <div class="bs-p-3 tw:p-4!"><div id="errorDetails"></div></div>
                 </div>
             </div>
         </div>
     </div>
 
     {{-- ADD CLASS MODAL --}}
-    <div class="modal fade" id="addClassModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content nx-modal">
+    <div class="ui-modal ui-fade" id="addClassModal" tabindex="-1" aria-hidden="true">
+        <div class="ui-modal-dialog ui-modal-dialog-centered ui-modal-lg">
+            <div class="ui-modal-content nx-modal">
                 <form id="addClassForm" autocomplete="off">
                     @csrf
-                    <div class="modal-header nx-modal-header">
-                        <h5 class="modal-title">Add Student To Class</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <div class="ui-modal-header nx-modal-header">
+                        <h5 class="ui-modal-title">Add Student To Class</h5>
+                        <button type="button" class="ui-btn-close" data-nx-dismiss="modal"></button>
                     </div>
-                    <div class="modal-body nx-modal-body">
+                    <div class="ui-modal-body nx-modal-body">
                         <div class="nx-info-box">
                             <div><strong>Student:</strong> <span id="modalStudentName">-</span></div>
                             <div><strong>Class:</strong> <span id="modalClassName">-</span></div>
                             <div><strong>Category:</strong> <span id="modalCategoryName">-</span></div>
                         </div>
-                        <div class="row g-3">
-                            <div class="col-md-4">
+                        <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2">
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
                                 <label class="nx-label">Free Card</label>
-                                <select id="modalIsFreeCard" class="form-select nx-input">
+                                <select id="modalIsFreeCard" class="ui-form-select nx-input">
                                     <option value="0">No</option>
                                     <option value="1">Yes</option>
                                 </select>
                             </div>
-                            <div class="col-md-4">
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
                                 <label class="nx-label">Custom Fee</label>
-                                <input type="number" step="0.01" min="0" id="modalCustomFee" class="form-control nx-input">
+                                <input type="number" step="0.01" min="0" id="modalCustomFee" class="ui-form-control nx-input">
                             </div>
-                            <div class="col-md-4">
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
                                 <label class="nx-label">Discount %</label>
-                                <input type="number" step="0.01" min="0" max="100" id="modalDiscountPercentage" class="form-control nx-input">
+                                <input type="number" step="0.01" min="0" max="100" id="modalDiscountPercentage" class="ui-form-control nx-input">
                             </div>
-                            <div class="col-md-6">
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
                                 <label class="nx-label">Custom Fee Reason</label>
-                                <select id="modalCustomFeeReason" class="form-select nx-input">
+                                <select id="modalCustomFeeReason" class="ui-form-select nx-input">
                                     <option value="">Select Reason</option>
                                     <option value="Student enrolled in multiple categories">Student enrolled in multiple categories</option>
                                     <option value="Special Discount">Special Discount</option>
@@ -192,9 +192,9 @@
                                     <option value="Other">Other</option>
                                 </select>
                             </div>
-                            <div class="col-md-6">
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
                                 <label class="nx-label">Discount Reason</label>
-                                <select id="modalDiscountReason" class="form-select nx-input">
+                                <select id="modalDiscountReason" class="ui-form-select nx-input">
                                     <option value="">Select Reason</option>
                                     <option value="Half Card">Half Card</option>
                                     <option value="Special Discount">Special Discount</option>
@@ -205,14 +205,14 @@
                                     <option value="Other">Other</option>
                                 </select>
                             </div>
-                            <div class="col-md-6">
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
                                 <label class="nx-label">Enrolled At</label>
-                                <input type="date" id="modalEnrolledAt" class="form-control nx-input" value="{{ now()->toDateString() }}">
+                                <input type="date" id="modalEnrolledAt" class="ui-form-control nx-input" value="{{ now()->toDateString() }}">
                             </div>
                         </div>
                     </div>
-                    <div class="modal-footer nx-modal-footer">
-                        <button type="button" class="nx-btn nx-btn-light" data-bs-dismiss="modal">Cancel</button>
+                    <div class="ui-modal-footer nx-modal-footer">
+                        <button type="button" class="nx-btn nx-btn-light" data-nx-dismiss="modal">Cancel</button>
                         <button type="submit" class="nx-btn nx-btn-primary" id="saveClassBtn">Save Class</button>
                     </div>
                 </form>
@@ -237,12 +237,12 @@
         background: var(--nx-green); border-color: var(--nx-green); color: #fff;
     }
 
-    .dashboard-page .p-3 .nx-btn-light,
-    .dashboard-page .modal .nx-btn-light {
+    .dashboard-page .bs-p-3 .nx-btn-light,
+    .dashboard-page .ui-modal .nx-btn-light {
         background: #fff; border-color: var(--nx-border); color: var(--nx-muted);
     }
 
-    .dashboard-page .nx-pills .nav-link {
+    .dashboard-page .nx-pills .ui-nav-link {
         border-radius: 8px;
         font-weight: 500;
         font-size: .82rem;
@@ -251,7 +251,7 @@
         border: 1px solid var(--nx-border);
         padding: .4rem .9rem;
     }
-    .dashboard-page .nx-pills .nav-link.active {
+    .dashboard-page .nx-pills .ui-nav-link.active {
         background: var(--nx-blue); color: #fff; border-color: var(--nx-blue);
     }
 
@@ -358,7 +358,7 @@
         border-bottom: 1px solid var(--nx-border);
         padding: 1rem 1.25rem;
     }
-    .dashboard-page .nx-modal-header .modal-title {
+    .dashboard-page .nx-modal-header .ui-modal-title {
         font-weight: 600;
         font-size: .95rem;
         color: var(--nx-text);
@@ -382,7 +382,7 @@
     .dashboard-page .nx-info-box div { margin-bottom: .25rem; }
     .dashboard-page .nx-info-box div:last-child { margin-bottom: 0; }
 
-    .dashboard-page .form-check-input:checked {
+    .dashboard-page .ui-form-check-input:checked {
         background-color: var(--nx-blue);
         border-color: var(--nx-blue);
     }
@@ -434,7 +434,7 @@
             const stopScannerBtn = document.getElementById('stopScannerBtn');
 
             const addClassModalEl = document.getElementById('addClassModal');
-            const addClassModal = addClassModalEl ? new bootstrap.Modal(addClassModalEl) : null;
+            const addClassModal = addClassModalEl ? new NxUi.Modal(addClassModalEl) : null;
             const addClassForm = document.getElementById('addClassForm');
             const saveClassBtn = document.getElementById('saveClassBtn');
 
@@ -463,16 +463,16 @@
             function showAlert(type, message) {
                 const safeType = ['success', 'danger', 'warning', 'info'].includes(type) ? type : 'info';
 
-                alertBox.className = `alert alert-${safeType} nx-alert`;
-                alertBox.classList.remove('d-none');
+                alertBox.className = `ui-alert ui-alert-${safeType} nx-alert`;
+                alertBox.classList.remove('tw:hidden!');
                 alertBox.style.display = 'block';
 
                 if (alertIcon) {
                     alertIcon.className =
-                        safeType === 'success' ? 'bi bi-check-circle-fill fs-5 mt-1' :
-                            safeType === 'danger' ? 'bi bi-exclamation-triangle-fill fs-5 mt-1' :
-                                safeType === 'warning' ? 'bi bi-exclamation-circle-fill fs-5 mt-1' :
-                                    'bi bi-info-circle-fill fs-5 mt-1';
+                        safeType === 'success' ? 'bi bi-check-circle-fill tw:text-[length:1.25rem]! tw:mt-1!' :
+                            safeType === 'danger' ? 'bi bi-exclamation-triangle-fill tw:text-[length:1.25rem]! tw:mt-1!' :
+                                safeType === 'warning' ? 'bi bi-exclamation-circle-fill tw:text-[length:1.25rem]! tw:mt-1!' :
+                                    'bi bi-info-circle-fill tw:text-[length:1.25rem]! tw:mt-1!';
                 }
 
                 alertTitle.textContent =
@@ -485,12 +485,12 @@
             }
 
             function hideAlert() {
-                alertBox.classList.add('d-none');
+                alertBox.classList.add('tw:hidden!');
                 alertMessage.textContent = '';
             }
 
             function hideErrorDetails() {
-                if (errorDetailsCard) errorDetailsCard.classList.add('d-none');
+                if (errorDetailsCard) errorDetailsCard.classList.add('tw:hidden!');
                 if (errorDetails) errorDetails.innerHTML = '';
             }
 
@@ -498,11 +498,11 @@
                 if (!errorDetailsCard || !errorDetails) return;
 
                 errorDetails.innerHTML = `
-                                                    <div class="nx-alert nx-alert-red mb-0">
+                                                    <div class="nx-alert nx-alert-red tw:mb-0!">
                                                         ${escapeHtml(message || 'Unknown error')}
                                                     </div>
                                                 `;
-                errorDetailsCard.classList.remove('d-none');
+                errorDetailsCard.classList.remove('tw:hidden!');
             }
 
             function setReadButtonLoading(isLoading) {
@@ -510,8 +510,8 @@
 
                 manualReadBtn.disabled = isLoading;
                 manualReadBtn.innerHTML = isLoading
-                    ? '<span class="spinner-border spinner-border-sm me-1"></span>Processing...'
-                    : '<i class="bi bi-person-check-fill me-1"></i>Read Student';
+                    ? '<span class="ui-spinner-border ui-spinner-border-sm tw:mr-1!"></span>Processing...'
+                    : '<i class="bi bi-person-check-fill tw:mr-1!"></i>Read Student';
             }
 
             function setMarkButtonLoading(isLoading) {
@@ -520,8 +520,8 @@
 
                 button.disabled = isLoading;
                 button.innerHTML = isLoading
-                    ? '<span class="spinner-border spinner-border-sm me-1"></span>Marking...'
-                    : '<i class="bi bi-check-circle me-1"></i>Mark Attendance';
+                    ? '<span class="ui-spinner-border ui-spinner-border-sm tw:mr-1!"></span>Marking...'
+                    : '<i class="bi bi-check-circle tw:mr-1!"></i>Mark Attendance';
             }
 
             async function postJson(url, payload) {
@@ -632,9 +632,9 @@
                     return;
                 }
 
-                emptyStateCard.classList.add('d-none');
-                studentDetailsCard.classList.remove('d-none');
-                attendanceDetailsCard.classList.remove('d-none');
+                emptyStateCard.classList.add('tw:hidden!');
+                studentDetailsCard.classList.remove('tw:hidden!');
+                attendanceDetailsCard.classList.remove('tw:hidden!');
 
                 studentImage.src = student.img_url || defaultStudentImage;
                 studentImage.onerror = function () {
@@ -675,9 +675,9 @@
 
                 const paymentHtml = lastPayment
                     ? `
-                <div class="fw-bold">${formatMoney(lastPayment.amount)}</div>
-                <small class="text-muted d-block">Month: ${escapeHtml(lastPayment.payment_month)}</small>
-                <small class="text-info d-block">Paid: ${escapeHtml(lastPayment.paid_at)}</small>
+                <div class="tw:font-bold!">${formatMoney(lastPayment.amount)}</div>
+                <small class="tw:text-(color:--nx-muted)! tw:block!">Month: ${escapeHtml(lastPayment.payment_month)}</small>
+                <small class="tw:text-bs-info! tw:block!">Paid: ${escapeHtml(lastPayment.paid_at)}</small>
             `
                     : '<span class="nx-badge nx-badge-red">No Payment Yet</span>';
 
@@ -687,96 +687,96 @@
 
                 attendanceDetailsContent.innerHTML = `
             <div class="attendance-detail-card">
-                <div class="row g-3">
-                    <div class="col-md-3">
+                <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[25%]">
                         <div class="info-card">
                             <small>Status</small>
-                            <div class="mt-2">
+                            <div class="tw:mt-2!">
                                 <span class="${statusBadgeClass}">${statusLabel}</span>
                             </div>
                         </div>
                     </div>
 
-                    <div class="col-md-3">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[25%]">
                         <div class="info-card">
                             <small>Class</small>
                             <h6>${escapeHtml(className)}</h6>
-                            <span class="text-muted">Class ID: ${escapeHtml(studentClassIdValue)}</span>
+                            <span class="tw:text-(color:--nx-muted)!">Class ID: ${escapeHtml(studentClassIdValue)}</span>
                         </div>
                     </div>
 
-                    <div class="col-md-2">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[16.66666667%]">
                         <div class="info-card">
                             <small>Grade</small>
                             <h6>${escapeHtml(grade)}</h6>
                         </div>
                     </div>
 
-                    <div class="col-md-4">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
                         <div class="info-card">
                             <small>Teacher</small>
                             <h6>${escapeHtml(teacher)}</h6>
                         </div>
                     </div>
 
-                    <div class="col-md-3">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[25%]">
                         <div class="info-card">
                             <small>Category</small>
                             <h6>${escapeHtml(categoryName)}</h6>
-                            <span class="text-muted">Fee ID: ${escapeHtml(feeIdValue)}</span>
+                            <span class="tw:text-(color:--nx-muted)!">Fee ID: ${escapeHtml(feeIdValue)}</span>
                         </div>
                     </div>
 
-                    <div class="col-md-3">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[25%]">
                         <div class="info-card">
                             <small>Final Fee</small>
                             <h6>${formatMoney(finalFeeValue)}</h6>
-                            <span class="text-muted">Default: ${formatMoney(defaultFeeValue)}</span>
+                            <span class="tw:text-(color:--nx-muted)!">Default: ${formatMoney(defaultFeeValue)}</span>
                         </div>
                     </div>
 
-                    <div class="col-md-3">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[25%]">
                         <div class="info-card">
                             <small>Last Payment</small>
                             ${paymentHtml}
                         </div>
                     </div>
 
-                    <div class="col-md-3">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[25%]">
                         <div class="info-card">
                             <small>Attendance</small>
                             <h6>${attendance.attended_classes ?? 0} / ${attendance.total_classes ?? 0}</h6>
-                            <span class="text-muted">
+                            <span class="tw:text-(color:--nx-muted)!">
                                 ${attendance.attendance_percentage ?? 0}%
                                 ${attendance.month ? '(' + escapeHtml(attendance.month) + ')' : ''}
                             </span>
-                            ${tuteHtml ? `<div class="mt-2">${tuteHtml}</div>` : ''}
+                            ${tuteHtml ? `<div class="tw:mt-2!">${tuteHtml}</div>` : ''}
                         </div>
                     </div>
                 </div>
 
-                <div class="d-flex justify-content-end gap-2 flex-wrap mt-4">
+                <div class="tw:flex! tw:justify-end! tw:gap-2! tw:flex-wrap! tw:mt-6!">
                     ${enrollmentExists ? `
-                        <div class="form-check d-flex align-items-center gap-2 me-2">
+                        <div class="ui-form-check tw:flex! tw:items-center! tw:gap-2! tw:mr-2!">
                             <input
-                                class="form-check-input"
+                                class="ui-form-check-input"
                                 type="checkbox"
                                 id="issueTuteCheckbox"
                                 ${tute?.is_issued ? 'checked' : ''}
                             >
-                            <label class="form-check-label" for="issueTuteCheckbox">
+                            <label class="ui-form-check-label" for="issueTuteCheckbox">
                                 Issue Tute
                             </label>
                         </div>
                     ` : ''}
 
                     <button type="button" class="nx-btn nx-btn-primary" id="addClassBtn">
-                        <i class="bi bi-plus-circle me-1"></i>
+                        <i class="bi bi-plus-circle tw:mr-1!"></i>
                         Add Class
                     </button>
 
                     <button type="button" class="nx-btn nx-btn-success" id="markAttendanceBtn">
-                        <i class="bi bi-check-circle me-1"></i>
+                        <i class="bi bi-check-circle tw:mr-1!"></i>
                         Mark Attendance
                     </button>
                 </div>
@@ -918,7 +918,7 @@
 
                 try {
                     saveClassBtn.disabled = true;
-                    saveClassBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Saving...';
+                    saveClassBtn.innerHTML = '<span class="ui-spinner-border ui-spinner-border-sm tw:mr-1!"></span>Saving...';
 
                     const payload = {
                         student_id: currentStudent.id,
@@ -964,9 +964,9 @@
                 currentStudent = null;
                 currentEnrollment = null;
 
-                emptyStateCard.classList.remove('d-none');
-                studentDetailsCard.classList.add('d-none');
-                attendanceDetailsCard.classList.add('d-none');
+                emptyStateCard.classList.remove('tw:hidden!');
+                studentDetailsCard.classList.add('tw:hidden!');
+                attendanceDetailsCard.classList.add('tw:hidden!');
 
                 if (attendanceDetailsContent) {
                     attendanceDetailsContent.innerHTML = '';
@@ -1010,7 +1010,7 @@
                     html5QrCode = new Html5Qrcode('qr-reader');
 
                     startScannerBtn.disabled = true;
-                    startScannerBtn.innerHTML = '<span class="spinner-border spinner-border-sm me-1"></span>Starting Scanner...';
+                    startScannerBtn.innerHTML = '<span class="ui-spinner-border ui-spinner-border-sm tw:mr-1!"></span>Starting Scanner...';
 
                     await html5QrCode.start(
                         { facingMode: 'environment' },
@@ -1036,14 +1036,14 @@
                     );
 
                     scannerRunning = true;
-                    startScannerBtn.innerHTML = '<i class="bi bi-camera-video-fill me-1"></i>Scanner Running';
+                    startScannerBtn.innerHTML = '<i class="bi bi-camera-video-fill tw:mr-1!"></i>Scanner Running';
                     startScannerBtn.disabled = true;
-                    stopScannerBtn.classList.remove('d-none');
+                    stopScannerBtn.classList.remove('tw:hidden!');
                 } catch (error) {
                     console.error(error);
                     showAlert('danger', 'Could not start scanner.');
                     startScannerBtn.disabled = false;
-                    startScannerBtn.innerHTML = '<i class="bi bi-camera-fill me-1"></i>Start Scanner';
+                    startScannerBtn.innerHTML = '<i class="bi bi-camera-fill tw:mr-1!"></i>Start Scanner';
                 }
             }
 
@@ -1059,8 +1059,8 @@
                 lastScanTime = 0;
 
                 startScannerBtn.disabled = false;
-                startScannerBtn.innerHTML = '<i class="bi bi-camera-fill me-1"></i>Start Scanner';
-                stopScannerBtn.classList.add('d-none');
+                startScannerBtn.innerHTML = '<i class="bi bi-camera-fill tw:mr-1!"></i>Start Scanner';
+                stopScannerBtn.classList.add('tw:hidden!');
             }
 
             manualQrForm.addEventListener('submit', function (event) {

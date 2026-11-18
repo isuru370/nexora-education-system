@@ -8,7 +8,7 @@
     $exportQuery = fn ($format) => request()->fullUrlWithQuery(['export' => $format]);
 @endphp
 <div class="dashboard-page">
-    <div class="hero-section mb-4">
+    <div class="hero-section tw:mb-6!">
         <div class="hero-content">
             <div class="hero-left">
                 <span class="greeting-badge">Course reports</span>
@@ -25,23 +25,23 @@
         </div>
     </div>
 
-    <div class="nx-card mb-4 no-print">
-        <ul class="nav nx-tabs">
+    <div class="nx-card tw:mb-6! no-print">
+        <ul class="ui-nav nx-tabs">
             @foreach ($types as $key => $label)
-                <li class="nav-item"><a class="nav-link {{ $type === $key ? 'active' : '' }}" href="{{ route('course-reports.show', $key) }}">{{ $label }}</a></li>
+                <li class="ui-nav-item"><a class="ui-nav-link {{ $type === $key ? 'active' : '' }}" href="{{ route('course-reports.show', $key) }}">{{ $label }}</a></li>
             @endforeach
         </ul>
-        <div class="p-3">
+        <div class="tw:p-4!">
             <form method="GET" action="{{ route('course-reports.show', $type) }}" class="inline-form">
                 @if ($type === 'daily')
-                    <div><label class="nx-label" for="date">Date</label><input type="date" id="date" name="date" class="form-control nx-input" value="{{ $filters['date'] }}"></div>
+                    <div><label class="nx-label" for="date">Date</label><input type="date" id="date" name="date" class="ui-form-control nx-input" value="{{ $filters['date'] }}"></div>
                 @elseif ($type === 'monthly')
-                    <div><label class="nx-label" for="month">Month</label><input type="month" id="month" name="month" class="form-control nx-input" value="{{ $filters['month'] }}"></div>
+                    <div><label class="nx-label" for="month">Month</label><input type="month" id="month" name="month" class="ui-form-control nx-input" value="{{ $filters['month'] }}"></div>
                 @elseif ($type === 'yearly')
-                    <div><label class="nx-label" for="year">Year</label><input type="number" id="year" name="year" min="2000" max="2100" class="form-control nx-input" value="{{ $filters['year'] }}"></div>
+                    <div><label class="nx-label" for="year">Year</label><input type="number" id="year" name="year" min="2000" max="2100" class="ui-form-control nx-input" value="{{ $filters['year'] }}"></div>
                 @else
                     <div><label class="nx-label" for="active">Courses</label>
-                        <select id="active" name="active" class="form-select nx-input">
+                        <select id="active" name="active" class="ui-form-select nx-input">
                             <option value="0">All courses</option>
                             <option value="1" {{ $filters['active'] ? 'selected' : '' }}>Active only</option>
                         </select>
@@ -52,9 +52,9 @@
         </div>
     </div>
 
-    <div class="report-summary mb-4">
+    <div class="report-summary tw:mb-6!">
         @foreach ($report['summary'] as $label => $value)
-            <div class="nx-card p-3">
+            <div class="nx-card tw:p-4!">
                 <div class="stat-label">{{ $label }}</div>
                 <div class="report-value money">{{ $value }}</div>
             </div>
@@ -62,14 +62,14 @@
     </div>
 
     @foreach ($report['tables'] as $table)
-        <div class="nx-card mb-4">
+        <div class="nx-card tw:mb-6!">
             <div class="nx-card-header"><h5 class="nx-card-title">{{ $table['title'] }}</h5></div>
-            <div class="table-responsive">
-                <table class="table premium-table mb-0">
+            <div class="ui-table-responsive">
+                <table class="ui-table premium-table tw:mb-0!">
                     <thead>
                         <tr>
                             @foreach ($table['columns'] as $key => $heading)
-                                <th class="{{ in_array($key, $table['money'], true) ? 'text-end' : '' }}">{{ $heading }}</th>
+                                <th class="{{ in_array($key, $table['money'], true) ? 'tw:text-right!' : '' }}">{{ $heading }}</th>
                             @endforeach
                         </tr>
                     </thead>
@@ -78,7 +78,7 @@
                             <tr>
                                 @foreach ($table['columns'] as $key => $heading)
                                     @if (in_array($key, $table['money'], true))
-                                        <td class="text-end money">{{ number_format((float) $row[$key], 2) }}</td>
+                                        <td class="tw:text-right! money">{{ number_format((float) $row[$key], 2) }}</td>
                                     @else
                                         <td>{{ $row[$key] }}</td>
                                     @endif
@@ -95,7 +95,7 @@
                                     @if ($loop->first)
                                         <td>Total</td>
                                     @elseif (in_array($key, $table['money'], true))
-                                        <td class="text-end money">{{ number_format(collect($table['rows'])->sum($key), 2) }}</td>
+                                        <td class="tw:text-right! money">{{ number_format(collect($table['rows'])->sum($key), 2) }}</td>
                                     @else
                                         <td></td>
                                     @endif

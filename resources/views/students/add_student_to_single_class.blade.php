@@ -12,7 +12,7 @@
 @section('content')
     <div class="ui-container-fluid">
         <!-- Student Information Section -->
-        <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 tw:mb-6!">
+        <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row tw:mb-6!">
             <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:flex-[0_0_auto] tw:w-[100%]">
                 <div class="ui-card tw:[border:0]! tw:shadow-bs-lg!">
                     <div class="ui-card-header tw:bg-bs-primary! tw:[background-image:linear-gradient(180deg,_rgba(255,255,255,0.15),_rgba(255,255,255,0))]! tw:text-bs-white! tw:py-4!">
@@ -35,17 +35,17 @@
         </div>
 
         <!-- Class Search Section -->
-        <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 tw:mb-6!">
+        <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row tw:mb-6!">
             <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:flex-[0_0_auto] tw:w-[100%]">
                 <div class="ui-card tw:[border:0]! tw:shadow-bs-lg!">
-                    <div class="ui-card-header tw:bg-bs-info! tw:[background-image:linear-gradient(180deg,_rgba(255,255,255,0.15),_rgba(255,255,255,0))]! tw:text-bs-white! tw:py-4!">
+                    <div class="ui-card-header bs-bg-info tw:bg-bs-info! tw:[background-image:linear-gradient(180deg,_rgba(255,255,255,0.15),_rgba(255,255,255,0))]! tw:text-bs-white! tw:py-4!">
                         <h5 class="ui-card-title tw:mb-0!">
                             <i class="fas fa-search tw:mr-2!"></i>Search and Select Class
                         </h5>
                     </div>
                     <div class="ui-card-body">
                         <!-- Search Input -->
-                        <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 tw:mb-6!">
+                        <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row tw:mb-6!">
                             <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[66.66666667%]">
                                 <label class="ui-form-label tw:font-semibold!">Search Classes</label>
                                 <div class="ui-input-group">
@@ -71,7 +71,7 @@
                         <!-- Search Results -->
                         <div id="searchResults" class="tw:hidden!">
                             <h6 class="tw:mb-4! tw:font-semibold!">Search Results:</h6>
-                            <div class="ui-row scroll-row tw:flex-nowrap! tw:overflow-auto! tw:pb-4!" id="classesList" style="scrollbar-width: thin;">
+                            <div class="bs-row ui-row bs-flex-nowrap tw:flex-nowrap! tw:overflow-auto! tw:pb-4!" id="classesList" style="scrollbar-width: thin;">
                                 <!-- Cards will appear here -->
                             </div>
                         </div>
@@ -98,10 +98,10 @@
         </div>
 
         <!-- Selected Class Confirmation -->
-        <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3">
+        <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row">
             <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:flex-[0_0_auto] tw:w-[100%]">
                 <div class="ui-card tw:[border:0]! tw:shadow-bs-lg!">
-                    <div class="ui-card-header tw:bg-bs-success! tw:[background-image:linear-gradient(180deg,_rgba(255,255,255,0.15),_rgba(255,255,255,0))]! tw:text-bs-white! tw:py-4!">
+                    <div class="ui-card-header bs-bg-success tw:bg-bs-success! tw:[background-image:linear-gradient(180deg,_rgba(255,255,255,0.15),_rgba(255,255,255,0))]! tw:text-bs-white! tw:py-4!">
                         <h5 class="ui-card-title tw:mb-0!">
                             <i class="fas fa-check-circle tw:mr-2!"></i>Confirm Selection
                         </h5>
@@ -113,10 +113,10 @@
                                 <p class="tw:mb-0!">Review the details below before adding the student to the class.</p>
                             </div>
 
-                            <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3">
+                            <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row">
                                 <!-- Student Details -->
                                 <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
-                                    <div class="ui-card tw:h-full! tw:[border:0]! tw:shadow-bs-sm!">
+                                    <div class="ui-card tw:h-full! tw:[border:0]! bs-shadow-sm tw:shadow-bs-sm!">
                                         <div class="ui-card-header tw:bg-bs-light!">
                                             <h6 class="ui-card-title tw:mb-0! tw:font-semibold!">Student Details</h6>
                                         </div>
@@ -130,7 +130,7 @@
 
                                 <!-- Class Details -->
                                 <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
-                                    <div class="ui-card tw:h-full! tw:[border:0]! tw:shadow-bs-sm!">
+                                    <div class="ui-card tw:h-full! tw:[border:0]! bs-shadow-sm tw:shadow-bs-sm!">
                                         <div class="ui-card-header tw:bg-bs-light!">
                                             <h6 class="ui-card-title tw:mb-0! tw:font-semibold!">Class Details</h6>
                                         </div>
@@ -144,9 +144,9 @@
                             </div>
 
                             <!-- Fee Options -->
-                            <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 tw:mt-6!">
+                            <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row tw:mt-6!">
                                 <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:flex-[0_0_auto] tw:w-[100%]">
-                                    <div class="ui-card tw:[border:0]! tw:shadow-bs-sm!">
+                                    <div class="ui-card tw:[border:0]! bs-shadow-sm tw:shadow-bs-sm!">
                                         <div class="ui-card-header tw:bg-bs-light!">
                                             <h6 class="ui-card-title tw:mb-0! tw:font-semibold!">Fee Options</h6>
                                         </div>
@@ -166,7 +166,7 @@
 
                                             <!-- Custom Fee and Discount Fields -->
                                             <div id="feeFields">
-                                                <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3">
+                                                <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row">
                                                     <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:mb-4!">
                                                         <label for="customFee" class="ui-form-label">Custom Fee</label>
                                                         <div class="ui-input-group">
@@ -210,7 +210,7 @@
                             </div>
 
                             <!-- Action Buttons -->
-                            <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 tw:mt-6!">
+                            <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row tw:mt-6!">
                                 <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:flex-[0_0_auto] tw:w-[100%]">
                                     <div class="tw:flex! tw:justify-between! tw:items-center!">
                                         <button class="ui-btn ui-btn-outline-secondary" onclick="clearSelection()">
@@ -238,10 +238,10 @@
         </div>
 
         <!-- Current Enrollments Section -->
-        <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 tw:mb-6!" id="enrollmentsSection" style="display: none;">
+        <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row tw:mb-6!" id="enrollmentsSection" style="display: none;">
             <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:flex-[0_0_auto] tw:w-[100%]">
                 <div class="ui-card tw:[border:0]! tw:shadow-bs-lg!">
-                    <div class="ui-card-header tw:bg-bs-warning! tw:[background-image:linear-gradient(180deg,_rgba(255,255,255,0.15),_rgba(255,255,255,0))]! tw:text-bs-dark! tw:py-4!">
+                    <div class="ui-card-header bs-bg-warning tw:bg-bs-warning! tw:[background-image:linear-gradient(180deg,_rgba(255,255,255,0.15),_rgba(255,255,255,0))]! tw:text-bs-dark! tw:py-4!">
                         <div class="tw:flex! tw:items-center!">
                             <i class="fas fa-list fa-lg tw:mr-4!"></i>
                             <h5 class="ui-card-title tw:mb-0! tw:font-bold!">Current Class Enrollments</h5>
@@ -249,7 +249,7 @@
                         </div>
                     </div>
                     <div class="ui-card-body tw:p-6!">
-                        <div class="ui-row scroll-row tw:flex-nowrap! tw:overflow-auto! tw:pb-4! ui-g-3" id="enrollmentsList">
+                        <div class="bs-row ui-row bs-flex-nowrap tw:flex-nowrap! tw:overflow-auto! tw:pb-4! ui-g-3" id="enrollmentsList">
                             <!-- Enrollments will be loaded here -->
                         </div>
                         <div id="noEnrollments" class="tw:text-center! tw:py-12! tw:hidden!">
@@ -304,26 +304,26 @@
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
         }
 
-        .ui-row.scroll-row {
+        .bs-row.bs-flex-nowrap {
             scrollbar-width: thin;
             scrollbar-color: #c1c1c1 #f1f1f1;
         }
 
-        .ui-row.scroll-row::-webkit-scrollbar {
+        .bs-row.bs-flex-nowrap::-webkit-scrollbar {
             height: 8px;
         }
 
-        .ui-row.scroll-row::-webkit-scrollbar-track {
+        .bs-row.bs-flex-nowrap::-webkit-scrollbar-track {
             background: #f1f1f1;
             border-radius: 4px;
         }
 
-        .ui-row.scroll-row::-webkit-scrollbar-thumb {
+        .bs-row.bs-flex-nowrap::-webkit-scrollbar-thumb {
             background: #c1c1c1;
             border-radius: 4px;
         }
 
-        .ui-row.scroll-row::-webkit-scrollbar-thumb:hover {
+        .bs-row.bs-flex-nowrap::-webkit-scrollbar-thumb:hover {
             background: #a8a8a8;
         }
 
@@ -565,12 +565,12 @@
 
                 const isActive = enrollment.status === true || enrollment.status === 1 || enrollment.status === 'active';
                 const statusBadge = isActive ?
-                    '<span class="ui-badge tw:bg-bs-success! tw:[background-image:linear-gradient(180deg,_rgba(255,255,255,0.15),_rgba(255,255,255,0))]! tw:rounded-bs-pill! tw:px-4! tw:py-2!">Active</span>' :
+                    '<span class="ui-badge bs-bg-success tw:bg-bs-success! tw:[background-image:linear-gradient(180deg,_rgba(255,255,255,0.15),_rgba(255,255,255,0))]! tw:rounded-bs-pill! tw:px-4! tw:py-2!">Active</span>' :
                     '<span class="ui-badge tw:bg-bs-secondary! tw:[background-image:linear-gradient(180deg,_rgba(255,255,255,0.15),_rgba(255,255,255,0))]! tw:rounded-bs-pill! tw:px-4! tw:py-2!">Inactive</span>';
 
                 const freeCardStatus = enrollment.is_free_card === true || enrollment.is_free_card === 1;
                 const freeCardBadge = freeCardStatus ?
-                    '<span class="ui-badge tw:bg-bs-warning! tw:[background-image:linear-gradient(180deg,_rgba(255,255,255,0.15),_rgba(255,255,255,0))]! tw:text-bs-dark! tw:rounded-bs-pill! tw:px-2! tw:py-1!"><i class="fas fa-id-card tw:mr-1!"></i>Free Card</span>' :
+                    '<span class="ui-badge bs-bg-warning tw:bg-bs-warning! tw:[background-image:linear-gradient(180deg,_rgba(255,255,255,0.15),_rgba(255,255,255,0))]! tw:text-bs-dark! tw:rounded-bs-pill! tw:px-2! tw:py-1!"><i class="fas fa-id-card tw:mr-1!"></i>Free Card</span>' :
                     '<span class="ui-badge tw:bg-bs-light! tw:[background-image:linear-gradient(180deg,_rgba(255,255,255,0.15),_rgba(255,255,255,0))]! tw:text-bs-dark! tw:bs-border! tw:rounded-bs-pill! tw:px-2! tw:py-1!"><i class="fas fa-money-bill tw:mr-1!"></i>Paid</span>';
 
                 // Get enrollment date from created_at or enrollment_date
@@ -587,16 +587,16 @@
                 // Build fee info display
                 let feeInfo = '';
                 if (freeCardStatus) {
-                    feeInfo = '<span class="ui-badge tw:bg-bs-warning! tw:text-bs-dark!"><i class="fas fa-gift tw:mr-1!"></i>Free Card</span>';
+                    feeInfo = '<span class="ui-badge bs-bg-warning tw:bg-bs-warning! tw:text-bs-dark!"><i class="fas fa-gift tw:mr-1!"></i>Free Card</span>';
                 } else if (customFee) {
-                    feeInfo = `<span class="ui-badge tw:bg-bs-info!"><i class="fas fa-tag tw:mr-1!"></i>Custom Fee: Rs. ${parseFloat(customFee).toFixed(2)}</span>`;
+                    feeInfo = `<span class="ui-badge bs-bg-info tw:bg-bs-info!"><i class="fas fa-tag tw:mr-1!"></i>Custom Fee: Rs. ${parseFloat(customFee).toFixed(2)}</span>`;
                 } else if (discountPercentage) {
-                    feeInfo = `<span class="ui-badge tw:bg-bs-info!"><i class="fas fa-percent tw:mr-1!"></i>${discountPercentage}% Discount ${discountType ? '(' + discountType.replace('_', ' ') + ')' : ''}</span>`;
+                    feeInfo = `<span class="ui-badge bs-bg-info tw:bg-bs-info!"><i class="fas fa-percent tw:mr-1!"></i>${discountPercentage}% Discount ${discountType ? '(' + discountType.replace('_', ' ') + ')' : ''}</span>`;
                 }
 
                 enrollmentsHTML += `
                 <div class="ui-col-auto">
-                    <div class="ui-card tw:[border:0]! tw:shadow-bs-sm! tw:h-full! enrollment-card tw:relative!" style="width: 350px;">
+                    <div class="ui-card tw:[border:0]! bs-shadow-sm tw:shadow-bs-sm! tw:h-full! enrollment-card tw:relative!" style="width: 350px;">
                         ${freeCardStatus ? '<div class="free-card-indicator"><i class="fas fa-crown tw:mr-1!"></i>FREE</div>' : ''}
                         <div class="ui-card-header tw:bg-bs-primary! tw:[background-image:linear-gradient(180deg,_rgba(255,255,255,0.15),_rgba(255,255,255,0))]! tw:text-bs-white! tw:py-4!">
                             <div class="tw:flex! tw:justify-between! tw:items-start!">
@@ -632,7 +632,7 @@
                             </div>
 
                             <div class="tw:bs-border-t! tw:pt-2! tw:mt-2!">
-                                <div class="tw:flex tw:flex-wrap tw:-mt-1 tw:mx-[-0.125rem] tw:mb-4!">
+                                <div class="tw:flex tw:flex-wrap tw:-mt-1 tw:mx-[-0.125rem] bs-row tw:mb-4!">
                                     <div class="tw:shrink-0 tw:max-w-full tw:px-[0.125rem] tw:mt-1 tw:flex-[0_0_auto] tw:w-[50%]">
                                         <small class="tw:text-bs-secondary-color! tw:block!">
                                             <i class="fas fa-calendar tw:mr-1!"></i>
@@ -797,7 +797,7 @@
                             <button type="button" class="ui-btn-close ui-btn-close-white" data-nx-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="ui-modal-body">
-                            <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 tw:mb-6!">
+                            <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row tw:mb-6!">
                                 <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
                                     <div class="ui-card tw:bg-bs-light!">
                                         <div class="ui-card-body">
@@ -849,7 +849,7 @@
                                 </div>
 
                                 <div id="update_feeFields" style="${isFreeCardCurrent ? 'display: none;' : 'display: block;'}">
-                                    <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3">
+                                    <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row">
                                         <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:mb-4!">
                                             <label for="update_customFee" class="ui-form-label">Custom Fee</label>
                                             <div class="ui-input-group">
@@ -1240,7 +1240,7 @@
 
             if (student) {
                 studentInfoDiv.innerHTML = `
-                        <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3">
+                        <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row">
                             <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[25%]">
                                 <strong>Student ID:</strong><br>
                                 <span class="ui-badge tw:bg-bs-secondary! tw:text-[length:1rem]!">${student.custom_id || 'N/A'} / ${student.temporary_qr_code || ''}</span>
@@ -1251,7 +1251,7 @@
                             </div>
                             <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[25%]">
                                 <strong>Grade:</strong><br>
-                                <span class="ui-badge tw:bg-bs-info!">${student.grade ? 'Grade ' + student.grade.grade_name : 'N/A'}</span>
+                                <span class="ui-badge bs-bg-info tw:bg-bs-info!">${student.grade ? 'Grade ' + student.grade.grade_name : 'N/A'}</span>
                             </div>
                             <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[25%]">
                                 <strong>Mobile:</strong><br>
@@ -1340,11 +1340,11 @@
                                     <div class="tw:mb-2!">
                                         <small class="tw:text-bs-secondary-color!">Subject:</small><br>
                                         <span class="ui-badge tw:bg-bs-light! tw:text-bs-dark!">${studentClass.subject ? studentClass.subject.subject_name : 'N/A'}</span>
-                                        <span class="ui-badge tw:bg-bs-info!">Grade ${studentClass.grade ? studentClass.grade.grade_name : 'N/A'}</span>
+                                        <span class="ui-badge bs-bg-info tw:bg-bs-info!">Grade ${studentClass.grade ? studentClass.grade.grade_name : 'N/A'}</span>
                                     </div>
                                     <div class="tw:mt-2!">
                                         <small class="tw:text-bs-secondary-color!">Category & Fee:</small><br>
-                                        <span class="ui-badge tw:bg-bs-success!">${classCategory ? highlightSearchTerm(classCategory.category_name, searchTerm) : 'N/A'}</span>
+                                        <span class="ui-badge bs-bg-success tw:bg-bs-success!">${classCategory ? highlightSearchTerm(classCategory.category_name, searchTerm) : 'N/A'}</span>
                                         <span class="ui-badge tw:bg-bs-primary! tw:ml-1!">Rs. ${classItem.fees || 0}</span>
                                     </div>
                                 </div>
@@ -1401,7 +1401,7 @@
                         <strong>Name:</strong> ${currentStudent ? currentStudent.fname + ' ' + currentStudent.lname : 'N/A'}
                     </div>
                     <div class="tw:mb-2!">
-                        <strong>Grade:</strong> <span class="ui-badge tw:bg-bs-info!">${currentStudent && currentStudent.grade ? 'Grade ' + currentStudent.grade.grade_name : 'N/A'}</span>
+                        <strong>Grade:</strong> <span class="ui-badge bs-bg-info tw:bg-bs-info!">${currentStudent && currentStudent.grade ? 'Grade ' + currentStudent.grade.grade_name : 'N/A'}</span>
                     </div>
                     <div class="tw:mb-2!">
                         <strong>Mobile:</strong> ${currentStudent ? currentStudent.mobile : 'N/A'}
@@ -1424,10 +1424,10 @@
                         <strong>Subject:</strong> <span class="ui-badge tw:bg-bs-light! tw:text-bs-dark!">${studentClass.subject ? studentClass.subject.subject_name : 'N/A'}</span>
                     </div>
                     <div class="tw:mb-2!">
-                        <strong>Grade:</strong> <span class="ui-badge tw:bg-bs-info!">${studentClass.grade ? 'Grade ' + studentClass.grade.grade_name : 'N/A'}</span>
+                        <strong>Grade:</strong> <span class="ui-badge bs-bg-info tw:bg-bs-info!">${studentClass.grade ? 'Grade ' + studentClass.grade.grade_name : 'N/A'}</span>
                     </div>
                     <div class="tw:mb-2!">
-                        <strong>Category:</strong> <span class="ui-badge tw:bg-bs-success!">${classCategory ? classCategory.category_name : 'N/A'}</span>
+                        <strong>Category:</strong> <span class="ui-badge bs-bg-success tw:bg-bs-success!">${classCategory ? classCategory.category_name : 'N/A'}</span>
                     </div>
                     <div class="tw:mb-2!">
                         <strong>Default Fee:</strong> <span class="ui-badge tw:bg-bs-primary!">Rs. ${classData.fees || 0}</span>
@@ -1542,11 +1542,11 @@
 
         function showAlert(message, type) {
             // Remove any existing alerts
-            const existingAlerts = document.querySelectorAll('.ui-alert.toast-alert');
+            const existingAlerts = document.querySelectorAll('.ui-alert.bs-position-fixed');
             existingAlerts.forEach(alert => alert.remove());
 
             const alertDiv = document.createElement('div');
-            alertDiv.className = `ui-alert ui-alert-${type} ui-alert-dismissible ui-fade show tw:fixed! toast-alert`;
+            alertDiv.className = `ui-alert ui-alert-${type} ui-alert-dismissible ui-fade show bs-position-fixed tw:fixed!`;
             alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
             alertDiv.innerHTML = `
                     <strong>${type === 'success' ? 'Success!' : type === 'warning' ? 'Warning!' : 'Error!'}</strong> ${message}

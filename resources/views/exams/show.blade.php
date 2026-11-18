@@ -26,7 +26,7 @@
 <div class="dashboard-page">
 
     {{-- HERO --}}
-    <div class="hero-section mb-4">
+    <div class="hero-section tw:mb-6!">
         <div class="hero-content">
             <div class="hero-left">
                 <span class="greeting-badge">
@@ -86,21 +86,21 @@
 
     {{-- ALERTS --}}
     @if (session('success'))
-        <div class="nx-alert nx-alert-green mb-4">
+        <div class="nx-alert nx-alert-green tw:mb-6!">
             <i class="bi bi-check-circle-fill"></i>
             <span>{{ session('success') }}</span>
         </div>
     @endif
 
     @if (session('error'))
-        <div class="nx-alert nx-alert-red mb-4">
+        <div class="nx-alert nx-alert-red tw:mb-6!">
             <i class="bi bi-exclamation-triangle-fill"></i>
             <span>{{ session('error') }}</span>
         </div>
     @endif
 
     @if ($status === 'cancelled')
-        <div class="nx-alert nx-alert-red mb-4">
+        <div class="nx-alert nx-alert-red tw:mb-6!">
             <i class="bi bi-x-octagon-fill"></i>
             <div>
                 <strong>This exam was cancelled</strong>
@@ -111,14 +111,14 @@
                     by {{ $exam->cancelledBy->name }}
                 @endif
                 @if ($exam->cancel_reason)
-                    <div class="mt-1">Reason: {{ $exam->cancel_reason }}</div>
+                    <div class="tw:mt-1!">Reason: {{ $exam->cancel_reason }}</div>
                 @endif
             </div>
         </div>
     @elseif ($canStart)
-        <div class="nx-alert nx-alert-amber mb-4">
+        <div class="nx-alert nx-alert-amber tw:mb-6!">
             <i class="bi bi-play-circle-fill"></i>
-            <div class="flex-grow-1">
+            <div class="tw:grow!">
                 <strong>The exam date has arrived.</strong>
                 Mark it as ongoing when students sit the paper.
             </div>
@@ -134,7 +134,7 @@
     @endif
 
     {{-- STATS --}}
-    <div class="stats-grid mb-4">
+    <div class="stats-grid tw:mb-6!">
         <div class="nx-card stat-card">
             <div class="stat-icon-wrapper icon-blue"><i class="bi bi-people-fill"></i></div>
             <div class="stat-info">
@@ -179,19 +179,19 @@
         </div>
     </div>
 
-    <div class="row g-4 mb-4">
+    <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3 tw:mb-6!">
 
         {{-- EXAM INFO --}}
-        <div class="col-lg-5">
-            <div class="nx-card h-100">
+        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[41.66666667%]">
+            <div class="nx-card tw:h-full!">
                 <div class="nx-card-header">
                     <div>
-                        <h5 class="nx-card-title"><i class="bi bi-info-circle-fill text-primary"></i> Exam Information</h5>
+                        <h5 class="nx-card-title"><i class="bi bi-info-circle-fill tw:text-(color:--nx-blue)!"></i> Exam Information</h5>
                         <p class="nx-card-subtitle">Class, time and place</p>
                     </div>
                 </div>
 
-                <div class="p-3">
+                <div class="tw:p-4!">
                     <div class="detail-line">
                         <span class="detail-label">Class</span>
                         <span class="detail-value">{{ $exam->studentClass->class_name ?? 'N/A' }}</span>
@@ -234,7 +234,7 @@
                 </div>
 
                 {{-- STATUS / OTHER ACTIONS --}}
-                <div class="p-3 border-top d-flex flex-wrap gap-2">
+                <div class="tw:p-4! tw:bs-border-t! tw:flex! tw:flex-wrap! tw:gap-2!">
                     @if ($hasResults)
                         <a href="{{ route('admin.exams.results', $exam->id) }}" class="nx-btn nx-btn-success">
                             <i class="bi bi-bar-chart-fill"></i> View Results
@@ -242,7 +242,7 @@
                     @endif
 
                     @if (in_array($status, ['scheduled', 'ongoing'], true))
-                        <button type="button" class="nx-btn nx-btn-danger" data-bs-toggle="modal" data-bs-target="#cancelModal">
+                        <button type="button" class="nx-btn nx-btn-danger" data-nx-toggle="modal" data-nx-target="#cancelModal">
                             <i class="bi bi-x-circle"></i> Cancel Exam
                         </button>
                     @endif
@@ -261,11 +261,11 @@
         </div>
 
         {{-- STUDENTS --}}
-        <div class="col-lg-7">
-            <div class="nx-card h-100">
+        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[58.33333333%]">
+            <div class="nx-card tw:h-full!">
                 <div class="nx-card-header">
                     <div>
-                        <h5 class="nx-card-title"><i class="bi bi-people-fill text-primary"></i> Students</h5>
+                        <h5 class="nx-card-title"><i class="bi bi-people-fill tw:text-(color:--nx-blue)!"></i> Students</h5>
                         <p class="nx-card-subtitle">Active students in {{ $exam->studentClass->class_name ?? 'this class' }} - {{ $exam->category->category_name ?? '' }}</p>
                     </div>
                     @if ($canEnterMarks && $students->isNotEmpty())
@@ -275,13 +275,13 @@
                     @endif
                 </div>
 
-                <div class="table-responsive students-scroll">
-                    <table class="table premium-table mb-0">
+                <div class="ui-table-responsive students-scroll">
+                    <table class="ui-table premium-table tw:mb-0!">
                         <thead>
                             <tr>
                                 <th>#</th>
                                 <th>Student</th>
-                                <th class="text-end">Marks</th>
+                                <th class="tw:text-right!">Marks</th>
                                 <th>Grade</th>
                                 <th>Status</th>
                             </tr>
@@ -298,7 +298,7 @@
                                         <div class="cell-title">{{ $s->initial_name }}</div>
                                         <small class="cell-sub">{{ $studentCode($s) }}</small>
                                     </td>
-                                    <td class="text-end cell-title">
+                                    <td class="tw:text-right! cell-title">
                                         @if ($r && $r->is_absent)
                                             -
                                         @elseif ($r && $r->marks !== null)
@@ -324,8 +324,8 @@
                             @empty
                                 <tr>
                                     <td colspan="5" class="empty-table">
-                                        <i class="bi bi-people fs-2 d-block mb-2"></i>
-                                        <strong class="d-block">No students in this class and category</strong>
+                                        <i class="bi bi-people tw:text-[length:calc(1.325rem_+_0.9vw)]! tw:xl:text-[length:2rem]! tw:block! tw:mb-2!"></i>
+                                        <strong class="tw:block!">No students in this class and category</strong>
                                         <span class="cell-sub">Add students to the class first, then enter marks.</span>
                                     </td>
                                 </tr>
@@ -341,25 +341,25 @@
 
 {{-- CANCEL MODAL --}}
 @if (in_array($status, ['scheduled', 'ongoing'], true))
-    <div class="modal fade" id="cancelModal" tabindex="-1" aria-labelledby="cancelModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
+    <div class="ui-modal ui-fade" id="cancelModal" tabindex="-1" aria-labelledby="cancelModalLabel" aria-hidden="true">
+        <div class="ui-modal-dialog">
+            <div class="ui-modal-content">
                 <form method="POST" action="{{ route('admin.exams.cancel', $exam->id) }}">
                     @csrf
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="cancelModalLabel">
-                            <i class="bi bi-exclamation-triangle-fill text-danger me-2"></i> Cancel Exam
+                    <div class="ui-modal-header">
+                        <h5 class="ui-modal-title" id="cancelModalLabel">
+                            <i class="bi bi-exclamation-triangle-fill tw:text-(color:--nx-red)! tw:mr-2!"></i> Cancel Exam
                         </h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" class="ui-btn-close" data-nx-dismiss="modal" aria-label="Close"></button>
                     </div>
-                    <div class="modal-body">
+                    <div class="ui-modal-body">
                         <p>Cancel <strong>{{ $exam->title }}</strong>?</p>
                         <label class="nx-label" for="cancel_reason">Reason for cancellation</label>
-                        <textarea id="cancel_reason" name="cancel_reason" class="form-control custom-input" rows="3" required
+                        <textarea id="cancel_reason" name="cancel_reason" class="ui-form-control custom-input" rows="3" required
                             placeholder="e.g. Hall not available"></textarea>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="nx-btn nx-btn-light" data-bs-dismiss="modal">Close</button>
+                    <div class="ui-modal-footer">
+                        <button type="button" class="nx-btn nx-btn-light" data-nx-dismiss="modal">Close</button>
                         <button type="submit" class="nx-btn nx-btn-danger">
                             <i class="bi bi-x-circle"></i> Cancel Exam
                         </button>

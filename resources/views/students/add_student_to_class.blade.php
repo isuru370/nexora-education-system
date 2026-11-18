@@ -12,7 +12,7 @@
 @section('content')
     <div class="ui-container-fluid">
         <!-- Class Information Section -->
-        <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 tw:mb-6!">
+        <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row tw:mb-6!">
             <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:flex-[0_0_auto] tw:w-[100%]">
                 <div class="ui-card">
                     <div class="ui-card-header tw:bg-bs-primary! tw:text-bs-white!">
@@ -35,10 +35,10 @@
         </div>
 
         <!-- Class Categories Section -->
-        <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 tw:mb-6!">
+        <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row tw:mb-6!">
             <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:flex-[0_0_auto] tw:w-[100%]">
                 <div class="ui-card">
-                    <div class="ui-card-header tw:bg-bs-info! tw:text-bs-white!">
+                    <div class="ui-card-header bs-bg-info tw:bg-bs-info! tw:text-bs-white!">
                         <h5 class="ui-card-title tw:mb-0!">
                             <i class="fas fa-tags tw:mr-2!"></i>Available Categories
                         </h5>
@@ -58,17 +58,17 @@
         </div>
 
         <!-- Students Selection Section -->
-        <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3">
+        <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row">
             <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:flex-[0_0_auto] tw:w-[100%]">
                 <div class="ui-card">
-                    <div class="ui-card-header tw:bg-bs-success! tw:text-bs-white!">
+                    <div class="ui-card-header bs-bg-success tw:bg-bs-success! tw:text-bs-white!">
                         <h5 class="ui-card-title tw:mb-0!">
                             <i class="fas fa-user-plus tw:mr-2!"></i>Select Students
                         </h5>
                     </div>
                     <div class="ui-card-body">
                         <!-- Search and Filters -->
-                        <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 tw:mb-6!">
+                        <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row tw:mb-6!">
                             <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
                                 <label class="ui-form-label">Search Students</label>
                                 <div class="ui-input-group">
@@ -171,7 +171,7 @@
 
                         <!-- Pagination -->
                         <div id="studentsPagination" class="tw:hidden!">
-                            <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 tw:items-center!">
+                            <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row tw:items-center!">
                                 <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
                                     <div class="tw:text-bs-secondary-color!" id="paginationInfo">
                                         Showing 0 to 0 of 0 entries
@@ -188,7 +188,7 @@
                         </div>
 
                         <!-- Action Buttons -->
-                        <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 tw:mt-6!">
+                        <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row tw:mt-6!">
                             <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:flex-[0_0_auto] tw:w-[100%]">
                                 <div class="tw:flex! tw:justify-between! tw:items-center!">
                                     <div>
@@ -273,10 +273,10 @@
 
                 if (classData) {
                     document.getElementById('classInfo').innerHTML = `
-                    <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3">
+                    <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row">
                         <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[25%]">
                             <strong>Class Name:</strong><br>
-                            <span class="tw:text-[length:1.25rem]! tw:font-bold! tw:text-bs-primary!">${classData.class_name}</span>
+                            <span class="bs-fs-5 tw:text-[length:1.25rem]! tw:font-bold! tw:text-bs-primary!">${classData.class_name}</span>
                         </div>
                         <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[25%]">
                             <strong>Teacher:</strong><br>
@@ -293,7 +293,7 @@
                         </div>
                         <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[16.66666667%]">
                             <strong>Status:</strong><br>
-                            <span class="ui-badge ${classData.is_active ? 'tw:bg-bs-success!' : 'tw:bg-bs-secondary!'}">
+                            <span class="ui-badge ${classData.is_active ? 'tw:bg-bs-success! bs-bg-success' : 'tw:bg-bs-secondary!'}">
                                 ${classData.is_active ? 'Active' : 'Inactive'}
                             </span>
                         </div>
@@ -337,7 +337,7 @@
                                 <div class="ui-card-body">
                                     <h6 class="ui-card-title">${categoryName}</h6>
                                     <div class="tw:flex! tw:justify-between! tw:items-center!">
-                                        <span class="ui-badge tw:bg-bs-success! badge-fee">
+                                        <span class="ui-badge bs-bg-success tw:bg-bs-success! badge-fee">
                                             <i class="fas fa-rupee-sign tw:mr-1!"></i>${fee.toFixed(2)}
                                         </span>
                                         <small class="tw:text-bs-secondary-color!">Click to select</small>
@@ -349,7 +349,7 @@
             }).join('');
 
             // Wrap in row
-            container.innerHTML = `<div class="ui-row">${container.innerHTML}</div>`;
+            container.innerHTML = `<div class="bs-row ui-row">${container.innerHTML}</div>`;
         }
 
         // Select Category
@@ -519,7 +519,7 @@
 
                     if (enrollment.status === 1) {
                         rowClass = 'enrollment-active';
-                        statusBadge = '<span class="ui-badge tw:bg-bs-success!">Enrolled (Active)</span>';
+                        statusBadge = '<span class="ui-badge bs-bg-success tw:bg-bs-success!">Enrolled (Active)</span>';
                         disabled = 'disabled';
                         tooltip = 'title="Already enrolled and active"';
                         enrollmentCheckbox = `
@@ -534,7 +534,7 @@
                             `;
                     } else {
                         rowClass = 'enrollment-inactive';
-                        statusBadge = '<span class="ui-badge tw:bg-bs-warning! tw:text-bs-dark!">Enrolled (Inactive)</span>';
+                        statusBadge = '<span class="ui-badge bs-bg-warning tw:bg-bs-warning! tw:text-bs-dark!">Enrolled (Inactive)</span>';
                         disabled = 'disabled';
                         tooltip = 'title="Already enrolled but inactive"';
                         actionButtons = `
@@ -563,7 +563,7 @@
                                 <strong>${student.initial_name}</strong>
                             </td>
                             <td>
-                                <span class="ui-badge tw:bg-bs-info!">${student.grade ? 'Grade ' + student.grade.grade_name : 'N/A'}</span>
+                                <span class="ui-badge bs-bg-info tw:bg-bs-info!">${student.grade ? 'Grade ' + student.grade.grade_name : 'N/A'}</span>
                             </td>
                             <td>${student.mobile || 'N/A'}</td>
                             <td>${statusBadge}</td>
@@ -1041,7 +1041,7 @@
 
         function showAlert(message, type) {
             const alertDiv = document.createElement('div');
-            alertDiv.className = `ui-alert ui-alert-${type} ui-alert-dismissible ui-fade show tw:fixed!`;
+            alertDiv.className = `ui-alert ui-alert-${type} ui-alert-dismissible ui-fade show bs-position-fixed tw:fixed!`;
             alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
             alertDiv.innerHTML = `
                     <strong>${type === 'success' ? 'Success!' : type === 'warning' ? 'Warning!' : 'Error!'}</strong> ${message}

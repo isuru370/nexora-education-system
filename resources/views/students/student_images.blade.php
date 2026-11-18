@@ -11,10 +11,10 @@
 @section('content')
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3">
+    <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row">
         <!-- LEFT: Upload Section -->
         <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
-            <div class="ui-card tw:shadow-bs-sm! tw:[border:0]!">
+            <div class="ui-card bs-shadow-sm tw:shadow-bs-sm! tw:[border:0]!">
                 <div class="ui-card-header tw:bg-bs-primary! tw:text-bs-white!">
                     <strong><i class="fas fa-upload tw:mr-2!"></i>Upload Quick Image</strong>
                 </div>
@@ -23,7 +23,7 @@
                     <!-- Preview Section -->
                     <div class="tw:text-center! tw:mb-6!">
                         <div class="preview-container tw:relative!">
-                            <img id="previewImg" class="ui-img-thumbnail tw:rounded-bs! tw:shadow-bs-sm!"
+                            <img id="previewImg" class="ui-img-thumbnail tw:rounded-bs! bs-shadow-sm tw:shadow-bs-sm!"
                                 style="width: 100%; max-width: 300px; display: none;">
                             <div id="previewPlaceholder" class="tw:text-bs-secondary-color! tw:p-6! tw:bs-border! tw:rounded-bs!">
                                 <i class="fas fa-image fa-3x tw:mb-4!"></i>
@@ -85,7 +85,7 @@
 
         <!-- RIGHT: Quick Images List -->
         <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[66.66666667%]">
-            <div class="ui-card tw:shadow-bs-sm! tw:[border:0]!">
+            <div class="ui-card bs-shadow-sm tw:shadow-bs-sm! tw:[border:0]!">
                 <div class="ui-card-header tw:bg-bs-primary! tw:text-bs-white! tw:flex! tw:justify-between! tw:items-center!">
                     <strong><i class="fas fa-images tw:mr-2!"></i>Quick Images List</strong>
                     <span class="ui-badge tw:bg-bs-light! tw:text-bs-primary!" id="imageCount">0 images</span>
@@ -93,7 +93,7 @@
                 <div class="ui-card-body">
 
                     <!-- Filters -->
-                    <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 tw:mb-6!">
+                    <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row tw:mb-6!">
                         <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
                             <label class="ui-form-label tw:font-semibold!">Filter by Grade</label>
                             <select id="filterGrade" class="ui-form-select">
@@ -120,7 +120,7 @@
                         <p class="tw:text-bs-secondary-color! tw:mt-2!">Loading quick images...</p>
                     </div>
 
-                    <div id="imagesContainer" class="ui-row ui-g-3" style="display: none;">
+                    <div id="imagesContainer" class="bs-row ui-row ui-g-3" style="display: none;">
                         <!-- Images will be loaded here -->
                     </div>
 
@@ -170,7 +170,7 @@
             transform: translateY(-2px);
         }
 
-        .ui-alert.toast-alert {
+        .ui-alert.bs-position-fixed {
             animation: slideInRight 0.3s ease;
         }
 
@@ -544,7 +544,7 @@
                 const fullImageUrl = imageUrl + cacheBuster;
 
                 col.innerHTML = `
-                        <div class="ui-card tw:h-full! tw:shadow-bs-sm! quick-image-card">
+                        <div class="ui-card tw:h-full! bs-shadow-sm tw:shadow-bs-sm! quick-image-card">
                             <img src="${fullImageUrl}" class="ui-card-img-top" 
                                  style="height: 200px; object-fit: cover; width: 100%;" 
                                  alt="Quick image for ${item.grade?.grade_name || 'Unknown'}"
@@ -556,7 +556,7 @@
                             ` : ''}
                             <div class="ui-card-body">
                                 <h6 class="ui-card-title">Grade ${item.grade?.grade_name || 'N/A'}</h6>
-                                <span class="ui-badge ${item.is_active ? 'tw:bg-bs-success!' : 'tw:bg-bs-secondary!'}">
+                                <span class="ui-badge ${item.is_active ? 'tw:bg-bs-success! bs-bg-success' : 'tw:bg-bs-secondary!'}">
                                     ${item.is_active ? 'Active' : 'Inactive'}
                                 </span>
                                 ${item.custom_id ? `
@@ -628,7 +628,7 @@
             }
 
             const alertDiv = document.createElement('div');
-            alertDiv.className = `ui-alert ui-alert-${type} ui-alert-dismissible ui-fade show tw:fixed! toast-alert`;
+            alertDiv.className = `ui-alert ui-alert-${type} ui-alert-dismissible ui-fade show bs-position-fixed tw:fixed!`;
             alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px; max-width: 500px;';
 
             const icon = type === 'success' ? 'fa-check-circle' :

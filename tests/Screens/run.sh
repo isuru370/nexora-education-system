@@ -27,11 +27,16 @@ php artisan key:generate --force -q
 php artisan storage:link -q || true
 
 php vendor/bin/phpunit -c tests/Screens/phpunit.xml
-php artisan serve --host=127.0.0.1 --port="$port" > "/tmp/serve-$(basename "$dir").log" 2>&1 &
+# several workers (one slow page does not block the others); started again
+# if it stops, so one crash does not end the run
+( while true; do
+    PHP_CLI_SERVER_WORKERS=4 php artisan serve --no-reload --host=127.0.0.1 --port="$port" >> "/tmp/serve-$(basename "$dir").log" 2>&1
+    echo "server stopped, starting again" >> "/tmp/serve-$(basename "$dir").log"; sleep 1
+  done ) &
 server=$!
 for i in $(seq 1 30); do curl -s -o /dev/null "http://127.0.0.1:$port/login" && break; sleep 1; done
 
 node "$GITHUB_WORKSPACE/tools/shoot.mjs" "http://127.0.0.1:$port" storage/screens/urls.json "$out"
 
 # both runs use the same port (the URL shows on some pages)
-kill $server; pkill -f "artisan serve" || true; pkill -f "php -S 127.0.0.1:$port" || true; sleep 1
+kill $server 2>/dev/null || true; pkill -f "artisan serve" || true; pkill -f "php -S 127.0.0.1:$port" || true; sleep 1

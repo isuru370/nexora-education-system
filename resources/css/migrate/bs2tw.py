@@ -638,16 +638,25 @@ class Converter:
     def class_value(self, value, where='', row_parent=None, ui_grid=False):
         parts = re.split(r'(\{\{.*?\}\}|\{!!.*?!!\}|@\w+(?:\((?:[^()]|\([^()]*\))*\))?)', value, flags=re.S)
         static = [t for i, p in enumerate(parts) if i % 2 == 0 for t in p.split()]
-        if any(i % 2 == 1 and p.startswith('@') for i, p in enumerate(parts)):
+        glued = any(i % 2 == 1 and ((i > 0 and parts[i - 1][-1:] not in ('', ' ', '\n', '\t'))
+                                    or (i + 1 < len(parts) and parts[i + 1][:1] not in ('', ' ', '\n', '\t')))
+                    for i in range(len(parts)))
+        if glued or any(i % 2 == 1 and p.startswith('@') for i, p in enumerate(parts)):
             # @if / @error ... @endif inside the value: keep every class where it is
             out = []
             for i, p in enumerate(parts):
                 if i % 2 == 1:
                     out.append(self.expr(p, where, static) if not p.startswith('@') else p)
                 elif p.split():
-                    lead = ' ' if p[:1].isspace() else ''
-                    trail = ' ' if p[-1:].isspace() else ''
-                    out.append(lead + ' '.join(self.classes(p.split(), where, row_parent, ui_grid)) + trail)
+                    lead = p[:len(p) - len(p.lstrip())]
+                    trail = p[len(p.rstrip()):]
+                    toks = p.split()
+                    # a name glued to {{ }} (icon-{{ $x }}, {{ $x }}-badge) is only part of a class: keep it
+                    head = toks.pop(0) if not lead and i > 0 else None
+                    tail = toks.pop() if toks and not trail and i + 1 < len(parts) else None
+                    mapped = self.classes(toks, where, row_parent, ui_grid) if toks else []
+                    words = ([head] if head else []) + mapped + ([tail] if tail else [])
+                    out.append(lead + ' '.join(words) + trail)
                 else:
                     out.append(p)
             return ''.join(out)
@@ -1136,9 +1145,21 @@ def convert_scripts(text, conv, fname):
         body = re.sub(r'(class\s*=\s*\\?)(["\'])((?:(?!\2)[^<>])*?)\\?\2', cls_attr, body)
 
         def cl(mm):
-            args = mm.group(2)
-            return mm.group(1) + '(' + conv.expr(args, where(mm.start())) + ')'
-        body = re.sub(r'(classList\.(?:add|remove|toggle|contains|replace)|\.(?:addClass|removeClass|toggleClass|hasClass))\(([^()]*)\)', cl, body)
+            fn, args = mm.group(1), mm.group(2)
+            new = conv.expr(args, where(mm.start()))
+            if fn.startswith('classList') and new != args:
+                # classList takes one class per argument
+                def split(q):
+                    toks = q.group(2).split()
+                    if len(toks) < 2:
+                        return q.group(0)
+                    if fn.endswith(('add', 'remove')):
+                        return ', '.join(q.group(1) + t + q.group(1) for t in toks)
+                    conv.warn(where(mm.start()), 'classList.%s with several classes: %s' % (fn.split('.')[-1], q.group(2)))
+                    return q.group(0)
+                new = re.sub(r'(["\'])([^"\']*)\1', split, new)
+            return fn + '(' + new + ')'
+        body = re.sub(r'(classList\.(?:add|remove|toggle|contains|replace)|\.(?:addClass|removeClass|toggleClass|hasClass))\(((?:[^()]|\([^()]*\))*)\)', cl, body)
 
         def cname(mm):
             lit = mm.group(2)
@@ -1220,6 +1241,8 @@ def convert_js_api(text, conv, fname):
     text = re.sub(r'data-bs-(toggle|target|dismiss|backdrop|keyboard)(\s*=)', r'data-nx-\1\2', text)
     text = re.sub(r'\[data-bs-(toggle|target|dismiss)', r'[data-nx-\1', text)
     text = re.sub(r'\bbootstrap\.Modal\b', 'NxUi.Modal', text)
+    text = re.sub(r'dataset\.bs(Toggle|Target|Dismiss)\b', r'dataset.nx\1', text)
+    text = re.sub(r'(getAttribute|setAttribute|hasAttribute)\((["\'])data-bs-(toggle|target|dismiss)', r'\1(\2data-nx-\3', text)
     text = re.sub(r'\b(show|shown|hide|hidden)\.bs\.(modal|tab)\b', r'\1.nx.\2', text)
     for m in re.finditer(r'\bbootstrap\.\w+|data-bs-\w+', text):
         line = text.count('\n', 0, m.start()) + 1

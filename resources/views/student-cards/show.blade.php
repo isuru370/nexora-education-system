@@ -45,7 +45,7 @@
     <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3">
         {{-- Student Profile Card --}}
         <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[33.33333333%]">
-            <div class="ui-card tw:shadow-bs-sm! tw:[border:0]! tw:rounded-bs-xl! tw:overflow-hidden!">
+            <div class="ui-card tw:shadow-bs-sm! tw:[border:0]! bs-rounded-4 tw:rounded-bs-xl! tw:overflow-hidden!">
                 {{-- Card Header with Gradient --}}
                 <div class="ui-card-header bg-gradient-primary tw:text-bs-white! tw:py-6!" style="background: linear-gradient(135deg, #4e73df 0%, #224abe 100%);">
                     <div class="tw:text-center!">
@@ -199,7 +199,7 @@
                                 <div class="tw:flex! tw:flex-wrap! tw:gap-2!">
                                     @foreach($activeEnrollments as $enrollment)
                                         <div class="class-badge">
-                                            <span class="ui-badge tw:bg-bs-primary! tw:[background-image:linear-gradient(180deg,_rgba(255,255,255,0.15),_rgba(255,255,255,0))]! tw:px-4! tw:py-2! tw:rounded-bs-pill!">
+                                            <span class="ui-badge bs-bg-primary tw:bg-bs-primary! tw:[background-image:linear-gradient(180deg,_rgba(255,255,255,0.15),_rgba(255,255,255,0))]! tw:px-4! tw:py-2! tw:rounded-bs-pill!">
                                                 <i class="bi bi-bookmark-fill tw:mr-1!"></i>
                                                 {{ $enrollment->studentClass->class_name }}
                                             </span>
@@ -252,7 +252,7 @@
             <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3">
                 {{-- Card Details --}}
                 <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:flex-[0_0_auto] tw:w-[100%]">
-                    <div class="ui-card tw:shadow-bs-sm! tw:[border:0]! tw:rounded-bs-xl!">
+                    <div class="ui-card tw:shadow-bs-sm! tw:[border:0]! bs-rounded-4 tw:rounded-bs-xl!">
                         <div class="ui-card-header tw:bg-bs-white! tw:[border:0]! tw:pt-6!">
                             <h5 class="tw:mb-0! tw:font-bold!">
                                 <i class="bi bi-credit-card-2-front tw:text-bs-primary! tw:mr-2!"></i>
@@ -278,7 +278,7 @@
                                                 <i class="bi bi-check-circle tw:mr-1!"></i> Available
                                             </span>
                                         @elseif($card->status == 'assigned')
-                                            <span class="ui-badge tw:bg-bs-primary! tw:[background-image:linear-gradient(180deg,_rgba(255,255,255,0.15),_rgba(255,255,255,0))]! tw:text-[length:1rem]! tw:px-6! tw:py-2!">
+                                            <span class="ui-badge bs-bg-primary tw:bg-bs-primary! tw:[background-image:linear-gradient(180deg,_rgba(255,255,255,0.15),_rgba(255,255,255,0))]! tw:text-[length:1rem]! tw:px-6! tw:py-2!">
                                                 <i class="bi bi-person-check tw:mr-1!"></i> Assigned
                                             </span>
                                         @elseif($card->status == 'lost')
@@ -338,7 +338,7 @@
                 {{-- Enrollment Summary --}}
                 @if($card->student)
                 <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:flex-[0_0_auto] tw:w-[100%]">
-                    <div class="ui-card tw:shadow-bs-sm! tw:[border:0]! tw:rounded-bs-xl!">
+                    <div class="ui-card tw:shadow-bs-sm! tw:[border:0]! bs-rounded-4 tw:rounded-bs-xl!">
                         <div class="ui-card-header tw:bg-bs-white! tw:[border:0]! tw:pt-6!">
                             <h5 class="tw:mb-0! tw:font-bold!">
                                 <i class="bi bi-clock-history tw:text-bs-primary! tw:mr-2!"></i>
@@ -353,7 +353,7 @@
                                     $totalEnrollments = $enrollments->count();
                                 @endphp
                                 <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
-                                    <div class="stat-card tw:text-center! tw:p-4! tw:bg-[rgba(13,110,253,0.1)]! tw:rounded-bs-lg!">
+                                    <div class="stat-card tw:text-center! tw:p-4! bs-bg-primary tw:bg-[rgba(13,110,253,0.1)]! tw:rounded-bs-lg!">
                                         <h3 class="tw:mb-0! tw:text-bs-primary!">{{ $activeCount }}</h3>
                                         <p class="tw:text-bs-secondary-color! tw:text-[.875em] tw:mb-0!">Active Classes</p>
                                     </div>
@@ -465,6 +465,10 @@
     .info-card:hover {
         transform: translateY(-2px);
         box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    }
+
+    .bs-rounded-4 {
+        border-radius: 1rem;
     }
 
     .qr-code-preview {

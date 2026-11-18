@@ -35,7 +35,7 @@
 
                     <button type="submit"
                         class="ui-btn {{ $studentClassEnrollment->is_active ? 'ui-btn-warning' : 'ui-btn-success' }}">
-                        <i class="bi bi- tw:mr-1! {{ $studentClassEnrollment->is_active ? 'pause-circle' : 'play-circle' }}"></i>
+                        <i class="bi bi-{{ $studentClassEnrollment->is_active ? 'pause-circle' : 'play-circle' }} tw:mr-1!"></i>
                         {{ $studentClassEnrollment->is_active ? 'Deactivate' : 'Activate' }}
                     </button>
                 </form>

@@ -5,7 +5,7 @@
 
 @section('content')
 <div class="dashboard-page">
-    <div class="hero-section mb-4">
+    <div class="hero-section tw:mb-6!">
         <div class="hero-content">
             <div class="hero-left">
                 <span class="greeting-badge">Courses</span>
@@ -21,19 +21,19 @@
 
     @if ($student)
         @if ($enrolled->count())
-            <div class="nx-card mb-4">
-                <div class="nx-card-header"><h5 class="nx-card-title"><i class="bi bi-journal-check text-primary"></i> Already in</h5></div>
-                <div class="table-responsive">
-                    <table class="table premium-table mb-0">
-                        <thead><tr><th>Course</th><th>Plan</th><th class="text-end">Balance</th><th>Status</th><th class="text-end"></th></tr></thead>
+            <div class="nx-card tw:mb-6!">
+                <div class="nx-card-header"><h5 class="nx-card-title"><i class="bi bi-journal-check tw:text-(color:--nx-blue)!"></i> Already in</h5></div>
+                <div class="ui-table-responsive">
+                    <table class="ui-table premium-table tw:mb-0!">
+                        <thead><tr><th>Course</th><th>Plan</th><th class="tw:text-right!">Balance</th><th>Status</th><th class="tw:text-right!"></th></tr></thead>
                         <tbody>
                             @foreach ($enrolled as $row)
                                 <tr class="{{ $row['enrollment']->isActive() ? '' : 'row-muted' }}">
                                     <td>{{ $row['enrollment']->course->name }}</td>
                                     <td>{{ $row['enrollment']->payment_plan === 'full' ? 'At once' : 'Installments' }}</td>
-                                    <td class="text-end money">{{ number_format($row['fees']['balance'], 2) }}</td>
+                                    <td class="tw:text-right! money">{{ number_format($row['fees']['balance'], 2) }}</td>
                                     <td>@include('courses.partials.status-badge', ['status' => $row['enrollment']->status])</td>
-                                    <td class="text-end"><a class="nx-btn nx-btn-light" href="{{ route('courses.enrollments.show', [$row['enrollment']->course_id, $row['enrollment']]) }}">Open</a></td>
+                                    <td class="tw:text-right!"><a class="nx-btn nx-btn-light" href="{{ route('courses.enrollments.show', [$row['enrollment']->course_id, $row['enrollment']]) }}">Open</a></td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -42,7 +42,7 @@
             </div>
         @endif
 
-        <h5 class="mb-3">Courses to join</h5>
+        <h5 class="tw:mb-4!">Courses to join</h5>
         <div class="desk-grid">
             @forelse ($available as $course)
                 <form method="POST" action="{{ route('courses.enrollments.store', $course) }}" class="desk-card">
@@ -54,7 +54,7 @@
                     </div>
                     <div>
                         <label class="nx-label" for="plan{{ $course->id }}">Payment</label>
-                        <select id="plan{{ $course->id }}" name="payment_plan" class="form-select nx-input">
+                        <select id="plan{{ $course->id }}" name="payment_plan" class="ui-form-select nx-input">
                             <option value="installment">{{ $course->installment_count }} installments · {{ number_format($course->full_fee, 2) }}</option>
                             <option value="full">Pay at once · {{ number_format($course->one_time_fee, 2) }}</option>
                         </select>

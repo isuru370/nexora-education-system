@@ -5,7 +5,7 @@
 
 @section('content')
 <div class="dashboard-page">
-    <div class="hero-section mb-4">
+    <div class="hero-section tw:mb-6!">
         <div class="hero-content">
             <div class="hero-left">
                 <span class="greeting-badge">Course teacher · {{ $teacher->custom_id }}</span>
@@ -25,31 +25,31 @@
 
     @include('courses.partials.alerts')
 
-    <div class="desk-grid mb-4">
+    <div class="desk-grid tw:mb-6!">
         @foreach ($rows as $row)
             <div class="desk-card">
-                <div class="d-flex justify-content-between gap-2">
-                    <h6><a class="text-decoration-none" href="{{ route('courses.show', $row['course']) }}#teachers">{{ $row['course']->name }}</a></h6>
+                <div class="tw:flex! tw:justify-between! tw:gap-2!">
+                    <h6><a class="tw:[text-decoration:none]!" href="{{ route('courses.show', $row['course']) }}#teachers">{{ $row['course']->name }}</a></h6>
                     <span class="cell-sub">{{ $row['percentage'] !== null ? rtrim(rtrim(number_format($row['percentage'], 2), '0'), '.') . '%' : 'removed' }}</span>
                 </div>
-                <dl class="kv mb-0">
+                <dl class="kv tw:mb-0!">
                     <dt>Earned</dt><dd class="money">{{ number_format($row['earned'], 2) }}</dd>
                     <dt>Paid</dt><dd class="money">{{ number_format($row['paid'], 2) }}</dd>
-                    <dt>Balance</dt><dd class="money {{ $row['balance'] < 0 ? 'text-danger' : '' }}">{{ number_format($row['balance'], 2) }}</dd>
+                    <dt>Balance</dt><dd class="money {{ $row['balance'] < 0 ? 'tw:text-(color:--nx-red)!' : '' }}">{{ number_format($row['balance'], 2) }}</dd>
                 </dl>
                 @if ($row['balance'] > 0)
-                    <form method="POST" action="{{ route('courses.payouts.store', $row['course']) }}" class="d-flex flex-column gap-2" onsubmit="if (!confirm('Pay ' + this.amount.value + ' to {{ addslashes($teacher->full_name) }}?')) return false; this.querySelector('button[type=submit]').disabled = true;">
+                    <form method="POST" action="{{ route('courses.payouts.store', $row['course']) }}" class="tw:flex! tw:flex-col! tw:gap-2!" onsubmit="if (!confirm('Pay ' + this.amount.value + ' to {{ addslashes($teacher->full_name) }}?')) return false; this.querySelector('button[type=submit]').disabled = true;">
                         @csrf
                         <input type="hidden" name="teacher_id" value="{{ $teacher->id }}">
-                        <div class="d-flex gap-2">
-                            <input type="number" step="0.01" min="1" max="{{ $row['balance'] }}" name="amount" class="form-control nx-input" value="{{ $row['balance'] }}" required aria-label="Amount">
-                            <select name="payment_method" class="form-select nx-input" aria-label="Method">
+                        <div class="tw:flex! tw:gap-2!">
+                            <input type="number" step="0.01" min="1" max="{{ $row['balance'] }}" name="amount" class="ui-form-control nx-input" value="{{ $row['balance'] }}" required aria-label="Amount">
+                            <select name="payment_method" class="ui-form-select nx-input" aria-label="Method">
                                 @foreach ($methods as $method)
                                     <option value="{{ $method }}">{{ ucwords(str_replace('_', ' ', $method)) }}</option>
                                 @endforeach
                             </select>
                         </div>
-                        <input name="note" class="form-control nx-input" maxlength="500" placeholder="Note (optional)" aria-label="Note">
+                        <input name="note" class="ui-form-control nx-input" maxlength="500" placeholder="Note (optional)" aria-label="Note">
                         <button class="nx-btn nx-btn-primary" type="submit"><i class="bi bi-cash"></i> Pay teacher</button>
                     </form>
                 @endif
@@ -58,20 +58,20 @@
     </div>
 
     <div class="nx-card">
-        <div class="nx-card-header"><h5 class="nx-card-title"><i class="bi bi-clock-history text-primary"></i> Payments to {{ $teacher->full_name }}</h5></div>
-        <div class="table-responsive">
-            <table class="table premium-table mb-0">
-                <thead><tr><th>Date</th><th>Course</th><th>Method</th><th class="text-end">Amount</th><th>By</th><th>Status</th><th class="text-end"></th></tr></thead>
+        <div class="nx-card-header"><h5 class="nx-card-title"><i class="bi bi-clock-history tw:text-(color:--nx-blue)!"></i> Payments to {{ $teacher->full_name }}</h5></div>
+        <div class="ui-table-responsive">
+            <table class="ui-table premium-table tw:mb-0!">
+                <thead><tr><th>Date</th><th>Course</th><th>Method</th><th class="tw:text-right!">Amount</th><th>By</th><th>Status</th><th class="tw:text-right!"></th></tr></thead>
                 <tbody>
                     @forelse ($payouts as $payout)
                         <tr class="{{ $payout->status === 'cancelled' ? 'row-muted' : '' }}">
                             <td>{{ $payout->paid_on->format('d M Y') }}</td>
-                            <td>{{ $payout->course->name ?? '' }}@if ($payout->note)<small class="cell-sub d-block">{{ $payout->note }}</small>@endif</td>
+                            <td>{{ $payout->course->name ?? '' }}@if ($payout->note)<small class="cell-sub tw:block!">{{ $payout->note }}</small>@endif</td>
                             <td>{{ ucwords(str_replace('_', ' ', $payout->payment_method)) }}</td>
-                            <td class="text-end money">{{ number_format($payout->amount, 2) }}</td>
+                            <td class="tw:text-right! money">{{ number_format($payout->amount, 2) }}</td>
                             <td><small>{{ $payout->paidBy->name ?? '' }}</small></td>
                             <td>@include('courses.partials.status-badge', ['status' => $payout->status])</td>
-                            <td class="text-end">
+                            <td class="tw:text-right!">
                                 <div class="action-buttons">
                                     <a class="action-btn" href="{{ route('course-teacher-payouts.slip', $payout) }}" title="Slip" aria-label="Payment slip"><i class="bi bi-printer"></i></a>
                                     @if ($payout->status === 'paid')

@@ -1,51 +1,51 @@
 <!-- Create Grade Modal -->
-<div class="modal fade"
+<div class="ui-modal ui-fade"
      id="createGradeModal"
      tabindex="-1"
      aria-labelledby="createGradeModalLabel"
      aria-hidden="true">
 
-    <div class="modal-dialog">
+    <div class="ui-modal-dialog">
 
         <form action="{{ route('admin.grades.store') }}" method="POST">
 
             @csrf
 
-            <div class="modal-content">
+            <div class="ui-modal-content">
 
-                <div class="modal-header bg-primary text-white">
+                <div class="ui-modal-header tw:bg-bs-primary! tw:text-bs-white!">
 
-                    <h5 class="modal-title" id="createGradeModalLabel">
+                    <h5 class="ui-modal-title" id="createGradeModalLabel">
                         <i class="fas fa-plus-circle"></i>
                         Add New Grade
                     </h5>
 
                     <button type="button"
-                            class="btn-close btn-close-white"
-                            data-bs-dismiss="modal">
+                            class="ui-btn-close ui-btn-close-white"
+                            data-nx-dismiss="modal">
                     </button>
 
                 </div>
 
-                <div class="modal-body">
+                <div class="ui-modal-body">
 
                     {{-- Grade Name --}}
-                    <div class="mb-3">
+                    <div class="tw:mb-4!">
 
-                        <label class="form-label">
+                        <label class="ui-form-label">
                             Grade Name
-                            <span class="text-danger">*</span>
+                            <span class="tw:text-bs-danger!">*</span>
                         </label>
 
                         <input type="text"
                                name="grade_name"
-                               class="form-control @error('grade_name') is-invalid @enderror"
+                               class="ui-form-control @error('grade_name') ui-is-invalid @enderror"
                                value="{{ old('grade_name') }}"
                                placeholder="Enter Grade Name"
                                required>
 
                         @error('grade_name')
-                            <div class="invalid-feedback">
+                            <div class="ui-invalid-feedback">
                                 {{ $message }}
                             </div>
                         @enderror
@@ -53,17 +53,17 @@
                     </div>
 
                     {{-- Status --}}
-                    <div class="form-check form-switch">
+                    <div class="ui-form-check ui-form-switch">
 
                         <input
-                            class="form-check-input"
+                            class="ui-form-check-input"
                             type="checkbox"
                             name="is_active"
                             id="createStatus"
                             value="1"
                             checked>
 
-                        <label class="form-check-label" for="createStatus">
+                        <label class="ui-form-check-label" for="createStatus">
                             Active
                         </label>
 
@@ -71,11 +71,11 @@
 
                 </div>
 
-                <div class="modal-footer">
+                <div class="ui-modal-footer">
 
                     <button type="button"
-                            class="btn btn-secondary"
-                            data-bs-dismiss="modal">
+                            class="ui-btn ui-btn-secondary"
+                            data-nx-dismiss="modal">
 
                         <i class="fas fa-times"></i>
                         Close
@@ -83,7 +83,7 @@
                     </button>
 
                     <button type="submit"
-                            class="btn btn-primary">
+                            class="ui-btn ui-btn-primary">
 
                         <i class="fas fa-save"></i>
                         Save Grade
@@ -104,7 +104,7 @@
 @if($errors->any())
 <script>
     document.addEventListener('DOMContentLoaded', function () {
-        var modal = new bootstrap.Modal(document.getElementById('createGradeModal'));
+        var modal = new NxUi.Modal(document.getElementById('createGradeModal'));
         modal.show();
     });
 </script>

@@ -5,7 +5,7 @@
 
 @section('content')
 <div class="dashboard-page">
-    <div class="hero-section mb-4">
+    <div class="hero-section tw:mb-6!">
         <div class="hero-content">
             <div class="hero-left">
                 <span class="greeting-badge">Courses</span>

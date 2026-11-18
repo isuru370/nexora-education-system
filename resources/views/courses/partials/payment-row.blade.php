@@ -3,20 +3,20 @@
 @endphp
 <tr class="{{ $payment->isCompleted() ? '' : 'row-muted' }}">
     <td><span class="cell-title">{{ $payment->receipt_number }}</span></td>
-    <td>{{ $payment->paid_at->format('d M Y') }}<small class="cell-sub d-block">{{ $payment->paid_at->format('h:i A') }}</small></td>
+    <td>{{ $payment->paid_at->format('d M Y') }}<small class="cell-sub tw:block!">{{ $payment->paid_at->format('h:i A') }}</small></td>
     @if ($showStudent ?? true)
-        <td>{{ $payment->student->initial_name ?? '' }}<small class="cell-sub d-block">{{ $payment->student->custom_id ?? '' }}</small></td>
+        <td>{{ $payment->student->initial_name ?? '' }}<small class="cell-sub tw:block!">{{ $payment->student->custom_id ?? '' }}</small></td>
     @endif
     @if ($showCourse ?? false)
         <td>{{ $payment->course->name ?? '' }}</td>
     @endif
-    <td>{{ ucwords(str_replace('_', ' ', $payment->payment_method)) }}<small class="cell-sub d-block">{{ $payment->takenBy->name ?? '' }}</small></td>
-    <td class="text-end money"><strong>{{ number_format($payment->amount, 2) }}</strong></td>
+    <td>{{ ucwords(str_replace('_', ' ', $payment->payment_method)) }}<small class="cell-sub tw:block!">{{ $payment->takenBy->name ?? '' }}</small></td>
+    <td class="tw:text-right! money"><strong>{{ number_format($payment->amount, 2) }}</strong></td>
     <td>
         @include('courses.partials.status-badge', ['status' => $payment->status])
-        @if ($payment->cancel_reason)<small class="cell-sub d-block">{{ $payment->cancel_reason }}</small>@endif
+        @if ($payment->cancel_reason)<small class="cell-sub tw:block!">{{ $payment->cancel_reason }}</small>@endif
     </td>
-    <td class="text-end">
+    <td class="tw:text-right!">
         <div class="action-buttons">
             <a href="{{ route('course-payments.receipt', $payment) }}" class="action-btn" title="Receipt" aria-label="Receipt"><i class="bi bi-receipt"></i></a>
             @if ($canCancel && $payment->isCompleted())

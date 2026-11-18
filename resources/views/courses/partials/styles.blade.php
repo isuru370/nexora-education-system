@@ -24,8 +24,8 @@
     .dashboard-page .kv dt { color: var(--nx-muted); font-weight: 500; }
     .dashboard-page .kv dd { margin: 0; font-weight: 600; }
     .dashboard-page .nx-tabs { display: flex; gap: .25rem; padding: .5rem .75rem 0; border-bottom: 1px solid var(--nx-border); flex-wrap: wrap; }
-    .dashboard-page .nx-tabs .nav-link { border: 0; border-bottom: 3px solid transparent; border-radius: 0; color: var(--nx-muted); font-weight: 600; padding: .7rem 1rem; }
-    .dashboard-page .nx-tabs .nav-link.active { color: var(--nx-blue); border-bottom-color: var(--nx-blue); background: transparent; }
+    .dashboard-page .nx-tabs .ui-nav-link { border: 0; border-bottom: 3px solid transparent; border-radius: 0; color: var(--nx-muted); font-weight: 600; padding: .7rem 1rem; }
+    .dashboard-page .nx-tabs .ui-nav-link.active { color: var(--nx-blue); border-bottom-color: var(--nx-blue); background: transparent; }
     .dashboard-page .money { font-variant-numeric: tabular-nums; white-space: nowrap; }
     .dashboard-page .inline-form { display: flex; flex-wrap: wrap; gap: .6rem; align-items: flex-end; }
     .dashboard-page .inline-form > div { min-width: 160px; }

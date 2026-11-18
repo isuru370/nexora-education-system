@@ -6,7 +6,7 @@
 @section('content')
 <div class="dashboard-page">
 
-    <div class="hero-section mb-4">
+    <div class="hero-section tw:mb-6!">
         <div class="hero-content">
             <div class="hero-left">
                 <span class="greeting-badge">Courses</span>
@@ -29,18 +29,18 @@
     @include('courses.partials.alerts')
 
     <div class="nx-card">
-        <div class="table-responsive">
-            <table class="table premium-table mb-0">
-                <thead><tr><th>Teacher</th><th class="text-end">Courses</th><th class="text-end">Earned</th><th class="text-end">Paid</th><th class="text-end">Balance</th><th class="text-end"></th></tr></thead>
+        <div class="ui-table-responsive">
+            <table class="ui-table premium-table tw:mb-0!">
+                <thead><tr><th>Teacher</th><th class="tw:text-right!">Courses</th><th class="tw:text-right!">Earned</th><th class="tw:text-right!">Paid</th><th class="tw:text-right!">Balance</th><th class="tw:text-right!"></th></tr></thead>
                 <tbody>
                     @forelse ($teachers as $row)
                         <tr>
-                            <td><a class="cell-title text-decoration-none" href="{{ route('course-teacher-payments.show', $row['teacher']) }}">{{ $row['teacher']->full_name }}</a><small class="cell-sub d-block">{{ $row['teacher']->custom_id }}</small></td>
-                            <td class="text-end">{{ $row['courses'] }}</td>
-                            <td class="text-end money">{{ number_format($row['earned'], 2) }}</td>
-                            <td class="text-end money">{{ number_format($row['paid'], 2) }}</td>
-                            <td class="text-end money"><strong class="{{ $row['balance'] < 0 ? 'text-danger' : '' }}">{{ number_format($row['balance'], 2) }}</strong></td>
-                            <td class="text-end"><a href="{{ route('course-teacher-payments.show', $row['teacher']) }}" class="nx-btn nx-btn-primary">Open</a></td>
+                            <td><a class="cell-title tw:[text-decoration:none]!" href="{{ route('course-teacher-payments.show', $row['teacher']) }}">{{ $row['teacher']->full_name }}</a><small class="cell-sub tw:block!">{{ $row['teacher']->custom_id }}</small></td>
+                            <td class="tw:text-right!">{{ $row['courses'] }}</td>
+                            <td class="tw:text-right! money">{{ number_format($row['earned'], 2) }}</td>
+                            <td class="tw:text-right! money">{{ number_format($row['paid'], 2) }}</td>
+                            <td class="tw:text-right! money"><strong class="{{ $row['balance'] < 0 ? 'tw:text-(color:--nx-red)!' : '' }}">{{ number_format($row['balance'], 2) }}</strong></td>
+                            <td class="tw:text-right!"><a href="{{ route('course-teacher-payments.show', $row['teacher']) }}" class="nx-btn nx-btn-primary">Open</a></td>
                         </tr>
                     @empty
                         <tr><td colspan="6" class="empty-table">No course teachers yet.</td></tr>

@@ -8,7 +8,7 @@
     <div class="dashboard-page">
 
         {{-- HERO --}}
-        <div class="hero-section mb-4">
+        <div class="hero-section tw:mb-6!">
             <div class="hero-content">
                 <div class="hero-left">
                     <span class="greeting-badge">nexoraEDU</span>
@@ -46,7 +46,7 @@
         </div>
 
         {{-- KPI CARDS --}}
-        <div class="stats-grid mb-4">
+        <div class="stats-grid tw:mb-6!">
 
             <div class="nx-card stat-card">
                 <div class="stat-icon-wrapper icon-blue"><i class="bi bi-people-fill"></i></div>
@@ -82,11 +82,11 @@
         </div>
 
         {{-- MAIN CARD --}}
-        <div class="nx-card mb-4">
+        <div class="nx-card tw:mb-6!">
 
             <div class="nx-card-header">
                 <div>
-                    <h5 class="nx-card-title"><i class="bi bi-people-fill text-primary"></i> System Users Management</h5>
+                    <h5 class="nx-card-title"><i class="bi bi-people-fill tw:text-(color:--nx-blue)!"></i> System Users Management</h5>
                     <p class="nx-card-subtitle">Manage user accounts, status, and linked profile details</p>
                 </div>
 
@@ -105,7 +105,7 @@
 
             {{-- ALERT --}}
             @if (session('success'))
-                <div class="p-3 pb-0">
+                <div class="tw:p-4! tw:pb-0!">
                     <div class="nx-alert nx-alert-green">
                         <i class="bi bi-check-circle-fill"></i>
                         <span>{{ session('success') }}</span>
@@ -116,18 +116,18 @@
             {{-- SEARCH / FILTER --}}
             <div class="nx-search">
                 <form method="GET" action="{{ route('admin.system-users.index') }}">
-                    <div class="row g-3 align-items-center">
-                        <div class="col-lg-5">
+                    <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2 tw:items-center!">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[41.66666667%]">
                             <div class="search-input-wrapper">
                                 <i class="bi bi-search"></i>
-                                <input type="text" name="search" class="form-control custom-input"
+                                <input type="text" name="search" class="ui-form-control custom-input"
                                     placeholder="Search name / mobile / custom ID / user..."
                                     value="{{ request('search') }}">
                             </div>
                         </div>
 
-                        <div class="col-lg-3">
-                            <select name="is_active" class="form-select custom-input">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[25%]">
+                            <select name="is_active" class="ui-form-select custom-input">
                                 <option value="">All Status</option>
                                 <option value="1" {{ request('is_active') === '1' ? 'selected' : '' }}>Active</option>
                                 <option value="0" {{ request('is_active') === '0' ? 'selected' : '' }}>Inactive
@@ -135,14 +135,14 @@
                             </select>
                         </div>
 
-                        <div class="col-lg-2">
-                            <button class="nx-btn nx-btn-primary w-100" type="submit">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[16.66666667%]">
+                            <button class="nx-btn nx-btn-primary tw:w-full!" type="submit">
                                 <i class="bi bi-funnel-fill"></i> Filter
                             </button>
                         </div>
 
-                        <div class="col-lg-2">
-                            <a href="{{ route('admin.system-users.index') }}" class="nx-btn nx-btn-light w-100">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[16.66666667%]">
+                            <a href="{{ route('admin.system-users.index') }}" class="nx-btn nx-btn-light tw:w-full!">
                                 Reset
                             </a>
                         </div>
@@ -151,8 +151,8 @@
             </div>
 
             {{-- TABLE --}}
-            <div class="table-responsive">
-                <table class="table premium-table mb-0">
+            <div class="ui-table-responsive">
+                <table class="ui-table premium-table tw:mb-0!">
                     <thead>
                         <tr>
                             <th>#</th>
@@ -161,7 +161,7 @@
                             <th>Custom ID</th>
                             <th>Linked Account</th>
                             <th>Status</th>
-                            <th class="text-end">Actions</th>
+                            <th class="tw:text-right!">Actions</th>
                         </tr>
                     </thead>
 
@@ -174,7 +174,7 @@
 
                                 {{-- USER --}}
                                 <td>
-                                    <div class="d-flex align-items-center gap-3">
+                                    <div class="tw:flex! tw:items-center! tw:gap-4!">
                                         <div class="user-avatar">
                                             {{ strtoupper(substr($systemUser->full_name ?? 'U', 0, 1)) }}
                                         </div>
@@ -201,7 +201,7 @@
                                         <div class="cell-title">{{ $systemUser->user?->name }}</div>
                                         <small class="cell-sub">{{ $systemUser->user?->email }}</small>
                                     @else
-                                        <span class="cell-sub fst-italic">No linked account</span>
+                                        <span class="cell-sub tw:italic!">No linked account</span>
                                     @endif
                                 </td>
 
@@ -215,7 +215,7 @@
                                 </td>
 
                                 {{-- ACTIONS --}}
-                                <td class="text-end">
+                                <td class="tw:text-right!">
                                     <div class="action-buttons">
                                         <a href="{{ route('admin.system-users.show', $systemUser) }}" class="action-btn"
                                             title="View" aria-label="View">
@@ -247,8 +247,8 @@
                         @empty
                             <tr>
                                 <td colspan="7" class="empty-table">
-                                    <i class="bi bi-people fs-2 d-block mb-2"></i>
-                                    <strong class="d-block">No Users Found</strong>
+                                    <i class="bi bi-people tw:text-[length:calc(1.325rem_+_0.9vw)]! tw:xl:text-[length:2rem]! tw:block! tw:mb-2!"></i>
+                                    <strong class="tw:block!">No Users Found</strong>
                                     <span class="cell-sub">Try adjusting search filters or add a new user</span>
                                 </td>
                             </tr>
@@ -258,7 +258,7 @@
             </div>
 
             {{-- PAGINATION --}}
-            <div class="p-3 border-top">
+            <div class="tw:p-4! tw:bs-border-t!">
                 {{ $systemUsers->links() }}
             </div>
         </div>
