@@ -17,4 +17,10 @@ return [
         'password' => env('SUPER_ADMIN_PASSWORD'),
     ],
 
+    /*
+    | The user PHP runs as. nexora:deploy gives storage/ and bootstrap/cache/
+    | back to this user when it is run as root.
+    */
+    'web_user' => env('WEB_USER', 'www-data'),
+
 ];

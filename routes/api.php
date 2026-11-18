@@ -723,6 +723,16 @@ Route::middleware([
 
 /*
 |--------------------------------------------------------------------------
+| Receipt settings (staff app): what the class payment receipt prints
+|--------------------------------------------------------------------------
+*/
+
+Route::middleware(['auth:sanctum', 'user.active'])
+    ->get('receipt-settings', [\App\Http\Controllers\Api\Payment\ReceiptSettingsController::class, 'show'])
+    ->name('api.receipt-settings');
+
+/*
+|--------------------------------------------------------------------------
 | Teacher advance (staff app): pay only, ADMIN / BRANCH_ADMIN as on the web
 |--------------------------------------------------------------------------
 */

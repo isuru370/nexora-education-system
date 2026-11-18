@@ -38,5 +38,7 @@
 {{-- SCRIPTS --}}
 {{-- ============================================================= --}}
 @push('scripts')
+    {{-- What the receipt shows (Settings > Receipt) --}}
+    <script>window.NX_RECEIPT = @json(\App\Support\ReceiptRules::all());</script>
     @include('new-payment.scripts')
 @endpush
