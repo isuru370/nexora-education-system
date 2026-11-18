@@ -12,7 +12,7 @@
     {{-- ===================================================== --}}
     {{-- HERO --}}
     {{-- ===================================================== --}}
-    <div class="hero-section mb-4">
+    <div class="hero-section tw:mb-6!">
         <div class="hero-content">
             <div class="hero-left">
                 <span class="greeting-badge">nexoraEDU</span>
@@ -36,20 +36,20 @@
     {{-- ===================================================== --}}
     {{-- FILTERS --}}
     {{-- ===================================================== --}}
-    <div class="nx-card mb-4">
+    <div class="nx-card tw:mb-6!">
         <div class="nx-card-header">
             <div>
-                <h5 class="nx-card-title"><i class="bi bi-funnel text-primary"></i> Filters</h5>
+                <h5 class="nx-card-title"><i class="bi bi-funnel tw:text-(color:--nx-blue)!"></i> Filters</h5>
                 <p class="nx-card-subtitle">Filter by branch, class or search</p>
             </div>
         </div>
 
-        <div class="p-3">
+        <div class="tw:p-4!">
             <form method="GET" action="{{ route('class-schedules.index') }}">
-                <div class="row g-3 align-items-end">
-                    <div class="col-md-3">
+                <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2 tw:items-end!">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[25%]">
                         <label class="nx-label">Branch</label>
-                        <select name="branch_id" id="branch_id" class="form-select nx-input">
+                        <select name="branch_id" id="branch_id" class="ui-form-select nx-input">
                             <option value="">All Branches</option>
                             @foreach ($branches as $branch)
                                 <option value="{{ $branch->id }}"
@@ -60,9 +60,9 @@
                         </select>
                     </div>
 
-                    <div class="col-md-3">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[25%]">
                         <label class="nx-label">Class</label>
-                        <select name="student_class_id" id="student_class_id" class="form-select nx-input">
+                        <select name="student_class_id" id="student_class_id" class="ui-form-select nx-input">
                             <option value="">All Classes</option>
                             @foreach ($filterClasses as $filterClass)
                                 <option value="{{ $filterClass->id }}"
@@ -74,16 +74,16 @@
                         </select>
                     </div>
 
-                    <div class="col-md-3">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[25%]">
                         <label class="nx-label">Search</label>
-                        <input type="text" name="search" class="form-control nx-input"
+                        <input type="text" name="search" class="ui-form-control nx-input"
                             value="{{ request('search', '') }}"
                             placeholder="Class, grade, subject, teacher...">
                     </div>
 
-                    <div class="col-md-1">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[8.33333333%]">
                         <label class="nx-label">Show</label>
-                        <select name="per_page" class="form-select nx-input">
+                        <select name="per_page" class="ui-form-select nx-input">
                             @foreach ([10, 25, 50, 100] as $count)
                                 <option value="{{ $count }}"
                                     {{ (int) request('per_page', 10) === $count ? 'selected' : '' }}>
@@ -93,11 +93,11 @@
                         </select>
                     </div>
 
-                    <div class="col-md-2">
-                        <button type="submit" class="nx-btn nx-btn-primary w-100">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[16.66666667%]">
+                        <button type="submit" class="nx-btn nx-btn-primary tw:w-full!">
                             <i class="bi bi-funnel"></i> Filter
                         </button>
-                        <a href="{{ route('class-schedules.index') }}" class="nx-btn nx-btn-light w-100 mt-2">
+                        <a href="{{ route('class-schedules.index') }}" class="nx-btn nx-btn-light tw:w-full! tw:mt-2!">
                             Reset
                         </a>
                     </div>
@@ -141,7 +141,7 @@
     {{-- ===================================================== --}}
     {{-- CLASSES --}}
     {{-- ===================================================== --}}
-    <div class="row g-4">
+    <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3">
 
         @forelse($classes as $class)
             @php
@@ -150,13 +150,13 @@
                 $teacherName = optional($class->teacher)->full_name ?? 'N/A';
             @endphp
 
-            <div class="col-12">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:flex-[0_0_auto] tw:w-[100%]">
                 <div class="class-card">
 
                     {{-- CLASS HEADER --}}
                     <div class="class-card-header">
                         <div>
-                            <div class="d-flex align-items-center gap-2 flex-wrap mb-2">
+                            <div class="tw:flex! tw:items-center! tw:gap-2! tw:flex-wrap! tw:mb-2!">
                                 <h5 class="class-card-title">{{ $class->class_name }}</h5>
                                 <span class="nx-badge nx-badge-green">Ongoing</span>
                             </div>
@@ -181,14 +181,14 @@
                     {{-- CLASS BODY --}}
                     <div class="class-card-body">
                         @if ($class->categoryFees->count())
-                            <div class="row g-3">
+                            <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2">
                                 @foreach ($class->categoryFees as $fee)
                                     @php
                                         $category = $fee->category;
                                         $feeOptions = $fee->activeFeeOptions;
                                     @endphp
 
-                                    <div class="col-xl-4 col-lg-6 col-md-6">
+                                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:lg:flex-[0_0_auto] tw:lg:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[33.33333333%]">
                                         <div class="category-card">
 
                                             {{-- CATEGORY --}}
@@ -271,7 +271,7 @@
                             </div>
                         @else
                             <div class="empty-box">
-                                <i class="bi bi-folder-x fs-2 d-block mb-2"></i>
+                                <i class="bi bi-folder-x tw:text-[length:calc(1.325rem_+_0.9vw)]! tw:xl:text-[length:2rem]! tw:block! tw:mb-2!"></i>
                                 <div class="cell-title">No categories found</div>
                                 <div class="cell-sub">This class does not have any assigned category yet.</div>
                             </div>
@@ -281,10 +281,10 @@
                 </div>
             </div>
         @empty
-            <div class="col-12">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:flex-[0_0_auto] tw:w-[100%]">
                 <div class="empty-table">
-                    <i class="bi bi-calendar-x fs-1 d-block mb-3"></i>
-                    <strong class="d-block">No ongoing classes found</strong>
+                    <i class="bi bi-calendar-x tw:text-[length:calc(1.375rem_+_1.5vw)]! tw:xl:text-[length:2.5rem]! tw:block! tw:mb-4!"></i>
+                    <strong class="tw:block!">No ongoing classes found</strong>
                     <span class="cell-sub">Try a different search term.</span>
                 </div>
             </div>
@@ -293,7 +293,7 @@
     </div>
 
     {{-- PAGINATION --}}
-    <div class="p-3 border-top d-flex justify-content-end">
+    <div class="tw:p-4! tw:bs-border-t! tw:flex! tw:justify-end!">
         {{ $classes->appends(request()->query())->links() }}
     </div>
 

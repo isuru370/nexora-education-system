@@ -19,7 +19,7 @@
 
     <div class="dashboard-page">
 
-        <div class="hero-section mb-4">
+        <div class="hero-section tw:mb-6!">
             <div class="hero-content">
                 <div class="hero-left">
                     <span class="greeting-badge">Promote Class</span>
@@ -37,7 +37,7 @@
         </div>
 
         @if ($errors->any())
-            <div class="alert alert-danger">
+            <div class="ui-alert ui-alert-danger">
                 @foreach ($errors->all() as $error)
                     <div>{{ $error }}</div>
                 @endforeach
@@ -51,24 +51,24 @@
             <input type="hidden" name="from_class_id" value="{{ $class->id }}">
 
             {{-- NEW CLASS --}}
-            <div class="nx-card mb-4">
+            <div class="nx-card tw:mb-6!">
                 <div class="nx-card-header">
                     <div>
-                        <h5 class="nx-card-title"><i class="bi bi-2-circle-fill text-primary"></i> New class</h5>
+                        <h5 class="nx-card-title"><i class="bi bi-2-circle-fill tw:text-(color:--nx-blue)!"></i> New class</h5>
                         <p class="nx-card-subtitle">
                             Fees and the teacher % are copied from the old class{{ $has_payment_config ? '' : ' (this class has no teacher % set: add it after)' }}.
                         </p>
                     </div>
                 </div>
-                <div class="p-3 row g-3">
-                    <div class="col-lg-6">
+                <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2 tw:p-4!">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[50%]">
                         <label class="nx-label">New class name</label>
-                        <input type="text" name="class_name" class="form-control nx-input" required maxlength="150"
+                        <input type="text" name="class_name" class="ui-form-control nx-input" required maxlength="150"
                             value="{{ old('class_name', $suggested_name) }}">
                     </div>
-                    <div class="col-lg-3 col-md-6">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:lg:flex-[0_0_auto] tw:lg:w-[25%]">
                         <label class="nx-label">New grade</label>
-                        <select name="grade_id" class="form-select nx-input" required>
+                        <select name="grade_id" class="ui-form-select nx-input" required>
                             @foreach ($grades as $grade)
                                 <option value="{{ $grade->id }}" {{ (int) old('grade_id', $suggested_grade_id) === $grade->id ? 'selected' : '' }}>
                                     {{ $grade->grade_name }}
@@ -76,9 +76,9 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-lg-3 col-md-6">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:lg:flex-[0_0_auto] tw:lg:w-[25%]">
                         <label class="nx-label">Teacher</label>
-                        <select name="teacher_id" class="form-select nx-input" required>
+                        <select name="teacher_id" class="ui-form-select nx-input" required>
                             @foreach ($teachers as $teacher)
                                 <option value="{{ $teacher->id }}" {{ (int) old('teacher_id', $class->teacher_id) === $teacher->id ? 'selected' : '' }}>
                                     {{ $teacher->full_name }}
@@ -86,18 +86,18 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-lg-3 col-md-6">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:lg:flex-[0_0_auto] tw:lg:w-[25%]">
                         <label class="nx-label">Start date</label>
-                        <input type="date" name="start_date" id="startDate" class="form-control nx-input" required
+                        <input type="date" name="start_date" id="startDate" class="ui-form-control nx-input" required
                             value="{{ old('start_date', $start_date) }}">
-                        <small class="text-muted">The old class goes on until the day before.</small>
+                        <small class="tw:text-(color:--nx-muted)!">The old class goes on until the day before.</small>
                     </div>
-                    <div class="col-lg-3 col-md-6">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:lg:flex-[0_0_auto] tw:lg:w-[25%]">
                         <label class="nx-label">Schedule until</label>
-                        <input type="date" name="schedule_until" class="form-control nx-input" required
+                        <input type="date" name="schedule_until" class="ui-form-control nx-input" required
                             value="{{ old('schedule_until', $schedule_until) }}">
                     </div>
-                    <div class="col-lg-6 d-flex align-items-end">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[50%] tw:flex! tw:items-end!">
                         <a href="#" class="nx-btn nx-btn-light"
                             onclick="this.href='{{ route('class-promotions.create', ['class_id' => $class->id]) }}&start_date=' + document.getElementById('startDate').value;">
                             <i class="bi bi-arrow-repeat"></i> Check payments for this start date
@@ -107,10 +107,10 @@
             </div>
 
             {{-- STUDENTS --}}
-            <div class="nx-card mb-4">
+            <div class="nx-card tw:mb-6!">
                 <div class="nx-card-header">
                     <div>
-                        <h5 class="nx-card-title"><i class="bi bi-3-circle-fill text-primary"></i> Students</h5>
+                        <h5 class="nx-card-title"><i class="bi bi-3-circle-fill tw:text-(color:--nx-blue)!"></i> Students</h5>
                         <p class="nx-card-subtitle">
                             Untick students who are leaving. Ticked students move with the same category, fee and free card;
                             their grade changes on the start date.
@@ -120,21 +120,21 @@
                 </div>
 
                 @if ($paidAhead->isNotEmpty())
-                    <div class="alert alert-warning m-3 mb-0">
+                    <div class="ui-alert ui-alert-warning tw:m-4! tw:mb-0!">
                         <strong>{{ $paidAhead->count() }} student(s) already paid the old class for a month from the start date.</strong>
                         That money stays with the old class; check it before promoting (see "Paid ahead" below).
                     </div>
                 @endif
 
-                <div class="p-3 pb-0 d-flex gap-2 flex-wrap">
-                    <input type="search" class="form-control nx-input" style="max-width:320px" placeholder="Search ID or name"
+                <div class="tw:p-4! tw:pb-0! tw:flex! tw:gap-2! tw:flex-wrap!">
+                    <input type="search" class="ui-form-control nx-input" style="max-width:320px" placeholder="Search ID or name"
                         oninput="filterRows(this, 'studentsTable')">
                     <button type="button" class="nx-btn nx-btn-light" onclick="tickAll(true)">Tick all</button>
                     <button type="button" class="nx-btn nx-btn-light" onclick="tickAll(false)">Untick all</button>
                 </div>
 
-                <div class="table-responsive" style="max-height:520px; overflow:auto">
-                    <table class="table premium-table mb-0" id="studentsTable">
+                <div class="ui-table-responsive" style="max-height:520px; overflow:auto">
+                    <table class="ui-table premium-table tw:mb-0!" id="studentsTable">
                         <thead>
                             <tr>
                                 <th width="40"></th>
@@ -149,7 +149,7 @@
                             @forelse ($students as $s)
                                 <tr>
                                     <td>
-                                        <input type="checkbox" class="form-check-input student-tick" name="student_ids[]"
+                                        <input type="checkbox" class="ui-form-check-input student-tick" name="student_ids[]"
                                             value="{{ $s->id }}" onchange="countTicked()"
                                             {{ $oldStudents === null || in_array($s->id, $oldStudents) ? 'checked' : '' }}>
                                     </td>
@@ -169,7 +169,7 @@
                                     </td>
                                 </tr>
                             @empty
-                                <tr><td colspan="6" class="text-center text-muted py-4">No students in this class.</td></tr>
+                                <tr><td colspan="6" class="tw:text-center! tw:text-(color:--nx-muted)! tw:py-6!">No students in this class.</td></tr>
                             @endforelse
                         </tbody>
                     </table>
@@ -177,10 +177,10 @@
             </div>
 
             {{-- SCHEDULE --}}
-            <div class="nx-card mb-4">
+            <div class="nx-card tw:mb-6!">
                 <div class="nx-card-header">
                     <div>
-                        <h5 class="nx-card-title"><i class="bi bi-4-circle-fill text-primary"></i> Schedule of the new class</h5>
+                        <h5 class="nx-card-title"><i class="bi bi-4-circle-fill tw:text-(color:--nx-blue)!"></i> Schedule of the new class</h5>
                         <p class="nx-card-subtitle">
                             One row per day. Copied from the old class: change the day, time or hall, untick a row to leave it out,
                             or add a day. Leave all unticked to make the schedule later.
@@ -188,8 +188,8 @@
                     </div>
                 </div>
 
-                <div class="table-responsive">
-                    <table class="table premium-table mb-0" id="scheduleTable">
+                <div class="ui-table-responsive">
+                    <table class="ui-table premium-table tw:mb-0!" id="scheduleTable">
                         <thead>
                             <tr>
                                 <th width="40"></th>
@@ -209,9 +209,9 @@
                     </table>
                 </div>
 
-                <div class="p-3">
+                <div class="tw:p-4!">
                     @if ($categories->isEmpty())
-                        <span class="text-muted">This class has no fee category, so no schedule can be added.</span>
+                        <span class="tw:text-(color:--nx-muted)!">This class has no fee category, so no schedule can be added.</span>
                     @else
                         <button type="button" class="nx-btn nx-btn-light" onclick="addRow()">
                             <i class="bi bi-plus-lg"></i> Add a day
@@ -227,7 +227,7 @@
                 </template>
             </div>
 
-            <div class="d-flex justify-content-end gap-2 mb-5">
+            <div class="tw:flex! tw:justify-end! tw:gap-2! tw:mb-12!">
                 <a href="{{ route('class-promotions.index') }}" class="nx-btn nx-btn-light">Cancel</a>
                 <button type="submit" class="nx-btn nx-btn-primary">
                     <i class="bi bi-arrow-up-circle-fill"></i> Promote

@@ -1136,9 +1136,21 @@ def convert_scripts(text, conv, fname):
         body = re.sub(r'(class\s*=\s*\\?)(["\'])((?:(?!\2)[^<>])*?)\\?\2', cls_attr, body)
 
         def cl(mm):
-            args = mm.group(2)
-            return mm.group(1) + '(' + conv.expr(args, where(mm.start())) + ')'
-        body = re.sub(r'(classList\.(?:add|remove|toggle|contains|replace)|\.(?:addClass|removeClass|toggleClass|hasClass))\(([^()]*)\)', cl, body)
+            fn, args = mm.group(1), mm.group(2)
+            new = conv.expr(args, where(mm.start()))
+            if fn.startswith('classList') and new != args:
+                # classList takes one class per argument
+                def split(q):
+                    toks = q.group(2).split()
+                    if len(toks) < 2:
+                        return q.group(0)
+                    if fn.endswith(('add', 'remove')):
+                        return ', '.join(q.group(1) + t + q.group(1) for t in toks)
+                    conv.warn(where(mm.start()), 'classList.%s with several classes: %s' % (fn.split('.')[-1], q.group(2)))
+                    return q.group(0)
+                new = re.sub(r'(["\'])([^"\']*)\1', split, new)
+            return fn + '(' + new + ')'
+        body = re.sub(r'(classList\.(?:add|remove|toggle|contains|replace)|\.(?:addClass|removeClass|toggleClass|hasClass))\(((?:[^()]|\([^()]*\))*)\)', cl, body)
 
         def cname(mm):
             lit = mm.group(2)
@@ -1220,6 +1232,8 @@ def convert_js_api(text, conv, fname):
     text = re.sub(r'data-bs-(toggle|target|dismiss|backdrop|keyboard)(\s*=)', r'data-nx-\1\2', text)
     text = re.sub(r'\[data-bs-(toggle|target|dismiss)', r'[data-nx-\1', text)
     text = re.sub(r'\bbootstrap\.Modal\b', 'NxUi.Modal', text)
+    text = re.sub(r'dataset\.bs(Toggle|Target|Dismiss)\b', r'dataset.nx\1', text)
+    text = re.sub(r'(getAttribute|setAttribute|hasAttribute)\((["\'])data-bs-(toggle|target|dismiss)', r'\1(\2data-nx-\3', text)
     text = re.sub(r'\b(show|shown|hide|hidden)\.bs\.(modal|tab)\b', r'\1.nx.\2', text)
     for m in re.finditer(r'\bbootstrap\.\w+|data-bs-\w+', text):
         line = text.count('\n', 0, m.start()) + 1

@@ -6,7 +6,7 @@
 @section('content')
     <div class="dashboard-page">
 
-        <div class="hero-section mb-4">
+        <div class="hero-section tw:mb-6!">
             <div class="hero-content">
                 <div class="hero-left">
                     <span class="greeting-badge">Promotion #{{ $promotion->id }}</span>
@@ -19,7 +19,7 @@
                             · <strong>Undone</strong> {{ $promotion->undone_at->format('Y-m-d h:i A') }} by {{ $promotion->undoneBy->name ?? '-' }}
                         @endif
                     </p>
-                    <div class="mt-2">@include('class-promotions.status', ['promotion' => $promotion])</div>
+                    <div class="tw:mt-2!">@include('class-promotions.status', ['promotion' => $promotion])</div>
                 </div>
                 <div class="hero-right">
                     <div class="hero-actions">
@@ -28,9 +28,9 @@
                         </a>
                         @if ($promotion->status !== \App\Models\ClassPromotion::UNDONE)
                             @if ($details['undo_blocker'])
-                                <span class="text-muted small">{{ $details['undo_blocker'] }}</span>
+                                <span class="tw:text-(color:--nx-muted)! tw:text-[.875em]">{{ $details['undo_blocker'] }}</span>
                             @else
-                                <form method="POST" action="{{ route('class-promotions.undo', $promotion) }}" class="d-inline"
+                                <form method="POST" action="{{ route('class-promotions.undo', $promotion) }}" class="tw:[display:inline]!"
                                     data-confirm="Undo? The new class is removed and the old class, its students and schedule are as before."
                                     onsubmit="return confirm(this.dataset.confirm);">
                                     @csrf
@@ -46,13 +46,13 @@
         </div>
 
         @if ($promotion->status === \App\Models\ClassPromotion::SCHEDULED)
-            <div class="alert alert-info">
+            <div class="ui-alert ui-alert-info">
                 Until {{ $promotion->start_date->copy()->subDay()->format('Y-m-d') }} the old class goes on as usual
                 (attendance, payments). On {{ $promotion->start_date->format('Y-m-d') }} it closes by itself and the students' grade changes.
             </div>
         @endif
 
-        <div class="stats-grid stats-grid-3 mb-4">
+        <div class="stats-grid stats-grid-3 tw:mb-6!">
             @foreach ([
                 ['Students moved', 'moved', 'bi-person-check-fill', 'icon-green'],
                 ['Students left (not moved)', 'left', 'bi-person-dash', 'icon-amber'],
@@ -72,12 +72,12 @@
         </div>
 
         {{-- SCHEDULE --}}
-        <div class="nx-card mb-4">
+        <div class="nx-card tw:mb-6!">
             <div class="nx-card-header">
-                <h5 class="nx-card-title"><i class="bi bi-calendar-week text-primary"></i> Schedule of the new class</h5>
+                <h5 class="nx-card-title"><i class="bi bi-calendar-week tw:text-(color:--nx-blue)!"></i> Schedule of the new class</h5>
             </div>
-            <div class="table-responsive">
-                <table class="table premium-table mb-0">
+            <div class="ui-table-responsive">
+                <table class="ui-table premium-table tw:mb-0!">
                     <thead>
                         <tr><th>Day</th><th>Time</th><th>Hall</th><th>Category</th><th>From</th><th>Until</th></tr>
                     </thead>
@@ -92,7 +92,7 @@
                                 <td>{{ substr($s->end_date, 0, 10) }}</td>
                             </tr>
                         @empty
-                            <tr><td colspan="6" class="text-center text-muted py-3">No schedule was made (add it on the Class Schedule page).</td></tr>
+                            <tr><td colspan="6" class="tw:text-center! tw:text-(color:--nx-muted)! tw:py-4!">No schedule was made (add it on the Class Schedule page).</td></tr>
                         @endforelse
                     </tbody>
                 </table>
@@ -100,13 +100,13 @@
         </div>
 
         {{-- STUDENTS --}}
-        @foreach ([['Moved to the new class', 'moved', 'text-success'], ['Left (not moved)', 'left', 'text-warning']] as [$title, $key, $color])
-            <div class="nx-card mb-4">
+        @foreach ([['Moved to the new class', 'moved', 'tw:text-(color:--nx-green)!'], ['Left (not moved)', 'left', 'tw:text-(color:--nx-amber)!']] as [$title, $key, $color])
+            <div class="nx-card tw:mb-6!">
                 <div class="nx-card-header">
                     <h5 class="nx-card-title"><i class="bi bi-people-fill {{ $color }}"></i> {{ $title }} ({{ $details[$key]->count() }})</h5>
                 </div>
-                <div class="table-responsive" style="max-height:480px; overflow:auto">
-                    <table class="table premium-table mb-0">
+                <div class="ui-table-responsive" style="max-height:480px; overflow:auto">
+                    <table class="ui-table premium-table tw:mb-0!">
                         <thead>
                             <tr><th>#</th><th>Student ID</th><th>Name</th><th>Grade now</th></tr>
                         </thead>
@@ -119,7 +119,7 @@
                                     <td>{{ $s->grade_name }}</td>
                                 </tr>
                             @empty
-                                <tr><td colspan="4" class="text-center text-muted py-3">None.</td></tr>
+                                <tr><td colspan="4" class="tw:text-center! tw:text-(color:--nx-muted)! tw:py-4!">None.</td></tr>
                             @endforelse
                         </tbody>
                     </table>

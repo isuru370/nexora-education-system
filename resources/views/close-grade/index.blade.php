@@ -7,7 +7,7 @@
     <div class="dashboard-page">
 
         {{-- HERO --}}
-        <div class="hero-section mb-4">
+        <div class="hero-section tw:mb-6!">
             <div class="hero-content">
                 <div class="hero-left">
                     <span class="greeting-badge">nexoraEDU</span>
@@ -24,25 +24,25 @@
         </div>
 
         {{-- STEP 1: GRADES --}}
-        <div class="nx-card mb-4">
+        <div class="nx-card tw:mb-6!">
             <div class="nx-card-header">
                 <div>
-                    <h5 class="nx-card-title"><i class="bi bi-1-circle-fill text-primary"></i> Select grades</h5>
+                    <h5 class="nx-card-title"><i class="bi bi-1-circle-fill tw:text-(color:--nx-blue)!"></i> Select grades</h5>
                     <p class="nx-card-subtitle">Preview first: nothing is changed until you press "Close".</p>
                 </div>
             </div>
 
-            <div class="p-3">
+            <div class="tw:p-4!">
                 <form method="GET" action="{{ route('close-grade.index') }}">
-                    <div class="row g-2">
+                    <div class="tw:flex tw:flex-wrap tw:-mt-2 tw:-mx-1">
                         @foreach ($grades as $grade)
-                            <div class="col-xl-3 col-lg-4 col-sm-6">
-                                <label class="d-flex align-items-center gap-2 border rounded p-2 h-100" style="cursor:pointer">
-                                    <input type="checkbox" class="form-check-input m-0" name="grade_ids[]"
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-1 tw:mt-2 tw:w-full tw:sm:flex-[0_0_auto] tw:sm:w-[50%] tw:lg:flex-[0_0_auto] tw:lg:w-[33.33333333%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%]">
+                                <label class="tw:flex! tw:items-center! tw:gap-2! tw:bs-border! tw:rounded-bs! tw:p-2! tw:h-full!" style="cursor:pointer">
+                                    <input type="checkbox" class="ui-form-check-input tw:m-0!" name="grade_ids[]"
                                         value="{{ $grade->id }}" {{ in_array($grade->id, $selected, true) ? 'checked' : '' }}>
                                     <span>
                                         <strong>{{ $grade->grade_name }}</strong><br>
-                                        <small class="text-muted">
+                                        <small class="tw:text-(color:--nx-muted)!">
                                             {{ $grade->active_classes }} active classes · {{ $grade->active_students }} active students
                                         </small>
                                     </span>
@@ -51,7 +51,7 @@
                         @endforeach
                     </div>
 
-                    <div class="d-flex justify-content-end gap-2 mt-3">
+                    <div class="tw:flex! tw:justify-end! tw:gap-2! tw:mt-4!">
                         <a href="{{ route('close-grade.index') }}" class="nx-btn nx-btn-light">Clear</a>
                         <button type="submit" class="nx-btn nx-btn-primary">
                             <i class="bi bi-eye"></i> Preview
@@ -62,24 +62,24 @@
         </div>
 
         @if ($previewError)
-            <div class="alert alert-danger">{{ $previewError }}</div>
+            <div class="ui-alert ui-alert-danger">{{ $previewError }}</div>
         @endif
 
         {{-- STEP 2: PREVIEW --}}
         @if ($preview)
-            <div class="nx-card mb-4 border border-danger">
+            <div class="nx-card tw:mb-6! tw:[border:1px_solid_#dc3545]!">
                 <div class="nx-card-header">
                     <div>
                         <h5 class="nx-card-title">
-                            <i class="bi bi-2-circle-fill text-danger"></i>
+                            <i class="bi bi-2-circle-fill tw:text-(color:--nx-red)!"></i>
                             Preview: {{ implode(', ', $preview['grades']) }}
                         </h5>
                         <p class="nx-card-subtitle">This is what "Close" will change. Nothing is changed yet.</p>
                     </div>
                 </div>
 
-                <div class="p-3">
-                    <div class="stats-grid stats-grid-3 mb-3">
+                <div class="tw:p-4!">
+                    <div class="stats-grid stats-grid-3 tw:mb-4!">
                         @foreach ([
                             ['Classes made inactive', $preview['classes']->count(), 'bi-book', 'icon-blue'],
                             ['Enrollments ended (left today)', $preview['enrollments']->count(), 'bi-person-dash', 'icon-amber'],
@@ -98,11 +98,11 @@
                         @endforeach
                     </div>
 
-                    <h6 class="mt-2">Classes ({{ $preview['classes']->count() }})</h6>
+                    <h6 class="tw:mt-2!">Classes ({{ $preview['classes']->count() }})</h6>
                     @if ($preview['classes']->isEmpty())
-                        <p class="text-muted">No active classes (already inactive).</p>
+                        <p class="tw:text-(color:--nx-muted)!">No active classes (already inactive).</p>
                     @else
-                        <ul class="mb-3">
+                        <ul class="tw:mb-4!">
                             @foreach ($preview['classes'] as $class)
                                 <li>{{ $class->class_name }}</li>
                             @endforeach
@@ -110,9 +110,9 @@
                     @endif
 
                     @if ($preview['keep']->isNotEmpty())
-                        <h6 class="text-success">Kept active: still in an active class of another grade ({{ $preview['keep']->count() }})</h6>
-                        <div class="table-responsive mb-3">
-                            <table class="table premium-table mb-0">
+                        <h6 class="tw:text-(color:--nx-green)!">Kept active: still in an active class of another grade ({{ $preview['keep']->count() }})</h6>
+                        <div class="ui-table-responsive tw:mb-4!">
+                            <table class="ui-table premium-table tw:mb-0!">
                                 <thead>
                                     <tr><th>Student ID</th><th>Name</th><th>Other classes</th></tr>
                                 </thead>
@@ -131,10 +131,10 @@
 
                     <h6>Students deactivated ({{ $preview['close']->count() }})</h6>
                     @if ($preview['close']->isNotEmpty())
-                        <input type="search" class="form-control nx-input mb-2" placeholder="Search ID or name"
+                        <input type="search" class="ui-form-control nx-input tw:mb-2!" placeholder="Search ID or name"
                             oninput="filterRows(this, 'closeStudents')">
-                        <div class="table-responsive mb-3" style="max-height:420px; overflow:auto">
-                            <table class="table premium-table mb-0" id="closeStudents">
+                        <div class="ui-table-responsive tw:mb-4!" style="max-height:420px; overflow:auto">
+                            <table class="ui-table premium-table tw:mb-0!" id="closeStudents">
                                 <thead>
                                     <tr><th>#</th><th>Student ID</th><th>Name</th></tr>
                                 </thead>
@@ -151,7 +151,7 @@
                         </div>
                     @endif
 
-                    <form method="POST" action="{{ route('close-grade.store') }}" class="d-flex justify-content-end"
+                    <form method="POST" action="{{ route('close-grade.store') }}" class="tw:flex! tw:justify-end!"
                         data-confirm="Close {{ implode(', ', $preview['grades']) }}? {{ $preview['classes']->count() }} classes will be inactive and {{ $preview['close']->count() }} students deactivated. (It can be undone from the history.)"
                         onsubmit="return confirm(this.dataset.confirm);">
                         @csrf
@@ -167,27 +167,27 @@
         @endif
 
         {{-- HISTORY --}}
-        <div class="nx-card mb-4">
+        <div class="nx-card tw:mb-6!">
             <div class="nx-card-header">
                 <div>
-                    <h5 class="nx-card-title"><i class="bi bi-clock-history text-primary"></i> History</h5>
+                    <h5 class="nx-card-title"><i class="bi bi-clock-history tw:text-(color:--nx-blue)!"></i> History</h5>
                     <p class="nx-card-subtitle">Every close, who did it, and undo</p>
                 </div>
                 <span class="nx-badge nx-badge-blue">{{ $history->total() }} Closes</span>
             </div>
 
-            <div class="table-responsive">
-                <table class="table premium-table mb-0">
+            <div class="ui-table-responsive">
+                <table class="ui-table premium-table tw:mb-0!">
                     <thead>
                         <tr>
                             <th>#</th>
                             <th>Date</th>
                             <th>Grades</th>
-                            <th class="text-center">Classes</th>
-                            <th class="text-center">Students</th>
+                            <th class="tw:text-center!">Classes</th>
+                            <th class="tw:text-center!">Students</th>
                             <th>By</th>
                             <th>Status</th>
-                            <th class="text-center" width="150">Action</th>
+                            <th class="tw:text-center!" width="150">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -196,8 +196,8 @@
                                 <td>{{ $closure->id }}</td>
                                 <td class="cell-title">{{ $closure->closed_at->format('Y-m-d h:i A') }}</td>
                                 <td>{{ implode(', ', $closure->grade_names) }}</td>
-                                <td class="text-center">{{ $closure->total('classes') }}</td>
-                                <td class="text-center">{{ $closure->total('students') }}</td>
+                                <td class="tw:text-center!">{{ $closure->total('classes') }}</td>
+                                <td class="tw:text-center!">{{ $closure->total('students') }}</td>
                                 <td>
                                     {{ $closure->closedBy->name ?? ($closure->source === 'web' ? '-' : 'Command') }}
                                 </td>
@@ -208,7 +208,7 @@
                                         <span class="nx-badge nx-badge-red">Closed</span>
                                     @endif
                                 </td>
-                                <td class="text-center">
+                                <td class="tw:text-center!">
                                     <a href="{{ route('close-grade.show', $closure) }}" class="nx-btn nx-btn-light">
                                         <i class="bi bi-eye"></i> View
                                     </a>
@@ -216,7 +216,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="8" class="text-center text-muted py-4">No grade has been closed yet.</td>
+                                <td colspan="8" class="tw:text-center! tw:text-(color:--nx-muted)! tw:py-6!">No grade has been closed yet.</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -224,7 +224,7 @@
             </div>
 
             @if ($history->hasPages())
-                <div class="p-3">{{ $history->links() }}</div>
+                <div class="tw:p-4!">{{ $history->links() }}</div>
             @endif
         </div>
     </div>

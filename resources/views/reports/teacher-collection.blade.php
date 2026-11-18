@@ -21,7 +21,7 @@
     <div class="dashboard-page">
 
         {{-- HERO --}}
-        <div class="hero-section mb-4">
+        <div class="hero-section tw:mb-6!">
             <div class="hero-content">
                 <div class="hero-left">
                     <span class="greeting-badge">nexoraEDU</span>
@@ -50,31 +50,31 @@
 
         {{-- ALERTS --}}
         @if (session('error'))
-            <div class="nx-alert nx-alert-red mb-4"><i class="bi bi-exclamation-triangle-fill"></i><span>{{ session('error') }}</span></div>
+            <div class="nx-alert nx-alert-red tw:mb-6!"><i class="bi bi-exclamation-triangle-fill"></i><span>{{ session('error') }}</span></div>
         @endif
         @if ($errors->any())
-            <div class="nx-alert nx-alert-red mb-4">
+            <div class="nx-alert nx-alert-red tw:mb-6!">
                 <div>
                     @foreach ($errors->all() as $error)
-                        <div><i class="bi bi-exclamation-circle-fill me-1"></i>{{ $error }}</div>
+                        <div><i class="bi bi-exclamation-circle-fill tw:mr-1!"></i>{{ $error }}</div>
                     @endforeach
                 </div>
             </div>
         @endif
 
         {{-- FILTER --}}
-        <div class="nx-card mb-4">
+        <div class="nx-card tw:mb-6!">
             <div class="nx-card-header">
                 <div>
-                    <h5 class="nx-card-title"><i class="bi bi-funnel text-primary"></i> Teacher &amp; Date Range</h5>
+                    <h5 class="nx-card-title"><i class="bi bi-funnel tw:text-(color:--nx-blue)!"></i> Teacher &amp; Date Range</h5>
                     <p class="nx-card-subtitle">Payments are matched to the teacher who taught the class at payment time (max one year)</p>
                 </div>
             </div>
-            <div class="p-3">
-                <form method="GET" action="{{ route('reports.teacher-collection.index') }}" class="row g-3 align-items-end">
-                    <div class="col-lg-3 col-md-6">
+            <div class="tw:p-4!">
+                <form method="GET" action="{{ route('reports.teacher-collection.index') }}" class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2 tw:items-end!">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:lg:flex-[0_0_auto] tw:lg:w-[25%]">
                         <label class="nx-label">Teacher</label>
-                        <select name="teacher_id" class="form-select nx-input" required>
+                        <select name="teacher_id" class="ui-form-select nx-input" required>
                             <option value="">-- Select teacher --</option>
                             @foreach ($teachers as $teacher)
                                 <option value="{{ $teacher->id }}" {{ (int) $teacherId === (int) $teacher->id ? 'selected' : '' }}>
@@ -83,19 +83,19 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-lg-2 col-md-3">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[25%] tw:lg:flex-[0_0_auto] tw:lg:w-[16.66666667%]">
                         <label class="nx-label">From</label>
-                        <input type="date" name="from" class="form-control nx-input" value="{{ $currentRange['from'] }}" max="{{ $today }}">
+                        <input type="date" name="from" class="ui-form-control nx-input" value="{{ $currentRange['from'] }}" max="{{ $today }}">
                     </div>
-                    <div class="col-lg-2 col-md-3">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[25%] tw:lg:flex-[0_0_auto] tw:lg:w-[16.66666667%]">
                         <label class="nx-label">To</label>
-                        <input type="date" name="to" class="form-control nx-input" value="{{ $currentRange['to'] }}" max="{{ $today }}">
+                        <input type="date" name="to" class="ui-form-control nx-input" value="{{ $currentRange['to'] }}" max="{{ $today }}">
                     </div>
 
                     @if ($branches->count() > 1)
-                        <div class="col-lg-3 col-md-6">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:lg:flex-[0_0_auto] tw:lg:w-[25%]">
                             <label class="nx-label">Branch</label>
-                            <select name="branch_id" class="form-select nx-input">
+                            <select name="branch_id" class="ui-form-select nx-input">
                                 <option value="">All branches</option>
                                 @foreach ($branches as $branch)
                                     <option value="{{ $branch->id }}" {{ (int) $filter->branchId === (int) $branch->id ? 'selected' : '' }}>
@@ -106,13 +106,13 @@
                         </div>
                     @endif
 
-                    <div class="col-lg-2 col-md-6">
-                        <button type="submit" class="nx-btn nx-btn-primary w-100"><i class="bi bi-funnel"></i> Show</button>
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:lg:flex-[0_0_auto] tw:lg:w-[16.66666667%]">
+                        <button type="submit" class="nx-btn nx-btn-primary tw:w-full!"><i class="bi bi-funnel"></i> Show</button>
                     </div>
                 </form>
 
                 @if ($teacherId)
-                    <div class="d-flex gap-2 flex-wrap mt-3">
+                    <div class="tw:flex! tw:gap-2! tw:flex-wrap! tw:mt-4!">
                         @foreach ($quickRanges as $text => $range)
                             <a href="{{ route('reports.teacher-collection.index', array_filter($range + ['teacher_id' => $teacherId, 'branch_id' => $filter->branchId])) }}"
                                 class="nx-btn {{ $range === $currentRange ? 'nx-btn-primary' : 'nx-btn-light' }}">{{ $text }}</a>
@@ -123,10 +123,10 @@
         </div>
 
         @if (!$report)
-            <div class="nx-card mb-4">
+            <div class="nx-card tw:mb-6!">
                 <div class="empty-table">
-                    <i class="bi bi-person-badge fs-2 d-block mb-2"></i>
-                    <strong class="d-block">No teacher selected</strong>
+                    <i class="bi bi-person-badge tw:text-[length:calc(1.325rem_+_0.9vw)]! tw:xl:text-[length:2rem]! tw:block! tw:mb-2!"></i>
+                    <strong class="tw:block!">No teacher selected</strong>
                     <span class="cell-sub">Select a teacher and a date range to see the collection</span>
                 </div>
             </div>
@@ -139,7 +139,7 @@
             @endphp
 
             {{-- STATS --}}
-            <div class="stats-grid mb-4">
+            <div class="stats-grid tw:mb-6!">
                 <div class="nx-card stat-card">
                     <div class="stat-icon-wrapper icon-blue"><i class="bi bi-person-badge"></i></div>
                     <div class="stat-info">
@@ -175,31 +175,31 @@
             </div>
 
             {{-- BY CLASS --}}
-            <div class="nx-card mb-4">
+            <div class="nx-card tw:mb-6!">
                 <div class="nx-card-header">
                     <div>
-                        <h5 class="nx-card-title"><i class="bi bi-easel text-primary"></i> By Class &amp; Category</h5>
+                        <h5 class="nx-card-title"><i class="bi bi-easel tw:text-(color:--nx-blue)!"></i> By Class &amp; Category</h5>
                         <p class="nx-card-subtitle">Share = class collection as a percentage of the teacher's total</p>
                     </div>
                 </div>
                 @if ($classes->isEmpty())
                     <div class="empty-table">
-                        <i class="bi bi-inbox fs-2 d-block mb-2"></i>
-                        <strong class="d-block">No payments</strong>
+                        <i class="bi bi-inbox tw:text-[length:calc(1.325rem_+_0.9vw)]! tw:xl:text-[length:2rem]! tw:block! tw:mb-2!"></i>
+                        <strong class="tw:block!">No payments</strong>
                         <span class="cell-sub">No class fees were collected for this teacher in this period</span>
                     </div>
                 @else
-                    <div class="table-responsive">
-                        <table class="table premium-table mb-0">
+                    <div class="ui-table-responsive">
+                        <table class="ui-table premium-table tw:mb-0!">
                             <thead>
                                 <tr>
                                     <th>Class</th>
                                     <th>Category</th>
-                                    <th class="text-end">Students</th>
-                                    <th class="text-end">Payments</th>
-                                    <th class="text-end">Collected</th>
+                                    <th class="tw:text-right!">Students</th>
+                                    <th class="tw:text-right!">Payments</th>
+                                    <th class="tw:text-right!">Collected</th>
                                     <th style="min-width: 140px;">Share</th>
-                                    <th class="text-end">Teacher Share</th>
+                                    <th class="tw:text-right!">Teacher Share</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -211,29 +211,29 @@
                                             <small class="cell-sub">Grade {{ $class['grade_name'] ?? '-' }}</small>
                                         </td>
                                         <td><span class="nx-badge nx-badge-blue">{{ $class['category_name'] ?? '-' }}</span></td>
-                                        <td class="text-end">{{ number_format($class['students']) }}</td>
-                                        <td class="text-end">{{ number_format($class['payments']) }}</td>
-                                        <td class="text-end amount">{{ $money($class['amount']) }}</td>
+                                        <td class="tw:text-right!">{{ number_format($class['students']) }}</td>
+                                        <td class="tw:text-right!">{{ number_format($class['payments']) }}</td>
+                                        <td class="tw:text-right! amount">{{ $money($class['amount']) }}</td>
                                         <td>
-                                            <div class="d-flex align-items-center gap-2">
-                                                <div class="nx-progress flex-grow-1">
+                                            <div class="tw:flex! tw:items-center! tw:gap-2!">
+                                                <div class="nx-progress tw:grow!">
                                                     <div class="nx-progress-fill bg-blue" style="width: {{ min($percent, 100) }}%"></div>
                                                 </div>
                                                 <small class="cell-sub">{{ $percent }}%</small>
                                             </div>
                                         </td>
-                                        <td class="text-end amount fw-bold text-success">{{ $money($class['teacher_amount']) }}</td>
+                                        <td class="tw:text-right! amount tw:font-bold! tw:text-(color:--nx-green)!">{{ $money($class['teacher_amount']) }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>
                             <tfoot>
-                                <tr class="fw-bold">
+                                <tr class="tw:font-bold!">
                                     <td colspan="2">Total</td>
-                                    <td class="text-end">{{ number_format($summary['students']) }}</td>
-                                    <td class="text-end">{{ number_format($summary['payments']) }}</td>
-                                    <td class="text-end amount">{{ $money($summary['amount']) }}</td>
+                                    <td class="tw:text-right!">{{ number_format($summary['students']) }}</td>
+                                    <td class="tw:text-right!">{{ number_format($summary['payments']) }}</td>
+                                    <td class="tw:text-right! amount">{{ $money($summary['amount']) }}</td>
                                     <td></td>
-                                    <td class="text-end amount text-success">{{ $money($summary['teacher_amount']) }}</td>
+                                    <td class="tw:text-right! amount tw:text-(color:--nx-green)!">{{ $money($summary['teacher_amount']) }}</td>
                                 </tr>
                             </tfoot>
                         </table>
@@ -243,15 +243,15 @@
 
             {{-- PAYMENTS --}}
             @if ($rows->isNotEmpty())
-                <div class="nx-card mb-4">
+                <div class="nx-card tw:mb-6!">
                     <div class="nx-card-header">
                         <div>
-                            <h5 class="nx-card-title"><i class="bi bi-receipt text-primary"></i> Payments</h5>
+                            <h5 class="nx-card-title"><i class="bi bi-receipt tw:text-(color:--nx-blue)!"></i> Payments</h5>
                             <p class="nx-card-subtitle">{{ number_format($rows->count()) }} class fee payments, grouped by class</p>
                         </div>
                     </div>
-                    <div class="table-responsive">
-                        <table class="table premium-table mb-0">
+                    <div class="ui-table-responsive">
+                        <table class="ui-table premium-table tw:mb-0!">
                             <thead>
                                 <tr>
                                     <th>Receipt</th>
@@ -261,36 +261,36 @@
                                     <th>Fee Month</th>
                                     <th>Method</th>
                                     <th>Collected By</th>
-                                    <th class="text-end">Amount</th>
-                                    <th class="text-end">Teacher Share</th>
+                                    <th class="tw:text-right!">Amount</th>
+                                    <th class="tw:text-right!">Teacher Share</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($rows as $row)
                                     <tr>
-                                        <td class="cell-title text-nowrap">{{ $row['receipt_number'] ?? '-' }}</td>
-                                        <td class="text-nowrap">{{ $row['paid_at'] ?? '-' }}</td>
+                                        <td class="cell-title tw:whitespace-nowrap!">{{ $row['receipt_number'] ?? '-' }}</td>
+                                        <td class="tw:whitespace-nowrap!">{{ $row['paid_at'] ?? '-' }}</td>
                                         <td>
-                                            <div class="cell-title text-nowrap">{{ $row['student_name'] ?? '-' }}</div>
+                                            <div class="cell-title tw:whitespace-nowrap!">{{ $row['student_name'] ?? '-' }}</div>
                                             <small class="cell-sub">{{ $row['student_code'] ?? '-' }}{{ $row['guardian_mobile'] ? ' · ' . $row['guardian_mobile'] : '' }}</small>
                                         </td>
                                         <td>
                                             <div>{{ $row['class_name'] }}</div>
                                             <small class="cell-sub">{{ $row['category_name'] ?? '-' }}{{ $row['fee_option'] ? ' · ' . $row['fee_option'] : '' }}</small>
                                         </td>
-                                        <td class="text-nowrap">{{ $row['fee_month'] ?? '-' }}</td>
+                                        <td class="tw:whitespace-nowrap!">{{ $row['fee_month'] ?? '-' }}</td>
                                         <td><span class="nx-badge nx-badge-gray">{{ $row['payment_method'] }}</span></td>
                                         <td>{{ $row['collected_by'] ?? '-' }}</td>
-                                        <td class="text-end amount">{{ $money($row['amount']) }}</td>
-                                        <td class="text-end amount text-success">{{ $money($row['teacher_amount']) }}</td>
+                                        <td class="tw:text-right! amount">{{ $money($row['amount']) }}</td>
+                                        <td class="tw:text-right! amount tw:text-(color:--nx-green)!">{{ $money($row['teacher_amount']) }}</td>
                                     </tr>
                                 @endforeach
                             </tbody>
                             <tfoot>
-                                <tr class="fw-bold">
+                                <tr class="tw:font-bold!">
                                     <td colspan="7">Total ({{ number_format($rows->count()) }} payments)</td>
-                                    <td class="text-end amount">{{ $money($summary['amount']) }}</td>
-                                    <td class="text-end amount text-success">{{ $money($summary['teacher_amount']) }}</td>
+                                    <td class="tw:text-right! amount">{{ $money($summary['amount']) }}</td>
+                                    <td class="tw:text-right! amount tw:text-(color:--nx-green)!">{{ $money($summary['teacher_amount']) }}</td>
                                 </tr>
                             </tfoot>
                         </table>

@@ -14,20 +14,20 @@
 
             <div>
                 <h4>
-                    <i class="bi bi-pencil-square text-warning me-2"></i>
+                    <i class="bi bi-pencil-square tw:text-bs-warning! tw:mr-2!"></i>
                     Edit User: {{ $user->name }}
                 </h4>
-                <p class="text-muted mb-0">
+                <p class="tw:text-bs-secondary-color! tw:mb-0!">
                     Update user details, role and permissions
                 </p>
             </div>
 
             <div class="header-buttons">
-                <a href="{{ route('admin.users.show', $user) }}" class="btn btn-info custom-btn">
+                <a href="{{ route('admin.users.show', $user) }}" class="ui-btn ui-btn-info custom-btn">
                     <i class="bi bi-eye-fill"></i>
                     View Profile
                 </a>
-                <a href="{{ route('admin.users.index') }}" class="btn btn-light border custom-btn">
+                <a href="{{ route('admin.users.index') }}" class="ui-btn ui-btn-light tw:bs-border! custom-btn">
                     <i class="bi bi-arrow-left"></i>
                     Back to List
                 </a>
@@ -37,8 +37,8 @@
 
         <!-- USER STATUS ALERT -->
         @if($user->trashed())
-            <div class="alert alert-warning custom-alert">
-                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <div class="ui-alert ui-alert-warning custom-alert">
+                <i class="bi bi-exclamation-triangle-fill tw:mr-2!"></i>
                 This user is currently <strong>deleted</strong>. You can restore them from the user list.
             </div>
         @endif
@@ -49,45 +49,45 @@
             @csrf
             @method('PUT')
 
-            <div class="row g-4">
+            <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3 bs-row">
 
                 <!-- BASIC INFORMATION -->
-                <div class="col-md-6">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
 
                     <div class="form-section">
 
                         <h6 class="form-section-title">
-                            <i class="bi bi-person-fill me-2"></i>
+                            <i class="bi bi-person-fill tw:mr-2!"></i>
                             Basic Information
                         </h6>
 
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">
-                                Full Name <span class="text-danger">*</span>
+                        <div class="tw:mb-4!">
+                            <label class="ui-form-label tw:font-semibold!">
+                                Full Name <span class="tw:text-bs-danger!">*</span>
                             </label>
-                            <input type="text" name="name" class="form-control custom-input @error('name') is-invalid @enderror"
+                            <input type="text" name="name" class="ui-form-control custom-input @error('name') ui-is-invalid @enderror"
                                 placeholder="Enter full name" value="{{ old('name', $user->name) }}" required>
                             @error('name')
-                                <div class="invalid-feedback">{{ $message }}</div>
+                                <div class="ui-invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
 
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">
-                                Email Address <span class="text-danger">*</span>
+                        <div class="tw:mb-4!">
+                            <label class="ui-form-label tw:font-semibold!">
+                                Email Address <span class="tw:text-bs-danger!">*</span>
                             </label>
-                            <input type="email" name="email" class="form-control custom-input @error('email') is-invalid @enderror"
+                            <input type="email" name="email" class="ui-form-control custom-input @error('email') ui-is-invalid @enderror"
                                 placeholder="Enter email address" value="{{ old('email', $user->email) }}" required>
                             @error('email')
-                                <div class="invalid-feedback">{{ $message }}</div>
+                                <div class="ui-invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
 
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">
-                                User Type <span class="text-danger">*</span>
+                        <div class="tw:mb-4!">
+                            <label class="ui-form-label tw:font-semibold!">
+                                User Type <span class="tw:text-bs-danger!">*</span>
                             </label>
-                            <select name="user_type_id" class="form-select custom-input @error('user_type_id') is-invalid @enderror" required>
+                            <select name="user_type_id" class="ui-form-select custom-input @error('user_type_id') ui-is-invalid @enderror" required>
                                 <option value="">Select User Type</option>
                                 @foreach($userTypes as $type)
                                     <option value="{{ $type->id }}" {{ old('user_type_id', $user->user_type_id) == $type->id ? 'selected' : '' }}>
@@ -96,28 +96,28 @@
                                 @endforeach
                             </select>
                             @error('user_type_id')
-                                <div class="invalid-feedback">{{ $message }}</div>
+                                <div class="ui-invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
 
-                        <div class="mb-3">
-                            <div class="form-check form-switch">
-                                <input type="checkbox" name="is_active" class="form-check-input" id="isActive" value="1"
+                        <div class="tw:mb-4!">
+                            <div class="ui-form-check ui-form-switch">
+                                <input type="checkbox" name="is_active" class="ui-form-check-input" id="isActive" value="1"
                                     {{ old('is_active', $user->is_active) ? 'checked' : '' }}>
-                                <label class="form-check-label fw-semibold" for="isActive">
-                                    <i class="bi bi-check-circle-fill text-success me-1"></i>
+                                <label class="ui-form-check-label tw:font-semibold!" for="isActive">
+                                    <i class="bi bi-check-circle-fill tw:text-bs-success! tw:mr-1!"></i>
                                     Active Account
                                 </label>
                             </div>
-                            <small class="text-muted">Inactive users cannot log in to the system</small>
+                            <small class="tw:text-bs-secondary-color!">Inactive users cannot log in to the system</small>
                         </div>
 
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">
-                                <i class="bi bi-calendar3 me-1"></i>
+                        <div class="tw:mb-4!">
+                            <label class="ui-form-label tw:font-semibold!">
+                                <i class="bi bi-calendar3 tw:mr-1!"></i>
                                 Created At
                             </label>
-                            <p class="text-muted mb-0">{{ $user->created_at->format('Y-m-d H:i:s') }}</p>
+                            <p class="tw:text-bs-secondary-color! tw:mb-0!">{{ $user->created_at->format('Y-m-d H:i:s') }}</p>
                         </div>
 
                     </div>
@@ -125,58 +125,58 @@
                 </div>
 
                 <!-- PASSWORD & LINKING -->
-                <div class="col-md-6">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
 
                     <div class="form-section">
 
                         <h6 class="form-section-title">
-                            <i class="bi bi-lock-fill me-2"></i>
+                            <i class="bi bi-lock-fill tw:mr-2!"></i>
                             Password & Linking
                         </h6>
 
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">
-                                Change Password <span class="text-muted">(Optional)</span>
+                        <div class="tw:mb-4!">
+                            <label class="ui-form-label tw:font-semibold!">
+                                Change Password <span class="tw:text-bs-secondary-color!">(Optional)</span>
                             </label>
                             <div class="password-input-wrapper">
                                 <i class="bi bi-key-fill"></i>
                                 <input type="password" name="password" id="password"
-                                    class="form-control custom-input @error('password') is-invalid @enderror"
+                                    class="ui-form-control custom-input @error('password') ui-is-invalid @enderror"
                                     placeholder="Enter new password (leave blank to keep current)" minlength="8">
                                 <button type="button" class="password-toggle" onclick="togglePassword('password')">
                                     <i class="bi bi-eye-slash-fill"></i>
                                 </button>
                             </div>
                             @error('password')
-                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                <div class="ui-invalid-feedback tw:block!">{{ $message }}</div>
                             @enderror
-                            <small class="text-muted">Leave blank to keep current password. Minimum 8 characters.</small>
+                            <small class="tw:text-bs-secondary-color!">Leave blank to keep current password. Minimum 8 characters.</small>
                         </div>
 
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">
+                        <div class="tw:mb-4!">
+                            <label class="ui-form-label tw:font-semibold!">
                                 Confirm Password
                             </label>
                             <div class="password-input-wrapper">
                                 <i class="bi bi-shield-lock-fill"></i>
                                 <input type="password" name="password_confirmation" id="password_confirmation"
-                                    class="form-control custom-input"
+                                    class="ui-form-control custom-input"
                                     placeholder="Confirm new password">
                                 <button type="button" class="password-toggle" onclick="togglePassword('password_confirmation')">
                                     <i class="bi bi-eye-slash-fill"></i>
                                 </button>
                             </div>
-                            <div id="passwordMatch" class="mt-1"></div>
+                            <div id="passwordMatch" class="tw:mt-1!"></div>
                         </div>
 
                         <hr>
 
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">
-                                <i class="bi bi-person-badge-fill me-1"></i>
+                        <div class="tw:mb-4!">
+                            <label class="ui-form-label tw:font-semibold!">
+                                <i class="bi bi-person-badge-fill tw:mr-1!"></i>
                                 Link to Teacher (Optional)
                             </label>
-                            <select name="teacher_id" class="form-select custom-input">
+                            <select name="teacher_id" class="ui-form-select custom-input">
                                 <option value="">None</option>
                                 @foreach($teachers as $teacher)
                                     <option value="{{ $teacher->id }}"
@@ -185,10 +185,10 @@
                                     </option>
                                 @endforeach
                             </select>
-                            <small class="text-muted">Link this user account to an existing teacher</small>
+                            <small class="tw:text-bs-secondary-color!">Link this user account to an existing teacher</small>
                             @if($user->teacher)
-                                <div class="mt-2">
-                                    <span class="badge bg-info">
+                                <div class="tw:mt-2!">
+                                    <span class="ui-badge tw:bg-bs-info!">
                                         Currently linked to: {{ $user->teacher->full_name }}
                                     </span>
                                 </div>
@@ -196,22 +196,22 @@
                         </div>
 
                         <!-- CURRENT STATUS -->
-                        <div class="mt-3 p-3 bg-white rounded-3 border">
-                            <h6 class="mb-2">
-                                <i class="bi bi-info-circle-fill text-primary me-1"></i>
+                        <div class="tw:mt-4! tw:p-4! tw:bg-bs-white! tw:rounded-bs-lg! tw:bs-border!">
+                            <h6 class="tw:mb-2!">
+                                <i class="bi bi-info-circle-fill tw:text-bs-primary! tw:mr-1!"></i>
                                 Account Status
                             </h6>
-                            <ul class="list-unstyled mb-0">
+                            <ul class="ui-list-unstyled tw:mb-0!">
                                 <li>
-                                    <i class="bi bi-check-circle text-success me-2"></i>
+                                    <i class="bi bi-check-circle tw:text-bs-success! tw:mr-2!"></i>
                                     User Type: <strong>{{ $user->userType->name ?? 'N/A' }}</strong>
                                 </li>
                                 <li>
-                                    <i class="bi bi-check-circle text-success me-2"></i>
+                                    <i class="bi bi-check-circle tw:text-bs-success! tw:mr-2!"></i>
                                     Status: <strong>{{ $user->is_active ? 'Active' : 'Inactive' }}</strong>
                                 </li>
                                 <li>
-                                    <i class="bi bi-check-circle text-success me-2"></i>
+                                    <i class="bi bi-check-circle tw:text-bs-success! tw:mr-2!"></i>
                                     Last Updated: <strong>{{ $user->updated_at->diffForHumans() }}</strong>
                                 </li>
                             </ul>
@@ -222,26 +222,26 @@
                 </div>
 
                 <!-- BUTTONS -->
-                <div class="col-12">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:flex-[0_0_auto] tw:w-[100%]">
 
                     <hr>
 
-                    <div class="d-flex gap-3 flex-wrap">
-                        <button type="submit" class="btn btn-warning custom-btn btn-lg">
-                            <i class="bi bi-pencil-fill me-2"></i>
+                    <div class="bs-d-flex tw:flex! bs-gap-3 tw:gap-4! tw:flex-wrap!">
+                        <button type="submit" class="ui-btn ui-btn-warning custom-btn ui-btn-lg">
+                            <i class="bi bi-pencil-fill tw:mr-2!"></i>
                             Update User
                         </button>
-                        <a href="{{ route('admin.users.index') }}" class="btn btn-outline-secondary custom-btn">
+                        <a href="{{ route('admin.users.index') }}" class="ui-btn ui-btn-outline-secondary custom-btn">
                             <i class="bi bi-x-circle"></i>
                             Cancel
                         </a>
                         @if(!$user->trashed())
                             <form method="POST" action="{{ route('admin.users.destroy', $user) }}"
-                                onsubmit="return confirm('Delete this user?')" class="d-inline">
+                                onsubmit="return confirm('Delete this user?')" class="tw:[display:inline]!">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-danger custom-btn">
-                                    <i class="bi bi-trash-fill me-2"></i>
+                                <button type="submit" class="ui-btn ui-btn-danger custom-btn">
+                                    <i class="bi bi-trash-fill tw:mr-2!"></i>
                                     Delete User
                                 </button>
                             </form>
@@ -301,7 +301,7 @@
         box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
     }
 
-    .custom-btn.btn-lg {
+    .custom-btn.ui-btn-lg {
         padding: 0.8rem 1.5rem;
         font-size: 1.1rem;
     }
@@ -369,7 +369,7 @@
         font-weight: 500;
     }
 
-    .form-check-input:checked {
+    .ui-form-check-input:checked {
         background-color: #10b981;
         border-color: #10b981;
     }
@@ -428,9 +428,9 @@
                 }
 
                 if (password.value === this.value) {
-                    matchMessage.innerHTML = '<i class="bi bi-check-circle-fill text-success me-1"></i> <span class="text-success fw-semibold">Passwords match!</span>';
+                    matchMessage.innerHTML = '<i class="bi bi-check-circle-fill tw:text-bs-success! tw:mr-1!"></i> <span class="tw:text-bs-success! tw:font-semibold!">Passwords match!</span>';
                 } else {
-                    matchMessage.innerHTML = '<i class="bi bi-exclamation-circle-fill text-danger me-1"></i> <span class="text-danger fw-semibold">Passwords do not match</span>';
+                    matchMessage.innerHTML = '<i class="bi bi-exclamation-circle-fill tw:text-bs-danger! tw:mr-1!"></i> <span class="tw:text-bs-danger! tw:font-semibold!">Passwords do not match</span>';
                 }
             });
         }

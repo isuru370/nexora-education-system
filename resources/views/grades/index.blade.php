@@ -15,11 +15,11 @@
             </div>
             <div>
                 <h4>Grade Management</h4>
-                <p class="text-muted small">Manage Student Grades</p>
+                <p class="tw:text-bs-secondary-color! tw:text-[.875em]">Manage Student Grades</p>
             </div>
         </div>
         <div class="header-right">
-            <button class="btn btn-primary custom-btn" data-bs-toggle="modal" data-bs-target="#createGradeModal">
+            <button class="ui-btn ui-btn-primary custom-btn" data-nx-toggle="modal" data-nx-target="#createGradeModal">
                 <i class="bi bi-plus-lg"></i>
                 Add Grade
             </button>
@@ -28,33 +28,33 @@
 
     <!-- ALERTS -->
     @if(session('success'))
-        <div class="alert alert-success alert-dismissible fade show custom-alert" role="alert">
+        <div class="ui-alert ui-alert-success ui-alert-dismissible ui-fade show custom-alert" role="alert">
             <div class="alert-icon"><i class="bi bi-check-circle-fill"></i></div>
             <div class="alert-content">{{ session('success') }}</div>
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            <button type="button" class="ui-btn-close" data-nx-dismiss="alert"></button>
         </div>
     @endif
 
     @if(session('error'))
-        <div class="alert alert-danger alert-dismissible fade show custom-alert" role="alert">
+        <div class="ui-alert ui-alert-danger ui-alert-dismissible ui-fade show custom-alert" role="alert">
             <div class="alert-icon"><i class="bi bi-x-circle-fill"></i></div>
             <div class="alert-content">{{ session('error') }}</div>
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            <button type="button" class="ui-btn-close" data-nx-dismiss="alert"></button>
         </div>
     @endif
 
     @if($errors->any())
-        <div class="alert alert-danger alert-dismissible fade show custom-alert" role="alert">
+        <div class="ui-alert ui-alert-danger ui-alert-dismissible ui-fade show custom-alert" role="alert">
             <div class="alert-icon"><i class="bi bi-exclamation-triangle-fill"></i></div>
             <div class="alert-content">
                 <strong>Please fix the following errors:</strong>
-                <ul class="mb-0 mt-2">
+                <ul class="tw:mb-0! tw:mt-2!">
                     @foreach($errors->all() as $error)
                         <li><i class="bi bi-dot"></i> {{ $error }}</li>
                     @endforeach
                 </ul>
             </div>
-            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            <button type="button" class="ui-btn-close" data-nx-dismiss="alert"></button>
         </div>
     @endif
 
@@ -62,8 +62,8 @@
     <div class="main-card">
 
         <!-- STATS ROW -->
-        <div class="row g-4 mb-4">
-            <div class="col-xl-4 col-md-6">
+        <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3 tw:mb-6!">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[33.33333333%]">
                 <div class="stats-card">
                     <div class="stats-icon purple">
                         <i class="bi bi-graph-up-arrow"></i>
@@ -75,7 +75,7 @@
                 </div>
             </div>
 
-            <div class="col-xl-4 col-md-6">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[33.33333333%]">
                 <div class="stats-card">
                     <div class="stats-icon green">
                         <i class="bi bi-check-circle"></i>
@@ -87,7 +87,7 @@
                 </div>
             </div>
 
-            <div class="col-xl-4 col-md-6">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[33.33333333%]">
                 <div class="stats-card">
                     <div class="stats-icon blue">
                         <i class="bi bi-people"></i>
@@ -101,16 +101,16 @@
         </div>
 
         <!-- TABLE -->
-        <div class="table-responsive">
-            <table class="table custom-table align-middle" id="gradeTable">
+        <div class="ui-table-responsive">
+            <table class="ui-table custom-table tw:align-middle!" id="gradeTable">
                 <thead>
                     <tr>
                         <th width="60">#</th>
                         <th>Grade Name</th>
-                        <th class="text-center">Students</th>
-                        <th class="text-center">Status</th>
-                        <th class="text-center">Created</th>
-                        <th class="text-center" width="150">Action</th>
+                        <th class="tw:text-center!">Students</th>
+                        <th class="tw:text-center!">Status</th>
+                        <th class="tw:text-center!">Created</th>
+                        <th class="tw:text-center!" width="150">Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -122,42 +122,42 @@
 
                             <td>
                                 <div class="grade-name">
-                                    <span class="grade-badge grade-{{ strtolower($grade->grade_name) }}">
+                                    <span class="grade-badge grade- {{ strtolower($grade->grade_name) }}">
                                         {{ $grade->grade_name }}
                                     </span>
                                 </div>
                             </td>
 
-                            <td class="text-center">
+                            <td class="tw:text-center!">
                                 <span class="students-count-badge">
                                     <i class="bi bi-people"></i>
                                     {{ $grade->students_count }}
                                 </span>
                             </td>
 
-                            <td class="text-center">
+                            <td class="tw:text-center!">
                                 @if($grade->is_active)
-                                    <span class="badge status-active">
+                                    <span class="ui-badge status-active">
                                         <i class="bi bi-check-circle"></i>
                                         Active
                                     </span>
                                 @else
-                                    <span class="badge status-inactive">
+                                    <span class="ui-badge status-inactive">
                                         <i class="bi bi-x-circle"></i>
                                         Inactive
                                     </span>
                                 @endif
                             </td>
 
-                            <td class="text-center">
-                                <small class="text-muted">
+                            <td class="tw:text-center!">
+                                <small class="tw:text-bs-secondary-color!">
                                     <i class="bi bi-calendar"></i>
                                     {{ $grade->created_at->format('d M Y') }}
                                 </small>
                             </td>
 
-                            <td class="text-center">
-                                <div class="action-buttons justify-content-center">
+                            <td class="tw:text-center!">
+                                <div class="action-buttons tw:justify-center!">
                                     <button class="action-btn edit-btn editBtn"
                                             data-id="{{ $grade->id }}"
                                             data-name="{{ $grade->grade_name }}"
@@ -168,7 +168,7 @@
 
                                     <form action="{{ route('admin.grades.destroy', $grade->id) }}"
                                           method="POST"
-                                          class="d-inline">
+                                          class="tw:[display:inline]!">
                                         @csrf
                                         @method('DELETE')
                                         <button class="action-btn delete-btn"
@@ -182,10 +182,10 @@
                         </tr>
                     @empty
                         <tr>
-                            <td colspan="6" class="text-center py-5 text-muted">
-                                <i class="bi bi-graph-up fs-1 d-block mb-3"></i>
+                            <td colspan="6" class="tw:text-center! tw:py-12! tw:text-bs-secondary-color!">
+                                <i class="bi bi-graph-up tw:text-[length:calc(1.375rem_+_1.5vw)]! tw:xl:text-[length:2.5rem]! tw:block! tw:mb-4!"></i>
                                 <h5>No Grades Found</h5>
-                                <p class="mb-0">Click "Add Grade" to create your first grade.</p>
+                                <p class="tw:mb-0!">Click "Add Grade" to create your first grade.</p>
                             </td>
                         </tr>
                     @endforelse
@@ -196,12 +196,12 @@
         <!-- TABLE FOOTER -->
         <div class="table-footer">
             <div class="footer-left">
-                <span class="text-muted">
+                <span class="tw:text-bs-secondary-color!">
                     Showing {{ $grades->count() }} grades
                 </span>
             </div>
             <div class="footer-right">
-                <button class="btn btn-primary custom-btn-sm" data-bs-toggle="modal" data-bs-target="#createGradeModal">
+                <button class="ui-btn ui-btn-primary custom-btn-sm" data-nx-toggle="modal" data-nx-target="#createGradeModal">
                     <i class="bi bi-plus-lg"></i>
                     Add Grade
                 </button>
@@ -215,49 +215,49 @@
 <!-- ========================================== -->
 <!-- CREATE MODAL                              -->
 <!-- ========================================== -->
-<div class="modal fade" id="createGradeModal" tabindex="-1" 
+<div class="ui-modal ui-fade" id="createGradeModal" tabindex="-1" 
      aria-labelledby="createGradeModalLabel" aria-hidden="true"
-     data-bs-backdrop="static" data-bs-keyboard="true">
-    <div class="modal-dialog modal-dialog-centered">
+     data-nx-backdrop="static" data-nx-keyboard="true">
+    <div class="ui-modal-dialog ui-modal-dialog-centered">
         <form action="{{ route('admin.grades.store') }}" method="POST">
             @csrf
-            <div class="modal-content">
-                <div class="modal-header modal-header-primary">
-                    <h5 class="modal-title" id="createGradeModalLabel">
-                        <i class="bi bi-plus-circle me-2"></i>
+            <div class="ui-modal-content">
+                <div class="ui-modal-header modal-header-primary">
+                    <h5 class="ui-modal-title" id="createGradeModalLabel">
+                        <i class="bi bi-plus-circle tw:mr-2!"></i>
                         Add New Grade
                     </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <button type="button" class="ui-btn-close" data-nx-dismiss="modal"></button>
                 </div>
-                <div class="modal-body">
+                <div class="ui-modal-body">
                     <div class="form-group">
-                        <label class="form-label fw-semibold">
-                            <i class="bi bi-award text-primary"></i>
-                            Grade Name <span class="text-danger">*</span>
+                        <label class="ui-form-label tw:font-semibold!">
+                            <i class="bi bi-award tw:text-bs-primary!"></i>
+                            Grade Name <span class="tw:text-bs-danger!">*</span>
                         </label>
                         <input type="text" name="grade_name"
-                               class="form-control custom-input @error('grade_name') is-invalid @enderror"
+                               class="ui-form-control custom-input @error('grade_name') ui-is-invalid @enderror"
                                value="{{ old('grade_name') }}"
                                placeholder="Enter Grade Name" required>
                         @error('grade_name')
-                            <div class="invalid-feedback">{{ $message }}</div>
+                            <div class="ui-invalid-feedback">{{ $message }}</div>
                         @enderror
                     </div>
 
-                    <div class="form-check form-switch mt-3">
-                        <input class="form-check-input" type="checkbox" 
+                    <div class="ui-form-check ui-form-switch tw:mt-4!">
+                        <input class="ui-form-check-input" type="checkbox" 
                                name="is_active" id="createStatus" value="1" checked>
-                        <label class="form-check-label fw-semibold" for="createStatus">
-                            <i class="bi bi-toggle-on text-success"></i>
+                        <label class="ui-form-check-label tw:font-semibold!" for="createStatus">
+                            <i class="bi bi-toggle-on tw:text-bs-success!"></i>
                             Active
                         </label>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                <div class="ui-modal-footer">
+                    <button type="button" class="ui-btn ui-btn-secondary" data-nx-dismiss="modal">
                         <i class="bi bi-x"></i> Close
                     </button>
-                    <button type="submit" class="btn btn-primary">
+                    <button type="submit" class="ui-btn ui-btn-primary">
                         <i class="bi bi-check-circle"></i> Save Grade
                     </button>
                 </div>
@@ -269,45 +269,45 @@
 <!-- ========================================== -->
 <!-- EDIT MODAL                                -->
 <!-- ========================================== -->
-<div class="modal fade" id="editGradeModal" tabindex="-1" 
+<div class="ui-modal ui-fade" id="editGradeModal" tabindex="-1" 
      aria-labelledby="editGradeModalLabel" aria-hidden="true"
-     data-bs-backdrop="static" data-bs-keyboard="true">
-    <div class="modal-dialog modal-dialog-centered">
+     data-nx-backdrop="static" data-nx-keyboard="true">
+    <div class="ui-modal-dialog ui-modal-dialog-centered">
         <form id="editGradeForm" method="POST">
             @csrf
             @method('PUT')
-            <div class="modal-content">
-                <div class="modal-header modal-header-warning">
-                    <h5 class="modal-title" id="editGradeModalLabel">
-                        <i class="bi bi-pencil-square me-2"></i>
+            <div class="ui-modal-content">
+                <div class="ui-modal-header modal-header-warning">
+                    <h5 class="ui-modal-title" id="editGradeModalLabel">
+                        <i class="bi bi-pencil-square tw:mr-2!"></i>
                         Edit Grade
                     </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <button type="button" class="ui-btn-close" data-nx-dismiss="modal"></button>
                 </div>
-                <div class="modal-body">
+                <div class="ui-modal-body">
                     <div class="form-group">
-                        <label class="form-label fw-semibold">
-                            <i class="bi bi-award text-primary"></i>
-                            Grade Name <span class="text-danger">*</span>
+                        <label class="ui-form-label tw:font-semibold!">
+                            <i class="bi bi-award tw:text-bs-primary!"></i>
+                            Grade Name <span class="tw:text-bs-danger!">*</span>
                         </label>
                         <input type="text" name="grade_name" id="edit_grade_name"
-                               class="form-control custom-input" required>
+                               class="ui-form-control custom-input" required>
                     </div>
 
-                    <div class="form-check form-switch mt-3">
-                        <input class="form-check-input" type="checkbox" 
+                    <div class="ui-form-check ui-form-switch tw:mt-4!">
+                        <input class="ui-form-check-input" type="checkbox" 
                                name="is_active" id="edit_is_active" value="1">
-                        <label class="form-check-label fw-semibold" for="edit_is_active">
-                            <i class="bi bi-toggle-on text-success"></i>
+                        <label class="ui-form-check-label tw:font-semibold!" for="edit_is_active">
+                            <i class="bi bi-toggle-on tw:text-bs-success!"></i>
                             Active
                         </label>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                <div class="ui-modal-footer">
+                    <button type="button" class="ui-btn ui-btn-secondary" data-nx-dismiss="modal">
                         <i class="bi bi-x"></i> Close
                     </button>
-                    <button type="submit" class="btn btn-warning">
+                    <button type="submit" class="ui-btn ui-btn-warning">
                         <i class="bi bi-check-circle"></i> Update Grade
                     </button>
                 </div>
@@ -439,13 +439,13 @@
 
     .custom-alert ul li { padding: 0.15rem 0; }
 
-    .alert-danger {
+    .ui-alert-danger {
         background: #fef2f2;
         color: #991b1b;
         border-left: 4px solid #ef4444;
     }
 
-    .alert-success {
+    .ui-alert-success {
         background: #f0fdf4;
         color: #166534;
         border-left: 4px solid #10b981;
@@ -624,7 +624,7 @@
     /* ============================================ */
     /* STATUS BADGES                               */
     /* ============================================ */
-    .badge.status-active {
+    .ui-badge.status-active {
         background: #d1fae5;
         color: #065f46;
         padding: 0.3rem 0.7rem;
@@ -635,7 +635,7 @@
         gap: 0.3rem;
     }
 
-    .badge.status-inactive {
+    .ui-badge.status-inactive {
         background: #fee2e2;
         color: #991b1b;
         padding: 0.3rem 0.7rem;
@@ -723,13 +723,13 @@
     /* ============================================ */
     /* MODAL                                       */
     /* ============================================ */
-    .modal-content {
+    .ui-modal-content {
         border-radius: 20px;
         border: none;
         box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
     }
 
-    .modal-header {
+    .ui-modal-header {
         border-bottom: 1px solid #f1f5f9;
         padding: 1.25rem 1.5rem;
     }
@@ -739,7 +739,7 @@
         color: white;
     }
 
-    .modal-header-primary .btn-close {
+    .modal-header-primary .ui-btn-close {
         filter: brightness(0) invert(1);
     }
 
@@ -748,29 +748,29 @@
         color: white;
     }
 
-    .modal-header-warning .btn-close {
+    .modal-header-warning .ui-btn-close {
         filter: brightness(0) invert(1);
     }
 
-    .modal-footer {
+    .ui-modal-footer {
         border-top: 1px solid #f1f5f9;
         padding: 1.25rem 1.5rem;
     }
 
-    .modal-body {
+    .ui-modal-body {
         padding: 1.5rem;
     }
 
-    .modal-backdrop {
+    .ui-modal-backdrop {
         background-color: rgba(0, 0, 0, 0.5);
         transition: opacity 0.15s linear;
     }
 
-    .modal-backdrop.show {
+    .ui-modal-backdrop.show {
         opacity: 0.5;
     }
 
-    .modal.fade .modal-dialog {
+    .ui-modal.ui-fade .ui-modal-dialog {
         transition: transform 0.3s ease-out;
     }
 
@@ -779,7 +779,7 @@
     /* ============================================ */
     .form-group { margin-bottom: 0; }
 
-    .form-group .form-label {
+    .form-group .ui-form-label {
         font-size: 0.85rem;
         font-weight: 500;
         color: #1e293b;
@@ -804,19 +804,19 @@
         background: white;
     }
 
-    .custom-input.is-invalid {
+    .custom-input.ui-is-invalid {
         border-color: #ef4444;
         box-shadow: 0 0 0 4px rgba(239, 68, 68, 0.1);
     }
 
-    .form-check {
+    .ui-form-check {
         padding-left: 0;
         display: flex;
         align-items: center;
         gap: 0.75rem;
     }
 
-    .form-check .form-check-input {
+    .ui-form-check .ui-form-check-input {
         width: 48px;
         height: 26px;
         border-radius: 26px;
@@ -827,16 +827,16 @@
         margin: 0;
     }
 
-    .form-check .form-check-input:checked {
+    .ui-form-check .ui-form-check-input:checked {
         background: #2563eb;
         border-color: #2563eb;
     }
 
-    .form-check .form-check-input:focus {
+    .ui-form-check .ui-form-check-input:focus {
         box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.1);
     }
 
-    .form-check .form-check-label {
+    .ui-form-check .ui-form-check-label {
         font-weight: 500;
         color: #1e293b;
         cursor: pointer;
@@ -976,17 +976,17 @@
             padding: 0.3rem 0.6rem;
         }
 
-        .modal-body { padding: 1rem; }
-        .modal-header { padding: 1rem; }
-        .modal-footer { padding: 1rem; }
+        .ui-modal-body { padding: 1rem; }
+        .ui-modal-header { padding: 1rem; }
+        .ui-modal-footer { padding: 1rem; }
 
         .students-count-badge {
             font-size: 0.65rem;
             padding: 0.15rem 0.5rem;
         }
 
-        .badge.status-active,
-        .badge.status-inactive {
+        .ui-badge.status-active,
+        .ui-badge.status-inactive {
             font-size: 0.65rem;
             padding: 0.15rem 0.5rem;
         }
@@ -999,8 +999,8 @@
     @media print {
         .page-header .header-right,
         .footer-right,
-        .alert,
-        .btn-close,
+        .ui-alert,
+        .ui-btn-close,
         .action-buttons {
             display: none !important;
         }
@@ -1042,7 +1042,7 @@
                 document.getElementById('edit_is_active').checked = status == 1 ? true : false;
                 document.getElementById('editGradeForm').action = "{{ url('admin/grades') }}/" + id;
 
-                let modal = new bootstrap.Modal(document.getElementById('editGradeModal'));
+                let modal = new NxUi.Modal(document.getElementById('editGradeModal'));
                 modal.show();
             });
         });
@@ -1073,7 +1073,7 @@
         // 3. Reopen Modal on Validation Error
         // ============================================
         @if($errors->any())
-            var modal = new bootstrap.Modal(document.getElementById('createGradeModal'));
+            var modal = new NxUi.Modal(document.getElementById('createGradeModal'));
             modal.show();
         @endif
 
@@ -1083,7 +1083,7 @@
         document.addEventListener('keydown', function(e) {
             if (e.ctrlKey && e.key === 'n') {
                 e.preventDefault();
-                const createBtn = document.querySelector('[data-bs-target="#createGradeModal"]');
+                const createBtn = document.querySelector('[data-nx-target="#createGradeModal"]');
                 if (createBtn) {
                     createBtn.click();
                 }

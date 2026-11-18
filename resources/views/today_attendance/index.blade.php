@@ -16,15 +16,15 @@
     <div class="attendance-page">
 
         {{-- HERO CARD --}}
-        <div class="hero-card mb-4">
+        <div class="hero-card tw:mb-6!">
             <div class="hero-content">
                 <div>
-                    <div class="hero-badge mb-3">
+                    <div class="hero-badge tw:mb-4!">
                         <i class="bi bi-calendar-check-fill"></i>
                         Today's Attendance
                     </div>
-                    <h2 class="fw-bold mb-2">Class Attendance Tracker</h2>
-                    <p class="mb-0 text-light-soft">
+                    <h2 class="tw:font-bold! tw:mb-2!">Class Attendance Tracker</h2>
+                    <p class="tw:mb-0! text-light-soft">
                         {{ $todayDate->format('l, d F Y') }} | {{ ucfirst($dayName) }}
                     </p>
                 </div>
@@ -38,8 +38,8 @@
         </div>
 
         {{-- STATS CARDS --}}
-        <div class="row g-4 mb-4">
-            <div class="col-xl-3 col-md-6">
+        <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3 tw:mb-6!">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%]">
                 <div class="stats-card">
                     <div class="stats-icon blue">
                         <i class="bi bi-people-fill"></i>
@@ -47,12 +47,12 @@
                     <div class="stats-info">
                         <h3>{{ count($students) }}</h3>
                         <p>Enrolled Students</p>
-                        <small class="text-muted">Total registered</small>
+                        <small class="tw:text-bs-secondary-color!">Total registered</small>
                     </div>
                 </div>
             </div>
 
-            <div class="col-xl-3 col-md-6">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%]">
                 <div class="stats-card">
                     <div class="stats-icon green">
                         <i class="bi bi-check-circle-fill"></i>
@@ -60,12 +60,12 @@
                     <div class="stats-info">
                         <h3>{{ $presentCount }}</h3>
                         <p>Present</p>
-                        <small class="text-muted">{{ $attendancePercentage }}% of total</small>
+                        <small class="tw:text-bs-secondary-color!">{{ $attendancePercentage }}% of total</small>
                     </div>
                 </div>
             </div>
 
-            <div class="col-xl-3 col-md-6">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%]">
                 <div class="stats-card">
                     <div class="stats-icon red">
                         <i class="bi bi-x-circle-fill"></i>
@@ -73,12 +73,12 @@
                     <div class="stats-info">
                         <h3>{{ $absentCount }}</h3>
                         <p>Absent</p>
-                        <small class="text-muted">{{ 100 - $attendancePercentage }}% of total</small>
+                        <small class="tw:text-bs-secondary-color!">{{ 100 - $attendancePercentage }}% of total</small>
                     </div>
                 </div>
             </div>
 
-            <div class="col-xl-3 col-md-6">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%]">
                 <div class="stats-card">
                     <div class="stats-icon orange">
                         <i class="bi bi-person-exclamation"></i>
@@ -86,27 +86,27 @@
                     <div class="stats-info">
                         <h3>{{ $notEnrolledCount }}</h3>
                         <p>Not Enrolled</p>
-                        <small class="text-muted">Unregistered attendance</small>
+                        <small class="tw:text-bs-secondary-color!">Unregistered attendance</small>
                     </div>
                 </div>
             </div>
         </div>
 
         {{-- PROGRESS BAR SECTION --}}
-        <div class="progress-card mb-4">
-            <div class="d-flex justify-content-between align-items-center mb-2">
+        <div class="progress-card tw:mb-6!">
+            <div class="tw:flex! tw:justify-between! tw:items-center! tw:mb-2!">
                 <span class="progress-label">Attendance Rate</span>
                 <span class="progress-percentage">{{ $attendancePercentage }}%</span>
             </div>
-            <div class="progress attendance-progress">
-                <div class="progress-bar bg-success" role="progressbar" style="width: {{ $attendancePercentage }}%"
+            <div class="ui-progress attendance-progress">
+                <div class="ui-progress-bar tw:bg-bs-success!" role="progressbar" style="width: {{ $attendancePercentage }}%"
                     aria-valuenow="{{ $attendancePercentage }}" aria-valuemin="0" aria-valuemax="100">
                 </div>
             </div>
-            <div class="d-flex justify-content-between mt-2">
-                <small class="text-muted"><i class="bi bi-check-circle-fill text-success me-1"></i> Present:
+            <div class="tw:flex! tw:justify-between! tw:mt-2!">
+                <small class="tw:text-bs-secondary-color!"><i class="bi bi-check-circle-fill tw:text-bs-success! tw:mr-1!"></i> Present:
                     {{ $presentCount }}</small>
-                <small class="text-muted"><i class="bi bi-x-circle-fill text-danger me-1"></i> Absent:
+                <small class="tw:text-bs-secondary-color!"><i class="bi bi-x-circle-fill tw:text-bs-danger! tw:mr-1!"></i> Absent:
                     {{ $absentCount }}</small>
             </div>
         </div>
@@ -116,31 +116,31 @@
             <div class="main-card-header">
                 <div>
                     <h4>
-                        <i class="bi bi-book-fill me-2"></i>
+                        <i class="bi bi-book-fill tw:mr-2!"></i>
                         {{ $schedule->studentClass->class_name ?? 'Class Schedule' }}
                     </h4>
-                    <p class="mb-0">
-                        <i class="bi bi-tag me-1"></i> Fee ID: {{ $schedule->classCategoryFee->id ?? '-' }} &nbsp;|&nbsp;
-                        <i class="bi bi-building me-1"></i> Hall: {{ $schedule->hall->hall_name ?? '-' }} &nbsp;|&nbsp;
-                        <i class="bi bi-clock me-1"></i> {{ $todayDate->format('h:i A') }}
+                    <p class="tw:mb-0!">
+                        <i class="bi bi-tag tw:mr-1!"></i> Fee ID: {{ $schedule->classCategoryFee->id ?? '-' }} &nbsp;|&nbsp;
+                        <i class="bi bi-building tw:mr-1!"></i> Hall: {{ $schedule->hall->hall_name ?? '-' }} &nbsp;|&nbsp;
+                        <i class="bi bi-clock tw:mr-1!"></i> {{ $todayDate->format('h:i A') }}
                     </p>
                 </div>
                 <div class="class-badge">
-                    <i class="bi bi-calendar-week me-1"></i>
+                    <i class="bi bi-calendar-week tw:mr-1!"></i>
                     {{ ucfirst($dayName) }}
                 </div>
             </div>
 
             {{-- ENROLLED STUDENTS TABLE --}}
-            <div class="table-responsive">
-                <table class="custom-table align-middle">
+            <div class="ui-table-responsive">
+                <table class="custom-table tw:align-middle!">
                     <thead>
                         <tr>
-                            <th><i class="bi bi-person-badge me-1"></i> Student</th>
-                            <th><i class="bi bi-upc-scan me-1"></i> Student ID</th>
-                            <th><i class="bi bi-flag me-1"></i> Status</th>
-                            <th><i class="bi bi-receipt me-1"></i> Attendance ID</th>
-                            <th><i class="bi bi-chat-text me-1"></i> Note</th>
+                            <th><i class="bi bi-person-badge tw:mr-1!"></i> Student</th>
+                            <th><i class="bi bi-upc-scan tw:mr-1!"></i> Student ID</th>
+                            <th><i class="bi bi-flag tw:mr-1!"></i> Status</th>
+                            <th><i class="bi bi-receipt tw:mr-1!"></i> Attendance ID</th>
+                            <th><i class="bi bi-chat-text tw:mr-1!"></i> Note</th>
                         </tr>
                     </thead>
 
@@ -149,8 +149,8 @@
                             <tr>
 
                                 {{-- Student --}}
-                                <td class="fw-semibold">
-                                    <div class="d-flex align-items-center gap-2">
+                                <td class="tw:font-semibold!">
+                                    <div class="tw:flex! tw:items-center! tw:gap-2!">
 
                                         <div class="student-avatar">
                                             {{ strtoupper(substr($row['student']->initial_name ?? 'S', 0, 1)) }}
@@ -172,12 +172,12 @@
                                 <td>
                                     @if ($row['status'] === 'present')
                                         <span class="badge-present">
-                                            <i class="bi bi-check-circle-fill me-1"></i>
+                                            <i class="bi bi-check-circle-fill tw:mr-1!"></i>
                                             Present
                                         </span>
                                     @else
                                         <span class="badge-absent">
-                                            <i class="bi bi-x-circle-fill me-1"></i>
+                                            <i class="bi bi-x-circle-fill tw:mr-1!"></i>
                                             Absent
                                         </span>
                                     @endif
@@ -190,7 +190,7 @@
                                             {{ $row['attendance']->id }}
                                         </code>
                                     @else
-                                        <span class="text-muted">—</span>
+                                        <span class="tw:text-bs-secondary-color!">—</span>
                                     @endif
                                 </td>
 
@@ -207,7 +207,7 @@
                                 <td colspan="5" class="empty-state">
                                     <i class="bi bi-inbox"></i>
                                     <h5>No Enrolled Students</h5>
-                                    <p class="text-muted">
+                                    <p class="tw:text-bs-secondary-color!">
                                         No enrolled students found for this schedule.
                                     </p>
                                 </td>
@@ -219,22 +219,22 @@
 
             {{-- NOT ENROLLED ATTENDANCES SECTION --}}
             @if ($notEnrolledCount > 0)
-                <div class="mt-4 not-enrolled-section">
+                <div class="tw:mt-6! not-enrolled-section">
                     <div class="not-enrolled-header">
-                        <h5 class="mb-0">
-                            <i class="bi bi-person-exclamation me-2"></i>
+                        <h5 class="tw:mb-0!">
+                            <i class="bi bi-person-exclamation tw:mr-2!"></i>
                             Not Enrolled Attendance Records
                         </h5>
                         <span class="badge-not-enrolled">{{ $notEnrolledCount }} Records</span>
                     </div>
-                    <div class="table-responsive mt-3">
-                        <table class="custom-table align-middle">
+                    <div class="ui-table-responsive tw:mt-4!">
+                        <table class="custom-table tw:align-middle!">
                             <thead>
                                 <tr>
-                                    <th><i class="bi bi-receipt me-1"></i> Attendance ID</th>
-                                    <th><i class="bi bi-person me-1"></i> Student ID</th>
-                                    <th><i class="bi bi-flag me-1"></i> Record Status</th>
-                                    <th><i class="bi bi-chat-text me-1"></i> Note</th>
+                                    <th><i class="bi bi-receipt tw:mr-1!"></i> Attendance ID</th>
+                                    <th><i class="bi bi-person tw:mr-1!"></i> Student ID</th>
+                                    <th><i class="bi bi-flag tw:mr-1!"></i> Record Status</th>
+                                    <th><i class="bi bi-chat-text tw:mr-1!"></i> Note</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -246,7 +246,7 @@
                                         <td>{{ $attendance->student_id ?? '-' }}</td>
                                         <td>
                                             <span class="badge-not-enrolled-status">
-                                                <i class="bi bi-question-circle me-1"></i> Not Enrolled
+                                                <i class="bi bi-question-circle tw:mr-1!"></i> Not Enrolled
                                             </span>
                                         </td>
                                         <td>{{ $attendance->note ?? '—' }}</td>
@@ -260,8 +260,8 @@
         </div>
 
         {{-- FOOTER NOTE --}}
-        <div class="footer-note mt-4 text-center">
-            <small class="text-muted">
+        <div class="footer-note tw:mt-6! tw:text-center!">
+            <small class="tw:text-bs-secondary-color!">
                 <i class="bi bi-info-circle"></i>
                 Attendance recorded on {{ $todayDate->format('l, d F Y') }} at {{ now()->format('h:i A') }}
             </small>
@@ -428,7 +428,7 @@
             background: #e2e8f0;
         }
 
-        .attendance-progress .progress-bar {
+        .attendance-progress .ui-progress-bar {
             border-radius: 10px;
             background: linear-gradient(90deg, #10b981, #34d399);
         }

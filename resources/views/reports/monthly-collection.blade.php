@@ -19,7 +19,7 @@
         {{-- ===================================================== --}}
         {{-- HERO --}}
         {{-- ===================================================== --}}
-        <div class="hero-section mb-4">
+        <div class="hero-section tw:mb-6!">
             <div class="hero-content">
                 <div class="hero-left">
                     <span class="greeting-badge">nexoraEDU</span>
@@ -65,7 +65,7 @@
         {{-- VALIDATION ERRORS --}}
         {{-- ===================================================== --}}
         @if ($errors->any())
-            <div class="nx-alert nx-alert-red mb-4">
+            <div class="nx-alert nx-alert-red tw:mb-6!">
                 <i class="bi bi-exclamation-triangle-fill"></i>
                 <div>
                     @foreach ($errors->all() as $error)
@@ -78,29 +78,29 @@
         {{-- ===================================================== --}}
         {{-- FILTER --}}
         {{-- ===================================================== --}}
-        <div class="nx-card mb-4">
+        <div class="nx-card tw:mb-6!">
 
             <div class="nx-card-header">
                 <div>
-                    <h5 class="nx-card-title"><i class="bi bi-funnel text-primary"></i> Filters</h5>
+                    <h5 class="nx-card-title"><i class="bi bi-funnel tw:text-(color:--nx-blue)!"></i> Filters</h5>
                     <p class="nx-card-subtitle">Filter by month and branch</p>
                 </div>
             </div>
 
-            <div class="p-3">
+            <div class="tw:p-4!">
                 <form method="GET" action="{{ route('reports.monthly-collection.index') }}"
-                    class="row g-3 align-items-end">
+                    class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2 tw:items-end!">
 
-                    <div class="col-lg-3 col-md-4">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%] tw:lg:flex-[0_0_auto] tw:lg:w-[25%]">
                         <label class="nx-label">Fee month</label>
-                        <input type="month" name="month" class="form-control nx-input"
+                        <input type="month" name="month" class="ui-form-control nx-input"
                             value="{{ $report['month'] }}">
                     </div>
 
                     @if ($branches->count() > 1)
-                        <div class="col-lg-3 col-md-4">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%] tw:lg:flex-[0_0_auto] tw:lg:w-[25%]">
                             <label class="nx-label">Branch</label>
-                            <select name="branch_id" class="form-select nx-input">
+                            <select name="branch_id" class="ui-form-select nx-input">
                                 <option value="">All branches</option>
                                 @foreach ($branches as $branch)
                                     <option value="{{ $branch->id }}" {{ (int) $filter->branchId === (int) $branch->id ? 'selected' : '' }}>
@@ -111,8 +111,8 @@
                         </div>
                     @endif
 
-                    <div class="col-lg-2 col-md-4">
-                        <button type="submit" class="nx-btn nx-btn-primary w-100">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%] tw:lg:flex-[0_0_auto] tw:lg:w-[16.66666667%]">
+                        <button type="submit" class="nx-btn nx-btn-primary tw:w-full!">
                             <i class="bi bi-funnel"></i> Filter
                         </button>
                     </div>
@@ -123,7 +123,7 @@
         {{-- ===================================================== --}}
         {{-- STATS --}}
         {{-- ===================================================== --}}
-        <div class="stats-grid mb-4">
+        <div class="stats-grid tw:mb-6!">
 
             <div class="nx-card stat-card">
                 <div class="stat-icon-wrapper icon-blue"><i class="bi bi-file-earmark-text"></i></div>
@@ -165,30 +165,30 @@
         {{-- ===================================================== --}}
         {{-- COLLECTION PROGRESS --}}
         {{-- ===================================================== --}}
-        <div class="nx-card mb-4">
+        <div class="nx-card tw:mb-6!">
             <div class="nx-card-header">
                 <div>
-                    <h5 class="nx-card-title"><i class="bi bi-graph-up-arrow text-primary"></i> Collection Progress</h5>
+                    <h5 class="nx-card-title"><i class="bi bi-graph-up-arrow tw:text-(color:--nx-blue)!"></i> Collection Progress</h5>
                     <p class="nx-card-subtitle">Percentage of expected fees collected</p>
                 </div>
                 <span class="nx-badge nx-badge-green">{{ $summary['collection_percentage'] }}%</span>
             </div>
 
-            <div class="p-3">
-                <div class="nx-progress mb-3">
+            <div class="tw:p-4!">
+                <div class="nx-progress tw:mb-4!">
                     <div class="nx-progress-fill bg-green" style="width: {{ min($summary['collection_percentage'], 100) }}%"></div>
                 </div>
 
-                <div class="row g-3 text-center">
-                    <div class="col-md-4">
+                <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2 tw:text-center!">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
                         <span class="cell-sub">Teacher share</span>
                         <div class="cell-title">Rs. {{ number_format($summary['teacher_amount'], 2) }}</div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
                         <span class="cell-sub">Organizer share</span>
                         <div class="cell-title">Rs. {{ number_format($summary['organizer_amount'], 2) }}</div>
                     </div>
-                    <div class="col-md-4">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
                         <span class="cell-sub">Institute share</span>
                         <div class="cell-title">Rs. {{ number_format($summary['institution_amount'], 2) }}</div>
                     </div>
@@ -199,10 +199,10 @@
         {{-- ===================================================== --}}
         {{-- CLASS & CATEGORY BREAKDOWN --}}
         {{-- ===================================================== --}}
-        <div class="nx-card mb-4">
+        <div class="nx-card tw:mb-6!">
             <div class="nx-card-header">
                 <div>
-                    <h5 class="nx-card-title"><i class="bi bi-list-ul text-primary"></i> Class &amp; Category Breakdown</h5>
+                    <h5 class="nx-card-title"><i class="bi bi-list-ul tw:text-(color:--nx-blue)!"></i> Class &amp; Category Breakdown</h5>
                     <p class="nx-card-subtitle">Expected vs collected per class and category</p>
                 </div>
             </div>
@@ -214,10 +214,10 @@
         {{-- ===================================================== --}}
         {{-- ✅ (b) DAY BY DAY --}}
         {{-- ===================================================== --}}
-        <div class="nx-card mb-4">
+        <div class="nx-card tw:mb-6!">
             <div class="nx-card-header">
                 <div>
-                    <h5 class="nx-card-title"><i class="bi bi-calendar3 text-primary"></i> Day by day</h5>
+                    <h5 class="nx-card-title"><i class="bi bi-calendar3 tw:text-(color:--nx-blue)!"></i> Day by day</h5>
                     <p class="nx-card-subtitle">
                         Money received and paid out on each day of {{ $report['month_label'] }}
                         (by date paid, any fee month). Click a date to open the Collection Report for that day.
@@ -237,38 +237,38 @@
 
             @if ($dailyRows->isEmpty())
                 <div class="empty-table">
-                    <i class="bi bi-calendar-x fs-2 d-block mb-2"></i>
-                    <strong class="d-block">This month has not started yet.</strong>
+                    <i class="bi bi-calendar-x tw:text-[length:calc(1.325rem_+_0.9vw)]! tw:xl:text-[length:2rem]! tw:block! tw:mb-2!"></i>
+                    <strong class="tw:block!">This month has not started yet.</strong>
                 </div>
             @else
 
                 {{-- DAY-BY-DAY SUMMARY --}}
-                <div class="p-3 pb-0">
-                    <div class="row g-3">
-                        <div class="col-6 col-md-3">
+                <div class="tw:p-4! tw:pb-0!">
+                    <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:flex-[0_0_auto] tw:w-[50%] tw:md:flex-[0_0_auto] tw:md:w-[25%]">
                             <span class="cell-sub">Received</span>
                             <div class="cell-title" style="color: var(--nx-green);">
                                 Rs. {{ number_format($dailyTotals['total_income'], 2) }}
                             </div>
                         </div>
-                        <div class="col-6 col-md-3">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:flex-[0_0_auto] tw:w-[50%] tw:md:flex-[0_0_auto] tw:md:w-[25%]">
                             <span class="cell-sub">Paid out</span>
                             <div class="cell-title" style="color: var(--nx-red);">
                                 Rs. {{ number_format($dailyTotals['total_expenses'], 2) }}
                             </div>
                         </div>
-                        <div class="col-6 col-md-3">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:flex-[0_0_auto] tw:w-[50%] tw:md:flex-[0_0_auto] tw:md:w-[25%]">
                             <span class="cell-sub">Net</span>
-                            <div class="cell-title {{ $dailyTotals['net'] < 0 ? 'text-danger' : 'text-primary' }}">
+                            <div class="cell-title {{ $dailyTotals['net'] < 0 ? 'tw:text-(color:--nx-red)!' : 'tw:text-(color:--nx-blue)!' }}">
                                 Rs. {{ number_format($dailyTotals['net'], 2) }}
                             </div>
                         </div>
-                        <div class="col-6 col-md-3">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:flex-[0_0_auto] tw:w-[50%] tw:md:flex-[0_0_auto] tw:md:w-[25%]">
                             <span class="cell-sub">Best day</span>
                             <div class="cell-title">
                                 {{ $bestDay ? \Carbon\Carbon::parse($bestDay['date'])->format('d M') . ' · Rs. ' . number_format($bestDay['total_income'], 2) : '-' }}
                             </div>
-                            <small class="cell-sub d-block">
+                            <small class="cell-sub tw:block!">
                                 avg Rs. {{ number_format($dailyTotals['average_income'], 2) }} / day with income
                             </small>
                         </div>
@@ -276,60 +276,60 @@
                 </div>
 
                 {{-- DAY-BY-DAY TABLE --}}
-                <div class="table-responsive">
-                    <table class="table premium-table mb-0">
+                <div class="ui-table-responsive">
+                    <table class="ui-table premium-table tw:mb-0!">
                         <thead>
                             <tr>
                                 <th>Date</th>
-                                <th class="text-end">Payments</th>
-                                <th class="text-end">Class Fees</th>
-                                <th class="text-end">Admission</th>
-                                <th class="text-end">Extra Income</th>
-                                <th class="text-end">Income</th>
-                                <th class="text-end">Expenses</th>
-                                <th class="text-end">Net</th>
+                                <th class="tw:text-right!">Payments</th>
+                                <th class="tw:text-right!">Class Fees</th>
+                                <th class="tw:text-right!">Admission</th>
+                                <th class="tw:text-right!">Extra Income</th>
+                                <th class="tw:text-right!">Income</th>
+                                <th class="tw:text-right!">Expenses</th>
+                                <th class="tw:text-right!">Net</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($dailyRows as $row)
                                 <tr class="{{ $row['empty'] ? 'row-muted' : '' }}">
-                                    <td class="text-nowrap">
+                                    <td class="tw:whitespace-nowrap!">
                                         <a href="{{ route('reports.daily-collection.index', array_filter(['from' => $row['date'], 'to' => $row['date'], 'branch_id' => $filter->branchId])) }}"
-                                            class="{{ $row['empty'] ? 'cell-sub' : 'cell-title' }} text-decoration-none">
+                                            class="tw:[text-decoration:none]! {{ $row['empty'] ? 'cell-sub' : 'cell-title' }}">
                                             {{ $row['date_label'] }}
                                         </a>
-                                        <small class="cell-sub ms-1">{{ $row['day_name'] }}</small>
+                                        <small class="cell-sub tw:ml-1!">{{ $row['day_name'] }}</small>
                                     </td>
-                                    <td class="text-end cell-sub">{{ $row['payments'] ?: '-' }}</td>
-                                    <td class="text-end cell-title">Rs. {{ number_format($row['class_fees'], 2) }}</td>
-                                    <td class="text-end cell-title">Rs. {{ number_format($row['admission_fees'], 2) }}</td>
-                                    <td class="text-end cell-title">Rs. {{ number_format($row['extra_income'], 2) }}</td>
-                                    <td class="text-end cell-title" style="color: var(--nx-green);">
+                                    <td class="tw:text-right! cell-sub">{{ $row['payments'] ?: '-' }}</td>
+                                    <td class="tw:text-right! cell-title">Rs. {{ number_format($row['class_fees'], 2) }}</td>
+                                    <td class="tw:text-right! cell-title">Rs. {{ number_format($row['admission_fees'], 2) }}</td>
+                                    <td class="tw:text-right! cell-title">Rs. {{ number_format($row['extra_income'], 2) }}</td>
+                                    <td class="tw:text-right! cell-title" style="color: var(--nx-green);">
                                         Rs. {{ number_format($row['total_income'], 2) }}
                                     </td>
-                                    <td class="text-end cell-title {{ $row['total_expenses'] > 0 ? 'text-danger' : '' }}">
+                                    <td class="tw:text-right! cell-title {{ $row['total_expenses'] > 0 ? 'tw:text-(color:--nx-red)!' : '' }}">
                                         Rs. {{ number_format($row['total_expenses'], 2) }}
                                     </td>
-                                    <td class="text-end cell-title {{ $row['net'] < 0 ? 'text-danger' : ($row['net'] > 0 ? 'text-success' : '') }}">
+                                    <td class="tw:text-right! cell-title {{ $row['net'] < 0 ? 'tw:text-(color:--nx-red)!' : ($row['net'] > 0 ? 'tw:text-(color:--nx-green)!' : '') }}">
                                         Rs. {{ number_format($row['net'], 2) }}
                                     </td>
                                 </tr>
                             @endforeach
                         </tbody>
                         <tfoot>
-                            <tr class="fw-bold" style="border-top: 2px solid var(--nx-border);">
+                            <tr class="tw:font-bold!" style="border-top: 2px solid var(--nx-border);">
                                 <td>Total ({{ $dailyRows->count() }} days)</td>
-                                <td class="text-end">{{ number_format($dailyTotals['payments']) }}</td>
-                                <td class="text-end">Rs. {{ number_format($dailyTotals['class_fees'], 2) }}</td>
-                                <td class="text-end">Rs. {{ number_format($dailyTotals['admission_fees'], 2) }}</td>
-                                <td class="text-end">Rs. {{ number_format($dailyTotals['extra_income'], 2) }}</td>
-                                <td class="text-end" style="color: var(--nx-green);">
+                                <td class="tw:text-right!">{{ number_format($dailyTotals['payments']) }}</td>
+                                <td class="tw:text-right!">Rs. {{ number_format($dailyTotals['class_fees'], 2) }}</td>
+                                <td class="tw:text-right!">Rs. {{ number_format($dailyTotals['admission_fees'], 2) }}</td>
+                                <td class="tw:text-right!">Rs. {{ number_format($dailyTotals['extra_income'], 2) }}</td>
+                                <td class="tw:text-right!" style="color: var(--nx-green);">
                                     Rs. {{ number_format($dailyTotals['total_income'], 2) }}
                                 </td>
-                                <td class="text-end" style="color: var(--nx-red);">
+                                <td class="tw:text-right!" style="color: var(--nx-red);">
                                     Rs. {{ number_format($dailyTotals['total_expenses'], 2) }}
                                 </td>
-                                <td class="text-end {{ $dailyTotals['net'] < 0 ? 'text-danger' : 'text-success' }}">
+                                <td class="tw:text-right! {{ $dailyTotals['net'] < 0 ? 'tw:text-(color:--nx-red)!' : 'tw:text-(color:--nx-green)!' }}">
                                     Rs. {{ number_format($dailyTotals['net'], 2) }}
                                 </td>
                             </tr>
