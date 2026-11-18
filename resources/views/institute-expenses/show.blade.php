@@ -350,16 +350,16 @@
     {{-- =========================================================
          PAGE HEADING
     ========================================================== --}}
-    <div class="page-heading d-flex justify-content-between align-items-center flex-wrap gap-3">
+    <div class="page-heading tw:flex! tw:justify-between! tw:items-center! tw:flex-wrap! tw:gap-4!">
 
         <div>
 
-            <h4 class="mb-1">
-                <i class="bi bi-receipt-cutoff me-2 text-primary"></i>
+            <h4 class="tw:mb-1!">
+                <i class="bi bi-receipt-cutoff tw:mr-2! tw:text-bs-primary!"></i>
                 Expense Details
             </h4>
 
-            <p class="text-muted mb-0">
+            <p class="tw:text-bs-secondary-color! tw:mb-0!">
                 View institute expense transaction details
             </p>
 
@@ -413,7 +413,7 @@
             <div class="details-header-content">
 
                 <h4>
-                    <i class="bi bi-wallet2 me-2"></i>
+                    <i class="bi bi-wallet2 tw:mr-2!"></i>
                     Institute Expense
                 </h4>
 
@@ -468,11 +468,11 @@
             {{-- =================================================
                  MAIN DETAILS
             ================================================== --}}
-            <div class="row g-3">
+            <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2">
 
 
                 {{-- Payment Date --}}
-                <div class="col-md-6">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
 
                     <div class="detail-item">
 
@@ -486,13 +486,13 @@
 
                             @if($isCurrentMonth)
 
-                                <span class="badge bg-primary ms-1">
+                                <span class="ui-badge tw:bg-bs-primary! tw:ml-1!">
                                     Current Month
                                 </span>
 
                             @else
 
-                                <span class="badge bg-secondary ms-1">
+                                <span class="ui-badge tw:bg-bs-secondary! tw:ml-1!">
                                     Past Month
                                 </span>
 
@@ -506,7 +506,7 @@
 
 
                 {{-- Status --}}
-                <div class="col-md-6">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
 
                     <div class="detail-item">
 
@@ -574,7 +574,7 @@
 
 
                 {{-- Reason --}}
-                <div class="col-md-6">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
 
                     <div class="detail-item">
 
@@ -594,7 +594,7 @@
 
 
                 {{-- Reason Code --}}
-                <div class="col-md-6">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
 
                     <div class="detail-item">
 
@@ -628,7 +628,7 @@
 
 
                 {{-- Recorded By --}}
-                <div class="col-md-6">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
 
                     <div class="detail-item">
 
@@ -653,7 +653,7 @@
 
 
                 {{-- Payment Type --}}
-                <div class="col-md-6">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
 
                     <div class="detail-item">
 
@@ -675,7 +675,7 @@
 
 
                 {{-- Created At --}}
-                <div class="col-md-6">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
 
                     <div class="detail-item">
 
@@ -702,7 +702,7 @@
 
 
                 {{-- Updated At --}}
-                <div class="col-md-6">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
 
                     <div class="detail-item">
 
@@ -735,7 +735,7 @@
             ================================================== --}}
             <div class="note-section">
 
-                <div class="detail-label mb-2">
+                <div class="detail-label tw:mb-2!">
                     Note
                 </div>
 
@@ -764,13 +764,13 @@
             <div class="record-info">
 
                 <div class="record-info-title">
-                    <i class="bi bi-info-circle me-1"></i>
+                    <i class="bi bi-info-circle tw:mr-1!"></i>
                     Record Information
                 </div>
 
-                <div class="row g-3">
+                <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2">
 
-                    <div class="col-md-4">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
 
                         <div class="detail-item">
 
@@ -787,7 +787,7 @@
                     </div>
 
 
-                    <div class="col-md-4">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
 
                         <div class="detail-item">
 
@@ -804,7 +804,7 @@
                     </div>
 
 
-                    <div class="col-md-4">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
 
                         <div class="detail-item">
 

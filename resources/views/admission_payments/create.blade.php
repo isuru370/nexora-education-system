@@ -7,7 +7,7 @@
 <div class="dashboard-page">
 
     {{-- HERO --}}
-    <div class="hero-section mb-4">
+    <div class="hero-section tw:mb-6!">
         <div class="hero-content">
             <div class="hero-left">
                 <span class="greeting-badge">nexoraEDU</span>
@@ -27,31 +27,31 @@
     </div>
 
     {{-- QUICK NOTES --}}
-    <div class="nx-card mb-4">
+    <div class="nx-card tw:mb-6!">
         <div class="nx-card-header">
             <div>
-                <h5 class="nx-card-title"><i class="bi bi-info-circle text-primary"></i> Quick Notes</h5>
+                <h5 class="nx-card-title"><i class="bi bi-info-circle tw:text-(color:--nx-blue)!"></i> Quick Notes</h5>
                 <p class="nx-card-subtitle">Things to keep in mind when creating a payment</p>
             </div>
         </div>
 
-        <div class="p-3">
-            <div class="row g-3">
-                <div class="col-md-4">
+        <div class="tw:p-4!">
+            <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
                     <div class="quick-note">
                         <i class="bi bi-shield-check"></i>
                         <span>Required fields are marked with <strong style="color: var(--nx-red);">*</strong></span>
                     </div>
                 </div>
 
-                <div class="col-md-4">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
                     <div class="quick-note">
                         <i class="bi bi-credit-card"></i>
                         <span>Payment method must match available options</span>
                     </div>
                 </div>
 
-                <div class="col-md-4">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
                     <div class="quick-note">
                         <i class="bi bi-clock-history"></i>
                         <span>Status starts as <strong>Paid</strong> by default</span>
@@ -62,15 +62,15 @@
     </div>
 
     {{-- FORM CARD --}}
-    <div class="nx-card mb-4">
+    <div class="nx-card tw:mb-6!">
         <div class="nx-card-header">
             <div>
-                <h5 class="nx-card-title"><i class="bi bi-plus-circle-fill text-primary"></i> Payment Details</h5>
+                <h5 class="nx-card-title"><i class="bi bi-plus-circle-fill tw:text-(color:--nx-blue)!"></i> Payment Details</h5>
                 <p class="nx-card-subtitle">Fill in the information below to create the payment</p>
             </div>
         </div>
 
-        <div class="p-3 p-md-4">
+        <div class="tw:p-4! tw:md:p-6!">
             <form action="{{ route('admission-payments.store') }}" method="POST">
                 @csrf
 

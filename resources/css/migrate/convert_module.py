@@ -33,16 +33,27 @@ def in_scope(path, seen=()):
 def skip(path):
     t = texts[path]
     base = os.path.basename(path)
-    return ('pdf' in base or 'bootstrap@' in t or '<html' in t.lower()) and "@extends('layouts.app')" not in t
+    # a whole HTML document of its own (PDF, printed receipt): not a page in the app layout
+    own_doc = re.search(r'^\s*(<!DOCTYPE|<html)', re.sub(r'\{\{--.*?--\}\}', '', t, flags=re.S), re.I)
+    return ('pdf' in base or 'bootstrap@' in t or own_doc) and "@extends('layouts.app')" not in t
 
 
 problems = []
+util = bs2tw.Converter().util
 for d in sys.argv[1:]:
-    for path in sorted(glob.glob(os.path.join(views, d, '**/*.blade.php'), recursive=True)):
+    paths = [p for p in sorted(glob.glob(os.path.join(views, d, '**/*.blade.php'), recursive=True))]
+    # a folder's partials share their <style> / scripts: one marker set per folder
+    markers = set()
+    for path in paths:
+        if not skip(path):
+            markers |= bs2tw.find_markers(texts[path], util)
+    if markers:
+        print('MARKERS', d, ' '.join(sorted(markers)))
+    for path in paths:
         rel = os.path.relpath(path, ROOT)
         if skip(path):
             print('SKIP', rel)
             continue
-        problems += bs2tw.convert_file(path, in_scope(path))
+        problems += bs2tw.convert_file(path, in_scope(path), markers)
 for p in problems:
     print('CHECK', p)

@@ -27,7 +27,7 @@
         {{-- ===================================================== --}}
         {{-- HERO --}}
         {{-- ===================================================== --}}
-        <div class="hero-section mb-4">
+        <div class="hero-section tw:mb-6!">
             <div class="hero-content">
                 <div class="hero-left">
                     <span class="greeting-badge">nexoraEDU</span>
@@ -67,7 +67,7 @@
         {{-- ===================================================== --}}
         {{-- KPI CARDS --}}
         {{-- ===================================================== --}}
-        <div class="stats-grid mb-4">
+        <div class="stats-grid tw:mb-6!">
 
             <div class="nx-card stat-card">
                 <div class="stat-icon-wrapper icon-green"><i class="bi bi-cash-stack"></i></div>
@@ -115,32 +115,32 @@
         {{-- ===================================================== --}}
         {{-- FILTERS --}}
         {{-- ===================================================== --}}
-        <div class="nx-card mb-4">
+        <div class="nx-card tw:mb-6!">
 
             <div class="nx-card-header">
                 <div>
-                    <h5 class="nx-card-title"><i class="bi bi-funnel-fill text-primary"></i> Filter Receipts</h5>
+                    <h5 class="nx-card-title"><i class="bi bi-funnel-fill tw:text-(color:--nx-blue)!"></i> Filter Receipts</h5>
                     <p class="nx-card-subtitle">Search and filter your receipts</p>
                 </div>
             </div>
 
-            <div class="p-3">
+            <div class="tw:p-4!">
                 <form method="GET" action="{{ route('receipts.index') }}">
-                    <div class="row g-3">
+                    <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2">
 
-                        <div class="col-lg-3 col-md-6">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:lg:flex-[0_0_auto] tw:lg:w-[25%]">
                             <label class="nx-label" for="receipt_number">
                                 <i class="bi bi-receipt"></i> Receipt Number
                             </label>
-                            <input type="text" id="receipt_number" name="receipt_number" class="form-control custom-input"
+                            <input type="text" id="receipt_number" name="receipt_number" class="ui-form-control custom-input"
                                 value="{{ request('receipt_number') }}" placeholder="e.g. REC-000123">
                         </div>
 
-                        <div class="col-lg-2 col-md-6">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:lg:flex-[0_0_auto] tw:lg:w-[16.66666667%]">
                             <label class="nx-label" for="type">
                                 <i class="bi bi-tag"></i> Type
                             </label>
-                            <select id="type" name="type" class="form-select custom-input">
+                            <select id="type" name="type" class="ui-form-select custom-input">
                                 <option value="">All Types</option>
                                 @foreach (array_keys($typeStyles) as $type)
                                     <option value="{{ $type }}" {{ request('type') === $type ? 'selected' : '' }}>{{ $type }}</option>
@@ -148,37 +148,37 @@
                             </select>
                         </div>
 
-                        <div class="col-lg-2 col-md-6">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:lg:flex-[0_0_auto] tw:lg:w-[16.66666667%]">
                             <label class="nx-label" for="status">
                                 <i class="bi bi-funnel"></i> Status
                             </label>
-                            <select id="status" name="status" class="form-select custom-input">
+                            <select id="status" name="status" class="ui-form-select custom-input">
                                 <option value="active" {{ $currentStatus === 'active' ? 'selected' : '' }}>Active</option>
                                 <option value="deleted" {{ $currentStatus === 'deleted' ? 'selected' : '' }}>Deleted</option>
                                 <option value="all" {{ $currentStatus === 'all' ? 'selected' : '' }}>All</option>
                             </select>
                         </div>
 
-                        <div class="col-lg-2 col-md-6">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:lg:flex-[0_0_auto] tw:lg:w-[16.66666667%]">
                             <label class="nx-label" for="from_date">
                                 <i class="bi bi-calendar"></i> From Date
                             </label>
-                            <input type="date" id="from_date" name="from_date" class="form-control custom-input"
+                            <input type="date" id="from_date" name="from_date" class="ui-form-control custom-input"
                                 value="{{ request('from_date') }}">
                         </div>
 
-                        <div class="col-lg-2 col-md-6">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:lg:flex-[0_0_auto] tw:lg:w-[16.66666667%]">
                             <label class="nx-label" for="to_date">
                                 <i class="bi bi-calendar"></i> To Date
                             </label>
-                            <input type="date" id="to_date" name="to_date" class="form-control custom-input"
+                            <input type="date" id="to_date" name="to_date" class="ui-form-control custom-input"
                                 value="{{ request('to_date') }}">
                         </div>
 
-                        <div class="col-lg-1 col-md-12">
-                            <label class="nx-label d-none d-lg-block">&nbsp;</label>
-                            <div class="d-flex gap-2">
-                                <button type="submit" class="nx-btn nx-btn-primary flex-grow-1" title="Search" aria-label="Search">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[100%] tw:lg:flex-[0_0_auto] tw:lg:w-[8.33333333%]">
+                            <label class="nx-label tw:hidden! tw:lg:block!">&nbsp;</label>
+                            <div class="tw:flex! tw:gap-2!">
+                                <button type="submit" class="nx-btn nx-btn-primary tw:grow!" title="Search" aria-label="Search">
                                     <i class="bi bi-search"></i>
                                 </button>
                                 <a href="{{ route('receipts.index') }}" class="nx-btn nx-btn-light" title="Reset" aria-label="Reset">
@@ -195,11 +195,11 @@
         {{-- ===================================================== --}}
         {{-- RECEIPTS TABLE --}}
         {{-- ===================================================== --}}
-        <div class="nx-card mb-4">
+        <div class="nx-card tw:mb-6!">
 
             <div class="nx-card-header">
                 <div>
-                    <h5 class="nx-card-title"><i class="bi bi-receipt text-primary"></i> Receipt List</h5>
+                    <h5 class="nx-card-title"><i class="bi bi-receipt tw:text-(color:--nx-blue)!"></i> Receipt List</h5>
                     <p class="nx-card-subtitle">
                         @if ($currentStatus === 'deleted')
                             Deleted receipts (audit view)
@@ -224,17 +224,17 @@
                 </div>
             </div>
 
-            <div class="table-responsive">
-                <table class="table premium-table mb-0">
+            <div class="ui-table-responsive">
+                <table class="ui-table premium-table tw:mb-0!">
                     <thead>
                         <tr>
                             <th>Receipt No</th>
                             <th>Type</th>
                             <th>Student / Class</th>
-                            <th class="text-end">Amount</th>
+                            <th class="tw:text-right!">Amount</th>
                             <th>Status</th>
                             <th>Date &amp; Time</th>
-                            <th class="text-end">Actions</th>
+                            <th class="tw:text-right!">Actions</th>
                         </tr>
                     </thead>
 
@@ -258,7 +258,7 @@
                                                 {{ $receipt['receipt_number'] ?: '-' }}
                                             </a>
                                         @else
-                                            <span class="cell-title {{ $isActive ? '' : 'text-danger' }}">
+                                            <span class="cell-title {{ $isActive ? '' : 'tw:text-(color:--nx-red)!' }}">
                                                 {{ $receipt['receipt_number'] ?: '-' }}
                                             </span>
                                         @endif
@@ -290,7 +290,7 @@
                                 </td>
 
                                 {{-- Amount --}}
-                                <td class="text-end amount-cell">
+                                <td class="tw:text-right! amount-cell">
                                     <span class="currency">Rs.</span>
                                     <span class="amount {{ $isActive ? '' : 'amount-void' }}">
                                         {{ number_format((float) $receipt['amount'], 2) }}
@@ -337,7 +337,7 @@
                                 </td>
 
                                 {{-- Actions --}}
-                                <td class="text-end">
+                                <td class="tw:text-right!">
                                     <div class="action-buttons">
                                         @if ($receipt['url'])
                                             <a href="{{ $receipt['url'] }}" class="action-btn" title="View receipt" aria-label="View receipt">
@@ -354,8 +354,8 @@
                         @empty
                             <tr>
                                 <td colspan="7" class="empty-table">
-                                    <i class="bi bi-inbox fs-2 d-block mb-2"></i>
-                                    <strong class="d-block">No Receipts Found</strong>
+                                    <i class="bi bi-inbox tw:text-[length:calc(1.325rem_+_0.9vw)]! tw:xl:text-[length:2rem]! tw:block! tw:mb-2!"></i>
+                                    <strong class="tw:block!">No Receipts Found</strong>
                                     <span class="cell-sub">
                                         @if ($hasFilters || $currentStatus !== 'active')
                                             No receipts match your search criteria
@@ -365,7 +365,7 @@
                                     </span>
 
                                     @if ($hasFilters || $currentStatus !== 'active')
-                                        <div class="mt-3">
+                                        <div class="tw:mt-4!">
                                             <a href="{{ route('receipts.index') }}" class="nx-btn nx-btn-primary">
                                                 <i class="bi bi-arrow-repeat"></i> Clear Filters
                                             </a>
@@ -379,8 +379,8 @@
             </div>
 
             @if ($receipts->hasPages())
-                <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 p-3">
-                    <small class="text-muted">
+                <div class="tw:flex! tw:justify-between! tw:items-center! tw:flex-wrap! tw:gap-2! tw:p-4!">
+                    <small class="tw:text-(color:--nx-muted)!">
                         Showing {{ $receipts->firstItem() }}-{{ $receipts->lastItem() }} of {{ number_format($receipts->total()) }}
                     </small>
                     {{ $receipts->onEachSide(1)->links() }}

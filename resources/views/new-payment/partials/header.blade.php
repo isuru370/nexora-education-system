@@ -1,32 +1,32 @@
 {{-- =============================================================
      Header — New Payment Page
 ============================================================= --}}
-<div class="d-flex justify-content-between align-items-center mb-4 flex-wrap gap-3">
+<div class="bs-d-flex tw:flex! tw:justify-between! tw:items-center! tw:mb-6! tw:flex-wrap! tw:gap-4!">
 
     {{-- Left: Title --}}
     <div>
-        <h4 class="mb-1 fw-bold">
-            <i class="bi bi-credit-card-2-front-fill me-2 text-primary"></i>
+        <h4 class="tw:mb-1! tw:font-bold!">
+            <i class="bi bi-credit-card-2-front-fill tw:mr-2! tw:text-bs-primary!"></i>
             Payment Management
         </h4>
 
-        <p class="text-muted mb-0">
+        <p class="tw:text-bs-secondary-color! tw:mb-0!">
             QR / Student ID → Payment → Auto Print
         </p>
     </div>
 
 
     {{-- Right: Actions --}}
-    <div class="d-flex align-items-center gap-2 flex-wrap">
+    <div class="bs-d-flex tw:flex! tw:items-center! tw:gap-2! tw:flex-wrap!">
 
-        <span class="badge bg-success">
-            <i class="bi bi-lightning-charge-fill me-1"></i>
+        <span class="ui-badge tw:bg-bs-success!">
+            <i class="bi bi-lightning-charge-fill tw:mr-1!"></i>
             Fast Payment
         </span>
 
         <a href="{{ route('payments.index') }}"
-           class="btn btn-light border custom-btn">
-            <i class="bi bi-receipt me-1"></i>
+           class="ui-btn ui-btn-light tw:bs-border! custom-btn">
+            <i class="bi bi-receipt tw:mr-1!"></i>
             Today's Receipts
         </a>
 

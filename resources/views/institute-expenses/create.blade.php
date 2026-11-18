@@ -340,7 +340,7 @@
         {{-- Header --}}
         <div class="form-header">
 
-            <div class="d-flex align-items-center">
+            <div class="tw:flex! tw:items-center!">
 
                 <div class="form-header-icon">
                     <i class="bi bi-pencil-square"></i>
@@ -348,7 +348,7 @@
 
                 <div>
 
-                    <h4 class="fw-bold mb-1">
+                    <h4 class="tw:font-bold! tw:mb-1!">
                         Add Expense
                     </h4>
 
@@ -374,14 +374,14 @@
             ================================================== --}}
             @if($errors->any())
 
-                <div class="alert alert-danger rounded-4 mb-4">
+                <div class="ui-alert ui-alert-danger tw:rounded-bs-xl! tw:mb-6!">
 
-                    <div class="fw-bold mb-2">
-                        <i class="bi bi-exclamation-circle-fill me-1"></i>
+                    <div class="tw:font-bold! tw:mb-2!">
+                        <i class="bi bi-exclamation-circle-fill tw:mr-1!"></i>
                         Please fix the following errors:
                     </div>
 
-                    <ul class="mb-0">
+                    <ul class="tw:mb-0!">
 
                         @foreach($errors->all() as $error)
 
@@ -414,14 +414,14 @@
                     {{ !$isCurrentMonth ? 'disabled' : '' }}
                 >
 
-                    <div class="row g-4">
+                    <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3">
 
-                        @include('partials.branch-select', ['branches' => $branches ?? collect(), 'selected' => null, 'wrapperClass' => 'col-12'])
+                        @include('partials.branch-select', ['branches' => $branches ?? collect(), 'selected' => null, 'wrapperClass' => 'tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:flex-[0_0_auto] tw:w-[100%]'])
 
                         {{-- =====================================
                              AMOUNT
                         ====================================== --}}
-                        <div class="col-md-6">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
 
                             <label class="form-label-custom">
 
@@ -433,9 +433,9 @@
 
                             </label>
 
-                            <div class="input-group">
+                            <div class="ui-input-group">
 
-                                <span class="input-group-text bg-light border-end-0"
+                                <span class="ui-input-group-text tw:bg-bs-light! tw:[border-right:0]!"
                                       style="border-radius:12px 0 0 12px;">
                                     Rs.
                                 </span>
@@ -445,7 +445,7 @@
                                     step="0.01"
                                     min="0.01"
                                     name="amount"
-                                    class="form-control form-control-custom border-start-0"
+                                    class="ui-form-control form-control-custom tw:[border-left:0]!"
                                     value="{{ old(
                                         'amount',
                                         $instituteExpense->amount
@@ -457,7 +457,7 @@
 
                             @error('amount')
 
-                                <div class="text-danger small mt-1">
+                                <div class="tw:text-bs-danger! tw:text-[.875em] tw:mt-1!">
                                     {{ $message }}
                                 </div>
 
@@ -473,7 +473,7 @@
                         {{-- =====================================
                              PAYMENT DATE
                         ====================================== --}}
-                        <div class="col-md-6">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
 
                             <label class="form-label-custom">
 
@@ -488,7 +488,7 @@
                             <input
                                 type="date"
                                 name="payment_date"
-                                class="form-control form-control-custom"
+                                class="ui-form-control form-control-custom"
                                 value="{{ old(
                                     'payment_date',
                                     $paymentDate->format('Y-m-d')
@@ -498,7 +498,7 @@
 
                             @error('payment_date')
 
-                                <div class="text-danger small mt-1">
+                                <div class="tw:text-bs-danger! tw:text-[.875em] tw:mt-1!">
                                     {{ $message }}
                                 </div>
 
@@ -514,7 +514,7 @@
                         {{-- =====================================
                              REASON CODE
                         ====================================== --}}
-                        <div class="col-md-6">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
 
                             <label class="form-label-custom">
                                 Reason Code
@@ -522,7 +522,7 @@
 
                             <select
                                 name="reason_code"
-                                class="form-control form-control-custom"
+                                class="ui-form-control form-control-custom"
                             >
 
                                 <option value="">
@@ -557,7 +557,7 @@
 
                             @error('reason_code')
 
-                                <div class="text-danger small mt-1">
+                                <div class="tw:text-bs-danger! tw:text-[.875em] tw:mt-1!">
                                     {{ $message }}
                                 </div>
 
@@ -569,7 +569,7 @@
                         {{-- =====================================
                              REASON
                         ====================================== --}}
-                        <div class="col-md-6">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
 
                             <label class="form-label-custom">
                                 Reason
@@ -578,7 +578,7 @@
                             <input
                                 type="text"
                                 name="reason"
-                                class="form-control form-control-custom"
+                                class="ui-form-control form-control-custom"
                                 value="{{ old(
                                     'reason',
                                     $instituteExpense->reason
@@ -589,7 +589,7 @@
 
                             @error('reason')
 
-                                <div class="text-danger small mt-1">
+                                <div class="tw:text-bs-danger! tw:text-[.875em] tw:mt-1!">
                                     {{ $message }}
                                 </div>
 
@@ -605,7 +605,7 @@
                         {{-- =====================================
                              NOTE
                         ====================================== --}}
-                        <div class="col-12">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:flex-[0_0_auto] tw:w-[100%]">
 
                             <label class="form-label-custom">
                                 Note
@@ -614,7 +614,7 @@
                             <textarea
                                 name="note"
                                 rows="4"
-                                class="form-control form-control-custom"
+                                class="ui-form-control form-control-custom"
                                 placeholder="Additional notes..."
                             >{{ old(
                                 'note',
@@ -638,7 +638,7 @@
                 <div class="form-actions">
 
                     <button type="submit" class="btn-update">
-                        <i class="bi bi-plus-circle me-1"></i>
+                        <i class="bi bi-plus-circle tw:mr-1!"></i>
                         Save Expense
                     </button>
 
@@ -649,7 +649,7 @@
                         ) }}"
                         class="btn-cancel"
                     >
-                        <i class="bi bi-x-circle me-1"></i>
+                        <i class="bi bi-x-circle tw:mr-1!"></i>
                         Cancel
                     </a>
 

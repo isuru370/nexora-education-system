@@ -8,11 +8,11 @@
     <div class="salary-payment-page">
 
         <!-- HERO -->
-        <div class="hero-card mb-4">
+        <div class="hero-card tw:mb-6!">
 
             <div class="hero-content">
 
-                <div class="d-flex align-items-center gap-3">
+                <div class="tw:flex! tw:items-center! tw:gap-4!">
 
                     <div class="profile-avatar">
                         {{ strtoupper(substr($organizer->name, 0, 1)) }}
@@ -20,11 +20,11 @@
 
                     <div>
 
-                        <h4 class="mb-1 fw-bold">
+                        <h4 class="tw:mb-1! tw:font-bold!">
                             Organizer Salary Payment
                         </h4>
 
-                        <p class="mb-0 text-muted">
+                        <p class="tw:mb-0! tw:text-bs-secondary-color!">
                             {{ $organizer->name }}
                             —
                             {{ $organizer->code }}
@@ -41,18 +41,18 @@
                     <a href="{{ route('admin.organizer-payments.index', [
         'year' => $year,
         'month' => $month,
-    ]) }}" class="btn btn-outline-secondary custom-btn">
+    ]) }}" class="ui-btn ui-btn-outline-secondary custom-btn">
 
-                        <i class="bi bi-arrow-left me-1"></i>
+                        <i class="bi bi-arrow-left tw:mr-1!"></i>
                         Back
 
                     </a>
 
                     @if($salaryRecord)
 
-                        <button type="button" class="btn btn-dark custom-btn" disabled>
+                        <button type="button" class="ui-btn ui-btn-dark custom-btn" disabled>
 
-                            <i class="bi bi-printer me-1"></i>
+                            <i class="bi bi-printer tw:mr-1!"></i>
                             Print Receipt
 
                         </button>
@@ -66,12 +66,12 @@
         </div>
 
         <!-- SUMMARY -->
-        <div class="row g-4 mb-4">
+        <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3 tw:mb-6!">
 
-            <div class="col-xl-3 col-md-6">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%]">
                 <div class="summary-card summary-blue">
 
-                    <div class="card-body">
+                    <div class="ui-card-body">
 
                         <i class="bi bi-cash-stack summary-icon"></i>
 
@@ -86,10 +86,10 @@
                 </div>
             </div>
 
-            <div class="col-xl-3 col-md-6">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%]">
                 <div class="summary-card summary-red">
 
-                    <div class="card-body">
+                    <div class="ui-card-body">
 
                         <i class="bi bi-arrow-down-circle summary-icon"></i>
 
@@ -104,10 +104,10 @@
                 </div>
             </div>
 
-            <div class="col-xl-3 col-md-6">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%]">
                 <div class="summary-card summary-orange">
 
-                    <div class="card-body">
+                    <div class="ui-card-body">
 
                         <i class="bi bi-dash-circle summary-icon"></i>
 
@@ -122,10 +122,10 @@
                 </div>
             </div>
 
-            <div class="col-xl-3 col-md-6">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%]">
                 <div class="summary-card summary-gold">
 
-                    <div class="card-body">
+                    <div class="ui-card-body">
 
                         <i class="bi bi-three-dots summary-icon"></i>
 
@@ -143,13 +143,13 @@
         </div>
 
         <!-- SECOND ROW -->
-        <div class="row g-4 mb-4">
+        <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3 tw:mb-6!">
 
-            <div class="col-lg-6">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[50%]">
 
                 <div class="summary-card summary-purple">
 
-                    <div class="card-body">
+                    <div class="ui-card-body">
 
                         <i class="bi bi-wallet2 summary-icon"></i>
 
@@ -165,17 +165,17 @@
 
             </div>
 
-            <div class="col-lg-6">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[50%]">
 
                 <div class="summary-card summary-green">
 
-                    <div class="card-body">
+                    <div class="ui-card-body">
 
                         <i class="bi bi-check2-circle summary-icon"></i>
 
                         <h6>Net Payable</h6>
 
-                        <h2 class="mb-0 fw-bold">
+                        <h2 class="tw:mb-0! tw:font-bold!">
                             {{ number_format($netTotal, 2) }}
                         </h2>
 
@@ -226,7 +226,7 @@
                                 Salary Already Paid
                             </h5>
 
-                            <p class="mb-0">
+                            <p class="tw:mb-0!">
                                 Salary payment record already exists for this organizer and selected month.
                             </p>
 
@@ -248,7 +248,7 @@
                                 No Payable Balance
                             </h5>
 
-                            <p class="mb-0">
+                            <p class="tw:mb-0!">
                                 There is no payable salary balance available for this organizer.
                             </p>
 
@@ -264,11 +264,11 @@
 
                             <div>
 
-                                <h5 class="fw-bold mb-1">
+                                <h5 class="tw:font-bold! tw:mb-1!">
                                     Ready for Salary Payment
                                 </h5>
 
-                                <p class="text-muted mb-0">
+                                <p class="tw:text-bs-secondary-color! tw:mb-0!">
                                     Click the button below to process organizer salary payment.
                                 </p>
 
@@ -298,9 +298,9 @@
                             <input type="hidden" name="month" value="{{ $month }}">
                             <input type="hidden" name="payment_type" value="salary">
 
-                            <button type="submit" class="btn btn-success payment-btn">
+                            <button type="submit" class="ui-btn ui-btn-success payment-btn">
 
-                                <i class="bi bi-cash-coin me-2"></i>
+                                <i class="bi bi-cash-coin tw:mr-2!"></i>
 
                                 Pay Organizer Salary
 
@@ -388,7 +388,7 @@
             min-height: 145px;
         }
 
-        .summary-card .card-body {
+        .summary-card .ui-card-body {
             padding: 1.4rem;
             position: relative;
         }
@@ -565,7 +565,7 @@
                 width: 100%;
             }
 
-            .hero-actions .btn {
+            .hero-actions .ui-btn {
                 flex: 1;
             }
 

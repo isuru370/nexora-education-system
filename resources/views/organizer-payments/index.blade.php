@@ -22,7 +22,7 @@
         {{-- ===================================================== --}}
         {{-- HERO --}}
         {{-- ===================================================== --}}
-        <div class="hero-section mb-4">
+        <div class="hero-section tw:mb-6!">
             <div class="hero-content">
                 <div class="hero-left">
                     <span class="greeting-badge">nexoraEDU</span>
@@ -63,34 +63,34 @@
         {{-- ===================================================== --}}
         {{-- FILTER --}}
         {{-- ===================================================== --}}
-        <div class="nx-card mb-4">
+        <div class="nx-card tw:mb-6!">
             <div class="nx-card-header">
                 <div>
-                    <h5 class="nx-card-title"><i class="bi bi-funnel text-primary"></i> Filters</h5>
+                    <h5 class="nx-card-title"><i class="bi bi-funnel tw:text-(color:--nx-blue)!"></i> Filters</h5>
                     <p class="nx-card-subtitle">Filter by year and month</p>
                 </div>
             </div>
 
-            <div class="p-3">
-                <form method="GET" action="{{ route('admin.organizer-payments.index') }}" class="row g-3 align-items-end">
+            <div class="tw:p-4!">
+                <form method="GET" action="{{ route('admin.organizer-payments.index') }}" class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2 tw:items-end!">
 
-                    <div class="col-lg-3 col-md-4">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%] tw:lg:flex-[0_0_auto] tw:lg:w-[25%]">
                         <label class="nx-label">Year</label>
                         <input type="number" name="year" value="{{ $selectedYear }}"
-                            class="form-control nx-input"
+                            class="ui-form-control nx-input"
                             placeholder="Year" min="2000" max="2100">
                     </div>
 
-                    <div class="col-lg-3 col-md-4">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%] tw:lg:flex-[0_0_auto] tw:lg:w-[25%]">
                         <label class="nx-label">Month</label>
                         <input type="number" name="month" value="{{ $selectedMonth }}"
-                            class="form-control nx-input"
+                            class="ui-form-control nx-input"
                             placeholder="Month" min="1" max="12">
                     </div>
 
-                    <div class="col-lg-3 col-md-4">
-                        <div class="d-flex gap-2">
-                            <button type="submit" class="nx-btn nx-btn-primary flex-grow-1">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%] tw:lg:flex-[0_0_auto] tw:lg:w-[25%]">
+                        <div class="tw:flex! tw:gap-2!">
+                            <button type="submit" class="nx-btn nx-btn-primary tw:grow!">
                                 <i class="bi bi-funnel"></i> Filter
                             </button>
                             <a href="{{ route('admin.organizer-payments.index') }}" class="nx-btn nx-btn-light">
@@ -105,7 +105,7 @@
         {{-- ===================================================== --}}
         {{-- SUMMARY CARDS --}}
         {{-- ===================================================== --}}
-        <div class="stats-grid stats-grid-3 mb-4">
+        <div class="stats-grid stats-grid-3 tw:mb-6!">
 
             <div class="nx-card stat-card">
                 <div class="stat-icon-wrapper icon-blue"><i class="bi bi-cash-stack"></i></div>
@@ -165,11 +165,11 @@
         {{-- ===================================================== --}}
         {{-- MAIN TABLE --}}
         {{-- ===================================================== --}}
-        <div class="nx-card mb-4">
+        <div class="nx-card tw:mb-6!">
 
             <div class="nx-card-header">
                 <div>
-                    <h5 class="nx-card-title"><i class="bi bi-person-badge text-primary"></i> Monthly Organizer Payment Summary</h5>
+                    <h5 class="nx-card-title"><i class="bi bi-person-badge tw:text-(color:--nx-blue)!"></i> Monthly Organizer Payment Summary</h5>
                     <p class="nx-card-subtitle">
                         Showing records for {{ $selectedMonth }} / {{ $selectedYear }}
                     </p>
@@ -179,20 +179,20 @@
                 </span>
             </div>
 
-            <div class="table-responsive">
-                <table class="table premium-table mb-0">
+            <div class="ui-table-responsive">
+                <table class="ui-table premium-table tw:mb-0!">
                     <thead>
                         <tr>
                             <th>ID</th>
                             <th>Code</th>
                             <th>Name</th>
-                            <th class="text-end">Total Income</th>
-                            <th class="text-end">Advance</th>
-                            <th class="text-end">Deduction</th>
-                            <th class="text-end">Other</th>
-                            <th class="text-end">Salary Paid</th>
-                            <th class="text-end">Net Total</th>
-                            <th class="text-center">Action</th>
+                            <th class="tw:text-right!">Total Income</th>
+                            <th class="tw:text-right!">Advance</th>
+                            <th class="tw:text-right!">Deduction</th>
+                            <th class="tw:text-right!">Other</th>
+                            <th class="tw:text-right!">Salary Paid</th>
+                            <th class="tw:text-right!">Net Total</th>
+                            <th class="tw:text-center!">Action</th>
                         </tr>
                     </thead>
 
@@ -212,36 +212,36 @@
                                     @endif
                                 </td>
 
-                                <td class="text-end cell-title">
+                                <td class="tw:text-right! cell-title">
                                     {{ number_format($row['total_income'], 2) }}
                                 </td>
 
-                                <td class="text-end cell-title" style="color: var(--nx-red);">
+                                <td class="tw:text-right! cell-title" style="color: var(--nx-red);">
                                     {{ number_format($row['advance_amount'], 2) }}
                                 </td>
 
-                                <td class="text-end cell-title" style="color: var(--nx-red);">
+                                <td class="tw:text-right! cell-title" style="color: var(--nx-red);">
                                     {{ number_format($row['deduction_amount'], 2) }}
                                 </td>
 
-                                <td class="text-end cell-title" style="color: var(--nx-amber);">
+                                <td class="tw:text-right! cell-title" style="color: var(--nx-amber);">
                                     {{ number_format($row['other_amount'], 2) }}
                                 </td>
 
-                                <td class="text-end cell-title" style="color: var(--nx-blue);">
+                                <td class="tw:text-right! cell-title" style="color: var(--nx-blue);">
                                     {{ number_format($row['salary_paid'], 2) }}
                                 </td>
 
-                                <td class="text-end cell-title" style="color: var(--nx-green);">
+                                <td class="tw:text-right! cell-title" style="color: var(--nx-green);">
                                     {{ number_format($row['net_total'], 2) }}
                                 </td>
 
-                                <td class="text-center">
-                                    <div class="action-buttons justify-content-center">
+                                <td class="tw:text-center!">
+                                    <div class="action-buttons tw:justify-center!">
                                         @if (!$row['is_salary_paid'])
                                             <button type="button" class="action-btn action-btn-warning"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#adjustmentModal{{ $row['organizer_id'] }}"
+                                                data-nx-toggle="modal"
+                                                data-nx-target="#adjustmentModal{{ $row['organizer_id'] }}"
                                                 title="Add Payment" aria-label="Add Payment">
                                                 <i class="bi bi-plus-circle-fill"></i>
                                             </button>
@@ -268,8 +268,8 @@
                         @empty
                             <tr>
                                 <td colspan="10" class="empty-table">
-                                    <i class="bi bi-receipt fs-2 d-block mb-2"></i>
-                                    <strong class="d-block">No organizer payment records found</strong>
+                                    <i class="bi bi-receipt tw:text-[length:calc(1.325rem_+_0.9vw)]! tw:xl:text-[length:2rem]! tw:block! tw:mb-2!"></i>
+                                    <strong class="tw:block!">No organizer payment records found</strong>
                                     <span class="cell-sub">Try changing the year or month filters</span>
                                 </td>
                             </tr>
@@ -284,56 +284,56 @@
         {{-- ===================================================== --}}
         @foreach ($organizerRows as $row)
             @if (!$row['is_salary_paid'])
-                <div class="modal fade" id="adjustmentModal{{ $row['organizer_id'] }}" tabindex="-1" aria-hidden="true">
-                    <div class="modal-dialog modal-dialog-centered">
-                        <div class="modal-content">
+                <div class="ui-modal ui-fade" id="adjustmentModal{{ $row['organizer_id'] }}" tabindex="-1" aria-hidden="true">
+                    <div class="ui-modal-dialog ui-modal-dialog-centered">
+                        <div class="ui-modal-content">
                             <form method="POST"
                                 action="{{ route('admin.organizer-payments.adjustment-store', $row['organizer_id']) }}">
                                 @csrf
 
-                                <div class="modal-header">
+                                <div class="ui-modal-header">
                                     <div>
-                                        <h5 class="modal-title">Add Organizer Payment</h5>
+                                        <h5 class="ui-modal-title">Add Organizer Payment</h5>
                                         <small class="cell-sub">{{ $row['name'] }} · {{ $row['code'] }}</small>
                                     </div>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                    <button type="button" class="ui-btn-close" data-nx-dismiss="modal" aria-label="Close"></button>
                                 </div>
 
-                                <div class="modal-body">
-                                    <div class="mb-3">
+                                <div class="ui-modal-body">
+                                    <div class="tw:mb-4!">
                                         <label class="nx-label">Payment Type</label>
-                                        <select name="payment_type" class="form-select nx-input" required>
+                                        <select name="payment_type" class="ui-form-select nx-input" required>
                                             <option value="advance">Advance</option>
                                             <option value="deduction">Deduction</option>
                                             <option value="other">Other</option>
                                         </select>
                                     </div>
 
-                                    <div class="mb-3">
+                                    <div class="tw:mb-4!">
                                         <label class="nx-label">Amount</label>
                                         <input type="number" name="amount" step="0.01" min="0.01"
-                                            class="form-control nx-input" required>
+                                            class="ui-form-control nx-input" required>
                                     </div>
 
-                                    <div class="mb-3">
+                                    <div class="tw:mb-4!">
                                         <label class="nx-label">Payment Date</label>
                                         <input type="date" name="payment_date" value="{{ now()->format('Y-m-d') }}"
-                                            class="form-control nx-input" required>
+                                            class="ui-form-control nx-input" required>
                                     </div>
 
-                                    <div class="mb-3">
+                                    <div class="tw:mb-4!">
                                         <label class="nx-label">Reason</label>
-                                        <input type="text" name="reason" class="form-control nx-input" maxlength="150">
+                                        <input type="text" name="reason" class="ui-form-control nx-input" maxlength="150">
                                     </div>
 
-                                    <div class="mb-0">
+                                    <div class="tw:mb-0!">
                                         <label class="nx-label">Note</label>
-                                        <textarea name="note" class="form-control nx-input" rows="3"></textarea>
+                                        <textarea name="note" class="ui-form-control nx-input" rows="3"></textarea>
                                     </div>
                                 </div>
 
-                                <div class="modal-footer">
-                                    <button type="button" class="nx-btn nx-btn-light" data-bs-dismiss="modal">
+                                <div class="ui-modal-footer">
+                                    <button type="button" class="nx-btn nx-btn-light" data-nx-dismiss="modal">
                                         Cancel
                                     </button>
                                     <button type="submit" class="nx-btn nx-btn-primary">
@@ -360,31 +360,31 @@
        ============================================================ */
 
     /* Modals are teleported to <body> — scope with ID pattern */
-    [id^="adjustmentModal"] .modal-content {
+    [id^="adjustmentModal"] .ui-modal-content {
         border: 0;
         border-radius: 12px;
         box-shadow: 0 10px 40px rgba(15, 23, 42, .15);
         overflow: hidden;
     }
 
-    [id^="adjustmentModal"] .modal-header {
+    [id^="adjustmentModal"] .ui-modal-header {
         border-bottom: 1px solid #d1d8e3;
         padding: 1rem 1.25rem;
         background: #fafbfd;
     }
 
-    [id^="adjustmentModal"] .modal-title {
+    [id^="adjustmentModal"] .ui-modal-title {
         font-weight: 700;
         font-size: .95rem;
         color: #0f172a;
     }
 
-    [id^="adjustmentModal"] .modal-body {
+    [id^="adjustmentModal"] .ui-modal-body {
         padding: 1.25rem;
         background: #f4f6fa;
     }
 
-    [id^="adjustmentModal"] .modal-footer {
+    [id^="adjustmentModal"] .ui-modal-footer {
         border-top: 1px solid #d1d8e3;
         padding: .85rem 1.25rem;
         background: #fafbfd;
@@ -456,7 +456,7 @@
         .header-buttons,
         .action-buttons,
         .nx-search,
-        .modal { display: none !important; }
+        .ui-modal { display: none !important; }
 
         body { background: #fff !important; }
     }
