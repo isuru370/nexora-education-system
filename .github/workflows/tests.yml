@@ -1,0 +1,135 @@
+# Runs every test on each push and pull request.
+# The result (and the failures, if any) is written as a comment on the PR,
+# so it can be read without opening the Actions page.
+name: tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      composer_update:
+        description: "Run composer update and commit composer.lock (upgrades)"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: tests-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  phpunit:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.head_ref || github.ref }}
+
+      - name: PHP version from the Dockerfile
+        id: php
+        run: echo "version=$(grep -oP '^FROM php:\K[0-9]+\.[0-9]+' Dockerfile)" >> "$GITHUB_OUTPUT"
+
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ steps.php.outputs.version }}
+          extensions: gd, zip, intl, exif, bcmath, pdo_sqlite, sqlite3, mbstring, posix
+          coverage: none
+          tools: composer:v2
+
+      - name: Composer cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.composer/cache
+          key: composer-${{ steps.php.outputs.version }}-${{ hashFiles('composer.json', 'composer.lock') }}
+          restore-keys: composer-${{ steps.php.outputs.version }}-
+
+      # composer.json changed but composer.lock was not updated (an upgrade
+      # branch): make the lock here and commit it back to the branch
+      - name: Lock file up to date?
+        id: lock
+        run: |
+          if [ "${{ inputs.composer_update }}" = "true" ] || ! composer validate --no-check-publish --no-check-all --quiet 2>/dev/null; then
+            echo "update=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "update=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Composer update (new lock file)
+        if: steps.lock.outputs.update == 'true'
+        run: composer update --no-interaction --no-progress --prefer-dist -W 2>&1 | tee composer-output.txt
+
+      - name: Composer install
+        if: steps.lock.outputs.update != 'true'
+        run: composer install --no-interaction --no-progress --prefer-dist 2>&1 | tee composer-output.txt
+
+      - name: Commit the new composer.lock
+        if: steps.lock.outputs.update == 'true' && github.event_name != 'push'
+        run: |
+          if ! git diff --quiet composer.lock; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add composer.lock
+            git commit -m "composer.lock from CI (composer update)"
+            git push
+          fi
+
+      - name: Prepare .env
+        run: |
+          cp .env.example .env
+          php artisan key:generate --force
+
+      - name: Run tests
+        id: tests
+        continue-on-error: true
+        run: |
+          set -o pipefail
+          php artisan test --without-tty --no-ansi 2>&1 | tee test-output.txt
+
+      - name: Comment the result on the PR
+        if: always() && github.event_name == 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          OUTCOME: ${{ steps.tests.outcome }}
+        run: |
+          set +e
+          touch test-output.txt composer-output.txt
+          {
+            if [ "$OUTCOME" = "success" ]; then echo "### ✅ Tests passed"; else echo "### ❌ Tests failed"; fi
+            echo
+            echo "PHP $(php -r 'echo PHP_VERSION;') · Laravel $(php artisan --version --no-ansi | grep -oP '[0-9.]+$') · commit ${GITHUB_SHA::7}"
+            echo
+            echo '```'
+            grep -E "Tests:|Time:" test-output.txt | tail -2
+            echo '```'
+            if [ "$OUTCOME" != "success" ]; then
+              echo
+              echo "<details><summary>Failures</summary>"
+              echo
+              echo '```'
+              # every failed test with its message (cut to fit a comment)
+              grep -A12 -E "^\s+(FAILED|•|⨯)|FAILED " test-output.txt | head -c 55000 || tail -c 55000 test-output.txt
+              echo '```'
+              echo "</details>"
+            fi
+            if [ -s composer-output.txt ] && grep -qiE "problem|conflict|could not|requires" composer-output.txt; then
+              echo
+              echo "<details><summary>Composer</summary>"
+              echo
+              echo '```'
+              tail -c 8000 composer-output.txt
+              echo '```'
+              echo "</details>"
+            fi
+          } > comment.md
+          gh pr comment "${{ github.event.pull_request.number }}" --body-file comment.md
+
+      - name: Fail the job when tests failed
+        if: steps.tests.outcome != 'success'
+        run: exit 1
