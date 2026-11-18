@@ -27,19 +27,19 @@
     <div class="salary-details-page">
 
         <!-- HERO -->
-        <div class="hero-card mb-4">
+        <div class="hero-card tw:mb-6!">
             <div class="hero-content">
 
-                <div class="d-flex align-items-center gap-3">
+                <div class="tw:flex! tw:items-center! tw:gap-4!">
                     <div class="profile-avatar">
                         {{ strtoupper(substr($teacher->full_name, 0, 1)) }}
                     </div>
 
                     <div>
-                        <h3 class="mb-1 fw-bold">
+                        <h3 class="tw:mb-1! tw:font-bold!">
                             {{ $teacher->full_name }}
                         </h3>
-                        <p class="mb-0 text-muted">
+                        <p class="tw:mb-0! tw:text-bs-secondary-color!">
                             Salary Report • {{ $monthLabel }}
                             @if ($data['branch'])
                                 • <i class="bi bi-building"></i> {{ $data['branch']->name }}
@@ -50,14 +50,14 @@
 
                 <div class="hero-actions">
                     <a href="{{ route('teacher-salaries.index', ['year' => $selectedYear, 'month' => $selectedMonth, 'branch_id' => $branchId]) }}"
-                        class="btn btn-outline-secondary custom-btn">
-                        <i class="bi bi-arrow-left me-1"></i>
+                        class="ui-btn ui-btn-outline-secondary custom-btn">
+                        <i class="bi bi-arrow-left tw:mr-1!"></i>
                         Back
                     </a>
 
                     <a href="{{ route('teacher-salaries.show', $routeParams) }}"
-                        class="btn btn-primary custom-btn">
-                        <i class="bi bi-arrow-clockwise me-1"></i>
+                        class="ui-btn ui-btn-primary custom-btn">
+                        <i class="bi bi-arrow-clockwise tw:mr-1!"></i>
                         Refresh
                     </a>
                 </div>
@@ -66,15 +66,15 @@
         </div>
 
         <!-- FILTER CARD -->
-        <div class="filter-card mb-4">
+        <div class="filter-card tw:mb-6!">
             <form method="GET"
                 action="{{ route('teacher-salaries.show', ['teacher' => $teacher->id, 'year' => $selectedYear, 'month' => $selectedMonth]) }}"
-                class="row g-3 align-items-end">
+                class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2 tw:items-end!">
 
                 @if ($branches->count() > 1)
-                    <div class="col-lg-3 col-md-6">
-                        <label class="form-label fw-semibold">Branch</label>
-                        <select name="branch_id" class="form-select custom-input">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:lg:flex-[0_0_auto] tw:lg:w-[25%]">
+                        <label class="ui-form-label tw:font-semibold!">Branch</label>
+                        <select name="branch_id" class="ui-form-select custom-input">
                             @foreach ($branches as $branchOption)
                                 <option value="{{ $branchOption->id }}" {{ (int) $branchId === (int) $branchOption->id ? 'selected' : '' }}>
                                     {{ $branchOption->name }}
@@ -83,12 +83,12 @@
                         </select>
                     </div>
                 @else
-                    <input type="hidden" name="branch_id" value="{{ $branchId }}">
+                    <input class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full" type="hidden" name="branch_id" value="{{ $branchId }}">
                 @endif
 
-                <div class="col-lg-3 col-md-6">
-                    <label class="form-label fw-semibold">Year</label>
-                    <select name="year" class="form-select custom-input">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:lg:flex-[0_0_auto] tw:lg:w-[25%]">
+                    <label class="ui-form-label tw:font-semibold!">Year</label>
+                    <select name="year" class="ui-form-select custom-input">
                         @for($y = now()->year; $y >= 2020; $y--)
                             <option value="{{ $y }}" {{ $selectedYear == $y ? 'selected' : '' }}>
                                 {{ $y }}
@@ -97,9 +97,9 @@
                     </select>
                 </div>
 
-                <div class="col-lg-3 col-md-6">
-                    <label class="form-label fw-semibold">Month</label>
-                    <select name="month" class="form-select custom-input">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:lg:flex-[0_0_auto] tw:lg:w-[25%]">
+                    <label class="ui-form-label tw:font-semibold!">Month</label>
+                    <select name="month" class="ui-form-select custom-input">
                         @for($m = 1; $m <= 12; $m++)
                             <option value="{{ $m }}" {{ $selectedMonth == $m ? 'selected' : '' }}>
                                 {{ \Carbon\Carbon::create(null, $m, 1)->format('F') }}
@@ -108,9 +108,9 @@
                     </select>
                 </div>
 
-                <div class="col-lg-2 col-md-6">
-                    <button type="submit" class="btn btn-primary w-100 custom-btn">
-                        <i class="bi bi-search me-1"></i>
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:lg:flex-[0_0_auto] tw:lg:w-[16.66666667%]">
+                    <button type="submit" class="ui-btn ui-btn-primary tw:w-full! custom-btn">
+                        <i class="bi bi-search tw:mr-1!"></i>
                         Search
                     </button>
                 </div>
@@ -119,10 +119,10 @@
 
         <!-- VALIDATION ERRORS -->
         @if ($errors->any())
-            <div class="alert alert-danger custom-alert mb-4">
-                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <div class="ui-alert ui-alert-danger custom-alert tw:mb-6!">
+                <i class="bi bi-exclamation-triangle-fill tw:mr-2!"></i>
                 <strong>Please fix the following:</strong>
-                <ul class="mb-0 mt-2">
+                <ul class="tw:mb-0! tw:mt-2!">
                     @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
                     @endforeach
@@ -131,11 +131,11 @@
         @endif
 
         <!-- SUMMARY -->
-        <div class="row g-4 mb-4">
+        <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3 tw:mb-6!">
 
-            <div class="col-xl-3 col-md-6">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%]">
                 <div class="summary-card summary-blue">
-                    <div class="card-body">
+                    <div class="ui-card-body">
                         <i class="bi bi-building summary-icon"></i>
                         <h6>Class Income</h6>
                         <h3>
@@ -145,22 +145,22 @@
                 </div>
             </div>
 
-            <div class="col-xl-3 col-md-6">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%]">
                 <div class="summary-card summary-green">
-                    <div class="card-body">
+                    <div class="ui-card-body">
                         <i class="bi bi-cash-stack summary-icon"></i>
                         <h6>Teacher Earnings</h6>
                         <h3>
                             LKR {{ number_format($data['teacher_earnings'] ?? 0, 2) }}
                         </h3>
                         @if (($data['carried'] ?? 0) > 0)
-                            <small class="summary-sub d-block">
+                            <small class="summary-sub tw:block!">
                                 + LKR {{ number_format($data['carried'], 2) }} balance from
                                 {{ collect(array_keys($data['carried_months'] ?? []))->map(fn ($p) => \Carbon\Carbon::parse($p . '-01')->format('M Y'))->implode(', ') ?: 'earlier months' }}
                             </small>
                         @endif
                         @if (($data['paid_after_salary'] ?? 0) > 0)
-                            <small class="summary-sub d-block">
+                            <small class="summary-sub tw:block!">
                                 LKR {{ number_format($data['paid_after_salary'], 2) }} paid after this salary: goes to the next salary
                             </small>
                         @endif
@@ -168,9 +168,9 @@
                 </div>
             </div>
 
-            <div class="col-xl-3 col-md-6">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%]">
                 <div class="summary-card summary-red">
-                    <div class="card-body">
+                    <div class="ui-card-body">
                         <i class="bi bi-dash-circle summary-icon"></i>
                         <h6>Deductions</h6>
                         <h3>
@@ -183,9 +183,9 @@
                 </div>
             </div>
 
-            <div class="col-xl-3 col-md-6">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%]">
                 <div class="summary-card summary-primary">
-                    <div class="card-body">
+                    <div class="ui-card-body">
                         <i class="bi bi-wallet2 summary-icon"></i>
                         <h6>Net Payable</h6>
                         <h3>
@@ -198,34 +198,34 @@
         </div>
 
         <!-- STATUS -->
-        <div class="status-card mb-4">
-            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+        <div class="status-card tw:mb-6!">
+            <div class="tw:flex! tw:justify-between! tw:items-center! tw:flex-wrap! tw:gap-4!">
                 <div>
-                    <h5 class="mb-1 fw-bold">Payment Status</h5>
+                    <h5 class="tw:mb-1! tw:font-bold!">Payment Status</h5>
 
                     @if($isPaid)
-                        <span class="badge bg-success custom-badge">Paid</span>
-                        <div class="mt-2 text-success fw-semibold">
+                        <span class="ui-badge tw:bg-bs-success! custom-badge">Paid</span>
+                        <div class="tw:mt-2! tw:text-bs-success! tw:font-semibold!">
                             Paid Amount: LKR {{ number_format($data['salary_paid'] ?? 0, 2) }}
                             @if ($data['paid_at'])
-                                <span class="text-muted fw-normal">
+                                <span class="tw:text-bs-secondary-color! tw:font-normal!">
                                     on {{ $data['paid_at']->format('d M Y, h:i A') }}
                                 </span>
                             @endif
                         </div>
                     @else
-                        <span class="badge bg-warning text-dark custom-badge">Pending</span>
+                        <span class="ui-badge tw:bg-bs-warning! tw:text-bs-dark! custom-badge">Pending</span>
                     @endif
                 </div>
 
-                <div class="small text-muted">
+                <div class="tw:text-[.875em] tw:text-bs-secondary-color!">
                     {{ $monthLabel }}
                 </div>
             </div>
         </div>
 
         <!-- ACTIONS -->
-        <div class="main-card mb-4">
+        <div class="main-card tw:mb-6!">
             <div class="main-card-header">
                 <div>
                     <h4>Salary Actions</h4>
@@ -237,13 +237,13 @@
                 </div>
             </div>
 
-            <div class="row g-3 align-items-stretch">
+            <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2 tw:items-stretch!">
 
                 <!-- PAY -->
-                <div class="col-lg-3 col-md-6">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:lg:flex-[0_0_auto] tw:lg:w-[25%]">
                     @if($isPaid)
-                        <button class="btn btn-outline-success action-btn-full" disabled>
-                            <i class="bi bi-check-circle-fill me-1"></i>
+                        <button class="ui-btn ui-btn-outline-success action-btn-full" disabled>
+                            <i class="bi bi-check-circle-fill tw:mr-1!"></i>
                             Salary Paid
                         </button>
                     @elseif($data['can_pay'])
@@ -255,73 +255,73 @@
                             <input type="hidden" name="month" value="{{ $selectedMonth }}">
                             <input type="hidden" name="amount" value="{{ $data['net_payable'] }}">
 
-                            <button type="submit" class="btn btn-success action-btn-full">
-                                <i class="bi bi-cash-coin me-1"></i>
+                            <button type="submit" class="ui-btn ui-btn-success action-btn-full">
+                                <i class="bi bi-cash-coin tw:mr-1!"></i>
                                 Pay Salary (LKR {{ number_format($data['net_payable'], 2) }})
                             </button>
                         </form>
                     @else
-                        <button class="btn btn-secondary action-btn-full" disabled title="{{ $data['pay_block_reason'] }}">
-                            <i class="bi bi-lock-fill me-1"></i>
+                        <button class="ui-btn ui-btn-secondary action-btn-full" disabled title="{{ $data['pay_block_reason'] }}">
+                            <i class="bi bi-lock-fill tw:mr-1!"></i>
                             Payment Unavailable
                         </button>
                     @endif
                 </div>
 
                 <!-- SLIP -->
-                <div class="col-lg-3 col-md-6">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:lg:flex-[0_0_auto] tw:lg:w-[25%]">
                     @if($isPaid)
                         <a href="{{ route('teacher-salaries.slip', $routeParams + ['autoPrint' => 'true']) }}"
-                            target="_blank" class="btn btn-primary action-btn-full">
-                            <i class="bi bi-printer-fill me-1"></i>
+                            target="_blank" class="ui-btn ui-btn-primary action-btn-full">
+                            <i class="bi bi-printer-fill tw:mr-1!"></i>
                             Print Salary Slip
                         </a>
                     @else
-                        <button class="btn btn-secondary action-btn-full" disabled>
-                            <i class="bi bi-printer-fill me-1"></i>
+                        <button class="ui-btn ui-btn-secondary action-btn-full" disabled>
+                            <i class="bi bi-printer-fill tw:mr-1!"></i>
                             Print Slip (Pay first)
                         </button>
                     @endif
                 </div>
 
                 <!-- ADVANCE / DEDUCTION -->
-                <div class="col-lg-3 col-md-6">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:lg:flex-[0_0_auto] tw:lg:w-[25%]">
                     @if($data['can_add_payment'])
-                        <button class="btn btn-warning action-btn-full" data-bs-toggle="modal" data-bs-target="#advanceModal">
-                            <i class="bi bi-wallet2 me-1"></i>
+                        <button class="ui-btn ui-btn-warning action-btn-full" data-nx-toggle="modal" data-nx-target="#advanceModal">
+                            <i class="bi bi-wallet2 tw:mr-1!"></i>
                             Advance / Deduction
                         </button>
                     @else
-                        <button class="btn btn-outline-secondary action-btn-full" disabled
+                        <button class="ui-btn ui-btn-outline-secondary action-btn-full" disabled
                             title="{{ $data['payment_block_reason'] }}">
-                            <i class="bi bi-lock-fill me-1"></i>
+                            <i class="bi bi-lock-fill tw:mr-1!"></i>
                             Advance / Deduction Locked
                         </button>
                     @endif
                 </div>
 
                 <!-- EXPENSES -->
-                <div class="col-lg-3 col-md-6">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:lg:flex-[0_0_auto] tw:lg:w-[25%]">
                     <a href="{{ route('teacher-salaries.payment-details', $routeParams) }}"
-                        class="btn btn-outline-danger action-btn-full">
-                        <i class="bi bi-graph-down me-1"></i>
+                        class="ui-btn ui-btn-outline-danger action-btn-full">
+                        <i class="bi bi-graph-down tw:mr-1!"></i>
                         Expenses
                     </a>
                 </div>
 
             </div>
 
-            <div class="row g-3 mt-1">
-                <div class="col-lg-3 col-md-6">
+            <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2 tw:mt-1!">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:lg:flex-[0_0_auto] tw:lg:w-[25%]">
                     <a href="{{ route('teacher-salaries.payment-summary', $routeParams) }}"
-                        class="btn btn-outline-info action-btn-full">
-                        <i class="bi bi-eye me-1"></i>
+                        class="ui-btn ui-btn-outline-info action-btn-full">
+                        <i class="bi bi-eye tw:mr-1!"></i>
                         Details
                     </a>
                 </div>
 
                 <!-- EMAIL SLIP (salary slip + student payments PDF to the teacher) -->
-                <div class="col-lg-3 col-md-6">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:lg:flex-[0_0_auto] tw:lg:w-[25%]">
                     @php
                         $teacherEmail = \App\Support\TeacherSalaryEmail::addressOf($teacher->email);
                     @endphp
@@ -330,35 +330,35 @@
                             onsubmit="return confirm('Email the {{ $monthLabel }} salary slip to {{ $teacherEmail }}?');">
                             @csrf
                             <input type="hidden" name="branch_id" value="{{ $branchId }}">
-                            <button type="submit" class="btn btn-outline-primary action-btn-full" title="{{ $teacherEmail }}">
-                                <i class="bi bi-envelope-fill me-1"></i>
+                            <button type="submit" class="ui-btn ui-btn-outline-primary action-btn-full" title="{{ $teacherEmail }}">
+                                <i class="bi bi-envelope-fill tw:mr-1!"></i>
                                 Email Slip
                             </button>
                         </form>
                     @else
-                        <button class="btn btn-outline-secondary action-btn-full" disabled
+                        <button class="ui-btn ui-btn-outline-secondary action-btn-full" disabled
                             title="{{ $isPaid ? 'Add the teacher\'s email first' : 'Pay the salary first' }}">
-                            <i class="bi bi-envelope me-1"></i>
+                            <i class="bi bi-envelope tw:mr-1!"></i>
                             {{ $isPaid ? 'Email Slip (no email)' : 'Email Slip (Pay first)' }}
                         </button>
                     @endif
                 </div>
             </div>
 
-            <div class="mt-4">
+            <div class="tw:mt-6!">
                 @if($isPaid)
-                    <div class="alert alert-success custom-alert mb-0">
-                        <i class="bi bi-check-circle-fill me-2"></i>
+                    <div class="ui-alert ui-alert-success custom-alert tw:mb-0!">
+                        <i class="bi bi-check-circle-fill tw:mr-2!"></i>
                         Salary has been paid. Advances and deductions for {{ $monthLabel }} are locked.
                     </div>
                 @elseif($data['can_pay'])
-                    <div class="alert alert-success custom-alert mb-0">
-                        <i class="bi bi-check-circle-fill me-2"></i>
+                    <div class="ui-alert ui-alert-success custom-alert tw:mb-0!">
+                        <i class="bi bi-check-circle-fill tw:mr-2!"></i>
                         Payment is available. Please check the amounts before paying.
                     </div>
                 @elseif($data['pay_block_reason'])
-                    <div class="alert alert-info custom-alert mb-0">
-                        <i class="bi bi-info-circle-fill me-2"></i>
+                    <div class="ui-alert ui-alert-info custom-alert tw:mb-0!">
+                        <i class="bi bi-info-circle-fill tw:mr-2!"></i>
                         <strong>{{ $data['pay_block_reason'] }}</strong>
                         @if($data['can_add_payment'])
                             <br>You can still add advances and deductions for this month.
@@ -369,30 +369,30 @@
         </div>
 
         <!-- ADVANCE MODAL -->
-        <div class="modal fade" id="advanceModal" tabindex="-1" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered">
-                <div class="modal-content border-0 shadow-lg rounded-4">
+        <div class="ui-modal ui-fade" id="advanceModal" tabindex="-1" aria-hidden="true">
+            <div class="ui-modal-dialog ui-modal-dialog-centered">
+                <div class="ui-modal-content tw:[border:0]! tw:shadow-bs-lg! tw:rounded-bs-xl!">
                     <form method="POST" action="{{ route('teacher-salaries.payment.store', $teacher->id) }}"
                         id="advanceForm">
                         @csrf
                         <input type="hidden" name="branch_id" value="{{ $branchId }}">
 
-                        <div class="modal-header border-0">
+                        <div class="ui-modal-header tw:[border:0]!">
                             <div>
-                                <h5 class="modal-title fw-bold">Add Advance / Deduction</h5>
-                                <small class="text-muted">
+                                <h5 class="ui-modal-title tw:font-bold!">Add Advance / Deduction</h5>
+                                <small class="tw:text-bs-secondary-color!">
                                     {{ $teacher->full_name }}
                                 </small>
                             </div>
 
-                            <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                            <button type="button" class="ui-btn-close" data-nx-dismiss="modal"></button>
                         </div>
 
-                        <div class="modal-body pt-0">
+                        <div class="ui-modal-body tw:pt-0!">
 
-                            <div class="mb-3">
-                                <label class="form-label fw-semibold">Transaction Type</label>
-                                <select name="payment_type" class="form-select custom-input" required>
+                            <div class="tw:mb-4!">
+                                <label class="ui-form-label tw:font-semibold!">Transaction Type</label>
+                                <select name="payment_type" class="ui-form-select custom-input" required>
                                     @foreach (['advance' => 'Advance', 'deduction' => 'Deduction', 'other' => 'Other'] as $typeValue => $typeLabel)
                                         <option value="{{ $typeValue }}" {{ old('payment_type') === $typeValue ? 'selected' : '' }}>
                                             {{ $typeLabel }}
@@ -401,49 +401,49 @@
                                 </select>
                             </div>
 
-                            <div class="mb-3">
-                                <label class="form-label fw-semibold">Amount (LKR)</label>
-                                <input type="number" name="amount" step="0.01" class="form-control custom-input" required
+                            <div class="tw:mb-4!">
+                                <label class="ui-form-label tw:font-semibold!">Amount (LKR)</label>
+                                <input type="number" name="amount" step="0.01" class="ui-form-control custom-input" required
                                     id="advanceAmount" min="0.01" max="{{ $availableLimit }}" value="{{ old('amount') }}"
                                     placeholder="Enter amount">
 
-                                <small class="text-muted d-block mt-1">
+                                <small class="tw:text-bs-secondary-color! tw:block! tw:mt-1!">
                                     Maximum allowed: LKR {{ number_format($availableLimit, 2) }}
                                 </small>
 
-                                <div class="text-danger small mt-2 d-none" id="amountWarning"></div>
+                                <div class="tw:text-bs-danger! tw:text-[.875em] tw:mt-2! tw:hidden!" id="amountWarning"></div>
                             </div>
 
-                            <div class="mb-3">
-                                <label class="form-label fw-semibold">Payment Date</label>
-                                <input type="date" name="payment_date" class="form-control custom-input"
+                            <div class="tw:mb-4!">
+                                <label class="ui-form-label tw:font-semibold!">Payment Date</label>
+                                <input type="date" name="payment_date" class="ui-form-control custom-input"
                                     min="{{ $data['month_start'] }}" max="{{ $data['month_end'] }}"
                                     value="{{ old('payment_date', min(now()->toDateString(), $data['month_end'])) }}" required>
-                                <small class="text-muted d-block mt-1">
+                                <small class="tw:text-bs-secondary-color! tw:block! tw:mt-1!">
                                     Must be a date in {{ $monthLabel }}.
                                 </small>
                             </div>
 
-                            <div class="mb-3">
-                                <label class="form-label fw-semibold">Reason / Description</label>
-                                <input type="text" name="reason" class="form-control custom-input" maxlength="150"
+                            <div class="tw:mb-4!">
+                                <label class="ui-form-label tw:font-semibold!">Reason / Description</label>
+                                <input type="text" name="reason" class="ui-form-control custom-input" maxlength="150"
                                     value="{{ old('reason') }}" placeholder="Optional: Specify reason for this transaction">
                             </div>
 
-                            <div class="mb-0">
-                                <label class="form-label fw-semibold">Additional Notes</label>
-                                <textarea name="note" class="form-control custom-input" rows="3" maxlength="1000"
+                            <div class="tw:mb-0!">
+                                <label class="ui-form-label tw:font-semibold!">Additional Notes</label>
+                                <textarea name="note" class="ui-form-control custom-input" rows="3" maxlength="1000"
                                     placeholder="Optional: Any additional information">{{ old('note') }}</textarea>
                             </div>
                         </div>
 
-                        <div class="modal-footer border-0 pt-0">
-                            <button type="button" class="btn btn-outline-secondary custom-btn" data-bs-dismiss="modal">
+                        <div class="ui-modal-footer tw:[border:0]! tw:pt-0!">
+                            <button type="button" class="ui-btn ui-btn-outline-secondary custom-btn" data-nx-dismiss="modal">
                                 Cancel
                             </button>
 
-                            <button type="submit" class="btn btn-success custom-btn">
-                                <i class="bi bi-save me-1"></i>
+                            <button type="submit" class="ui-btn ui-btn-success custom-btn">
+                                <i class="bi bi-save tw:mr-1!"></i>
                                 Save Transaction
                             </button>
                         </div>
@@ -553,7 +553,7 @@
             border: none;
         }
 
-        .summary-card .card-body {
+        .summary-card .ui-card-body {
             padding: 1.4rem;
             position: relative;
         }
@@ -655,7 +655,7 @@
                 width: 100%;
             }
 
-            .hero-actions .btn {
+            .hero-actions .ui-btn {
                 flex: 1;
             }
         }
@@ -669,7 +669,7 @@
             @if ($errors->any() && old('payment_type'))
                 const advanceModal = document.getElementById('advanceModal');
                 if (advanceModal && window.bootstrap) {
-                    bootstrap.Modal.getOrCreateInstance(advanceModal).show();
+                    NxUi.Modal.getOrCreateInstance(advanceModal).show();
                 }
             @endif
 
@@ -684,12 +684,12 @@
 
                     if (value > availableLimit) {
                         warningDiv.textContent = 'Amount cannot exceed the available limit (LKR ' + availableLimit.toFixed(2) + ')';
-                        warningDiv.classList.remove('d-none');
-                        this.classList.add('is-invalid');
+                        warningDiv.classList.remove('tw:hidden!');
+                        this.classList.add('ui-is-invalid');
                     } else {
-                        warningDiv.classList.add('d-none');
+                        warningDiv.classList.add('tw:hidden!');
                         warningDiv.textContent = '';
-                        this.classList.remove('is-invalid');
+                        this.classList.remove('ui-is-invalid');
                     }
                 });
 
@@ -699,8 +699,8 @@
                     if (value > availableLimit) {
                         e.preventDefault();
                         warningDiv.textContent = 'Amount cannot exceed the available limit (LKR ' + availableLimit.toFixed(2) + ')';
-                        warningDiv.classList.remove('d-none');
-                        amountInput.classList.add('is-invalid');
+                        warningDiv.classList.remove('tw:hidden!');
+                        amountInput.classList.add('ui-is-invalid');
                     }
                 });
             }

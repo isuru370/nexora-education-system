@@ -22,7 +22,7 @@
         {{-- ===================================================== --}}
         {{-- HERO --}}
         {{-- ===================================================== --}}
-        <div class="hero-section mb-4">
+        <div class="hero-section tw:mb-6!">
             <div class="hero-content">
                 <div class="hero-left">
                     <span class="greeting-badge">nexoraEDU</span>
@@ -67,20 +67,20 @@
         {{-- ===================================================== --}}
         {{-- FILTER --}}
         {{-- ===================================================== --}}
-        <div class="nx-card mb-4">
+        <div class="nx-card tw:mb-6!">
             <div class="nx-card-header">
                 <div>
-                    <h5 class="nx-card-title"><i class="bi bi-funnel text-primary"></i> Filters</h5>
+                    <h5 class="nx-card-title"><i class="bi bi-funnel tw:text-(color:--nx-blue)!"></i> Filters</h5>
                     <p class="nx-card-subtitle">Filter by year, month, status or search</p>
                 </div>
             </div>
 
-            <div class="p-3">
-                <form method="GET" action="{{ route('admin.extra-incomes.index') }}" class="row g-3 align-items-end">
+            <div class="tw:p-4!">
+                <form method="GET" action="{{ route('admin.extra-incomes.index') }}" class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2 tw:items-end!">
 
-                    <div class="col-lg-3 col-md-6">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:lg:flex-[0_0_auto] tw:lg:w-[25%]">
                         <label class="nx-label">Year</label>
-                        <select name="year" class="form-select nx-input">
+                        <select name="year" class="ui-form-select nx-input">
                             @foreach ($years as $year)
                                 <option value="{{ $year }}" {{ $reportYear == $year ? 'selected' : '' }}>
                                     {{ $year }}
@@ -89,9 +89,9 @@
                         </select>
                     </div>
 
-                    <div class="col-lg-3 col-md-6">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:lg:flex-[0_0_auto] tw:lg:w-[25%]">
                         <label class="nx-label">Month</label>
-                        <select name="month" class="form-select nx-input">
+                        <select name="month" class="ui-form-select nx-input">
                             <option value="all" {{ $reportMonth == 'all' ? 'selected' : '' }}>All Months</option>
                             @for ($m = 1; $m <= 12; $m++)
                                 <option value="{{ $m }}" {{ (string) $reportMonth === (string) $m ? 'selected' : '' }}>
@@ -101,9 +101,9 @@
                         </select>
                     </div>
 
-                    <div class="col-lg-3 col-md-6">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:lg:flex-[0_0_auto] tw:lg:w-[25%]">
                         <label class="nx-label">Status</label>
-                        <select name="status" class="form-select nx-input">
+                        <select name="status" class="ui-form-select nx-input">
                             <option value="">All</option>
                             <option value="pending" {{ request('status') == 'pending' ? 'selected' : '' }}>Pending</option>
                             <option value="approved" {{ request('status') == 'approved' ? 'selected' : '' }}>Approved</option>
@@ -112,13 +112,13 @@
                         </select>
                     </div>
 
-                    <div class="col-lg-3 col-md-6">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:lg:flex-[0_0_auto] tw:lg:w-[25%]">
                         <label class="nx-label">Search</label>
-                        <input type="text" name="search" value="{{ request('search') }}" class="form-control nx-input"
+                        <input type="text" name="search" value="{{ request('search') }}" class="ui-form-control nx-input"
                             placeholder="Reason / Note">
                     </div>
 
-                    <div class="col-12 d-flex justify-content-end gap-2">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:flex-[0_0_auto] tw:w-[100%] tw:flex! tw:justify-end! tw:gap-2!">
                         <button type="submit" class="nx-btn nx-btn-primary">
                             <i class="bi bi-funnel"></i> Filter
                         </button>
@@ -133,7 +133,7 @@
         {{-- ===================================================== --}}
         {{-- SUMMARY CARDS --}}
         {{-- ===================================================== --}}
-        <div class="stats-grid stats-grid-3 mb-4">
+        <div class="stats-grid stats-grid-3 tw:mb-6!">
 
             <div class="nx-card stat-card">
                 <div class="stat-icon-wrapper icon-blue"><i class="bi bi-cash-stack"></i></div>
@@ -166,11 +166,11 @@
         {{-- ===================================================== --}}
         {{-- MAIN TABLE --}}
         {{-- ===================================================== --}}
-        <div class="nx-card mb-4">
+        <div class="nx-card tw:mb-6!">
 
             <div class="nx-card-header">
                 <div>
-                    <h5 class="nx-card-title"><i class="bi bi-cash-coin text-primary"></i> Income Records</h5>
+                    <h5 class="nx-card-title"><i class="bi bi-cash-coin tw:text-(color:--nx-blue)!"></i> Income Records</h5>
                     <p class="nx-card-subtitle">Showing filtered extra income entries</p>
                 </div>
                 <span class="nx-badge nx-badge-blue">
@@ -178,16 +178,16 @@
                 </span>
             </div>
 
-            <div class="table-responsive">
-                <table class="table premium-table mb-0">
+            <div class="ui-table-responsive">
+                <table class="ui-table premium-table tw:mb-0!">
                     <thead>
                         <tr>
                             <th>Date</th>
                             <th>Reason</th>
                             <th>Type</th>
                             <th>Status</th>
-                            <th class="text-end">Amount</th>
-                            <th class="text-center" width="180">Action</th>
+                            <th class="tw:text-right!">Amount</th>
+                            <th class="tw:text-center!" width="180">Action</th>
                         </tr>
                     </thead>
 
@@ -230,13 +230,13 @@
                                 </td>
 
                                 {{-- AMOUNT --}}
-                                <td class="text-end cell-title">
+                                <td class="tw:text-right! cell-title">
                                     Rs. {{ number_format($income->amount, 2) }}
                                 </td>
 
                                 {{-- ACTIONS --}}
-                                <td class="text-center">
-                                    <div class="action-buttons justify-content-center">
+                                <td class="tw:text-center!">
+                                    <div class="action-buttons tw:justify-center!">
                                         <a href="{{ route('admin.extra-incomes.show', $income) }}"
                                             class="action-btn" title="View" aria-label="View">
                                             <i class="bi bi-eye-fill"></i>
@@ -257,8 +257,8 @@
                         @empty
                             <tr>
                                 <td colspan="6" class="empty-table">
-                                    <i class="bi bi-inbox fs-2 d-block mb-2"></i>
-                                    <strong class="d-block">No records found</strong>
+                                    <i class="bi bi-inbox tw:text-[length:calc(1.325rem_+_0.9vw)]! tw:xl:text-[length:2rem]! tw:block! tw:mb-2!"></i>
+                                    <strong class="tw:block!">No records found</strong>
                                     <span class="cell-sub">Try changing the filters or add a new extra income record.</span>
                                 </td>
                             </tr>
@@ -267,7 +267,7 @@
                 </table>
             </div>
 
-            <div class="p-3 border-top">
+            <div class="tw:p-4! tw:bs-border-t!">
                 {{ $extraIncomes->withQueryString()->links() }}
             </div>
         </div>
@@ -290,7 +290,7 @@
         .header-buttons,
         .action-buttons,
         .nx-search,
-        .pagination { display: none !important; }
+        .ui-pagination { display: none !important; }
 
         body { background: #fff !important; }
     }

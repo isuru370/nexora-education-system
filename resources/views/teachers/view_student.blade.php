@@ -4,29 +4,29 @@
 @section('page-title', 'View Class Students')
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-    <li class="breadcrumb-item"><a href="{{ route('teachers.index') }}">Teachers</a></li>
-    <li class="breadcrumb-item active">View Students</li>
+    <li class="ui-breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
+    <li class="ui-breadcrumb-item"><a href="{{ route('teachers.index') }}">Teachers</a></li>
+    <li class="ui-breadcrumb-item active">View Students</li>
 @endsection
 
 @section('content')
-    <div class="container-fluid">
+    <div class="ui-container-fluid">
         <!-- Class Information Section -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header bg-primary text-white">
-                        <h5 class="card-title mb-0">
-                            <i class="fas fa-chalkboard-teacher me-2"></i>Class Information
+        <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row tw:mb-6!">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:flex-[0_0_auto] tw:w-[100%]">
+                <div class="ui-card">
+                    <div class="ui-card-header tw:bg-bs-primary! tw:text-bs-white!">
+                        <h5 class="ui-card-title tw:mb-0!">
+                            <i class="fas fa-chalkboard-teacher tw:mr-2!"></i>Class Information
                         </h5>
                     </div>
-                    <div class="card-body">
+                    <div class="ui-card-body">
                         <div id="classInfo">
-                            <div class="text-center py-3">
-                                <div class="spinner-border text-primary" role="status">
-                                    <span class="visually-hidden">Loading...</span>
+                            <div class="tw:text-center! tw:py-4!">
+                                <div class="ui-spinner-border tw:text-bs-primary!" role="status">
+                                    <span class="tw:sr-only">Loading...</span>
                                 </div>
-                                <p class="mt-2 mb-0">Loading class information...</p>
+                                <p class="tw:mt-2! tw:mb-0!">Loading class information...</p>
                             </div>
                         </div>
                     </div>
@@ -35,21 +35,21 @@
         </div>
 
         <!-- Class Categories Section -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header bg-info text-white">
-                        <h5 class="card-title mb-0">
-                            <i class="fas fa-tags me-2"></i>Available Categories
+        <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row tw:mb-6!">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:flex-[0_0_auto] tw:w-[100%]">
+                <div class="ui-card">
+                    <div class="ui-card-header tw:bg-bs-info! tw:text-bs-white!">
+                        <h5 class="ui-card-title tw:mb-0!">
+                            <i class="fas fa-tags tw:mr-2!"></i>Available Categories
                         </h5>
                     </div>
-                    <div class="card-body">
+                    <div class="ui-card-body">
                         <div id="classCategories">
-                            <div class="text-center py-3">
-                                <div class="spinner-border text-info" role="status">
-                                    <span class="visually-hidden">Loading...</span>
+                            <div class="tw:text-center! tw:py-4!">
+                                <div class="ui-spinner-border tw:text-bs-info!" role="status">
+                                    <span class="tw:sr-only">Loading...</span>
                                 </div>
-                                <p class="mt-2 mb-0">Loading class categories...</p>
+                                <p class="tw:mt-2! tw:mb-0!">Loading class categories...</p>
                             </div>
                         </div>
                     </div>
@@ -58,78 +58,78 @@
         </div>
 
         <!-- Students Section -->
-        <div class="row">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-header bg-success text-white">
-                        <h5 class="card-title mb-0">
-                            <i class="fas fa-users me-2"></i>Enrolled Students
+        <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:flex-[0_0_auto] tw:w-[100%]">
+                <div class="ui-card">
+                    <div class="ui-card-header tw:bg-bs-success! tw:text-bs-white!">
+                        <h5 class="ui-card-title tw:mb-0!">
+                            <i class="fas fa-users tw:mr-2!"></i>Enrolled Students
                         </h5>
                     </div>
-                    <div class="card-body">
+                    <div class="ui-card-body">
                         <!-- Selected Category Info -->
-                        <div id="selectedCategoryInfo" class="alert alert-warning mb-4" style="display: none;">
-                            <div class="d-flex justify-content-between align-items-center">
+                        <div id="selectedCategoryInfo" class="ui-alert ui-alert-warning tw:mb-6!" style="display: none;">
+                            <div class="bs-d-flex tw:flex! tw:justify-between! tw:items-center!">
                                 <div>
                                     <strong>Selected Category:</strong>
-                                    <span id="selectedCategoryName" class="fw-bold"></span> -
-                                    Fee: Rs. <span id="selectedCategoryFee" class="fw-bold"></span>
+                                    <span id="selectedCategoryName" class="tw:font-bold!"></span> -
+                                    Fee: Rs. <span id="selectedCategoryFee" class="tw:font-bold!"></span>
                                 </div>
-                                <button class="btn btn-sm btn-outline-danger" onclick="clearSelection()">
-                                    <i class="fas fa-times me-1"></i>Clear Selection
+                                <button class="ui-btn ui-btn-sm ui-btn-outline-danger" onclick="clearSelection()">
+                                    <i class="fas fa-times tw:mr-1!"></i>Clear Selection
                                 </button>
                             </div>
                         </div>
 
                         <!-- Bulk Actions Bar -->
-                        <div id="bulkActions" class="alert alert-info mb-3" style="display: none;">
-                            <div class="d-flex justify-content-between align-items-center">
+                        <div id="bulkActions" class="ui-alert ui-alert-info tw:mb-4!" style="display: none;">
+                            <div class="bs-d-flex tw:flex! tw:justify-between! tw:items-center!">
                                 <div>
                                     <strong>Bulk Actions:</strong>
-                                    <span id="selectedStudentsCount" class="badge bg-primary ms-2">0 students
+                                    <span id="selectedStudentsCount" class="ui-badge tw:bg-bs-primary! tw:ml-2!">0 students
                                         selected</span>
                                 </div>
-                                <div class="d-flex gap-2">
-                                    <button class="btn btn-sm btn-warning" id="bulkDeactivateBtn"
+                                <div class="bs-d-flex tw:flex! tw:gap-2!">
+                                    <button class="ui-btn ui-btn-sm ui-btn-warning" id="bulkDeactivateBtn"
                                         onclick="bulkDeactivateStudents()" disabled>
-                                        <i class="fas fa-user-minus me-1"></i>Deactivate Selected
+                                        <i class="fas fa-user-minus tw:mr-1!"></i>Deactivate Selected
                                     </button>
-                                    <button class="btn btn-sm btn-outline-secondary" onclick="clearAllSelections()">
-                                        <i class="fas fa-times me-1"></i>Clear All
+                                    <button class="ui-btn ui-btn-sm ui-btn-outline-secondary" onclick="clearAllSelections()">
+                                        <i class="fas fa-times tw:mr-1!"></i>Clear All
                                     </button>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Search and Filters -->
-                        <div class="row mb-4">
-                            <div class="col-md-3">
-                                <label class="form-label">Search Students</label>
-                                <div class="input-group">
-                                    <input type="text" id="studentSearch" class="form-control" placeholder="Name or ID...">
-                                    <button class="btn btn-outline-secondary" type="button" id="clearSearch">
+                        <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row tw:mb-6!">
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[25%]">
+                                <label class="ui-form-label">Search Students</label>
+                                <div class="ui-input-group">
+                                    <input type="text" id="studentSearch" class="ui-form-control" placeholder="Name or ID...">
+                                    <button class="ui-btn ui-btn-outline-secondary" type="button" id="clearSearch">
                                         <i class="fas fa-times"></i>
                                     </button>
                                 </div>
                             </div>
-                            <div class="col-md-3">
-                                <label class="form-label">Filter by Grade</label>
-                                <select class="form-select" id="gradeFilter">
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[25%]">
+                                <label class="ui-form-label">Filter by Grade</label>
+                                <select class="ui-form-select" id="gradeFilter">
                                     <option value="">All Grades</option>
                                 </select>
                             </div>
-                            <div class="col-md-3">
-                                <label class="form-label">Filter by Status</label>
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[25%]">
+                                <label class="ui-form-label">Filter by Status</label>
                                 <!-- In the status filter dropdown -->
-                                <select class="form-select" id="statusFilter">
+                                <select class="ui-form-select" id="statusFilter">
                                     <option value="">All Status</option>
                                     <option value="true">Active</option>
                                     <option value="false">Inactive</option>
                                 </select>
                             </div>
-                            <div class="col-md-3">
-                                <label class="form-label">Records Per Page</label>
-                                <select class="form-select" id="recordsPerPage">
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[25%]">
+                                <label class="ui-form-label">Records Per Page</label>
+                                <select class="ui-form-select" id="recordsPerPage">
                                     <option value="10">10 per page</option>
                                     <option value="25">25 per page</option>
                                     <option value="50">50 per page</option>
@@ -139,12 +139,12 @@
                         </div>
 
                         <!-- Students Table -->
-                        <div class="table-responsive">
-                            <table class="table table-hover">
-                                <thead class="table-success">
+                        <div class="ui-table-responsive">
+                            <table class="ui-table ui-table-hover">
+                                <thead class="ui-table-success">
                                     <tr>
                                         <th width="50">
-                                            <input type="checkbox" id="selectAllStudents" class="form-check-input">
+                                            <input type="checkbox" id="selectAllStudents" class="ui-form-check-input">
                                         </th>
                                         <th width="60">#</th>
                                         <th>Student ID</th>
@@ -162,33 +162,33 @@
                         </div>
 
                         <!-- Loading State -->
-                        <div id="studentsLoading" class="text-center py-4">
-                            <div class="spinner-border text-success" role="status">
-                                <span class="visually-hidden">Loading...</span>
+                        <div id="studentsLoading" class="tw:text-center! tw:py-6!">
+                            <div class="ui-spinner-border tw:text-bs-success!" role="status">
+                                <span class="tw:sr-only">Loading...</span>
                             </div>
-                            <p class="mt-2 text-muted">Loading students...</p>
+                            <p class="tw:mt-2! tw:text-bs-secondary-color!">Loading students...</p>
                         </div>
 
                         <!-- Empty State -->
-                        <div id="studentsEmpty" class="text-center py-5 d-none">
-                            <div class="empty-state-icon mb-3">
-                                <i class="fas fa-users fa-3x text-muted"></i>
+                        <div id="studentsEmpty" class="tw:text-center! tw:py-12! tw:hidden!">
+                            <div class="empty-state-icon tw:mb-4!">
+                                <i class="fas fa-users fa-3x tw:text-bs-secondary-color!"></i>
                             </div>
-                            <h4 class="text-muted">No Students Found</h4>
-                            <p class="text-muted">No enrolled students found for this category.</p>
+                            <h4 class="tw:text-bs-secondary-color!">No Students Found</h4>
+                            <p class="tw:text-bs-secondary-color!">No enrolled students found for this category.</p>
                         </div>
 
                         <!-- Pagination -->
-                        <div id="studentsPagination" class="d-none">
-                            <div class="row align-items-center">
-                                <div class="col-md-6">
-                                    <div class="text-muted" id="paginationInfo">
+                        <div id="studentsPagination" class="tw:hidden!">
+                            <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row tw:items-center!">
+                                <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
+                                    <div class="tw:text-bs-secondary-color!" id="paginationInfo">
                                         Showing 0 to 0 of 0 entries
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
                                     <nav aria-label="Students pagination">
-                                        <ul class="pagination justify-content-end mb-0" id="paginationControls">
+                                        <ul class="ui-pagination bs-justify-content-end tw:justify-end! tw:mb-0!" id="paginationControls">
                                             <!-- Pagination controls will be inserted here -->
                                         </ul>
                                     </nav>
@@ -228,7 +228,7 @@
             background-color: #e8f5e8;
         }
 
-        .table th {
+        .ui-table th {
             background: linear-gradient(135deg, #198754, #157347);
             color: white;
             font-weight: 600;
@@ -239,17 +239,17 @@
             padding: 0.5rem 0.8rem;
         }
 
-        .page-link {
+        .ui-page-link {
             color: #198754;
             border-color: #dee2e6;
         }
 
-        .page-item.active .page-link {
+        .ui-page-item.active .ui-page-link {
             background-color: #198754;
             border-color: #198754;
         }
 
-        .page-link:hover {
+        .ui-page-link:hover {
             color: #146c43;
             background-color: #e9ecef;
             border-color: #dee2e6;
@@ -308,27 +308,27 @@
 
                 if (classData) {
                     document.getElementById('classInfo').innerHTML = `
-                        <div class="row">
-                            <div class="col-md-3">
+                        <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row">
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[25%]">
                                 <strong>Class Name:</strong><br>
-                                <span class="fs-5 fw-bold text-primary">${classData.class_name}</span>
+                                <span class="tw:text-[length:1.25rem]! tw:font-bold! tw:text-bs-primary!">${classData.class_name}</span>
                             </div>
-                            <div class="col-md-3">
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[25%]">
                                 <strong>Teacher:</strong><br>
-                                <span class="fs-6">${classData.teacher ? classData.teacher.fname + ' ' + classData.teacher.lname : 'N/A'}</span>
-                                <br><small class="text-muted">${classData.teacher ? classData.teacher.custom_id : ''}</small>
+                                <span class="tw:text-[length:1rem]!">${classData.teacher ? classData.teacher.fname + ' ' + classData.teacher.lname : 'N/A'}</span>
+                                <br><small class="tw:text-bs-secondary-color!">${classData.teacher ? classData.teacher.custom_id : ''}</small>
                             </div>
-                            <div class="col-md-2">
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[16.66666667%]">
                                 <strong>Subject:</strong><br>
-                                <span class="badge bg-light text-dark border">${classData.subject ? classData.subject.subject_name : 'N/A'}</span>
+                                <span class="ui-badge tw:bg-bs-light! tw:text-bs-dark! tw:bs-border!">${classData.subject ? classData.subject.subject_name : 'N/A'}</span>
                             </div>
-                            <div class="col-md-2">
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[16.66666667%]">
                                 <strong>Grade:</strong><br>
-                                <span class="badge bg-primary">${classData.grade ? 'Grade ' + classData.grade.grade_name : 'N/A'}</span>
+                                <span class="ui-badge tw:bg-bs-primary!">${classData.grade ? 'Grade ' + classData.grade.grade_name : 'N/A'}</span>
                             </div>
-                            <div class="col-md-2">
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[16.66666667%]">
                                 <strong>Status:</strong><br>
-                                <span class="badge ${classData.is_active ? 'bg-success' : 'bg-secondary'}">
+                                <span class="ui-badge ${classData.is_active ? 'tw:bg-bs-success!' : 'tw:bg-bs-secondary!'}">
                                     ${classData.is_active ? 'Active' : 'Inactive'}
                                 </span>
                             </div>
@@ -341,7 +341,7 @@
             } catch (error) {
                 console.error('Error loading class info:', error);
                 document.getElementById('classInfo').innerHTML = `
-                    <div class="alert alert-danger">
+                    <div class="ui-alert ui-alert-danger">
                         Failed to load class information: ${error.message}
                     </div>
                 `;
@@ -354,8 +354,8 @@
 
             if (!categories || categories.length === 0) {
                 container.innerHTML = `
-                    <div class="alert alert-warning">
-                        <i class="fas fa-exclamation-triangle me-2"></i>
+                    <div class="ui-alert ui-alert-warning">
+                        <i class="fas fa-exclamation-triangle tw:mr-2!"></i>
                         No categories available for this class.
                     </div>
                 `;
@@ -367,15 +367,15 @@
                 const fee = category.fees || 0;
 
                 return `
-                    <div class="col-md-4 mb-3">
-                        <div class="card category-card" onclick="selectCategory(${category.id}, '${categoryName}', ${fee})">
-                            <div class="card-body">
-                                <h6 class="card-title">${categoryName}</h6>
-                                <div class="d-flex justify-content-between align-items-center">
-                                    <span class="badge bg-success badge-fee">
-                                        <i class="fas fa-rupee-sign me-1"></i>${fee.toFixed(2)}
+                    <div class="ui-col-md-4 tw:mb-4!">
+                        <div class="ui-card category-card" onclick="selectCategory(${category.id}, '${categoryName}', ${fee})">
+                            <div class="ui-card-body">
+                                <h6 class="ui-card-title">${categoryName}</h6>
+                                <div class="bs-d-flex tw:flex! tw:justify-between! tw:items-center!">
+                                    <span class="ui-badge tw:bg-bs-success! badge-fee">
+                                        <i class="fas fa-rupee-sign tw:mr-1!"></i>${fee.toFixed(2)}
                                     </span>
-                                    <small class="text-muted">Click to view students</small>
+                                    <small class="tw:text-bs-secondary-color!">Click to view students</small>
                                 </div>
                             </div>
                         </div>
@@ -384,7 +384,7 @@
             }).join('');
 
             // Wrap in row
-            container.innerHTML = `<div class="row">${container.innerHTML}</div>`;
+            container.innerHTML = `<div class="bs-row ui-row">${container.innerHTML}</div>`;
 
             // Automatically select first category
             if (categories.length > 0) {
@@ -581,7 +581,7 @@
             const tbody = document.getElementById('studentsTableBody');
             const emptyState = document.getElementById('studentsEmpty');
             const paginationContainer = document.getElementById('studentsPagination');
-            const tableResponsive = document.querySelector('.table-responsive');
+            const tableResponsive = document.querySelector('.ui-table-responsive');
             const bulkActions = document.getElementById('bulkActions');
             const filterSummary = document.getElementById('filterSummary');
 
@@ -590,16 +590,16 @@
             tbody.innerHTML = '';
 
             if (filteredStudents.length === 0) {
-                if (emptyState) emptyState.classList.remove('d-none');
-                if (paginationContainer) paginationContainer.classList.add('d-none');
+                if (emptyState) emptyState.classList.remove('tw:hidden!');
+                if (paginationContainer) paginationContainer.classList.add('tw:hidden!');
                 if (bulkActions) bulkActions.style.display = 'none';
-                if (filterSummary) filterSummary.classList.add('d-none');
+                if (filterSummary) filterSummary.classList.add('tw:hidden!');
                 return;
             }
 
-            if (emptyState) emptyState.classList.add('d-none');
-            if (paginationContainer) paginationContainer.classList.remove('d-none');
-            if (tableResponsive) tableResponsive.classList.remove('d-none');
+            if (emptyState) emptyState.classList.add('tw:hidden!');
+            if (paginationContainer) paginationContainer.classList.remove('tw:hidden!');
+            if (tableResponsive) tableResponsive.classList.remove('tw:hidden!');
 
             // Calculate pagination
             const totalPages = Math.ceil(filteredStudents.length / studentsRecordsPerPage);
@@ -655,33 +655,33 @@
                 const row = `
                     <tr class="student-row ${isSelected ? 'selected' : ''}">
                         <td>
-                            <input type="checkbox" class="form-check-input student-checkbox" 
+                            <input type="checkbox" class="ui-form-check-input student-checkbox" 
                                    value="${enrollment.id}" ${isSelected ? 'checked' : ''}
                                    onchange="toggleStudentSelection(${enrollment.id}, this.checked)">
                         </td>
-                        <td class="fw-bold text-muted">${actualIndex + 1}</td>
+                        <td class="tw:font-bold! tw:text-bs-secondary-color!">${actualIndex + 1}</td>
                         <td>
-                            <span class="badge bg-secondary">${student.custom_id || 'N/A'}</span>
+                            <span class="ui-badge tw:bg-bs-secondary!">${student.custom_id || 'N/A'}</span>
                         </td>
                         <td>
                             <strong>${student.fname || ''} ${student.lname || ''}</strong>
                         </td>
                         <td>
-                            <span class="badge bg-info">${gradeDisplay}</span>
+                            <span class="ui-badge tw:bg-bs-info!">${gradeDisplay}</span>
                         </td>
                         <td>${student.guardian_mobile || student.mobile || 'N/A'}</td>
                         <td>
-                            <span class="badge ${isActiveBoolean ? 'bg-success' : 'bg-warning text-dark'}">
+                            <span class="ui-badge ${isActiveBoolean ? 'tw:bg-bs-success!' : 'tw:bg-bs-warning! tw:text-bs-dark!'}">
                                 ${isActiveBoolean ? 'Active' : 'Inactive'}
                             </span>
                         </td>
                         <td>
-                            <div class="btn-group btn-group-sm">
+                            <div class="ui-btn-group ui-btn-group-sm">
                                 ${isActiveBoolean ?
-                        `<button class="btn btn-warning" onclick="deactivateStudent(${enrollment.id})" title="Deactivate">
+                        `<button class="ui-btn ui-btn-warning" onclick="deactivateStudent(${enrollment.id})" title="Deactivate">
                                         <i class="fas fa-user-minus"></i>
                                     </button>` :
-                        `<button class="btn btn-success" onclick="activateStudent(${enrollment.id})" title="Activate">
+                        `<button class="ui-btn ui-btn-success" onclick="activateStudent(${enrollment.id})" title="Activate">
                                         <i class="fas fa-user-check"></i>
                                     </button>`
                     }
@@ -745,8 +745,8 @@
 
             // Previous button
             const prevButton = `
-                <li class="page-item ${studentsCurrentPage === 1 ? 'disabled' : ''}">
-                    <a class="page-link" href="#" onclick="changePage(${studentsCurrentPage - 1})" aria-label="Previous">
+                <li class="ui-page-item ${studentsCurrentPage === 1 ? 'disabled' : ''}">
+                    <a class="ui-page-link" href="#" onclick="changePage(${studentsCurrentPage - 1})" aria-label="Previous">
                         <span aria-hidden="true">&laquo;</span>
                     </a>
                 </li>
@@ -764,8 +764,8 @@
 
             for (let i = startPage; i <= endPage; i++) {
                 const pageItem = `
-                    <li class="page-item ${i === studentsCurrentPage ? 'active' : ''}">
-                        <a class="page-link" href="#" onclick="changePage(${i})">${i}</a>
+                    <li class="ui-page-item ${i === studentsCurrentPage ? 'active' : ''}">
+                        <a class="ui-page-link" href="#" onclick="changePage(${i})">${i}</a>
                     </li>
                 `;
                 paginationContainer.innerHTML += pageItem;
@@ -773,8 +773,8 @@
 
             // Next button
             const nextButton = `
-                <li class="page-item ${studentsCurrentPage === totalPages ? 'disabled' : ''}">
-                    <a class="page-link" href="#" onclick="changePage(${studentsCurrentPage + 1})" aria-label="Next">
+                <li class="ui-page-item ${studentsCurrentPage === totalPages ? 'disabled' : ''}">
+                    <a class="ui-page-link" href="#" onclick="changePage(${studentsCurrentPage + 1})" aria-label="Next">
                         <span aria-hidden="true">&raquo;</span>
                     </a>
                 </li>
@@ -929,9 +929,9 @@
 
             if (filters.length > 0) {
                 activeFiltersElement.textContent = filters.join(' • ');
-                summaryElement.classList.remove('d-none');
+                summaryElement.classList.remove('tw:hidden!');
             } else {
-                summaryElement.classList.add('d-none');
+                summaryElement.classList.add('tw:hidden!');
             }
         }
 
@@ -952,7 +952,7 @@
             try {
                 if (bulkDeactivateBtn) {
                     bulkDeactivateBtn.disabled = true;
-                    bulkDeactivateBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-1"></i>Deactivating...';
+                    bulkDeactivateBtn.innerHTML = '<i class="fas fa-spinner fa-spin tw:mr-1!"></i>Deactivating...';
                 }
 
                 const enrollmentIds = Array.from(selectedStudents);
@@ -993,7 +993,7 @@
             } finally {
                 if (bulkDeactivateBtn) {
                     bulkDeactivateBtn.disabled = false;
-                    bulkDeactivateBtn.innerHTML = '<i class="fas fa-user-minus me-1"></i>Deactivate Selected';
+                    bulkDeactivateBtn.innerHTML = '<i class="fas fa-user-minus tw:mr-1!"></i>Deactivate Selected';
                 }
             }
         }
@@ -1088,17 +1088,17 @@
             if (bulkActions) bulkActions.style.display = 'none';
 
             const filterSummary = document.getElementById('filterSummary');
-            if (filterSummary) filterSummary.classList.add('d-none');
+            if (filterSummary) filterSummary.classList.add('tw:hidden!');
 
             // Clear table
             const tbody = document.getElementById('studentsTableBody');
             if (tbody) tbody.innerHTML = '';
 
             const studentsEmpty = document.getElementById('studentsEmpty');
-            if (studentsEmpty) studentsEmpty.classList.remove('d-none');
+            if (studentsEmpty) studentsEmpty.classList.remove('tw:hidden!');
 
             const studentsPagination = document.getElementById('studentsPagination');
-            if (studentsPagination) studentsPagination.classList.add('d-none');
+            if (studentsPagination) studentsPagination.classList.add('tw:hidden!');
 
             updateSelectedCount();
         }
@@ -1125,42 +1125,42 @@
 
         function showStudentsLoading() {
             const studentsLoading = document.getElementById('studentsLoading');
-            const tableResponsive = document.querySelector('.table-responsive');
+            const tableResponsive = document.querySelector('.ui-table-responsive');
             const paginationContainer = document.getElementById('studentsPagination');
             const filterSummary = document.getElementById('filterSummary');
 
-            if (studentsLoading) studentsLoading.classList.remove('d-none');
-            if (tableResponsive) tableResponsive.classList.add('d-none');
-            if (paginationContainer) paginationContainer.classList.add('d-none');
-            if (filterSummary) filterSummary.classList.add('d-none');
+            if (studentsLoading) studentsLoading.classList.remove('tw:hidden!');
+            if (tableResponsive) tableResponsive.classList.add('tw:hidden!');
+            if (paginationContainer) paginationContainer.classList.add('tw:hidden!');
+            if (filterSummary) filterSummary.classList.add('tw:hidden!');
         }
 
         function hideStudentsLoading() {
             const studentsLoading = document.getElementById('studentsLoading');
-            if (studentsLoading) studentsLoading.classList.add('d-none');
+            if (studentsLoading) studentsLoading.classList.add('tw:hidden!');
         }
 
         function showStudentsEmptyState() {
             const studentsEmpty = document.getElementById('studentsEmpty');
-            const tableResponsive = document.querySelector('.table-responsive');
+            const tableResponsive = document.querySelector('.ui-table-responsive');
             const paginationContainer = document.getElementById('studentsPagination');
             const filterSummary = document.getElementById('filterSummary');
             const bulkActions = document.getElementById('bulkActions');
 
-            if (studentsEmpty) studentsEmpty.classList.remove('d-none');
-            if (tableResponsive) tableResponsive.classList.add('d-none');
-            if (paginationContainer) paginationContainer.classList.add('d-none');
-            if (filterSummary) filterSummary.classList.add('d-none');
+            if (studentsEmpty) studentsEmpty.classList.remove('tw:hidden!');
+            if (tableResponsive) tableResponsive.classList.add('tw:hidden!');
+            if (paginationContainer) paginationContainer.classList.add('tw:hidden!');
+            if (filterSummary) filterSummary.classList.add('tw:hidden!');
             if (bulkActions) bulkActions.style.display = 'none';
         }
 
         function showAlert(message, type) {
             const alertDiv = document.createElement('div');
-            alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+            alertDiv.className = `ui-alert ui-alert-${type} ui-alert-dismissible ui-fade show tw:fixed!`;
             alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
             alertDiv.innerHTML = `
                 <strong>${type === 'success' ? 'Success!' : type === 'warning' ? 'Warning!' : 'Error!'}</strong> ${message}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <button type="button" class="ui-btn-close" data-nx-dismiss="alert"></button>
             `;
 
             document.body.appendChild(alertDiv);

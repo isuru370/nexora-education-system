@@ -474,6 +474,9 @@ class Converter:
         self.util = data['utilities']
         self.nx_scope = nx_scope
         self.problems = []
+        # Bootstrap utility / grid classes that page CSS or JS selects on (.row, .d-flex ...):
+        # the elements also get a bs-<name> class and the selectors use it
+        self.markers = set()
         load_bs_colors()
         load_border_order()
 
@@ -516,6 +519,8 @@ class Converter:
         borders = [t for t in toks if BORDER_TOK.match(t) and t in self.util]
         merged = self.merge_borders(borders) if len(borders) > 1 else None
         for tok in toks:
+            if tok in self.markers:
+                out.append('bs-' + tok)
             if merged is not None and tok in borders:
                 if tok == borders[0]:
                     out += merged
@@ -669,6 +674,8 @@ class Converter:
                     new.append('ui-' + t)
                 else:
                     new += self.token(t, set(static) | set(toks), where)
+                if t in self.markers:
+                    new.append('bs-' + t)
             return q + ' '.join(dedupe(new)) + q
         return re.sub(r'(["\'])((?:(?!\1).)*)\1', rep, text)
 
@@ -1173,6 +1180,8 @@ def convert_scripts(text, conv, fname):
 def rename_selector_class(cls, conv, where):
     if cls in KIT:
         return 'ui-' + cls
+    if cls in conv.markers:
+        return 'bs-' + cls
     if cls in conv.util or GRID_COL.match(cls) or cls == 'row':
         conv.warn(where, 'Bootstrap class used in a selector: .' + cls)
     return cls
@@ -1218,9 +1227,25 @@ def convert_js_api(text, conv, fname):
     return text
 
 
-def convert_file(path, nx_scope=False):
+def find_markers(text, util):
+    """Bootstrap utility / grid classes used in selectors (page <style>, JS querySelector / $())."""
+    found = set()
+    sels = []
+    for m in re.finditer(r'<style\b[^>]*>(.*?)</style>', text, flags=re.S | re.I):
+        css = re.sub(r'/\*.*?\*/', '', m.group(1), flags=re.S)
+        sels += [h for h in re.findall(r'([^{};]+)\{', css) if not h.strip().startswith('@')]
+    sels += re.findall(r'(?:querySelector(?:All)?|closest|matches|\$|jQuery|\.find|\.parents|\.children|\.is|\.not|\.filter)\(\s*["\']([^"\']+)["\']', text)
+    for sel in sels:
+        for c in re.findall(r'\.([a-zA-Z][\w-]*)', sel):
+            if c not in KIT and (c in util or GRID_ANY.match(c)):
+                found.add(c)
+    return found
+
+
+def convert_file(path, nx_scope=False, markers=None):
     conv = Converter(nx_scope)
     text = open(path).read()
+    conv.markers = set(markers) if markers is not None else find_markers(text, conv.util)
     fname = os.path.relpath(path, ROOT)
     text = convert_markup(text, conv, fname)
     text = convert_js_templates(text, conv, fname)

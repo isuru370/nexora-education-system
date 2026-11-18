@@ -15,25 +15,25 @@
 
             <div>
                 <h4>
-                    <i class="bi bi-key-fill text-primary me-2"></i>
+                    <i class="bi bi-key-fill tw:text-bs-primary! tw:mr-2!"></i>
                     Teacher Login Details
                 </h4>
-                <p class="text-muted mb-0">
+                <p class="tw:text-bs-secondary-color! tw:mb-0!">
                     Manage login credentials for {{ $teacher->full_name ?? $teacher->name }}
                 </p>
             </div>
 
             <!-- ACTION BUTTONS -->
             <div class="header-buttons">
-                <a href="{{ route('teachers.show', $teacher) }}" class="btn btn-info custom-btn">
+                <a href="{{ route('teachers.show', $teacher) }}" class="ui-btn ui-btn-info custom-btn">
                     <i class="bi bi-eye-fill"></i>
                     View Profile
                 </a>
-                <a href="{{ route('teachers.edit', $teacher) }}" class="btn btn-warning custom-btn">
+                <a href="{{ route('teachers.edit', $teacher) }}" class="ui-btn ui-btn-warning custom-btn">
                     <i class="bi bi-pencil-fill"></i>
                     Edit Teacher
                 </a>
-                <a href="{{ route('teachers.index') }}" class="btn btn-light border custom-btn">
+                <a href="{{ route('teachers.index') }}" class="ui-btn ui-btn-light tw:bs-border! custom-btn">
                     <i class="bi bi-arrow-left"></i>
                     Back to List
                 </a>
@@ -43,47 +43,47 @@
 
         <!-- ALERTS -->
         @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show custom-alert" role="alert">
-                <i class="bi bi-check-circle-fill me-2"></i>
+            <div class="ui-alert ui-alert-success ui-alert-dismissible ui-fade show custom-alert" role="alert">
+                <i class="bi bi-check-circle-fill tw:mr-2!"></i>
                 {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <button type="button" class="ui-btn-close" data-nx-dismiss="alert"></button>
             </div>
         @endif
 
         @if(session('error'))
-            <div class="alert alert-danger alert-dismissible fade show custom-alert" role="alert">
-                <i class="bi bi-exclamation-circle-fill me-2"></i>
+            <div class="ui-alert ui-alert-danger ui-alert-dismissible ui-fade show custom-alert" role="alert">
+                <i class="bi bi-exclamation-circle-fill tw:mr-2!"></i>
                 {{ session('error') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                <button type="button" class="ui-btn-close" data-nx-dismiss="alert"></button>
             </div>
         @endif
 
         <!-- TEACHER INFO CARD -->
         <div class="teacher-info-card">
 
-            <div class="row align-items-center">
+            <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row tw:items-center!">
 
                 <!-- AVATAR & NAME -->
-                <div class="col-md-5">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[41.66666667%]">
 
-                    <div class="d-flex align-items-center gap-4">
+                    <div class="bs-d-flex tw:flex! tw:items-center! tw:gap-6!">
 
                         <div class="teacher-avatar-large">
                             {{ strtoupper(substr($teacher->full_name ?? $teacher->name, 0, 1)) }}
                         </div>
 
                         <div>
-                            <h3 class="mb-1">{{ $teacher->full_name ?? $teacher->name }}</h3>
-                            <span class="badge custom-badge bg-light text-dark border">
+                            <h3 class="tw:mb-1!">{{ $teacher->full_name ?? $teacher->name }}</h3>
+                            <span class="ui-badge custom-badge tw:bg-bs-light! tw:text-bs-dark! tw:bs-border!">
                                 {{ $teacher->custom_id ?? 'No ID' }}
                             </span>
                             @if($teacher->is_active)
-                                <span class="badge custom-badge bg-success ms-2">
-                                    <i class="bi bi-check-circle-fill me-1"></i> Active
+                                <span class="ui-badge custom-badge tw:bg-bs-success! tw:ml-2!">
+                                    <i class="bi bi-check-circle-fill tw:mr-1!"></i> Active
                                 </span>
                             @else
-                                <span class="badge custom-badge bg-secondary ms-2">
-                                    <i class="bi bi-pause-circle-fill me-1"></i> Inactive
+                                <span class="ui-badge custom-badge tw:bg-bs-secondary! tw:ml-2!">
+                                    <i class="bi bi-pause-circle-fill tw:mr-1!"></i> Inactive
                                 </span>
                             @endif
                         </div>
@@ -93,53 +93,53 @@
                 </div>
 
                 <!-- CONTACT INFO -->
-                <div class="col-md-7">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[58.33333333%]">
 
-                    <div class="row g-2">
+                    <div class="tw:flex tw:flex-wrap tw:-mt-2 tw:-mx-1 bs-row">
 
-                        <div class="col-sm-6">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-1 tw:mt-2 tw:w-full tw:sm:flex-[0_0_auto] tw:sm:w-[50%]">
 
                             <div class="info-item">
-                                <i class="bi bi-envelope-fill text-primary"></i>
+                                <i class="bi bi-envelope-fill tw:text-bs-primary!"></i>
                                 <div>
-                                    <small class="text-muted d-block">Email</small>
-                                    <span class="fw-semibold">{{ $teacher->email ?? 'N/A' }}</span>
+                                    <small class="tw:text-bs-secondary-color! tw:block!">Email</small>
+                                    <span class="tw:font-semibold!">{{ $teacher->email ?? 'N/A' }}</span>
                                 </div>
                             </div>
 
                         </div>
 
-                        <div class="col-sm-6">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-1 tw:mt-2 tw:w-full tw:sm:flex-[0_0_auto] tw:sm:w-[50%]">
 
                             <div class="info-item">
-                                <i class="bi bi-phone-fill text-success"></i>
+                                <i class="bi bi-phone-fill tw:text-bs-success!"></i>
                                 <div>
-                                    <small class="text-muted d-block">Mobile</small>
-                                    <span class="fw-semibold">{{ $teacher->mobile ?? 'N/A' }}</span>
+                                    <small class="tw:text-bs-secondary-color! tw:block!">Mobile</small>
+                                    <span class="tw:font-semibold!">{{ $teacher->mobile ?? 'N/A' }}</span>
                                 </div>
                             </div>
 
                         </div>
 
-                        <div class="col-sm-6">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-1 tw:mt-2 tw:w-full tw:sm:flex-[0_0_auto] tw:sm:w-[50%]">
 
                             <div class="info-item">
-                                <i class="bi bi-person-fill text-info"></i>
+                                <i class="bi bi-person-fill tw:text-bs-info!"></i>
                                 <div>
-                                    <small class="text-muted d-block">NIC</small>
-                                    <span class="fw-semibold">{{ $teacher->nic ?? 'N/A' }}</span>
+                                    <small class="tw:text-bs-secondary-color! tw:block!">NIC</small>
+                                    <span class="tw:font-semibold!">{{ $teacher->nic ?? 'N/A' }}</span>
                                 </div>
                             </div>
 
                         </div>
 
-                        <div class="col-sm-6">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-1 tw:mt-2 tw:w-full tw:sm:flex-[0_0_auto] tw:sm:w-[50%]">
 
                             <div class="info-item">
-                                <i class="bi bi-calendar-fill text-warning"></i>
+                                <i class="bi bi-calendar-fill tw:text-bs-warning!"></i>
                                 <div>
-                                    <small class="text-muted d-block">Birthday</small>
-                                    <span class="fw-semibold">{{ $teacher->bday ? $teacher->bday->format('Y-m-d') : 'N/A' }}</span>
+                                    <small class="tw:text-bs-secondary-color! tw:block!">Birthday</small>
+                                    <span class="tw:font-semibold!">{{ $teacher->bday ? $teacher->bday->format('Y-m-d') : 'N/A' }}</span>
                                 </div>
                             </div>
 
@@ -156,32 +156,32 @@
         <!-- LOGIN STATUS -->
         <div class="login-status-card">
 
-            <div class="row align-items-center">
+            <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row tw:items-center!">
 
-                <div class="col-md-6">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
 
-                    <div class="d-flex align-items-center gap-3">
+                    <div class="bs-d-flex tw:flex! tw:items-center! tw:gap-4!">
 
                         <div class="status-icon {{ $teacher->user_id ? 'status-success' : 'status-warning' }}">
                             <i class="bi {{ $teacher->user_id ? 'bi-check-lg' : 'bi-clock' }}"></i>
                         </div>
 
                         <div>
-                            <h5 class="mb-0">
+                            <h5 class="tw:mb-0!">
                                 Login Account Status
                             </h5>
-                            <p class="mb-0 text-muted">
+                            <p class="tw:mb-0! tw:text-bs-secondary-color!">
                                 @if($teacher->user_id)
-                                    <span class="text-success fw-semibold">
-                                        <i class="bi bi-check-circle-fill me-1"></i> Created
+                                    <span class="tw:text-bs-success! tw:font-semibold!">
+                                        <i class="bi bi-check-circle-fill tw:mr-1!"></i> Created
                                     </span>
-                                    <span class="mx-2">|</span>
-                                    <span class="text-muted">User ID: #{{ $teacher->user_id }}</span>
+                                    <span class="tw:mx-2!">|</span>
+                                    <span class="tw:text-bs-secondary-color!">User ID: #{{ $teacher->user_id }}</span>
                                 @else
-                                    <span class="text-warning fw-semibold">
-                                        <i class="bi bi-exclamation-triangle-fill me-1"></i> Not Created
+                                    <span class="tw:text-bs-warning! tw:font-semibold!">
+                                        <i class="bi bi-exclamation-triangle-fill tw:mr-1!"></i> Not Created
                                     </span>
-                                    <span class="text-muted ms-2">(No login account exists)</span>
+                                    <span class="tw:text-bs-secondary-color! tw:ml-2!">(No login account exists)</span>
                                 @endif
                             </p>
                         </div>
@@ -190,11 +190,11 @@
 
                 </div>
 
-                <div class="col-md-6 text-md-end">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] bs-text-md-end tw:md:text-right!">
 
                     @if($teacher->user_id)
-                        <div class="d-flex justify-content-md-end gap-2 flex-wrap">
-                            <button class="btn btn-outline-info custom-btn" disabled>
+                        <div class="bs-d-flex tw:flex! bs-justify-content-md-end tw:md:justify-end! tw:gap-2! tw:flex-wrap!">
+                            <button class="ui-btn ui-btn-outline-info custom-btn" disabled>
                                 <i class="bi bi-envelope-fill"></i>
                                 Send Credentials
                             </button>
@@ -214,10 +214,10 @@
 
                 <div class="create-login-header">
                     <h5>
-                        <i class="bi bi-person-plus-fill text-primary me-2"></i>
+                        <i class="bi bi-person-plus-fill tw:text-bs-primary! tw:mr-2!"></i>
                         Create Login Account
                     </h5>
-                    <p class="text-muted mb-0">
+                    <p class="tw:text-bs-secondary-color! tw:mb-0!">
                         Set a password for this teacher to access the system
                     </p>
                 </div>
@@ -226,15 +226,15 @@
 
                     @csrf
 
-                    <div class="row g-4">
+                    <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3 bs-row">
 
-                        <div class="col-md-6">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
 
                             <div class="form-group">
-                                <label for="password" class="form-label fw-semibold">
-                                    <i class="bi bi-lock-fill me-1"></i>
+                                <label for="password" class="ui-form-label tw:font-semibold!">
+                                    <i class="bi bi-lock-fill tw:mr-1!"></i>
                                     Password
-                                    <span class="text-danger">*</span>
+                                    <span class="tw:text-bs-danger!">*</span>
                                 </label>
                                 <div class="password-input-wrapper">
                                     <i class="bi bi-key-fill"></i>
@@ -242,7 +242,7 @@
                                         type="password"
                                         id="password"
                                         name="password"
-                                        class="form-control custom-input @error('password') is-invalid @enderror"
+                                        class="ui-form-control custom-input @error('password') ui-is-invalid @enderror"
                                         placeholder="Enter a strong password"
                                         required
                                         minlength="8">
@@ -251,26 +251,26 @@
                                     </button>
                                 </div>
                                 @error('password')
-                                    <div class="invalid-feedback d-block">
-                                        <i class="bi bi-exclamation-circle-fill me-1"></i>
+                                    <div class="ui-invalid-feedback tw:block!">
+                                        <i class="bi bi-exclamation-circle-fill tw:mr-1!"></i>
                                         {{ $message }}
                                     </div>
                                 @enderror
-                                <small class="text-muted">
-                                    <i class="bi bi-info-circle-fill me-1"></i>
+                                <small class="tw:text-bs-secondary-color!">
+                                    <i class="bi bi-info-circle-fill tw:mr-1!"></i>
                                     Minimum 8 characters, include letters and numbers
                                 </small>
                             </div>
 
                         </div>
 
-                        <div class="col-md-6">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
 
                             <div class="form-group">
-                                <label for="password_confirmation" class="form-label fw-semibold">
-                                    <i class="bi bi-check-circle-fill me-1"></i>
+                                <label for="password_confirmation" class="ui-form-label tw:font-semibold!">
+                                    <i class="bi bi-check-circle-fill tw:mr-1!"></i>
                                     Confirm Password
-                                    <span class="text-danger">*</span>
+                                    <span class="tw:text-bs-danger!">*</span>
                                 </label>
                                 <div class="password-input-wrapper">
                                     <i class="bi bi-shield-lock-fill"></i>
@@ -278,47 +278,47 @@
                                         type="password"
                                         id="password_confirmation"
                                         name="password_confirmation"
-                                        class="form-control custom-input"
+                                        class="ui-form-control custom-input"
                                         placeholder="Confirm your password"
                                         required>
                                     <button type="button" class="password-toggle" onclick="togglePassword('password_confirmation')">
                                         <i class="bi bi-eye-slash-fill" id="confirm-password-icon"></i>
                                     </button>
                                 </div>
-                                <div id="password-match-message" class="mt-1"></div>
+                                <div id="password-match-message" class="tw:mt-1!"></div>
                             </div>
 
                         </div>
 
-                        <div class="col-12">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:flex-[0_0_auto] tw:w-[100%]">
 
                             <div class="password-requirements">
-                                <h6 class="mb-2">
-                                    <i class="bi bi-shield-check me-1"></i>
+                                <h6 class="tw:mb-2!">
+                                    <i class="bi bi-shield-check tw:mr-1!"></i>
                                     Password Requirements:
                                 </h6>
-                                <div class="row g-2">
-                                    <div class="col-md-3 col-6">
+                                <div class="tw:flex tw:flex-wrap tw:-mt-2 tw:-mx-1 bs-row">
+                                    <div class="tw:shrink-0 tw:max-w-full tw:px-1 tw:mt-2 tw:flex-[0_0_auto] tw:w-[50%] tw:md:flex-[0_0_auto] tw:md:w-[25%]">
                                         <span class="requirement" id="req-length">
-                                            <i class="bi bi-x-circle-fill text-danger"></i>
+                                            <i class="bi bi-x-circle-fill tw:text-bs-danger!"></i>
                                             8+ characters
                                         </span>
                                     </div>
-                                    <div class="col-md-3 col-6">
+                                    <div class="tw:shrink-0 tw:max-w-full tw:px-1 tw:mt-2 tw:flex-[0_0_auto] tw:w-[50%] tw:md:flex-[0_0_auto] tw:md:w-[25%]">
                                         <span class="requirement" id="req-uppercase">
-                                            <i class="bi bi-x-circle-fill text-danger"></i>
+                                            <i class="bi bi-x-circle-fill tw:text-bs-danger!"></i>
                                             Uppercase letter
                                         </span>
                                     </div>
-                                    <div class="col-md-3 col-6">
+                                    <div class="tw:shrink-0 tw:max-w-full tw:px-1 tw:mt-2 tw:flex-[0_0_auto] tw:w-[50%] tw:md:flex-[0_0_auto] tw:md:w-[25%]">
                                         <span class="requirement" id="req-lowercase">
-                                            <i class="bi bi-x-circle-fill text-danger"></i>
+                                            <i class="bi bi-x-circle-fill tw:text-bs-danger!"></i>
                                             Lowercase letter
                                         </span>
                                     </div>
-                                    <div class="col-md-3 col-6">
+                                    <div class="tw:shrink-0 tw:max-w-full tw:px-1 tw:mt-2 tw:flex-[0_0_auto] tw:w-[50%] tw:md:flex-[0_0_auto] tw:md:w-[25%]">
                                         <span class="requirement" id="req-number">
-                                            <i class="bi bi-x-circle-fill text-danger"></i>
+                                            <i class="bi bi-x-circle-fill tw:text-bs-danger!"></i>
                                             Number
                                         </span>
                                     </div>
@@ -327,24 +327,24 @@
 
                         </div>
 
-                        <div class="col-12">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:flex-[0_0_auto] tw:w-[100%]">
 
                             <hr>
 
-                            <div class="mb-3">
+                            <div class="tw:mb-4!">
                                 @include('partials.send-login-sms', ['id' => 'sendSmsCreateLogin'])
                             </div>
 
-                            <div class="d-flex gap-3 flex-wrap">
-                                <button type="submit" class="btn btn-primary custom-btn btn-lg">
-                                    <i class="bi bi-person-plus-fill me-2"></i>
+                            <div class="bs-d-flex tw:flex! tw:gap-4! tw:flex-wrap!">
+                                <button type="submit" class="ui-btn ui-btn-primary custom-btn ui-btn-lg">
+                                    <i class="bi bi-person-plus-fill tw:mr-2!"></i>
                                     Create Login Account
                                 </button>
-                                <button type="reset" class="btn btn-light border custom-btn">
+                                <button type="reset" class="ui-btn ui-btn-light tw:bs-border! custom-btn">
                                     <i class="bi bi-arrow-counterclockwise"></i>
                                     Clear Form
                                 </button>
-                                <a href="{{ route('teachers.index') }}" class="btn btn-outline-secondary custom-btn">
+                                <a href="{{ route('teachers.index') }}" class="ui-btn ui-btn-outline-secondary custom-btn">
                                     <i class="bi bi-x-circle"></i>
                                     Cancel
                                 </a>
@@ -363,37 +363,37 @@
             <!-- ACCOUNT CREATED - SHOW RESET PASSWORD -->
             <div class="account-created-card">
 
-                <div class="row">
+                <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row">
 
-                    <div class="col-lg-6">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[50%]">
 
-                        <div class="d-flex align-items-start gap-3">
+                        <div class="bs-d-flex tw:flex! tw:items-start! tw:gap-4!">
 
                             <div class="success-icon">
                                 <i class="bi bi-check-circle-fill"></i>
                             </div>
 
                             <div>
-                                <h5 class="text-success">
-                                    <i class="bi bi-check-circle-fill me-2"></i>
+                                <h5 class="tw:text-bs-success!">
+                                    <i class="bi bi-check-circle-fill tw:mr-2!"></i>
                                     Login Account Created
                                 </h5>
-                                <p class="mb-1">
+                                <p class="tw:mb-1!">
                                     This teacher already has a login account.
-                                    <span class="fw-semibold">User ID: #{{ $teacher->user_id }}</span>
+                                    <span class="tw:font-semibold!">User ID: #{{ $teacher->user_id }}</span>
                                 </p>
-                                <ul class="list-unstyled mt-2">
+                                <ul class="ui-list-unstyled tw:mt-2!">
                                     <li>
-                                        <i class="bi bi-check-circle text-success me-2"></i>
+                                        <i class="bi bi-check-circle tw:text-bs-success! tw:mr-2!"></i>
                                         Account active and ready to use
                                     </li>
                                     <li>
-                                        <i class="bi bi-envelope text-primary me-2"></i>
-                                        Login email: <span class="fw-semibold">{{ $teacher->email }}</span>
+                                        <i class="bi bi-envelope tw:text-bs-primary! tw:mr-2!"></i>
+                                        Login email: <span class="tw:font-semibold!">{{ $teacher->email }}</span>
                                     </li>
                                     <li>
-                                        <i class="bi bi-phone text-success me-2"></i>
-                                        Account linked to mobile: <span class="fw-semibold">{{ $teacher->mobile }}</span>
+                                        <i class="bi bi-phone tw:text-bs-success! tw:mr-2!"></i>
+                                        Account linked to mobile: <span class="tw:font-semibold!">{{ $teacher->mobile }}</span>
                                     </li>
                                 </ul>
                             </div>
@@ -402,13 +402,13 @@
 
                     </div>
 
-                    <div class="col-lg-6">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[50%]">
 
                         <!-- RESET PASSWORD FORM -->
                         <div class="reset-password-card">
 
-                            <h6 class="mb-3">
-                                <i class="bi bi-arrow-clockwise text-warning me-2"></i>
+                            <h6 class="tw:mb-4!">
+                                <i class="bi bi-arrow-clockwise tw:text-bs-warning! tw:mr-2!"></i>
                                 Reset Password
                             </h6>
 
@@ -416,15 +416,15 @@
 
                                 @csrf
 
-                                <div class="row g-3">
+                                <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2 bs-row">
 
-                                    <div class="col-12">
+                                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:flex-[0_0_auto] tw:w-[100%]">
 
                                         <div class="form-group">
-                                            <label for="reset_password" class="form-label fw-semibold">
-                                                <i class="bi bi-lock-fill me-1"></i>
+                                            <label for="reset_password" class="ui-form-label tw:font-semibold!">
+                                                <i class="bi bi-lock-fill tw:mr-1!"></i>
                                                 New Password
-                                                <span class="text-danger">*</span>
+                                                <span class="tw:text-bs-danger!">*</span>
                                             </label>
                                             <div class="password-input-wrapper">
                                                 <i class="bi bi-key-fill"></i>
@@ -432,7 +432,7 @@
                                                     type="password"
                                                     id="reset_password"
                                                     name="password"
-                                                    class="form-control custom-input @error('password') is-invalid @enderror"
+                                                    class="ui-form-control custom-input @error('password') ui-is-invalid @enderror"
                                                     placeholder="Enter new password"
                                                     required
                                                     minlength="8">
@@ -441,8 +441,8 @@
                                                 </button>
                                             </div>
                                             @error('password')
-                                                <div class="invalid-feedback d-block">
-                                                    <i class="bi bi-exclamation-circle-fill me-1"></i>
+                                                <div class="ui-invalid-feedback tw:block!">
+                                                    <i class="bi bi-exclamation-circle-fill tw:mr-1!"></i>
                                                     {{ $message }}
                                                 </div>
                                             @enderror
@@ -450,13 +450,13 @@
 
                                     </div>
 
-                                    <div class="col-12">
+                                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:flex-[0_0_auto] tw:w-[100%]">
 
                                         <div class="form-group">
-                                            <label for="reset_password_confirmation" class="form-label fw-semibold">
-                                                <i class="bi bi-check-circle-fill me-1"></i>
+                                            <label for="reset_password_confirmation" class="ui-form-label tw:font-semibold!">
+                                                <i class="bi bi-check-circle-fill tw:mr-1!"></i>
                                                 Confirm New Password
-                                                <span class="text-danger">*</span>
+                                                <span class="tw:text-bs-danger!">*</span>
                                             </label>
                                             <div class="password-input-wrapper">
                                                 <i class="bi bi-shield-lock-fill"></i>
@@ -464,37 +464,37 @@
                                                     type="password"
                                                     id="reset_password_confirmation"
                                                     name="password_confirmation"
-                                                    class="form-control custom-input"
+                                                    class="ui-form-control custom-input"
                                                     placeholder="Confirm new password"
                                                     required>
                                                 <button type="button" class="password-toggle" onclick="togglePassword('reset_password_confirmation')">
                                                     <i class="bi bi-eye-slash-fill" id="reset-confirm-icon"></i>
                                                 </button>
                                             </div>
-                                            <div id="reset-password-match" class="mt-1"></div>
+                                            <div id="reset-password-match" class="tw:mt-1!"></div>
                                         </div>
 
                                     </div>
 
-                                    <div class="col-12">
+                                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:flex-[0_0_auto] tw:w-[100%]">
 
-                                        <div class="mb-3">
+                                        <div class="tw:mb-4!">
                                             @include('partials.send-login-sms', ['id' => 'sendSmsResetPassword'])
                                         </div>
 
-                                        <div class="d-flex gap-2 flex-wrap">
-                                            <button type="submit" class="btn btn-warning custom-btn">
-                                                <i class="bi bi-arrow-clockwise me-2"></i>
+                                        <div class="bs-d-flex tw:flex! tw:gap-2! tw:flex-wrap!">
+                                            <button type="submit" class="ui-btn ui-btn-warning custom-btn">
+                                                <i class="bi bi-arrow-clockwise tw:mr-2!"></i>
                                                 Reset Password
                                             </button>
-                                            <button type="reset" class="btn btn-light border custom-btn">
+                                            <button type="reset" class="ui-btn ui-btn-light tw:bs-border! custom-btn">
                                                 <i class="bi bi-arrow-counterclockwise"></i>
                                                 Clear
                                             </button>
                                         </div>
 
-                                        <small class="text-muted d-block mt-2">
-                                            <i class="bi bi-info-circle-fill me-1"></i>
+                                        <small class="tw:text-bs-secondary-color! tw:block! tw:mt-2!">
+                                            <i class="bi bi-info-circle-fill tw:mr-1!"></i>
                                             The teacher will receive a notification with their new credentials
                                         </small>
 
@@ -510,9 +510,9 @@
 
                 </div>
 
-                <div class="row mt-3">
-                    <div class="col-12">
-                        <a href="{{ route('teachers.index') }}" class="btn btn-primary custom-btn">
+                <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row tw:mt-4!">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:flex-[0_0_auto] tw:w-[100%]">
+                        <a href="{{ route('teachers.index') }}" class="ui-btn ui-btn-primary custom-btn">
                             <i class="bi bi-arrow-left"></i>
                             Back to Teachers
                         </a>
@@ -793,18 +793,18 @@
     }
 
     /* BREADCRUMB */
-    .breadcrumb {
+    .ui-breadcrumb {
         background: transparent;
         padding: 0;
         margin: 0;
     }
 
-    .breadcrumb-item a {
+    .ui-breadcrumb-item a {
         color: #4f46e5;
         font-weight: 500;
     }
 
-    .breadcrumb-item.active {
+    .ui-breadcrumb-item.active {
         color: #64748b;
         font-weight: 600;
     }
@@ -827,7 +827,7 @@
             justify-content: center;
         }
 
-        .teacher-info-card .row {
+        .teacher-info-card .bs-row {
             gap: 1rem;
         }
 
@@ -853,20 +853,20 @@
             font-size: 1.5rem;
         }
 
-        .login-status-card .text-md-end {
+        .login-status-card .bs-text-md-end {
             text-align: left !important;
             margin-top: 1rem;
         }
 
-        .login-status-card .d-flex.justify-content-md-end {
+        .login-status-card .bs-d-flex.bs-justify-content-md-end {
             justify-content: flex-start !important;
         }
 
-        .account-created-card .row > div:first-child {
+        .account-created-card .bs-row > div:first-child {
             margin-bottom: 1.5rem;
         }
 
-        .account-created-card .d-flex {
+        .account-created-card .bs-d-flex {
             flex-direction: column;
             align-items: flex-start !important;
         }
@@ -881,7 +881,7 @@
             padding: 1rem;
         }
 
-        .password-requirements .row {
+        .password-requirements .bs-row {
             gap: 0.5rem;
         }
 
@@ -912,7 +912,7 @@
             padding: 0.5rem 0.8rem;
         }
 
-        .custom-btn.btn-lg {
+        .custom-btn.ui-btn-lg {
             font-size: 1rem;
             padding: 0.6rem 1rem;
         }
@@ -981,9 +981,9 @@
                 }
 
                 if (password.value === this.value) {
-                    matchMessage.innerHTML = '<i class="bi bi-check-circle-fill text-success me-1"></i> <span class="text-success fw-semibold">Passwords match!</span>';
+                    matchMessage.innerHTML = '<i class="bi bi-check-circle-fill tw:text-bs-success! tw:mr-1!"></i> <span class="tw:text-bs-success! tw:font-semibold!">Passwords match!</span>';
                 } else {
-                    matchMessage.innerHTML = '<i class="bi bi-exclamation-circle-fill text-danger me-1"></i> <span class="text-danger fw-semibold">Passwords do not match</span>';
+                    matchMessage.innerHTML = '<i class="bi bi-exclamation-circle-fill tw:text-bs-danger! tw:mr-1!"></i> <span class="tw:text-bs-danger! tw:font-semibold!">Passwords do not match</span>';
                 }
             });
         }
@@ -1001,9 +1001,9 @@
                 }
 
                 if (resetPassword.value === this.value) {
-                    resetMatch.innerHTML = '<i class="bi bi-check-circle-fill text-success me-1"></i> <span class="text-success fw-semibold">Passwords match!</span>';
+                    resetMatch.innerHTML = '<i class="bi bi-check-circle-fill tw:text-bs-success! tw:mr-1!"></i> <span class="tw:text-bs-success! tw:font-semibold!">Passwords match!</span>';
                 } else {
-                    resetMatch.innerHTML = '<i class="bi bi-exclamation-circle-fill text-danger me-1"></i> <span class="text-danger fw-semibold">Passwords do not match</span>';
+                    resetMatch.innerHTML = '<i class="bi bi-exclamation-circle-fill tw:text-bs-danger! tw:mr-1!"></i> <span class="tw:text-bs-danger! tw:font-semibold!">Passwords do not match</span>';
                 }
             });
         }
@@ -1030,7 +1030,7 @@
                         element.innerHTML = '<i class="bi bi-check-circle-fill"></i> ' + req.label;
                     } else {
                         element.className = 'requirement';
-                        element.innerHTML = '<i class="bi bi-x-circle-fill text-danger"></i> ' + req.label;
+                        element.innerHTML = '<i class="bi bi-x-circle-fill tw:text-bs-danger!"></i> ' + req.label;
                     }
                 }
             });
@@ -1045,7 +1045,7 @@
         const alerts = document.querySelectorAll('.custom-alert');
         alerts.forEach(alert => {
             setTimeout(() => {
-                const closeBtn = alert.querySelector('.btn-close');
+                const closeBtn = alert.querySelector('.ui-btn-close');
                 if (closeBtn) {
                     closeBtn.click();
                 }
