@@ -30,6 +30,8 @@
                             {{ $organizer->code }}
                             |
                             {{ $year }}-{{ str_pad($month, 2, '0', STR_PAD_LEFT) }}
+                            |
+                            {{ $branch?->name }}
                         </p>
 
                     </div>
@@ -41,6 +43,7 @@
                     <a href="{{ route('admin.organizer-payments.index', [
         'year' => $year,
         'month' => $month,
+        'branch_id' => $branchId,
     ]) }}" class="ui-btn ui-btn-outline-secondary custom-btn">
 
                         <i class="bi bi-arrow-left tw:mr-1!"></i>
@@ -50,12 +53,12 @@
 
                     @if($salaryRecord)
 
-                        <button type="button" class="ui-btn ui-btn-dark custom-btn" disabled>
+                        <a href="{{ route('admin.organizer-payments.salary-slip', ['organizer' => $organizer->id, 'year' => $year, 'month' => $month, 'branch_id' => $branchId]) }}" class="ui-btn ui-btn-dark custom-btn">
 
                             <i class="bi bi-printer tw:mr-1!"></i>
-                            Print Receipt
+                            Salary Slip
 
-                        </button>
+                        </a>
 
                     @endif
 
@@ -234,7 +237,7 @@
 
                     </div>
 
-                @elseif ($netTotal <= 0)
+                @elseif ($payBlockReason)
 
                     <div class="status-alert warning-alert">
 
@@ -245,11 +248,11 @@
                         <div>
 
                             <h5>
-                                No Payable Balance
+                                Salary cannot be paid now
                             </h5>
 
                             <p class="tw:mb-0!">
-                                There is no payable salary balance available for this organizer.
+                                {{ $payBlockReason }}
                             </p>
 
                         </div>
@@ -284,6 +287,10 @@
                                     Rs. {{ number_format($netTotal, 2) }}
                                 </h2>
 
+                                @if (abs($earlierBalance) >= 0.01)
+                                    <small class="cell-sub">Includes Rs. {{ number_format($earlierBalance, 2) }} from earlier months</small>
+                                @endif
+
                             </div>
 
                         </div>
@@ -296,6 +303,8 @@
 
                             <input type="hidden" name="year" value="{{ $year }}">
                             <input type="hidden" name="month" value="{{ $month }}">
+                            <input type="hidden" name="branch_id" value="{{ $branchId }}">
+                            <input type="hidden" name="expected_net" value="{{ $netTotal }}">
                             <input type="hidden" name="payment_type" value="salary">
 
                             <button type="submit" class="ui-btn ui-btn-success payment-btn">

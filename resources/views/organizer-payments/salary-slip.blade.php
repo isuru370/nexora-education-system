@@ -253,6 +253,10 @@
                     <div class="info-value">{{ $organizer->name }}</div>
                 </div>
                 <div class="info-item">
+                    <div class="info-label">Branch</div>
+                    <div class="info-value">{{ $branch?->name ?? '-' }}</div>
+                </div>
+                <div class="info-item">
                     <div class="info-label">Mobile</div>
                     <div class="info-value">{{ $organizer->mobile ?? '-' }}</div>
                 </div>
@@ -291,6 +295,13 @@
                         <td class="text-right amount-income">Rs. {{ number_format($totalIncome, 2) }}</td>
                     </tr>
 
+                    @if(abs($earlierBalance) >= 0.01)
+                        <tr>
+                            <td>Balance from earlier months</td>
+                            <td class="text-right amount-income">Rs. {{ number_format($earlierBalance, 2) }}</td>
+                        </tr>
+                    @endif
+
                     {{-- Advance Deduction --}}
                     @if($advanceAmount > 0)
                         <tr>
@@ -312,6 +323,14 @@
                         <tr>
                             <td>Other</td>
                             <td class="text-right amount-deduction">- Rs. {{ number_format($otherAmount, 2) }}</td>
+                        </tr>
+                    @endif
+
+                    {{-- fees of this month paid after the salary: in the next salary --}}
+                    @if($stillOwed >= 0.01)
+                        <tr>
+                            <td>Fees received after this salary (next salary)</td>
+                            <td class="text-right amount-deduction">- Rs. {{ number_format($stillOwed, 2) }}</td>
                         </tr>
                     @endif
 
