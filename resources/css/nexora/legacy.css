@@ -1,10 +1,64 @@
-{{-- ============================================================
-     nexoraEDU — Shared Theme (Darkened)
-     Dashboard-aligned design system (nx-*).
-     Used across all pages via layouts.app include.
-     ============================================================ --}}
+/*
+ * Styles that pages still built with Bootstrap rely on.
+ *
+ * This file sits in the "bootstrap" cascade layer together with Bootstrap
+ * itself, so its rules compete with Bootstrap exactly as before (by
+ * specificity and order). Tailwind utilities (tw:*) are in a later layer
+ * and always win. It shrinks as modules move to Tailwind and goes away
+ * with Bootstrap at the end.
+ */
 
-<style>
+/* ---------- From layouts/app.blade.php ---------- */
+:root {
+    --primary: #2563eb;
+    --primary-dark: #1d4ed8;
+    --secondary: #64748b;
+    --success: #10b981;
+    --warning: #f59e0b;
+    --danger: #ef4444;
+    --info: #0ea5e9;
+    --dark: #0f172a;
+    --dark-light: #1e293b;
+    --light: #f8fafc;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html {
+    scroll-behavior: smooth;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    background: linear-gradient(135deg, #f8fafc, #e2e8f0);
+    color: #1e293b;
+    min-height: 100vh;
+    overflow-x: hidden;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.alert {
+    border: none;
+    border-radius: 14px;
+    padding: 1rem 1.25rem;
+    font-weight: 500;
+    box-shadow: 0 6px 18px rgba(0, 0, 0, 0.05);
+}
+
+::-webkit-scrollbar { width: 8px; }
+::-webkit-scrollbar-thumb { background: linear-gradient(180deg, #2563eb, #1d4ed8); border-radius: 20px; }
+::-webkit-scrollbar-track { background: #e2e8f0; }
+
+/* ---------- nx-* design system (was layouts/partials/nexora-theme) ---------- */
+
     /* ============================================================
        PAGE WRAPPER
     ============================================================ */
@@ -704,4 +758,3 @@
             transition: none !important;
         }
     }
-</style>

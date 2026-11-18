@@ -1,0 +1,9 @@
+/*
+ * Small shared pieces for pages built with Tailwind (public/js/nx-ui.js
+ * opens / closes them). Everything else is Tailwind classes in the views.
+ */
+
+/* Hidden until nx-ui opens it: <div data-nx-menu> ... </div> */
+[data-nx-menu]:not([data-open]) {
+    display: none;
+}

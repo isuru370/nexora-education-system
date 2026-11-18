@@ -19,10 +19,19 @@ async function session(viewport) {
         document.addEventListener('DOMContentLoaded', () => document.head.appendChild(style));
     });
     const page = await context.newPage();
-    await page.goto(base + '/login');
-    await page.fill('input[name=email]', 'admin@test.lk');
-    await page.fill('input[name=password]', 'password123');
-    await Promise.all([page.waitForNavigation(), page.click('button[type=submit]')]);
+    for (let attempt = 1; ; attempt++) {
+        try {
+            await page.goto(base + '/login');
+            await page.fill('input[name=email]', 'admin@test.lk');
+            await page.fill('input[name=password]', 'password123');
+            await Promise.all([page.waitForNavigation(), page.click('button[type=submit]')]);
+            if (!page.url().includes('/login')) break;
+        } catch (e) {
+            if (attempt >= 3) throw e;
+        }
+        if (attempt >= 3) throw new Error('login failed');
+        await page.waitForTimeout(1000);
+    }
     return { context, page };
 }
 

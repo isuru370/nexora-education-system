@@ -95,6 +95,12 @@ jobs:
             git push
           fi
 
+      - name: Built CSS is up to date (public/css/nexora.css)
+        if: matrix.db == 'sqlite'
+        run: |
+          npm install --no-save --no-package-lock tailwindcss@4.3.3 > /dev/null
+          node resources/css/build.mjs --check
+
       - name: Prepare .env
         run: |
           cp .env.example .env

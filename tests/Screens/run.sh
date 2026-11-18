@@ -27,7 +27,11 @@ php artisan key:generate --force -q
 php artisan storage:link -q || true
 
 php vendor/bin/phpunit -c tests/Screens/phpunit.xml
-php artisan serve --host=127.0.0.1 --port="$port" > /tmp/serve-$port.log 2>&1 &
-sleep 3
+php artisan serve --host=127.0.0.1 --port="$port" > "/tmp/serve-$(basename "$dir").log" 2>&1 &
+server=$!
+for i in $(seq 1 30); do curl -s -o /dev/null "http://127.0.0.1:$port/login" && break; sleep 1; done
 
 node "$GITHUB_WORKSPACE/tools/shoot.mjs" "http://127.0.0.1:$port" storage/screens/urls.json "$out"
+
+# both runs use the same port (the URL shows on some pages)
+kill $server; pkill -f "artisan serve" || true; pkill -f "php -S 127.0.0.1:$port" || true; sleep 1
