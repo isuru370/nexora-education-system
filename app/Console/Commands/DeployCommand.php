@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Services\System\DeployCheckService;
+use App\Services\System\FolderPermissionService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Log;
@@ -19,7 +20,8 @@ use Throwable;
  *  4. Health checks (tables, roles, admin, routes, controllers, views, pages)
  *  5. Rebuilds the caches
  *  6. Sends this institute's details to the Parent Hub (parent app login)
- *  7. Prints READY FOR PRODUCTION / NOT READY  (exit code 0 / 1)
+ *  7. Gives storage/ and bootstrap/cache/ back to the web user (run as root)
+ *  8. Prints READY FOR PRODUCTION / NOT READY  (exit code 0 / 1)
  */
 class DeployCommand extends Command
 {
@@ -116,6 +118,18 @@ class DeployCommand extends Command
             $this->record(['Parent Hub' => $checker->ok('Not sent (--check)')]);
         } else {
             $this->record(['Parent Hub' => $checker->parentHubSync()]);
+        }
+
+        /*
+         * 7. Folder permissions - last, so the caches / logs made above as
+         *    root also go back to the web user
+         */
+        $this->section('7', 'Folder permissions');
+
+        if ($checkOnly) {
+            $this->record(['Folder permissions' => $checker->ok('Not changed (--check)')]);
+        } else {
+            $this->record(['Folder permissions' => app(FolderPermissionService::class)->fix()]);
         }
 
         return $this->finish($started);
@@ -230,7 +244,7 @@ class DeployCommand extends Command
     protected function section(string $number, string $title): void
     {
         $this->newLine();
-        $this->line("<fg=cyan;options=bold>[{$number}/6] {$title}</>");
+        $this->line("<fg=cyan;options=bold>[{$number}/7] {$title}</>");
     }
 
     protected function record(array $checks): void
