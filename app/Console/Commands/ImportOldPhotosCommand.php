@@ -104,6 +104,12 @@ class ImportOldPhotosCommand extends Command
             $count['created']++;
         }
 
+        // Run as root: the copied pictures / uploads folder must stay writable for PHP
+        if (!$dry) {
+            $permissions = app(\App\Services\System\FolderPermissionService::class)->fix();
+            $this->line('Folder permissions: ' . $permissions['message']);
+        }
+
         $this->newLine();
         $this->line($dry ? '<fg=yellow>DRY RUN - nothing was changed</>' : '<fg=green>Done</>');
         $this->table(['', 'Photos'], [

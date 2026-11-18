@@ -365,9 +365,10 @@
 
                 <div class="text-muted">
                     <i class="bi bi-collection me-1"></i>
-                    <strong>Total Cards:</strong> {{ $codes->count() }}
+                    @php($totalCards = $total ?? $codes->count())
+                    <strong>Total Cards:</strong> {{ $totalCards }}
                     <span class="mx-2">|</span>
-                    <strong>Total Pages:</strong> {{ ceil($codes->count() / 12) }}
+                    <strong>Total Pages:</strong> {{ ceil($totalCards / 12) }}
                     <span class="mx-2">|</span>
                     <strong>Layout:</strong> 3 × 4 Cards Per Page
                 </div>
@@ -379,13 +380,28 @@
                     <input type="hidden" name="start" value="{{ $start }}">
                     <input type="hidden" name="end" value="{{ $end }}">
 
-                    <button type="submit" class="btn btn-primary custom-btn">
-                        <i class="bi bi-file-pdf me-1"></i>
-                        Download PDF
-                    </button>
+                    @if (($files ?? 1) > 1)
+                        <button type="submit" class="btn btn-primary custom-btn">
+                            <i class="bi bi-file-zip me-1"></i>
+                            Download ZIP ({{ $files }} PDFs)
+                        </button>
+                    @else
+                        <button type="submit" class="btn btn-primary custom-btn">
+                            <i class="bi bi-file-pdf me-1"></i>
+                            Download PDF
+                        </button>
+                    @endif
                 </form>
 
             </div>
+
+            @if (($total ?? 0) > $codes->count())
+                <div class="alert alert-info border-0 rounded-4 no-print">
+                    <i class="bi bi-info-circle me-1"></i>
+                    Showing the first {{ $codes->count() }} of {{ $total }} cards. The download has all {{ $total }}:
+                    a ZIP with one PDF for every {{ \App\Services\Web\TemporaryCard\TemporaryCardService::PDF_CHUNK }} cards.
+                </div>
+            @endif
         @endif
 
         {{-- =========================================================
