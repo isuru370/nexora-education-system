@@ -17,8 +17,8 @@
     <div class="notifications-page">
 
         {{-- STATS --}}
-        <div class="row g-4 mb-4">
-            <div class="col-xl-3 col-md-6">
+        <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3 tw:mb-6!">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%]">
                 <div class="stats-card">
                     <div class="stats-icon purple">
                         <i class="bi bi-bell-fill"></i>
@@ -30,7 +30,7 @@
                 </div>
             </div>
 
-            <div class="col-xl-3 col-md-6">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%]">
                 <div class="stats-card">
                     <div class="stats-icon orange">
                         <i class="bi bi-clock-history"></i>
@@ -42,7 +42,7 @@
                 </div>
             </div>
 
-            <div class="col-xl-3 col-md-6">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%]">
                 <div class="stats-card">
                     <div class="stats-icon green">
                         <i class="bi bi-check-circle-fill"></i>
@@ -54,7 +54,7 @@
                 </div>
             </div>
 
-            <div class="col-xl-3 col-md-6">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%]">
                 <div class="stats-card">
                     <div class="stats-icon red">
                         <i class="bi bi-exclamation-circle-fill"></i>
@@ -68,8 +68,8 @@
         </div>
 
         {{-- SECOND ROW STATS --}}
-        <div class="row g-4 mb-4">
-            <div class="col-xl-4 col-md-6">
+        <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3 tw:mb-6!">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[33.33333333%]">
                 <div class="stats-card">
                     <div class="stats-icon blue">
                         <i class="bi bi-envelope-open-fill"></i>
@@ -81,7 +81,7 @@
                 </div>
             </div>
 
-            <div class="col-xl-4 col-md-6">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[33.33333333%]">
                 <div class="stats-card">
                     <div class="stats-icon teal">
                         <i class="bi bi-calendar-today"></i>
@@ -93,7 +93,7 @@
                 </div>
             </div>
 
-            <div class="col-xl-4 col-md-6">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[33.33333333%]">
                 <div class="stats-card">
                     <div class="stats-icon pink">
                         <i class="bi bi-percent"></i>
@@ -118,42 +118,42 @@
 
                 <div class="header-buttons">
                     {{-- Send Notification --}}
-                    <a href="{{ route('admin.notifications.create') }}" class="btn btn-primary custom-btn">
+                    <a href="{{ route('admin.notifications.create') }}" class="ui-btn ui-btn-primary custom-btn">
                         <i class="bi bi-plus-lg"></i>
                         Send Notification
                     </a>
 
                     {{-- Mark All Read --}}
-                    <form action="{{ route('admin.notifications.mark-all-read') }}" method="POST" class="d-inline">
+                    <form action="{{ route('admin.notifications.mark-all-read') }}" method="POST" class="tw:[display:inline]!">
                         @csrf
-                        <button type="submit" class="btn btn-info custom-btn">
+                        <button type="submit" class="ui-btn ui-btn-info custom-btn">
                             <i class="bi bi-check2-all"></i>
                             Mark All Read
                         </button>
                     </form>
 
                     {{-- Device Tokens (NEW) --}}
-                    <a href="{{ route('admin.fcm-tokens.index') }}" class="btn btn-purple custom-btn">
+                    <a href="{{ route('admin.fcm-tokens.index') }}" class="ui-btn btn-purple custom-btn">
                         <i class="bi bi-phone"></i>
                         Device Tokens
                         @php
                             $activeDeviceCount = App\Models\FcmToken::active()->count();
                         @endphp
                         @if ($activeDeviceCount > 0)
-                            <span class="badge bg-white text-dark ms-1">{{ $activeDeviceCount }}</span>
+                            <span class="ui-badge tw:bg-bs-white! tw:text-bs-dark! tw:ml-1!">{{ $activeDeviceCount }}</span>
                         @endif
                     </a>
 
                     {{-- Export --}}
                     <a href="{{ route('admin.notifications.export', request()->query()) }}"
-                        class="btn btn-success custom-btn">
+                        class="ui-btn ui-btn-success custom-btn">
                         <i class="bi bi-file-earmark-excel-fill"></i>
                         Export
                     </a>
 
                     {{-- Cleanup --}}
-                    <button type="button" class="btn btn-danger custom-btn" data-bs-toggle="modal"
-                        data-bs-target="#cleanupModal">
+                    <button type="button" class="ui-btn ui-btn-danger custom-btn" data-nx-toggle="modal"
+                        data-nx-target="#cleanupModal">
                         <i class="bi bi-trash-fill"></i>
                         Cleanup
                     </button>
@@ -162,15 +162,15 @@
 
             {{-- ALERT --}}
             @if (session('success'))
-                <div class="alert alert-success custom-alert">
-                    <i class="bi bi-check-circle-fill me-2"></i>
+                <div class="ui-alert ui-alert-success custom-alert">
+                    <i class="bi bi-check-circle-fill tw:mr-2!"></i>
                     {{ session('success') }}
                 </div>
             @endif
 
             @if (session('error'))
-                <div class="alert alert-danger custom-alert">
-                    <i class="bi bi-exclamation-circle-fill me-2"></i>
+                <div class="ui-alert ui-alert-danger custom-alert">
+                    <i class="bi bi-exclamation-circle-fill tw:mr-2!"></i>
                     {{ session('error') }}
                 </div>
             @endif
@@ -178,17 +178,17 @@
             {{-- SEARCH / FILTER --}}
             <div class="search-card">
                 <form method="GET" action="{{ route('admin.notifications.index') }}">
-                    <div class="row g-3 align-items-center">
-                        <div class="col-lg-4">
+                    <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2 tw:items-center!">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[33.33333333%]">
                             <div class="search-input-wrapper">
                                 <i class="bi bi-search"></i>
-                                <input type="text" name="search" class="form-control custom-input"
+                                <input type="text" name="search" class="ui-form-control custom-input"
                                     placeholder="Search by title, body, student..." value="{{ request('search') }}">
                             </div>
                         </div>
 
-                        <div class="col-lg-2">
-                            <select name="status" class="form-select custom-input">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[16.66666667%]">
+                            <select name="status" class="ui-form-select custom-input">
                                 <option value="">All Status</option>
                                 @foreach ($statuses as $status)
                                     <option value="{{ $status }}"
@@ -199,8 +199,8 @@
                             </select>
                         </div>
 
-                        <div class="col-lg-2">
-                            <select name="type" class="form-select custom-input">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[16.66666667%]">
+                            <select name="type" class="ui-form-select custom-input">
                                 <option value="">All Types</option>
                                 @foreach ($types as $type)
                                     <option value="{{ $type }}" {{ request('type') == $type ? 'selected' : '' }}>
@@ -210,40 +210,40 @@
                             </select>
                         </div>
 
-                        <div class="col-lg-2">
-                            <button class="btn btn-primary w-100 custom-btn" type="submit">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[16.66666667%]">
+                            <button class="ui-btn ui-btn-primary tw:w-full! custom-btn" type="submit">
                                 <i class="bi bi-funnel-fill"></i>
                                 Filter
                             </button>
                         </div>
 
-                        <div class="col-lg-2">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[16.66666667%]">
                             <a href="{{ route('admin.notifications.index') }}"
-                                class="btn btn-light border w-100 custom-btn">
+                                class="ui-btn ui-btn-light tw:bs-border! tw:w-full! custom-btn">
                                 Reset
                             </a>
                         </div>
                     </div>
 
-                    <div class="row g-3 mt-2">
-                        <div class="col-lg-3">
-                            <input type="date" name="date_from" class="form-control custom-input" placeholder="From Date"
+                    <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2 tw:mt-2!">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[25%]">
+                            <input type="date" name="date_from" class="ui-form-control custom-input" placeholder="From Date"
                                 value="{{ request('date_from') }}">
                         </div>
-                        <div class="col-lg-3">
-                            <input type="date" name="date_to" class="form-control custom-input" placeholder="To Date"
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[25%]">
+                            <input type="date" name="date_to" class="ui-form-control custom-input" placeholder="To Date"
                                 value="{{ request('date_to') }}">
                         </div>
-                        <div class="col-lg-6">
-                            <small class="text-muted">Filter by date range</small>
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[50%]">
+                            <small class="tw:text-bs-secondary-color!">Filter by date range</small>
                         </div>
                     </div>
                 </form>
             </div>
 
             {{-- TABLE --}}
-            <div class="table-responsive">
-                <table class="table custom-table align-middle">
+            <div class="ui-table-responsive">
+                <table class="ui-table custom-table tw:align-middle!">
                     <thead>
                         <tr>
                             <th>#</th>
@@ -252,7 +252,7 @@
                             <th>Type</th>
                             <th>Status</th>
                             <th>Created</th>
-                            <th class="text-end">Actions</th>
+                            <th class="tw:text-right!">Actions</th>
                         </tr>
                     </thead>
 
@@ -264,7 +264,7 @@
                                 </td>
 
                                 <td>
-                                    <div class="d-flex align-items-center gap-3">
+                                    <div class="tw:flex! tw:items-center! tw:gap-4!">
                                         <div class="user-avatar"
                                             style="background: linear-gradient(135deg, #8b5cf6, #6d28d9);">
                                             {{ strtoupper(substr($notification->student->initial_name ?? 'S', 0, 1)) }}
@@ -274,7 +274,7 @@
                                             <div class="user-name">
                                                 {{ $notification->student->initial_name ?? 'Unknown Student' }}
                                             </div>
-                                            <small class="text-muted">
+                                            <small class="tw:text-bs-secondary-color!">
                                                 ID: {{ $notification->student->custom_id ?? $notification->student_id }}
                                             </small>
                                         </div>
@@ -284,20 +284,20 @@
                                 <td>
                                     <div class="notification-content">
                                         <a href="{{ route('admin.notifications.show', $notification->id) }}"
-                                            class="notification-title {{ is_null($notification->read_at) ? 'fw-bold' : '' }}">
+                                            class="notification-title {{ is_null($notification->read_at) ? 'tw:font-bold!' : '' }}">
                                             {{ Str::limit($notification->title, 50) }}
                                         </a>
                                         <br>
-                                        <small class="text-muted">{{ Str::limit($notification->body, 60) }}</small>
+                                        <small class="tw:text-bs-secondary-color!">{{ Str::limit($notification->body, 60) }}</small>
                                         @if (is_null($notification->read_at))
-                                            <span class="badge bg-primary ms-1" style="font-size: 8px;">NEW</span>
+                                            <span class="ui-badge tw:bg-bs-primary! tw:ml-1!" style="font-size: 8px;">NEW</span>
                                         @endif
                                     </div>
                                 </td>
 
                                 <td>
-                                    <span class="badge custom-badge {{ $notification->type }}-badge">
-                                        <i class="bi {{ $notification->type_icon }} me-1"></i>
+                                    <span class="ui-badge custom-badge {{ $notification->type }}-badge">
+                                        <i class="bi tw:mr-1! {{ $notification->type_icon }}"></i>
                                         {{ $notification->type_label }}
                                     </span>
                                 </td>
@@ -320,13 +320,13 @@
                                         ];
                                     @endphp
                                     <span
-                                        class="badge custom-badge status-badge bg-{{ $statusColors[$notification->status] ?? 'secondary' }}">
-                                        <i class="bi {{ $statusIcons[$notification->status] ?? 'bi-circle' }} me-1"></i>
+                                        class="ui-badge custom-badge status-badge bg-{{ $statusColors[$notification->status] ?? 'secondary' }}">
+                                        <i class="bi tw:mr-1! {{ $statusIcons[$notification->status] ?? 'bi-circle' }}"></i>
                                         {{ $notification->status_label }}
                                     </span>
                                     @if ($notification->wasFailed() && $notification->error_message)
                                         <br>
-                                        <small class="text-danger" title="{{ $notification->error_message }}">
+                                        <small class="tw:text-bs-danger!" title="{{ $notification->error_message }}">
                                             <i class="bi bi-exclamation-triangle-fill"></i>
                                             {{ Str::limit($notification->error_message, 30) }}
                                         </small>
@@ -337,11 +337,11 @@
                                     <div>
                                         {{ $notification->created_at->format('Y-m-d') }}
                                         <br>
-                                        <small class="text-muted">{{ $notification->created_at->format('H:i') }}</small>
+                                        <small class="tw:text-bs-secondary-color!">{{ $notification->created_at->format('H:i') }}</small>
                                     </div>
                                 </td>
 
-                                <td class="text-end">
+                                <td class="tw:text-right!">
                                     <div class="action-buttons">
                                         <a href="{{ route('admin.notifications.show', $notification->id) }}"
                                             class="action-btn view-btn" title="View">
@@ -350,7 +350,7 @@
 
                                         @if ($notification->isPending())
                                             <form action="{{ route('admin.notifications.cancel', $notification->id) }}"
-                                                method="POST" class="d-inline">
+                                                method="POST" class="tw:[display:inline]!">
                                                 @csrf
                                                 <button type="submit" class="action-btn cancel-btn"
                                                     onclick="return confirm('Cancel this notification?')" title="Cancel">
@@ -361,7 +361,7 @@
 
                                         @if ($notification->wasFailed() && $notification->canRetry())
                                             <form action="{{ route('admin.notifications.retry', $notification->id) }}"
-                                                method="POST" class="d-inline">
+                                                method="POST" class="tw:[display:inline]!">
                                                 @csrf
                                                 <button type="submit" class="action-btn retry-btn" title="Retry">
                                                     <i class="bi bi-arrow-repeat"></i>
@@ -371,7 +371,7 @@
 
                                         @if (is_null($notification->read_at))
                                             <form action="{{ route('admin.notifications.mark-read', $notification->id) }}"
-                                                method="POST" class="d-inline">
+                                                method="POST" class="tw:[display:inline]!">
                                                 @csrf
                                                 <button type="submit" class="action-btn read-btn" title="Mark as Read">
                                                     <i class="bi bi-check2-circle"></i>
@@ -381,7 +381,7 @@
 
                                         @if (!$notification->wasSent())
                                             <form action="{{ route('admin.notifications.destroy', $notification->id) }}"
-                                                method="POST" class="d-inline">
+                                                method="POST" class="tw:[display:inline]!">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="action-btn delete-btn"
@@ -395,12 +395,12 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7" class="text-center py-5 text-muted">
+                                <td colspan="7" class="tw:text-center! tw:py-12! tw:text-bs-secondary-color!">
                                     <div class="empty-state">
                                         <i class="bi bi-bell-slash"></i>
                                         <h5>No Notifications Found</h5>
                                         <p>Try adjusting search filters or send a new notification</p>
-                                        <a href="{{ route('admin.notifications.create') }}" class="btn btn-primary mt-3">
+                                        <a href="{{ route('admin.notifications.create') }}" class="ui-btn ui-btn-primary tw:mt-4!">
                                             <i class="bi bi-plus-lg"></i> Send Notification
                                         </a>
                                     </div>
@@ -412,43 +412,43 @@
             </div>
 
             {{-- PAGINATION --}}
-            <div class="mt-4">
+            <div class="tw:mt-6!">
                 {{ $notifications->links() }}
             </div>
         </div>
     </div>
 
     {{-- CLEANUP MODAL --}}
-    <div class="modal fade" id="cleanupModal" tabindex="-1">
-        <div class="modal-dialog">
-            <div class="modal-content">
+    <div class="ui-modal ui-fade" id="cleanupModal" tabindex="-1">
+        <div class="ui-modal-dialog">
+            <div class="ui-modal-content">
                 <form action="{{ route('admin.notifications.cleanup') }}" method="POST">
                     @csrf
                     @method('DELETE')
-                    <div class="modal-header">
-                        <h5 class="modal-title">
-                            <i class="bi bi-trash-fill text-danger me-2"></i>
+                    <div class="ui-modal-header">
+                        <h5 class="ui-modal-title">
+                            <i class="bi bi-trash-fill tw:text-bs-danger! tw:mr-2!"></i>
                             Delete Old Notifications
                         </h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                        <button type="button" class="ui-btn-close" data-nx-dismiss="modal"></button>
                     </div>
-                    <div class="modal-body">
+                    <div class="ui-modal-body">
                         <p>Delete notifications older than:</p>
                         <div class="form-group">
-                            <input type="number" name="days" class="form-control custom-input" value="30"
+                            <input type="number" name="days" class="ui-form-control custom-input" value="30"
                                 min="1" max="365">
-                            <small class="text-muted">Enter number of days (e.g., 30 for last 30 days)</small>
+                            <small class="tw:text-bs-secondary-color!">Enter number of days (e.g., 30 for last 30 days)</small>
                         </div>
-                        <div class="alert alert-danger mt-3">
-                            <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                        <div class="ui-alert ui-alert-danger tw:mt-4!">
+                            <i class="bi bi-exclamation-triangle-fill tw:mr-2!"></i>
                             This will delete all sent, failed, and cancelled notifications older than specified days.
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-light border custom-btn"
-                            data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-danger custom-btn">
-                            <i class="bi bi-trash-fill me-1"></i>
+                    <div class="ui-modal-footer">
+                        <button type="button" class="ui-btn ui-btn-light tw:bs-border! custom-btn"
+                            data-nx-dismiss="modal">Cancel</button>
+                        <button type="submit" class="ui-btn ui-btn-danger custom-btn">
+                            <i class="bi bi-trash-fill tw:mr-1!"></i>
                             Delete
                         </button>
                     </div>
@@ -831,7 +831,7 @@
             box-shadow: 0 8px 25px rgba(124, 58, 237, 0.3);
         }
 
-        .btn-purple.custom-btn .badge {
+        .btn-purple.custom-btn .ui-badge {
             font-size: 10px;
             padding: 2px 8px;
             border-radius: 20px;
@@ -886,11 +886,11 @@
         }
 
         /* Pagination Custom */
-        .pagination {
+        .ui-pagination {
             gap: 4px;
         }
 
-        .pagination .page-link {
+        .ui-pagination .ui-page-link {
             border-radius: 10px !important;
             border: 1px solid #e2e8f0;
             color: #475569;
@@ -898,12 +898,12 @@
             padding: 0.5rem 1rem;
         }
 
-        .pagination .page-link:hover {
+        .ui-pagination .ui-page-link:hover {
             background: #f1f5f9;
             border-color: #cbd5e1;
         }
 
-        .pagination .active .page-link {
+        .ui-pagination .active .ui-page-link {
             background: #2563eb;
             border-color: #2563eb;
             color: #fff;

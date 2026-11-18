@@ -9,7 +9,7 @@
     {{-- ===================================================== --}}
     {{-- HERO --}}
     {{-- ===================================================== --}}
-    <div class="hero-section mb-4">
+    <div class="hero-section tw:mb-6!">
         <div class="hero-content">
             <div class="hero-left">
                 <span class="greeting-badge">nexoraEDU</span>
@@ -42,25 +42,25 @@
     {{-- ===================================================== --}}
     {{-- CLASS CATEGORY INFO --}}
     {{-- ===================================================== --}}
-    <div class="nx-card mb-4">
+    <div class="nx-card tw:mb-6!">
         <div class="nx-card-header">
             <div>
-                <h5 class="nx-card-title"><i class="bi bi-info-circle text-primary"></i> Class Category Information</h5>
+                <h5 class="nx-card-title"><i class="bi bi-info-circle tw:text-(color:--nx-blue)!"></i> Class Category Information</h5>
                 <p class="nx-card-subtitle">Context for these fee options</p>
             </div>
         </div>
 
-        <div class="p-3">
-            <div class="row g-3">
-                <div class="col-md-4">
+        <div class="tw:p-4!">
+            <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
                     <span class="cell-sub">Class</span>
                     <div class="cell-title">{{ $classCategoryFee->studentClass->class_name ?? 'N/A' }}</div>
                 </div>
-                <div class="col-md-4">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
                     <span class="cell-sub">Category</span>
                     <div class="cell-title">{{ $classCategoryFee->category->category_name ?? 'N/A' }}</div>
                 </div>
-                <div class="col-md-4">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
                     <span class="cell-sub">Status</span>
                     <div>
                         @if ($classCategoryFee->is_active)
@@ -78,25 +78,25 @@
     {{-- ALERTS --}}
     {{-- ===================================================== --}}
     @if (session('success'))
-        <div class="nx-alert nx-alert-green mb-4">
+        <div class="nx-alert nx-alert-green tw:mb-6!">
             <i class="bi bi-check-circle-fill"></i>
             <span>{{ session('success') }}</span>
         </div>
     @endif
 
     @if (session('error'))
-        <div class="nx-alert nx-alert-red mb-4">
+        <div class="nx-alert nx-alert-red tw:mb-6!">
             <i class="bi bi-exclamation-circle-fill"></i>
             <span>{{ session('error') }}</span>
         </div>
     @endif
 
     @if ($errors->any())
-        <div class="nx-alert nx-alert-red mb-4">
+        <div class="nx-alert nx-alert-red tw:mb-6!">
             <i class="bi bi-exclamation-triangle-fill"></i>
             <div>
                 <strong>Please fix the following errors:</strong>
-                <ul class="mb-0 mt-2">
+                <ul class="tw:mb-0! tw:mt-2!">
                     @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
                     @endforeach
@@ -108,19 +108,19 @@
     {{-- ===================================================== --}}
     {{-- FEE OPTIONS TABLE --}}
     {{-- ===================================================== --}}
-    <div class="nx-card mb-4">
+    <div class="nx-card tw:mb-6!">
 
         <div class="nx-card-header">
             <div>
-                <h5 class="nx-card-title"><i class="bi bi-cash-stack text-primary"></i> Fee Options</h5>
+                <h5 class="nx-card-title"><i class="bi bi-cash-stack tw:text-(color:--nx-blue)!"></i> Fee Options</h5>
                 <p class="nx-card-subtitle">Predefined payment options available for this category.</p>
             </div>
             <span class="nx-badge nx-badge-blue">{{ $feeOptions->count() }} Options</span>
         </div>
 
         @if ($feeOptions->count() > 0)
-            <div class="table-responsive">
-                <table class="table premium-table mb-0">
+            <div class="ui-table-responsive">
+                <table class="ui-table premium-table tw:mb-0!">
                     <thead>
                         <tr>
                             <th style="width: 60px;">#</th>
@@ -128,7 +128,7 @@
                             <th>Fee</th>
                             <th>Status</th>
                             <th>Default</th>
-                            <th class="text-end">Actions</th>
+                            <th class="tw:text-right!">Actions</th>
                         </tr>
                     </thead>
 
@@ -141,7 +141,7 @@
                                 <td>
                                     <div class="cell-title">{{ $option->label }}</div>
                                     @if ($option->note)
-                                        <small class="cell-sub d-block">{{ $option->note }}</small>
+                                        <small class="cell-sub tw:block!">{{ $option->note }}</small>
                                     @endif
                                 </td>
 
@@ -171,7 +171,7 @@
                                 </td>
 
                                 {{-- ACTIONS --}}
-                                <td class="text-end">
+                                <td class="tw:text-right!">
                                     <div class="action-buttons">
 
                                         {{-- EDIT --}}
@@ -194,7 +194,7 @@
                                                 action="{{ route('class-category-fee-options.set-default', [
                                                     'classCategoryFeeId' => $classCategoryFee->id,
                                                     'id' => $option->id,
-                                                ]) }}" class="d-inline">
+                                                ]) }}" class="tw:[display:inline]!">
                                                 @csrf
                                                 <button type="submit" class="action-btn" title="Set as Default" aria-label="Set as Default">
                                                     <i class="bi bi-star"></i>
@@ -215,7 +215,7 @@
                                                     action="{{ route('class-category-fee-options.deactivate', [
                                                         'classCategoryFeeId' => $classCategoryFee->id,
                                                         'id' => $option->id,
-                                                    ]) }}" class="d-inline"
+                                                    ]) }}" class="tw:[display:inline]!"
                                                     onsubmit="return confirm('Are you sure you want to deactivate this fee option?')">
                                                     @csrf
                                                     @method('PATCH')
@@ -228,7 +228,7 @@
                                                     action="{{ route('class-category-fee-options.activate', [
                                                         'classCategoryFeeId' => $classCategoryFee->id,
                                                         'id' => $option->id,
-                                                    ]) }}" class="d-inline">
+                                                    ]) }}" class="tw:[display:inline]!">
                                                     @csrf
                                                     @method('PATCH')
                                                     <button type="submit" class="action-btn action-btn-success" title="Activate" aria-label="Activate">
@@ -263,9 +263,9 @@
             </div>
         @else
             <div class="empty-table">
-                <i class="bi bi-cash-stack fs-2 d-block mb-3"></i>
-                <strong class="d-block mb-2">No Fee Options Found</strong>
-                <span class="cell-sub d-block mb-4">
+                <i class="bi bi-cash-stack tw:text-[length:calc(1.325rem_+_0.9vw)]! tw:xl:text-[length:2rem]! tw:block! tw:mb-4!"></i>
+                <strong class="tw:block! tw:mb-2!">No Fee Options Found</strong>
+                <span class="cell-sub tw:block! tw:mb-6!">
                     No predefined fee options have been created for this class category yet.
                 </span>
 

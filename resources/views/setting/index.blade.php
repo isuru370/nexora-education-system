@@ -7,7 +7,7 @@
     <div class="dashboard-page">
 
         {{-- HERO --}}
-        <div class="hero-section mb-4">
+        <div class="hero-section tw:mb-6!">
             <div class="hero-content">
                 <div class="hero-left">
                     <span class="greeting-badge">nexoraEDU</span>
@@ -18,7 +18,7 @@
                     @php
                         $settingsRole = strtoupper(optional(optional(auth()->user())->userType)->code ?? '');
                     @endphp
-                    <div class="hero-actions d-flex flex-wrap gap-2">
+                    <div class="hero-actions tw:flex! tw:flex-wrap! tw:gap-2!">
                         <a href="{{ route('admin.setting.notifications') }}" class="nx-btn nx-btn-light">
                             <i class="bi bi-bell-fill"></i> Parent Notifications
                         </a>
@@ -34,7 +34,7 @@
                         <a href="{{ route('admin.setting.teacher-app') }}" class="nx-btn nx-btn-light">
                             <i class="bi bi-person-video3"></i> Teacher App
                             @if (($teacherRequests = \App\Models\TeacherScheduleRequest::query()->where('status', 'pending')->count()) > 0)
-                                <span class="badge bg-danger ms-1">{{ $teacherRequests }}</span>
+                                <span class="ui-badge tw:[background:var(--nx-red)]! tw:ml-1!">{{ $teacherRequests }}</span>
                             @endif
                         </a>
                         @if ($settingsRole === 'SUPER_ADMIN')
@@ -60,13 +60,13 @@
 
         {{-- ALERTS --}}
         @if (session('success'))
-            <div class="nx-alert nx-alert-green mb-4">
+            <div class="nx-alert nx-alert-green tw:mb-6!">
                 <i class="bi bi-check-circle-fill"></i>
                 <span>{{ session('success') }}</span>
             </div>
         @endif
         @if (session('error'))
-            <div class="nx-alert nx-alert-red mb-4">
+            <div class="nx-alert nx-alert-red tw:mb-6!">
                 <i class="bi bi-exclamation-triangle-fill"></i>
                 <span>{{ session('error') }}</span>
             </div>
@@ -81,10 +81,10 @@
             }
         @endphp
 
-        <div class="nx-card mb-5">
+        <div class="nx-card tw:mb-12!">
             <div class="nx-card-header">
                 <div>
-                    <h5 class="nx-card-title"><i class="bi bi-bell-fill text-primary"></i> Parent Notifications</h5>
+                    <h5 class="nx-card-title"><i class="bi bi-bell-fill tw:text-(color:--nx-blue)!"></i> Parent Notifications</h5>
                     <p class="nx-card-subtitle">What parents are told, and whether it goes to the parent app or by SMS</p>
                 </div>
                 <a href="{{ route('admin.setting.notifications') }}" class="nx-btn nx-btn-primary">
@@ -93,8 +93,8 @@
             </div>
 
             @if ($notificationSettings->isEmpty())
-                <div class="p-3">
-                    <div class="nx-alert nx-alert-amber mb-0">
+                <div class="tw:p-4!">
+                    <div class="nx-alert nx-alert-amber tw:mb-0!">
                         <i class="bi bi-exclamation-triangle-fill"></i>
                         <span>Notification settings are not set up yet. Run <code>php artisan migrate</code>.</span>
                     </div>
@@ -120,23 +120,23 @@
         {{-- DATABASE BACKUP: Super Admin (Nexora) only --}}
         @if ($settingsRole === 'SUPER_ADMIN')
         {{-- SECTION HEADER --}}
-        <div class="nx-section-header mb-3" id="backup">
-            <h2 class="nx-section-title"><i class="bi bi-database text-primary"></i> Database Backup Management</h2>
+        <div class="nx-section-header tw:mb-4!" id="backup">
+            <h2 class="nx-section-title"><i class="bi bi-database tw:text-(color:--nx-blue)!"></i> Database Backup Management</h2>
             <p class="nx-section-subtitle">Manage your database backups securely</p>
         </div>
 
         {{-- BACKUP CARDS --}}
-        <div class="row g-4 mb-5">
-            <div class="col-md-6">
-                <div class="nx-card h-100">
-                    <div class="p-4 d-flex flex-column h-100">
-                        <div class="backup-card-icon icon-export mb-3"><i class="bi bi-download"></i></div>
+        <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3 tw:mb-12!">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
+                <div class="nx-card tw:h-full!">
+                    <div class="tw:p-6! tw:flex! tw:flex-col! tw:h-full!">
+                        <div class="backup-card-icon icon-export tw:mb-4!"><i class="bi bi-download"></i></div>
                         <h4 class="backup-card-title">Export Backup</h4>
                         <p class="backup-card-desc">
                             Create and download a complete database backup instantly.
                             The backup will include all your data in a compressed ZIP format.
                         </p>
-                        <div class="mt-auto">
+                        <div class="tw:mt-auto!">
                             <a href="{{ route('admin.setting.backup.export') }}" class="nx-btn nx-btn-success">
                                 <i class="bi bi-download"></i> Export Database
                             </a>
@@ -145,34 +145,34 @@
                 </div>
             </div>
 
-            <div class="col-md-6">
-                <div class="nx-card h-100">
-                    <div class="p-4 d-flex flex-column h-100">
-                        <div class="backup-card-icon icon-import mb-3"><i class="bi bi-upload"></i></div>
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
+                <div class="nx-card tw:h-full!">
+                    <div class="tw:p-6! tw:flex! tw:flex-col! tw:h-full!">
+                        <div class="backup-card-icon icon-import tw:mb-4!"><i class="bi bi-upload"></i></div>
                         <h4 class="backup-card-title">Import Backup</h4>
                         <p class="backup-card-desc">
                             Restore your database from a previously created backup ZIP file.
                             This will replace your current data.
                         </p>
                         <form action="{{ route('admin.setting.backup.import') }}" method="POST"
-                            enctype="multipart/form-data" id="importForm" class="mt-auto">
+                            enctype="multipart/form-data" id="importForm" class="tw:mt-auto!">
                             @csrf
-                            <div class="file-upload-wrapper mb-3">
+                            <div class="file-upload-wrapper tw:mb-4!">
                                 <div class="file-upload-area" onclick="document.getElementById('backup_file').click()">
                                     <i class="bi bi-cloud-upload"></i>
                                     <p>Click to choose backup file</p>
                                     <small>ZIP files only (Max 50MB)</small>
-                                    <input type="file" name="backup_file" id="backup_file" class="d-none" accept=".zip" required>
+                                    <input type="file" name="backup_file" id="backup_file" class="tw:hidden!" accept=".zip" required>
                                 </div>
-                                <div id="selectedFileName" class="selected-file-name mt-2" style="display: none;">
+                                <div id="selectedFileName" class="selected-file-name tw:mt-2!" style="display: none;">
                                     <i class="bi bi-file-zip"></i>
                                     <span></span>
                                 </div>
                             </div>
                             @error('backup_file')
-                                <div class="nx-error mb-3"><i class="bi bi-exclamation-circle"></i>{{ $message }}</div>
+                                <div class="nx-error tw:mb-4!"><i class="bi bi-exclamation-circle"></i>{{ $message }}</div>
                             @enderror
-                            <button type="submit" class="nx-btn nx-btn-primary w-100" onclick="return confirmImport()">
+                            <button type="submit" class="nx-btn nx-btn-primary tw:w-full!" onclick="return confirmImport()">
                                 <i class="bi bi-upload"></i> Import Database
                             </button>
                         </form>
@@ -182,10 +182,10 @@
         </div>
 
         {{-- BACKUP LOGS --}}
-        <div class="nx-card mb-4">
+        <div class="nx-card tw:mb-6!">
             <div class="nx-card-header">
                 <div>
-                    <h5 class="nx-card-title"><i class="bi bi-clock-history text-primary"></i> Backup Activity Logs</h5>
+                    <h5 class="nx-card-title"><i class="bi bi-clock-history tw:text-(color:--nx-blue)!"></i> Backup Activity Logs</h5>
                     <p class="nx-card-subtitle">Track all backup and restore operations</p>
                 </div>
                 <div class="logs-stats">
@@ -199,8 +199,8 @@
             @endphp
 
             @if ($logs->count() > 0)
-                <div class="table-responsive">
-                    <table class="table premium-table mb-0">
+                <div class="ui-table-responsive">
+                    <table class="ui-table premium-table tw:mb-0!">
                         <thead>
                             <tr>
                                 <th>#</th>
@@ -218,7 +218,7 @@
                                 <tr>
                                     <td class="row-number">{{ $log->id }}</td>
                                     <td>
-                                        <div class="d-flex align-items-center gap-2">
+                                        <div class="tw:flex! tw:items-center! tw:gap-2!">
                                             <div class="user-avatar">{{ strtoupper(substr(optional($log->user)->name ?? 'S', 0, 1)) }}</div>
                                             <span class="cell-title">{{ optional($log->user)->name ?? 'System' }}</span>
                                         </div>
@@ -253,7 +253,7 @@
                                     </td>
                                     <td>
                                         <div class="date-time">
-                                            <span class="cell-title d-block">
+                                            <span class="cell-title tw:block!">
                                                 <i class="bi bi-calendar"></i> {{ $log->created_at?->format('Y-m-d') }}
                                             </span>
                                             <small class="cell-sub">{{ $log->created_at?->format('H:i:s') }}</small>
@@ -263,8 +263,8 @@
                             @empty
                                 <tr>
                                     <td colspan="8" class="empty-table">
-                                        <i class="bi bi-database fs-2 d-block mb-2"></i>
-                                        <strong class="d-block">No Backup Logs Found</strong>
+                                        <i class="bi bi-database tw:text-[length:calc(1.325rem_+_0.9vw)]! tw:xl:text-[length:2rem]! tw:block! tw:mb-2!"></i>
+                                        <strong class="tw:block!">No Backup Logs Found</strong>
                                         <span class="cell-sub">Backup activities will appear here</span>
                                     </td>
                                 </tr>
@@ -272,11 +272,11 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="p-3 border-top">{{ $logs->links() }}</div>
+                <div class="tw:p-4! tw:bs-border-t!">{{ $logs->links() }}</div>
             @else
                 <div class="empty-table">
-                    <i class="bi bi-database fs-2 d-block mb-2"></i>
-                    <strong class="d-block">No Backup Logs Found</strong>
+                    <i class="bi bi-database tw:text-[length:calc(1.325rem_+_0.9vw)]! tw:xl:text-[length:2rem]! tw:block! tw:mb-2!"></i>
+                    <strong class="tw:block!">No Backup Logs Found</strong>
                     <span class="cell-sub">Backup activities will appear here</span>
                 </div>
             @endif

@@ -7,11 +7,11 @@
 
 {{-- ERRORS --}}
 @if ($errors->any())
-    <div class="nx-alert nx-alert-red mb-4">
+    <div class="nx-alert nx-alert-red tw:mb-6!">
         <i class="bi bi-exclamation-triangle-fill"></i>
         <div>
             <strong>Please correct the following errors:</strong>
-            <ul class="mb-0 mt-2">
+            <ul class="tw:mb-0! tw:mt-2!">
                 @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
                 @endforeach
@@ -28,13 +28,13 @@
         @method('PUT')
     @endif
 
-    <div class="row g-4">
+    <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3">
 
         {{-- ===================================================== --}}
         {{-- BRANCH --}}
         {{-- ===================================================== --}}
-        <div class="col-12">
-            <div class="section-header mb-3">
+        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:flex-[0_0_auto] tw:w-[100%]">
+            <div class="section-header tw:mb-4!">
                 <div class="section-icon icon-blue"><i class="bi bi-building"></i></div>
                 <div>
                     <h5 class="section-title">Branch Information</h5>
@@ -42,13 +42,13 @@
                 </div>
             </div>
 
-            <div class="mb-4">
+            <div class="tw:mb-6!">
                 <label for="branch_id" class="nx-label">
                     Branch <span style="color: var(--nx-red);">*</span>
                 </label>
 
                 <select name="branch_id" id="branch_id"
-                    class="form-select nx-input @error('branch_id') is-invalid @enderror"
+                    class="ui-form-select nx-input @error('branch_id') ui-is-invalid @enderror"
                     required>
 
                     <option value="">Select Branch</option>
@@ -65,7 +65,7 @@
                     <div class="nx-error"><i class="bi bi-exclamation-circle"></i> {{ $message }}</div>
                 @enderror
 
-                <small class="cell-sub d-block mt-1">
+                <small class="cell-sub tw:block! tw:mt-1!">
                     Select the branch that owns this hall.
                 </small>
             </div>
@@ -74,8 +74,8 @@
         {{-- ===================================================== --}}
         {{-- HALL INFORMATION --}}
         {{-- ===================================================== --}}
-        <div class="col-12">
-            <div class="section-header mb-3 pt-3 border-top">
+        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:flex-[0_0_auto] tw:w-[100%]">
+            <div class="section-header tw:mb-4! tw:pt-4! tw:bs-border-t!">
                 <div class="section-icon icon-green"><i class="bi bi-door-open"></i></div>
                 <div>
                     <h5 class="section-title">Hall Information</h5>
@@ -83,15 +83,15 @@
                 </div>
             </div>
 
-            <div class="row g-3 mb-4">
+            <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2 tw:mb-6!">
 
                 {{-- CODE --}}
-                <div class="col-md-4">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
                     <label for="code" class="nx-label">
                         Hall Code <span style="color: var(--nx-red);">*</span>
                     </label>
                     <input type="text" name="code" id="code"
-                        class="form-control nx-input @error('code') is-invalid @enderror"
+                        class="ui-form-control nx-input @error('code') ui-is-invalid @enderror"
                         value="{{ old('code', $classHall->code ?? '') }}"
                         placeholder="HALL-01"
                         maxlength="50"
@@ -99,18 +99,18 @@
                     @error('code')
                         <div class="nx-error"><i class="bi bi-exclamation-circle"></i> {{ $message }}</div>
                     @enderror
-                    <small class="cell-sub d-block mt-1">
+                    <small class="cell-sub tw:block! tw:mt-1!">
                         Code must be unique within the selected branch.
                     </small>
                 </div>
 
                 {{-- NAME --}}
-                <div class="col-md-8">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[66.66666667%]">
                     <label for="hall_name" class="nx-label">
                         Hall Name <span style="color: var(--nx-red);">*</span>
                     </label>
                     <input type="text" name="hall_name" id="hall_name"
-                        class="form-control nx-input @error('hall_name') is-invalid @enderror"
+                        class="ui-form-control nx-input @error('hall_name') ui-is-invalid @enderror"
                         value="{{ old('hall_name', $classHall->hall_name ?? '') }}"
                         placeholder="Main Hall"
                         maxlength="150"
@@ -121,10 +121,10 @@
                 </div>
 
                 {{-- TYPE --}}
-                <div class="col-md-6">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
                     <label for="hall_type" class="nx-label">Hall Type</label>
                     <input type="text" name="hall_type" id="hall_type"
-                        class="form-control nx-input @error('hall_type') is-invalid @enderror"
+                        class="ui-form-control nx-input @error('hall_type') ui-is-invalid @enderror"
                         value="{{ old('hall_type', $classHall->hall_type ?? '') }}"
                         placeholder="AC / Non-AC / Online"
                         maxlength="50">
@@ -134,12 +134,12 @@
                 </div>
 
                 {{-- PRICE --}}
-                <div class="col-md-6">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
                     <label for="hall_price" class="nx-label">Hall Price</label>
                     <div class="nx-input-group">
                         <span class="nx-input-group-text">LKR</span>
                         <input type="number" name="hall_price" id="hall_price"
-                            class="form-control nx-input @error('hall_price') is-invalid @enderror"
+                            class="ui-form-control nx-input @error('hall_price') ui-is-invalid @enderror"
                             value="{{ old('hall_price', $classHall->hall_price ?? '') }}"
                             min="0"
                             step="0.01"
@@ -148,18 +148,18 @@
                     @error('hall_price')
                         <div class="nx-error"><i class="bi bi-exclamation-circle"></i> {{ $message }}</div>
                     @enderror
-                    <small class="cell-sub d-block mt-1">
+                    <small class="cell-sub tw:block! tw:mt-1!">
                         Leave empty if no hall price is specified.
                     </small>
                 </div>
 
                 {{-- ACTIVE --}}
-                <div class="col-12">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:flex-[0_0_auto] tw:w-[100%]">
                     <input type="hidden" name="is_active" value="0">
 
                     <div class="toggle-switch">
                         <input type="checkbox" name="is_active" value="1" id="is_active"
-                            class="form-check-input flex-shrink-0"
+                            class="ui-form-check-input tw:shrink-0!"
                             style="width: 3em; height: 1.5em; cursor: pointer;"
                             {{ (bool) old('is_active', $classHall->is_active ?? true) ? 'checked' : '' }}>
                         <label for="is_active" class="toggle-content">
@@ -174,7 +174,7 @@
         {{-- ===================================================== --}}
         {{-- ACTIONS --}}
         {{-- ===================================================== --}}
-        <div class="col-12">
+        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:flex-[0_0_auto] tw:w-[100%]">
             <div class="nx-form-actions">
                 <a href="{{ route('class-halls.index') }}" class="nx-btn nx-btn-light">
                     <i class="bi bi-x-circle"></i> Cancel

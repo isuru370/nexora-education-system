@@ -81,6 +81,12 @@
 
     function Modal(el, options) {
         if (typeof el === 'string') el = document.querySelector(el);
+        // one instance per element: pages call "new NxUi.Modal(el)" on every click
+        var existing = instances.get(el);
+        if (existing) {
+            if (options) Object.assign(existing._options, options);
+            return existing;
+        }
         this._el = el;
         this._options = Object.assign({
             backdrop: el.getAttribute('data-nx-backdrop') === 'static' ? 'static' : el.getAttribute('data-nx-backdrop') !== 'false',

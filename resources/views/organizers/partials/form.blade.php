@@ -20,15 +20,15 @@ $selectedBranches = array_map('intval', (array) $selectedBranches);
 @endphp
 
 @if ($errors->any())
-    <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
-        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+    <div class="ui-alert ui-alert-danger ui-alert-dismissible ui-fade show tw:mb-6!" role="alert">
+        <i class="bi bi-exclamation-triangle-fill tw:mr-2!"></i>
         <strong>Please fix the following errors:</strong>
-        <ul class="mb-0 mt-2">
+        <ul class="tw:mb-0! tw:mt-2!">
             @foreach ($errors->all() as $error)
                 <li>{{ $error }}</li>
             @endforeach
         </ul>
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        <button type="button" class="ui-btn-close" data-nx-dismiss="alert"></button>
     </div>
 @endif
 
@@ -39,82 +39,82 @@ $selectedBranches = array_map('intval', (array) $selectedBranches);
         @method('PUT')
     @endif
 
-    <div class="row g-4">
+    <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3">
 
         {{-- ==================================================
              BASIC INFORMATION
         ================================================== --}}
-        <div class="col-12">
-            <h6 class="fw-bold mb-3">
-                <i class="bi bi-person me-2 text-primary"></i>
+        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:flex-[0_0_auto] tw:w-[100%]">
+            <h6 class="tw:font-bold! tw:mb-4!">
+                <i class="bi bi-person tw:mr-2! tw:text-bs-primary!"></i>
                 Basic Information
             </h6>
 
-            <div class="row g-3">
+            <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2">
 
                 {{-- Name --}}
-                <div class="col-md-6">
-                    <label class="form-label fw-semibold">
-                        Organizer Name <span class="text-danger">*</span>
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
+                    <label class="ui-form-label tw:font-semibold!">
+                        Organizer Name <span class="tw:text-bs-danger!">*</span>
                     </label>
                     <input type="text" name="name"
-                        class="form-control custom-input @error('name') is-invalid @enderror"
+                        class="ui-form-control custom-input @error('name') ui-is-invalid @enderror"
                         value="{{ old('name', $organizer->name ?? '') }}" required placeholder="Enter organizer name">
                     @error('name')
-                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                        <div class="ui-invalid-feedback tw:block!">{{ $message }}</div>
                     @enderror
                 </div>
 
                 {{-- ✅ Organizer Code — Auto Generated --}}
-                <div class="col-md-6">
-                    <label class="form-label fw-semibold">
-                        <i class="bi bi-hash me-1 text-primary"></i>
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
+                    <label class="ui-form-label tw:font-semibold!">
+                        <i class="bi bi-hash tw:mr-1! tw:text-bs-primary!"></i>
                         Organizer Code
-                        <span class="badge bg-info bg-opacity-10 text-info ms-2">
+                        <span class="ui-badge tw:bg-[rgba(13,202,240,0.1)]! tw:text-bs-info! tw:ml-2!">
                             <i class="bi bi-magic"></i> Auto
                         </span>
                     </label>
 
                     @if ($isEdit)
                         {{-- ✅ Edit Mode — Show generated code (readonly) --}}
-                        <input type="text" class="form-control custom-input bg-light" value="{{ $organizer->code }}"
+                        <input type="text" class="ui-form-control custom-input tw:bg-bs-light!" value="{{ $organizer->code }}"
                             readonly disabled>
 
-                        <small class="text-muted d-block mt-1">
-                            <i class="bi bi-info-circle me-1"></i>
+                        <small class="tw:text-bs-secondary-color! tw:block! tw:mt-1!">
+                            <i class="bi bi-info-circle tw:mr-1!"></i>
                             Code is auto-generated and cannot be changed.
                         </small>
                     @else
                         {{-- ✅ Create Mode — Show preview --}}
-                        <input type="text" class="form-control custom-input bg-light"
+                        <input type="text" class="ui-form-control custom-input tw:bg-bs-light!"
                             value="{{ $previewCode ?? 'Will be generated on save' }}" readonly disabled>
 
-                        <small class="text-muted d-block mt-1">
-                            <i class="bi bi-info-circle me-1"></i>
+                        <small class="tw:text-bs-secondary-color! tw:block! tw:mt-1!">
+                            <i class="bi bi-info-circle tw:mr-1!"></i>
                             Code will be generated automatically (e.g. ORG001).
                         </small>
                     @endif
                 </div>
 
                 {{-- Email --}}
-                <div class="col-md-6">
-                    <label class="form-label fw-semibold">Email</label>
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
+                    <label class="ui-form-label tw:font-semibold!">Email</label>
                     <input type="email" name="email"
-                        class="form-control custom-input @error('email') is-invalid @enderror"
+                        class="ui-form-control custom-input @error('email') ui-is-invalid @enderror"
                         value="{{ old('email', $organizer->email ?? '') }}" placeholder="organizer@example.com">
                     @error('email')
-                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                        <div class="ui-invalid-feedback tw:block!">{{ $message }}</div>
                     @enderror
                 </div>
 
                 {{-- Phone --}}
-                <div class="col-md-6">
-                    <label class="form-label fw-semibold">Phone</label>
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
+                    <label class="ui-form-label tw:font-semibold!">Phone</label>
                     <input type="text" name="phone"
-                        class="form-control custom-input @error('phone') is-invalid @enderror"
+                        class="ui-form-control custom-input @error('phone') ui-is-invalid @enderror"
                         value="{{ old('phone', $organizer->phone ?? '') }}" placeholder="0771234567">
                     @error('phone')
-                        <div class="invalid-feedback d-block">{{ $message }}</div>
+                        <div class="ui-invalid-feedback tw:block!">{{ $message }}</div>
                     @enderror
                 </div>
 
@@ -124,12 +124,12 @@ $selectedBranches = array_map('intval', (array) $selectedBranches);
         {{-- ==================================================
              BRANCHES (MULTI-SELECT)
         ================================================== --}}
-        <div class="col-12">
-            <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mb-3">
-                <h6 class="fw-bold mb-0">
-                    <i class="bi bi-building me-2 text-primary"></i>
+        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:flex-[0_0_auto] tw:w-[100%]">
+            <div class="tw:flex! tw:justify-between! tw:items-center! tw:flex-wrap! tw:gap-2! tw:mb-4!">
+                <h6 class="tw:font-bold! tw:mb-0!">
+                    <i class="bi bi-building tw:mr-2! tw:text-bs-primary!"></i>
                     Branches
-                    <span class="text-danger">*</span>
+                    <span class="tw:text-bs-danger!">*</span>
                     <span class="branch-counter">
                         <i class="bi bi-check2-square"></i>
                         <span id="selectedBranchCount">0</span> selected
@@ -137,11 +137,11 @@ $selectedBranches = array_map('intval', (array) $selectedBranches);
                 </h6>
 
                 <div class="branch-actions">
-                    <button type="button" class="btn btn-outline-primary btn-sm" id="selectAllBranches">
-                        <i class="bi bi-check-all me-1"></i> Select All
+                    <button type="button" class="ui-btn ui-btn-outline-primary ui-btn-sm" id="selectAllBranches">
+                        <i class="bi bi-check-all tw:mr-1!"></i> Select All
                     </button>
-                    <button type="button" class="btn btn-outline-secondary btn-sm" id="deselectAllBranches">
-                        <i class="bi bi-x-circle me-1"></i> Clear
+                    <button type="button" class="ui-btn ui-btn-outline-secondary ui-btn-sm" id="deselectAllBranches">
+                        <i class="bi bi-x-circle tw:mr-1!"></i> Clear
                     </button>
                 </div>
             </div>
@@ -173,15 +173,15 @@ $selectedBranches = array_map('intval', (array) $selectedBranches);
             </div>
 
             @error('branch_ids')
-                <div class="text-danger small mt-2">{{ $message }}</div>
+                <div class="tw:text-bs-danger! tw:text-[.875em] tw:mt-2!">{{ $message }}</div>
             @enderror
 
             @error('branch_ids.*')
-                <div class="text-danger small mt-2">{{ $message }}</div>
+                <div class="tw:text-bs-danger! tw:text-[.875em] tw:mt-2!">{{ $message }}</div>
             @enderror
 
-            <small class="text-muted d-block mt-2">
-                <i class="bi bi-info-circle me-1"></i>
+            <small class="tw:text-bs-secondary-color! tw:block! tw:mt-2!">
+                <i class="bi bi-info-circle tw:mr-1!"></i>
                 Select one or more branches this organizer belongs to.
             </small>
         </div>
@@ -189,16 +189,16 @@ $selectedBranches = array_map('intval', (array) $selectedBranches);
         {{-- ==================================================
              STATUS
         ================================================== --}}
-        <div class="col-12">
-            <h6 class="fw-bold mb-3">
-                <i class="bi bi-toggle-on me-2 text-primary"></i>
+        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:flex-[0_0_auto] tw:w-[100%]">
+            <h6 class="tw:font-bold! tw:mb-4!">
+                <i class="bi bi-toggle-on tw:mr-2! tw:text-bs-primary!"></i>
                 Status
             </h6>
 
-            <div class="form-check form-switch">
-                <input type="checkbox" name="is_active" value="1" id="is_active" class="form-check-input"
+            <div class="ui-form-check ui-form-switch">
+                <input type="checkbox" name="is_active" value="1" id="is_active" class="ui-form-check-input"
                     {{ old('is_active', $organizer->is_active ?? true) ? 'checked' : '' }}>
-                <label for="is_active" class="form-check-label fw-semibold">
+                <label for="is_active" class="ui-form-check-label tw:font-semibold!">
                     Active
                 </label>
             </div>
@@ -207,12 +207,12 @@ $selectedBranches = array_map('intval', (array) $selectedBranches);
         {{-- ==================================================
              BUTTONS
         ================================================== --}}
-        <div class="col-12 d-flex justify-content-end gap-2 pt-3 border-top">
-            <a href="{{ route('organizers.index') }}" class="btn btn-outline-secondary px-4">
-                <i class="bi bi-x-lg me-1"></i> Cancel
+        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:flex-[0_0_auto] tw:w-[100%] tw:flex! tw:justify-end! tw:gap-2! tw:pt-4! tw:bs-border-t!">
+            <a href="{{ route('organizers.index') }}" class="ui-btn ui-btn-outline-secondary tw:px-6!">
+                <i class="bi bi-x-lg tw:mr-1!"></i> Cancel
             </a>
-            <button type="submit" class="btn btn-primary px-4">
-                <i class="bi bi-save me-1"></i> {{ $buttonText ?? 'Save Organizer' }}
+            <button type="submit" class="ui-btn ui-btn-primary tw:px-6!">
+                <i class="bi bi-save tw:mr-1!"></i> {{ $buttonText ?? 'Save Organizer' }}
             </button>
         </div>
 

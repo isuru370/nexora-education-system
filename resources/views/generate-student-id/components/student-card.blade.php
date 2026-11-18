@@ -58,40 +58,40 @@
     $isAdmin = $isAdmin ?? false;
 @endphp
 
-<div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 mb-4 student-card"
+<div class="bs-col-xl-4 ui-col-xl-4 ui-col-lg-6 ui-col-md-6 ui-col-sm-12 tw:mb-6! student-card"
      data-id="{{ $studentKey }}"
      data-student='@json($studentData)'
      data-card-id="{{ $cardId }}">
 
-    <div class="premium-student-card h-100">
+    <div class="premium-student-card tw:h-full!">
 
         {{-- ==================== TOP BAR ==================== --}}
-        <div class="student-top d-flex justify-content-between align-items-start gap-2">
+        <div class="student-top tw:flex! tw:justify-between! tw:items-start! tw:gap-2!">
 
             <div class="student-info">
-                <div class="student-id-badge mb-1">
-                    <i class="fas fa-id-card me-1"></i>
+                <div class="student-id-badge tw:mb-1!">
+                    <i class="fas fa-id-card tw:mr-1!"></i>
                     {{ $studentData['custom_id'] }}
                 </div>
 
                 @if ($student->permanent_qr_active)
-                    <span class="badge rounded-pill bg-success-subtle text-success border border-success-subtle">
-                        <i class="fas fa-check-circle me-1"></i> Permanent card
+                    <span class="ui-badge tw:rounded-bs-pill! tw:bg-bs-success-bg-subtle! tw:text-(color:--nx-green)! tw:[border:1px_solid_#a3cfbb]!">
+                        <i class="fas fa-check-circle tw:mr-1!"></i> Permanent card
                     </span>
                 @else
-                    <span class="badge rounded-pill bg-warning-subtle text-warning-emphasis border border-warning-subtle">
-                        <i class="fas fa-clock me-1"></i> Temporary card
+                    <span class="ui-badge tw:rounded-bs-pill! tw:bg-bs-warning-bg-subtle! tw:text-bs-warning-text-emphasis! tw:[border:1px_solid_#ffe69c]!">
+                        <i class="fas fa-clock tw:mr-1!"></i> Temporary card
                     </span>
                 @endif
 
                 {{-- ✅ Branch Info --}}
                 @if ($branchName)
-                    <div class="student-card-badge mt-1">
-                        <small class="text-muted">
-                            <i class="fas fa-building me-1"></i>
+                    <div class="student-card-badge tw:mt-1!">
+                        <small class="tw:text-(color:--nx-muted)!">
+                            <i class="fas fa-building tw:mr-1!"></i>
                             {{ $branchName }}
                             @if ($branchCode)
-                                <span class="text-primary">({{ $branchCode }})</span>
+                                <span class="tw:text-(color:--nx-blue)!">({{ $branchCode }})</span>
                             @endif
                         </small>
                     </div>
@@ -100,9 +100,9 @@
 
             {{-- ✅ Checkbox --}}
             @if ($isAdmin)
-                <div class="form-check">
+                <div class="ui-form-check">
                     <input type="checkbox"
-                           class="form-check-input student-select"
+                           class="ui-form-check-input student-select"
                            value="{{ $studentKey }}"
                            id="student_{{ $studentKey }}">
                 </div>
@@ -123,17 +123,17 @@
         </div>
 
         {{-- ==================== ACTION AREA ==================== --}}
-        <div class="student-action-area px-3 pb-3 pt-2">
+        <div class="student-action-area tw:px-4! tw:pb-4! tw:pt-2!">
 
             {{-- Name + Date --}}
-            <div class="d-flex justify-content-between mb-2">
-                <small class="text-muted">
-                    <i class="fas fa-user me-1"></i>
+            <div class="tw:flex! tw:justify-between! tw:mb-2!">
+                <small class="tw:text-(color:--nx-muted)!">
+                    <i class="fas fa-user tw:mr-1!"></i>
                     {{ Str::limit($studentData['name'], 24) }}
                 </small>
 
-                <small class="text-muted">
-                    <i class="fas fa-calendar me-1"></i>
+                <small class="tw:text-(color:--nx-muted)!">
+                    <i class="fas fa-calendar tw:mr-1!"></i>
                     {{ $createdAt }}
                 </small>
             </div>
@@ -143,19 +143,19 @@
                 $downloadInfo = ($downloads ?? collect())->get($student->id);
             @endphp
             @if ($downloadInfo)
-                <div class="id-download-note mb-2" data-downloaded-note="{{ $cardId }}">
+                <div class="id-download-note tw:mb-2!" data-downloaded-note="{{ $cardId }}">
                     <i class="bi bi-arrow-repeat"></i>
                     Downloaded {{ $downloadInfo->times }}&times; &middot; last {{ \Carbon\Carbon::parse($downloadInfo->last_at)->format('d M Y') }}
-                    <span class="d-block">Next download: card fee</span>
+                    <span class="tw:block!">Next download: card fee</span>
                 </div>
             @endif
 
             {{-- ✅ Download ID Card Button --}}
             <button type="button"
-                    class="btn download-btn text-white w-100 download-single-btn"
+                    class="ui-btn download-btn tw:text-bs-white! tw:w-full! download-single-btn"
                     data-card-id="{{ $cardId }}"
                     data-student-key="{{ $studentKey }}">
-                <i class="fas fa-download me-1"></i> Download ID Card
+                <i class="fas fa-download tw:mr-1!"></i> Download ID Card
             </button>
 
         </div>

@@ -15,7 +15,7 @@
     <div class="dashboard-page">
 
         {{-- HERO --}}
-        <div class="hero-section mb-4">
+        <div class="hero-section tw:mb-6!">
             <div class="hero-content">
                 <div class="hero-left">
                     <span class="greeting-badge">nexoraEDU</span>
@@ -40,22 +40,22 @@
         </div>
 
         {{-- FILTERS --}}
-        <div class="nx-card mb-4">
+        <div class="nx-card tw:mb-6!">
             <div class="nx-card-header">
                 <div>
-                    <h5 class="nx-card-title"><i class="bi bi-funnel text-primary"></i> Filters</h5>
+                    <h5 class="nx-card-title"><i class="bi bi-funnel tw:text-(color:--nx-blue)!"></i> Filters</h5>
                     <p class="nx-card-subtitle">Filter by class, category or status</p>
                 </div>
             </div>
 
-            <div class="p-3">
+            <div class="tw:p-4!">
                 <form method="GET" action="{{ route('class-category-fees.index') }}">
-                    <div class="row g-3">
+                    <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2">
 
                         {{-- Class --}}
-                        <div class="col-md-4">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
                             <label for="student_class_id" class="nx-label">Class</label>
-                            <select name="student_class_id" id="student_class_id" class="form-select nx-input">
+                            <select name="student_class_id" id="student_class_id" class="ui-form-select nx-input">
                                 <option value="">All Classes</option>
                                 @foreach ($classes as $class)
                                     <option value="{{ $class->id }}"
@@ -69,9 +69,9 @@
                         </div>
 
                         {{-- Category --}}
-                        <div class="col-md-3">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[25%]">
                             <label for="class_category_id" class="nx-label">Category</label>
-                            <select name="class_category_id" id="class_category_id" class="form-select nx-input">
+                            <select name="class_category_id" id="class_category_id" class="ui-form-select nx-input">
                                 <option value="">All Categories</option>
                                 @foreach ($categories as $category)
                                     <option value="{{ $category->id }}"
@@ -84,9 +84,9 @@
                         </div>
 
                         {{-- Status --}}
-                        <div class="col-md-2">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[16.66666667%]">
                             <label for="is_active" class="nx-label">Status</label>
-                            <select name="is_active" id="is_active" class="form-select nx-input">
+                            <select name="is_active" id="is_active" class="ui-form-select nx-input">
                                 <option value="">All</option>
                                 <option value="true" {{ $currentStatus === 'true' ? 'selected' : '' }}>Active</option>
                                 <option value="false" {{ $currentStatus === 'false' ? 'selected' : '' }}>Inactive</option>
@@ -94,9 +94,9 @@
                         </div>
 
                         {{-- Per Page --}}
-                        <div class="col-md-1">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[8.33333333%]">
                             <label for="per_page" class="nx-label">Rows</label>
-                            <select name="per_page" id="per_page" class="form-select nx-input">
+                            <select name="per_page" id="per_page" class="ui-form-select nx-input">
                                 <option value="10" {{ (string) $currentPerPage === '10' ? 'selected' : '' }}>10</option>
                                 <option value="25" {{ (string) $currentPerPage === '25' ? 'selected' : '' }}>25</option>
                                 <option value="50" {{ (string) $currentPerPage === '50' ? 'selected' : '' }}>50</option>
@@ -105,8 +105,8 @@
                         </div>
 
                         {{-- Search + Reset --}}
-                        <div class="col-md-2 d-flex align-items-end gap-2">
-                            <button type="submit" class="nx-btn nx-btn-primary flex-grow-1">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[16.66666667%] tw:flex! tw:items-end! tw:gap-2!">
+                            <button type="submit" class="nx-btn nx-btn-primary tw:grow!">
                                 <i class="bi bi-search"></i> Search
                             </button>
                             <a href="{{ route('class-category-fees.index') }}" class="nx-btn nx-btn-light">
@@ -120,11 +120,11 @@
         </div>
 
         {{-- TABLE --}}
-        <div class="nx-card mb-4">
+        <div class="nx-card tw:mb-6!">
 
             <div class="nx-card-header">
                 <div>
-                    <h5 class="nx-card-title"><i class="bi bi-tags text-primary"></i> Category Assignments</h5>
+                    <h5 class="nx-card-title"><i class="bi bi-tags tw:text-(color:--nx-blue)!"></i> Category Assignments</h5>
                     <p class="nx-card-subtitle">Categories assigned to classes with schedule options</p>
                 </div>
                 <span class="nx-badge nx-badge-blue">
@@ -132,8 +132,8 @@
                 </span>
             </div>
 
-            <div class="table-responsive">
-                <table class="table premium-table mb-0">
+            <div class="ui-table-responsive">
+                <table class="ui-table premium-table tw:mb-0!">
                     <thead>
                         <tr>
                             <th>#</th>
@@ -141,8 +141,8 @@
                             <th>Category</th>
                             <th>Class Status</th>
                             <th>Category Fee Status</th>
-                            <th class="text-center">Schedule</th>
-                            <th class="text-end">Actions</th>
+                            <th class="tw:text-center!">Schedule</th>
+                            <th class="tw:text-right!">Actions</th>
                         </tr>
                     </thead>
 
@@ -179,7 +179,7 @@
                                 <td>
                                     <div class="cell-title">{{ optional($category)->category_name ?? '-' }}</div>
                                     @if (optional($category)->code)
-                                        <small class="cell-sub d-block">{{ $category->code }}</small>
+                                        <small class="cell-sub tw:block!">{{ $category->code }}</small>
                                     @endif
                                 </td>
 
@@ -202,7 +202,7 @@
                                 </td>
 
                                 {{-- SCHEDULE --}}
-                                <td class="text-center">
+                                <td class="tw:text-center!">
                                     <div class="action-buttons">
                                         <a href="{{ route('class-schedules.index', [
                                             'student_class_id' => $fee->student_class_id,
@@ -214,7 +214,7 @@
                                 </td>
 
                                 {{-- ACTIONS --}}
-                                <td class="text-end">
+                                <td class="tw:text-right!">
                                     <div class="action-buttons">
 
                                         {{-- View --}}
@@ -248,7 +248,7 @@
                                         @if ($classIsActive)
                                             <form method="POST"
                                                 action="{{ route('class-category-fees.toggle-active', $fee->id) }}"
-                                                class="d-inline">
+                                                class="tw:[display:inline]!">
                                                 @csrf
                                                 @method('PATCH')
                                                 <button type="submit"
@@ -271,8 +271,8 @@
                         @empty
                             <tr>
                                 <td colspan="7" class="empty-table">
-                                    <i class="bi bi-tags fs-2 d-block mb-2"></i>
-                                    <strong class="d-block">No Class Category Fees Found</strong>
+                                    <i class="bi bi-tags tw:text-[length:calc(1.325rem_+_0.9vw)]! tw:xl:text-[length:2rem]! tw:block! tw:mb-2!"></i>
+                                    <strong class="tw:block!">No Class Category Fees Found</strong>
                                     <span class="cell-sub">No category assignments match your filters.</span>
                                 </td>
                             </tr>
@@ -282,7 +282,7 @@
             </div>
 
             @if ($fees->hasPages())
-                <div class="p-3 border-top">
+                <div class="tw:p-4! tw:bs-border-t!">
                     {{ $fees->withQueryString()->links() }}
                 </div>
             @endif

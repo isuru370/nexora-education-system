@@ -9,7 +9,7 @@
         {{-- ===================================================== --}}
         {{-- HERO --}}
         {{-- ===================================================== --}}
-        <div class="hero-section mb-4">
+        <div class="hero-section tw:mb-6!">
             <div class="hero-content">
                 <div class="hero-left">
                     <span class="greeting-badge">
@@ -51,35 +51,35 @@
         {{-- ===================================================== --}}
         {{-- DETAILS CARD --}}
         {{-- ===================================================== --}}
-        <div class="nx-card mb-4">
+        <div class="nx-card tw:mb-6!">
 
             <div class="nx-card-header">
                 <div>
-                    <h5 class="nx-card-title"><i class="bi bi-info-circle-fill text-primary"></i> Admission Details</h5>
+                    <h5 class="nx-card-title"><i class="bi bi-info-circle-fill tw:text-(color:--nx-blue)!"></i> Admission Details</h5>
                     <p class="nx-card-subtitle">Fee structure, status and record information</p>
                 </div>
             </div>
 
-            <div class="p-3 p-md-4">
+            <div class="tw:p-4! tw:md:p-6!">
 
                 {{-- INFO GRID --}}
                 <div class="info-grid">
 
                     {{-- NAME --}}
                     <div class="info-card">
-                        <div class="info-label"><i class="bi bi-tag-fill text-primary"></i> Admission Name</div>
+                        <div class="info-label"><i class="bi bi-tag-fill tw:text-(color:--nx-blue)!"></i> Admission Name</div>
                         <div class="info-value">{{ $admission->name }}</div>
                     </div>
 
                     {{-- AMOUNT --}}
                     <div class="info-card">
-                        <div class="info-label"><i class="bi bi-cash-stack text-primary"></i> Amount</div>
+                        <div class="info-label"><i class="bi bi-cash-stack tw:text-(color:--nx-blue)!"></i> Amount</div>
                         <div class="info-value amount">Rs. {{ number_format($admission->amount, 2) }}</div>
                     </div>
 
                     {{-- STATUS --}}
                     <div class="info-card">
-                        <div class="info-label"><i class="bi bi-flag-fill text-primary"></i> Status</div>
+                        <div class="info-label"><i class="bi bi-flag-fill tw:text-(color:--nx-blue)!"></i> Status</div>
                         <div class="info-value">
                             @if ($admission->is_active)
                                 <span class="nx-badge nx-badge-green">
@@ -95,7 +95,7 @@
 
                     {{-- CREATED BY --}}
                     <div class="info-card">
-                        <div class="info-label"><i class="bi bi-person-badge-fill text-primary"></i> Created By</div>
+                        <div class="info-label"><i class="bi bi-person-badge-fill tw:text-(color:--nx-blue)!"></i> Created By</div>
                         <div class="info-value">{{ $admission->createdBy->name ?? 'System' }}</div>
                     </div>
                 </div>
@@ -144,7 +144,7 @@
         </div>
 
         {{-- FOOTER --}}
-        <div class="text-center">
+        <div class="tw:text-center!">
             <small class="cell-sub">
                 <i class="bi bi-info-circle"></i>
                 Admission ID: #{{ $admission->id }} |
