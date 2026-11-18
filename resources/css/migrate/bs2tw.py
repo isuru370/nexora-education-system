@@ -638,16 +638,25 @@ class Converter:
     def class_value(self, value, where='', row_parent=None, ui_grid=False):
         parts = re.split(r'(\{\{.*?\}\}|\{!!.*?!!\}|@\w+(?:\((?:[^()]|\([^()]*\))*\))?)', value, flags=re.S)
         static = [t for i, p in enumerate(parts) if i % 2 == 0 for t in p.split()]
-        if any(i % 2 == 1 and p.startswith('@') for i, p in enumerate(parts)):
+        glued = any(i % 2 == 1 and ((i > 0 and parts[i - 1][-1:] not in ('', ' ', '\n', '\t'))
+                                    or (i + 1 < len(parts) and parts[i + 1][:1] not in ('', ' ', '\n', '\t')))
+                    for i in range(len(parts)))
+        if glued or any(i % 2 == 1 and p.startswith('@') for i, p in enumerate(parts)):
             # @if / @error ... @endif inside the value: keep every class where it is
             out = []
             for i, p in enumerate(parts):
                 if i % 2 == 1:
                     out.append(self.expr(p, where, static) if not p.startswith('@') else p)
                 elif p.split():
-                    lead = ' ' if p[:1].isspace() else ''
-                    trail = ' ' if p[-1:].isspace() else ''
-                    out.append(lead + ' '.join(self.classes(p.split(), where, row_parent, ui_grid)) + trail)
+                    lead = p[:len(p) - len(p.lstrip())]
+                    trail = p[len(p.rstrip()):]
+                    toks = p.split()
+                    # a name glued to {{ }} (icon-{{ $x }}, {{ $x }}-badge) is only part of a class: keep it
+                    head = toks.pop(0) if not lead and i > 0 else None
+                    tail = toks.pop() if toks and not trail and i + 1 < len(parts) else None
+                    mapped = self.classes(toks, where, row_parent, ui_grid) if toks else []
+                    words = ([head] if head else []) + mapped + ([tail] if tail else [])
+                    out.append(lead + ' '.join(words) + trail)
                 else:
                     out.append(p)
             return ''.join(out)

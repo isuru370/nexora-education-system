@@ -60,7 +60,7 @@
                                 <span><i class="bi bi-building"></i> <strong>Branch:</strong> {{ $branchNames->join(', ') }}</span>
                             @endif
                             <span>
-                                <i class="bi bi-circle-fill {{ $student->is_active ? 'tw:text-(color:--nx-green)!' : 'tw:text-(color:--nx-red)!' }}"></i>
+                                <i class="bi bi-circle-fill {{ $student->is_active ? 'tw:text-(color:--nx-green)! bs-text-success' : 'tw:text-(color:--nx-red)! bs-text-danger' }}"></i>
                                 {{ $student->is_active ? 'Active' : 'Inactive' }}
                             </span>
                         </div>
@@ -278,6 +278,8 @@
         color: var(--nx-muted);
     }
     .dashboard-page .student-meta span i { margin-right: .3rem; }
+    .dashboard-page .student-meta .bs-text-success { color: var(--nx-green) !important; }
+    .dashboard-page .student-meta .bs-text-danger { color: var(--nx-red) !important; }
     .dashboard-page .student-actions { display: flex; gap: .5rem; flex-wrap: wrap; }
     .dashboard-page .fee-amount {
         color: var(--nx-green);

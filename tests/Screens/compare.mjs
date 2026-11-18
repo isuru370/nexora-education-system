@@ -21,13 +21,36 @@ function firstMoved(file) {
     const ja = path.join(beforeDir, file.replace('.png', '.json')), jb = path.join(afterDir, file.replace('.png', '.json'));
     if (!fs.existsSync(ja) || !fs.existsSync(jb)) return '';
     const A = JSON.parse(fs.readFileSync(ja, 'utf8')), B = JSON.parse(fs.readFileSync(jb, 'utf8'));
-    for (let i = 0; i < Math.min(A.length, B.length); i++) {
+    const n = Math.min(A.length, B.length);
+    const desc = (i, extra) => {
         const a = A[i], b = B[i];
-        const sa = a[5].split('|'), sb = b[5].split('|');
+        return `\`${b[0]}\` ${a[3]}×${a[4]}@${a[1]},${a[2]} → ${b[3]}×${b[4]}@${b[1]},${b[2]} ${extra || ''}`.slice(0, 300);
+    };
+    // 1) an element whose own styles changed
+    for (let i = 0; i < n; i++) {
+        if (A[i][0] !== B[i][0]) return `element ${i}: \`${A[i][0]}\` → \`${B[i][0]}\``;
+        const sa = A[i][5].split('|'), sb = B[i][5].split('|');
         const styles = PROPS.map((p, k) => (sa[k] !== sb[k] && p !== 'width' && p !== 'height' ? `${p}: ${sa[k]} → ${sb[k]}` : '')).filter(Boolean);
-        if (a[1] !== b[1] || a[2] !== b[2] || a[3] !== b[3] || a[4] !== b[4] || styles.length) {
-            return `\`${b[0]}\` ${a[3]}×${a[4]}@${a[1]},${a[2]} → ${b[3]}×${b[4]}@${b[1]},${b[2]} ${styles.join('; ')}`.slice(0, 300);
+        if (styles.length) return desc(i, styles.join('; '));
+    }
+    // 2) the first element that moved, and the last one before it that changed size (the cause)
+    for (let i = 0; i < n; i++) {
+        const a = A[i], b = B[i];
+        if (a[1] !== b[1] || a[2] !== b[2]) {
+            let cause = '';
+            for (let j = i - 1; j >= 0; j--) {
+                if (A[j][3] !== B[j][3] || A[j][4] !== B[j][4]) {
+                    // the deepest one: skip ancestors (they contain i)
+                    if (A[j][2] + A[j][4] >= a[2] && A[j][2] <= a[2]) continue;
+                    cause = ' after ' + desc(j);
+                    break;
+                }
+            }
+            return 'moved ' + desc(i) + cause;
         }
+    }
+    for (let i = n - 1; i >= 0; i--) {
+        if (A[i][3] !== B[i][3] || A[i][4] !== B[i][4]) return 'size ' + desc(i);
     }
     return A.length !== B.length ? `elements ${A.length} → ${B.length}` : '';
 }

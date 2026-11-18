@@ -53,7 +53,7 @@
         </div>
 
         <!-- STATS -->
-        <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3 tw:mb-6!">
+        <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3 bs-row tw:mb-6!">
             <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%]">
                 <div class="stats-card">
                     <div class="stats-icon blue">
@@ -97,7 +97,7 @@
                     </div>
                     <div>
                         <h3>
-                            <span class="ui-badge custom-badge {{ $student->is_active ? 'tw:bg-bs-success!' : 'tw:bg-bs-secondary!' }}">
+                            <span class="ui-badge custom-badge {{ $student->is_active ? 'tw:bg-bs-success! bs-bg-success' : 'tw:bg-bs-secondary!' }}">
                                 {{ $student->is_active ? 'Active' : 'Inactive' }}
                             </span>
                         </h3>
@@ -107,7 +107,7 @@
             </div>
         </div>
 
-        <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3">
+        <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3 bs-row">
 
             <!-- LEFT SIDE -->
             <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[50%]">
@@ -119,7 +119,7 @@
 
                     <div class="tw:text-center! tw:mb-6!">
                         <img src="{{ $studentImage }}" alt="{{ $student->full_name }}"
-                            class="student-profile-image tw:shadow-bs-sm!" onerror="this.src='{{ asset('images/male.png') }}'">
+                            class="student-profile-image bs-shadow-sm tw:shadow-bs-sm!" onerror="this.src='{{ asset('images/male.png') }}'">
 
                         <h5 class="tw:font-bold! tw:mt-4! tw:mb-0!">{{ $student->full_name }}</h5>
                         <small class="tw:text-bs-secondary-color!">{{ $student->custom_id }}</small>
@@ -173,7 +173,7 @@
                         <div class="info-row">
                             <span class="label">Class Type</span>
                             <span class="value">
-                                <span class="ui-badge tw:bg-bs-info! tw:text-bs-dark! custom-badge">
+                                <span class="ui-badge bs-bg-info tw:bg-bs-info! tw:text-bs-dark! custom-badge">
                                     {{ ucfirst($student->class_type ?? 'N/A') }}
                                 </span>
                             </span>
@@ -188,9 +188,9 @@
                             <span class="label">QR Type</span>
                             <span class="value">
                                 @if($student->permanent_qr_active)
-                                    <span class="ui-badge tw:bg-bs-success! custom-badge">Permanent QR</span>
+                                    <span class="ui-badge bs-bg-success tw:bg-bs-success! custom-badge">Permanent QR</span>
                                 @else
-                                    <span class="ui-badge tw:bg-bs-warning! tw:text-bs-dark! custom-badge">Temporary QR</span>
+                                    <span class="ui-badge bs-bg-warning tw:bg-bs-warning! tw:text-bs-dark! custom-badge">Temporary QR</span>
                                 @endif
                             </span>
                         </div>
@@ -269,7 +269,7 @@
                         <div class="info-row">
                             <span class="label">Active</span>
                             <span class="value">
-                                <span class="ui-badge custom-badge {{ $student->is_active ? 'tw:bg-bs-success!' : 'tw:bg-bs-secondary!' }}">
+                                <span class="ui-badge custom-badge {{ $student->is_active ? 'tw:bg-bs-success! bs-bg-success' : 'tw:bg-bs-secondary!' }}">
                                     {{ $student->is_active ? 'Active' : 'Inactive' }}
                                 </span>
                             </span>
@@ -279,9 +279,9 @@
                             <span class="label">Disabled</span>
                             <span class="value">
                                 @if($student->student_disable)
-                                    <span class="ui-badge tw:bg-bs-danger! custom-badge">Disabled</span>
+                                    <span class="ui-badge bs-bg-danger tw:bg-bs-danger! custom-badge">Disabled</span>
                                 @else
-                                    <span class="ui-badge tw:bg-bs-success! custom-badge">Enabled</span>
+                                    <span class="ui-badge bs-bg-success tw:bg-bs-success! custom-badge">Enabled</span>
                                 @endif
                             </span>
                         </div>

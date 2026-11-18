@@ -28,7 +28,7 @@
     {{-- Student Information --}}
     <div class="ui-card tw:shadow-bs-sm! tw:[border:0]! tw:mb-6!">
 
-        <div class="ui-card-header header-primary tw:bg-bs-primary! tw:text-bs-white!">
+        <div class="ui-card-header bs-bg-primary tw:bg-bs-primary! tw:text-bs-white!">
             <h5 class="tw:mb-0!">
                 <i class="bi bi-person-badge"></i>
                 Student Information
@@ -154,7 +154,7 @@
                                 @switch($history->action)
 
                                     @case('assigned')
-                                        <span class="ui-badge tw:bg-bs-primary!">
+                                        <span class="ui-badge bs-bg-primary tw:bg-bs-primary!">
                                             Assigned
                                         </span>
                                     @break
@@ -301,7 +301,7 @@ h6{
     margin-bottom:0;
 }
 
-.ui-card-header.header-primary{
+.ui-card-header.bs-bg-primary{
     border-radius:16px 16px 0 0;
 }
 

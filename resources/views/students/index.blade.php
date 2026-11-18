@@ -180,7 +180,7 @@
         {{-- SEARCH --}}
         <div class="nx-search">
             <form method="GET" action="{{ route('students.index') }}">
-                <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2">
+                <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2 bs-row">
                     <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[41.66666667%]">
                         <div class="search-input-wrapper">
                             <i class="bi bi-search"></i>

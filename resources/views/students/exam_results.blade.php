@@ -13,9 +13,9 @@
 @section('content')
     <div class="ui-container-fluid tw:px-2! tw:md:px-4!">
         <!-- Header Card -->
-        <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 tw:mb-4!">
+        <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row tw:mb-4!">
             <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:flex-[0_0_auto] tw:w-[100%]">
-                <div class="ui-card tw:[border:0]! tw:shadow-bs-sm!">
+                <div class="ui-card tw:[border:0]! bs-shadow-sm tw:shadow-bs-sm!">
                     <div class="ui-card-body tw:py-4!">
                         <div class="tw:flex! tw:flex-col! tw:md:flex-row! tw:justify-between! tw:items-start! tw:md:items-center!">
                             <div class="tw:flex! tw:items-center! tw:mb-2! tw:md:mb-0!">
@@ -45,9 +45,9 @@
         </div>
 
         <!-- Chart Card -->
-        <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 tw:mb-4!">
+        <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row tw:mb-4!">
             <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:flex-[0_0_auto] tw:w-[100%]">
-                <div class="ui-card tw:[border:0]! tw:shadow-bs-sm!">
+                <div class="ui-card tw:[border:0]! bs-shadow-sm tw:shadow-bs-sm!">
                     <div class="ui-card-header tw:bg-bs-white! tw:py-2! tw:bs-border-b!">
                         <div class="tw:flex! tw:justify-between! tw:items-center!">
                             <h5 class="tw:mb-0! tw:font-semibold!">
@@ -88,23 +88,23 @@
                         </div>
 
                         <!-- Stats Summary -->
-                        <div id="statsSummary" class="tw:flex tw:flex-wrap tw:-mt-2 tw:-mx-1 tw:mt-4! tw:hidden!">
+                        <div id="statsSummary" class="tw:flex tw:flex-wrap tw:-mt-2 tw:-mx-1 bs-row tw:mt-4! tw:hidden!">
                             <div class="tw:shrink-0 tw:max-w-full tw:px-1 tw:mt-2 tw:flex-[0_0_auto] tw:w-[33.33333333%]">
                                 <div class="tw:bg-bs-light! tw:rounded-bs! tw:p-2! tw:text-center!">
                                     <small class="tw:text-bs-secondary-color! tw:block!">Average</small>
-                                    <span class="tw:font-bold! tw:text-[length:1.1rem]! tw:text-bs-primary!" id="avgMarks">0</span>
+                                    <span class="tw:font-bold! bs-fs-5 tw:text-[length:1.1rem]! tw:text-bs-primary!" id="avgMarks">0</span>
                                 </div>
                             </div>
                             <div class="tw:shrink-0 tw:max-w-full tw:px-1 tw:mt-2 tw:flex-[0_0_auto] tw:w-[33.33333333%]">
                                 <div class="tw:bg-bs-light! tw:rounded-bs! tw:p-2! tw:text-center!">
                                     <small class="tw:text-bs-secondary-color! tw:block!">Highest</small>
-                                    <span class="tw:font-bold! tw:text-[length:1.1rem]! tw:text-bs-success!" id="highestMarks">0</span>
+                                    <span class="tw:font-bold! bs-fs-5 tw:text-[length:1.1rem]! tw:text-bs-success!" id="highestMarks">0</span>
                                 </div>
                             </div>
                             <div class="tw:shrink-0 tw:max-w-full tw:px-1 tw:mt-2 tw:flex-[0_0_auto] tw:w-[33.33333333%]">
                                 <div class="tw:bg-bs-light! tw:rounded-bs! tw:p-2! tw:text-center!">
                                     <small class="tw:text-bs-secondary-color! tw:block!">Lowest</small>
-                                    <span class="tw:font-bold! tw:text-[length:1.1rem]! tw:text-bs-danger!" id="lowestMarks">0</span>
+                                    <span class="tw:font-bold! bs-fs-5 tw:text-[length:1.1rem]! tw:text-bs-danger!" id="lowestMarks">0</span>
                                 </div>
                             </div>
                         </div>
@@ -114,9 +114,9 @@
         </div>
 
         <!-- Exam Results Table -->
-        <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3">
+        <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row">
             <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:flex-[0_0_auto] tw:w-[100%]">
-                <div class="ui-card tw:[border:0]! tw:shadow-bs-sm!">
+                <div class="ui-card tw:[border:0]! bs-shadow-sm tw:shadow-bs-sm!">
                     <div class="ui-card-header tw:bg-bs-white! tw:py-2! tw:bs-border-b!">
                         <div class="tw:flex! tw:justify-between! tw:items-center!">
                             <h5 class="tw:mb-0! tw:font-semibold!">
@@ -205,10 +205,10 @@
         }
         
         /* Status badge colors */
-        .ui-badge.status-success { background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important; }
-        .ui-badge.status-info { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important; }
-        .ui-badge.status-warning { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important; }
-        .ui-badge.status-danger { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important; }
+        .ui-badge.bs-bg-success { background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important; }
+        .ui-badge.bs-bg-info { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important; }
+        .ui-badge.bs-bg-warning { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important; }
+        .ui-badge.bs-bg-danger { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important; }
         
         /* Print styles */
         @media print {
@@ -242,6 +242,10 @@
         
         .ui-table th {
             font-size: 0.85rem;
+        }
+        
+        .bs-fs-5 {
+            font-size: 1.1rem !important;
         }
         
         small {
@@ -548,16 +552,16 @@
                 });
                 
                 // Status based on marks
-                let statusClass = 'tw:bg-bs-success! status-success';
+                let statusClass = 'tw:bg-bs-success! bs-bg-success';
                 let statusText = 'Excellent';
                 if (marks < 40) {
-                    statusClass = 'tw:bg-bs-danger! status-danger';
+                    statusClass = 'tw:bg-bs-danger! bs-bg-danger';
                     statusText = 'Needs Improvement';
                 } else if (marks < 60) {
-                    statusClass = 'tw:bg-bs-warning! status-warning';
+                    statusClass = 'tw:bg-bs-warning! bs-bg-warning';
                     statusText = 'Average';
                 } else if (marks < 75) {
-                    statusClass = 'tw:bg-bs-info! status-info';
+                    statusClass = 'tw:bg-bs-info! bs-bg-info';
                     statusText = 'Good';
                 }
                 
@@ -569,7 +573,7 @@
                             ${exam.is_updated ? '<br><small class="tw:text-bs-secondary-color!"><i class="fas fa-edit tw:mr-1!"></i>Updated</small>' : ''}
                         </td>
                         <td>${formattedDate}</td>
-                        <td class="tw:text-center! tw:font-bold! tw:text-[length:1.1rem]! ${marks >= 75 ? 'tw:text-bs-success!' : (marks >= 60 ? 'tw:text-bs-info!' : (marks >= 40 ? 'tw:text-bs-warning!' : 'tw:text-bs-danger!'))}">${marks}</td>
+                        <td class="tw:text-center! tw:font-bold! bs-fs-5 tw:text-[length:1.1rem]! ${marks >= 75 ? 'tw:text-bs-success!' : (marks >= 60 ? 'tw:text-bs-info!' : (marks >= 40 ? 'tw:text-bs-warning!' : 'tw:text-bs-danger!'))}">${marks}</td>
                         <td class="tw:text-center!">
                             <span class="ui-badge ${statusClass}">${statusText}</span>
                         </td>

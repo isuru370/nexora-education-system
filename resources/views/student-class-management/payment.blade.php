@@ -53,7 +53,7 @@
         <div class="nx-card stat-card">
             @php $status = $data['payment_status'] ?? 'unpaid'; @endphp
             <div class="stat-icon-wrapper {{ $status === 'paid' ? 'icon-green' : 'icon-red' }}">
-                <i class="bi bi- {{ $status === 'paid' ? 'check-circle-fill' : 'x-circle-fill' }}"></i>
+                <i class="bi bi-{{ $status === 'paid' ? 'check-circle-fill' : 'x-circle-fill' }}"></i>
             </div>
             <div class="stat-info">
                 <span class="stat-label">Overall Status</span>

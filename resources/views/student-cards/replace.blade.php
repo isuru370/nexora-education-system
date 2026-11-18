@@ -270,7 +270,7 @@
                                                     <i class="bi bi-check-circle tw:mr-1!"></i> Available
                                                 </span>
                                             @elseif($card->status == 'assigned')
-                                                <span class="ui-badge tw:bg-bs-primary! custom-badge-lg">
+                                                <span class="ui-badge bs-bg-primary tw:bg-bs-primary! custom-badge-lg">
                                                     <i class="bi bi-person-check tw:mr-1!"></i> Assigned
                                                 </span>
                                             @elseif($card->status == 'lost')

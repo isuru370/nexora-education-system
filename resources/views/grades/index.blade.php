@@ -122,7 +122,7 @@
 
                             <td>
                                 <div class="grade-name">
-                                    <span class="grade-badge grade- {{ strtolower($grade->grade_name) }}">
+                                    <span class="grade-badge grade-{{ strtolower($grade->grade_name) }}">
                                         {{ $grade->grade_name }}
                                     </span>
                                 </div>

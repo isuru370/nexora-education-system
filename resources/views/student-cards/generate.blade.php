@@ -182,7 +182,7 @@
                                     <h6 class="tw:font-bold! tw:mb-4!">
                                         <i class="bi bi-eye tw:mr-2!"></i>
                                         Card Format Preview
-                                        <span class="ui-badge tw:bg-bs-primary! custom-badge tw:ml-2!" id="branchPreviewBadge"
+                                        <span class="ui-badge bs-bg-primary tw:bg-bs-primary! custom-badge tw:ml-2!" id="branchPreviewBadge"
                                             style="display: none;">
                                             <i class="bi bi-building"></i>
                                             <span id="branchPreviewName">-</span>

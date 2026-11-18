@@ -59,7 +59,7 @@
             <div class="hero-right">
                 <div class="hero-actions">
                     <span class="nx-badge {{ $isEdit ? 'nx-badge-amber' : 'nx-badge-green' }}">
-                        <i class="bi bi- {{ $isEdit ? 'pencil' : 'plus' }}"></i>
+                        <i class="bi bi-{{ $isEdit ? 'pencil' : 'plus' }}"></i>
                         {{ $isEdit ? 'Editing' : 'Creating' }}
                     </span>
                 </div>
@@ -402,7 +402,7 @@
                 <div class="nx-card">
                     <div class="tw:p-4! tw:flex! tw:flex-col! tw:gap-2!">
                         <button type="submit" class="nx-btn nx-btn-primary tw:w-full!">
-                            <i class="bi bi- {{ $isEdit ? 'check-circle' : 'plus-circle' }}"></i>
+                            <i class="bi bi-{{ $isEdit ? 'check-circle' : 'plus-circle' }}"></i>
                             {{ $isEdit ? 'Update Exam' : 'Create Exam' }}
                         </button>
                         <a href="{{ route('admin.exams.index') }}" class="nx-btn nx-btn-light tw:w-full!">

@@ -12,9 +12,9 @@
 @section('content')
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
-    <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3">
+    <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row">
         <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:flex-[0_0_auto] tw:w-[100%]">
-            <div class="ui-card tw:shadow-bs-sm! tw:[border:0]!">
+            <div class="ui-card bs-shadow-sm tw:shadow-bs-sm! tw:[border:0]!">
                 <div class="ui-card-header tw:bg-bs-primary! tw:text-bs-white! tw:flex! tw:justify-between! tw:items-center!">
                     <div>
                         <strong><i class="fas fa-images tw:mr-2!"></i>Student Images Management</strong>
@@ -27,7 +27,7 @@
                 
                 <div class="ui-card-body">
                     <!-- Search Form -->
-                    <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 tw:mb-6!">
+                    <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row tw:mb-6!">
                         <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[100%]">
                             <form method="GET" action="{{ route('students.images') }}" class="tw:flex!">
                                 <div class="ui-input-group">
@@ -49,14 +49,14 @@
 
                     <!-- Student Images Grid -->
                     @if($students->count() > 0)
-                        <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3">
+                        <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row">
                             @foreach($students as $student)
                                 <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:lg:flex-[0_0_auto] tw:lg:w-[33.33333333%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%] tw:mb-6!">
-                                    <div class="ui-card student-card tw:h-full! tw:shadow-bs-sm!">
+                                    <div class="ui-card student-card tw:h-full! bs-shadow-sm tw:shadow-bs-sm!">
                                         <div class="ui-card-body tw:text-center! tw:p-4!">
                                             <!-- Status Badge -->
                                             <div class="tw:absolute! tw:top-0! tw:right-0! tw:p-2!">
-                                                <span class="ui-badge {{ $student->img_url ? 'tw:bg-bs-success!' : 'tw:bg-bs-warning!' }}">
+                                                <span class="ui-badge {{ $student->img_url ? 'tw:bg-bs-success! bs-bg-success' : 'tw:bg-bs-warning! bs-bg-warning' }}">
                                                     <i class="fas tw:mr-1! {{ $student->img_url ? 'fa-check' : 'fa-times' }}"></i>
                                                     {{ $student->img_url ? 'Has Image' : 'No Image' }}
                                                 </span>
@@ -110,7 +110,7 @@
                         </div>
                         
                         <!-- Pagination with Bootstrap Styling -->
-                        <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 tw:mt-6!">
+                        <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row tw:mt-6!">
                             <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[100%]">
                                 <!-- Bootstrap Pagination -->
                                 @if($students->hasPages())
@@ -376,7 +376,7 @@
     <div class="ui-modal ui-fade" id="viewImageModal" tabindex="-1" aria-hidden="true">
         <div class="ui-modal-dialog ui-modal-lg">
             <div class="ui-modal-content">
-                <div class="ui-modal-header tw:bg-bs-info! tw:text-bs-white!">
+                <div class="ui-modal-header bs-bg-info tw:bg-bs-info! tw:text-bs-white!">
                     <h5 class="ui-modal-title" id="viewImageTitle">
                         <i class="fas fa-image tw:mr-2!"></i>Student Image
                     </h5>
@@ -384,7 +384,7 @@
                         aria-label="Close"></button>
                 </div>
                 <div class="ui-modal-body">
-                    <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3">
+                    <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row">
                         <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:text-center! tw:mb-4!">
                             <h6>Current Image</h6>
                             <img id="viewImage" src="" class="ui-img-fluid tw:rounded-bs! tw:bs-border!" 
@@ -562,10 +562,10 @@
         // Set status badge
         if (imageUrl && imageUrl !== '') {
             viewImageStatus.textContent = 'Has Image';
-            viewImageStatus.className = 'ui-badge tw:bg-bs-success!';
+            viewImageStatus.className = 'ui-badge tw:bg-bs-success! bs-bg-success';
         } else {
             viewImageStatus.textContent = 'No Image';
-            viewImageStatus.className = 'ui-badge tw:bg-bs-warning!';
+            viewImageStatus.className = 'ui-badge tw:bg-bs-warning! bs-bg-warning';
         }
         
         // Show modal
@@ -752,7 +752,7 @@
 
             return `
                 <div class="quick-image-item ui-card tw:mb-2! tw:p-2!" onclick="selectQuickImage(${img.id}, '${imageUrl}', '${img.custom_id || 'No ID'}')">
-                    <div class="tw:flex tw:flex-wrap tw:-mt-2 tw:-mx-1 tw:items-center!">
+                    <div class="tw:flex tw:flex-wrap tw:-mt-2 tw:-mx-1 bs-row tw:items-center!">
                         <div class="tw:shrink-0 tw:max-w-full tw:px-1 tw:mt-2 tw:flex-[0_0_auto] tw:w-[25%]">
                             <img src="${imageUrl}" class="ui-img-fluid tw:rounded-bs!" style="height: 60px; object-fit: cover;"
                                  onerror="this.src='/uploads/logo/logo.png'">

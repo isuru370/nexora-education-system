@@ -137,7 +137,7 @@
             </div>
 
             <div class="nx-card stat-card">
-                <div class="stat-icon-wrapper icon- {{ $rateTone === 'green' ? 'green' : ($rateTone === 'amber' ? 'amber' : 'red') }}">
+                <div class="stat-icon-wrapper icon-{{ $rateTone === 'green' ? 'green' : ($rateTone === 'amber' ? 'amber' : 'red') }}">
                     <i class="bi bi-graph-up-arrow"></i>
                 </div>
                 <div class="stat-info">
@@ -255,7 +255,7 @@
                                         <i class="bi bi-calendar3"></i>
                                         {{ $category['class_days'] }} Days
                                     </span>
-                                    <span class="nx-badge nx-badge- {{ $category['attendance_rate'] >= 80 ? 'green' : ($category['attendance_rate'] >= 60 ? 'amber' : 'red') }}">
+                                    <span class="nx-badge nx-badge-{{ $category['attendance_rate'] >= 80 ? 'green' : ($category['attendance_rate'] >= 60 ? 'amber' : 'red') }}">
                                         <i class="bi bi-percent"></i>
                                         {{ number_format($category['attendance_rate'], 1) }}%
                                     </span>
@@ -283,7 +283,7 @@
                                                 $tone = $percent >= 80 ? 'green' : ($percent >= 60 ? 'amber' : 'red');
                                             @endphp
 
-                                            <tr class="att-student-row att-row- {{ $tone }}">
+                                            <tr class="att-student-row att-row-{{ $tone }}">
                                                 <td>
                                                     <div class="tw:flex! tw:items-center! tw:gap-2!">
                                                         <div class="att-avatar">
@@ -319,7 +319,7 @@
                                                 </td>
 
                                                 <td class="tw:text-center!">
-                                                    <span class="nx-badge nx-badge- {{ $tone }}">
+                                                    <span class="nx-badge nx-badge-{{ $tone }}">
                                                         {{ number_format($student['attendance_percentage'], 1) }}%
                                                     </span>
                                                 </td>

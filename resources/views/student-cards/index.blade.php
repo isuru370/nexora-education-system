@@ -375,7 +375,7 @@
                                         @break
 
                                         @case('assigned')
-                                            <span class="ui-badge tw:bg-bs-primary! custom-badge">Assigned</span>
+                                            <span class="ui-badge bs-bg-primary tw:bg-bs-primary! custom-badge">Assigned</span>
                                         @break
 
                                         @case('lost')

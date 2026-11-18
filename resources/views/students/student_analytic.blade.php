@@ -12,7 +12,7 @@
 @section('content')
     <div class="ui-container-fluid">
         <!-- Header Section -->
-        <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 tw:mb-6!">
+        <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row tw:mb-6!">
             <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:flex-[0_0_auto] tw:w-[100%]">
                 <div class="tw:flex! tw:flex-col! tw:md:flex-row! tw:justify-between! tw:items-start! tw:md:items-center!">
                     <div class="tw:mb-4! tw:md:mb-0!">
@@ -46,9 +46,9 @@
         </div>
 
         <!-- Student Profile Card -->
-        <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 tw:mb-6!">
+        <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row tw:mb-6!">
             <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:flex-[0_0_auto] tw:w-[100%]">
-                <div class="ui-card tw:[border:0]! tw:shadow-bs-sm!">
+                <div class="ui-card tw:[border:0]! bs-shadow-sm tw:shadow-bs-sm!">
                     <div class="ui-card-header tw:bg-bs-primary! tw:text-bs-white! tw:py-4! tw:bs-border-b!">
                         <div
                             class="tw:flex! tw:flex-col! tw:md:flex-row! tw:justify-between! tw:items-start! tw:md:items-center!">
@@ -75,9 +75,9 @@
         </div>
 
         <!-- Statistics Dashboard -->
-        <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 tw:mb-6!" id="statsSection">
+        <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row tw:mb-6!" id="statsSection">
             <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:flex-[0_0_auto] tw:w-[100%]">
-                <div class="ui-card tw:[border:0]! tw:shadow-bs-sm!">
+                <div class="ui-card tw:[border:0]! bs-shadow-sm tw:shadow-bs-sm!">
                     <div class="ui-card-header tw:bg-bs-primary! tw:text-bs-white! tw:py-4! tw:bs-border-b!">
                         <div
                             class="tw:flex! tw:flex-col! tw:md:flex-row! tw:justify-between! tw:items-start! tw:md:items-center!">
@@ -101,10 +101,10 @@
                         <!-- Stats Content -->
                         <div id="statsContent" class="tw:hidden!">
                             <!-- Main Stats Row -->
-                            <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3 tw:mb-6!">
+                            <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3 bs-row tw:mb-6!">
                                 <!-- Total Enrollments -->
                                 <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%]">
-                                    <div class="ui-card tw:[border:0]! tw:shadow-bs-sm! tw:h-full! tw:bg-[rgba(13,110,253,0.1)]!">
+                                    <div class="ui-card tw:[border:0]! bs-shadow-sm tw:shadow-bs-sm! tw:h-full! tw:bg-[rgba(13,110,253,0.1)]!">
                                         <div class="ui-card-body">
                                             <div class="tw:flex! tw:justify-between! tw:items-center! tw:mb-4!">
                                                 <div>
@@ -115,7 +115,7 @@
                                                     <i class="fas fa-chalkboard-teacher fa-lg tw:text-bs-primary!"></i>
                                                 </div>
                                             </div>
-                                            <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3">
+                                            <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row">
                                                 <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:flex-[0_0_auto] tw:w-[50%]">
                                                     <small class="tw:text-bs-secondary-color!">Active</small>
                                                     <div class="tw:font-bold! tw:text-bs-success!" id="activeEnrollments">0</div>
@@ -131,18 +131,18 @@
 
                                 <!-- Financial Overview -->
                                 <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%]">
-                                    <div class="ui-card tw:[border:0]! tw:shadow-bs-sm! tw:h-full! tw:bg-[rgba(25,135,84,0.1)]!">
+                                    <div class="ui-card tw:[border:0]! bs-shadow-sm tw:shadow-bs-sm! tw:h-full! bs-bg-success tw:bg-[rgba(25,135,84,0.1)]!">
                                         <div class="ui-card-body">
                                             <div class="tw:flex! tw:justify-between! tw:items-center! tw:mb-4!">
                                                 <div>
                                                     <h6 class="tw:text-bs-secondary-color! tw:mb-1!">Financial Summary</h6>
                                                     <h2 class="tw:mb-0! tw:text-bs-success!" id="totalFees">Rs. 0</h2>
                                                 </div>
-                                                <div class="tw:bg-[rgba(25,135,84,0.25)]! tw:p-4! tw:rounded-[50%]!">
+                                                <div class="bs-bg-success tw:bg-[rgba(25,135,84,0.25)]! tw:p-4! tw:rounded-[50%]!">
                                                     <i class="fas fa-money-bill-wave fa-lg tw:text-bs-success!"></i>
                                                 </div>
                                             </div>
-                                            <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3">
+                                            <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row">
                                                 <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:flex-[0_0_auto] tw:w-[50%]">
                                                     <small class="tw:text-bs-secondary-color!">Paid</small>
                                                     <div class="tw:font-bold! tw:text-bs-success!" id="totalPaid">Rs. 0</div>
@@ -158,18 +158,18 @@
 
                                 <!-- Attendance Overview -->
                                 <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%]">
-                                    <div class="ui-card tw:[border:0]! tw:shadow-bs-sm! tw:h-full! tw:bg-[rgba(13,202,240,0.1)]!">
+                                    <div class="ui-card tw:[border:0]! bs-shadow-sm tw:shadow-bs-sm! tw:h-full! bs-bg-info tw:bg-[rgba(13,202,240,0.1)]!">
                                         <div class="ui-card-body">
                                             <div class="tw:flex! tw:justify-between! tw:items-center! tw:mb-4!">
                                                 <div>
                                                     <h6 class="tw:text-bs-secondary-color! tw:mb-1!">Attendance Rate</h6>
                                                     <h2 class="tw:mb-0! tw:text-bs-info!" id="attendanceRate">0%</h2>
                                                 </div>
-                                                <div class="tw:bg-[rgba(13,202,240,0.25)]! tw:p-4! tw:rounded-[50%]!">
+                                                <div class="bs-bg-info tw:bg-[rgba(13,202,240,0.25)]! tw:p-4! tw:rounded-[50%]!">
                                                     <i class="fas fa-user-check fa-lg tw:text-bs-info!"></i>
                                                 </div>
                                             </div>
-                                            <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3">
+                                            <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row">
                                                 <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:flex-[0_0_auto] tw:w-[50%]">
                                                     <small class="tw:text-bs-secondary-color!">Present</small>
                                                     <div class="tw:font-bold! tw:text-bs-success!" id="totalPresent">0</div>
@@ -185,18 +185,18 @@
 
                                 <!-- Class Sessions -->
                                 <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%]">
-                                    <div class="ui-card tw:[border:0]! tw:shadow-bs-sm! tw:h-full! tw:bg-[rgba(255,193,7,0.1)]!">
+                                    <div class="ui-card tw:[border:0]! bs-shadow-sm tw:shadow-bs-sm! tw:h-full! bs-bg-warning tw:bg-[rgba(255,193,7,0.1)]!">
                                         <div class="ui-card-body">
                                             <div class="tw:flex! tw:justify-between! tw:items-center! tw:mb-4!">
                                                 <div>
                                                     <h6 class="tw:text-bs-secondary-color! tw:mb-1!">Class Sessions</h6>
                                                     <h2 class="tw:mb-0! tw:text-bs-warning!" id="totalSessions">0</h2>
                                                 </div>
-                                                <div class="tw:bg-[rgba(255,193,7,0.25)]! tw:p-4! tw:rounded-[50%]!">
+                                                <div class="bs-bg-warning tw:bg-[rgba(255,193,7,0.25)]! tw:p-4! tw:rounded-[50%]!">
                                                     <i class="fas fa-calendar-alt fa-lg tw:text-bs-warning!"></i>
                                                 </div>
                                             </div>
-                                            <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3">
+                                            <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row">
                                                 <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:flex-[0_0_auto] tw:w-[50%]">
                                                     <small class="tw:text-bs-secondary-color!">Avg/Class</small>
                                                     <div class="tw:font-bold! tw:text-bs-warning!" id="avgSessions">0</div>
@@ -212,10 +212,10 @@
                             </div>
 
                             <!-- Progress Bars Row -->
-                            <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3">
+                            <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3 bs-row">
                                 <!-- Payment Progress -->
-                                <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:xl:flex-[0_0_auto] tw:xl:w-[50%]">
-                                    <div class="ui-card tw:[border:0]! tw:shadow-bs-sm! tw:h-full!">
+                                <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:xl:flex-[0_0_auto] tw:xl:w-[50%] bs-col-xl-6">
+                                    <div class="ui-card tw:[border:0]! bs-shadow-sm tw:shadow-bs-sm! tw:h-full!">
                                         <div class="ui-card-header tw:bg-bs-white! tw:py-4! tw:bs-border-b!">
                                             <div class="tw:flex! tw:justify-between! tw:items-center!">
                                                 <h6 class="tw:mb-0!"><i class="fas fa-credit-card tw:mr-2! tw:text-bs-primary!"></i>Payment
@@ -226,7 +226,7 @@
                                         </div>
                                         <div class="ui-card-body">
                                             <div class="ui-progress" style="height: 10px;">
-                                                <div class="ui-progress-bar tw:bg-bs-success!" id="paymentProgress" style="width: 0%"
+                                                <div class="ui-progress-bar bs-bg-success tw:bg-bs-success!" id="paymentProgress" style="width: 0%"
                                                     role="progressbar"></div>
                                             </div>
                                             <div class="tw:mt-2! tw:flex! tw:justify-between!">
@@ -240,19 +240,19 @@
                                 </div>
 
                                 <!-- Attendance Progress -->
-                                <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:xl:flex-[0_0_auto] tw:xl:w-[50%]">
-                                    <div class="ui-card tw:[border:0]! tw:shadow-bs-sm! tw:h-full!">
+                                <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:xl:flex-[0_0_auto] tw:xl:w-[50%] bs-col-xl-6">
+                                    <div class="ui-card tw:[border:0]! bs-shadow-sm tw:shadow-bs-sm! tw:h-full!">
                                         <div class="ui-card-header tw:bg-bs-white! tw:py-4! tw:bs-border-b!">
                                             <div class="tw:flex! tw:justify-between! tw:items-center!">
                                                 <h6 class="tw:mb-0!"><i class="fas fa-chart-bar tw:mr-2! tw:text-bs-info!"></i>Attendance
                                                     Progress</h6>
-                                                <span class="ui-badge tw:bg-[rgba(13,202,240,0.1)]! tw:text-bs-info!"
+                                                <span class="ui-badge bs-bg-info tw:bg-[rgba(13,202,240,0.1)]! tw:text-bs-info!"
                                                     id="attendanceCompletion">0%</span>
                                             </div>
                                         </div>
                                         <div class="ui-card-body">
                                             <div class="ui-progress" style="height: 10px;">
-                                                <div class="ui-progress-bar tw:bg-bs-info!" id="attendanceProgress" style="width: 0%"
+                                                <div class="ui-progress-bar bs-bg-info tw:bg-bs-info!" id="attendanceProgress" style="width: 0%"
                                                     role="progressbar"></div>
                                             </div>
                                             <div class="tw:mt-2! tw:flex! tw:justify-between!">
@@ -272,9 +272,9 @@
         </div>
 
         <!-- Class Enrollments Section -->
-        <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 tw:mb-6!" id="enrollmentsSection">
+        <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row tw:mb-6!" id="enrollmentsSection">
             <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:flex-[0_0_auto] tw:w-[100%]">
-                <div class="ui-card tw:[border:0]! tw:shadow-bs-sm!">
+                <div class="ui-card tw:[border:0]! bs-shadow-sm tw:shadow-bs-sm!">
                     <div class="ui-card-header tw:bg-bs-primary! tw:text-bs-white! tw:py-4! tw:bs-border-b!">
                         <div
                             class="tw:flex! tw:flex-col! tw:md:flex-row! tw:justify-between! tw:items-start! tw:md:items-center!">
@@ -318,7 +318,7 @@
                         </div>
 
                         <!-- Enrollments Grid -->
-                        <div class="ui-row ui-g-4 tw:p-6! tw:hidden!" id="enrollmentsList">
+                        <div class="bs-row ui-row ui-g-4 tw:p-6! tw:hidden!" id="enrollmentsList">
                             <!-- Enrollments will be loaded here -->
                         </div>
 
@@ -396,6 +396,11 @@
             display: flex;
             align-items: center;
             justify-content: center;
+        }
+
+        /* Custom shadows */
+        .bs-shadow-sm {
+            box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075) !important;
         }
 
         /* Responsive adjustments */
@@ -634,7 +639,7 @@
             const isStudentActive = student.is_active == 1;
 
             elements.studentInfo.innerHTML = `
-                <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 tw:items-center!">
+                <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row tw:items-center!">
                     <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[66.66666667%]">
                         <div class="tw:flex! tw:items-center!">
                             <div class="tw:bg-[rgba(13,110,253,0.1)]! tw:p-4! tw:rounded-[50%]! tw:mr-4!">
@@ -654,7 +659,7 @@
                                     <div>
                                         <small class="tw:text-bs-secondary-color!">Status</small>
                                         <div class="tw:font-bold!">
-                                            <span class="ui-badge ${isStudentActive ? 'tw:bg-bs-success!' : 'tw:bg-bs-secondary!'}">
+                                            <span class="ui-badge ${isStudentActive ? 'tw:bg-bs-success! bs-bg-success' : 'tw:bg-bs-secondary!'}">
                                                 <i class="fas fa-circle fa-xs tw:mr-1!"></i>
                                                 ${isStudentActive ? 'Active Student' : 'Inactive Student'}
                                             </span>
@@ -687,7 +692,7 @@
 
             if (isStudentActive) {
                 elements.studentStatusBadge.innerHTML = '<i class="fas fa-circle fa-xs tw:mr-1! tw:text-bs-success!"></i>Active Student';
-                elements.studentStatusBadge.className = 'ui-badge tw:bg-bs-success! bg-opacity-10 tw:text-bs-success! tw:text-[length:1rem]! tw:px-4! tw:py-2!';
+                elements.studentStatusBadge.className = 'ui-badge tw:bg-bs-success! bs-bg-success bg-opacity-10 tw:text-bs-success! tw:text-[length:1rem]! tw:px-4! tw:py-2!';
             } else {
                 elements.studentStatusBadge.innerHTML = '<i class="fas fa-circle fa-xs tw:mr-1! tw:text-bs-secondary!"></i>Inactive Student';
                 elements.studentStatusBadge.className = 'ui-badge tw:bg-bs-secondary! bg-opacity-10 tw:text-bs-secondary! tw:text-[length:1rem]! tw:px-4! tw:py-2!';
@@ -834,7 +839,7 @@
                 }
 
                 enrollmentsHTML += `
-                    <div class="ui-col-xl-6 ui-col-lg-12" 
+                    <div class="bs-col-xl-6 ui-col-xl-6 ui-col-lg-12" 
                          data-enrollment-id="${enrollmentId}"
                          data-class-category-id="${classCategoryHasStudentClassId}"
                          data-status="${isActive ? 'active' : 'inactive'}" 
@@ -855,11 +860,11 @@
                                             '<span class="split-category-badge"><i class="fas fa-link fa-xs tw:mr-1!"></i>Split</span>' :
                                             ''
                                         }
-                                        <span class="ui-badge ${isActive ? 'tw:bg-bs-success!' : 'tw:bg-bs-secondary!'}">
+                                        <span class="ui-badge ${isActive ? 'tw:bg-bs-success! bs-bg-success' : 'tw:bg-bs-secondary!'}">
                                             ${isActive ? 'Active' : 'Inactive'}
                                         </span>
                                         ${isFreeCard ?
-                                            '<span class="ui-badge tw:bg-bs-warning! tw:text-bs-dark!"><i class="fas fa-crown tw:mr-1!"></i>Free Card</span>' :
+                                            '<span class="ui-badge bs-bg-warning tw:bg-bs-warning! tw:text-bs-dark!"><i class="fas fa-crown tw:mr-1!"></i>Free Card</span>' :
                                             ''
                                         }
                                     </div>
@@ -867,7 +872,7 @@
                             </div>
                             <div class="ui-card-body">
                                 <!-- Class Info -->
-                                <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 tw:mb-4!">
+                                <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row tw:mb-4!">
                                     <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:flex-[0_0_auto] tw:w-[50%]">
                                         <small class="tw:text-bs-secondary-color! tw:block!">Teacher</small>
                                         <div class="tw:font-bold!">${teacherName}</div>
@@ -881,10 +886,10 @@
                                         }
                                     </div>
                                 </div>
-                                <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 tw:mb-6!">
+                                <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row tw:mb-6!">
                                     <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:flex-[0_0_auto] tw:w-[50%]">
                                         <small class="tw:text-bs-secondary-color! tw:block!">Subject</small>
-                                        <span class="ui-badge tw:bg-bs-info!">${subjectName}</span>
+                                        <span class="ui-badge bs-bg-info tw:bg-bs-info!">${subjectName}</span>
                                     </div>
                                     <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:flex-[0_0_auto] tw:w-[50%]">
                                         <small class="tw:text-bs-secondary-color! tw:block!">Grade</small>
@@ -900,7 +905,7 @@
                                         <span class="tw:text-bs-secondary-color!">/ Rs. ${fees.toLocaleString()}</span>
                                     </div>
                                     <div class="ui-progress" style="height: 6px;">
-                                        <div class="ui-progress-bar tw:bg-bs-success!" style="width: ${paymentPercentage}%"></div>
+                                        <div class="ui-progress-bar bs-bg-success tw:bg-bs-success!" style="width: ${paymentPercentage}%"></div>
                                     </div>
                                     <div class="tw:flex! tw:justify-between! tw:mt-1!">
                                         <small class="tw:text-bs-secondary-color!">${paymentPercentage}% Paid</small>
@@ -916,7 +921,7 @@
                                         <span class="tw:text-bs-secondary-color!">/ ${totalSessions} session${totalSessions !== 1 ? 's' : ''}</span>
                                     </div>
                                     <div class="ui-progress" style="height: 6px;">
-                                        <div class="ui-progress-bar tw:bg-bs-info!" style="width: ${attendancePercentage}%"></div>
+                                        <div class="ui-progress-bar bs-bg-info tw:bg-bs-info!" style="width: ${attendancePercentage}%"></div>
                                     </div>
                                     <div class="tw:flex! tw:justify-between! tw:mt-1!">
                                         <small class="tw:text-bs-secondary-color!">${attendancePercentage}% Attendance</small>
@@ -990,7 +995,7 @@
 
         // Filter by search term
         function filterEnrollmentsBySearch(searchTerm) {
-            const enrollmentCards = document.querySelectorAll('#enrollmentsList .ui-col-xl-6');
+            const enrollmentCards = document.querySelectorAll('#enrollmentsList .bs-col-xl-6');
             let visibleCount = 0;
 
             enrollmentCards.forEach(card => {
@@ -1081,7 +1086,7 @@
 
             // Create new alert
             const alertDiv = document.createElement('div');
-            alertDiv.className = `ui-alert ui-alert-${type} alert-toast tw:fixed! tw:top-0! tw:right-0! tw:m-4! tw:shadow-bs!`;
+            alertDiv.className = `ui-alert ui-alert-${type} alert-toast bs-position-fixed tw:fixed! tw:top-0! tw:right-0! tw:m-4! tw:shadow-bs!`;
             alertDiv.style.zIndex = '9999';
             alertDiv.style.minWidth = '300px';
             alertDiv.style.maxWidth = '400px';
