@@ -98,15 +98,8 @@ class PaymentMarker
         $option = $this->chosenFeeOption($enrollment, $data['fee_option_id'] ?? null);
         $optionFee = $option ? round((float) $option->fee + $this->hallFee($enrollment), 2) : null;
 
-        // 12b. Not more than the fee: a typing mistake (20000 for 2000) would be
-        //      saved and split, and the teacher would get the extra share
-        $maximum = max($payableAmount, $optionFee ?? 0);
-        if ($amount > $maximum + 0.009) {
-            throw new \InvalidArgumentException(sprintf(
-                'Payment amount cannot be more than Rs. %.2f for this month.',
-                $maximum
-            ));
-        }
+        // No upper limit: more than the fee is saved as it is (the cashiers
+        // check the day's payments and delete a wrong one).
 
         // 13. Payment amount validation
         //     Payment Rules (per institute, off by default) may allow less:
