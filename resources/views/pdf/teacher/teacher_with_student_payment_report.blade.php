@@ -2,13 +2,17 @@
     $teacher = $report['teacher'];
     $summary = $report['summary'];
     $filter = $report['filter'];
-    $monthLabel = \Carbon\Carbon::create($year, $month, 1)->format('F Y');
+    $monthStart = \Carbon\Carbon::create($year, $month, 1);
+    $monthLabel = $monthStart->format('F Y');
+    $monthShort = $monthStart->format('M');
     $institute = $instituteName ?? config('institution.name', config('app.name'));
-    $statusLabels = ['paid' => 'Paid', 'unpaid' => 'Unpaid', 'freecard' => 'Free Card', 'noattend' => 'No Attendance'];
+    $statusLabels = ['paid' => 'Paid', 'partial' => 'Partly paid', 'unpaid' => 'Unpaid', 'freecard' => 'Free Card', 'noattend' => 'No Attendance'];
     $hasNoAttend = ($summary['noattend_students'] ?? 0) > 0;
-    // By collection date the paid fee month can differ from the report month
-    $showPaidFor = ($filter['basis'] ?? null) === 'paid-date';
-    $columns = $showPaidFor ? 11 : 10;
+    // Collection date = the payments of the teacher's salary (any fee month)
+    $bySalary = ($filter['basis'] ?? null) === 'paid-date';
+    $showPhones = $report['show_phones'] ?? false;
+    $columns = ($bySalary ? 10 : 11) + ($showPhones ? 1 : 0);
+    $money = fn ($v) => number_format((float) $v, 2);
 @endphp
 <!DOCTYPE html>
 <html lang="en">
@@ -60,6 +64,10 @@
         .status-paid { color: #166534; font-weight: bold; }
         .status-unpaid { color: #b91c1c; font-weight: bold; }
         .status-freecard { color: #1d4ed8; font-weight: bold; }
+        .status-partial { color: #b45309; font-weight: bold; }
+        .muted { color: #94a3b8; }
+        .note { border: 1px solid #e2e8f0; background: #f8fafc; padding: 5px 7px; margin-bottom: 9px; color: #475569; font-size: 7.5px; line-height: 1.5; }
+        .tag { display: inline-block; padding: 0 4px; border-radius: 6px; background: #ede9fe; color: #5b21b6; font-size: 6.5px; font-weight: bold; }
 
         .empty { text-align: center; padding: 10px; color: #64748b; }
         .footer { margin-top: 10px; text-align: center; color: #94a3b8; font-size: 7px; }
@@ -85,24 +93,52 @@
         </tr>
     </table>
 
-    <table class="cards">
-        <tr>
-            <td><div class="card-value">{{ $summary['total_classes'] }}</div><div class="card-label">Classes</div></td>
-            <td><div class="card-value">{{ $summary['total_students'] }}</div><div class="card-label">Students</div></td>
-            <td><div class="card-value" style="color:#166534">{{ $summary['paid_students'] }}</div><div class="card-label">Paid</div></td>
-            <td><div class="card-value" style="color:#b91c1c">{{ $summary['unpaid_students'] }}</div><div class="card-label">Unpaid</div></td>
-            <td><div class="card-value" style="color:#1d4ed8">{{ $summary['freecard_students'] }}{{ $hasNoAttend ? ' / ' . $summary['noattend_students'] : '' }}</div><div class="card-label">Free Card{{ $hasNoAttend ? ' / No Attend.' : '' }}</div></td>
-            <td><div class="card-value">{{ number_format($summary['total_collected'], 2) }}</div><div class="card-label">Collected (Rs.)</div></td>
-        </tr>
-    </table>
+    @if ($bySalary)
+        <table class="cards">
+            <tr>
+                <td><div class="card-value">{{ $summary['payments'] }}</div><div class="card-label">Payments</div></td>
+                <td><div class="card-value">{{ $money($summary['total_collected']) }}</div><div class="card-label">Received (Rs.)</div></td>
+                <td><div class="card-value" style="color:#b45309">{{ $money($summary['hall_collected']) }}</div><div class="card-label">Hall fees (Rs.)</div></td>
+                <td><div class="card-value">{{ $money($summary['class_collected']) }}</div><div class="card-label">Class fees (Rs.)</div></td>
+                <td><div class="card-value" style="color:#166534">{{ $money($summary['teacher_share']) }}</div><div class="card-label">Teacher's share (Rs.)</div></td>
+                <td><div class="card-value">{{ $summary['paid_students'] }} / {{ $summary['unpaid_students'] }}</div><div class="card-label">{{ $monthShort }} fee paid / unpaid</div></td>
+            </tr>
+        </table>
+        <div class="note">
+            The money the teacher's {{ $monthLabel }} salary is made of: class fees <strong>received</strong> in {{ $monthLabel }}
+            (up to the time the salary was paid), whatever month each fee was for, plus earlier months' fees received after their salary
+            (<span class="tag">AFTER SALARY</span>). The hall fee is taken first from each payment; the teacher's share is the teacher %
+            of the rest. Advances and deductions are on the salary slip. <strong>Status</strong> = the student's {{ $monthLabel }} fee.
+        </div>
+    @else
+        <table class="cards">
+            <tr>
+                <td><div class="card-value">{{ $summary['total_students'] }}</div><div class="card-label">Students</div></td>
+                <td><div class="card-value" style="color:#166534">{{ $summary['paid_students'] }}</div><div class="card-label">Paid</div></td>
+                <td><div class="card-value" style="color:#b91c1c">{{ $summary['unpaid_students'] + $summary['partial_students'] }}</div><div class="card-label">Unpaid{{ $summary['partial_students'] ? ' (' . $summary['partial_students'] . ' partly)' : '' }}</div></td>
+                <td><div class="card-value" style="color:#1d4ed8">{{ $summary['freecard_students'] }}{{ $hasNoAttend ? ' / ' . $summary['noattend_students'] : '' }}</div><div class="card-label">Free Card{{ $hasNoAttend ? ' / No Attend.' : '' }}</div></td>
+                <td><div class="card-value">{{ $money($summary['total_payable']) }}</div><div class="card-label">To collect (Rs.)</div></td>
+                <td><div class="card-value" style="color:#166534">{{ $money($summary['total_collected']) }}</div><div class="card-label">Collected (Rs.)</div></td>
+                <td><div class="card-value" style="color:#b91c1c">{{ $money($summary['total_balance']) }}</div><div class="card-label">Balance (Rs.)</div></td>
+            </tr>
+        </table>
+        <div class="note">
+            Fees <strong>for</strong> {{ $monthLabel }}, whatever day they were paid. To pay = class fee + hall fee
+            (collected Rs. {{ $money($summary['class_collected']) }} class fee + Rs. {{ $money($summary['hall_collected']) }} hall fee).
+            A payment pays the hall fee first.
+        </div>
+    @endif
 
     @forelse ($report['classes'] as $class)
-        @forelse ($class['categories'] as $category)
+        @foreach ($class['categories'] as $category)
             @php
-                $students = collect(['paid', 'unpaid', 'freecard'])
-                    ->merge(['noattend'])
+                $students = collect(['paid', 'unpaid', 'freecard', 'noattend'])
                     ->flatMap(fn ($group) => $category['students'][$group] ?? []);
-                $collected = $students->sum('paid_amount');
+                // by collection date: students who paid something first
+                if ($bySalary) {
+                    $students = $students->sortByDesc(fn ($s) => $s['paid_amount'] > 0)->values();
+                }
+                $ct = $category['totals'];
             @endphp
 
             <div class="class-block">
@@ -117,10 +153,15 @@
                             </div>
                             <div class="class-sub">
                                 {{ $class['grade_name'] ?? '' }}{{ $category['category_name'] ? ' | ' . $category['category_name'] : '' }}
-                                | Collected Rs. {{ number_format($collected, 2) }}
+                                @if ($bySalary)
+                                    | Received Rs. {{ $money($ct['collected']) }} | Teacher Rs. {{ $money($ct['teacher']) }}
+                                @else
+                                    | Collected Rs. {{ $money($ct['collected']) }} of {{ $money($ct['payable']) }}
+                                @endif
                             </div>
                         </td>
                         <td class="counts">
+                            @if ($bySalary) <span class="class-sub">{{ $monthShort }} fee:</span> @endif
                             <span class="pill pill-total">Total {{ $category['total_students'] }}</span>
                             <span class="pill pill-paid">Paid {{ $category['paid_count'] }}</span>
                             <span class="pill pill-unpaid">Unpaid {{ $category['unpaid_count'] }}</span>
@@ -135,19 +176,28 @@
                 <table class="data">
                     <thead>
                         <tr>
-                            <th style="width:4%">#</th>
-                            <th style="width:11%">Code</th>
+                            <th style="width:3%">#</th>
+                            <th style="width:9%">Code</th>
                             <th>Student Name</th>
-                            <th style="width:12%">Guardian Mobile</th>
-                            <th style="width:10%">Fee Option</th>
-                            @if ($showPaidFor)
-                                <th style="width:9%">Paid For</th>
+                            @if ($showPhones)<th style="width:9%">Guardian Mobile</th>@endif
+                            @if ($bySalary)
+                                <th style="width:12%">Fee For</th>
+                                <th style="width:11%">Received On</th>
+                                <th class="right" style="width:8%">Received</th>
+                                <th class="right" style="width:7%">Hall Fee</th>
+                                <th class="right" style="width:8%">Class Fee</th>
+                                <th class="right" style="width:8%">Teacher Share</th>
+                                <th class="center" style="width:8%">{{ $monthShort }} Fee</th>
+                            @else
+                                <th style="width:9%">Fee Option</th>
+                                <th style="width:9%">Paid On</th>
+                                <th class="right" style="width:7%">Class Fee</th>
+                                <th class="right" style="width:6%">Hall Fee</th>
+                                <th class="right" style="width:7%">To Pay</th>
+                                <th class="right" style="width:7%">Paid</th>
+                                <th class="right" style="width:7%">Balance</th>
+                                <th class="center" style="width:8%">Status</th>
                             @endif
-                            <th style="width:9%">Paid On</th>
-                            <th class="right" style="width:8%">Fee</th>
-                            <th class="right" style="width:8%">Paid</th>
-                            <th class="right" style="width:8%">Balance</th>
-                            <th class="center" style="width:8%">Status</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -156,15 +206,26 @@
                                 <td>{{ $loop->iteration }}</td>
                                 <td>{{ $student['student_code'] ?? '-' }}</td>
                                 <td>{{ $student['initial_name'] ?? '-' }}</td>
-                                <td>{{ $student['guardian_mobile'] ?? '-' }}</td>
-                                <td>{{ $student['fee_option']['label'] ?? '-' }}</td>
-                                @if ($showPaidFor)
-                                    <td>{{ $student['paid_for'] ?: '-' }}</td>
+                                @if ($showPhones)<td>{{ $student['guardian_mobile'] ?? '-' }}</td>@endif
+                                @if ($bySalary)
+                                    <td>
+                                        {{ $student['paid_for'] ?: '-' }}
+                                        @if ($student['carried']) <span class="tag">AFTER SALARY</span> @endif
+                                    </td>
+                                    <td>{{ $student['paid_on'] ?: '-' }}</td>
+                                    <td class="right {{ $student['paid_amount'] > 0 ? '' : 'muted' }}">{{ $money($student['paid_amount']) }}</td>
+                                    <td class="right {{ $student['paid_amount'] > 0 ? '' : 'muted' }}">{{ $money($student['hall_collected']) }}</td>
+                                    <td class="right {{ $student['paid_amount'] > 0 ? '' : 'muted' }}">{{ $money($student['class_collected']) }}</td>
+                                    <td class="right {{ $student['paid_amount'] > 0 ? '' : 'muted' }}"><strong>{{ $money($student['teacher_amount']) }}</strong></td>
+                                @else
+                                    <td>{{ $student['fee_option']['label'] ?? '-' }}</td>
+                                    <td>{{ $student['paid_on'] ?: '-' }}</td>
+                                    <td class="right">{{ $money($student['class_fee']) }}</td>
+                                    <td class="right">{{ $money($student['hall_fee']) }}</td>
+                                    <td class="right"><strong>{{ $money($student['payable']) }}</strong></td>
+                                    <td class="right">{{ $money($student['paid_amount']) }}{{ $student['discount'] > 0 ? ' (+' . $money($student['discount']) . ' disc.)' : '' }}</td>
+                                    <td class="right">{{ $money($student['balance']) }}</td>
                                 @endif
-                                <td>{{ $student['paid_on'] ?: '-' }}</td>
-                                <td class="right">{{ number_format((float) $student['final_fee'], 2) }}</td>
-                                <td class="right">{{ number_format((float) $student['paid_amount'], 2) }}</td>
-                                <td class="right">{{ number_format((float) $student['balance'], 2) }}</td>
                                 <td class="center status-{{ $student['status'] }}">{{ $statusLabels[$student['status']] ?? $student['status'] }}</td>
                             </tr>
                         @empty
@@ -174,24 +235,28 @@
                     @if ($students->isNotEmpty())
                         <tfoot>
                             <tr>
-                                <td colspan="{{ $columns - 4 }}">Total ({{ $students->count() }})</td>
-                                <td class="right">{{ number_format($students->sum('final_fee'), 2) }}</td>
-                                <td class="right">{{ number_format($collected, 2) }}</td>
-                                <td class="right">{{ number_format($students->sum('balance'), 2) }}</td>
-                                <td></td>
+                                @if ($bySalary)
+                                    <td colspan="{{ $showPhones ? 6 : 5 }}">Total ({{ $students->count() }} students)</td>
+                                    <td class="right">{{ $money($ct['collected']) }}</td>
+                                    <td class="right">{{ $money($ct['hall']) }}</td>
+                                    <td class="right">{{ $money($ct['class']) }}</td>
+                                    <td class="right">{{ $money($ct['teacher']) }}</td>
+                                    <td></td>
+                                @else
+                                    <td colspan="{{ $showPhones ? 6 : 5 }}">Total ({{ $students->count() }} students)</td>
+                                    <td class="right">{{ $money($students->sum('class_fee')) }}</td>
+                                    <td class="right">{{ $money($students->sum('hall_fee')) }}</td>
+                                    <td class="right">{{ $money($ct['payable']) }}</td>
+                                    <td class="right">{{ $money($ct['collected']) }}</td>
+                                    <td class="right">{{ $money($ct['balance']) }}</td>
+                                    <td></td>
+                                @endif
                             </tr>
                         </tfoot>
                     @endif
                 </table>
             </div>
-        @empty
-            <div class="class-block">
-                <table class="class-head">
-                    <tr><td><div class="class-name">{{ $class['class_name'] }}</div><div class="class-sub">{{ $class['grade_name'] ?? '' }}</div></td></tr>
-                </table>
-                <div class="empty">No fee categories for this class.</div>
-            </div>
-        @endforelse
+        @endforeach
     @empty
         <div class="empty">No classes found for this teacher.</div>
     @endforelse

@@ -2,7 +2,7 @@
      Exams Stats — nx-* design system
      ============================================================ --}}
 
-<div class="stats-grid mb-4">
+<div class="stats-grid tw:mb-6!">
 
     {{-- TOTAL --}}
     <div class="nx-card stat-card">

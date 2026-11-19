@@ -4,11 +4,11 @@
 
 {{-- VALIDATION ERRORS --}}
 @if ($errors->any())
-    <div class="nx-alert nx-alert-red mb-4">
+    <div class="nx-alert nx-alert-red tw:mb-6!">
         <i class="bi bi-exclamation-triangle-fill"></i>
         <div>
             <strong>Please fix the following errors:</strong>
-            <ul class="mb-0 mt-2">
+            <ul class="tw:mb-0! tw:mt-2!">
                 @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
                 @endforeach
@@ -25,11 +25,11 @@
         @method('PUT')
     @endif
 
-    <div class="row g-3">
+    <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2">
 
         {{-- CATEGORY INFORMATION --}}
-        <div class="col-12">
-            <div class="section-header mb-3">
+        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:flex-[0_0_auto] tw:w-[100%]">
+            <div class="section-header tw:mb-4!">
                 <div class="section-icon icon-blue"><i class="bi bi-tag-fill"></i></div>
                 <div>
                     <h5 class="section-title">Category Information</h5>
@@ -37,15 +37,15 @@
                 </div>
             </div>
 
-            <div class="row g-3">
+            <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2">
 
                 {{-- NAME --}}
-                <div class="col-md-6">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
                     <label class="nx-label">
                         Category Name <span style="color: var(--nx-red);">*</span>
                     </label>
                     <input type="text" name="category_name"
-                        class="form-control nx-input @error('category_name') is-invalid @enderror"
+                        class="ui-form-control nx-input @error('category_name') ui-is-invalid @enderror"
                         value="{{ old('category_name', $category->category_name ?? '') }}"
                         placeholder="Theory / Revision / Paper" required>
                     @error('category_name')
@@ -54,12 +54,12 @@
                 </div>
 
                 {{-- CODE --}}
-                <div class="col-md-6">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
                     <label class="nx-label">
                         Code <span style="color: var(--nx-red);">*</span>
                     </label>
                     <input type="text" name="code"
-                        class="form-control nx-input @error('code') is-invalid @enderror"
+                        class="ui-form-control nx-input @error('code') ui-is-invalid @enderror"
                         value="{{ old('code', $category->code ?? '') }}"
                         placeholder="THEORY / REVISION / PAPER" required>
                     @error('code')
@@ -68,13 +68,13 @@
                 </div>
 
                 {{-- SWITCHES --}}
-                <div class="col-md-12">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[100%]">
                     <div class="toggle-switch-group">
 
                         {{-- SCHEDULABLE --}}
                         <div class="toggle-switch">
                             <input type="checkbox" name="is_schedulable" value="1" id="is_schedulable"
-                                class="form-check-input flex-shrink-0"
+                                class="ui-form-check-input tw:shrink-0!"
                                 style="width: 3em; height: 1.5em; cursor: pointer;"
                                 {{ old('is_schedulable', $category->is_schedulable ?? true) ? 'checked' : '' }}>
                             <label for="is_schedulable" class="toggle-content">
@@ -86,7 +86,7 @@
                         {{-- ACTIVE --}}
                         <div class="toggle-switch">
                             <input type="checkbox" name="is_active" value="1" id="is_active"
-                                class="form-check-input flex-shrink-0"
+                                class="ui-form-check-input tw:shrink-0!"
                                 style="width: 3em; height: 1.5em; cursor: pointer;"
                                 {{ old('is_active', $category->is_active ?? true) ? 'checked' : '' }}>
                             <label for="is_active" class="toggle-content">
@@ -100,7 +100,7 @@
         </div>
 
         {{-- FORM ACTIONS --}}
-        <div class="col-12">
+        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:flex-[0_0_auto] tw:w-[100%]">
             <div class="nx-form-actions">
                 <a href="{{ route('class-categories.index') }}" class="nx-btn nx-btn-light">
                     <i class="bi bi-x-circle"></i> Cancel

@@ -1,18 +1,21 @@
-<aside class="sidebar" id="sidebar">
+{{-- Class names "sidebar" / nav-link-custom / sidebar-group stay: the JS
+     below and page print styles use them. --}}
+<aside id="sidebar"
+    class="sidebar tw:fixed tw:inset-y-0 tw:left-0 tw:z-[1030] tw:flex tw:w-[280px] tw:flex-col tw:border-r tw:border-white/6 tw:bg-[linear-gradient(180deg,var(--tw-color-nx-side-1)_0%,var(--tw-color-nx-side-2)_50%,var(--tw-color-nx-side-3)_100%)] tw:shadow-[6px_0_25px_rgba(0,0,0,0.20)] tw:transition-all tw:duration-300 tw:max-lg:transform-[translateX(-100%)] tw:max-lg:[&.show]:transform-none">
 
     <!-- SIDEBAR HEADER -->
-    <div class="sidebar-header">
+    <div class="tw:shrink-0 tw:border-b tw:border-white/6 tw:px-5 tw:py-6">
 
-        <button type="button" class="brand text-decoration-none" id="brandButton"
-            style="background: none; border: none; width: 100%; cursor: pointer; padding: 0;">
+        <button type="button" id="brandButton"
+            class="tw:flex tw:w-full tw:cursor-pointer tw:items-center tw:gap-[14px] tw:border-0 tw:bg-transparent tw:p-0">
 
-            <div class="brand-icon">
+            <div class="tw:flex tw:h-11 tw:w-11 tw:shrink-0 tw:items-center tw:justify-center tw:rounded-[10px] tw:bg-nx-blue tw:text-[1.3rem] tw:font-extrabold tw:text-white">
                 N
             </div>
 
-            <div class="brand-text">
-                <h4>Nexora</h4>
-                <small>Education System</small>
+            <div>
+                <h4 class="tw:m-0 tw:text-[1.15rem] tw:leading-[1.2] tw:font-bold tw:text-white">Nexora</h4>
+                <small class="tw:text-[0.72rem] tw:text-nx-side-title">Education System</small>
             </div>
 
         </button>
@@ -21,7 +24,7 @@
 
 
     <!-- SIDEBAR BODY -->
-    <div class="sidebar-body">
+    <div class="sidebar-body tw:flex-1 tw:overflow-y-auto tw:p-4 tw:[scrollbar-color:rgba(255,255,255,.15)_transparent] tw:[scrollbar-width:thin] tw:[&::-webkit-scrollbar]:w-1.5 tw:[&::-webkit-scrollbar-thumb]:rounded-[20px] tw:[&::-webkit-scrollbar-thumb]:bg-white/15">
 
         @php
             $role = auth()->check() && auth()->user()->userType ? strtoupper(auth()->user()->userType->code) : null;
@@ -245,44 +248,54 @@
             $menu = array_values(array_filter($menu, fn ($group) => count($group['items']) > 0));
         @endphp
 
+        @php
+            // One look for every menu link; "active" is set here and by the JS below
+            $navLink = 'nav-link-custom tw:flex tw:w-full tw:cursor-pointer tw:items-center tw:border-0 tw:bg-transparent tw:text-left tw:font-medium tw:text-nx-side-text tw:no-underline tw:transition-[background-color,color] tw:duration-150 tw:hover:transform-[translateX(5px)] tw:hover:bg-white/6 tw:hover:text-white tw:[&.active]:bg-nx-blue tw:[&.active]:text-white tw:[&.active]:shadow-[0_10px_18px_rgba(37,99,235,0.30)] tw:rounded-[10px]';
+        @endphp
+
         {{-- DASHBOARD + MENU SEARCH --}}
-        <div class="sidebar-section sidebar-top">
+        <div class="tw:mb-4">
             @if ($canDashboard)
-                <div class="nav-item">
-                    <button type="button" class="nav-link-custom {{ request()->routeIs('dashboard') ? 'active' : '' }}"
+                <div class="nav-item tw:mb-1">
+                    <button type="button"
+                        class="{{ $navLink }} tw:gap-[14px] tw:px-[0.9rem] tw:py-[0.7rem] tw:text-[0.88rem] {{ request()->routeIs('dashboard') ? 'active' : '' }}"
                         data-route="dashboard" data-href="{{ route('dashboard') }}">
-                        <i class="bi bi-speedometer2"></i>
+                        <i class="bi bi-speedometer2 tw:w-[22px] tw:shrink-0 tw:text-[1.1rem]"></i>
                         <span>Dashboard</span>
                     </button>
                 </div>
             @endif
 
-            <div class="sidebar-search">
-                <i class="bi bi-search"></i>
+            <div class="tw:relative tw:mt-[0.6rem]">
+                <i class="bi bi-search tw:absolute tw:top-1/2 tw:left-3 tw:-translate-y-1/2 tw:text-[0.85rem] tw:text-nx-side-title"></i>
                 <input type="search" id="sidebarSearch" placeholder="Search menu..." autocomplete="off"
-                    aria-label="Search menu">
+                    aria-label="Search menu"
+                    class="tw:w-full tw:rounded-[10px] tw:border tw:border-white/8 tw:bg-white/5 tw:py-[0.55rem] tw:pr-[0.8rem] tw:pl-[2.1rem] tw:text-[0.85rem] tw:text-white tw:outline-none tw:placeholder:text-nx-side-title tw:focus:border-nx-blue tw:focus:bg-white/8">
             </div>
         </div>
 
         {{-- MENU GROUPS --}}
         @foreach ($menu as $group)
-            <div class="sidebar-group {{ $group['open'] ? 'is-open' : '' }} {{ !empty($group['nexora']) ? 'is-nexora' : '' }}"
+            @php $nexora = !empty($group['nexora']); @endphp
+            <div class="sidebar-group tw:group tw:mb-[0.35rem] {{ $group['open'] ? 'is-open' : '' }} {{ $nexora ? 'tw:mt-[0.9rem] tw:border-t tw:border-white/8 tw:pt-[0.9rem]' : '' }}"
                 data-group="{{ $group['key'] }}">
-                <button type="button" class="sidebar-group-toggle" aria-expanded="{{ $group['open'] ? 'true' : 'false' }}">
-                    <i class="bi {{ $group['icon'] }}"></i>
+                <button type="button" aria-expanded="{{ $group['open'] ? 'true' : 'false' }}"
+                    class="sidebar-group-toggle tw:flex tw:w-full tw:cursor-pointer tw:items-center tw:gap-3 tw:rounded-[10px] tw:border-0 tw:bg-transparent tw:px-[0.9rem] tw:py-[0.6rem] tw:text-left tw:text-[0.74rem] tw:font-bold tw:tracking-[.8px] tw:uppercase tw:transition-[background-color,color] tw:duration-150 tw:hover:bg-white/4 {{ $nexora ? 'tw:text-[#fbbf24]' : 'tw:text-nx-side-title tw:hover:text-white tw:group-[.is-open]:text-white' }}">
+                    <i class="bi {{ $group['icon'] }} tw:w-[22px] tw:shrink-0 tw:text-[0.95rem]"></i>
                     <span>{{ $group['title'] }}</span>
-                    <i class="bi bi-chevron-down sidebar-group-caret"></i>
+                    <i class="bi bi-chevron-down tw:ml-auto tw:text-[0.75rem] tw:transition-transform tw:duration-200 tw:group-[.is-open]:rotate-180"></i>
                 </button>
 
-                <div class="sidebar-group-items">
+                <div class="sidebar-group-items tw:ml-[1.15rem] tw:hidden tw:border-l tw:border-white/8 tw:pt-[0.15rem] tw:pb-[0.4rem] tw:pl-[0.6rem] tw:group-[.is-open]:block">
                     @foreach ($group['items'] as $item)
-                        <div class="nav-item" data-label="{{ strtolower($item[0]) }}">
-                            <button type="button" class="nav-link-custom {{ $item['active'] ? 'active' : '' }}"
+                        <div class="nav-item tw:mb-1" data-label="{{ strtolower($item[0]) }}">
+                            <button type="button"
+                                class="{{ $navLink }} tw:gap-3 tw:px-[0.8rem] tw:py-[0.55rem] tw:text-[0.85rem] {{ $item['active'] ? 'active' : '' }}"
                                 data-route="{{ $item['route'] }}" data-href="{{ $item['url'] }}">
-                                <i class="bi {{ $item[1] }}"></i>
+                                <i class="bi {{ $item[1] }} tw:w-[22px] tw:shrink-0 tw:text-[1rem]"></i>
                                 <span>{{ $item[0] }}</span>
                                 @if (!empty($item[5]))
-                                    <span class="badge bg-danger ms-auto">{{ $item[5] }}</span>
+                                    <span class="tw:ml-auto tw:inline-block tw:rounded-[0.375rem] tw:bg-[#dc3545] tw:px-[0.65em] tw:py-[0.35em] tw:text-[0.75em] tw:leading-none tw:font-bold tw:text-white">{{ $item[5] }}</span>
                                 @endif
                             </button>
                         </div>
@@ -291,321 +304,12 @@
             </div>
         @endforeach
 
-        <div class="sidebar-search-empty" id="sidebarSearchEmpty">No menu found</div>
+        <div id="sidebarSearchEmpty" class="tw:hidden tw:px-[0.9rem] tw:py-2 tw:text-[0.82rem] tw:text-nx-side-title">No menu found</div>
 
     </div>
 
 </aside>
 
-
-<style>
-    /* ============================================================
-       Sidebar — aligned to nexoraEDU (nx-*) design system.
-       Uses :root level tokens (outside .dashboard-page scope).
-       Business logic and JS untouched.
-    ============================================================ */
-
-    :root {
-        --nx-sidebar-bg-start: #141c3a;
-        --nx-sidebar-bg-mid: #1a2344;
-        --nx-sidebar-bg-end: #1e293b;
-        --nx-sidebar-border: rgba(255, 255, 255, .06);
-        --nx-sidebar-title: #8894b3;
-        --nx-sidebar-text: #b8c2da;
-        --nx-sidebar-text-hover: #ffffff;
-        --nx-sidebar-active: #2563eb;
-        --nx-sidebar-active-soft: #eef3ff;
-        --nx-sidebar-radius: 10px;
-    }
-
-    /* ---------- SIDEBAR ---------- */
-    .sidebar {
-        width: 280px;
-
-        background: linear-gradient(180deg,
-                var(--nx-sidebar-bg-start) 0%,
-                var(--nx-sidebar-bg-mid) 50%,
-                var(--nx-sidebar-bg-end) 100%);
-
-        position: fixed;
-        top: 0;
-        left: 0;
-        bottom: 0;
-        z-index: 1030;
-
-        display: flex;
-        flex-direction: column;
-
-        border-right: 1px solid var(--nx-sidebar-border);
-        box-shadow: 6px 0 25px rgba(0, 0, 0, 0.20);
-    }
-
-    /* ---------- HEADER ---------- */
-    .sidebar-header {
-        padding: 1.5rem 1.25rem;
-        border-bottom: 1px solid var(--nx-sidebar-border);
-        flex-shrink: 0;
-    }
-
-    /* ---------- BODY ---------- */
-    .sidebar-body {
-        flex: 1;
-        overflow-y: auto;
-        padding: 1rem;
-        scrollbar-width: thin;
-        scrollbar-color: rgba(255, 255, 255, .15) transparent;
-    }
-
-    .sidebar-body::-webkit-scrollbar {
-        width: 6px;
-    }
-
-    .sidebar-body::-webkit-scrollbar-thumb {
-        background: rgba(255, 255, 255, .15);
-        border-radius: 20px;
-    }
-
-    /* ---------- BRAND ---------- */
-    .brand {
-        display: flex;
-        align-items: center;
-        gap: 14px;
-    }
-
-    .brand-icon {
-        width: 44px;
-        height: 44px;
-
-        border-radius: 10px;
-
-        background: var(--nx-sidebar-active);
-        color: #fff;
-
-        display: flex;
-        align-items: center;
-        justify-content: center;
-
-        font-size: 1.3rem;
-        font-weight: 800;
-
-        flex-shrink: 0;
-    }
-
-    .brand-text h4 {
-        margin: 0;
-        color: #fff;
-        font-size: 1.15rem;
-        font-weight: 700;
-        line-height: 1.2;
-    }
-
-    .brand-text small {
-        color: var(--nx-sidebar-title);
-        font-size: 0.72rem;
-    }
-
-    /* ---------- SECTIONS ---------- */
-    .sidebar-section {
-        margin-bottom: 1.5rem;
-    }
-
-    .sidebar-section-title {
-        color: var(--nx-sidebar-title);
-        font-size: 0.7rem;
-        font-weight: 700;
-        letter-spacing: 1px;
-        text-transform: uppercase;
-        margin-bottom: 0.7rem;
-        padding-left: 0.8rem;
-    }
-
-    /* ---------- NAV ITEMS ---------- */
-    .nav-item {
-        margin-bottom: 0.25rem;
-    }
-
-    .nav-link-custom {
-        display: flex;
-        align-items: center;
-        gap: 14px;
-
-        padding: 0.7rem 0.9rem;
-
-        border-radius: var(--nx-sidebar-radius);
-
-        color: var(--nx-sidebar-text);
-        text-decoration: none;
-
-        font-size: 0.88rem;
-        font-weight: 500;
-
-        transition: background-color .15s ease, color .15s ease;
-
-        /* Button reset — keeps original look */
-        background: none;
-        border: none;
-        width: 100%;
-        cursor: pointer;
-        text-align: left;
-        font-family: inherit;
-    }
-
-    .nav-link-custom i {
-        font-size: 1.1rem;
-        width: 22px;
-        flex-shrink: 0;
-    }
-
-    .nav-link-custom:hover {
-        background: rgba(255, 255, 255, 0.06);
-        color: var(--nx-sidebar-text-hover);
-    }
-
-    .nav-link-custom.active {
-        background: var(--nx-sidebar-active);
-        color: #fff;
-    }
-
-    /* ---------- MENU SEARCH ---------- */
-    .sidebar-top {
-        margin-bottom: 1rem;
-    }
-
-    .sidebar-search {
-        position: relative;
-        margin-top: 0.6rem;
-    }
-
-    .sidebar-search i {
-        position: absolute;
-        left: 12px;
-        top: 50%;
-        transform: translateY(-50%);
-        color: var(--nx-sidebar-title);
-        font-size: 0.85rem;
-    }
-
-    .sidebar-search input {
-        width: 100%;
-        padding: 0.55rem 0.8rem 0.55rem 2.1rem;
-        border-radius: var(--nx-sidebar-radius);
-        border: 1px solid rgba(255, 255, 255, .08);
-        background: rgba(255, 255, 255, .05);
-        color: #fff;
-        font-size: 0.85rem;
-        outline: none;
-    }
-
-    .sidebar-search input::placeholder {
-        color: var(--nx-sidebar-title);
-    }
-
-    .sidebar-search input:focus {
-        border-color: var(--nx-sidebar-active);
-        background: rgba(255, 255, 255, .08);
-    }
-
-    .sidebar-search-empty {
-        display: none;
-        color: var(--nx-sidebar-title);
-        font-size: 0.82rem;
-        padding: 0.5rem 0.9rem;
-    }
-
-    /* ---------- MENU GROUPS (open / close) ---------- */
-    .sidebar-group {
-        margin-bottom: 0.35rem;
-    }
-
-    .sidebar-group-toggle {
-        display: flex;
-        align-items: center;
-        gap: 12px;
-        width: 100%;
-        padding: 0.6rem 0.9rem;
-        border: none;
-        border-radius: var(--nx-sidebar-radius);
-        background: none;
-        color: var(--nx-sidebar-title);
-        font-family: inherit;
-        font-size: 0.74rem;
-        font-weight: 700;
-        letter-spacing: .8px;
-        text-transform: uppercase;
-        text-align: left;
-        cursor: pointer;
-        transition: background-color .15s ease, color .15s ease;
-    }
-
-    .sidebar-group-toggle:hover {
-        background: rgba(255, 255, 255, 0.04);
-        color: var(--nx-sidebar-text-hover);
-    }
-
-    .sidebar-group-toggle > i:first-child {
-        font-size: 0.95rem;
-        width: 22px;
-        flex-shrink: 0;
-    }
-
-    .sidebar-group-caret {
-        margin-left: auto;
-        font-size: 0.75rem;
-        transition: transform .2s ease;
-    }
-
-    .sidebar-group.is-open > .sidebar-group-toggle {
-        color: var(--nx-sidebar-text-hover);
-    }
-
-    .sidebar-group.is-open .sidebar-group-caret {
-        transform: rotate(180deg);
-    }
-
-    .sidebar-group-items {
-        display: none;
-        padding: 0.15rem 0 0.4rem 0.6rem;
-        margin-left: 1.15rem;
-        border-left: 1px solid rgba(255, 255, 255, .08);
-    }
-
-    .sidebar-group.is-open > .sidebar-group-items {
-        display: block;
-    }
-
-    .sidebar-group-items .nav-link-custom {
-        padding: 0.55rem 0.8rem;
-        font-size: 0.85rem;
-        gap: 12px;
-    }
-
-    .sidebar-group-items .nav-link-custom i {
-        font-size: 1rem;
-    }
-
-    /* Super Admin only group */
-    .sidebar-group.is-nexora {
-        margin-top: 0.9rem;
-        padding-top: 0.9rem;
-        border-top: 1px solid rgba(255, 255, 255, .08);
-    }
-
-    .sidebar-group.is-nexora > .sidebar-group-toggle {
-        color: #fbbf24;
-    }
-
-    /* ---------- MOBILE ---------- */
-    @media (max-width: 991px) {
-        .sidebar {
-            transform: translateX(-100%);
-            transition: transform .3s ease;
-        }
-
-        .sidebar.show {
-            transform: translateX(0);
-        }
-    }
-</style>
 
 
 <script>

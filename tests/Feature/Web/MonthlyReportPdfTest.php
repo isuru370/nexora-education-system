@@ -2,7 +2,9 @@
 
 namespace Tests\Feature\Web;
 
+use App\Models\Payment;
 use App\Services\Web\MonthlyReport\MonthlyReportService;
+use App\Services\Web\Payment\PaymentSplitSnapshotService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\DB;
 use Tests\Support\BuildsInstitute;
@@ -28,9 +30,17 @@ class MonthlyReportPdfTest extends TestCase
             ['teacher_id' => $this->inst['teacher'], 'branch_id' => $this->inst['b2']],
         ]);
         $this->actingAs($this->inst['admin']);
+        $this->splitPayments();
     }
 
-    protected function query(): string
+    /** Every payment has its fee split (as when it is paid at the counter). */
+    protected function splitPayments(): void
+    {
+        Payment::query()->where('status', 'completed')->doesntHave('splitSnapshot')->get()
+            ->each(fn (Payment $payment) => app(PaymentSplitSnapshotService::class)->refreshForPayment($payment));
+    }
+
+    protected function reportQuery(): string
     {
         return '?teacher_id=' . $this->inst['teacher'] . '&year=2026&month=10';
     }
@@ -38,7 +48,7 @@ class MonthlyReportPdfTest extends TestCase
     public function test_student_payment_pdf_downloads_for_both_bases(): void
     {
         foreach (['fee-month', 'paid-date'] as $basis) {
-            $response = $this->get("/monthly-report/student-payments/{$basis}/pdf" . $this->query());
+            $response = $this->get("/monthly-report/student-payments/{$basis}/pdf" . $this->reportQuery());
 
             $response->assertOk();
             $this->assertSame('application/pdf', $response->headers->get('content-type'));
@@ -83,28 +93,34 @@ class MonthlyReportPdfTest extends TestCase
             'payment_method' => 'cash', 'status' => 'completed', 'receipt_number' => 'R-SEP',
         ]);
 
+        $this->splitPayments();
+
         $service = app(MonthlyReportService::class);
         $teacher = $this->inst['teacher'];
 
+        // in the October salary (received in October), but the October fee is still unpaid
         $byCollection = $service->teacherStudentPaymentReport($teacher, 2026, 10, 'paid-date');
-        $s3 = $byCollection['classes'][1]['categories'][0]['students']['paid'][0];
+        $s3 = $byCollection['classes'][1]['categories'][0]['students']['unpaid'][0];
         $this->assertSame('Sep 2026', $s3['paid_for']);
         $this->assertSame('10 Oct 2026', $s3['paid_on']);
+        $this->assertEquals(2000, $s3['paid_amount']);
+        $this->assertEquals(1200, $s3['teacher_amount']);   // 60%
+        $this->assertSame('unpaid', $s3['status']);
 
         $html = view('pdf.teacher.teacher_with_student_payment_report', [
             'report' => $byCollection, 'year' => 2026, 'month' => 10,
         ])->render();
-        $this->assertStringContainsString('Paid For', $html);
+        $this->assertStringContainsString('Fee For', $html);
         $this->assertStringContainsString('Sep 2026', $html);
 
-        // By fee month the September payment is not in October; no Paid For column
+        // By fee month the September payment is not in October; no Fee For column
         $byFeeMonth = $service->teacherStudentPaymentReport($teacher, 2026, 10, 'fee-month');
         $this->assertSame('unpaid', $byFeeMonth['classes'][1]['categories'][0]['students']['unpaid'][0]['status']);
 
         $html = view('pdf.teacher.teacher_with_student_payment_report', [
             'report' => $byFeeMonth, 'year' => 2026, 'month' => 10,
         ])->render();
-        $this->assertStringNotContainsString('Paid For', $html);
+        $this->assertStringNotContainsString('Fee For', $html);
         $this->assertStringContainsString('05 Oct 2026', $html);   // S1 paid on
     }
 

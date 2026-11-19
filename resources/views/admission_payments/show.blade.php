@@ -37,14 +37,14 @@
         {{-- ALERTS --}}
         {{-- ===================================================== --}}
         @if (session('success'))
-            <div class="nx-alert nx-alert-green mb-4">
+            <div class="nx-alert nx-alert-green tw:mb-6!">
                 <i class="bi bi-check-circle-fill"></i>
                 <span>{{ session('success') }}</span>
             </div>
         @endif
 
         @if (session('error'))
-            <div class="nx-alert nx-alert-red mb-4">
+            <div class="nx-alert nx-alert-red tw:mb-6!">
                 <i class="bi bi-exclamation-triangle-fill"></i>
                 <span>{{ session('error') }}</span>
             </div>
@@ -53,7 +53,7 @@
         {{-- ===================================================== --}}
         {{-- HERO --}}
         {{-- ===================================================== --}}
-        <div class="hero-section mb-4">
+        <div class="hero-section tw:mb-6!">
             <div class="hero-content">
                 <div class="hero-left">
                     <span class="greeting-badge">
@@ -105,23 +105,23 @@
         {{-- ===================================================== --}}
         {{-- DETAILS CARD --}}
         {{-- ===================================================== --}}
-        <div class="nx-card mb-4">
+        <div class="nx-card tw:mb-6!">
 
             <div class="nx-card-header">
                 <div>
-                    <h5 class="nx-card-title"><i class="bi bi-info-circle-fill text-primary"></i> Transaction Details</h5>
+                    <h5 class="nx-card-title"><i class="bi bi-info-circle-fill tw:text-(color:--nx-blue)!"></i> Transaction Details</h5>
                     <p class="nx-card-subtitle">Payment, student and transaction information</p>
                 </div>
             </div>
 
-            <div class="p-3 p-md-4">
+            <div class="tw:p-4! tw:md:p-6!">
 
                 {{-- INFO GRID --}}
                 <div class="info-grid">
 
                     {{-- RECEIPT --}}
                     <div class="info-card">
-                        <div class="info-label"><i class="bi bi-receipt text-primary"></i> Receipt Number</div>
+                        <div class="info-label"><i class="bi bi-receipt tw:text-(color:--nx-blue)!"></i> Receipt Number</div>
                         <div class="info-value">
                             @if ($payment->receipt_number)
                                 <span class="id-badge">{{ $payment->receipt_number }}</span>
@@ -134,7 +134,7 @@
                     {{-- AMOUNT --}}
                     <div class="info-card">
                         <div class="info-label">
-                            <i class="bi bi-cash-stack text-primary"></i>
+                            <i class="bi bi-cash-stack tw:text-(color:--nx-blue)!"></i>
                             {{ $isPaid ? 'Amount Paid' : 'Amount' }}
                         </div>
                         <div class="info-value amount {{ $isVoid ? 'amount-void' : '' }}">
@@ -149,7 +149,7 @@
 
                     {{-- STUDENT --}}
                     <div class="info-card">
-                        <div class="info-label"><i class="bi bi-person-badge-fill text-primary"></i> Student</div>
+                        <div class="info-label"><i class="bi bi-person-badge-fill tw:text-(color:--nx-blue)!"></i> Student</div>
                         <div class="info-value">
                             @if ($student)
                                 <a href="{{ route('students.show', $student->id) }}" class="info-link">
@@ -168,13 +168,13 @@
 
                     {{-- ADMISSION --}}
                     <div class="info-card">
-                        <div class="info-label"><i class="bi bi-journal-bookmark-fill text-primary"></i> Admission Type</div>
+                        <div class="info-label"><i class="bi bi-journal-bookmark-fill tw:text-(color:--nx-blue)!"></i> Admission Type</div>
                         <div class="info-value">{{ optional($payment->admission)->name ?? '-' }}</div>
                     </div>
 
                     {{-- METHOD --}}
                     <div class="info-card">
-                        <div class="info-label"><i class="bi bi-credit-card text-primary"></i> Payment Method</div>
+                        <div class="info-label"><i class="bi bi-credit-card tw:text-(color:--nx-blue)!"></i> Payment Method</div>
                         <div class="info-value">
                             <span class="nx-badge {{ $methodClass }}">
                                 <i class="bi {{ $methodIcon }}"></i> {{ $methodLabel }}
@@ -184,7 +184,7 @@
 
                     {{-- STATUS --}}
                     <div class="info-card">
-                        <div class="info-label"><i class="bi bi-flag-fill text-primary"></i> Payment Status</div>
+                        <div class="info-label"><i class="bi bi-flag-fill tw:text-(color:--nx-blue)!"></i> Payment Status</div>
                         <div class="info-value">
                             <span class="nx-badge {{ $statusClass }}">
                                 <i class="bi {{ $statusIcon }}"></i> {{ $statusLabel }}
@@ -194,7 +194,7 @@
 
                     {{-- COLLECTED BY --}}
                     <div class="info-card">
-                        <div class="info-label"><i class="bi bi-person-workspace text-primary"></i> Collected By</div>
+                        <div class="info-label"><i class="bi bi-person-workspace tw:text-(color:--nx-blue)!"></i> Collected By</div>
                         <div class="info-value">
                             {{ optional($payment->collectedBy)->name ?? 'System' }}
                             @if ($payment->branch)
@@ -205,7 +205,7 @@
 
                     {{-- PAID AT --}}
                     <div class="info-card">
-                        <div class="info-label"><i class="bi bi-calendar-check-fill text-primary"></i> Payment Date &amp; Time</div>
+                        <div class="info-label"><i class="bi bi-calendar-check-fill tw:text-(color:--nx-blue)!"></i> Payment Date &amp; Time</div>
                         <div class="info-value">
                             @if ($payment->paid_at)
                                 {{ $payment->paid_at->format('l, d F Y') }}
@@ -284,7 +284,7 @@
         </div>
 
         {{-- FOOTER --}}
-        <div class="text-center">
+        <div class="tw:text-center!">
             <small class="cell-sub">
                 <i class="bi bi-info-circle"></i>
                 Transaction ID: #{{ $payment->id }}

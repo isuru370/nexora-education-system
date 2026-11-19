@@ -82,18 +82,19 @@ class TeacherSalaryEmailTest extends TestCase
 
         $this->pay()->assertSessionHas('success', 'Salary paid successfully. Salary slip will be emailed to t@test.lk.');
 
-        $messages = app('mailer')->getSwiftMailer()->getTransport()->messages();
+        $messages = app('mailer')->getSymfonyTransport()->messages();
         $this->assertCount(1, $messages);
-        $message = $messages->first();
+        /** @var \Symfony\Component\Mime\Email $message */
+        $message = $messages->first()->getOriginalMessage();
 
-        $this->assertSame(['t@test.lk'], array_keys($message->getTo()));
-        $this->assertSame(['no-reply@test.lk' => 'Success Education'], $message->getFrom());
+        $this->assertSame(['t@test.lk'], array_map(fn ($a) => $a->getAddress(), $message->getTo()));
+        $this->assertSame('no-reply@test.lk', $message->getFrom()[0]->getAddress());
+        $this->assertSame('Success Education', $message->getFrom()[0]->getName());
         $this->assertSame('Salary slip - 2026 Oct - Success Education', $message->getSubject());
-        $this->assertStringContainsString('LKR 1,200.00', $message->getBody());
-        $this->assertStringContainsString('Powered by NexoraIT', $message->getBody());
+        $this->assertStringContainsString('LKR 1,200.00', (string) $message->getHtmlBody());
+        $this->assertStringContainsString('Powered by NexoraIT', (string) $message->getHtmlBody());
 
-        $files = collect($message->getChildren())
-            ->filter(fn ($part) => $part instanceof \Swift_Attachment)
+        $files = collect($message->getAttachments())
             ->map(fn ($part) => $part->getFilename())
             ->values()
             ->all();

@@ -20,7 +20,7 @@
         {{-- ===================================================== --}}
         {{-- HERO --}}
         {{-- ===================================================== --}}
-        <div class="hero-section mb-4">
+        <div class="hero-section tw:mb-6!">
             <div class="hero-content">
                 <div class="hero-left">
                     <span class="greeting-badge">nexoraEDU</span>
@@ -50,7 +50,7 @@
         {{-- VALIDATION ERRORS --}}
         {{-- ===================================================== --}}
         @if ($errors->any())
-            <div class="nx-alert nx-alert-red mb-4">
+            <div class="nx-alert nx-alert-red tw:mb-6!">
                 <i class="bi bi-exclamation-triangle-fill"></i>
                 <div>
                     @foreach ($errors->all() as $error)
@@ -63,38 +63,38 @@
         {{-- ===================================================== --}}
         {{-- FILTER --}}
         {{-- ===================================================== --}}
-        <div class="nx-card mb-4">
+        <div class="nx-card tw:mb-6!">
 
             <div class="nx-card-header">
                 <div>
-                    <h5 class="nx-card-title"><i class="bi bi-funnel text-primary"></i> Filters</h5>
+                    <h5 class="nx-card-title"><i class="bi bi-funnel tw:text-(color:--nx-blue)!"></i> Filters</h5>
                     <p class="nx-card-subtitle">Filter by date, branch, collector or payment method</p>
                 </div>
             </div>
 
-            <div class="p-3">
+            <div class="tw:p-4!">
                 <form method="GET"
                     action="{{ route('reports.daily-collection.index', ['tab' => $tab]) }}"
-                    class="row g-3 align-items-end">
+                    class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2 tw:items-end!">
 
-                    <div class="col-lg-2 col-md-4">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%] tw:lg:flex-[0_0_auto] tw:lg:w-[16.66666667%]">
                         <label class="nx-label">From</label>
-                        <input type="date" name="from" class="form-control nx-input"
+                        <input type="date" name="from" class="ui-form-control nx-input"
                             value="{{ $filter->from->toDateString() }}"
                             max="{{ now()->toDateString() }}">
                     </div>
 
-                    <div class="col-lg-2 col-md-4">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%] tw:lg:flex-[0_0_auto] tw:lg:w-[16.66666667%]">
                         <label class="nx-label">To</label>
-                        <input type="date" name="to" class="form-control nx-input"
+                        <input type="date" name="to" class="ui-form-control nx-input"
                             value="{{ $filter->to->toDateString() }}"
                             max="{{ now()->toDateString() }}">
                     </div>
 
                     @if ($branches->count() > 1)
-                        <div class="col-lg-2 col-md-4">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%] tw:lg:flex-[0_0_auto] tw:lg:w-[16.66666667%]">
                             <label class="nx-label">Branch</label>
-                            <select name="branch_id" class="form-select nx-input">
+                            <select name="branch_id" class="ui-form-select nx-input">
                                 <option value="">All branches</option>
                                 @foreach ($branches as $branch)
                                     <option value="{{ $branch->id }}" {{ (int) $filter->branchId === (int) $branch->id ? 'selected' : '' }}>
@@ -105,9 +105,9 @@
                         </div>
                     @endif
 
-                    <div class="col-lg-2 col-md-4">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%] tw:lg:flex-[0_0_auto] tw:lg:w-[16.66666667%]">
                         <label class="nx-label">Collected by</label>
-                        <select name="collected_by" class="form-select nx-input">
+                        <select name="collected_by" class="ui-form-select nx-input">
                             <option value="">Everyone</option>
                             @foreach ($collectors as $collector)
                                 <option value="{{ $collector->id }}" {{ (int) $filter->collectedBy === (int) $collector->id ? 'selected' : '' }}>
@@ -117,9 +117,9 @@
                         </select>
                     </div>
 
-                    <div class="col-lg-2 col-md-4">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%] tw:lg:flex-[0_0_auto] tw:lg:w-[16.66666667%]">
                         <label class="nx-label">Payment method</label>
-                        <select name="payment_method" class="form-select nx-input">
+                        <select name="payment_method" class="ui-form-select nx-input">
                             <option value="">All methods</option>
                             @foreach ($paymentMethods as $method)
                                 <option value="{{ $method }}" {{ $filter->paymentMethod === $method ? 'selected' : '' }}>
@@ -129,8 +129,8 @@
                         </select>
                     </div>
 
-                    <div class="col-lg-2 col-md-4 d-flex gap-2">
-                        <button type="submit" class="nx-btn nx-btn-primary flex-grow-1">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%] tw:lg:flex-[0_0_auto] tw:lg:w-[16.66666667%] tw:flex! tw:gap-2!">
+                        <button type="submit" class="nx-btn nx-btn-primary tw:grow!">
                             <i class="bi bi-funnel"></i> Filter
                         </button>
                         <a href="{{ route('reports.daily-collection.index', ['tab' => $tab]) }}"
@@ -141,7 +141,7 @@
                 </form>
 
                 @if ($summary['show_expenses'] === false)
-                    <div class="nx-alert nx-alert-blue mt-3">
+                    <div class="nx-alert nx-alert-blue tw:mt-4!">
                         <i class="bi bi-info-circle-fill"></i>
                         <span>
                             "Collected by" and "Payment method" only apply to class fees and admission fees,
@@ -155,7 +155,7 @@
         {{-- ===================================================== --}}
         {{-- STATS --}}
         {{-- ===================================================== --}}
-        <div class="stats-grid mb-4">
+        <div class="stats-grid tw:mb-6!">
 
             <div class="nx-card stat-card">
                 <div class="stat-icon-wrapper icon-green"><i class="bi bi-arrow-down-circle"></i></div>
@@ -201,11 +201,11 @@
         {{-- ===================================================== --}}
         {{-- TABS --}}
         {{-- ===================================================== --}}
-        <div class="nx-card mb-4 p-3">
-            <ul class="nav nx-tabs gap-2">
+        <div class="nx-card tw:mb-6! tw:p-4!">
+            <ul class="ui-nav nx-tabs tw:gap-2!">
                 @foreach ($tabs as $key => $label)
-                    <li class="nav-item">
-                        <a class="nav-link {{ $tab === $key ? 'active' : '' }}"
+                    <li class="ui-nav-item">
+                        <a class="ui-nav-link {{ $tab === $key ? 'active' : '' }}"
                             href="{{ route('reports.daily-collection.index', ['tab' => $key] + $query) }}">
                             {{ $label }}
                         </a>
@@ -219,30 +219,30 @@
         {{-- ===================================================== --}}
         @if ($tab === 'summary')
 
-            <div class="row g-3">
+            <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2">
 
                 {{-- INCOME --}}
-                <div class="col-lg-6">
-                    <div class="nx-card h-100">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[50%]">
+                    <div class="nx-card tw:h-full!">
                         <div class="nx-card-header">
                             <div>
                                 <h5 class="nx-card-title">
-                                    <i class="bi bi-arrow-down-circle text-success"></i> Income
+                                    <i class="bi bi-arrow-down-circle tw:text-(color:--nx-green)!"></i> Income
                                 </h5>
                                 <p class="nx-card-subtitle">Breakdown by category</p>
                             </div>
                         </div>
-                        <div class="p-3">
-                            <table class="table premium-table mb-0">
+                        <div class="tw:p-4!">
+                            <table class="ui-table premium-table tw:mb-0!">
                                 @foreach ($summary['income'] as $label => $amount)
                                     <tr>
                                         <td>{{ $label }}</td>
-                                        <td class="text-end cell-title">Rs. {{ number_format($amount, 2) }}</td>
+                                        <td class="tw:text-right! cell-title">Rs. {{ number_format($amount, 2) }}</td>
                                     </tr>
                                 @endforeach
-                                <tr class="fw-bold" style="border-top: 2px solid var(--nx-border);">
+                                <tr class="tw:font-bold!" style="border-top: 2px solid var(--nx-border);">
                                     <td>Total income</td>
-                                    <td class="text-end cell-title">Rs. {{ number_format($summary['total_income'], 2) }}</td>
+                                    <td class="tw:text-right! cell-title">Rs. {{ number_format($summary['total_income'], 2) }}</td>
                                 </tr>
                             </table>
                         </div>
@@ -250,36 +250,36 @@
                 </div>
 
                 {{-- EXPENSES --}}
-                <div class="col-lg-6">
-                    <div class="nx-card h-100">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[50%]">
+                    <div class="nx-card tw:h-full!">
                         <div class="nx-card-header">
                             <div>
                                 <h5 class="nx-card-title">
-                                    <i class="bi bi-arrow-up-circle text-danger"></i> Expenses
+                                    <i class="bi bi-arrow-up-circle tw:text-(color:--nx-red)!"></i> Expenses
                                 </h5>
                                 <p class="nx-card-subtitle">Breakdown by category</p>
                             </div>
                         </div>
-                        <div class="p-3">
+                        <div class="tw:p-4!">
                             @if ($summary['show_expenses'])
-                                <table class="table premium-table mb-0">
+                                <table class="ui-table premium-table tw:mb-0!">
                                     @foreach ($summary['expenses'] as $label => $amount)
                                         <tr>
                                             <td>{{ $label }}</td>
-                                            <td class="text-end cell-title">Rs. {{ number_format($amount, 2) }}</td>
+                                            <td class="tw:text-right! cell-title">Rs. {{ number_format($amount, 2) }}</td>
                                         </tr>
                                     @endforeach
-                                    <tr class="fw-bold" style="border-top: 2px solid var(--nx-border);">
+                                    <tr class="tw:font-bold!" style="border-top: 2px solid var(--nx-border);">
                                         <td>Total expenses</td>
-                                        <td class="text-end cell-title">Rs. {{ number_format($summary['total_expenses'], 2) }}</td>
+                                        <td class="tw:text-right! cell-title">Rs. {{ number_format($summary['total_expenses'], 2) }}</td>
                                     </tr>
-                                    <tr class="fw-bold" style="border-top: 2px solid var(--nx-border);">
-                                        <td class="text-primary">Net balance</td>
-                                        <td class="text-end cell-title text-primary">Rs. {{ number_format($summary['net'], 2) }}</td>
+                                    <tr class="tw:font-bold!" style="border-top: 2px solid var(--nx-border);">
+                                        <td class="tw:text-(color:--nx-blue)!">Net balance</td>
+                                        <td class="tw:text-right! cell-title tw:text-(color:--nx-blue)!">Rs. {{ number_format($summary['net'], 2) }}</td>
                                     </tr>
                                 </table>
                             @else
-                                <p class="cell-sub mb-0">Hidden while a collector or payment method filter is used.</p>
+                                <p class="cell-sub tw:mb-0!">Hidden while a collector or payment method filter is used.</p>
                             @endif
                         </div>
                     </div>
@@ -287,12 +287,12 @@
 
                 {{-- ✅ BY BRANCH (conditional) --}}
                 @if ($byBranch->count() > 1)
-                    <div class="col-12">
-                        <div class="nx-card h-100">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:flex-[0_0_auto] tw:w-[100%]">
+                        <div class="nx-card tw:h-full!">
                             <div class="nx-card-header">
                                 <div>
                                     <h5 class="nx-card-title">
-                                        <i class="bi bi-diagram-3 text-primary"></i> By branch
+                                        <i class="bi bi-diagram-3 tw:text-(color:--nx-blue)!"></i> By branch
                                     </h5>
                                     <p class="nx-card-subtitle">Income and expenses per branch</p>
                                 </div>
@@ -301,16 +301,16 @@
                                     Full breakdown <i class="bi bi-arrow-right"></i>
                                 </a>
                             </div>
-                            <div class="table-responsive">
-                                <table class="table premium-table mb-0">
+                            <div class="ui-table-responsive">
+                                <table class="ui-table premium-table tw:mb-0!">
                                     <thead>
                                         <tr>
                                             <th>Branch</th>
-                                            <th class="text-end">Payments</th>
-                                            <th class="text-end">Income</th>
+                                            <th class="tw:text-right!">Payments</th>
+                                            <th class="tw:text-right!">Income</th>
                                             @if ($summary['show_expenses'])
-                                                <th class="text-end">Expenses</th>
-                                                <th class="text-end">Net</th>
+                                                <th class="tw:text-right!">Expenses</th>
+                                                <th class="tw:text-right!">Net</th>
                                             @endif
                                         </tr>
                                     </thead>
@@ -318,13 +318,13 @@
                                         @foreach ($byBranch as $row)
                                             <tr class="{{ $row['key'] === 'shared' ? 'row-muted' : '' }}">
                                                 <td class="cell-title">{{ $row['branch'] }}</td>
-                                                <td class="text-end cell-sub">{{ number_format($row['payments']) }}</td>
-                                                <td class="text-end cell-title">Rs. {{ number_format($row['total_income'], 2) }}</td>
+                                                <td class="tw:text-right! cell-sub">{{ number_format($row['payments']) }}</td>
+                                                <td class="tw:text-right! cell-title">Rs. {{ number_format($row['total_income'], 2) }}</td>
                                                 @if ($summary['show_expenses'])
-                                                    <td class="text-end cell-title {{ $row['total_expenses'] > 0 ? 'text-danger' : '' }}">
+                                                    <td class="tw:text-right! cell-title {{ $row['total_expenses'] > 0 ? 'tw:text-(color:--nx-red)!' : '' }}">
                                                         Rs. {{ number_format($row['total_expenses'], 2) }}
                                                     </td>
-                                                    <td class="text-end cell-title {{ $row['net'] < 0 ? 'text-danger' : 'text-success' }}">
+                                                    <td class="tw:text-right! cell-title {{ $row['net'] < 0 ? 'tw:text-(color:--nx-red)!' : 'tw:text-(color:--nx-green)!' }}">
                                                         Rs. {{ number_format($row['net'], 2) }}
                                                     </td>
                                                 @endif
@@ -338,22 +338,22 @@
                 @endif
 
                 {{-- BY PAYMENT METHOD --}}
-                <div class="col-lg-4">
-                    <div class="nx-card h-100">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[33.33333333%]">
+                    <div class="nx-card tw:h-full!">
                         <div class="nx-card-header">
                             <div>
-                                <h5 class="nx-card-title"><i class="bi bi-credit-card text-primary"></i> By payment method</h5>
+                                <h5 class="nx-card-title"><i class="bi bi-credit-card tw:text-(color:--nx-blue)!"></i> By payment method</h5>
                             </div>
                         </div>
-                        <div class="p-3">
-                            <table class="table premium-table mb-0">
+                        <div class="tw:p-4!">
+                            <table class="ui-table premium-table tw:mb-0!">
                                 @forelse ($summary['by_method'] as $row)
                                     <tr>
                                         <td>
                                             {{ $row['label'] }}
                                             <small class="cell-sub">({{ $row['count'] }})</small>
                                         </td>
-                                        <td class="text-end cell-title">Rs. {{ number_format($row['amount'], 2) }}</td>
+                                        <td class="tw:text-right! cell-title">Rs. {{ number_format($row['amount'], 2) }}</td>
                                     </tr>
                                 @empty
                                     <tr><td class="cell-sub">No payments</td></tr>
@@ -364,22 +364,22 @@
                 </div>
 
                 {{-- BY COLLECTOR --}}
-                <div class="col-lg-4">
-                    <div class="nx-card h-100">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[33.33333333%]">
+                    <div class="nx-card tw:h-full!">
                         <div class="nx-card-header">
                             <div>
-                                <h5 class="nx-card-title"><i class="bi bi-person-badge text-primary"></i> By collector</h5>
+                                <h5 class="nx-card-title"><i class="bi bi-person-badge tw:text-(color:--nx-blue)!"></i> By collector</h5>
                             </div>
                         </div>
-                        <div class="p-3">
-                            <table class="table premium-table mb-0">
+                        <div class="tw:p-4!">
+                            <table class="ui-table premium-table tw:mb-0!">
                                 @forelse ($summary['by_collector'] as $row)
                                     <tr>
                                         <td>
                                             {{ $row['name'] }}
                                             <small class="cell-sub">({{ $row['count'] }})</small>
                                         </td>
-                                        <td class="text-end cell-title">Rs. {{ number_format($row['amount'], 2) }}</td>
+                                        <td class="tw:text-right! cell-title">Rs. {{ number_format($row['amount'], 2) }}</td>
                                     </tr>
                                 @empty
                                     <tr><td class="cell-sub">No payments</td></tr>
@@ -390,19 +390,19 @@
                 </div>
 
                 {{-- CLASS FEE SPLIT --}}
-                <div class="col-lg-4">
-                    <div class="nx-card h-100">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[33.33333333%]">
+                    <div class="nx-card tw:h-full!">
                         <div class="nx-card-header">
                             <div>
-                                <h5 class="nx-card-title"><i class="bi bi-pie-chart text-primary"></i> Class fee split</h5>
+                                <h5 class="nx-card-title"><i class="bi bi-pie-chart tw:text-(color:--nx-blue)!"></i> Class fee split</h5>
                             </div>
                         </div>
-                        <div class="p-3">
-                            <table class="table premium-table mb-0">
+                        <div class="tw:p-4!">
+                            <table class="ui-table premium-table tw:mb-0!">
                                 @foreach ($summary['split'] as $label => $amount)
                                     <tr>
                                         <td>{{ $label }}</td>
-                                        <td class="text-end cell-title">Rs. {{ number_format($amount, 2) }}</td>
+                                        <td class="tw:text-right! cell-title">Rs. {{ number_format($amount, 2) }}</td>
                                     </tr>
                                 @endforeach
                             </table>
@@ -416,8 +416,8 @@
             {{-- OTHER TABS --}}
             <div class="nx-card">
                                 @if ($tab === 'branches' && !$summary['show_expenses'])
-                    <div class="p-3 pb-0">
-                        <p class="cell-sub mb-0">
+                    <div class="tw:p-4! tw:pb-0!">
+                        <p class="cell-sub tw:mb-0!">
                             <i class="bi bi-info-circle"></i>
                             Only class fees and admission fees are shown while a collector or payment method filter is used.
                         </p>
@@ -425,8 +425,8 @@
                 @endif
 
                 @if ($tab === 'expenses' && !$summary['show_expenses'])
-                    <div class="p-3">
-                        <p class="cell-sub mb-0">
+                    <div class="tw:p-4!">
+                        <p class="cell-sub tw:mb-0!">
                             Expenses are hidden while a collector or payment method filter is used.
                         </p>
                     </div>
@@ -453,7 +453,7 @@
         flex-wrap: wrap;
     }
 
-    .dashboard-page .nx-tabs .nav-link {
+    .dashboard-page .nx-tabs .ui-nav-link {
         border-radius: 8px;
         padding: .45rem .95rem;
         font-size: .82rem;
@@ -464,13 +464,13 @@
         transition: all .15s ease;
     }
 
-    .dashboard-page .nx-tabs .nav-link:hover {
+    .dashboard-page .nx-tabs .ui-nav-link:hover {
         background: var(--nx-blue-soft);
         color: var(--nx-blue);
         border-color: var(--nx-blue);
     }
 
-    .dashboard-page .nx-tabs .nav-link.active {
+    .dashboard-page .nx-tabs .ui-nav-link.active {
         background: var(--nx-blue);
         color: #fff;
         border-color: var(--nx-blue);

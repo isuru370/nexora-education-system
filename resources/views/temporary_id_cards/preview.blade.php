@@ -250,7 +250,7 @@
             width: 100%;
         }
 
-        .hero-actions .btn {
+        .hero-actions .ui-btn {
             flex: 1;
         }
 
@@ -270,16 +270,16 @@
         <div class="hero-card">
             <div class="hero-content">
                 <div>
-                    <h4 class="mb-1 fw-bold">Temporary ID Cards Preview</h4>
-                    <p class="mb-0 text-muted">
+                    <h4 class="tw:mb-1! tw:font-bold!">Temporary ID Cards Preview</h4>
+                    <p class="tw:mb-0! tw:text-bs-secondary-color!">
                         Preview and download temporary ID cards as PDF.
                     </p>
                 </div>
 
                 <div class="hero-actions">
                     <a href="{{ route('temporary_id_cards.index') }}"
-                       class="btn btn-outline-secondary custom-btn">
-                        <i class="bi bi-arrow-left me-1"></i>
+                       class="ui-btn ui-btn-outline-secondary custom-btn">
+                        <i class="bi bi-arrow-left tw:mr-1!"></i>
                         Back to List
                     </a>
                 </div>
@@ -295,45 +295,45 @@
                   action="{{ route('temporary_id_cards.preview-generate') }}">
                 @csrf
 
-                <div class="row g-3 align-items-end">
+                <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2 tw:items-end!">
 
-                    <div class="col-md-4">
-                        <label class="form-label fw-semibold">
-                            <i class="bi bi-hash me-1"></i> Start TMP Number
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
+                        <label class="ui-form-label tw:font-semibold!">
+                            <i class="bi bi-hash tw:mr-1!"></i> Start TMP Number
                         </label>
 
                         <input type="text"
                                name="start"
-                               class="form-control custom-input"
+                               class="ui-form-control custom-input"
                                placeholder="TMP001"
                                value="{{ $start ?? old('start') }}"
                                required>
 
                         @error('start')
-                            <small class="text-danger d-block mt-1">{{ $message }}</small>
+                            <small class="tw:text-bs-danger! tw:block! tw:mt-1!">{{ $message }}</small>
                         @enderror
                     </div>
 
-                    <div class="col-md-4">
-                        <label class="form-label fw-semibold">
-                            <i class="bi bi-hash me-1"></i> End TMP Number
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
+                        <label class="ui-form-label tw:font-semibold!">
+                            <i class="bi bi-hash tw:mr-1!"></i> End TMP Number
                         </label>
 
                         <input type="text"
                                name="end"
-                               class="form-control custom-input"
+                               class="ui-form-control custom-input"
                                placeholder="TMP012"
                                value="{{ $end ?? old('end') }}"
                                required>
 
                         @error('end')
-                            <small class="text-danger d-block mt-1">{{ $message }}</small>
+                            <small class="tw:text-bs-danger! tw:block! tw:mt-1!">{{ $message }}</small>
                         @enderror
                     </div>
 
-                    <div class="col-md-4 d-grid">
-                        <button type="submit" class="btn btn-success custom-btn">
-                            <i class="bi bi-search me-1"></i>
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%] tw:grid!">
+                        <button type="submit" class="ui-btn ui-btn-success custom-btn">
+                            <i class="bi bi-search tw:mr-1!"></i>
                             Generate Preview
                         </button>
                     </div>
@@ -342,15 +342,15 @@
             </form>
 
             @if (session('error'))
-                <div class="alert alert-danger border-0 mt-3 mb-0 rounded-4">
-                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                <div class="ui-alert ui-alert-danger tw:[border:0]! tw:mt-4! tw:mb-0! tw:rounded-bs-xl!">
+                    <i class="bi bi-exclamation-triangle-fill tw:mr-2!"></i>
                     {{ session('error') }}
                 </div>
             @endif
 
             @if (session('success'))
-                <div class="alert alert-success border-0 mt-3 mb-0 rounded-4">
-                    <i class="bi bi-check-circle-fill me-2"></i>
+                <div class="ui-alert ui-alert-success tw:[border:0]! tw:mt-4! tw:mb-0! tw:rounded-bs-xl!">
+                    <i class="bi bi-check-circle-fill tw:mr-2!"></i>
                     {{ session('success') }}
                 </div>
             @endif
@@ -363,31 +363,31 @@
         @if (isset($codes) && $codes->count())
             <div class="info-bar no-print">
 
-                <div class="text-muted">
-                    <i class="bi bi-collection me-1"></i>
+                <div class="tw:text-bs-secondary-color!">
+                    <i class="bi bi-collection tw:mr-1!"></i>
                     @php($totalCards = $total ?? $codes->count())
                     <strong>Total Cards:</strong> {{ $totalCards }}
-                    <span class="mx-2">|</span>
+                    <span class="tw:mx-2!">|</span>
                     <strong>Total Pages:</strong> {{ ceil($totalCards / 12) }}
-                    <span class="mx-2">|</span>
+                    <span class="tw:mx-2!">|</span>
                     <strong>Layout:</strong> 3 × 4 Cards Per Page
                 </div>
 
                 <form method="POST"
                       action="{{ route('temporary_id_cards.download-pdf') }}"
-                      class="d-inline">
+                      class="tw:[display:inline]!">
                     @csrf
                     <input type="hidden" name="start" value="{{ $start }}">
                     <input type="hidden" name="end" value="{{ $end }}">
 
                     @if (($files ?? 1) > 1)
-                        <button type="submit" class="btn btn-primary custom-btn">
-                            <i class="bi bi-file-zip me-1"></i>
+                        <button type="submit" class="ui-btn ui-btn-primary custom-btn">
+                            <i class="bi bi-file-zip tw:mr-1!"></i>
                             Download ZIP ({{ $files }} PDFs)
                         </button>
                     @else
-                        <button type="submit" class="btn btn-primary custom-btn">
-                            <i class="bi bi-file-pdf me-1"></i>
+                        <button type="submit" class="ui-btn ui-btn-primary custom-btn">
+                            <i class="bi bi-file-pdf tw:mr-1!"></i>
                             Download PDF
                         </button>
                     @endif
@@ -396,8 +396,8 @@
             </div>
 
             @if (($total ?? 0) > $codes->count())
-                <div class="alert alert-info border-0 rounded-4 no-print">
-                    <i class="bi bi-info-circle me-1"></i>
+                <div class="ui-alert ui-alert-info tw:[border:0]! tw:rounded-bs-xl! no-print">
+                    <i class="bi bi-info-circle tw:mr-1!"></i>
                     Showing the first {{ $codes->count() }} of {{ $total }} cards. The download has all {{ $total }}:
                     a ZIP with one PDF for every {{ \App\Services\Web\TemporaryCard\TemporaryCardService::PDF_CHUNK }} cards.
                 </div>
@@ -435,8 +435,8 @@
                     <div class="icon">
                         <i class="bi bi-credit-card-2-front"></i>
                     </div>
-                    <h4 class="fw-bold mb-2">No preview cards yet</h4>
-                    <p class="text-muted mb-0">
+                    <h4 class="tw:font-bold! tw:mb-2!">No preview cards yet</h4>
+                    <p class="tw:text-bs-secondary-color! tw:mb-0!">
                         Enter a Start TMP Number and End TMP Number, then click Generate Preview.
                     </p>
                 </div>

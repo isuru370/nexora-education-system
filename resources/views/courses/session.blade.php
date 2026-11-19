@@ -10,7 +10,7 @@
 @endphp
 <div class="dashboard-page">
 
-    <div class="hero-section mb-4">
+    <div class="hero-section tw:mb-6!">
         <div class="hero-content">
             <div class="hero-left">
                 <span class="greeting-badge">{{ $course->name }}</span>
@@ -33,18 +33,18 @@
     @include('courses.partials.alerts')
 
     @if ($canManage && $session->canEdit())
-        <div class="nx-card mb-4" id="edit">
-            <div class="p-3">
+        <div class="nx-card tw:mb-6!" id="edit">
+            <div class="tw:p-4!">
                 <details class="special-fee" {{ $errors->hasAny(['session_date', 'start_time', 'end_time', 'class_hall_id']) ? 'open' : '' }}>
                     <summary>Change date / time / hall</summary>
-                    <form method="POST" action="{{ route('courses.sessions.update', [$course, $session]) }}" class="inline-form mt-2" onsubmit="return confirm('Change this class day? Parents will be told.')">
+                    <form method="POST" action="{{ route('courses.sessions.update', [$course, $session]) }}" class="inline-form tw:mt-2!" onsubmit="return confirm('Change this class day? Parents will be told.')">
                         @csrf @method('PUT')
-                        <div><label class="nx-label" for="edit_date">Date</label><input type="date" id="edit_date" name="session_date" class="form-control nx-input" min="{{ today()->toDateString() }}" value="{{ old('session_date', $session->session_date->toDateString()) }}" required></div>
-                        <div><label class="nx-label" for="edit_start">Start</label><input type="time" id="edit_start" name="start_time" class="form-control nx-input" value="{{ old('start_time', substr($session->start_time, 0, 5)) }}" required></div>
-                        <div><label class="nx-label" for="edit_end">End</label><input type="time" id="edit_end" name="end_time" class="form-control nx-input" value="{{ old('end_time', substr($session->end_time, 0, 5)) }}" required></div>
+                        <div><label class="nx-label" for="edit_date">Date</label><input type="date" id="edit_date" name="session_date" class="ui-form-control nx-input" min="{{ today()->toDateString() }}" value="{{ old('session_date', $session->session_date->toDateString()) }}" required></div>
+                        <div><label class="nx-label" for="edit_start">Start</label><input type="time" id="edit_start" name="start_time" class="ui-form-control nx-input" value="{{ old('start_time', substr($session->start_time, 0, 5)) }}" required></div>
+                        <div><label class="nx-label" for="edit_end">End</label><input type="time" id="edit_end" name="end_time" class="ui-form-control nx-input" value="{{ old('end_time', substr($session->end_time, 0, 5)) }}" required></div>
                         <div>
                             <label class="nx-label" for="edit_hall">Hall</label>
-                            <select id="edit_hall" name="class_hall_id" class="form-select nx-input">
+                            <select id="edit_hall" name="class_hall_id" class="ui-form-select nx-input">
                                 <option value="">No hall</option>
                                 @foreach ($halls as $hall)
                                     <option value="{{ $hall->id }}" {{ (string) old('class_hall_id', $session->class_hall_id) === (string) $hall->id ? 'selected' : '' }}>{{ $hall->hall_name }}</option>
@@ -53,26 +53,26 @@
                         </div>
                         <div style="min-width:auto"><button class="nx-btn nx-btn-primary" type="submit">Save</button></div>
                     </form>
-                    <small class="cell-sub d-block mt-1">Only this day changes. It stays like this when the weekly schedule is edited.</small>
+                    <small class="cell-sub tw:block! tw:mt-1!">Only this day changes. It stays like this when the weekly schedule is edited.</small>
                 </details>
             </div>
         </div>
     @endif
 
     @if ($session->isCancelled())
-        <div class="nx-alert nx-alert-red mb-4"><i class="bi bi-x-circle-fill"></i><span>This class day is cancelled{{ $session->cancel_reason ? ': ' . $session->cancel_reason : '' }}.</span></div>
+        <div class="nx-alert nx-alert-red tw:mb-6!"><i class="bi bi-x-circle-fill"></i><span>This class day is cancelled{{ $session->cancel_reason ? ': ' . $session->cancel_reason : '' }}.</span></div>
     @elseif ($session->status === 'completed')
-        <div class="nx-alert nx-alert-blue mb-4"><i class="bi bi-check-circle-fill"></i><span>This class day is completed.</span></div>
+        <div class="nx-alert nx-alert-blue tw:mb-6!"><i class="bi bi-check-circle-fill"></i><span>This class day is completed.</span></div>
     @elseif (!$canMark)
-        <div class="nx-alert nx-alert-blue mb-4"><i class="bi bi-info-circle-fill"></i><span>Attendance can be marked from this day on.</span></div>
+        <div class="nx-alert nx-alert-blue tw:mb-6!"><i class="bi bi-info-circle-fill"></i><span>Attendance can be marked from this day on.</span></div>
     @else
-        <div class="nx-card mb-4">
-            <div class="p-3">
+        <div class="nx-card tw:mb-6!">
+            <div class="tw:p-4!">
                 <form method="POST" action="{{ route('courses.sessions.mark', [$course, $session]) }}" class="inline-form" autocomplete="off">
                     @csrf
-                    <div class="flex-grow-1">
+                    <div class="tw:grow!">
                         <label class="nx-label" for="student_code">Scan QR or type student ID</label>
-                        <input id="student_code" name="student_code" class="form-control nx-input scan-box" placeholder="Student ID / QR" required autofocus>
+                        <input id="student_code" name="student_code" class="ui-form-control nx-input scan-box" placeholder="Student ID / QR" required autofocus>
                     </div>
                     <div style="min-width:auto"><button class="nx-btn nx-btn-primary" type="submit"><i class="bi bi-person-check-fill"></i> Mark present</button></div>
                 </form>
@@ -81,16 +81,16 @@
     @endif
 
     <div class="nx-card">
-        <div class="table-responsive">
-            <table class="table premium-table mb-0">
-                <thead><tr><th>Student</th><th>Mobile</th><th>Status</th><th>Time</th><th class="text-end"></th></tr></thead>
+        <div class="ui-table-responsive">
+            <table class="ui-table premium-table tw:mb-0!">
+                <thead><tr><th>Student</th><th>Mobile</th><th>Status</th><th>Time</th><th class="tw:text-right!"></th></tr></thead>
                 <tbody>
                     @forelse ($students as $enrollment)
                         @php
                             $row = $marked->get($enrollment->student_id);
                         @endphp
                         <tr>
-                            <td><span class="cell-title">{{ $enrollment->student->initial_name ?? '' }}</span><small class="cell-sub d-block">{{ $enrollment->student->custom_id ?? '' }}</small></td>
+                            <td><span class="cell-title">{{ $enrollment->student->initial_name ?? '' }}</span><small class="cell-sub tw:block!">{{ $enrollment->student->custom_id ?? '' }}</small></td>
                             <td>{{ $enrollment->student->mobile ?? '—' }}</td>
                             <td>
                                 @if ($row)
@@ -102,10 +102,10 @@
                             <td>
                                 @if ($row)
                                     {{ $row->attended_at->format('h:i A') }}
-                                    <small class="cell-sub d-block">{{ str_contains($row->mark_method, 'mobile') ? 'App' : 'Web' }} · {{ $row->markedBy->name ?? '' }}</small>
+                                    <small class="cell-sub tw:block!">{{ str_contains($row->mark_method, 'mobile') ? 'App' : 'Web' }} · {{ $row->markedBy->name ?? '' }}</small>
                                 @endif
                             </td>
-                            <td class="text-end">
+                            <td class="tw:text-right!">
                                 @if ($row)
                                     <form method="POST" action="{{ route('courses.sessions.unmark', [$course, $session, $row]) }}" onsubmit="return confirm('Remove this attendance?')">
                                         @csrf @method('DELETE')

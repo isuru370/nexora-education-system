@@ -8,39 +8,39 @@
         use SimpleSoftwareIO\QrCode\Facades\QrCode;
     @endphp
 
-    <div class="container-fluid py-4">
+    <div class="ui-container-fluid tw:py-6!">
 
         {{-- ===========================
         HEADER
     ============================ --}}
 
-        <div class="d-flex justify-content-between align-items-center flex-wrap mb-4">
+        <div class="tw:flex! tw:justify-between! tw:items-center! tw:flex-wrap! tw:mb-6!">
 
-            <h4 class="mb-3 mb-md-0">
-                <i class="bi bi-person-vcard text-primary me-2"></i>
+            <h4 class="tw:mb-4! tw:md:mb-0!">
+                <i class="bi bi-person-vcard tw:text-bs-primary! tw:mr-2!"></i>
                 Student Card Preview
             </h4>
 
-            <div class="d-flex flex-wrap gap-2 no-print">
+            <div class="tw:flex! tw:flex-wrap! tw:gap-2! no-print">
 
                 @if (auth()->check() && auth()->user()->isSuperAdmin())
-                    <button class="btn btn-outline-primary" id="selectAllBtn">
+                    <button class="ui-btn ui-btn-outline-primary" id="selectAllBtn">
                         <i class="bi bi-check2-all"></i>
                         Select All
                     </button>
 
-                    <button class="btn btn-outline-secondary" id="deselectAllBtn">
+                    <button class="ui-btn ui-btn-outline-secondary" id="deselectAllBtn">
                         <i class="bi bi-x-circle"></i>
                         Clear
                     </button>
 
-                    <button class="btn btn-success" id="bulkDownloadBtn" disabled>
+                    <button class="ui-btn ui-btn-success" id="bulkDownloadBtn" disabled>
                         <i class="bi bi-download"></i>
                         Download Selected
                         (<span id="downloadCount">0</span>)
                     </button>
 
-                    <button class="btn btn-primary" onclick="window.print()">
+                    <button class="ui-btn ui-btn-primary" onclick="window.print()">
                         <i class="bi bi-printer"></i>
                         Print
                     </button>
@@ -56,7 +56,7 @@
     ============================ --}}
 
         @if (auth()->check() && auth()->user()->isSuperAdmin())
-            <div class="alert alert-info no-print py-2 d-flex align-items-center gap-2">
+            <div class="ui-alert ui-alert-info no-print tw:py-2! tw:flex! tw:items-center! tw:gap-2!">
 
                 <i class="bi bi-check-circle-fill"></i>
 
@@ -93,12 +93,12 @@
 
                     <div class="card-toolbar no-print">
 
-                        <div class="form-check">
+                        <div class="ui-form-check">
 
                             @if (auth()->check() && auth()->user()->isSuperAdmin())
-                                <input class="form-check-input student-select" type="checkbox" value="{{ $card->id }}">
+                                <input class="ui-form-check-input student-select" type="checkbox" value="{{ $card->id }}">
                             @else
-                                <span class="text-muted" style="font-size: 12px;">
+                                <span class="tw:text-bs-secondary-color!" style="font-size: 12px;">
                                     <i class="bi bi-lock"></i>
                                 </span>
                             @endif
@@ -106,7 +106,7 @@
                         </div>
 
                         @if (auth()->check() && auth()->user()->isSuperAdmin())
-                            <button class="btn btn-sm btn-success download-single-btn" data-card-id="{{ $card->id }}"
+                            <button class="ui-btn ui-btn-sm ui-btn-success download-single-btn" data-card-id="{{ $card->id }}"
                                 data-student-key="{{ $card->card_number }}">
 
                                 <i class="bi bi-download"></i>
@@ -141,7 +141,7 @@
         Pagination
     ============================ --}}
 
-        <div class="mt-4 d-flex justify-content-center no-print">
+        <div class="tw:mt-6! tw:flex! tw:justify-center! no-print">
 
             {{ $cards->withQueryString()->links() }}
 
@@ -169,25 +169,25 @@
             font-size: 1.5rem;
         }
 
-        .btn {
+        .ui-btn {
             border-radius: 10px;
             font-weight: 600;
             padding: 0.6rem 1.2rem;
             transition: all 0.3s ease;
         }
 
-        .btn:hover {
+        .ui-btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.12);
         }
 
-        .btn-outline-primary:hover {
+        .ui-btn-outline-primary:hover {
             background: linear-gradient(135deg, #2563eb, #3b82f6);
             border-color: #2563eb;
             color: #fff;
         }
 
-        .btn-success:hover {
+        .ui-btn-success:hover {
             background: linear-gradient(135deg, #059669, #10b981);
             border-color: #059669;
         }
@@ -196,7 +196,7 @@
                                        SELECTED COUNT ALERT
                                     ========================================== */
 
-        .alert-info {
+        .ui-alert-info {
             background: linear-gradient(135deg, #eff6ff, #dbeafe);
             border: none;
             border-radius: 14px;
@@ -204,7 +204,7 @@
             font-weight: 500;
         }
 
-        .alert-info i {
+        .ui-alert-info i {
             font-size: 1.2rem;
         }
 
@@ -292,7 +292,7 @@
             border-color: #0d6efd;
         }
 
-        .form-check {
+        .ui-form-check {
             padding-left: 0;
         }
 
@@ -326,7 +326,7 @@
                                        CR80 CARD
                                     ========================================== */
 
-        /* the card itself is drawn by id-cards.card (85.6 x 54 mm) */
+        /* the card itself is drawn by id-cards.ui-card (85.6 x 54 mm) */
         .id-card {
             position: relative;
             width: 85.6mm;
@@ -510,13 +510,13 @@
                                        PAGINATION
                                     ========================================== */
 
-        .pagination {
+        .ui-pagination {
 
             margin-top: 20px;
 
         }
 
-        .pagination .page-link {
+        .ui-pagination .ui-page-link {
             border: none;
             margin: 0 3px;
             border-radius: 10px !important;
@@ -526,13 +526,13 @@
             transition: all 0.3s ease;
         }
 
-        .pagination .page-item.active .page-link {
+        .ui-pagination .ui-page-item.active .ui-page-link {
             background: linear-gradient(135deg, #2563eb, #3b82f6);
             color: #fff;
             box-shadow: 0 4px 15px rgba(37, 99, 235, 0.3);
         }
 
-        .pagination .page-item:hover .page-link {
+        .ui-pagination .ui-page-item:hover .ui-page-link {
             background: #eef2f7;
         }
 
@@ -562,7 +562,7 @@
 
             }
 
-            .container-fluid {
+            .ui-container-fluid {
 
                 padding: 0 !important;
 
@@ -647,7 +647,7 @@
                 gap: 20px;
             }
 
-            .btn {
+            .ui-btn {
                 padding: 0.4rem 0.8rem;
                 font-size: 0.8rem;
             }
@@ -700,13 +700,13 @@
                 gap: 15px;
             }
 
-            .btn {
+            .ui-btn {
                 padding: 0.3rem 0.6rem;
                 font-size: 0.7rem;
                 border-radius: 8px;
             }
 
-            .alert-info {
+            .ui-alert-info {
                 font-size: 0.8rem;
                 padding: 0.5rem 0.8rem !important;
             }

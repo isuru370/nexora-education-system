@@ -1,5 +1,5 @@
 @if($students->hasPages())
-    <div class="pagination-wrapper mt-4">
+    <div class="pagination-wrapper tw:mt-6!">
 
         {{-- ==================== RESULTS INFO ==================== --}}
         <div class="pagination-info">
@@ -19,7 +19,7 @@
 
         {{-- ==================== PAGINATION LINKS ==================== --}}
         <nav aria-label="Student ID Cards Pagination" class="pagination-nav">
-            {{ $students->appends(request()->query())->links('pagination::bootstrap-4') }}
+            {{ $students->appends(request()->query())->links('pagination.ui') }}
         </nav>
 
     </div>
@@ -84,17 +84,17 @@
         margin: 0;
     }
 
-    .pagination {
+    .ui-pagination {
         margin: 0;
         gap: 0.35rem;
         flex-wrap: wrap;
     }
 
-    .pagination .page-item {
+    .ui-pagination .ui-page-item {
         margin: 0;
     }
 
-    .pagination .page-link {
+    .ui-pagination .ui-page-link {
         display: flex;
         align-items: center;
         justify-content: center;
@@ -111,20 +111,20 @@
         box-shadow: none;
     }
 
-    .pagination .page-link:hover:not(.disabled) {
+    .ui-pagination .ui-page-link:hover:not(.disabled) {
         background: #f1f5f9;
         color: #0f4bb5;
         border-color: #cbd5e1;
         transform: translateY(-1px);
     }
 
-    .pagination .page-link:focus {
+    .ui-pagination .ui-page-link:focus {
         box-shadow: 0 0 0 4px rgba(15, 75, 181, 0.1);
         outline: none;
     }
 
     /* Active Page */
-    .pagination .page-item.active .page-link {
+    .ui-pagination .ui-page-item.active .ui-page-link {
         background: linear-gradient(135deg, #0f4bb5, #3b82f6);
         color: #fff;
         border-color: #0f4bb5;
@@ -132,14 +132,14 @@
         transform: translateY(-1px);
     }
 
-    .pagination .page-item.active .page-link:hover {
+    .ui-pagination .ui-page-item.active .ui-page-link:hover {
         background: linear-gradient(135deg, #0d3f99, #2563eb);
         color: #fff;
         border-color: #0d3f99;
     }
 
     /* Disabled (Previous / Next) */
-    .pagination .page-item.disabled .page-link {
+    .ui-pagination .ui-page-item.disabled .ui-page-link {
         background: #f8fafc;
         color: #cbd5e1;
         border-color: #f1f5f9;
@@ -147,7 +147,7 @@
         opacity: 0.7;
     }
 
-    .pagination .page-item.disabled .page-link:hover {
+    .ui-pagination .ui-page-item.disabled .ui-page-link:hover {
         transform: none;
         background: #f8fafc;
         color: #cbd5e1;
@@ -155,8 +155,8 @@
     }
 
     /* Previous / Next arrows */
-    .pagination .page-item:first-child .page-link,
-    .pagination .page-item:last-child .page-link {
+    .ui-pagination .ui-page-item:first-child .ui-page-link,
+    .ui-pagination .ui-page-item:last-child .ui-page-link {
         font-weight: 900;
     }
 
@@ -181,7 +181,7 @@
             justify-content: center;
         }
 
-        .pagination .page-link {
+        .ui-pagination .ui-page-link {
             min-width: 38px;
             height: 38px;
             padding: 0.4rem 0.7rem;
@@ -206,11 +206,11 @@
             font-size: 0.75rem;
         }
 
-        .pagination {
+        .ui-pagination {
             gap: 0.25rem;
         }
 
-        .pagination .page-link {
+        .ui-pagination .ui-page-link {
             min-width: 34px;
             height: 34px;
             padding: 0.3rem 0.55rem;

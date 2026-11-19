@@ -7,7 +7,7 @@
 <div class="dashboard-page">
 
     {{-- HERO --}}
-    <div class="hero-section mb-4">
+    <div class="hero-section tw:mb-6!">
         <div class="hero-content">
             <div class="hero-left">
                 <span class="greeting-badge">
@@ -29,7 +29,7 @@
     </div>
 
     {{-- INFO BOX --}}
-    <div class="nx-alert nx-alert-blue mb-4">
+    <div class="nx-alert nx-alert-blue tw:mb-6!">
         <i class="bi bi-info-circle-fill"></i>
         <span>
             Fill in the details below to create a new admission fee structure.
@@ -38,72 +38,72 @@
     </div>
 
     {{-- FORM CARD --}}
-    <div class="nx-card mb-4">
+    <div class="nx-card tw:mb-6!">
 
         <div class="nx-card-header">
             <div>
-                <h5 class="nx-card-title"><i class="bi bi-journal-plus text-primary"></i> Admission Information</h5>
+                <h5 class="nx-card-title"><i class="bi bi-journal-plus tw:text-(color:--nx-blue)!"></i> Admission Information</h5>
                 <p class="nx-card-subtitle">New fee structure details</p>
             </div>
         </div>
 
-        <div class="p-3 p-md-4">
+        <div class="tw:p-4! tw:md:p-6!">
             <form action="{{ route('admissions.store') }}" method="POST">
                 @csrf
 
                 {{-- NAME --}}
-                <div class="nx-form-group mb-3">
+                <div class="nx-form-group tw:mb-4!">
                     <label class="nx-label">
                         <i class="bi bi-tag-fill"></i> Admission Name <span style="color: var(--nx-red);">*</span>
                     </label>
                     <input type="text" name="name"
-                        class="form-control nx-input @error('name') is-invalid @enderror"
+                        class="ui-form-control nx-input @error('name') ui-is-invalid @enderror"
                         value="{{ old('name') }}"
                         placeholder="Enter admission name (e.g., Primary Admission, Secondary Admission)"
                         autofocus>
                     @error('name')
-                        <div class="invalid-feedback d-block">
+                        <div class="ui-invalid-feedback tw:block!">
                             <i class="bi bi-exclamation-triangle-fill"></i> {{ $message }}
                         </div>
                     @enderror
                 </div>
 
                 {{-- AMOUNT --}}
-                <div class="nx-form-group mb-3">
+                <div class="nx-form-group tw:mb-4!">
                     <label class="nx-label">
                         <i class="bi bi-cash-stack"></i> Amount <span style="color: var(--nx-red);">*</span>
                     </label>
                     <div class="currency-input">
                         <span class="currency-symbol">Rs.</span>
                         <input type="number" step="0.01" name="amount"
-                            class="form-control nx-input @error('amount') is-invalid @enderror"
+                            class="ui-form-control nx-input @error('amount') ui-is-invalid @enderror"
                             value="{{ old('amount') }}"
                             placeholder="0.00">
                     </div>
                     @error('amount')
-                        <div class="invalid-feedback d-block">
+                        <div class="ui-invalid-feedback tw:block!">
                             <i class="bi bi-exclamation-triangle-fill"></i> {{ $message }}
                         </div>
                     @enderror
                 </div>
 
                 {{-- NOTE --}}
-                <div class="nx-form-group mb-3">
+                <div class="nx-form-group tw:mb-4!">
                     <label class="nx-label">
                         <i class="bi bi-chat-text-fill"></i> Note (Optional)
                     </label>
                     <textarea name="note" rows="4"
-                        class="form-control nx-input @error('note') is-invalid @enderror"
+                        class="ui-form-control nx-input @error('note') ui-is-invalid @enderror"
                         placeholder="Enter any additional notes or description about this admission...">{{ old('note') }}</textarea>
                     @error('note')
-                        <div class="invalid-feedback d-block">
+                        <div class="ui-invalid-feedback tw:block!">
                             <i class="bi bi-exclamation-triangle-fill"></i> {{ $message }}
                         </div>
                     @enderror
                 </div>
 
                 {{-- STATUS TOGGLE --}}
-                <div class="toggle-switch mb-3">
+                <div class="toggle-switch tw:mb-4!">
                     <div class="custom-checkbox">
                         <input type="checkbox" name="is_active" value="1" id="isActive"
                             {{ old('is_active', true) ? 'checked' : '' }}>
@@ -117,7 +117,7 @@
                 </div>
 
                 {{-- CARD REPLACEMENT --}}
-                <div class="toggle-switch mb-3">
+                <div class="toggle-switch tw:mb-4!">
                     <div class="custom-checkbox">
                         <input type="checkbox" name="for_card_replacement" value="1" id="forCardReplacement"
                             {{ old('for_card_replacement', false) ? 'checked' : '' }}>
@@ -145,7 +145,7 @@
     </div>
 
     {{-- FOOTER --}}
-    <div class="text-center">
+    <div class="tw:text-center!">
         <small class="cell-sub">
             <i class="bi bi-shield-check"></i>
             All admission records are securely stored and can be managed from the admissions list

@@ -48,25 +48,25 @@ document.addEventListener('DOMContentLoaded', function () {
     */
 
     function showLoading() {
-        if (loading) loading.classList.remove('d-none');
-        if (errorBox) errorBox.classList.add('d-none');
+        if (loading) loading.classList.remove('tw:hidden!');
+        if (errorBox) errorBox.classList.add('tw:hidden!');
     }
 
     function hideLoading() {
-        if (loading) loading.classList.add('d-none');
+        if (loading) loading.classList.add('tw:hidden!');
     }
 
     function showError(message) {
         hideLoading();
         if (errorBox) {
             errorBox.textContent = message;
-            errorBox.classList.remove('d-none');
+            errorBox.classList.remove('tw:hidden!');
         }
     }
 
     function clearError() {
         if (errorBox) {
-            errorBox.classList.add('d-none');
+            errorBox.classList.add('tw:hidden!');
             errorBox.textContent = '';
         }
     }
@@ -147,7 +147,7 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
         } catch (error) {
-            if (studentSection) studentSection.classList.add('d-none');
+            if (studentSection) studentSection.classList.add('tw:hidden!');
             showError(error.message);
         } finally {
             hideLoading();
@@ -181,7 +181,7 @@ document.addEventListener('DOMContentLoaded', function () {
             imageEl.src = student.image_url || '{{ asset('images/default-student.png') }}';
         }
 
-        if (studentSection) studentSection.classList.remove('d-none');
+        if (studentSection) studentSection.classList.remove('tw:hidden!');
     }
 
     /*
@@ -215,15 +215,15 @@ document.addEventListener('DOMContentLoaded', function () {
 
         if (!currentClasses.length) {
             container.innerHTML = `
-                <div class="col-12">
+                <div class="ui-col-12">
                     <div class="classes-empty-state">
                         <div class="classes-empty-icon">
                             <i class="bi bi-journal-x"></i>
                         </div>
-                        <div class="fw-semibold text-muted">
+                        <div class="tw:font-semibold! tw:text-bs-secondary-color!">
                             No active classes found
                         </div>
-                        <small class="text-muted">
+                        <small class="tw:text-bs-secondary-color!">
                             This student has no active class enrollments.
                         </small>
                     </div>
@@ -262,29 +262,29 @@ document.addEventListener('DOMContentLoaded', function () {
                     <div class="last-payment-box">
                         <div class="last-payment-header">
                             <span class="last-payment-label">
-                                <i class="bi bi-receipt me-1"></i>
+                                <i class="bi bi-receipt tw:mr-1!"></i>
                                 Last Payment
                             </span>
                         </div>
 
                         <div class="last-payment-content">
                             <div>
-                                <div class="small text-muted">Month</div>
+                                <div class="tw:text-[.875em] tw:text-bs-secondary-color!">Month</div>
                                 <strong>
                                     ${escapeHtml(last.payment_month_name || last.payment_month || '-')}
                                 </strong>
                             </div>
 
-                            <div class="text-end">
-                                <div class="small text-muted">Amount</div>
-                                <strong class="text-success">
+                            <div class="tw:text-right!">
+                                <div class="tw:text-[.875em] tw:text-bs-secondary-color!">Amount</div>
+                                <strong class="tw:text-bs-success!">
                                     Rs. ${formatMoney(last.amount)}
                                 </strong>
                             </div>
                         </div>
 
                         <div class="last-payment-receipt">
-                            <i class="bi bi-upc-scan me-1"></i>
+                            <i class="bi bi-upc-scan tw:mr-1!"></i>
                             Receipt: ${escapeHtml(last.receipt_number || '-')}
                         </div>
                     </div>
@@ -296,11 +296,11 @@ document.addEventListener('DOMContentLoaded', function () {
                     <div class="last-payment-box last-payment-empty">
                         <div>
                             <span class="last-payment-label">
-                                <i class="bi bi-receipt me-1"></i>
+                                <i class="bi bi-receipt tw:mr-1!"></i>
                                 Last Payment
                             </span>
                         </div>
-                        <div class="small text-muted mt-1">
+                        <div class="tw:text-[.875em] tw:text-bs-secondary-color! tw:mt-1!">
                             No payment recorded yet
                         </div>
                     </div>
@@ -316,34 +316,34 @@ document.addEventListener('DOMContentLoaded', function () {
             container.insertAdjacentHTML(
                 'beforeend',
                 `
-                <div class="col-12 col-md-6 col-xl-4">
+                <div class="ui-col-12 ui-col-md-6 ui-col-xl-4">
                     <div class="class-payment-card">
 
                         {{-- =====================================================
                              Card Header
                              ===================================================== --}}
                         <div class="class-payment-card-header">
-                            <div class="d-flex align-items-start gap-3">
+                            <div class="bs-d-flex tw:flex! tw:items-start! tw:gap-4!">
 
                                 {{-- Checkbox --}}
-                                <div class="pt-1">
+                                <div class="tw:pt-1!">
                                     <input
                                         type="checkbox"
-                                        class="form-check-input class-checkbox"
+                                        class="ui-form-check-input class-checkbox"
                                         value="${item.enrollment_id}"
                                     >
                                 </div>
 
                                 {{-- Class Info --}}
-                                <div class="flex-grow-1">
-                                    <div class="d-flex justify-content-between align-items-start gap-2">
+                                <div class="tw:grow!">
+                                    <div class="bs-d-flex tw:flex! tw:justify-between! tw:items-start! tw:gap-2!">
                                         <div>
-                                            <h6 class="class-payment-title mb-1">
+                                            <h6 class="class-payment-title tw:mb-1!">
                                                 ${escapeHtml(item.class_name || '-')}
                                             </h6>
 
                                             <div class="class-payment-subject">
-                                                <i class="bi bi-book me-1"></i>
+                                                <i class="bi bi-book tw:mr-1!"></i>
                                                 ${escapeHtml(item.subject || '-')}
                                             </div>
                                         </div>
@@ -365,7 +365,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             {{-- Category --}}
                             <div class="class-payment-detail">
                                 <div class="class-payment-detail-label">
-                                    <i class="bi bi-tag me-1"></i>
+                                    <i class="bi bi-tag tw:mr-1!"></i>
                                     Category
                                 </div>
                                 <div class="class-payment-detail-value">
@@ -376,7 +376,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             {{-- Grade --}}
                             <div class="class-payment-detail">
                                 <div class="class-payment-detail-label">
-                                    <i class="bi bi-mortarboard me-1"></i>
+                                    <i class="bi bi-mortarboard tw:mr-1!"></i>
                                     Grade
                                 </div>
                                 <div class="class-payment-detail-value">
@@ -387,7 +387,7 @@ document.addEventListener('DOMContentLoaded', function () {
                             {{-- Teacher --}}
                             <div class="class-payment-detail">
                                 <div class="class-payment-detail-label">
-                                    <i class="bi bi-person-badge me-1"></i>
+                                    <i class="bi bi-person-badge tw:mr-1!"></i>
                                     Teacher
                                 </div>
                                 <div class="class-payment-detail-value">
@@ -398,13 +398,13 @@ document.addEventListener('DOMContentLoaded', function () {
                             {{-- Fee --}}
                             <div class="class-payment-detail">
                                 <div class="class-payment-detail-label">
-                                    <i class="bi bi-cash-stack me-1"></i>
+                                    <i class="bi bi-cash-stack tw:mr-1!"></i>
                                     Monthly Fee
                                 </div>
                                 <div class="class-payment-fee">
                                     Rs. ${formatMoney(item.total_fee ?? item.final_fee ?? 0)}
                                     ${Number(item.hall_fee || 0) > 0 ? `
-                                        <div class="small text-muted mt-1">
+                                        <div class="tw:text-[.875em] tw:text-bs-secondary-color! tw:mt-1!">
                                             Class: Rs. ${formatMoney(item.class_fee ?? item.final_fee ?? 0)}<br>
                                             Hall: Rs. ${formatMoney(item.hall_fee)}
                                         </div>
@@ -419,19 +419,19 @@ document.addEventListener('DOMContentLoaded', function () {
 
                         {{-- Footer --}}
                         <div class="class-payment-card-footer">
-                            <div class="small text-muted">
+                            <div class="tw:text-[.875em] tw:text-bs-secondary-color!">
                                 ${status === 'paid'
-                                    ? '<i class="bi bi-check-circle-fill text-success me-1"></i> Payment completed'
-                                    : '<i class="bi bi-exclamation-circle text-warning me-1"></i> Payment pending'
+                                    ? '<i class="bi bi-check-circle-fill tw:text-bs-success! tw:mr-1!"></i> Payment completed'
+                                    : '<i class="bi bi-exclamation-circle tw:text-bs-warning! tw:mr-1!"></i> Payment pending'
                                 }
                             </div>
 
                             <button
                                 type="button"
-                                class="btn btn-primary btn-sm pay-single-btn"
+                                class="ui-btn ui-btn-primary ui-btn-sm pay-single-btn"
                                 data-enrollment-id="${item.enrollment_id}"
                             >
-                                <i class="bi bi-credit-card me-1"></i>
+                                <i class="bi bi-credit-card tw:mr-1!"></i>
                                 Pay
                             </button>
                         </div>
@@ -493,8 +493,8 @@ document.addEventListener('DOMContentLoaded', function () {
         bulkButton.disabled = selectedEnrollmentIds.length === 0;
 
         bulkButton.innerHTML = selectedEnrollmentIds.length > 1
-            ? `<i class="bi bi-credit-card me-1"></i> Pay Selected (${selectedEnrollmentIds.length})`
-            : `<i class="bi bi-credit-card me-1"></i> Pay Selected`;
+            ? `<i class="bi bi-credit-card tw:mr-1!"></i> Pay Selected (${selectedEnrollmentIds.length})`
+            : `<i class="bi bi-credit-card tw:mr-1!"></i> Pay Selected`;
     }
 
     /*
@@ -633,7 +633,7 @@ document.addEventListener('DOMContentLoaded', function () {
         setCurrentMonth();
         resetMonthInfo();
 
-        bootstrap.Modal
+        NxUi.Modal
             .getOrCreateInstance(modalElement)
             .show();
 
@@ -650,7 +650,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     function resetMonthInfo() {
         monthInfo = null;
-        document.getElementById('payment-month-info')?.classList.add('d-none');
+        document.getElementById('payment-month-info')?.classList.add('tw:hidden!');
         const discount = document.getElementById('payment-discount');
         if (discount) discount.readOnly = false;
         const tute = document.getElementById('payment-give-tute');
@@ -721,47 +721,47 @@ document.addEventListener('DOMContentLoaded', function () {
         const box = document.getElementById('payment-month-info');
         if (!box || !monthInfo) return;
 
-        box.classList.remove('d-none');
+        box.classList.remove('tw:hidden!');
         document.getElementById('pmi-attendance').textContent =
             monthInfo.attendance_count + ' (' + monthInfo.payment_month_name + ')';
 
-        document.getElementById('pmi-noattend').classList.toggle('d-none', !monthInfo.no_attendance);
+        document.getElementById('pmi-noattend').classList.toggle('tw:hidden!', !monthInfo.no_attendance);
 
         const paid = document.getElementById('pmi-paid');
         if (monthInfo.already_paid) {
-            paid.classList.remove('d-none');
+            paid.classList.remove('tw:hidden!');
             document.getElementById('pmi-paid-text').textContent =
                 'Already paid (' + (monthInfo.paid.receipt_number || '') + ')';
         } else {
-            paid.classList.add('d-none');
+            paid.classList.add('tw:hidden!');
         }
 
         // Fee options of the class category; the student's own one first selected
         const optionBox = document.getElementById('pmi-option');
         const select = document.getElementById('payment-fee-option');
         if (monthInfo.fee_option_enabled) {
-            optionBox.classList.remove('d-none');
+            optionBox.classList.remove('tw:hidden!');
             select.innerHTML = monthInfo.fee_options.map(function (option) {
                 return '<option value="' + option.id + '"' + (option.is_student_option ? ' selected' : '') + '>'
                     + escapeHtml(option.label) + ' - Rs. ' + formatMoney(option.amount)
                     + (option.is_student_option ? ' (student)' : '') + '</option>';
             }).join('');
         } else {
-            optionBox.classList.add('d-none');
+            optionBox.classList.add('tw:hidden!');
             select.innerHTML = '';
         }
 
         const tuteBox = document.getElementById('pmi-tute');
         const tuteInput = document.getElementById('payment-give-tute');
         if (monthInfo.tute.enabled) {
-            tuteBox.classList.remove('d-none');
+            tuteBox.classList.remove('tw:hidden!');
             tuteInput.checked = false;
             tuteInput.disabled = monthInfo.tute.issued;
             document.getElementById('pmi-tute-label').textContent = monthInfo.tute.issued
                 ? 'Tute already given (' + (monthInfo.tute.issued_at || '') + ')'
                 : 'Give ' + monthInfo.payment_month_name + ' tute';
         } else {
-            tuteBox.classList.add('d-none');
+            tuteBox.classList.add('tw:hidden!');
         }
 
         // Amount follows the option; the discount is worked out from the amount
@@ -862,7 +862,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const button = this;
             button.disabled = true;
-            button.innerHTML = `<span class="spinner-border spinner-border-sm me-2"></span> Processing...`;
+            button.innerHTML = `<span class="ui-spinner-border ui-spinner-border-sm tw:mr-2!"></span> Processing...`;
 
             try {
 
@@ -902,7 +902,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         throw new Error(result.message || 'Payment failed.');
                     }
 
-                    const modal = bootstrap.Modal.getInstance(
+                    const modal = NxUi.Modal.getInstance(
                         document.getElementById('paymentModal')
                     );
                     if (modal) modal.hide();
@@ -961,7 +961,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         throw new Error(result.message || 'Bulk payment failed.');
                     }
 
-                    const modal = bootstrap.Modal.getInstance(
+                    const modal = NxUi.Modal.getInstance(
                         document.getElementById('paymentModal')
                     );
                     if (modal) modal.hide();
@@ -982,7 +982,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 alert(error.message);
             } finally {
                 button.disabled = false;
-                button.innerHTML = `<i class="bi bi-check-circle me-1"></i> Confirm Payment`;
+                button.innerHTML = `<i class="bi bi-check-circle tw:mr-1!"></i> Confirm Payment`;
             }
         });
     }
@@ -1006,7 +1006,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
         let html = `
             <div id="receipt-print-area" class="receipt-paper">
-                <div class="text-center">
+                <div class="bs-text-center tw:text-center!">
                     <strong>${escapeHtml(@json(strtoupper(config('app.name'))))}</strong><br>
                     PAYMENT RECEIPT
                 </div>
@@ -1058,9 +1058,9 @@ document.addEventListener('DOMContentLoaded', function () {
                     show('payment_method') && `Payment: ${escapeHtml(receipt.payment_method || '-')}<br>`,
                 ])}
                 <br>
-                <div class="text-center">Thank You!</div>
-                ${show('keep_note') ? '<div class="text-center">Please keep this receipt</div>' : ''}
-                ${rules.footer ? `<div class="text-center">${escapeHtml(rules.footer)}</div>` : ''}
+                <div class="bs-text-center tw:text-center!">Thank You!</div>
+                ${show('keep_note') ? '<div class="bs-text-center tw:text-center!">Please keep this receipt</div>' : ''}
+                ${rules.footer ? `<div class="bs-text-center tw:text-center!">${escapeHtml(rules.footer)}</div>` : ''}
             </div>
         `;
 
@@ -1074,7 +1074,7 @@ document.addEventListener('DOMContentLoaded', function () {
         if (previewEl) previewEl.innerHTML = buildReceiptHtml(receipt);
 
         const modalElement = document.getElementById('receiptModal');
-        if (modalElement) bootstrap.Modal.getOrCreateInstance(modalElement).show();
+        if (modalElement) NxUi.Modal.getOrCreateInstance(modalElement).show();
     }
 
     function printReceipt(receipt) {
@@ -1101,7 +1101,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     .receipt-line{border-top:1px dashed #000;margin:6px 0}
                     .receipt-summary{line-height:1.6}
                     .receipt-item{line-height:1.45;word-break:break-word}
-                    .text-center{text-align:center}
+                    .bs-text-center{text-align:center}
                 </style>
             </head>
             <body>${buildReceiptHtml(receipt)}</body>
@@ -1151,7 +1151,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         .receipt-line{border-top:1px dashed #000;margin:6px 0}
                         .receipt-summary{line-height:1.6}
                         .receipt-item{line-height:1.45}
-                        .text-center{text-align:center}
+                        .bs-text-center{text-align:center}
                     </style>
                 </head>
                 <body>${receiptElement.outerHTML}</body>

@@ -7,7 +7,7 @@
 <div class="dashboard-page">
 
     {{-- HERO --}}
-    <div class="hero-section mb-4">
+    <div class="hero-section tw:mb-6!">
         <div class="hero-content">
             <div class="hero-left">
                 <span class="greeting-badge">Bulk Schedule</span>
@@ -30,21 +30,21 @@
     </div>
 
     {{-- CATEGORY INFO --}}
-    <div class="nx-card mb-4">
+    <div class="nx-card tw:mb-6!">
         <div class="nx-card-header">
             <div>
-                <h5 class="nx-card-title"><i class="bi bi-tags text-primary"></i> Category Information</h5>
+                <h5 class="nx-card-title"><i class="bi bi-tags tw:text-(color:--nx-blue)!"></i> Category Information</h5>
                 <p class="nx-card-subtitle">Category and fee options</p>
             </div>
         </div>
 
-        <div class="p-3">
-            <div class="row g-4">
+        <div class="tw:p-4!">
+            <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3">
 
                 {{-- CATEGORY --}}
-                <div class="col-md-6">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
                     <span class="cell-sub">Category</span>
-                    <div class="cell-title d-flex align-items-center gap-2 mt-1">
+                    <div class="cell-title tw:flex! tw:items-center! tw:gap-2! tw:mt-1!">
                         {{ optional($categoryFee->category)->category_name ?? 'N/A' }}
                         @if (optional($categoryFee->category)->code)
                             <span class="id-badge">{{ $categoryFee->category->code }}</span>
@@ -53,20 +53,20 @@
                 </div>
 
                 {{-- FEE OPTIONS --}}
-                <div class="col-md-6">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
                     <span class="cell-sub">Fee Options</span>
 
                     @if ($categoryFee->activeFeeOptions->count())
-                        <div class="fee-list mt-2">
+                        <div class="fee-list tw:mt-2!">
                             @foreach ($categoryFee->activeFeeOptions as $option)
                                 <div class="fee-item">
                                     <div>
                                         <div class="cell-title">{{ $option->label }}</div>
                                         @if ($option->is_default)
-                                            <span class="nx-badge nx-badge-green mt-1">Default</span>
+                                            <span class="nx-badge nx-badge-green tw:mt-1!">Default</span>
                                         @endif
                                         @if ($option->note)
-                                            <small class="cell-sub d-block">{{ $option->note }}</small>
+                                            <small class="cell-sub tw:block!">{{ $option->note }}</small>
                                         @endif
                                     </div>
                                     <div class="cell-title" style="color: var(--nx-blue);">
@@ -76,7 +76,7 @@
                             @endforeach
                         </div>
                     @else
-                        <div class="cell-sub mt-1">No active fee options</div>
+                        <div class="cell-sub tw:mt-1!">No active fee options</div>
                     @endif
                 </div>
             </div>
@@ -90,7 +90,7 @@
             (int) $categoryFee->id
         );
     @endphp
-    <div class="nx-alert {{ $hallFeeNow['fee'] > 0 ? 'nx-alert-green' : 'nx-alert-blue' }} mb-4">
+    <div class="nx-alert tw:mb-6! {{ $hallFeeNow['fee'] > 0 ? 'nx-alert-green' : 'nx-alert-blue' }}">
         <i class="bi bi-building"></i>
         <span>
             @if ($hallFeeNow['fee'] > 0)
@@ -106,10 +106,10 @@
     </div>
 
     {{-- PATTERNS --}}
-    <div class="nx-card mb-4">
+    <div class="nx-card tw:mb-6!">
         <div class="nx-card-header">
             <div>
-                <h5 class="nx-card-title"><i class="bi bi-calendar-range text-primary"></i> Schedule Patterns</h5>
+                <h5 class="nx-card-title"><i class="bi bi-calendar-range tw:text-(color:--nx-blue)!"></i> Schedule Patterns</h5>
                 <p class="nx-card-subtitle">Recurring schedules defined for this category</p>
             </div>
             <span class="nx-badge nx-badge-blue">
@@ -117,8 +117,8 @@
             </span>
         </div>
 
-        <div class="table-responsive">
-            <table class="table premium-table mb-0">
+        <div class="ui-table-responsive">
+            <table class="ui-table premium-table tw:mb-0!">
                 <thead>
                     <tr>
                         <th>Day</th>
@@ -127,13 +127,13 @@
                         <th>Start Date</th>
                         <th>End Date</th>
                         <th>Status</th>
-                        <th class="text-end">Action</th>
+                        <th class="tw:text-right!">Action</th>
                     </tr>
                 </thead>
                 <tbody>
                     @forelse ($patterns as $pattern)
                         <tr>
-                            <td class="cell-title text-capitalize">
+                            <td class="cell-title tw:capitalize!">
                                 <span class="nx-badge nx-badge-blue">{{ $pattern->class_day ?? 'N/A' }}</span>
                             </td>
 
@@ -150,7 +150,7 @@
                             <td class="cell-sub">
                                 {{ optional($pattern->hall)->hall_name ?? 'N/A' }}
                                 @if ($pattern->hall)
-                                    <small class="d-block">Rs. {{ number_format((float) $pattern->hall->hall_price, 2) }}</small>
+                                    <small class="tw:block!">Rs. {{ number_format((float) $pattern->hall->hall_price, 2) }}</small>
                                     @if ($pattern->is_active && $hallFeeNow['fee'] > 0 && optional($hallFeeNow['hall'])->id === $pattern->hall->id)
                                         <span class="nx-badge nx-badge-green">Hall fee charged</span>
                                     @endif
@@ -171,7 +171,7 @@
                                 </span>
                             </td>
 
-                            <td class="text-end">
+                            <td class="tw:text-right!">
                                 <div class="action-buttons">
                                     <a href="{{ route('class-schedules.editBulkSchedule', $pattern->id) }}"
                                         class="action-btn action-btn-warning"
@@ -184,8 +184,8 @@
                     @empty
                         <tr>
                             <td colspan="7" class="empty-table">
-                                <i class="bi bi-calendar-x fs-2 d-block mb-2"></i>
-                                <strong class="d-block">No Schedule Pattern Found</strong>
+                                <i class="bi bi-calendar-x tw:text-[length:calc(1.325rem_+_0.9vw)]! tw:xl:text-[length:2rem]! tw:block! tw:mb-2!"></i>
+                                <strong class="tw:block!">No Schedule Pattern Found</strong>
                                 <span class="cell-sub">Create a recurring schedule pattern first</span>
                             </td>
                         </tr>

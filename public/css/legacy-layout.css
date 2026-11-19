@@ -1,0 +1,564 @@
+/*
+ * Old sidebar and top navbar styles, unchanged. Loaded in <body> where the
+ * old layout had them (after the page styles in <head>), because some pages
+ * use these class names too (.user-avatar ...). Not built: plain CSS.
+ * Goes away with Bootstrap at the end.
+ */
+
+/* ---------- layouts/sidebar.blade.php ---------- */
+
+    /* ============================================================
+       Sidebar — aligned to nexoraEDU (nx-*) design system.
+       Uses :root level tokens (outside .dashboard-page scope).
+       Business logic and JS untouched.
+    ============================================================ */
+
+    :root {
+        --nx-sidebar-bg-start: #141c3a;
+        --nx-sidebar-bg-mid: #1a2344;
+        --nx-sidebar-bg-end: #1e293b;
+        --nx-sidebar-border: rgba(255, 255, 255, .06);
+        --nx-sidebar-title: #8894b3;
+        --nx-sidebar-text: #b8c2da;
+        --nx-sidebar-text-hover: #ffffff;
+        --nx-sidebar-active: #2563eb;
+        --nx-sidebar-active-soft: #eef3ff;
+        --nx-sidebar-radius: 10px;
+    }
+
+    /* ---------- SIDEBAR ---------- */
+    .sidebar {
+        width: 280px;
+
+        background: linear-gradient(180deg,
+                var(--nx-sidebar-bg-start) 0%,
+                var(--nx-sidebar-bg-mid) 50%,
+                var(--nx-sidebar-bg-end) 100%);
+
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        z-index: 1030;
+
+        display: flex;
+        flex-direction: column;
+
+        border-right: 1px solid var(--nx-sidebar-border);
+        box-shadow: 6px 0 25px rgba(0, 0, 0, 0.20);
+    }
+
+    /* ---------- HEADER ---------- */
+    .sidebar-header {
+        padding: 1.5rem 1.25rem;
+        border-bottom: 1px solid var(--nx-sidebar-border);
+        flex-shrink: 0;
+    }
+
+    /* ---------- BODY ---------- */
+    .sidebar-body {
+        flex: 1;
+        overflow-y: auto;
+        padding: 1rem;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(255, 255, 255, .15) transparent;
+    }
+
+    .sidebar-body::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .sidebar-body::-webkit-scrollbar-thumb {
+        background: rgba(255, 255, 255, .15);
+        border-radius: 20px;
+    }
+
+    /* ---------- BRAND ---------- */
+    .brand {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+    }
+
+    .brand-icon {
+        width: 44px;
+        height: 44px;
+
+        border-radius: 10px;
+
+        background: var(--nx-sidebar-active);
+        color: #fff;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        font-size: 1.3rem;
+        font-weight: 800;
+
+        flex-shrink: 0;
+    }
+
+    .brand-text h4 {
+        margin: 0;
+        color: #fff;
+        font-size: 1.15rem;
+        font-weight: 700;
+        line-height: 1.2;
+    }
+
+    .brand-text small {
+        color: var(--nx-sidebar-title);
+        font-size: 0.72rem;
+    }
+
+    /* ---------- SECTIONS ---------- */
+    .sidebar-section {
+        margin-bottom: 1.5rem;
+    }
+
+    .sidebar-section-title {
+        color: var(--nx-sidebar-title);
+        font-size: 0.7rem;
+        font-weight: 700;
+        letter-spacing: 1px;
+        text-transform: uppercase;
+        margin-bottom: 0.7rem;
+        padding-left: 0.8rem;
+    }
+
+    /* ---------- NAV ITEMS ---------- */
+    .nav-item,
+    .ui-nav-item {
+        margin-bottom: 0.25rem;
+    }
+
+    .nav-link-custom {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+
+        padding: 0.7rem 0.9rem;
+
+        border-radius: var(--nx-sidebar-radius);
+
+        color: var(--nx-sidebar-text);
+        text-decoration: none;
+
+        font-size: 0.88rem;
+        font-weight: 500;
+
+        transition: background-color .15s ease, color .15s ease;
+
+        /* Button reset — keeps original look */
+        background: none;
+        border: none;
+        width: 100%;
+        cursor: pointer;
+        text-align: left;
+        font-family: inherit;
+    }
+
+    .nav-link-custom i {
+        font-size: 1.1rem;
+        width: 22px;
+        flex-shrink: 0;
+    }
+
+    .nav-link-custom:hover {
+        background: rgba(255, 255, 255, 0.06);
+        color: var(--nx-sidebar-text-hover);
+    }
+
+    .nav-link-custom.active {
+        background: var(--nx-sidebar-active);
+        color: #fff;
+    }
+
+    /* ---------- MENU SEARCH ---------- */
+    .sidebar-top {
+        margin-bottom: 1rem;
+    }
+
+    .sidebar-search {
+        position: relative;
+        margin-top: 0.6rem;
+    }
+
+    .sidebar-search i {
+        position: absolute;
+        left: 12px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: var(--nx-sidebar-title);
+        font-size: 0.85rem;
+    }
+
+    .sidebar-search input {
+        width: 100%;
+        padding: 0.55rem 0.8rem 0.55rem 2.1rem;
+        border-radius: var(--nx-sidebar-radius);
+        border: 1px solid rgba(255, 255, 255, .08);
+        background: rgba(255, 255, 255, .05);
+        color: #fff;
+        font-size: 0.85rem;
+        outline: none;
+    }
+
+    .sidebar-search input::placeholder {
+        color: var(--nx-sidebar-title);
+    }
+
+    .sidebar-search input:focus {
+        border-color: var(--nx-sidebar-active);
+        background: rgba(255, 255, 255, .08);
+    }
+
+    .sidebar-search-empty {
+        display: none;
+        color: var(--nx-sidebar-title);
+        font-size: 0.82rem;
+        padding: 0.5rem 0.9rem;
+    }
+
+    /* ---------- MENU GROUPS (open / close) ---------- */
+    .sidebar-group {
+        margin-bottom: 0.35rem;
+    }
+
+    .sidebar-group-toggle {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        width: 100%;
+        padding: 0.6rem 0.9rem;
+        border: none;
+        border-radius: var(--nx-sidebar-radius);
+        background: none;
+        color: var(--nx-sidebar-title);
+        font-family: inherit;
+        font-size: 0.74rem;
+        font-weight: 700;
+        letter-spacing: .8px;
+        text-transform: uppercase;
+        text-align: left;
+        cursor: pointer;
+        transition: background-color .15s ease, color .15s ease;
+    }
+
+    .sidebar-group-toggle:hover {
+        background: rgba(255, 255, 255, 0.04);
+        color: var(--nx-sidebar-text-hover);
+    }
+
+    .sidebar-group-toggle > i:first-child {
+        font-size: 0.95rem;
+        width: 22px;
+        flex-shrink: 0;
+    }
+
+    .sidebar-group-caret {
+        margin-left: auto;
+        font-size: 0.75rem;
+        transition: transform .2s ease;
+    }
+
+    .sidebar-group.is-open > .sidebar-group-toggle {
+        color: var(--nx-sidebar-text-hover);
+    }
+
+    .sidebar-group.is-open .sidebar-group-caret {
+        transform: rotate(180deg);
+    }
+
+    .sidebar-group-items {
+        display: none;
+        padding: 0.15rem 0 0.4rem 0.6rem;
+        margin-left: 1.15rem;
+        border-left: 1px solid rgba(255, 255, 255, .08);
+    }
+
+    .sidebar-group.is-open > .sidebar-group-items {
+        display: block;
+    }
+
+    .sidebar-group-items .nav-link-custom {
+        padding: 0.55rem 0.8rem;
+        font-size: 0.85rem;
+        gap: 12px;
+    }
+
+    .sidebar-group-items .nav-link-custom i {
+        font-size: 1rem;
+    }
+
+    /* Super Admin only group */
+    .sidebar-group.is-nexora {
+        margin-top: 0.9rem;
+        padding-top: 0.9rem;
+        border-top: 1px solid rgba(255, 255, 255, .08);
+    }
+
+    .sidebar-group.is-nexora > .sidebar-group-toggle {
+        color: #fbbf24;
+    }
+
+    /* ---------- MOBILE ---------- */
+    @media (max-width: 991px) {
+        .sidebar {
+            transform: translateX(-100%);
+            transition: transform .3s ease;
+        }
+
+        .sidebar.show {
+            transform: translateX(0);
+        }
+    }
+
+
+/* ---------- layouts/header.blade.php ---------- */
+
+    /* ============================================================
+       Top Navbar — aligned to nexoraEDU (nx-*) design system.
+       Uses :root level tokens (outside .dashboard-page scope).
+       Business logic untouched.
+    ============================================================ */
+
+    :root {
+        --nx-topnav-bg: rgba(255, 255, 255, 0.85);
+        --nx-topnav-border: #e5e9f0;
+        --nx-topnav-text: #1e2640;
+        --nx-topnav-muted: #6b7590;
+        --nx-topnav-blue: #2563eb;
+        --nx-topnav-blue-soft: #eef3ff;
+        --nx-topnav-red: #dc2626;
+        --nx-topnav-radius: 10px;
+        --nx-topnav-shadow: 0 1px 2px rgba(20, 28, 58, .04);
+    }
+
+    /* ---------- TOP NAVBAR ---------- */
+    .top-navbar {
+        background: var(--nx-topnav-bg);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+
+        border-bottom: 1px solid var(--nx-topnav-border);
+
+        padding: 1rem 2rem;
+
+        position: sticky;
+        top: 0;
+        z-index: 1020;
+
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+
+        box-shadow: var(--nx-topnav-shadow);
+    }
+
+    /* ---------- PAGE TITLE ---------- */
+    .page-title h1 {
+        margin: 0;
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--nx-topnav-text);
+        line-height: 1.3;
+    }
+
+    .page-title p {
+        margin: 0;
+        font-size: 0.85rem;
+        color: var(--nx-topnav-muted);
+    }
+
+    /* ---------- USER MENU ---------- */
+    .user-menu {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    /* ---------- NOTIFICATION BUTTON ---------- */
+    .notification-button {
+        width: 42px;
+        height: 42px;
+
+        border: 1px solid var(--nx-topnav-border);
+        border-radius: 10px;
+
+        background: #fff;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        font-size: 1.05rem;
+        color: var(--nx-topnav-muted);
+
+        position: relative;
+
+        transition: background-color .15s, color .15s, border-color .15s;
+        box-shadow: none;
+    }
+
+    .notification-button:hover {
+        background: var(--nx-topnav-blue-soft);
+        color: var(--nx-topnav-blue);
+        border-color: var(--nx-topnav-blue);
+    }
+
+    /* ---------- BADGE ---------- */
+    .notification-badge {
+        position: absolute;
+        top: -5px;
+        right: -5px;
+
+        min-width: 18px;
+        height: 18px;
+        padding: 0 4px;
+
+        background: var(--nx-topnav-red);
+        color: #fff;
+        border-radius: 99px;
+
+        font-size: 0.68rem;
+        font-weight: 600;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        border: 2px solid #fff;
+    }
+
+    /* ---------- USER DROPDOWN ---------- */
+    .user-dropdown {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+
+        padding: 0.4rem 0.7rem;
+
+        border-radius: 10px;
+        border: 1px solid transparent;
+
+        cursor: pointer;
+        transition: background-color .15s, border-color .15s;
+    }
+
+    .user-dropdown:hover {
+        background: #fafbfd;
+        border-color: var(--nx-topnav-border);
+    }
+
+    /* ---------- USER AVATAR ---------- */
+    .user-avatar {
+        width: 40px;
+        height: 40px;
+
+        border-radius: 10px;
+
+        background: var(--nx-topnav-blue-soft);
+        color: var(--nx-topnav-blue);
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        font-weight: 600;
+        font-size: 1rem;
+    }
+
+    /* ---------- USER INFO ---------- */
+    .user-info { text-align: right; }
+
+    .user-info .name {
+        font-size: 0.88rem;
+        font-weight: 600;
+        color: var(--nx-topnav-text);
+        line-height: 1.2;
+    }
+
+    .user-info .role {
+        font-size: 0.72rem;
+        color: var(--nx-topnav-muted);
+        line-height: 1.2;
+    }
+
+    /* ---------- DROPDOWN MENU ---------- */
+    .user-dropdown-menu {
+        width: 240px;
+
+        border-radius: var(--nx-topnav-radius);
+        padding: 0.5rem;
+
+        margin-top: 10px;
+
+        border: 1px solid var(--nx-topnav-border);
+        box-shadow: 0 10px 30px rgba(20, 28, 58, .10);
+    }
+
+    .user-dropdown-menu .dropdown-header {
+        padding: 0.6rem 0.75rem;
+        color: var(--nx-topnav-text);
+    }
+
+    .user-dropdown-menu .dropdown-header small {
+        color: var(--nx-topnav-muted) !important;
+    }
+
+    .user-dropdown-menu .dropdown-item {
+        border-radius: 8px;
+        padding: 0.6rem 0.85rem;
+        font-size: 0.85rem;
+        color: var(--nx-topnav-text);
+        font-weight: 500;
+        transition: background-color .15s, color .15s;
+    }
+
+    .user-dropdown-menu .dropdown-item:hover {
+        background: var(--nx-topnav-blue-soft);
+        color: var(--nx-topnav-blue);
+    }
+
+    .user-dropdown-menu .dropdown-item.text-danger {
+        color: var(--nx-topnav-red) !important;
+    }
+
+    .user-dropdown-menu .dropdown-item.text-danger:hover {
+        background: #fdecec;
+        color: var(--nx-topnav-red) !important;
+    }
+
+    .user-dropdown-menu .dropdown-divider {
+        margin: 0.4rem 0;
+        border-color: var(--nx-topnav-border);
+        opacity: 1;
+    }
+
+    /* ---------- MOBILE TOGGLE ---------- */
+    .mobile-toggle {
+        display: none;
+
+        background: none;
+        border: none;
+
+        font-size: 1.5rem;
+        color: var(--nx-topnav-text);
+
+        cursor: pointer;
+        padding: 0.25rem;
+    }
+
+    /* ---------- RESPONSIVE ---------- */
+    @media (max-width: 991px) {
+        .mobile-toggle { display: block; }
+
+        .top-navbar { padding: 1rem; }
+
+        .page-title h1 { font-size: 1.2rem; }
+
+        .user-info { display: none; }
+    }
+

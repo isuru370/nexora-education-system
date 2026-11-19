@@ -6,7 +6,7 @@
 @section('content')
     <div class="dashboard-page">
 
-        <div class="hero-section mb-4">
+        <div class="hero-section tw:mb-6!">
             <div class="hero-content">
                 <div class="hero-left">
                     <span class="greeting-badge">Close #{{ $closure->id }}</span>
@@ -26,7 +26,7 @@
                             <i class="bi bi-arrow-left"></i> Back
                         </a>
                         @unless ($closure->isUndone())
-                            <form method="POST" action="{{ route('close-grade.undo', $closure) }}" class="d-inline"
+                            <form method="POST" action="{{ route('close-grade.undo', $closure) }}" class="tw:[display:inline]!"
                                 data-confirm="Undo this close? The classes, enrollments, sessions and students are made active again."
                                 onsubmit="return confirm(this.dataset.confirm);">
                                 @csrf
@@ -40,7 +40,7 @@
             </div>
         </div>
 
-        <div class="stats-grid stats-grid-3 mb-4">
+        <div class="stats-grid stats-grid-3 tw:mb-6!">
             @foreach ([
                 ['Classes made inactive', 'classes', 'bi-book', 'icon-blue'],
                 ['Enrollments ended', 'enrollments', 'bi-person-dash', 'icon-amber'],
@@ -60,12 +60,12 @@
         </div>
 
         {{-- CLASSES --}}
-        <div class="nx-card mb-4">
+        <div class="nx-card tw:mb-6!">
             <div class="nx-card-header">
-                <h5 class="nx-card-title"><i class="bi bi-book text-primary"></i> Classes ({{ $details['classes']->count() }})</h5>
+                <h5 class="nx-card-title"><i class="bi bi-book tw:text-(color:--nx-blue)!"></i> Classes ({{ $details['classes']->count() }})</h5>
             </div>
-            <div class="table-responsive">
-                <table class="table premium-table mb-0">
+            <div class="ui-table-responsive">
+                <table class="ui-table premium-table tw:mb-0!">
                     <thead>
                         <tr><th>#</th><th>Class</th><th>Teacher</th><th>Now</th></tr>
                     </thead>
@@ -82,7 +82,7 @@
                                 </td>
                             </tr>
                         @empty
-                            <tr><td colspan="4" class="text-center text-muted py-3">No classes were active.</td></tr>
+                            <tr><td colspan="4" class="tw:text-center! tw:text-(color:--nx-muted)! tw:py-4!">No classes were active.</td></tr>
                         @endforelse
                     </tbody>
                 </table>
@@ -91,15 +91,15 @@
 
         {{-- KEPT --}}
         @if ($details['kept']->isNotEmpty())
-            <div class="nx-card mb-4">
+            <div class="nx-card tw:mb-6!">
                 <div class="nx-card-header">
                     <h5 class="nx-card-title">
-                        <i class="bi bi-person-check-fill text-success"></i>
+                        <i class="bi bi-person-check-fill tw:text-(color:--nx-green)!"></i>
                         Kept active: in an active class of another grade ({{ $details['kept']->count() }})
                     </h5>
                 </div>
-                <div class="table-responsive">
-                    <table class="table premium-table mb-0">
+                <div class="ui-table-responsive">
+                    <table class="ui-table premium-table tw:mb-0!">
                         <thead>
                             <tr><th>Student ID</th><th>Name</th><th>Other classes</th></tr>
                         </thead>
@@ -118,18 +118,18 @@
         @endif
 
         {{-- STUDENTS --}}
-        <div class="nx-card mb-4">
+        <div class="nx-card tw:mb-6!">
             <div class="nx-card-header">
                 <h5 class="nx-card-title">
-                    <i class="bi bi-person-x-fill text-danger"></i> Students deactivated ({{ $details['students']->count() }})
+                    <i class="bi bi-person-x-fill tw:text-(color:--nx-red)!"></i> Students deactivated ({{ $details['students']->count() }})
                 </h5>
             </div>
-            <div class="p-3 pb-0">
-                <input type="search" class="form-control nx-input mb-2" placeholder="Search ID, name or mobile"
+            <div class="tw:p-4! tw:pb-0!">
+                <input type="search" class="ui-form-control nx-input tw:mb-2!" placeholder="Search ID, name or mobile"
                     oninput="filterRows(this, 'closedStudents')">
             </div>
-            <div class="table-responsive" style="max-height:600px; overflow:auto">
-                <table class="table premium-table mb-0" id="closedStudents">
+            <div class="ui-table-responsive" style="max-height:600px; overflow:auto">
+                <table class="ui-table premium-table tw:mb-0!" id="closedStudents">
                     <thead>
                         <tr><th>#</th><th>Student ID</th><th>Name</th><th>Grade</th><th>Mobile</th><th>Now</th></tr>
                     </thead>
@@ -148,7 +148,7 @@
                                 </td>
                             </tr>
                         @empty
-                            <tr><td colspan="6" class="text-center text-muted py-3">No students.</td></tr>
+                            <tr><td colspan="6" class="tw:text-center! tw:text-(color:--nx-muted)! tw:py-4!">No students.</td></tr>
                         @endforelse
                     </tbody>
                 </table>

@@ -6,7 +6,7 @@
 @section('content')
     <div class="dashboard-page">
 
-        <div class="hero-section mb-4">
+        <div class="hero-section tw:mb-6!">
             <div class="hero-content">
                 <div class="hero-left">
                     <span class="greeting-badge">nexoraEDU</span>
@@ -24,21 +24,21 @@
         </div>
 
         {{-- STEP 1: CLASS --}}
-        <div class="nx-card mb-4">
+        <div class="nx-card tw:mb-6!">
             <div class="nx-card-header">
                 <div>
-                    <h5 class="nx-card-title"><i class="bi bi-1-circle-fill text-primary"></i> Which class?</h5>
+                    <h5 class="nx-card-title"><i class="bi bi-1-circle-fill tw:text-(color:--nx-blue)!"></i> Which class?</h5>
                     <p class="nx-card-subtitle">Next you choose the new name, grade, start date, students and schedule.</p>
                 </div>
             </div>
 
-            <div class="p-3">
-                <form method="GET" action="{{ route('class-promotions.create') }}" class="row g-3 align-items-end">
-                    <div class="col-lg-9">
+            <div class="tw:p-4!">
+                <form method="GET" action="{{ route('class-promotions.create') }}" class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2 tw:items-end!">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[75%]">
                         <label class="nx-label">Class</label>
-                        <input type="search" class="form-control nx-input mb-2" placeholder="Search class, grade or teacher"
+                        <input type="search" class="ui-form-control nx-input tw:mb-2!" placeholder="Search class, grade or teacher"
                             oninput="filterOptions(this)">
-                        <select name="class_id" id="classSelect" class="form-select nx-input" size="8" required>
+                        <select name="class_id" id="classSelect" class="ui-form-select nx-input" size="8" required>
                             @foreach ($classes as $class)
                                 <option value="{{ $class->id }}">
                                     {{ $class->class_name }} · {{ $class->grade_name }} · {{ $class->teacher }}
@@ -47,7 +47,7 @@
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-lg-3 d-flex justify-content-end">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[25%] tw:flex! tw:justify-end!">
                         <button type="submit" class="nx-btn nx-btn-primary">
                             Next <i class="bi bi-arrow-right"></i>
                         </button>
@@ -57,27 +57,27 @@
         </div>
 
         {{-- HISTORY --}}
-        <div class="nx-card mb-4">
+        <div class="nx-card tw:mb-6!">
             <div class="nx-card-header">
                 <div>
-                    <h5 class="nx-card-title"><i class="bi bi-clock-history text-primary"></i> History</h5>
+                    <h5 class="nx-card-title"><i class="bi bi-clock-history tw:text-(color:--nx-blue)!"></i> History</h5>
                     <p class="nx-card-subtitle">Every promotion, who did it, and undo</p>
                 </div>
                 <span class="nx-badge nx-badge-blue">{{ $history->total() }} Promotions</span>
             </div>
 
-            <div class="table-responsive">
-                <table class="table premium-table mb-0">
+            <div class="ui-table-responsive">
+                <table class="ui-table premium-table tw:mb-0!">
                     <thead>
                         <tr>
                             <th>#</th>
                             <th>Old class</th>
                             <th>New class</th>
                             <th>Starts</th>
-                            <th class="text-center">Students</th>
+                            <th class="tw:text-center!">Students</th>
                             <th>By</th>
                             <th>Status</th>
-                            <th class="text-center" width="120">Action</th>
+                            <th class="tw:text-center!" width="120">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -87,10 +87,10 @@
                                 <td>{{ $p->from_class_name }}</td>
                                 <td class="cell-title">{{ $p->to_class_name }}</td>
                                 <td>{{ $p->start_date->format('Y-m-d') }}</td>
-                                <td class="text-center">{{ $p->total('moved') }}</td>
+                                <td class="tw:text-center!">{{ $p->total('moved') }}</td>
                                 <td>{{ $p->promotedBy->name ?? '-' }}</td>
                                 <td>@include('class-promotions.status', ['promotion' => $p])</td>
-                                <td class="text-center">
+                                <td class="tw:text-center!">
                                     <a href="{{ route('class-promotions.show', $p) }}" class="nx-btn nx-btn-light">
                                         <i class="bi bi-eye"></i> View
                                     </a>
@@ -98,7 +98,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="8" class="text-center text-muted py-4">No class has been promoted yet.</td>
+                                <td colspan="8" class="tw:text-center! tw:text-(color:--nx-muted)! tw:py-6!">No class has been promoted yet.</td>
                             </tr>
                         @endforelse
                     </tbody>
@@ -106,7 +106,7 @@
             </div>
 
             @if ($history->hasPages())
-                <div class="p-3">{{ $history->links() }}</div>
+                <div class="tw:p-4!">{{ $history->links() }}</div>
             @endif
         </div>
     </div>

@@ -23,7 +23,7 @@
 <div class="dashboard-page">
 
     {{-- HERO --}}
-    <div class="hero-section mb-4">
+    <div class="hero-section tw:mb-6!">
         <div class="hero-content">
             <div class="hero-left">
                 <span class="greeting-badge">Class Scheduling</span>
@@ -42,15 +42,15 @@
     </div>
 
     {{-- FORM CARD --}}
-    <div class="nx-card mb-4">
+    <div class="nx-card tw:mb-6!">
         <div class="nx-card-header">
             <div>
-                <h5 class="nx-card-title"><i class="bi bi-calendar-plus text-primary"></i> {{ $pageTitle }}</h5>
+                <h5 class="nx-card-title"><i class="bi bi-calendar-plus tw:text-(color:--nx-blue)!"></i> {{ $pageTitle }}</h5>
                 <p class="nx-card-subtitle">{{ $pageDescription }}</p>
             </div>
         </div>
 
-        <div class="p-3 p-md-4">
+        <div class="tw:p-4! tw:md:p-6!">
             @include('class_schedules.partials.form', [
                 'classSchedule'         => null,
                 'scheduleType'          => $scheduleType,

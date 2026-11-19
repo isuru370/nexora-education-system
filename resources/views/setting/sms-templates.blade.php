@@ -16,7 +16,7 @@
 <div class="dashboard-page">
 
     {{-- HERO --}}
-    <div class="hero-section mb-4">
+    <div class="hero-section tw:mb-6!">
         <div class="hero-content">
             <div class="hero-left">
                 <span class="greeting-badge"><i class="bi bi-chat-dots-fill"></i> Settings</span>
@@ -42,14 +42,14 @@
 
     {{-- ALERTS --}}
     @if (session('success'))
-        <div class="nx-alert nx-alert-green mb-4">
+        <div class="nx-alert nx-alert-green tw:mb-6!">
             <i class="bi bi-check-circle-fill"></i>
             <span>{{ session('success') }}</span>
         </div>
     @endif
 
     @if ($errors->any())
-        <div class="nx-alert nx-alert-red mb-4">
+        <div class="nx-alert nx-alert-red tw:mb-6!">
             <i class="bi bi-exclamation-triangle-fill"></i>
             <div>
                 @foreach ($errors->all() as $error)
@@ -60,7 +60,7 @@
     @endif
 
     {{-- Test SMS: filled by the "Send test" buttons --}}
-    <form id="sms-test-form" method="POST" action="{{ route('admin.setting.sms-templates.test') }}" class="d-none">
+    <form id="sms-test-form" method="POST" action="{{ route('admin.setting.sms-templates.test') }}" class="tw:hidden!">
         @csrf
         <input type="hidden" name="key" value="">
         <input type="hidden" name="body" value="">
@@ -71,10 +71,10 @@
         @method('PUT')
 
         {{-- COST + TEST NUMBER --}}
-        <div class="nx-card mb-4">
+        <div class="nx-card tw:mb-6!">
             <div class="nx-card-header">
                 <div>
-                    <h5 class="nx-card-title"><i class="bi bi-calculator text-primary"></i> SMS cost</h5>
+                    <h5 class="nx-card-title"><i class="bi bi-calculator tw:text-(color:--nx-blue)!"></i> SMS cost</h5>
                     <p class="nx-card-subtitle">
                         1 SMS = {{ $limits['single'] }} characters. A longer message is sent in parts of
                         {{ $limits['part'] }} characters, and every part is charged as 1 SMS.
@@ -84,20 +84,20 @@
                     <i class="bi bi-save"></i> Save
                 </button>
             </div>
-            <div class="p-3">
-                <div class="row g-3 align-items-end">
-                    <div class="col-md-4 col-lg-3">
+            <div class="tw:p-4!">
+                <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2 tw:items-end!">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%] tw:lg:flex-[0_0_auto] tw:lg:w-[25%]">
                         <label class="nx-label" for="sms-cost">Price of 1 SMS (Rs.)</label>
                         <input type="number" step="0.01" min="0" max="100" id="sms-cost" name="cost"
-                            class="form-control nx-input" value="{{ old('cost', number_format($cost, 2, '.', '')) }}" required>
+                            class="ui-form-control nx-input" value="{{ old('cost', number_format($cost, 2, '.', '')) }}" required>
                     </div>
-                    <div class="col-md-4 col-lg-3">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%] tw:lg:flex-[0_0_auto] tw:lg:w-[25%]">
                         <label class="nx-label" for="sms-test-mobile">Test SMS to (your number)</label>
                         <input type="text" id="sms-test-mobile" name="mobile" form="sms-test-form"
-                            class="form-control nx-input" value="{{ old('mobile') }}" placeholder="07XXXXXXXX" inputmode="tel">
+                            class="ui-form-control nx-input" value="{{ old('mobile') }}" placeholder="07XXXXXXXX" inputmode="tel">
                     </div>
-                    <div class="col-md-4 col-lg-6">
-                        <small class="cell-sub d-block">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%] tw:lg:flex-[0_0_auto] tw:lg:w-[50%]">
+                        <small class="cell-sub tw:block!">
                             "Send test SMS" sends the text in the box (with the sample details) to this number.
                             Characters like <code>[ ] { } ~ ^ | \</code> count as 2.
                         </small>
@@ -113,14 +113,14 @@
                 $hasError = $errors->has("templates.{$key}");
             @endphp
 
-            <div class="nx-card mb-4 sms-card" data-sms-card data-key="{{ $key }}">
+            <div class="nx-card tw:mb-6! sms-card" data-sms-card data-key="{{ $key }}">
                 <div class="nx-card-header">
-                    <div class="d-flex align-items-center gap-3">
-                        <div class="stat-icon-wrapper {{ $iconColors[$loop->index % count($iconColors)] }} sms-icon">
+                    <div class="tw:flex! tw:items-center! tw:gap-4!">
+                        <div class="stat-icon-wrapper sms-icon {{ $iconColors[$loop->index % count($iconColors)] }}">
                             <i class="bi {{ $template['icon'] }}"></i>
                         </div>
                         <div>
-                            <h5 class="nx-card-title mb-0">
+                            <h5 class="nx-card-title tw:mb-0!">
                                 {{ $template['label'] }}
                                 @if ($template['custom'])
                                     <span class="nx-badge nx-badge-blue">Edited</span>
@@ -128,14 +128,14 @@
                                     <span class="nx-badge nx-badge-gray">Default</span>
                                 @endif
                             </h5>
-                            <p class="nx-card-subtitle mb-0">{{ $template['when'] }}</p>
+                            <p class="nx-card-subtitle tw:mb-0!">{{ $template['when'] }}</p>
                             @if ($template['edited'] && $template['edited']->updatedBy)
                                 <small class="cell-sub">Changed by {{ $template['edited']->updatedBy->name }},
                                     {{ $template['edited']->updated_at?->diffForHumans() }}</small>
                             @endif
                         </div>
                     </div>
-                    <div class="d-flex gap-2 flex-wrap">
+                    <div class="tw:flex! tw:gap-2! tw:flex-wrap!">
                         <button type="button" class="nx-btn nx-btn-light nx-btn-sm" data-reset>
                             <i class="bi bi-arrow-counterclockwise"></i> Reset to default
                         </button>
@@ -145,17 +145,17 @@
                     </div>
                 </div>
 
-                <div class="p-3">
-                    <div class="row g-3">
-                        <div class="col-lg-7">
+                <div class="tw:p-4!">
+                    <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[58.33333333%]">
                             <label class="nx-label" for="tpl-{{ $key }}">Message</label>
                             <textarea id="tpl-{{ $key }}" name="templates[{{ $key }}]" rows="9"
                                 maxlength="{{ $limits['max'] }}" spellcheck="false"
-                                class="form-control nx-input sms-textarea {{ $hasError ? 'is-invalid' : '' }}"
+                                class="ui-form-control nx-input sms-textarea {{ $hasError ? 'ui-is-invalid' : '' }}"
                                 data-textarea>{{ $body }}</textarea>
 
-                            <div class="sms-chips mt-2">
-                                <small class="cell-sub me-1">Insert:</small>
+                            <div class="sms-chips tw:mt-2!">
+                                <small class="cell-sub tw:mr-1!">Insert:</small>
                                 @foreach (array_keys($template['placeholders']) as $placeholder)
                                     <button type="button" class="sms-chip {{ isset($template['required'][$placeholder]) ? 'is-required' : '' }}"
                                         data-insert="{{ $placeholder }}">{{ $placeholder }}</button>
@@ -163,41 +163,41 @@
                             </div>
 
                             @if ($template['required'])
-                                <small class="cell-sub d-block mt-2">
-                                    <i class="bi bi-lock-fill text-warning"></i>
+                                <small class="cell-sub tw:block! tw:mt-2!">
+                                    <i class="bi bi-lock-fill tw:text-(color:--nx-amber)!"></i>
                                     Must be in the text: <strong>{{ implode(', ', array_keys($template['required'])) }}</strong>.
                                     @if ($key === 'payment')
                                         The hall fee line is sent when the class hall price is not 0, and left out when it is 0.
                                     @endif
                                 </small>
                             @endif
-                            <small class="cell-sub d-block mt-1">
+                            <small class="cell-sub tw:block! tw:mt-1!">
                                 A line is left out when its detail is empty (for example no hall, no reason).
                             </small>
                         </div>
 
-                        <div class="col-lg-5">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[41.66666667%]">
                             <label class="nx-label">Preview (sample student)</label>
                             <div class="sms-phone">
                                 <div class="sms-bubble" data-preview></div>
                             </div>
 
-                            <div class="sms-stats mt-2" data-stats>
+                            <div class="sms-stats tw:mt-2!" data-stats>
                                 <div><span data-chars>0</span><small>characters</small></div>
                                 <div><span data-parts>0</span><small>SMS</small></div>
                                 <div><span data-cost>0.00</span><small>Rs. / parent</small></div>
                                 <div><span data-cost100>0</span><small>Rs. / 100 parents</small></div>
                             </div>
-                            <div class="sms-bar mt-2"><div class="sms-bar-fill" data-bar></div></div>
-                            <small class="cell-sub d-block mt-1" data-left></small>
-                            <div class="sms-warn mt-2" data-warn hidden></div>
+                            <div class="sms-bar tw:mt-2!"><div class="sms-bar-fill" data-bar></div></div>
+                            <small class="cell-sub tw:block! tw:mt-1!" data-left></small>
+                            <div class="sms-warn tw:mt-2!" data-warn hidden></div>
                         </div>
                     </div>
                 </div>
             </div>
         @endforeach
 
-        <div class="d-flex justify-content-end mb-4">
+        <div class="tw:flex! tw:justify-end! tw:mb-6!">
             <button type="submit" class="nx-btn nx-btn-primary">
                 <i class="bi bi-save"></i> Save SMS Messages
             </button>
@@ -208,7 +208,7 @@
         <i class="bi bi-info-circle-fill"></i>
         <div>
             <strong>Good to know</strong>
-            <ul class="mb-0 mt-1 ps-3">
+            <ul class="tw:mb-0! tw:mt-1! tw:pl-4!">
                 <li>Which messages go by SMS (or to the parent app) is chosen in <a href="{{ route('admin.setting.notifications') }}">Parent Notifications</a>.</li>
                 <li>The preview uses a sample student. A longer student or class name adds characters, so a few parents may get one more SMS part.</li>
                 <li>Sinhala / Tamil letters are removed before sending: an English SMS holds 160 characters, a Sinhala one only 70.</li>

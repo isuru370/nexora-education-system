@@ -65,7 +65,7 @@ class SidebarRolesTest extends TestCase
     private function sidebarOf($user, string $url = '/dashboard'): string
     {
         $html = $this->actingAs($user)->get($url)->assertOk()->getContent();
-        $start = strpos($html, '<aside class="sidebar"');
+        $start = strpos($html, '<aside id="sidebar"');
         $this->assertNotFalse($start);
 
         return substr($html, $start, strpos($html, '</aside>', $start) - $start);
@@ -99,7 +99,7 @@ class SidebarRolesTest extends TestCase
     {
         $html = $this->actingAs($this->inst['admin'])->get('/teacher-salaries')->assertOk()->getContent();
 
-        $this->assertMatchesRegularExpression('/sidebar-group is-open\s*"\s*data-group="staff"/', $html);
-        $this->assertDoesNotMatchRegularExpression('/sidebar-group is-open\s*"\s*data-group="reports"/', $html);
+        $this->assertMatchesRegularExpression('/class="sidebar-group [^"]*\bis-open\b[^"]*"\s*data-group="staff"/', $html);
+        $this->assertDoesNotMatchRegularExpression('/class="sidebar-group [^"]*\bis-open\b[^"]*"\s*data-group="reports"/', $html);
     }
 }

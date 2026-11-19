@@ -11,10 +11,10 @@
 
     <div class="system-user-form-page">
 
-        <div class="row g-4 mb-4">
-            <div class="col-lg-8">
+        <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3 tw:mb-6!">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[66.66666667%]">
                 <div class="form-hero-card">
-                    <div class="d-flex align-items-start justify-content-between flex-wrap gap-3">
+                    <div class="tw:flex! tw:items-start! tw:justify-between! tw:flex-wrap! tw:gap-4!">
                         <div>
                             <div class="hero-icon">
                                 <i class="bi bi-person-plus-fill"></i>
@@ -32,9 +32,9 @@
                 </div>
             </div>
 
-            <div class="col-lg-4">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[33.33333333%]">
                 <div class="quick-summary-card">
-                    <h6 class="mb-3">Quick Notes</h6>
+                    <h6 class="tw:mb-4!">Quick Notes</h6>
                     <div class="summary-item">
                         <i class="bi bi-shield-check"></i>
                         <span>Required fields are marked with *</span>
@@ -65,18 +65,18 @@
 
                 @include('system-users.partials.form', ['systemUser' => null])
 
-                <div class="px-3 pt-3">
+                <div class="tw:px-4! tw:pt-4!">
                     @include('partials.send-login-sms', ['id' => 'sendSmsSystemUser'])
                 </div>
 
                 <div class="form-footer">
-                    <div class="d-flex gap-2 ms-auto">
-                        <a href="{{ route('admin.system-users.index') }}" class="btn btn-light border custom-btn">
+                    <div class="tw:flex! tw:gap-2! tw:ml-auto!">
+                        <a href="{{ route('admin.system-users.index') }}" class="ui-btn ui-btn-light tw:bs-border! custom-btn">
                             <i class="bi bi-arrow-left"></i>
                             Cancel
                         </a>
 
-                        <button type="submit" class="btn btn-primary custom-btn">
+                        <button type="submit" class="ui-btn ui-btn-primary custom-btn">
                             <i class="bi bi-check2-circle"></i>
                             {{ isset($systemUser) ? 'Update User' : 'Save User' }}
                         </button>
@@ -209,7 +209,7 @@
             letter-spacing: .04em;
         }
 
-        .form-label {
+        .ui-form-label {
             font-weight: 600;
             color: #334155;
         }
@@ -241,7 +241,7 @@
             color: #64748b;
         }
 
-        .form-check {
+        .ui-form-check {
             padding: 1rem 1rem 0 0;
         }
 

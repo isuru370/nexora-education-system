@@ -47,7 +47,7 @@
 <div class="dashboard-page">
 
     {{-- HERO --}}
-    <div class="hero-section mb-4">
+    <div class="hero-section tw:mb-6!">
         <div class="hero-content">
             <div class="hero-left">
                 <span class="greeting-badge">nexoraEDU</span>
@@ -70,11 +70,11 @@
 
     {{-- ALERTS --}}
     @if ($errors->any())
-        <div class="nx-alert nx-alert-red mb-4">
+        <div class="nx-alert nx-alert-red tw:mb-6!">
             <i class="bi bi-exclamation-triangle-fill"></i>
             <div>
                 <strong>Please fix the following errors:</strong>
-                <ul class="mb-0 mt-2">
+                <ul class="tw:mb-0! tw:mt-2!">
                     @foreach ($errors->all() as $error)
                         <li><i class="bi bi-dot"></i> {{ $error }}</li>
                     @endforeach
@@ -84,14 +84,14 @@
     @endif
 
     @if (session('error'))
-        <div class="nx-alert nx-alert-red mb-4">
+        <div class="nx-alert nx-alert-red tw:mb-6!">
             <i class="bi bi-x-circle-fill"></i>
             <span>{{ session('error') }}</span>
         </div>
     @endif
 
     @if (session('success'))
-        <div class="nx-alert nx-alert-green mb-4">
+        <div class="nx-alert nx-alert-green tw:mb-6!">
             <i class="bi bi-check-circle-fill"></i>
             <span>{{ session('success') }}</span>
         </div>
@@ -103,34 +103,34 @@
             @method('PUT')
         @endif
 
-        <div class="row g-4">
+        <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3">
 
             {{-- LEFT COLUMN --}}
-            <div class="col-lg-8 d-flex flex-column gap-4">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[66.66666667%] tw:flex! tw:flex-col! tw:gap-6!">
 
                 {{-- BASIC INFO --}}
                 <div class="nx-card">
                     <div class="nx-card-header">
                         <div>
-                            <h5 class="nx-card-title"><i class="bi bi-info-circle text-primary"></i> Basic Information</h5>
+                            <h5 class="nx-card-title"><i class="bi bi-info-circle tw:text-(color:--nx-blue)!"></i> Basic Information</h5>
                             <p class="nx-card-subtitle">Title and notes for this exam</p>
                         </div>
                     </div>
-                    <div class="p-3 p-md-4">
-                        <div class="row g-3">
+                    <div class="tw:p-4! tw:md:p-6!">
+                        <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2">
 
                             {{-- TITLE --}}
-                            <div class="col-12">
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:flex-[0_0_auto] tw:w-[100%]">
                                 <label for="title" class="nx-label">
                                     Exam Title <span style="color: var(--nx-red);">*</span>
                                 </label>
                                 <input type="text" name="title" id="title"
-                                    class="form-control nx-input @error('title') is-invalid @enderror"
+                                    class="ui-form-control nx-input @error('title') ui-is-invalid @enderror"
                                     value="{{ $oldTitle }}" placeholder="Enter exam title" required>
                                 @error('title')
                                     <div class="nx-error"><i class="bi bi-exclamation-circle"></i> {{ $message }}</div>
                                 @else
-                                    <small class="cell-sub d-block mt-1">
+                                    <small class="cell-sub tw:block! tw:mt-1!">
                                         <i class="bi bi-info-circle"></i>
                                         Enter a clear and descriptive title for the exam.
                                     </small>
@@ -138,15 +138,15 @@
                             </div>
 
                             {{-- NOTE --}}
-                            <div class="col-12">
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:flex-[0_0_auto] tw:w-[100%]">
                                 <label for="note" class="nx-label">Additional Notes</label>
                                 <textarea name="note" id="note"
-                                    class="form-control nx-input @error('note') is-invalid @enderror"
+                                    class="ui-form-control nx-input @error('note') ui-is-invalid @enderror"
                                     placeholder="Add notes about this exam" rows="3">{{ $oldNote }}</textarea>
                                 @error('note')
                                     <div class="nx-error"><i class="bi bi-exclamation-circle"></i> {{ $message }}</div>
                                 @else
-                                    <small class="cell-sub d-block mt-1">
+                                    <small class="cell-sub tw:block! tw:mt-1!">
                                         <i class="bi bi-info-circle"></i>
                                         Optional: Add any special instructions or notes.
                                     </small>
@@ -160,20 +160,20 @@
                 <div class="nx-card">
                     <div class="nx-card-header">
                         <div>
-                            <h5 class="nx-card-title"><i class="bi bi-calendar-event text-primary"></i> Exam Schedule</h5>
+                            <h5 class="nx-card-title"><i class="bi bi-calendar-event tw:text-(color:--nx-blue)!"></i> Exam Schedule</h5>
                             <p class="nx-card-subtitle">Date and time</p>
                         </div>
                     </div>
-                    <div class="p-3 p-md-4">
-                        <div class="row g-3">
+                    <div class="tw:p-4! tw:md:p-6!">
+                        <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2">
 
                             {{-- DATE --}}
-                            <div class="col-md-4">
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
                                 <label for="exam_date" class="nx-label">
                                     Exam Date <span style="color: var(--nx-red);">*</span>
                                 </label>
                                 <input type="date" name="exam_date" id="exam_date"
-                                    class="form-control nx-input @error('exam_date') is-invalid @enderror"
+                                    class="ui-form-control nx-input @error('exam_date') ui-is-invalid @enderror"
                                     value="{{ $oldExamDate }}" min="{{ $today }}" required>
                                 @error('exam_date')
                                     <div class="nx-error"><i class="bi bi-exclamation-circle"></i> {{ $message }}</div>
@@ -181,12 +181,12 @@
                             </div>
 
                             {{-- START TIME --}}
-                            <div class="col-md-4">
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
                                 <label for="start_time" class="nx-label">
                                     Start Time <span style="color: var(--nx-red);">*</span>
                                 </label>
                                 <input type="time" name="start_time" id="start_time"
-                                    class="form-control nx-input @error('start_time') is-invalid @enderror"
+                                    class="ui-form-control nx-input @error('start_time') ui-is-invalid @enderror"
                                     value="{{ $oldStartTime }}" required>
                                 @error('start_time')
                                     <div class="nx-error"><i class="bi bi-exclamation-circle"></i> {{ $message }}</div>
@@ -194,12 +194,12 @@
                             </div>
 
                             {{-- END TIME --}}
-                            <div class="col-md-4">
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
                                 <label for="end_time" class="nx-label">
                                     End Time <span style="color: var(--nx-red);">*</span>
                                 </label>
                                 <input type="time" name="end_time" id="end_time"
-                                    class="form-control nx-input @error('end_time') is-invalid @enderror"
+                                    class="ui-form-control nx-input @error('end_time') ui-is-invalid @enderror"
                                     value="{{ $oldEndTime }}" required>
                                 @error('end_time')
                                     <div class="nx-error"><i class="bi bi-exclamation-circle"></i> {{ $message }}</div>
@@ -208,7 +208,7 @@
                         </div>
 
                         {{-- TIME WARNING --}}
-                        <div id="timeWarning" class="nx-alert nx-alert-amber d-none mt-3">
+                        <div id="timeWarning" class="nx-alert nx-alert-amber tw:hidden! tw:mt-4!">
                             <i class="bi bi-exclamation-triangle-fill"></i>
                             <span id="timeWarningText">End time must be after start time.</span>
                         </div>
@@ -219,20 +219,20 @@
                 <div class="nx-card">
                     <div class="nx-card-header">
                         <div>
-                            <h5 class="nx-card-title"><i class="bi bi-diagram-3 text-primary"></i> Assignment Details</h5>
+                            <h5 class="nx-card-title"><i class="bi bi-diagram-3 tw:text-(color:--nx-blue)!"></i> Assignment Details</h5>
                             <p class="nx-card-subtitle">Class, category and hall</p>
                         </div>
                     </div>
-                    <div class="p-3 p-md-4">
-                        <div class="row g-3">
+                    <div class="tw:p-4! tw:md:p-6!">
+                        <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2">
 
                             {{-- CLASS --}}
-                            <div class="col-md-4">
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
                                 <label for="student_class_id" class="nx-label">
                                     Class <span style="color: var(--nx-red);">*</span>
                                 </label>
                                 <select name="student_class_id" id="student_class_id"
-                                    class="form-select nx-input @error('student_class_id') is-invalid @enderror"
+                                    class="ui-form-select nx-input @error('student_class_id') ui-is-invalid @enderror"
                                     required>
                                     <option value="">Select Class</option>
                                     @foreach ($classes as $class)
@@ -251,12 +251,12 @@
                             </div>
 
                             {{-- CATEGORY --}}
-                            <div class="col-md-4">
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
                                 <label for="class_category_id" class="nx-label">
                                     Category <span style="color: var(--nx-red);">*</span>
                                 </label>
                                 <select name="class_category_id" id="class_category_id"
-                                    class="form-select nx-input @error('class_category_id') is-invalid @enderror"
+                                    class="ui-form-select nx-input @error('class_category_id') ui-is-invalid @enderror"
                                     required>
                                     <option value="">Select Category</option>
                                     @if ($oldCategoryId && isset($categories))
@@ -274,12 +274,12 @@
                             </div>
 
                             {{-- HALL --}}
-                            <div class="col-md-4">
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
                                 <label for="class_hall_id" class="nx-label">
                                     Exam Hall <span style="color: var(--nx-red);">*</span>
                                 </label>
                                 <select name="class_hall_id" id="class_hall_id"
-                                    class="form-select nx-input @error('class_hall_id') is-invalid @enderror"
+                                    class="ui-form-select nx-input @error('class_hall_id') ui-is-invalid @enderror"
                                     required>
                                     <option value="">Select Hall</option>
                                     @foreach ($halls as $hall)
@@ -302,19 +302,19 @@
             </div>
 
             {{-- RIGHT COLUMN --}}
-            <div class="col-lg-4 d-flex flex-column gap-4">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[33.33333333%] tw:flex! tw:flex-col! tw:gap-6!">
 
                 {{-- STATUS (Edit Only) --}}
                 @if ($isEdit)
                     <div class="nx-card">
                         <div class="nx-card-header">
                             <div>
-                                <h5 class="nx-card-title"><i class="bi bi-toggles text-primary"></i> Exam Status</h5>
+                                <h5 class="nx-card-title"><i class="bi bi-toggles tw:text-(color:--nx-blue)!"></i> Exam Status</h5>
                             </div>
                         </div>
-                        <div class="p-3">
+                        <div class="tw:p-4!">
                             <select name="status" id="statusSelect"
-                                class="form-select nx-input @error('status') is-invalid @enderror">
+                                class="ui-form-select nx-input @error('status') ui-is-invalid @enderror">
                                 <option value="scheduled" {{ $oldStatus == 'scheduled' ? 'selected' : '' }}>Scheduled</option>
                                 <option value="ongoing" {{ $oldStatus == 'ongoing' ? 'selected' : '' }}>Ongoing</option>
                                 <option value="completed" {{ $oldStatus == 'completed' ? 'selected' : '' }}>Completed</option>
@@ -324,7 +324,7 @@
                                 <div class="nx-error"><i class="bi bi-exclamation-circle"></i> {{ $message }}</div>
                             @enderror
 
-                            <div class="status-info mt-3">
+                            <div class="status-info tw:mt-4!">
                                 <div class="status-indicator" id="statusIndicator">
                                     @php
                                         $statusBadgeMap = [
@@ -339,7 +339,7 @@
                                         {{ ucfirst($oldStatus) }}
                                     </span>
                                 </div>
-                                <small class="cell-sub d-block mt-2">
+                                <small class="cell-sub tw:block! tw:mt-2!">
                                     <i class="bi bi-info-circle"></i>
                                     <span id="statusDescription">
                                         @switch($oldStatus)
@@ -359,10 +359,10 @@
                 <div class="nx-card">
                     <div class="nx-card-header">
                         <div>
-                            <h5 class="nx-card-title"><i class="bi bi-list-check text-primary"></i> Exam Summary</h5>
+                            <h5 class="nx-card-title"><i class="bi bi-list-check tw:text-(color:--nx-blue)!"></i> Exam Summary</h5>
                         </div>
                     </div>
-                    <div class="p-3">
+                    <div class="tw:p-4!">
                         <div class="summary-list">
 
                             <div class="summary-item">
@@ -400,12 +400,12 @@
 
                 {{-- ACTIONS --}}
                 <div class="nx-card">
-                    <div class="p-3 d-flex flex-column gap-2">
-                        <button type="submit" class="nx-btn nx-btn-primary w-100">
+                    <div class="tw:p-4! tw:flex! tw:flex-col! tw:gap-2!">
+                        <button type="submit" class="nx-btn nx-btn-primary tw:w-full!">
                             <i class="bi bi-{{ $isEdit ? 'check-circle' : 'plus-circle' }}"></i>
                             {{ $isEdit ? 'Update Exam' : 'Create Exam' }}
                         </button>
-                        <a href="{{ route('admin.exams.index') }}" class="nx-btn nx-btn-light w-100">
+                        <a href="{{ route('admin.exams.index') }}" class="nx-btn nx-btn-light tw:w-full!">
                             <i class="bi bi-arrow-left"></i> Cancel & Go Back
                         </a>
                     </div>
@@ -578,7 +578,7 @@
         inputs.forEach(input => {
             input.addEventListener('blur', function () { validateField(this); });
             input.addEventListener('input', function () {
-                if (this.classList.contains('is-invalid') || this.classList.contains('is-valid')) {
+                if (this.classList.contains('ui-is-invalid') || this.classList.contains('ui-is-valid')) {
                     validateField(this);
                 }
                 updateSummary();
@@ -593,12 +593,12 @@
             const isValid = input.checkValidity();
 
             if (!isValid) {
-                input.classList.add('is-invalid');
-                input.classList.remove('is-valid');
+                input.classList.add('ui-is-invalid');
+                input.classList.remove('ui-is-valid');
             } else {
-                input.classList.remove('is-invalid');
+                input.classList.remove('ui-is-invalid');
                 if (input.value.trim() !== '') {
-                    input.classList.add('is-valid');
+                    input.classList.add('ui-is-valid');
                 }
             }
         }
@@ -614,14 +614,14 @@
         function validateTimes() {
             if (startTime.value && endTime.value) {
                 if (startTime.value >= endTime.value) {
-                    timeWarning.classList.remove('d-none');
+                    timeWarning.classList.remove('tw:hidden!');
                     timeWarningText.textContent = 'End time must be after start time.';
-                    endTime.classList.add('is-invalid');
+                    endTime.classList.add('ui-is-invalid');
                     return false;
                 }
-                timeWarning.classList.add('d-none');
-                endTime.classList.remove('is-invalid');
-                endTime.classList.add('is-valid');
+                timeWarning.classList.add('tw:hidden!');
+                endTime.classList.remove('ui-is-invalid');
+                endTime.classList.add('ui-is-valid');
             }
             return true;
         }
@@ -640,12 +640,12 @@
 
         examDate.addEventListener('change', function () {
             if (this.value < today) {
-                this.classList.add('is-invalid');
+                this.classList.add('ui-is-invalid');
                 this.setCustomValidity('Exam date cannot be in the past.');
             } else {
-                this.classList.remove('is-invalid');
+                this.classList.remove('ui-is-invalid');
                 this.setCustomValidity('');
-                this.classList.add('is-valid');
+                this.classList.add('ui-is-valid');
             }
             updateSummary();
         });
@@ -752,22 +752,22 @@
 
             allInputs.forEach(input => {
                 if (!input.checkValidity()) {
-                    input.classList.add('is-invalid');
+                    input.classList.add('ui-is-invalid');
                     isValid = false;
                 } else {
-                    input.classList.remove('is-invalid');
-                    input.classList.add('is-valid');
+                    input.classList.remove('ui-is-invalid');
+                    input.classList.add('ui-is-valid');
                 }
             });
 
             if (!validateTimes()) isValid = false;
             if (examDate.value && examDate.value < today) {
-                examDate.classList.add('is-invalid');
+                examDate.classList.add('ui-is-invalid');
                 isValid = false;
             }
 
             if (!isValid) {
-                const firstError = this.querySelector('.is-invalid');
+                const firstError = this.querySelector('.ui-is-invalid');
                 if (firstError) {
                     firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
                     firstError.focus();
@@ -823,7 +823,6 @@
         /* ============================================ */
         /* 10. TOOLTIP INITIALIZATION                   */
         /* ============================================ */
-        document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(el => new bootstrap.Tooltip(el));
 
         console.log('✅ Exam form initialized successfully');
     });

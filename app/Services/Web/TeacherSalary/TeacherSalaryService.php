@@ -524,132 +524,217 @@ class TeacherSalaryService
     |--------------------------------------------------------------------------
     */
 
+    /**
+     * The class fee payments one salary (teacher + branch + month) is made of,
+     * by the day the money was received (payment_split_snapshots.payment_date):
+     *
+     *  - fees received in the month (when the salary is paid: up to the time
+     *    it was paid; later ones go into the next salary)
+     *  - earlier months' fees received after their salary was paid (carried)
+     *
+     * The teacher amounts add up to the salary page's teacher earnings + balance
+     * from earlier months (TeacherSalaryCalculator), whatever month the fee was for.
+     *
+     * @return array{in_salary: Collection<int, PaymentSplitSnapshot>, after_salary: Collection<int, PaymentSplitSnapshot>, record: TeacherSalary|null}
+     */
+    public function salaryPayments(int $teacherId, int $branchId, int $year, int $month): array
+    {
+        [$start, $end] = $this->calculator->monthRange($year, $month);
+
+        $record = $this->calculator->salaryRecord($teacherId, $branchId, $year, $month);
+        $isPaid = $record && $record->status === 'paid';
+
+        $with = [
+            'payment' => fn ($query) => $query->withTrashed()->select('id', 'student_id', 'student_class_enrollment_id', 'amount', 'discount_amount', 'payment_month', 'paid_at', 'receipt_number'),
+            'payment.student:id,custom_id,temporary_qr_code,permanent_qr_active,initial_name',
+            'enrollment' => fn ($query) => $query->withTrashed()->select('id', 'student_class_id', 'class_category_fee_id', 'class_category_fee_option_id'),
+        ];
+
+        $monthRows = PaymentSplitSnapshot::query()
+            ->with($with)
+            ->where('branch_id', $branchId)
+            ->where('teacher_id', $teacherId)
+            ->whereBetween('payment_date', [$start, $end])
+            ->orderBy('payment_date')
+            ->orderBy('id')
+            ->get();
+
+        $paidAt = $isPaid ? $record->paid_at : null;
+        $inMonth = $paidAt ? $monthRows->filter(fn ($s) => !$s->payment_date->greaterThan($paidAt)) : $monthRows;
+        $after = $paidAt ? $monthRows->filter(fn ($s) => $s->payment_date->greaterThan($paidAt)) : collect();
+
+        $carriedIds = $isPaid
+            ? PaymentSplitSnapshot::query()->where('carried_to_salary_id', $record->id)->pluck('id')->all()
+            : ($this->calculator->carryByTeacher($branchId, $year, $month, [$teacherId])->get($teacherId)['snapshot_ids'] ?? []);
+
+        $carried = PaymentSplitSnapshot::query()
+            ->with($with)
+            ->whereIn('id', $carriedIds)
+            ->orderBy('payment_date')
+            ->orderBy('id')
+            ->get()
+            ->each(fn ($snapshot) => $snapshot->setAttribute('is_carried', true));
+
+        return [
+            'in_salary' => $carried->concat($inMonth)->values(),
+            'after_salary' => $after->values(),
+            'record' => $record,
+        ];
+    }
+
+    /**
+     * One payment of a salary as a table row.
+     */
+    public function salaryPaymentRow(PaymentSplitSnapshot $snapshot): array
+    {
+        $payment = $snapshot->payment;
+        $student = optional($payment)->student;
+        $amount = round((float) $snapshot->payment_amount, 2);
+        $hall = \App\Support\MonthFee::hallPart($amount, $snapshot->hall_fee);
+
+        return [
+            'student_code' => $student
+                ? ($student->permanent_qr_active ? $student->custom_id : ($student->temporary_qr_code ?: $student->custom_id))
+                : '-',
+            'student_name' => optional($student)->initial_name ?? '-',
+            'paid_for' => optional($payment)->payment_month ? Carbon::parse($payment->payment_month)->format('M Y') : '-',
+            'paid_on' => $snapshot->payment_date->format('d M Y'),
+            'receipt' => optional($payment)->receipt_number,
+            'amount' => $amount,
+            'hall_fee' => $hall,
+            'class_fee' => round($amount - $hall, 2),
+            'teacher_percentage' => (float) $snapshot->teacher_percentage,
+            'teacher_amount' => round((float) $snapshot->teacher_amount, 2),
+            'carried' => (bool) ($snapshot->is_carried ?? false),
+        ];
+    }
+
+    /**
+     * Totals of some salary payments.
+     *
+     * @param  Collection<int, PaymentSplitSnapshot>  $snapshots
+     */
+    public function salaryPaymentTotals(Collection $snapshots): array
+    {
+        $hall = $snapshots->sum(fn ($s) => \App\Support\MonthFee::hallPart((float) $s->payment_amount, $s->hall_fee));
+        $collected = (float) $snapshots->sum('payment_amount');
+
+        return [
+            'payments' => $snapshots->count(),
+            'collected' => round($collected, 2),
+            'hall_fee' => round($hall, 2),
+            'class_fee' => round($collected - $hall, 2),
+            'teacher' => round((float) $snapshots->sum('teacher_amount'), 2),
+            'organizer' => round((float) $snapshots->sum('organizer_amount'), 2),
+            'institute' => round((float) $snapshots->sum('institution_amount'), 2),
+        ];
+    }
+
+    /**
+     * How a teacher's salary of a month was made: every class fee payment in
+     * it (by the day it was received, whatever month it was for), per class
+     * and fee category, with the hall fee and the class fee apart. Also this
+     * month's fee status of each category (paid / unpaid / free card).
+     */
     public function teacherPaymentAndClassSummary(int $teacherId, int $branchId, int $year, int $month): array
     {
         $this->assertBranchAccess($branchId);
 
-        Teacher::withTrashed()->findOrFail($teacherId);
+        $teacher = Teacher::withTrashed()->findOrFail($teacherId);
+        [$start, $end] = $this->calculator->monthRange($year, $month);
 
-        $teacherTotal = (float) $this->calculator
-            ->grossByTeacher($branchId, $year, $month, [$teacherId])
-            ->get($teacherId, 0.0);
+        $salary = $this->salaryPayments($teacherId, $branchId, $year, $month);
+        $inSalary = $salary['in_salary'];
+        $record = $salary['record'];
+        $isPaid = $record && $record->status === 'paid';
 
+        // classes: active ones of the teacher in the branch + any with money in this salary
         $classes = StudentClass::query()
+            ->withTrashed()
+            ->with([
+                'grade:id,grade_name',
+                'categoryFees' => fn ($query) => $query->with('category:id,category_name')->orderBy('id'),
+                'enrollments' => fn ($query) => $query->where('is_active', true)
+                    ->select('id', 'student_id', 'student_class_id', 'class_category_fee_id', 'class_category_fee_option_id', 'is_active', 'is_free_card')
+                    ->with([
+                        'classCategoryFeeOption:id,class_category_fee_id,label,fee',
+                        'payments' => fn ($payments) => $payments->where('status', 'completed')
+                            ->whereBetween('payment_month', [$start->toDateString(), $end->toDateString()])
+                            ->with('splitSnapshot:id,payment_id,hall_fee'),
+                    ]),
+            ])
             ->where('branch_id', $branchId)
             ->where('teacher_id', $teacherId)
-            ->where('is_active', true)
-            ->with([
-                'categoryFees.category:id,category_name',
-                'categoryFees.feeOptions' => function ($query) {
-                    $query->where('is_active', true)
-                        ->orderByDesc('is_default')
-                        ->orderBy('id');
-                },
-                'grade:id,grade_name',
-                'enrollments' => function ($query) use ($year, $month) {
-                    $query->where('is_active', true)
-                        ->with('classCategoryFeeOption')
-                        ->withSum([
-                            'payments as monthly_paid_amount' => function ($paymentQuery) use ($year, $month) {
-                                $paymentQuery->where('status', 'completed')
-                                    ->whereYear('paid_at', $year)
-                                    ->whereMonth('paid_at', $month);
-                            },
-                        ], 'amount');
-                },
-            ])
+            ->where(function ($query) use ($inSalary) {
+                $query->where(fn ($q) => $q->where('is_active', true)->whereNull('deleted_at'))
+                    ->orWhereIn('id', $inSalary->pluck('student_class_id')->filter()->unique()->values());
+            })
             ->orderBy('class_name')
             ->get();
 
-        $classSummaries = [];
-        $grandStudentCount = 0;
+        $hallFeeNow = \App\Support\MonthFee::hallFeeCache();
+        $byClass = $inSalary->groupBy('student_class_id');
 
-        foreach ($classes as $class) {
-            $classEnrollments = $class->enrollments;
-            $classStudentCount = $classEnrollments->count();
-            $grandStudentCount += $classStudentCount;
+        $classRows = $classes->map(function (StudentClass $class) use ($byClass, $hallFeeNow) {
+            $classPayments = $byClass->get($class->id, collect());
+            $byCategory = $classPayments->groupBy(fn ($s) => optional($s->enrollment)->class_category_fee_id);
 
-            $classTotal = 0;
-            $categorySummaries = [];
+            $categories = $class->categoryFees->map(function ($categoryFee) use ($class, $byCategory, $hallFeeNow) {
+                $payments = $byCategory->get($categoryFee->id, collect());
 
-            foreach ($class->categoryFees as $categoryFee) {
-                $enrollments = $classEnrollments->where('class_category_fee_id', $categoryFee->id);
-
-                $paidStudents = 0;
-                $partialStudents = 0;
-                $unpaidStudents = 0;
-                $freeCardStudents = 0;
-                $categoryTotal = 0;
-
-                foreach ($enrollments as $enrollment) {
-                    if ($enrollment->is_free_card) {
-                        $freeCardStudents++;
-
-                        continue;
-                    }
-
-                    $paidAmount = (float) ($enrollment->monthly_paid_amount ?? 0);
-                    $finalFee = (float) $enrollment->final_fee;
-
-                    if ($paidAmount <= 0) {
-                        $unpaidStudents++;
-                    } elseif ($paidAmount < $finalFee) {
-                        $partialStudents++;
-                    } else {
-                        $paidStudents++;
-                    }
-
-                    $categoryTotal += $paidAmount;
+                $status = ['paid' => 0, 'partial' => 0, 'unpaid' => 0, 'freecard' => 0, 'payable' => 0.0, 'paid_amount' => 0.0];
+                foreach ($class->enrollments->where('class_category_fee_id', $categoryFee->id) as $enrollment) {
+                    $fee = \App\Support\MonthFee::forEnrollment($enrollment, $enrollment->payments, $hallFeeNow($enrollment));
+                    $status[$fee['status']]++;
+                    $status['payable'] += $fee['payable'];
+                    $status['paid_amount'] += $fee['paid'];
                 }
 
-                $classTotal += $categoryTotal;
-
-                $categorySummaries[] = [
+                return [
                     'category_fee_id' => $categoryFee->id,
-                    'category_id' => optional($categoryFee->category)->id,
-                    'category_name' => optional($categoryFee->category)->category_name,
-                    'fee' => null,
-                    'fee_options' => $categoryFee->feeOptions
-                        ->map(fn($option) => [
-                            'id' => $option->id,
-                            'label' => $option->label,
-                            'fee' => (float) $option->fee,
-                            'is_default' => (bool) $option->is_default,
-                        ])
-                        ->values()
-                        ->all(),
-                    'expected_total' => round(
-                        $enrollments->sum(fn($enrollment) => $enrollment->is_free_card ? 0 : (float) $enrollment->final_fee),
-                        2
-                    ),
-                    'student_count' => $enrollments->count(),
-                    'paid_students' => $paidStudents,
-                    'partial_students' => $partialStudents,
-                    'unpaid_students' => $unpaidStudents,
-                    'free_card_students' => $freeCardStudents,
-                    'category_total' => round($categoryTotal, 2),
+                    'category_name' => optional($categoryFee->category)->category_name ?? 'Category',
+                    'students' => $class->enrollments->where('class_category_fee_id', $categoryFee->id)->count(),
+                    'fee_status' => $status,
+                    'totals' => $this->salaryPaymentTotals($payments),
+                    'payments' => $payments->map(fn ($s) => $this->salaryPaymentRow($s))->values()->all(),
                 ];
-            }
+            })
+                // categories with students or with money in this salary
+                ->filter(fn ($row) => $row['students'] > 0 || $row['totals']['payments'] > 0)
+                ->values()
+                ->all();
 
-            $classSummaries[] = [
+            return [
                 'class_id' => $class->id,
                 'class_name' => $class->class_name,
                 'grade_name' => optional($class->grade)->grade_name,
-                'total_students' => $classStudentCount,
-                'class_total' => round($classTotal, 2),
-                'categories' => $categorySummaries,
+                'is_active' => (bool) $class->is_active && !$class->trashed(),
+                'totals' => $this->salaryPaymentTotals($classPayments),
+                'categories' => $categories,
             ];
-        }
+        })->values();
+
+        $totals = $this->salaryPaymentTotals($inSalary);
+        $carried = $inSalary->filter(fn ($s) => $s->is_carried ?? false);
 
         return [
+            'teacher' => $teacher,
+            'branch' => Branch::query()->find($branchId),
             'teacher_id' => $teacherId,
             'branch_id' => $branchId,
             'year' => $year,
             'month' => $month,
-            'teacher_total' => round($teacherTotal, 2),
-            'total_student_count' => $grandStudentCount,
-            'total_class_count' => $classes->count(),
-            'classes' => $classSummaries,
+            'month_label' => $start->format('F Y'),
+            'is_paid' => $isPaid,
+            'paid_at' => $isPaid ? $record->paid_at : null,
+            'totals' => $totals,
+            'carried' => $this->salaryPaymentTotals($carried),
+            'after_salary' => [
+                'totals' => $this->salaryPaymentTotals($salary['after_salary']),
+                'payments' => $salary['after_salary']->map(fn ($s) => $this->salaryPaymentRow($s))->values()->all(),
+            ],
+            'student_count' => $classes->sum(fn ($class) => $class->enrollments->count()),
+            'classes' => $classRows->all(),
         ];
     }
 

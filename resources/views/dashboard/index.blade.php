@@ -57,7 +57,7 @@
         {{-- ===================================================== --}}
         {{-- HERO --}}
         {{-- ===================================================== --}}
-        <div class="hero-section mb-4">
+        <div class="hero-section tw:mb-6!">
             <div class="hero-content">
                 <div class="hero-left">
                     <span class="greeting-badge">{{ $greeting }}</span>
@@ -109,7 +109,7 @@
 
                     @if ($branchView && $myBranches->count() > 1)
                         <form method="GET" action="{{ route('dashboard') }}" class="hero-branch-picker">
-                            <select name="branch_id" class="form-select form-select-sm" aria-label="Branch" onchange="this.form.submit()">
+                            <select name="branch_id" class="ui-form-select ui-form-select-sm" aria-label="Branch" onchange="this.form.submit()">
                                 <option value="">All my branches</option>
                                 @foreach ($myBranches as $myBranch)
                                     <option value="{{ $myBranch->id }}" {{ (int) ($selectedBranchId ?? 0) === (int) $myBranch->id ? 'selected' : '' }}>{{ $myBranch->name }}</option>
@@ -130,12 +130,12 @@
                 && $issuedTemporaryCardsLeft < ($lowTemporaryCardThreshold ?? 20);
         @endphp
         @if (($showStudentCardWarning ?? false) || $lowTemporaryCards || ($expiringStudentsCount ?? 0) > 0 || ($incompleteRegistrationCount ?? 0) > 0)
-            <div class="alerts-row mb-4">
+            <div class="alerts-row tw:mb-6!">
                 @if ($showStudentCardWarning ?? false)
                     <a href="{{ \App\Support\CardAccess::canView() ? route('student-cards.index') : '#' }}" class="nx-alert nx-alert-amber">
                         <i class="bi bi-person-vcard"></i>
                         <span>Student cards are running low: <strong>{{ $availableStudentCardCount ?? 0 }}</strong> left</span>
-                        <i class="bi bi-chevron-right ms-auto"></i>
+                        <i class="bi bi-chevron-right tw:ml-auto!"></i>
                     </a>
                 @endif
 
@@ -146,7 +146,7 @@
                             Only <strong>{{ $issuedTemporaryCardsLeft }}</strong> issued temporary cards left -
                             issue more before registrations stop
                         </span>
-                        <i class="bi bi-chevron-right ms-auto"></i>
+                        <i class="bi bi-chevron-right tw:ml-auto!"></i>
                     </a>
                 @endif
 
@@ -154,7 +154,7 @@
                     <a href="{{ \App\Support\CardAccess::canView() && \App\Support\CardMode::temporary() ? route('temporary_id_cards.index') : route('students.index') }}" class="nx-alert nx-alert-red">
                         <i class="bi bi-qr-code"></i>
                         <span><strong>{{ $expiringStudentsCount }}</strong> temporary QR codes expire within 10 days</span>
-                        <i class="bi bi-chevron-right ms-auto"></i>
+                        <i class="bi bi-chevron-right tw:ml-auto!"></i>
                     </a>
                 @endif
 
@@ -162,7 +162,7 @@
                     <a href="#incomplete-registrations" class="nx-alert nx-alert-blue">
                         <i class="bi bi-hourglass-split"></i>
                         <span><strong>{{ $incompleteRegistrationCount }}</strong> incomplete student registrations</span>
-                        <i class="bi bi-chevron-right ms-auto"></i>
+                        <i class="bi bi-chevron-right tw:ml-auto!"></i>
                     </a>
                 @endif
             </div>
@@ -171,7 +171,7 @@
         {{-- ===================================================== --}}
         {{-- KPI CARDS --}}
         {{-- ===================================================== --}}
-        <div class="stats-grid mb-4">
+        <div class="stats-grid tw:mb-6!">
 
             <div class="nx-card stat-card">
                 <div class="stat-icon-wrapper icon-green"><i class="bi bi-cash-stack"></i></div>
@@ -212,7 +212,7 @@
                 <div class="stat-info">
                     <span class="stat-label">Fee Collection · {{ $unpaid['month'] ?? now()->format('F Y') }}</span>
                     <h2 class="stat-number">{{ $unpaid['paid_percent'] ?? 0 }}%</h2>
-                    <div class="nx-progress mt-1">
+                    <div class="nx-progress tw:mt-1!">
                         <div class="nx-progress-fill bg-amber" style="width: {{ $unpaid['paid_percent'] ?? 0 }}%"></div>
                     </div>
                     <span class="stat-change-note">
@@ -225,7 +225,7 @@
         {{-- ===================================================== --}}
         {{-- QUICK ACTIONS --}}
         {{-- ===================================================== --}}
-        <div class="quick-actions-section mb-4">
+        <div class="quick-actions-section tw:mb-6!">
             <div class="quick-actions-grid">
                 @cardaccess('assign')
                 <a href="{{ \App\Support\CardMode::temporary() ? route('student-temporary-registration.create') : route('student-card-registration.create') }}" class="quick-action-btn">
@@ -264,21 +264,21 @@
         {{-- ===================================================== --}}
         {{-- TODAY: CLASSES + SUMMARY --}}
         {{-- ===================================================== --}}
-        <div class="row g-4 mb-4">
+        <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3 tw:mb-6!">
 
             {{-- Today's Classes --}}
-            <div class="col-xl-8">
-                <div class="nx-card h-100">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:xl:flex-[0_0_auto] tw:xl:w-[66.66666667%]">
+                <div class="nx-card tw:h-full!">
                     <div class="nx-card-header">
                         <div>
-                            <h5 class="nx-card-title"><i class="bi bi-calendar-day text-primary"></i> Today's Classes</h5>
+                            <h5 class="nx-card-title"><i class="bi bi-calendar-day tw:text-(color:--nx-blue)!"></i> Today's Classes</h5>
                             <p class="nx-card-subtitle">{{ now()->format('l, d M') }} · attendance vs enrolled</p>
                         </div>
                         <a href="{{ route('class-schedules.todayClasses') }}" class="nx-link">View all <i class="bi bi-arrow-right"></i></a>
                     </div>
 
-                    <div class="table-responsive">
-                        <table class="table premium-table mb-0">
+                    <div class="ui-table-responsive">
+                        <table class="ui-table premium-table tw:mb-0!">
                             <thead>
                                 <tr>
                                     <th>Time</th>
@@ -291,7 +291,7 @@
                             <tbody>
                                 @forelse ($todayClasses as $class)
                                     <tr class="{{ $class['status'] === 'cancelled' ? 'row-muted' : '' }}">
-                                        <td class="text-nowrap">
+                                        <td class="tw:whitespace-nowrap!">
                                             <strong>{{ $class['start_time'] }}</strong>
                                             <div class="cell-sub">{{ $class['end_time'] }}</div>
                                         </td>
@@ -312,7 +312,7 @@
                                             @if ($class['status'] === 'cancelled')
                                                 <span class="cell-sub">—</span>
                                             @else
-                                                <div class="d-flex justify-content-between small">
+                                                <div class="tw:flex! tw:justify-between! tw:text-[.875em]">
                                                     <span>{{ $class['present'] }} / {{ $class['enrolled'] }}</span>
                                                     <span class="cell-sub">{{ $class['attendance_percent'] }}%</span>
                                                 </div>
@@ -325,7 +325,7 @@
                                 @empty
                                     <tr>
                                         <td colspan="5" class="empty-table">
-                                            <i class="bi bi-calendar-x fs-2 d-block mb-2"></i>
+                                            <i class="bi bi-calendar-x tw:text-[length:calc(1.325rem_+_0.9vw)]! tw:xl:text-[length:2rem]! tw:block! tw:mb-2!"></i>
                                             No classes scheduled for today.
                                         </td>
                                     </tr>
@@ -337,11 +337,11 @@
             </div>
 
             {{-- Today Summary + Unpaid --}}
-            <div class="col-xl-4">
-                <div class="d-flex flex-column gap-4 h-100">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:xl:flex-[0_0_auto] tw:xl:w-[33.33333333%]">
+                <div class="tw:flex! tw:flex-col! tw:gap-6! tw:h-full!">
 
-                    <div class="nx-card p-3">
-                        <h5 class="nx-card-title mb-3"><i class="bi bi-activity text-success"></i> Today at a Glance</h5>
+                    <div class="nx-card tw:p-4!">
+                        <h5 class="nx-card-title tw:mb-4!"><i class="bi bi-activity tw:text-(color:--nx-green)!"></i> Today at a Glance</h5>
 
                         <div class="glance-grid">
                             <div class="glance-item">
@@ -362,8 +362,8 @@
                             </div>
                         </div>
 
-                        <div class="mt-3">
-                            <div class="d-flex justify-content-between small mb-1">
+                        <div class="tw:mt-4!">
+                            <div class="tw:flex! tw:justify-between! tw:text-[.875em] tw:mb-1!">
                                 <span>Students present</span>
                                 <strong>{{ $present }} / {{ $expected }} ({{ $todayAttendancePercent }}%)</strong>
                             </div>
@@ -373,10 +373,10 @@
                         </div>
                     </div>
 
-                    <div class="nx-card p-3 flex-grow-1">
-                        <div class="d-flex justify-content-between align-items-start mb-3">
+                    <div class="nx-card tw:p-4! tw:grow!">
+                        <div class="tw:flex! tw:justify-between! tw:items-start! tw:mb-4!">
                             <div>
-                                <h5 class="nx-card-title"><i class="bi bi-exclamation-circle text-danger"></i> Not Paid This Month</h5>
+                                <h5 class="nx-card-title"><i class="bi bi-exclamation-circle tw:text-(color:--nx-red)!"></i> Not Paid This Month</h5>
                                 <p class="nx-card-subtitle">Classes with the most unpaid students</p>
                             </div>
                             <span class="nx-badge nx-badge-red">{{ number_format($unpaid['unpaid_count'] ?? 0) }}</span>
@@ -384,14 +384,14 @@
 
                         @forelse ($unpaid['top_classes'] ?? [] as $row)
                             <div class="unpaid-row">
-                                <a href="{{ route('payment-reminder.index', ['class_id' => $row['student_class_id']]) }}" class="text-truncate text-reset">{{ $row['class_name'] }}</a>
+                                <a href="{{ route('payment-reminder.index', ['class_id' => $row['student_class_id']]) }}" class="tw:truncate tw:text-[inherit]!">{{ $row['class_name'] }}</a>
                                 <strong>{{ $row['unpaid_count'] }}</strong>
                             </div>
                         @empty
-                            <p class="cell-sub mb-0"><i class="bi bi-check-circle text-success"></i> Everyone has paid this month.</p>
+                            <p class="cell-sub tw:mb-0!"><i class="bi bi-check-circle tw:text-(color:--nx-green)!"></i> Everyone has paid this month.</p>
                         @endforelse
 
-                        <a href="{{ route('payment-reminder.index') }}" class="nx-link d-inline-block mt-3">
+                        <a href="{{ route('payment-reminder.index') }}" class="nx-link tw:[display:inline-block]! tw:mt-4!">
                             Send reminders <i class="bi bi-arrow-right"></i>
                         </a>
                     </div>
@@ -402,12 +402,12 @@
         {{-- ===================================================== --}}
         {{-- INCOME: LAST 14 DAYS + PAYMENT METHODS --}}
         {{-- ===================================================== --}}
-        <div class="row g-4 mb-4">
-            <div class="col-xl-8">
-                <div class="nx-card h-100">
+        <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3 tw:mb-6!">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:xl:flex-[0_0_auto] tw:xl:w-[66.66666667%]">
+                <div class="nx-card tw:h-full!">
                     <div class="nx-card-header">
                         <div>
-                            <h5 class="nx-card-title"><i class="bi bi-bar-chart-fill text-primary"></i> Daily Income</h5>
+                            <h5 class="nx-card-title"><i class="bi bi-bar-chart-fill tw:text-(color:--nx-blue)!"></i> Daily Income</h5>
                             <p class="nx-card-subtitle">Last 14 days · completed payments</p>
                         </div>
                         <strong>{{ $money(array_sum($dailyIncome['values'] ?? [])) }}</strong>
@@ -418,17 +418,17 @@
                 </div>
             </div>
 
-            <div class="col-xl-4">
-                <div class="nx-card h-100 p-3">
-                    <h5 class="nx-card-title"><i class="bi bi-wallet2 text-success"></i> Payment Methods</h5>
-                    <p class="nx-card-subtitle mb-3">{{ now()->format('F Y') }}</p>
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:xl:flex-[0_0_auto] tw:xl:w-[33.33333333%]">
+                <div class="nx-card tw:h-full! tw:p-4!">
+                    <h5 class="nx-card-title"><i class="bi bi-wallet2 tw:text-(color:--nx-green)!"></i> Payment Methods</h5>
+                    <p class="nx-card-subtitle tw:mb-4!">{{ now()->format('F Y') }}</p>
 
                     @forelse ($paymentMethods as $method)
                         @php
                             $share = $methodsTotal > 0 ? round(($method['total'] / $methodsTotal) * 100) : 0;
                         @endphp
                         <div class="method-row">
-                            <div class="d-flex justify-content-between small">
+                            <div class="tw:flex! tw:justify-between! tw:text-[.875em]">
                                 <span>{{ $method['label'] }} <span class="cell-sub">({{ $method['payments'] }})</span></span>
                                 <strong>{{ $money($method['total']) }}</strong>
                             </div>
@@ -437,7 +437,7 @@
                             </div>
                         </div>
                     @empty
-                        <p class="cell-sub mb-0">No payments this month yet.</p>
+                        <p class="cell-sub tw:mb-0!">No payments this month yet.</p>
                     @endforelse
 
                     @if (($stats['monthlyDiscount'] ?? 0) > 0)
@@ -453,14 +453,14 @@
         {{-- ===================================================== --}}
         {{-- YEARLY CHART + CARD STOCK --}}
         {{-- ===================================================== --}}
-        <div class="row g-4 mb-4">
-            <div class="col-xl-9">
+        <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3 tw:mb-6!">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:xl:flex-[0_0_auto] tw:xl:w-[75%]">
                 @if ($branchView)
                     {{-- Branch Admin: last 6 months of this branch (the yearly report is institute-wide) --}}
-                    <div class="nx-card h-100">
+                    <div class="nx-card tw:h-full!">
                         <div class="nx-card-header">
                             <div>
-                                <h5 class="nx-card-title"><i class="bi bi-bar-chart-line text-primary"></i> Last 6 Months</h5>
+                                <h5 class="nx-card-title"><i class="bi bi-bar-chart-line tw:text-(color:--nx-blue)!"></i> Last 6 Months</h5>
                                 <p class="nx-card-subtitle">Payments collected per month &middot; {{ $branchTitle }}</p>
                             </div>
                         </div>
@@ -489,10 +489,10 @@
                         </div>
                     </div>
                 @else
-                <div class="nx-card h-100">
+                <div class="nx-card tw:h-full!">
                     <div class="nx-card-header">
                         <div>
-                            <h5 class="nx-card-title"><i class="bi bi-graph-up-arrow text-primary"></i> Yearly Payment Report</h5>
+                            <h5 class="nx-card-title"><i class="bi bi-graph-up-arrow tw:text-(color:--nx-blue)!"></i> Yearly Payment Report</h5>
                             <p class="nx-card-subtitle">Total payments vs institute income by month</p>
                         </div>
                         <div class="chart-controls">
@@ -508,7 +508,7 @@
 
                     <div class="chart-box chart-box-lg">
                         <canvas id="yearlyPaymentChart"></canvas>
-                        <div id="chartLoading" class="chart-loading d-none"><div class="spinner"></div></div>
+                        <div id="chartLoading" class="chart-loading tw:hidden!"><div class="spinner"></div></div>
                     </div>
 
                     <div class="chart-stats">
@@ -534,16 +534,16 @@
             </div>
 
             @cardmode('permanent')
-            <div class="col-xl-3">
-                <div class="nx-card h-100 p-3 d-flex flex-column">
-                    <div class="d-flex justify-content-between align-items-start">
-                        <span class="stat-label text-uppercase">Available Student Cards</span>
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:xl:flex-[0_0_auto] tw:xl:w-[25%]">
+                <div class="nx-card tw:h-full! tw:p-4! tw:flex! tw:flex-col!">
+                    <div class="tw:flex! tw:justify-between! tw:items-start!">
+                        <span class="stat-label tw:uppercase!">Available Student Cards</span>
                         <div class="stat-icon-wrapper icon-amber"><i class="bi bi-person-vcard-fill"></i></div>
                     </div>
 
                     <h2 class="card-stock-number">{{ $availableStudentCardCount ?? 0 }}</h2>
 
-                    <div class="my-2">
+                    <div class="tw:my-2!">
                         @if ($showStudentCardWarning ?? false)
                             <span class="nx-badge nx-badge-amber"><i class="bi bi-exclamation-triangle"></i> Low stock</span>
                         @else
@@ -551,13 +551,13 @@
                         @endif
                     </div>
 
-                    <div class="mt-auto">
+                    <div class="tw:mt-auto!">
                         <div class="nx-progress">
                             <div class="nx-progress-fill bg-amber" style="width: {{ min(100, (($availableStudentCardCount ?? 0) / 50) * 100) }}%"></div>
                         </div>
-                        <span class="cell-sub d-block mt-1">Reorder when stock reaches 20</span>
+                        <span class="cell-sub tw:block! tw:mt-1!">Reorder when stock reaches 20</span>
                         @cardaccess('view')
-                        <a href="{{ route('student-cards.index') }}" class="nx-link d-inline-block mt-2">Manage cards <i class="bi bi-arrow-right"></i></a>
+                        <a href="{{ route('student-cards.index') }}" class="nx-link tw:[display:inline-block]! tw:mt-2!">Manage cards <i class="bi bi-arrow-right"></i></a>
                         @endcardaccess
                     </div>
                 </div>
@@ -565,16 +565,16 @@
             @endcardmode
 
             @cardmode('temporary')
-            <div class="col-xl-3">
-                <div class="nx-card h-100 p-3 d-flex flex-column">
-                    <div class="d-flex justify-content-between align-items-start">
-                        <span class="stat-label text-uppercase">Issued Temporary Cards Left</span>
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:xl:flex-[0_0_auto] tw:xl:w-[25%]">
+                <div class="nx-card tw:h-full! tw:p-4! tw:flex! tw:flex-col!">
+                    <div class="tw:flex! tw:justify-between! tw:items-start!">
+                        <span class="stat-label tw:uppercase!">Issued Temporary Cards Left</span>
                         <div class="stat-icon-wrapper icon-amber"><i class="bi bi-person-vcard-fill"></i></div>
                     </div>
 
                     <h2 class="card-stock-number">{{ $issuedTemporaryCardsLeft ?? 0 }}</h2>
 
-                    <div class="my-2">
+                    <div class="tw:my-2!">
                         @if ($lowTemporaryCards)
                             <span class="nx-badge nx-badge-amber"><i class="bi bi-exclamation-triangle"></i> Issue more cards</span>
                         @else
@@ -582,10 +582,10 @@
                         @endif
                     </div>
 
-                    <div class="mt-auto">
-                        <span class="cell-sub d-block">The next card is given automatically on registration</span>
+                    <div class="tw:mt-auto!">
+                        <span class="cell-sub tw:block!">The next card is given automatically on registration</span>
                         @cardaccess('view')
-                        <a href="{{ route('temporary_id_cards.index') }}" class="nx-link d-inline-block mt-2">Manage cards <i class="bi bi-arrow-right"></i></a>
+                        <a href="{{ route('temporary_id_cards.index') }}" class="nx-link tw:[display:inline-block]! tw:mt-2!">Manage cards <i class="bi bi-arrow-right"></i></a>
                         @endcardaccess
                     </div>
                 </div>
@@ -597,29 +597,29 @@
         {{-- BRANCH SUMMARY (only when there is more than one branch) --}}
         {{-- ===================================================== --}}
         @if ($branchSummary->isNotEmpty())
-            <div class="nx-card mb-4">
+            <div class="nx-card tw:mb-6!">
                 <div class="nx-card-header">
-                    <h5 class="nx-card-title"><i class="bi bi-diagram-3 text-primary"></i> Branches</h5>
+                    <h5 class="nx-card-title"><i class="bi bi-diagram-3 tw:text-(color:--nx-blue)!"></i> Branches</h5>
                 </div>
-                <div class="table-responsive">
-                    <table class="table premium-table mb-0">
+                <div class="ui-table-responsive">
+                    <table class="ui-table premium-table tw:mb-0!">
                         <thead>
                             <tr>
                                 <th>Branch</th>
-                                <th class="text-end">Active Students</th>
-                                <th class="text-end">Classes Today</th>
-                                <th class="text-end">Today's Income</th>
-                                <th class="text-end">{{ now()->format('F') }} Income</th>
+                                <th class="tw:text-right!">Active Students</th>
+                                <th class="tw:text-right!">Classes Today</th>
+                                <th class="tw:text-right!">Today's Income</th>
+                                <th class="tw:text-right!">{{ now()->format('F') }} Income</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($branchSummary as $branch)
                                 <tr>
                                     <td class="cell-title">{{ $branch['name'] }}</td>
-                                    <td class="text-end">{{ number_format($branch['active_students']) }}</td>
-                                    <td class="text-end">{{ $branch['today_classes'] }}</td>
-                                    <td class="text-end">{{ $money($branch['today_income']) }}</td>
-                                    <td class="text-end"><strong>{{ $money($branch['month_income']) }}</strong></td>
+                                    <td class="tw:text-right!">{{ number_format($branch['active_students']) }}</td>
+                                    <td class="tw:text-right!">{{ $branch['today_classes'] }}</td>
+                                    <td class="tw:text-right!">{{ $money($branch['today_income']) }}</td>
+                                    <td class="tw:text-right!"><strong>{{ $money($branch['month_income']) }}</strong></td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -631,22 +631,22 @@
         {{-- ===================================================== --}}
         {{-- RECENT PAYMENTS + LATEST STUDENTS --}}
         {{-- ===================================================== --}}
-        <div class="row g-4 mb-4">
-            <div class="col-xl-7">
-                <div class="nx-card h-100">
+        <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3 tw:mb-6!">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:xl:flex-[0_0_auto] tw:xl:w-[58.33333333%]">
+                <div class="nx-card tw:h-full!">
                     <div class="nx-card-header">
-                        <h5 class="nx-card-title"><i class="bi bi-receipt text-success"></i> Recent Payments</h5>
+                        <h5 class="nx-card-title"><i class="bi bi-receipt tw:text-(color:--nx-green)!"></i> Recent Payments</h5>
                         <a href="{{ route('receipts.index') }}" class="nx-link">All receipts <i class="bi bi-arrow-right"></i></a>
                     </div>
-                    <div class="table-responsive">
-                        <table class="table premium-table mb-0">
+                    <div class="ui-table-responsive">
+                        <table class="ui-table premium-table tw:mb-0!">
                             <thead>
                                 <tr>
                                     <th>Student</th>
                                     <th>Class</th>
                                     <th>Month</th>
-                                    <th class="text-end">Amount</th>
-                                    <th class="text-end">Time</th>
+                                    <th class="tw:text-right!">Amount</th>
+                                    <th class="tw:text-right!">Time</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -661,16 +661,16 @@
                                             <div class="cell-sub">{{ $payment['receipt_number'] }} · {{ $payment['collected_by'] }}</div>
                                         </td>
                                         <td>{{ $payment['payment_month'] }}</td>
-                                        <td class="text-end">
+                                        <td class="tw:text-right!">
                                             <strong>{{ $money($payment['amount']) }}</strong>
                                             <div class="cell-sub">{{ $payment['payment_method'] }}</div>
                                         </td>
-                                        <td class="text-end cell-sub" title="{{ $payment['paid_at'] }}">{{ $payment['paid_at_human'] }}</td>
+                                        <td class="tw:text-right! cell-sub" title="{{ $payment['paid_at'] }}">{{ $payment['paid_at_human'] }}</td>
                                     </tr>
                                 @empty
                                     <tr>
                                         <td colspan="5" class="empty-table">
-                                            <i class="bi bi-inbox fs-2 d-block mb-2"></i>
+                                            <i class="bi bi-inbox tw:text-[length:calc(1.325rem_+_0.9vw)]! tw:xl:text-[length:2rem]! tw:block! tw:mb-2!"></i>
                                             No payments yet.
                                         </td>
                                     </tr>
@@ -681,18 +681,18 @@
                 </div>
             </div>
 
-            <div class="col-xl-5">
-                <div class="nx-card h-100">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:xl:flex-[0_0_auto] tw:xl:w-[41.66666667%]">
+                <div class="nx-card tw:h-full!">
                     <div class="nx-card-header">
-                        <h5 class="nx-card-title"><i class="bi bi-clock-history text-info"></i> Latest Students</h5>
+                        <h5 class="nx-card-title"><i class="bi bi-clock-history tw:text-bs-info!"></i> Latest Students</h5>
                     </div>
-                    <div class="table-responsive">
-                        <table class="table premium-table mb-0">
+                    <div class="ui-table-responsive">
+                        <table class="ui-table premium-table tw:mb-0!">
                             <thead>
                                 <tr>
                                     <th>Student</th>
                                     <th>Guardian</th>
-                                    <th class="text-end">Joined</th>
+                                    <th class="tw:text-right!">Joined</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -703,17 +703,17 @@
                                                 <span class="avatar-xs">{{ strtoupper(substr($student->initial_name ?? 'N', 0, 1)) }}</span>
                                                 <span>
                                                     <span class="cell-title">{{ $student->initial_name ?? '-' }}</span>
-                                                    <span class="cell-sub d-block">{{ $student->custom_id ?? '-' }}</span>
+                                                    <span class="cell-sub tw:block!">{{ $student->custom_id ?? '-' }}</span>
                                                 </span>
                                             </a>
                                         </td>
                                         <td>{{ $student->guardian_mobile ?? '-' }}</td>
-                                        <td class="text-end cell-sub">{{ optional($student->created_at)->diffForHumans() }}</td>
+                                        <td class="tw:text-right! cell-sub">{{ optional($student->created_at)->diffForHumans() }}</td>
                                     </tr>
                                 @empty
                                     <tr>
                                         <td colspan="3" class="empty-table">
-                                            <i class="bi bi-inbox fs-2 d-block mb-2"></i>
+                                            <i class="bi bi-inbox tw:text-[length:calc(1.325rem_+_0.9vw)]! tw:xl:text-[length:2rem]! tw:block! tw:mb-2!"></i>
                                             No students found.
                                         </td>
                                     </tr>
@@ -728,21 +728,21 @@
         {{-- ===================================================== --}}
         {{-- INCOMPLETE REGISTRATIONS + EXPIRING QR --}}
         {{-- ===================================================== --}}
-        <div class="row g-4">
-            <div class="col-xl-7" id="incomplete-registrations">
-                <div class="nx-card h-100">
+        <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:xl:flex-[0_0_auto] tw:xl:w-[58.33333333%]" id="incomplete-registrations">
+                <div class="nx-card tw:h-full!">
                     <div class="nx-card-header">
-                        <h5 class="nx-card-title"><i class="bi bi-hourglass-split text-warning"></i> Incomplete Registrations</h5>
+                        <h5 class="nx-card-title"><i class="bi bi-hourglass-split tw:text-(color:--nx-amber)!"></i> Incomplete Registrations</h5>
                         <span class="nx-badge nx-badge-amber">{{ $incompleteRegistrationCount ?? 0 }} pending</span>
                     </div>
-                    <div class="table-responsive">
-                        <table class="table premium-table mb-0">
+                    <div class="ui-table-responsive">
+                        <table class="ui-table premium-table tw:mb-0!">
                             <thead>
                                 <tr>
                                     <th>ID</th>
                                     <th>Name</th>
                                     <th>Guardian Mobile</th>
-                                    <th class="text-end">Action</th>
+                                    <th class="tw:text-right!">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -751,7 +751,7 @@
                                         <td><span class="id-badge">{{ $student->custom_id ?? '-' }}</span></td>
                                         <td>{{ $student->initial_name ?? '-' }}</td>
                                         <td>{{ $student->guardian_mobile ?? '-' }}</td>
-                                        <td class="text-end">
+                                        <td class="tw:text-right!">
                                             <a href="{{ route('students.edit', $student->id) }}" class="nx-link">
                                                 <i class="bi bi-check2-circle"></i> Complete
                                             </a>
@@ -760,7 +760,7 @@
                                 @empty
                                     <tr>
                                         <td colspan="4" class="empty-table">
-                                            <i class="bi bi-check-circle fs-2 d-block mb-2 text-success"></i>
+                                            <i class="bi bi-check-circle tw:text-[length:calc(1.325rem_+_0.9vw)]! tw:xl:text-[length:2rem]! tw:block! tw:mb-2! tw:text-(color:--nx-green)!"></i>
                                             No incomplete registrations.
                                         </td>
                                     </tr>
@@ -771,19 +771,19 @@
                 </div>
             </div>
 
-            <div class="col-xl-5">
-                <div class="nx-card h-100">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:xl:flex-[0_0_auto] tw:xl:w-[41.66666667%]">
+                <div class="nx-card tw:h-full!">
                     <div class="nx-card-header">
-                        <h5 class="nx-card-title"><i class="bi bi-qr-code text-danger"></i> Temporary QR Expiring</h5>
+                        <h5 class="nx-card-title"><i class="bi bi-qr-code tw:text-(color:--nx-red)!"></i> Temporary QR Expiring</h5>
                         <span class="nx-badge nx-badge-red">{{ $expiringStudentsCount ?? 0 }}</span>
                     </div>
-                    <div class="table-responsive">
-                        <table class="table premium-table mb-0">
+                    <div class="ui-table-responsive">
+                        <table class="ui-table premium-table tw:mb-0!">
                             <thead>
                                 <tr>
                                     <th>Student</th>
                                     <th>Guardian</th>
-                                    <th class="text-end">Expires</th>
+                                    <th class="tw:text-right!">Expires</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -792,7 +792,7 @@
                                         $expiresAt = $student->temporary_qr_code_expire_date
                                             ? \Carbon\Carbon::parse($student->temporary_qr_code_expire_date)
                                             : null;
-                                        $daysLeft = $expiresAt ? today()->diffInDays($expiresAt, false) : null;
+                                        $daysLeft = $expiresAt ? (int) today()->diffInDays($expiresAt, false) : null;
                                     @endphp
                                     <tr>
                                         <td>
@@ -800,7 +800,7 @@
                                             <div class="cell-sub">{{ $student->temporary_qr_code ?? '-' }}</div>
                                         </td>
                                         <td>{{ $student->guardian_mobile ?? '-' }}</td>
-                                        <td class="text-end">
+                                        <td class="tw:text-right!">
                                             @if ($daysLeft === 0)
                                                 <span class="nx-badge nx-badge-red">Today</span>
                                             @elseif ($daysLeft !== null && $daysLeft <= 3)
@@ -813,7 +813,7 @@
                                 @empty
                                     <tr>
                                         <td colspan="3" class="empty-table">
-                                            <i class="bi bi-check-circle fs-2 d-block mb-2 text-success"></i>
+                                            <i class="bi bi-check-circle tw:text-[length:calc(1.325rem_+_0.9vw)]! tw:xl:text-[length:2rem]! tw:block! tw:mb-2! tw:text-(color:--nx-green)!"></i>
                                             No QR codes expiring soon.
                                         </td>
                                     </tr>
@@ -1000,7 +1000,7 @@
             min-width: 200px;
         }
 
-        .hero-branch-picker .form-select {
+        .hero-branch-picker .ui-form-select {
             border-radius: 10px;
             font-weight: 600;
         }
@@ -1614,7 +1614,7 @@
             async function loadYearlyReport(year) {
                 if (!yearlyCanvas) return;
 
-                loader.classList.remove('d-none');
+                loader.classList.remove('tw:hidden!');
 
                 try {
                     const response = await fetch(`${YEARLY_URL}?year=${encodeURIComponent(year)}`, {
@@ -1675,7 +1675,7 @@
                 } catch (error) {
                     setText('bestMonth', 'Could not load report');
                 } finally {
-                    loader.classList.add('d-none');
+                    loader.classList.add('tw:hidden!');
                 }
             }
 

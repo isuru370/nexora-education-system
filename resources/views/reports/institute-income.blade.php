@@ -26,7 +26,7 @@
         {{-- ===================================================== --}}
         {{-- HERO --}}
         {{-- ===================================================== --}}
-        <div class="hero-section mb-4">
+        <div class="hero-section tw:mb-6!">
             <div class="hero-content">
                 <div class="hero-left">
                     <span class="greeting-badge">nexoraEDU</span>
@@ -74,14 +74,14 @@
         {{-- ALERTS --}}
         {{-- ===================================================== --}}
         @if (session('error'))
-            <div class="nx-alert nx-alert-red mb-4">
+            <div class="nx-alert nx-alert-red tw:mb-6!">
                 <i class="bi bi-exclamation-triangle-fill"></i>
                 <span>{{ session('error') }}</span>
             </div>
         @endif
 
         @if ($errors->any())
-            <div class="nx-alert nx-alert-red mb-4">
+            <div class="nx-alert nx-alert-red tw:mb-6!">
                 <i class="bi bi-exclamation-triangle-fill"></i>
                 <div>
                     @foreach ($errors->all() as $error)
@@ -94,34 +94,34 @@
         {{-- ===================================================== --}}
         {{-- FILTER --}}
         {{-- ===================================================== --}}
-        <div class="nx-card mb-4">
+        <div class="nx-card tw:mb-6!">
             <div class="nx-card-header">
                 <div>
-                    <h5 class="nx-card-title"><i class="bi bi-funnel text-primary"></i> Filters</h5>
+                    <h5 class="nx-card-title"><i class="bi bi-funnel tw:text-(color:--nx-blue)!"></i> Filters</h5>
                     <p class="nx-card-subtitle">Filter by date range or branch</p>
                 </div>
             </div>
 
-            <div class="p-3">
+            <div class="tw:p-4!">
                 <form method="GET" action="{{ route('reports.institute-income.index', ['tab' => $tab]) }}"
-                    class="row g-3 align-items-end">
+                    class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2 tw:items-end!">
 
-                    <div class="col-lg-3 col-md-4">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%] tw:lg:flex-[0_0_auto] tw:lg:w-[25%]">
                         <label class="nx-label">From</label>
-                        <input type="date" name="from" class="form-control nx-input"
+                        <input type="date" name="from" class="ui-form-control nx-input"
                             value="{{ $filter->from->toDateString() }}" max="{{ now()->toDateString() }}">
                     </div>
 
-                    <div class="col-lg-3 col-md-4">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%] tw:lg:flex-[0_0_auto] tw:lg:w-[25%]">
                         <label class="nx-label">To</label>
-                        <input type="date" name="to" class="form-control nx-input"
+                        <input type="date" name="to" class="ui-form-control nx-input"
                             value="{{ $filter->to->toDateString() }}" max="{{ now()->toDateString() }}">
                     </div>
 
                     @if ($branches->count() > 1)
-                        <div class="col-lg-3 col-md-4">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%] tw:lg:flex-[0_0_auto] tw:lg:w-[25%]">
                             <label class="nx-label">Branch</label>
-                            <select name="branch_id" class="form-select nx-input">
+                            <select name="branch_id" class="ui-form-select nx-input">
                                 <option value="">All branches</option>
                                 @foreach ($branches as $branch)
                                     <option value="{{ $branch->id }}" {{ (int) $filter->branchId === (int) $branch->id ? 'selected' : '' }}>
@@ -132,14 +132,14 @@
                         </div>
                     @endif
 
-                    <div class="col-lg-3 col-md-4">
-                        <button type="submit" class="nx-btn nx-btn-primary w-100">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%] tw:lg:flex-[0_0_auto] tw:lg:w-[25%]">
+                        <button type="submit" class="nx-btn nx-btn-primary tw:w-full!">
                             <i class="bi bi-funnel"></i> Filter
                         </button>
                     </div>
                 </form>
 
-                <div class="d-flex gap-2 flex-wrap mt-3">
+                <div class="tw:flex! tw:gap-2! tw:flex-wrap! tw:mt-4!">
                     @foreach ($quickRanges as $label => $range)
                         <a href="{{ route('reports.institute-income.index', ['tab' => $tab] + $range + array_filter(['branch_id' => $filter->branchId])) }}"
                             class="nx-btn {{ $range['from'] === $filter->from->toDateString() && $range['to'] === $filter->to->toDateString() ? 'nx-btn-primary' : 'nx-btn-light' }}"
@@ -154,7 +154,7 @@
         {{-- ===================================================== --}}
         {{-- STATS --}}
         {{-- ===================================================== --}}
-        <div class="stats-grid stats-grid-3 mb-4">
+        <div class="stats-grid stats-grid-3 tw:mb-6!">
 
             <div class="nx-card stat-card">
                 <div class="stat-icon-wrapper icon-violet"><i class="bi bi-credit-card-fill"></i></div>
@@ -232,7 +232,7 @@
                 <div class="stat-icon-wrapper icon-blue"><i class="bi bi-wallet2"></i></div>
                 <div class="stat-info">
                     <span class="stat-label">Institute Net Income (Net Profit)</span>
-                    <h2 class="stat-number {{ $summary['net'] < 0 ? 'text-danger' : '' }}">Rs. {{ number_format($summary['net'], 2) }}</h2>
+                    <h2 class="stat-number {{ $summary['net'] < 0 ? 'tw:text-(color:--nx-red)!' : '' }}">Rs. {{ number_format($summary['net'], 2) }}</h2>
                     <span class="stat-change neutral">Income <span class="stat-change-note">minus expenses</span></span>
                 </div>
             </div>
@@ -241,9 +241,9 @@
         {{-- ===================================================== --}}
         {{-- HALL FEES --}}
         {{-- ===================================================== --}}
-        <a href="{{ route('reports.institute-income.index', ['tab' => 'hall-fees'] + $query) }}" class="nx-card hall-fee-band mb-4">
+        <a href="{{ route('reports.institute-income.index', ['tab' => 'hall-fees'] + $query) }}" class="nx-card hall-fee-band tw:mb-6!">
             <div class="stat-icon-wrapper icon-green"><i class="bi bi-building"></i></div>
-            <div class="flex-grow-1">
+            <div class="tw:grow!">
                 <span class="stat-label">Hall Fees</span>
                 <div class="hall-fee-amount">Rs. {{ number_format($summary['hall_fee'], 2) }}</div>
                 <small class="cell-sub">
@@ -258,7 +258,7 @@
         {{-- UNSPLIT WARNING --}}
         {{-- ===================================================== --}}
         @if ($summary['unsplit_count'] > 0)
-            <div class="nx-alert nx-alert-amber mb-4">
+            <div class="nx-alert nx-alert-amber tw:mb-6!">
                 <i class="bi bi-exclamation-triangle-fill"></i>
                 <span>
                     <strong>{{ $summary['unsplit_count'] }}</strong> class fee payment(s)
@@ -271,11 +271,11 @@
         {{-- ===================================================== --}}
         {{-- TABS --}}
         {{-- ===================================================== --}}
-        <div class="nx-card mb-4 p-3">
-            <ul class="nav nx-tabs gap-2">
+        <div class="nx-card tw:mb-6! tw:p-4!">
+            <ul class="ui-nav nx-tabs tw:gap-2!">
                 @foreach ($tabs as $key => $label)
-                    <li class="nav-item">
-                        <a class="nav-link {{ $tab === $key ? 'active' : '' }}"
+                    <li class="ui-nav-item">
+                        <a class="ui-nav-link {{ $tab === $key ? 'active' : '' }}"
                             href="{{ route('reports.institute-income.index', ['tab' => $key] + $query) }}">
                             {{ $label }}
                         </a>
@@ -289,40 +289,40 @@
         {{-- ===================================================== --}}
         @if ($tab === 'summary')
 
-            <div class="row g-3">
+            <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2">
 
                 {{-- INSTITUTE INCOME --}}
-                <div class="col-lg-6">
-                    <div class="nx-card h-100">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[50%]">
+                    <div class="nx-card tw:h-full!">
                         <div class="nx-card-header">
                             <div>
                                 <h5 class="nx-card-title">
-                                    <i class="bi bi-arrow-down-circle text-success"></i> Institute Income
+                                    <i class="bi bi-arrow-down-circle tw:text-(color:--nx-green)!"></i> Institute Income
                                 </h5>
                                 <p class="nx-card-subtitle">Income breakdown</p>
                             </div>
                         </div>
-                        <div class="p-3">
-                            <table class="table premium-table mb-0">
+                        <div class="tw:p-4!">
+                            <table class="ui-table premium-table tw:mb-0!">
                                 @foreach ($summary['income'] as $label => $amount)
                                     <tr>
                                         <td>{{ $label }}</td>
-                                        <td class="text-end cell-title">Rs. {{ number_format($amount, 2) }}</td>
+                                        <td class="tw:text-right! cell-title">Rs. {{ number_format($amount, 2) }}</td>
                                     </tr>
                                 @endforeach
-                                <tr class="fw-bold" style="border-top: 2px solid var(--nx-border);">
+                                <tr class="tw:font-bold!" style="border-top: 2px solid var(--nx-border);">
                                     <td>Total income</td>
-                                    <td class="text-end cell-title">Rs. {{ number_format($summary['total_income'], 2) }}</td>
+                                    <td class="tw:text-right! cell-title">Rs. {{ number_format($summary['total_income'], 2) }}</td>
                                 </tr>
                                 <tr>
                                     <td>Institute expenses</td>
-                                    <td class="text-end cell-title" style="color: var(--nx-red);">
+                                    <td class="tw:text-right! cell-title" style="color: var(--nx-red);">
                                         - Rs. {{ number_format($summary['expenses'], 2) }}
                                     </td>
                                 </tr>
-                                <tr class="fw-bold" style="border-top: 2px solid var(--nx-border);">
-                                    <td class="text-primary">Net income</td>
-                                    <td class="text-end cell-title text-primary">Rs. {{ number_format($summary['net'], 2) }}</td>
+                                <tr class="tw:font-bold!" style="border-top: 2px solid var(--nx-border);">
+                                    <td class="tw:text-(color:--nx-blue)!">Net income</td>
+                                    <td class="tw:text-right! cell-title tw:text-(color:--nx-blue)!">Rs. {{ number_format($summary['net'], 2) }}</td>
                                 </tr>
                             </table>
                         </div>
@@ -330,52 +330,52 @@
                 </div>
 
                 {{-- CLASS FEE SPLIT --}}
-                <div class="col-lg-6">
-                    <div class="nx-card h-100">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[50%]">
+                    <div class="nx-card tw:h-full!">
                         <div class="nx-card-header">
                             <div>
                                 <h5 class="nx-card-title">
-                                    <i class="bi bi-pie-chart text-primary"></i> {{ empty($summary['courses']) ? 'Class Fee Split' : 'Fee Split' }}
+                                    <i class="bi bi-pie-chart tw:text-(color:--nx-blue)!"></i> {{ empty($summary['courses']) ? 'Class Fee Split' : 'Fee Split' }}
                                 </h5>
                                 <p class="nx-card-subtitle">{{ empty($summary['courses']) ? 'Where the class fees go' : 'Where the class and course fees go' }}</p>
                             </div>
                         </div>
-                        <div class="p-3">
-                            <table class="table premium-table mb-0">
-                                <tr class="fw-bold">
+                        <div class="tw:p-4!">
+                            <table class="ui-table premium-table tw:mb-0!">
+                                <tr class="tw:font-bold!">
                                     <td>Class fees collected</td>
-                                    <td class="text-end cell-title">Rs. {{ number_format($summary['class_fees'], 2) }}</td>
+                                    <td class="tw:text-right! cell-title">Rs. {{ number_format($summary['class_fees'], 2) }}</td>
                                 </tr>
                                 @foreach ($summary['split'] as $label => $amount)
                                     <tr>
                                         <td>{{ $label }}</td>
-                                        <td class="text-end cell-title">Rs. {{ number_format($amount, 2) }}</td>
+                                        <td class="tw:text-right! cell-title">Rs. {{ number_format($amount, 2) }}</td>
                                     </tr>
                                 @endforeach
                                 <tr>
                                     <td class="cell-sub">Hall fee (part of institute share)</td>
-                                    <td class="text-end cell-sub">Rs. {{ number_format($summary['hall_fee'], 2) }}</td>
+                                    <td class="tw:text-right! cell-sub">Rs. {{ number_format($summary['hall_fee'], 2) }}</td>
                                 </tr>
                             </table>
 
                             @if (!empty($summary['courses']))
-                                <table class="table premium-table mb-0 mt-3">
-                                    <tr class="fw-bold">
+                                <table class="ui-table premium-table tw:mb-0! tw:mt-4!">
+                                    <tr class="tw:font-bold!">
                                         <td>Course fees collected</td>
-                                        <td class="text-end cell-title">Rs. {{ number_format($summary['courses']['collected'], 2) }}</td>
+                                        <td class="tw:text-right! cell-title">Rs. {{ number_format($summary['courses']['collected'], 2) }}</td>
                                     </tr>
                                     <tr>
                                         <td>Course teacher share</td>
-                                        <td class="text-end cell-title">Rs. {{ number_format($summary['courses']['teachers'], 2) }}</td>
+                                        <td class="tw:text-right! cell-title">Rs. {{ number_format($summary['courses']['teachers'], 2) }}</td>
                                     </tr>
                                     <tr>
                                         <td>Course institute share</td>
-                                        <td class="text-end cell-title">Rs. {{ number_format($summary['courses']['institute'], 2) }}</td>
+                                        <td class="tw:text-right! cell-title">Rs. {{ number_format($summary['courses']['institute'], 2) }}</td>
                                     </tr>
                                 </table>
                             @endif
 
-                            <p class="cell-sub mt-3 mb-0">
+                            <p class="cell-sub tw:mt-4! tw:mb-0!">
                                 Teacher and organizer shares are not institute money. Their salaries and advances are in the
                                 <a href="{{ route('reports.daily-collection.index', ['tab' => 'expenses'] + $query) }}">Collection report</a>.
                             </p>
@@ -388,7 +388,7 @@
 
             {{-- OTHER TABS --}}
             @if ($tab === 'hall-fees')
-                <div class="nx-alert nx-alert-blue mb-4">
+                <div class="nx-alert nx-alert-blue tw:mb-6!">
                     <i class="bi bi-info-circle-fill"></i>
                     <span>
                         Hall fee per payment = the <strong>highest hall price</strong> of the class's active schedules
@@ -422,7 +422,7 @@
         flex-wrap: wrap;
     }
 
-    .dashboard-page .nx-tabs .nav-link {
+    .dashboard-page .nx-tabs .ui-nav-link {
         border-radius: 8px;
         padding: .45rem .95rem;
         font-size: .82rem;
@@ -433,13 +433,13 @@
         transition: all .15s ease;
     }
 
-    .dashboard-page .nx-tabs .nav-link:hover {
+    .dashboard-page .nx-tabs .ui-nav-link:hover {
         background: var(--nx-blue-soft);
         color: var(--nx-blue);
         border-color: var(--nx-blue);
     }
 
-    .dashboard-page .nx-tabs .nav-link.active {
+    .dashboard-page .nx-tabs .ui-nav-link.active {
         background: var(--nx-blue);
         color: #fff;
         border-color: var(--nx-blue);

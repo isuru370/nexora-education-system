@@ -11,22 +11,22 @@
     <div class="permissions-page">
 
         {{-- HERO CARD --}}
-        <div class="hero-card mb-4">
-            <div class="d-flex justify-content-between align-items-start flex-wrap gap-3 position-relative">
+        <div class="hero-card tw:mb-6!">
+            <div class="tw:flex! tw:justify-between! tw:items-start! tw:flex-wrap! tw:gap-4! tw:relative!">
                 <div>
-                    <div class="mb-3">
+                    <div class="tw:mb-4!">
                         <span class="hero-badge">
                             <i class="bi bi-shield-lock-fill"></i>
                             Permission Management
                         </span>
                     </div>
-                    <h2 class="fw-bold mb-2">User Permissions</h2>
-                    <p class="mb-0 text-light-soft">
+                    <h2 class="tw:font-bold! tw:mb-2!">User Permissions</h2>
+                    <p class="tw:mb-0! text-light-soft">
                         Manage access controls and permissions for the selected system user.
                     </p>
                 </div>
-                <div class="text-end">
-                    <div class="hero-badge mb-2">
+                <div class="tw:text-right!">
+                    <div class="hero-badge tw:mb-2!">
                         <i class="bi bi-people-fill"></i>
                         {{ $systemUser->full_name }}
                     </div>
@@ -39,10 +39,10 @@
         </div>
 
         {{-- USER SUMMARY CARD --}}
-        <div class="user-summary-card mb-4">
+        <div class="user-summary-card tw:mb-6!">
             <div class="user-summary-header">
-                <h6 class="mb-0 fw-bold">
-                    <i class="bi bi-person-badge-fill me-2"></i>User Information
+                <h6 class="tw:mb-0! tw:font-bold!">
+                    <i class="bi bi-person-badge-fill tw:mr-2!"></i>User Information
                 </h6>
                 <a href="{{ route('admin.system-users.index') }}" class="btn-back">
                     <i class="bi bi-arrow-left"></i> Back to Users
@@ -71,9 +71,9 @@
                     <div class="summary-label">Status</div>
                     <div class="summary-value">
                         @if($systemUser->is_active)
-                            <span class="badge bg-success">Active</span>
+                            <span class="ui-badge tw:bg-bs-success!">Active</span>
                         @else
-                            <span class="badge bg-danger">Inactive</span>
+                            <span class="ui-badge tw:bg-bs-danger!">Inactive</span>
                         @endif
                     </div>
                 </div>
@@ -88,15 +88,15 @@
 
         {{-- ALERTS --}}
         @if(session('success'))
-            <div class="alert alert-success custom-alert">
-                <i class="bi bi-check-circle-fill me-2"></i>
+            <div class="ui-alert ui-alert-success custom-alert">
+                <i class="bi bi-check-circle-fill tw:mr-2!"></i>
                 {{ session('success') }}
             </div>
         @endif
 
         @if(session('error'))
-            <div class="alert alert-danger custom-alert">
-                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <div class="ui-alert ui-alert-danger custom-alert">
+                <i class="bi bi-exclamation-triangle-fill tw:mr-2!"></i>
                 {{ session('error') }}
             </div>
         @endif
@@ -108,10 +108,10 @@
             <div class="permissions-card">
                 <div class="permissions-card-header">
                     <div>
-                        <h5 class="mb-0 fw-bold">
-                            <i class="bi bi-table me-2"></i>Permission Matrix
+                        <h5 class="tw:mb-0! tw:font-bold!">
+                            <i class="bi bi-table tw:mr-2!"></i>Permission Matrix
                         </h5>
-                        <p class="text-muted mb-0 small">Configure access rights for each module</p>
+                        <p class="tw:text-bs-secondary-color! tw:mb-0! tw:text-[.875em]">Configure access rights for each module</p>
                     </div>
                     <div class="permission-legend">
                         <span class="legend-item"><span class="legend-color view"></span> View</span>
@@ -122,17 +122,17 @@
                     </div>
                 </div>
 
-                <div class="table-responsive">
+                <div class="ui-table-responsive">
                     <table class="permissions-table">
                         <thead>
                             <tr>
                                 <th style="width: 30%;">Module / Page</th>
                                 <th style="width: 25%;">Route Name</th>
-                                <th class="text-center" style="width: 9%;">View</th>
-                                <th class="text-center" style="width: 9%;">Create</th>
-                                <th class="text-center" style="width: 9%;">Update</th>
-                                <th class="text-center" style="width: 9%;">Delete</th>
-                                <th class="text-center" style="width: 9%;">Active</th>
+                                <th class="tw:text-center!" style="width: 9%;">View</th>
+                                <th class="tw:text-center!" style="width: 9%;">Create</th>
+                                <th class="tw:text-center!" style="width: 9%;">Update</th>
+                                <th class="tw:text-center!" style="width: 9%;">Delete</th>
+                                <th class="tw:text-center!" style="width: 9%;">Active</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -140,7 +140,7 @@
                                 <tr class="module-row">
                                     <td colspan="7">
                                         <div class="module-title">
-                                            <i class="bi bi-folder-fill me-2"></i>
+                                            <i class="bi bi-folder-fill tw:mr-2!"></i>
                                             {{ ucwords(str_replace('_', ' ', $module)) }}
                                         </div>
                                     </td>
@@ -154,14 +154,14 @@
                                     <tr class="page-row">
                                         <td>
                                             <div class="page-name">
-                                                <i class="bi bi-file-text-fill me-2"></i>
+                                                <i class="bi bi-file-text-fill tw:mr-2!"></i>
                                                 {{ $page->name }}
                                             </div>
                                         </td>
                                         <td>
                                             <code class="route-badge">{{ $page->route_name }}</code>
                                         </td>
-                                        <td class="text-center">
+                                        <td class="tw:text-center!">
                                             <input type="hidden" name="permissions[{{ $page->id }}][page_id]"
                                                 value="{{ $page->id }}">
                                             <label class="checkbox-label">
@@ -170,28 +170,28 @@
                                                 <span class="checkmark view-check"></span>
                                             </label>
                                         </td>
-                                        <td class="text-center">
+                                        <td class="tw:text-center!">
                                             <label class="checkbox-label">
                                                 <input type="checkbox" class="perm-check"
                                                     name="permissions[{{ $page->id }}][can_create]" value="1" {{ old("permissions.$page->id.can_create", $permission?->can_create) ? 'checked' : '' }}>
                                                 <span class="checkmark create-check"></span>
                                             </label>
                                         </td>
-                                        <td class="text-center">
+                                        <td class="tw:text-center!">
                                             <label class="checkbox-label">
                                                 <input type="checkbox" class="perm-check"
                                                     name="permissions[{{ $page->id }}][can_update]" value="1" {{ old("permissions.$page->id.can_update", $permission?->can_update) ? 'checked' : '' }}>
                                                 <span class="checkmark update-check"></span>
                                             </label>
                                         </td>
-                                        <td class="text-center">
+                                        <td class="tw:text-center!">
                                             <label class="checkbox-label">
                                                 <input type="checkbox" class="perm-check"
                                                     name="permissions[{{ $page->id }}][can_delete]" value="1" {{ old("permissions.$page->id.can_delete", $permission?->can_delete) ? 'checked' : '' }}>
                                                 <span class="checkmark delete-check"></span>
                                             </label>
                                         </td>
-                                        <td class="text-center">
+                                        <td class="tw:text-center!">
                                             <label class="checkbox-label">
                                                 <input type="checkbox" class="perm-check"
                                                     name="permissions[{{ $page->id }}][is_active]" value="1" {{ old("permissions.$page->id.is_active", $permission?->is_active ?? true) ? 'checked' : '' }}>
@@ -206,12 +206,12 @@
                 </div>
 
                 <div class="permissions-card-footer">
-                    <div class="d-flex justify-content-end gap-3">
+                    <div class="tw:flex! tw:justify-end! tw:gap-4!">
                         <a href="{{ route('admin.system-users.index') }}" class="btn-cancel">
-                            <i class="bi bi-x-lg me-1"></i> Cancel
+                            <i class="bi bi-x-lg tw:mr-1!"></i> Cancel
                         </a>
                         <button type="submit" class="btn-save">
-                            <i class="bi bi-shield-check me-1"></i> Save Permissions
+                            <i class="bi bi-shield-check tw:mr-1!"></i> Save Permissions
                         </button>
                     </div>
                 </div>

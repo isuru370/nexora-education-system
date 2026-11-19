@@ -4,24 +4,24 @@
 
 @section('content')
 
-    <div class="container-fluid py-4">
+    <div class="ui-container-fluid tw:py-6!">
 
         {{-- Page Header --}}
-        <div class="d-flex flex-wrap justify-content-between align-items-center mb-4">
+        <div class="tw:flex! tw:flex-wrap! tw:justify-between! tw:items-center! tw:mb-6!">
 
             <div>
-                <h3 class="fw-bold mb-1">
+                <h3 class="tw:font-bold! tw:mb-1!">
                     Teacher Dashboard
                 </h3>
 
-                <p class="text-muted mb-0">
+                <p class="tw:text-bs-secondary-color! tw:mb-0!">
                     Manage your classes, students and teaching activities
                 </p>
             </div>
 
-            <div class="mt-2 mt-md-0">
-                <span class="badge bg-success-subtle text-success px-3 py-2">
-                    <i class="bi bi-person-workspace me-1"></i>
+            <div class="tw:mt-2! tw:md:mt-0!">
+                <span class="ui-badge tw:bg-bs-success-bg-subtle! tw:text-bs-success! tw:px-4! tw:py-2!">
+                    <i class="bi bi-person-workspace tw:mr-1!"></i>
                     Teacher
                 </span>
             </div>
@@ -30,41 +30,41 @@
 
 
         {{-- Teacher Statistics --}}
-        <div class="row g-4 mb-4">
+        <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3 tw:mb-6!">
 
             {{-- My Classes --}}
-            <div class="col-xl-3 col-md-6">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%]">
 
-                <div class="card border-0 shadow-sm h-100">
+                <div class="ui-card tw:[border:0]! tw:shadow-bs-sm! tw:h-full!">
 
-                    <div class="card-body p-4">
+                    <div class="ui-card-body tw:p-6!">
 
-                        <div class="d-flex justify-content-between align-items-start">
+                        <div class="tw:flex! tw:justify-between! tw:items-start!">
 
                             <div>
-                                <p class="text-muted mb-2">
+                                <p class="tw:text-bs-secondary-color! tw:mb-2!">
                                     My Classes
                                 </p>
 
-                                <h3 class="fw-bold mb-0">
+                                <h3 class="tw:font-bold! tw:mb-0!">
                                     {{ $classesCount ?? 0 }}
                                 </h3>
                             </div>
 
-                            <div class="bg-primary-subtle text-primary rounded-3 p-3">
-                                <i class="bi bi-mortarboard fs-4"></i>
+                            <div class="tw:bg-bs-primary-bg-subtle! tw:text-bs-primary! tw:rounded-bs-lg! tw:p-4!">
+                                <i class="bi bi-mortarboard tw:text-[length:calc(1.275rem_+_0.3vw)]! tw:xl:text-[length:1.5rem]!"></i>
                             </div>
 
                         </div>
 
                         @if (\App\Services\Web\Common\RouteAccess::can('student-classes.index'))
-                            <div class="mt-3">
+                            <div class="tw:mt-4!">
 
-                                <a href="{{ route('student-classes.index') }}" class="text-decoration-none small">
+                                <a href="{{ route('student-classes.index') }}" class="tw:[text-decoration:none]! tw:text-[.875em]">
 
                                     View Classes
 
-                                    <i class="bi bi-arrow-right ms-1"></i>
+                                    <i class="bi bi-arrow-right tw:ml-1!"></i>
 
                                 </a>
 
@@ -79,40 +79,40 @@
 
 
             {{-- My Students --}}
-            <div class="col-xl-3 col-md-6">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%]">
 
-                <div class="card border-0 shadow-sm h-100">
+                <div class="ui-card tw:[border:0]! tw:shadow-bs-sm! tw:h-full!">
 
-                    <div class="card-body p-4">
+                    <div class="ui-card-body tw:p-6!">
 
-                        <div class="d-flex justify-content-between align-items-start">
+                        <div class="tw:flex! tw:justify-between! tw:items-start!">
 
                             <div>
 
-                                <p class="text-muted mb-2">
+                                <p class="tw:text-bs-secondary-color! tw:mb-2!">
                                     My Students
                                 </p>
 
-                                <h3 class="fw-bold mb-0">
+                                <h3 class="tw:font-bold! tw:mb-0!">
                                     {{ $studentsCount ?? 0 }}
                                 </h3>
 
                             </div>
 
-                            <div class="bg-success-subtle text-success rounded-3 p-3">
-                                <i class="bi bi-people fs-4"></i>
+                            <div class="tw:bg-bs-success-bg-subtle! tw:text-bs-success! tw:rounded-bs-lg! tw:p-4!">
+                                <i class="bi bi-people tw:text-[length:calc(1.275rem_+_0.3vw)]! tw:xl:text-[length:1.5rem]!"></i>
                             </div>
 
                         </div>
 
                         @if (\App\Services\Web\Common\RouteAccess::can('student-classes.index'))
-                            <div class="mt-3">
+                            <div class="tw:mt-4!">
 
-                                <a href="{{ route('student-classes.index') }}" class="text-decoration-none small">
+                                <a href="{{ route('student-classes.index') }}" class="tw:[text-decoration:none]! tw:text-[.875em]">
 
                                     View Students
 
-                                    <i class="bi bi-arrow-right ms-1"></i>
+                                    <i class="bi bi-arrow-right tw:ml-1!"></i>
 
                                 </a>
 
@@ -127,40 +127,40 @@
 
 
             {{-- Today's Classes --}}
-            <div class="col-xl-3 col-md-6">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%]">
 
-                <div class="card border-0 shadow-sm h-100">
+                <div class="ui-card tw:[border:0]! tw:shadow-bs-sm! tw:h-full!">
 
-                    <div class="card-body p-4">
+                    <div class="ui-card-body tw:p-6!">
 
-                        <div class="d-flex justify-content-between align-items-start">
+                        <div class="tw:flex! tw:justify-between! tw:items-start!">
 
                             <div>
 
-                                <p class="text-muted mb-2">
+                                <p class="tw:text-bs-secondary-color! tw:mb-2!">
                                     Today's Classes
                                 </p>
 
-                                <h3 class="fw-bold mb-0">
+                                <h3 class="tw:font-bold! tw:mb-0!">
                                     {{ $todayClassesCount ?? 0 }}
                                 </h3>
 
                             </div>
 
-                            <div class="bg-warning-subtle text-warning rounded-3 p-3">
-                                <i class="bi bi-calendar-day fs-4"></i>
+                            <div class="tw:bg-bs-warning-bg-subtle! tw:text-bs-warning! tw:rounded-bs-lg! tw:p-4!">
+                                <i class="bi bi-calendar-day tw:text-[length:calc(1.275rem_+_0.3vw)]! tw:xl:text-[length:1.5rem]!"></i>
                             </div>
 
                         </div>
 
                         @if (\App\Services\Web\Common\RouteAccess::can('class-schedules.index'))
-                            <div class="mt-3">
+                            <div class="tw:mt-4!">
 
-                                <a href="{{ route('class-schedules.index') }}" class="text-decoration-none small">
+                                <a href="{{ route('class-schedules.index') }}" class="tw:[text-decoration:none]! tw:text-[.875em]">
 
                                     View Timetable
 
-                                    <i class="bi bi-arrow-right ms-1"></i>
+                                    <i class="bi bi-arrow-right tw:ml-1!"></i>
 
                                 </a>
 
@@ -175,40 +175,40 @@
 
 
             {{-- Upcoming Exams --}}
-            <div class="col-xl-3 col-md-6">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%]">
 
-                <div class="card border-0 shadow-sm h-100">
+                <div class="ui-card tw:[border:0]! tw:shadow-bs-sm! tw:h-full!">
 
-                    <div class="card-body p-4">
+                    <div class="ui-card-body tw:p-6!">
 
-                        <div class="d-flex justify-content-between align-items-start">
+                        <div class="tw:flex! tw:justify-between! tw:items-start!">
 
                             <div>
 
-                                <p class="text-muted mb-2">
+                                <p class="tw:text-bs-secondary-color! tw:mb-2!">
                                     Upcoming Exams
                                 </p>
 
-                                <h3 class="fw-bold mb-0">
+                                <h3 class="tw:font-bold! tw:mb-0!">
                                     {{ $upcomingExamsCount ?? 0 }}
                                 </h3>
 
                             </div>
 
-                            <div class="bg-danger-subtle text-danger rounded-3 p-3">
-                                <i class="bi bi-file-earmark-text fs-4"></i>
+                            <div class="tw:bg-bs-danger-bg-subtle! tw:text-bs-danger! tw:rounded-bs-lg! tw:p-4!">
+                                <i class="bi bi-file-earmark-text tw:text-[length:calc(1.275rem_+_0.3vw)]! tw:xl:text-[length:1.5rem]!"></i>
                             </div>
 
                         </div>
 
                         @if (\App\Services\Web\Common\RouteAccess::can('admin.exams.index'))
-                            <div class="mt-3">
+                            <div class="tw:mt-4!">
 
-                                <a href="{{ route('admin.exams.index') }}" class="text-decoration-none small">
+                                <a href="{{ route('admin.exams.index') }}" class="tw:[text-decoration:none]! tw:text-[.875em]">
 
                                     View Exams
 
-                                    <i class="bi bi-arrow-right ms-1"></i>
+                                    <i class="bi bi-arrow-right tw:ml-1!"></i>
 
                                 </a>
 
@@ -225,31 +225,31 @@
 
 
         {{-- Main Content --}}
-        <div class="row g-4 mb-4">
+        <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3 tw:mb-6!">
 
             {{-- Today's Classes --}}
-            <div class="col-lg-8">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[66.66666667%]">
 
-                <div class="card border-0 shadow-sm h-100">
+                <div class="ui-card tw:[border:0]! tw:shadow-bs-sm! tw:h-full!">
 
-                    <div class="card-header bg-white border-0 px-4 pt-4">
+                    <div class="ui-card-header tw:bg-bs-white! tw:[border:0]! tw:px-6! tw:pt-6!">
 
-                        <div class="d-flex justify-content-between align-items-center">
+                        <div class="tw:flex! tw:justify-between! tw:items-center!">
 
                             <div>
 
-                                <h5 class="fw-bold mb-1">
+                                <h5 class="tw:font-bold! tw:mb-1!">
                                     Today's Classes
                                 </h5>
 
-                                <p class="text-muted small mb-0">
+                                <p class="tw:text-bs-secondary-color! tw:text-[.875em] tw:mb-0!">
                                     Your scheduled classes for today
                                 </p>
 
                             </div>
 
                             @if (\App\Services\Web\Common\RouteAccess::can('class-schedules.index'))
-                                <a href="{{ route('class-schedules.index') }}" class="btn btn-sm btn-light">
+                                <a href="{{ route('class-schedules.index') }}" class="ui-btn ui-btn-sm ui-btn-light">
 
                                     View All
 
@@ -260,30 +260,30 @@
 
                     </div>
 
-                    <div class="card-body px-4 pb-4">
+                    <div class="ui-card-body tw:px-6! tw:pb-6!">
 
                         @if (isset($todayClasses) && $todayClasses->count())
 
-                            <div class="list-group list-group-flush">
+                            <div class="ui-list-group ui-list-group-flush">
 
                                 @foreach ($todayClasses as $class)
-                                    <div class="list-group-item px-0 py-3">
+                                    <div class="ui-list-group-item tw:px-0! tw:py-4!">
 
-                                        <div class="d-flex align-items-center">
+                                        <div class="tw:flex! tw:items-center!">
 
-                                            <div class="bg-primary-subtle text-primary rounded-3 p-3 me-3">
+                                            <div class="tw:bg-bs-primary-bg-subtle! tw:text-bs-primary! tw:rounded-bs-lg! tw:p-4! tw:mr-4!">
 
-                                                <i class="bi bi-calendar-event fs-5"></i>
+                                                <i class="bi bi-calendar-event tw:text-[length:1.25rem]!"></i>
 
                                             </div>
 
-                                            <div class="flex-grow-1">
+                                            <div class="tw:grow!">
 
-                                                <div class="fw-semibold">
+                                                <div class="tw:font-semibold!">
                                                     {{ $class->studentClass->name ?? 'Class' }}
                                                 </div>
 
-                                                <small class="text-muted">
+                                                <small class="tw:text-bs-secondary-color!">
 
                                                     {{ $class->start_time ?? '--:--' }}
 
@@ -296,7 +296,7 @@
                                             </div>
 
                                             @if (isset($class->status))
-                                                <span class="badge bg-success-subtle text-success">
+                                                <span class="ui-badge tw:bg-bs-success-bg-subtle! tw:text-bs-success!">
                                                     {{ ucfirst($class->status) }}
                                                 </span>
                                             @endif
@@ -308,19 +308,19 @@
 
                             </div>
                         @else
-                            <div class="text-center py-5">
+                            <div class="tw:text-center! tw:py-12!">
 
-                                <div class="text-muted mb-3">
+                                <div class="tw:text-bs-secondary-color! tw:mb-4!">
 
-                                    <i class="bi bi-calendar-x fs-1"></i>
+                                    <i class="bi bi-calendar-x tw:text-[length:calc(1.375rem_+_1.5vw)]! tw:xl:text-[length:2.5rem]!"></i>
 
                                 </div>
 
-                                <h6 class="fw-semibold">
+                                <h6 class="tw:font-semibold!">
                                     No classes scheduled today
                                 </h6>
 
-                                <p class="text-muted small mb-0">
+                                <p class="tw:text-bs-secondary-color! tw:text-[.875em] tw:mb-0!">
                                     You don't have any scheduled classes for today.
                                 </p>
 
@@ -336,79 +336,79 @@
 
 
             {{-- Teacher Profile --}}
-            <div class="col-lg-4">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[33.33333333%]">
 
-                <div class="card border-0 shadow-sm h-100">
+                <div class="ui-card tw:[border:0]! tw:shadow-bs-sm! tw:h-full!">
 
-                    <div class="card-header bg-white border-0 px-4 pt-4">
+                    <div class="ui-card-header tw:bg-bs-white! tw:[border:0]! tw:px-6! tw:pt-6!">
 
-                        <h5 class="fw-bold mb-1">
+                        <h5 class="tw:font-bold! tw:mb-1!">
                             My Profile
                         </h5>
 
-                        <p class="text-muted small mb-0">
+                        <p class="tw:text-bs-secondary-color! tw:text-[.875em] tw:mb-0!">
                             Teacher account information
                         </p>
 
                     </div>
 
-                    <div class="card-body px-4 pb-4">
+                    <div class="ui-card-body tw:px-6! tw:pb-6!">
 
-                        <div class="text-center mb-4">
+                        <div class="tw:text-center! tw:mb-6!">
 
-                            <div class="bg-primary-subtle text-primary rounded-circle d-inline-flex align-items-center justify-content-center"
+                            <div class="tw:bg-bs-primary-bg-subtle! tw:text-bs-primary! tw:rounded-[50%]! tw:[display:inline-flex]! tw:items-center! tw:justify-center!"
                                 style="width: 70px; height: 70px;">
 
-                                <i class="bi bi-person-workspace fs-2"></i>
+                                <i class="bi bi-person-workspace tw:text-[length:calc(1.325rem_+_0.9vw)]! tw:xl:text-[length:2rem]!"></i>
 
                             </div>
 
-                            <h5 class="fw-bold mt-3 mb-1">
+                            <h5 class="tw:font-bold! tw:mt-4! tw:mb-1!">
                                 {{ auth()->user()->name }}
                             </h5>
 
-                            <p class="text-muted small mb-0">
+                            <p class="tw:text-bs-secondary-color! tw:text-[.875em] tw:mb-0!">
                                 {{ auth()->user()->email }}
                             </p>
 
                         </div>
 
 
-                        <div class="border-top pt-3">
+                        <div class="tw:bs-border-t! tw:pt-4!">
 
-                            <div class="d-flex justify-content-between mb-3">
+                            <div class="tw:flex! tw:justify-between! tw:mb-4!">
 
-                                <span class="text-muted">
+                                <span class="tw:text-bs-secondary-color!">
                                     Role
                                 </span>
 
-                                <span class="fw-semibold">
+                                <span class="tw:font-semibold!">
                                     {{ auth()->user()->userType->name ?? 'Teacher' }}
                                 </span>
 
                             </div>
 
 
-                            <div class="d-flex justify-content-between mb-3">
+                            <div class="tw:flex! tw:justify-between! tw:mb-4!">
 
-                                <span class="text-muted">
+                                <span class="tw:text-bs-secondary-color!">
                                     Status
                                 </span>
 
-                                <span class="badge bg-success-subtle text-success">
+                                <span class="ui-badge tw:bg-bs-success-bg-subtle! tw:text-bs-success!">
                                     Active
                                 </span>
 
                             </div>
 
 
-                            <div class="d-flex justify-content-between">
+                            <div class="tw:flex! tw:justify-between!">
 
-                                <span class="text-muted">
+                                <span class="tw:text-bs-secondary-color!">
                                     Branches
                                 </span>
 
-                                <span class="fw-semibold">
+                                <span class="tw:font-semibold!">
 
                                     {{ isset($branches) ? $branches->count() : 0 }}
 
@@ -419,11 +419,11 @@
                         </div>
 
 
-                        <div class="mt-4">
+                        <div class="tw:mt-6!">
 
-                            <a href="{{ route('admin.profile.index') }}" class="btn btn-light w-100">
+                            <a href="{{ route('admin.profile.index') }}" class="ui-btn ui-btn-light tw:w-full!">
 
-                                <i class="bi bi-person me-1"></i>
+                                <i class="bi bi-person tw:mr-1!"></i>
 
                                 View Profile
 
@@ -441,45 +441,45 @@
 
 
         {{-- Quick Actions --}}
-        <div class="card border-0 shadow-sm">
+        <div class="ui-card tw:[border:0]! tw:shadow-bs-sm!">
 
-            <div class="card-header bg-white border-0 px-4 pt-4">
+            <div class="ui-card-header tw:bg-bs-white! tw:[border:0]! tw:px-6! tw:pt-6!">
 
-                <h5 class="fw-bold mb-1">
+                <h5 class="tw:font-bold! tw:mb-1!">
                     Quick Actions
                 </h5>
 
-                <p class="text-muted small mb-0">
+                <p class="tw:text-bs-secondary-color! tw:text-[.875em] tw:mb-0!">
                     Teaching features available to you
                 </p>
 
             </div>
 
 
-            <div class="card-body p-4">
+            <div class="ui-card-body tw:p-6!">
 
-                <div class="row g-3">
+                <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2">
 
 
                     {{-- My Classes --}}
                     @if (\App\Services\Web\Common\RouteAccess::can('student-classes.index'))
-                        <div class="col-md-4 col-lg-3">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%] tw:lg:flex-[0_0_auto] tw:lg:w-[25%]">
 
-                            <a href="{{ route('student-classes.index') }}" class="text-decoration-none">
+                            <a href="{{ route('student-classes.index') }}" class="tw:[text-decoration:none]!">
 
-                                <div class="border rounded-4 p-3 h-100">
+                                <div class="tw:bs-border! tw:rounded-bs-xl! tw:p-4! tw:h-full!">
 
-                                    <div class="bg-primary-subtle text-primary rounded-3 p-2 d-inline-flex mb-3">
+                                    <div class="tw:bg-bs-primary-bg-subtle! tw:text-bs-primary! tw:rounded-bs-lg! tw:p-2! tw:[display:inline-flex]! tw:mb-4!">
 
                                         <i class="bi bi-mortarboard"></i>
 
                                     </div>
 
-                                    <h6 class="fw-bold text-dark mb-1">
+                                    <h6 class="tw:font-bold! tw:text-bs-dark! tw:mb-1!">
                                         My Classes
                                     </h6>
 
-                                    <small class="text-muted">
+                                    <small class="tw:text-bs-secondary-color!">
                                         View assigned classes
                                     </small>
 
@@ -493,23 +493,23 @@
 
                     {{-- Timetable --}}
                     @if (\App\Services\Web\Common\RouteAccess::can('class-schedules.index'))
-                        <div class="col-md-4 col-lg-3">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%] tw:lg:flex-[0_0_auto] tw:lg:w-[25%]">
 
-                            <a href="{{ route('class-schedules.index') }}" class="text-decoration-none">
+                            <a href="{{ route('class-schedules.index') }}" class="tw:[text-decoration:none]!">
 
-                                <div class="border rounded-4 p-3 h-100">
+                                <div class="tw:bs-border! tw:rounded-bs-xl! tw:p-4! tw:h-full!">
 
-                                    <div class="bg-warning-subtle text-warning rounded-3 p-2 d-inline-flex mb-3">
+                                    <div class="tw:bg-bs-warning-bg-subtle! tw:text-bs-warning! tw:rounded-bs-lg! tw:p-2! tw:[display:inline-flex]! tw:mb-4!">
 
                                         <i class="bi bi-calendar3"></i>
 
                                     </div>
 
-                                    <h6 class="fw-bold text-dark mb-1">
+                                    <h6 class="tw:font-bold! tw:text-bs-dark! tw:mb-1!">
                                         Timetable
                                     </h6>
 
-                                    <small class="text-muted">
+                                    <small class="tw:text-bs-secondary-color!">
                                         View class timetable
                                     </small>
 
@@ -523,23 +523,23 @@
 
                     {{-- Attendance --}}
                     @if (\App\Services\Web\Common\RouteAccess::can('admin.attendance.index'))
-                        <div class="col-md-4 col-lg-3">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%] tw:lg:flex-[0_0_auto] tw:lg:w-[25%]">
 
-                            <a href="{{ route('admin.attendance.index') }}" class="text-decoration-none">
+                            <a href="{{ route('admin.attendance.index') }}" class="tw:[text-decoration:none]!">
 
-                                <div class="border rounded-4 p-3 h-100">
+                                <div class="tw:bs-border! tw:rounded-bs-xl! tw:p-4! tw:h-full!">
 
-                                    <div class="bg-success-subtle text-success rounded-3 p-2 d-inline-flex mb-3">
+                                    <div class="tw:bg-bs-success-bg-subtle! tw:text-bs-success! tw:rounded-bs-lg! tw:p-2! tw:[display:inline-flex]! tw:mb-4!">
 
                                         <i class="bi bi-calendar-check"></i>
 
                                     </div>
 
-                                    <h6 class="fw-bold text-dark mb-1">
+                                    <h6 class="tw:font-bold! tw:text-bs-dark! tw:mb-1!">
                                         Attendance
                                     </h6>
 
-                                    <small class="text-muted">
+                                    <small class="tw:text-bs-secondary-color!">
                                         View attendance
                                     </small>
 
@@ -553,23 +553,23 @@
 
                     {{-- Exams --}}
                     @if (\App\Services\Web\Common\RouteAccess::can('admin.exams.index'))
-                        <div class="col-md-4 col-lg-3">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%] tw:lg:flex-[0_0_auto] tw:lg:w-[25%]">
 
-                            <a href="{{ route('admin.exams.index') }}" class="text-decoration-none">
+                            <a href="{{ route('admin.exams.index') }}" class="tw:[text-decoration:none]!">
 
-                                <div class="border rounded-4 p-3 h-100">
+                                <div class="tw:bs-border! tw:rounded-bs-xl! tw:p-4! tw:h-full!">
 
-                                    <div class="bg-danger-subtle text-danger rounded-3 p-2 d-inline-flex mb-3">
+                                    <div class="tw:bg-bs-danger-bg-subtle! tw:text-bs-danger! tw:rounded-bs-lg! tw:p-2! tw:[display:inline-flex]! tw:mb-4!">
 
                                         <i class="bi bi-file-earmark-text"></i>
 
                                     </div>
 
-                                    <h6 class="fw-bold text-dark mb-1">
+                                    <h6 class="tw:font-bold! tw:text-bs-dark! tw:mb-1!">
                                         Exams
                                     </h6>
 
-                                    <small class="text-muted">
+                                    <small class="tw:text-bs-secondary-color!">
                                         View and manage exams
                                     </small>
 
@@ -583,23 +583,23 @@
 
                     {{-- Student Images --}}
                     @if (\App\Services\Web\Common\RouteAccess::can('admin.student-images.index'))
-                        <div class="col-md-4 col-lg-3">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%] tw:lg:flex-[0_0_auto] tw:lg:w-[25%]">
 
-                            <a href="{{ route('admin.student-images.index') }}" class="text-decoration-none">
+                            <a href="{{ route('admin.student-images.index') }}" class="tw:[text-decoration:none]!">
 
-                                <div class="border rounded-4 p-3 h-100">
+                                <div class="tw:bs-border! tw:rounded-bs-xl! tw:p-4! tw:h-full!">
 
-                                    <div class="bg-info-subtle text-info rounded-3 p-2 d-inline-flex mb-3">
+                                    <div class="tw:bg-bs-info-bg-subtle! tw:text-bs-info! tw:rounded-bs-lg! tw:p-2! tw:[display:inline-flex]! tw:mb-4!">
 
                                         <i class="bi bi-images"></i>
 
                                     </div>
 
-                                    <h6 class="fw-bold text-dark mb-1">
+                                    <h6 class="tw:font-bold! tw:text-bs-dark! tw:mb-1!">
                                         Student Images
                                     </h6>
 
-                                    <small class="text-muted">
+                                    <small class="tw:text-bs-secondary-color!">
                                         View student images
                                     </small>
 
@@ -613,23 +613,23 @@
 
                     {{-- Weekly Timetable --}}
                     @if (\App\Services\Web\Common\RouteAccess::can('class-time-table.weekly'))
-                        <div class="col-md-4 col-lg-3">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%] tw:lg:flex-[0_0_auto] tw:lg:w-[25%]">
 
-                            <a href="{{ route('class-time-table.weekly') }}" class="text-decoration-none">
+                            <a href="{{ route('class-time-table.weekly') }}" class="tw:[text-decoration:none]!">
 
-                                <div class="border rounded-4 p-3 h-100">
+                                <div class="tw:bs-border! tw:rounded-bs-xl! tw:p-4! tw:h-full!">
 
-                                    <div class="bg-secondary-subtle text-secondary rounded-3 p-2 d-inline-flex mb-3">
+                                    <div class="tw:bg-bs-secondary-bg-subtle! tw:text-bs-secondary! tw:rounded-bs-lg! tw:p-2! tw:[display:inline-flex]! tw:mb-4!">
 
                                         <i class="bi bi-calendar-week"></i>
 
                                     </div>
 
-                                    <h6 class="fw-bold text-dark mb-1">
+                                    <h6 class="tw:font-bold! tw:text-bs-dark! tw:mb-1!">
                                         Weekly Timetable
                                     </h6>
 
-                                    <small class="text-muted">
+                                    <small class="tw:text-bs-secondary-color!">
                                         View weekly schedule
                                     </small>
 
@@ -642,23 +642,23 @@
 
 
                     {{-- Profile --}}
-                    <div class="col-md-4 col-lg-3">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%] tw:lg:flex-[0_0_auto] tw:lg:w-[25%]">
 
-                        <a href="{{ route('admin.profile.index') }}" class="text-decoration-none">
+                        <a href="{{ route('admin.profile.index') }}" class="tw:[text-decoration:none]!">
 
-                            <div class="border rounded-4 p-3 h-100">
+                            <div class="tw:bs-border! tw:rounded-bs-xl! tw:p-4! tw:h-full!">
 
-                                <div class="bg-dark-subtle text-dark rounded-3 p-2 d-inline-flex mb-3">
+                                <div class="tw:bg-bs-dark-bg-subtle! tw:text-bs-dark! tw:rounded-bs-lg! tw:p-2! tw:[display:inline-flex]! tw:mb-4!">
 
                                     <i class="bi bi-person"></i>
 
                                 </div>
 
-                                <h6 class="fw-bold text-dark mb-1">
+                                <h6 class="tw:font-bold! tw:text-bs-dark! tw:mb-1!">
                                     My Profile
                                 </h6>
 
-                                <small class="text-muted">
+                                <small class="tw:text-bs-secondary-color!">
                                     Manage your profile
                                 </small>
 

@@ -94,6 +94,20 @@ class PaymentMarker
         // 12. Payable
         $payableAmount = round(max($grossFee - $discountAmount, 0), 2);
 
+        // Payment Rules > fee option: the option the cashier picked for this month
+        $option = $this->chosenFeeOption($enrollment, $data['fee_option_id'] ?? null);
+        $optionFee = $option ? round((float) $option->fee + $this->hallFee($enrollment), 2) : null;
+
+        // 12b. Not more than the fee: a typing mistake (20000 for 2000) would be
+        //      saved and split, and the teacher would get the extra share
+        $maximum = max($payableAmount, $optionFee ?? 0);
+        if ($amount > $maximum + 0.009) {
+            throw new \InvalidArgumentException(sprintf(
+                'Payment amount cannot be more than Rs. %.2f for this month.',
+                $maximum
+            ));
+        }
+
         // 13. Payment amount validation
         //     Payment Rules (per institute, off by default) may allow less:
         //     - fee option: the cashier picked another fee option of the
@@ -104,14 +118,9 @@ class PaymentMarker
             $minimum = $payableAmount;
             $reason = null;
 
-            $option = $this->chosenFeeOption($enrollment, $data['fee_option_id'] ?? null);
-            if ($option) {
-                $optionFee = round((float) $option->fee + $this->hallFee($enrollment), 2);
-
-                if ($optionFee < $minimum) {
-                    $minimum = $optionFee;
-                    $reason = 'Fee option: ' . $option->label;
-                }
+            if ($option && $optionFee < $minimum) {
+                $minimum = $optionFee;
+                $reason = 'Fee option: ' . $option->label;
             }
 
             if (PaymentRules::customAmount()) {
@@ -131,9 +140,15 @@ class PaymentMarker
                 . number_format($discountAmount, 2) . ']');
         }
 
-        // 14. Duplicate check
+        // 14. Duplicate check: this enrollment, or another enrollment of the same
+        //     student in the same class + category (a fee option change makes a
+        //     new enrollment row, the month paid on the old one is still paid)
         $alreadyPaid = Payment::query()
-            ->where('student_class_enrollment_id', $enrollment->id)
+            ->whereIn('student_class_enrollment_id', StudentClassEnrollment::withTrashed()
+                ->where('student_id', $enrollment->student_id)
+                ->where('student_class_id', $enrollment->student_class_id)
+                ->where('class_category_fee_id', $enrollment->class_category_fee_id)
+                ->select('id'))
             ->whereDate('payment_month', $paymentMonth)
             ->where('status', 'completed')
             ->exists();

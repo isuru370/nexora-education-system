@@ -13,7 +13,7 @@ use Tests\TestCase;
  */
 class FolderPermissionTest extends TestCase
 {
-    private string $dir;
+    private ?string $dir = null;
 
     protected function setUp(): void
     {
@@ -31,7 +31,9 @@ class FolderPermissionTest extends TestCase
 
     protected function tearDown(): void
     {
-        File::deleteDirectory($this->dir);
+        if ($this->dir !== null) {
+            File::deleteDirectory($this->dir);
+        }
         parent::tearDown();
     }
 

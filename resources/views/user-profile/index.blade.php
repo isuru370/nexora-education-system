@@ -7,7 +7,7 @@
     <div class="dashboard-page">
 
         {{-- HERO --}}
-        <div class="hero-section mb-4">
+        <div class="hero-section tw:mb-6!">
             <div class="hero-content">
                 <div class="hero-left">
                     <span class="greeting-badge">nexoraEDU</span>
@@ -32,82 +32,82 @@
 
         {{-- ALERTS --}}
         @if (session('success'))
-            <div class="nx-alert nx-alert-green mb-4">
+            <div class="nx-alert nx-alert-green tw:mb-6!">
                 <i class="bi bi-check-circle-fill"></i>
                 <span>{{ session('success') }}</span>
             </div>
         @endif
 
         @if (session('error'))
-            <div class="nx-alert nx-alert-red mb-4">
+            <div class="nx-alert nx-alert-red tw:mb-6!">
                 <i class="bi bi-exclamation-triangle-fill"></i>
                 <span>{{ session('error') }}</span>
             </div>
         @endif
 
-        <div class="row g-4">
+        <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3">
             {{-- PROFILE INFORMATION --}}
-            <div class="col-lg-8">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[66.66666667%]">
                 <div class="nx-card">
                     <div class="nx-card-header">
                         <div>
-                            <h5 class="nx-card-title"><i class="bi bi-person-badge text-primary"></i> Profile Information</h5>
+                            <h5 class="nx-card-title"><i class="bi bi-person-badge tw:text-(color:--nx-blue)!"></i> Profile Information</h5>
                             <p class="nx-card-subtitle">Update your personal information and contact details</p>
                         </div>
                     </div>
-                    <div class="p-3 p-md-4">
+                    <div class="tw:p-4! tw:md:p-6!">
                         <form action="{{ route('admin.profile.update') }}" method="POST" id="profileForm">
                             @csrf
-                            <div class="row g-3">
-                                <div class="col-md-6">
+                            <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2">
+                                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
                                     <div class="nx-form-group">
-                                        <label class="nx-label"><i class="bi bi-person-circle me-1"></i> Login Name</label>
-                                        <input type="text" name="name" class="form-control nx-input @error('name') is-invalid @enderror"
+                                        <label class="nx-label"><i class="bi bi-person-circle tw:mr-1!"></i> Login Name</label>
+                                        <input type="text" name="name" class="ui-form-control nx-input @error('name') ui-is-invalid @enderror"
                                             value="{{ old('name', $user->name) }}" placeholder="Enter login name">
-                                        @error('name')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                        @error('name')<div class="ui-invalid-feedback">{{ $message }}</div>@enderror
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
                                     <div class="nx-form-group">
-                                        <label class="nx-label"><i class="bi bi-envelope me-1"></i> Email Address</label>
-                                        <input type="email" name="email" class="form-control nx-input @error('email') is-invalid @enderror"
+                                        <label class="nx-label"><i class="bi bi-envelope tw:mr-1!"></i> Email Address</label>
+                                        <input type="email" name="email" class="ui-form-control nx-input @error('email') ui-is-invalid @enderror"
                                             value="{{ old('email', $user->email) }}" placeholder="Enter email address">
-                                        @error('email')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                        @error('email')<div class="ui-invalid-feedback">{{ $message }}</div>@enderror
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
                                     <div class="nx-form-group">
-                                        <label class="nx-label"><i class="bi bi-person me-1"></i> Full Name</label>
-                                        <input type="text" name="full_name" class="form-control nx-input @error('full_name') is-invalid @enderror"
+                                        <label class="nx-label"><i class="bi bi-person tw:mr-1!"></i> Full Name</label>
+                                        <input type="text" name="full_name" class="ui-form-control nx-input @error('full_name') ui-is-invalid @enderror"
                                             value="{{ old('full_name', $user->systemUser?->full_name) }}" placeholder="Enter full name">
-                                        @error('full_name')<div class="invalid-feedback">{{ $message }}</div>@enderror
+                                        @error('full_name')<div class="ui-invalid-feedback">{{ $message }}</div>@enderror
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
                                     <div class="nx-form-group">
-                                        <label class="nx-label"><i class="bi bi-phone me-1"></i> Mobile Number</label>
-                                        <input type="text" name="mobile" class="form-control nx-input"
+                                        <label class="nx-label"><i class="bi bi-phone tw:mr-1!"></i> Mobile Number</label>
+                                        <input type="text" name="mobile" class="ui-form-control nx-input"
                                             value="{{ old('mobile', $user->systemUser?->mobile) }}" placeholder="Enter mobile number">
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
                                     <div class="nx-form-group">
-                                        <label class="nx-label"><i class="bi bi-card-text me-1"></i> NIC</label>
-                                        <input type="text" name="nic" class="form-control nx-input"
+                                        <label class="nx-label"><i class="bi bi-card-text tw:mr-1!"></i> NIC</label>
+                                        <input type="text" name="nic" class="ui-form-control nx-input"
                                             value="{{ old('nic', $user->systemUser?->nic) }}" placeholder="Enter NIC number">
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
                                     <div class="nx-form-group">
-                                        <label class="nx-label"><i class="bi bi-calendar-heart me-1"></i> Birthday</label>
-                                        <input type="date" name="bday" class="form-control nx-input"
+                                        <label class="nx-label"><i class="bi bi-calendar-heart tw:mr-1!"></i> Birthday</label>
+                                        <input type="date" name="bday" class="ui-form-control nx-input"
                                             value="{{ old('bday', optional($user->systemUser?->bday)->format('Y-m-d')) }}">
                                     </div>
                                 </div>
-                                <div class="col-md-6">
+                                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
                                     <div class="nx-form-group">
-                                        <label class="nx-label"><i class="bi bi-gender-ambiguous me-1"></i> Gender</label>
-                                        <select name="gender" class="form-select nx-input">
+                                        <label class="nx-label"><i class="bi bi-gender-ambiguous tw:mr-1!"></i> Gender</label>
+                                        <select name="gender" class="ui-form-select nx-input">
                                             <option value="">Select Gender</option>
                                             <option value="male" {{ old('gender', $user->systemUser?->gender) == 'male' ? 'selected' : '' }}>Male</option>
                                             <option value="female" {{ old('gender', $user->systemUser?->gender) == 'female' ? 'selected' : '' }}>Female</option>
@@ -115,31 +115,31 @@
                                         </select>
                                     </div>
                                 </div>
-                                <div class="col-12">
+                                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:flex-[0_0_auto] tw:w-[100%]">
                                     <div class="nx-form-group">
-                                        <label class="nx-label"><i class="bi bi-house-door me-1"></i> Address Line 1</label>
-                                        <input type="text" name="address1" class="form-control nx-input"
+                                        <label class="nx-label"><i class="bi bi-house-door tw:mr-1!"></i> Address Line 1</label>
+                                        <input type="text" name="address1" class="ui-form-control nx-input"
                                             value="{{ old('address1', $user->systemUser?->address1) }}" placeholder="Street address">
                                     </div>
                                 </div>
-                                <div class="col-12">
+                                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:flex-[0_0_auto] tw:w-[100%]">
                                     <div class="nx-form-group">
-                                        <label class="nx-label"><i class="bi bi-building me-1"></i> Address Line 2</label>
-                                        <input type="text" name="address2" class="form-control nx-input"
+                                        <label class="nx-label"><i class="bi bi-building tw:mr-1!"></i> Address Line 2</label>
+                                        <input type="text" name="address2" class="ui-form-control nx-input"
                                             value="{{ old('address2', $user->systemUser?->address2) }}" placeholder="City">
                                     </div>
                                 </div>
-                                <div class="col-12">
+                                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:flex-[0_0_auto] tw:w-[100%]">
                                     <div class="nx-form-group">
-                                        <label class="nx-label"><i class="bi bi-geo-alt me-1"></i> Address Line 3</label>
-                                        <input type="text" name="address3" class="form-control nx-input"
+                                        <label class="nx-label"><i class="bi bi-geo-alt tw:mr-1!"></i> Address Line 3</label>
+                                        <input type="text" name="address3" class="ui-form-control nx-input"
                                             value="{{ old('address3', $user->systemUser?->address3) }}" placeholder="Postal code / District">
                                     </div>
                                 </div>
-                                <div class="col-12">
+                                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:flex-[0_0_auto] tw:w-[100%]">
                                     <div class="nx-form-group">
-                                        <label class="nx-label"><i class="bi bi-pencil-square me-1"></i> Note</label>
-                                        <textarea name="note" rows="3" class="form-control nx-input"
+                                        <label class="nx-label"><i class="bi bi-pencil-square tw:mr-1!"></i> Note</label>
+                                        <textarea name="note" rows="3" class="ui-form-control nx-input"
                                             placeholder="Additional notes...">{{ old('note', $user->systemUser?->note) }}</textarea>
                                     </div>
                                 </div>
@@ -158,50 +158,50 @@
             </div>
 
             {{-- SIDEBAR --}}
-            <div class="col-lg-4">
-                <div class="nx-card mb-4">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[33.33333333%]">
+                <div class="nx-card tw:mb-6!">
                     <div class="nx-card-header">
                         <div>
-                            <h5 class="nx-card-title"><i class="bi bi-shield-lock text-primary"></i> Change Password</h5>
+                            <h5 class="nx-card-title"><i class="bi bi-shield-lock tw:text-(color:--nx-blue)!"></i> Change Password</h5>
                             <p class="nx-card-subtitle">Update your account password</p>
                         </div>
                     </div>
-                    <div class="p-3">
+                    <div class="tw:p-4!">
                         <form action="{{ route('admin.profile.password') }}" method="POST" id="passwordForm">
                             @csrf
-                            <div class="nx-form-group mb-3">
-                                <label class="nx-label"><i class="bi bi-lock me-1"></i> Current Password</label>
+                            <div class="nx-form-group tw:mb-4!">
+                                <label class="nx-label"><i class="bi bi-lock tw:mr-1!"></i> Current Password</label>
                                 <div class="password-input-wrapper">
                                     <input type="password" name="current_password" id="current_password"
-                                        class="form-control nx-input @error('current_password') is-invalid @enderror"
+                                        class="ui-form-control nx-input @error('current_password') ui-is-invalid @enderror"
                                         placeholder="Enter current password">
                                     <i class="bi bi-eye-slash toggle-password" data-target="current_password"></i>
                                 </div>
-                                @error('current_password')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
+                                @error('current_password')<div class="ui-invalid-feedback tw:block!">{{ $message }}</div>@enderror
                             </div>
-                            <div class="nx-form-group mb-3">
-                                <label class="nx-label"><i class="bi bi-key me-1"></i> New Password</label>
+                            <div class="nx-form-group tw:mb-4!">
+                                <label class="nx-label"><i class="bi bi-key tw:mr-1!"></i> New Password</label>
                                 <div class="password-input-wrapper">
                                     <input type="password" name="password" id="new_password"
-                                        class="form-control nx-input @error('password') is-invalid @enderror"
+                                        class="ui-form-control nx-input @error('password') ui-is-invalid @enderror"
                                         placeholder="Enter new password">
                                     <i class="bi bi-eye-slash toggle-password" data-target="new_password"></i>
                                 </div>
-                                <div class="password-strength mt-2">
+                                <div class="password-strength tw:mt-2!">
                                     <div class="strength-bar"></div>
                                     <small class="strength-text"></small>
                                 </div>
-                                @error('password')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
+                                @error('password')<div class="ui-invalid-feedback tw:block!">{{ $message }}</div>@enderror
                             </div>
-                            <div class="nx-form-group mb-4">
-                                <label class="nx-label"><i class="bi bi-check-circle me-1"></i> Confirm Password</label>
+                            <div class="nx-form-group tw:mb-6!">
+                                <label class="nx-label"><i class="bi bi-check-circle tw:mr-1!"></i> Confirm Password</label>
                                 <div class="password-input-wrapper">
                                     <input type="password" name="password_confirmation" id="confirm_password"
-                                        class="form-control nx-input" placeholder="Confirm new password">
+                                        class="ui-form-control nx-input" placeholder="Confirm new password">
                                     <i class="bi bi-eye-slash toggle-password" data-target="confirm_password"></i>
                                 </div>
                             </div>
-                            <button type="submit" class="nx-btn nx-btn-primary w-100">
+                            <button type="submit" class="nx-btn nx-btn-primary tw:w-full!">
                                 <i class="bi bi-arrow-repeat"></i> Change Password
                             </button>
                         </form>
@@ -211,11 +211,11 @@
                 <div class="nx-card">
                     <div class="nx-card-header">
                         <div>
-                            <h5 class="nx-card-title"><i class="bi bi-info-circle text-primary"></i> User Details</h5>
+                            <h5 class="nx-card-title"><i class="bi bi-info-circle tw:text-(color:--nx-blue)!"></i> User Details</h5>
                             <p class="nx-card-subtitle">Account information summary</p>
                         </div>
                     </div>
-                    <div class="p-3">
+                    <div class="tw:p-4!">
                         <div class="details-list">
                             <div class="detail-item">
                                 <div class="detail-icon"><i class="bi bi-person-badge"></i></div>
@@ -354,10 +354,10 @@
 
     .dashboard-page .nx-badge-red { background: var(--nx-red-soft); color: var(--nx-red); }
 
-    .dashboard-page .form-control.is-invalid,
-    .dashboard-page .form-select.is-invalid { border-color: var(--nx-red); }
-    .dashboard-page .form-control.is-invalid:focus,
-    .dashboard-page .form-select.is-invalid:focus { box-shadow: 0 0 0 3px var(--nx-red-soft); }
+    .dashboard-page .ui-form-control.ui-is-invalid,
+    .dashboard-page .ui-form-select.ui-is-invalid { border-color: var(--nx-red); }
+    .dashboard-page .ui-form-control.ui-is-invalid:focus,
+    .dashboard-page .ui-form-select.ui-is-invalid:focus { box-shadow: 0 0 0 3px var(--nx-red-soft); }
 
     @media (max-width: 768px) {
         .dashboard-page .nx-form-actions { flex-direction: column; }

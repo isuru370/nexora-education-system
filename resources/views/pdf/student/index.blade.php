@@ -296,7 +296,7 @@
                             <div class="small">
                                 @php
                                     $expire = $student->temporary_qr_code_expire_date;
-                                    $days = $expire ? now()->diffInDays($expire, false) : null;
+                                    $days = $expire ? (int) now()->diffInDays($expire, false) : null;
                                 @endphp
 
                                 @if ($days === null)

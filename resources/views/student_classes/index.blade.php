@@ -7,7 +7,7 @@
 <div class="dashboard-page">
 
     {{-- HERO --}}
-    <div class="hero-section mb-4">
+    <div class="hero-section tw:mb-6!">
         <div class="hero-content">
             <div class="hero-left">
                 <span class="greeting-badge">nexoraEDU</span>
@@ -44,7 +44,7 @@
     </div>
 
     {{-- KPI CARDS --}}
-    <div class="stats-grid mb-4">
+    <div class="stats-grid tw:mb-6!">
         <div class="nx-card stat-card">
             <div class="stat-icon-wrapper icon-blue"><i class="bi bi-journal-bookmark-fill"></i></div>
             <div class="stat-info">
@@ -80,11 +80,11 @@
     </div>
 
     {{-- MAIN CARD --}}
-    <div class="nx-card mb-4">
+    <div class="nx-card tw:mb-6!">
 
         <div class="nx-card-header">
             <div>
-                <h5 class="nx-card-title"><i class="bi bi-journal-bookmark-fill text-primary"></i> Classes Management</h5>
+                <h5 class="nx-card-title"><i class="bi bi-journal-bookmark-fill tw:text-(color:--nx-blue)!"></i> Classes Management</h5>
                 <p class="nx-card-subtitle">Manage student classes, teachers & payment configs</p>
             </div>
             <div class="header-buttons">
@@ -100,35 +100,35 @@
         {{-- SEARCH --}}
         <div class="nx-search">
             <form method="GET" action="{{ route('student-classes.index') }}">
-                <div class="row g-3">
-                    <div class="col-lg-5">
+                <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[41.66666667%]">
                         <div class="search-input-wrapper">
                             <i class="bi bi-search"></i>
-                            <input type="text" name="search" class="form-control custom-input"
+                            <input type="text" name="search" class="ui-form-control custom-input"
                                 placeholder="Search class / teacher / subject / grade" value="{{ request('search') }}">
                         </div>
                     </div>
-                    <div class="col-lg-3">
-                        <select name="class_type" class="form-select custom-input">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[25%]">
+                        <select name="class_type" class="ui-form-select custom-input">
                             <option value="">All Types</option>
                             <option value="online">Online</option>
                             <option value="offline">Offline</option>
                             <option value="hybrid">Hybrid</option>
                         </select>
                     </div>
-                    <div class="col-lg-2">
-                        <button class="nx-btn nx-btn-primary w-100"><i class="bi bi-search"></i> Search</button>
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[16.66666667%]">
+                        <button class="nx-btn nx-btn-primary tw:w-full!"><i class="bi bi-search"></i> Search</button>
                     </div>
-                    <div class="col-lg-2">
-                        <a href="{{ route('student-classes.index') }}" class="nx-btn nx-btn-light w-100">Reset</a>
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[16.66666667%]">
+                        <a href="{{ route('student-classes.index') }}" class="nx-btn nx-btn-light tw:w-full!">Reset</a>
                     </div>
                 </div>
             </form>
         </div>
 
         {{-- TABLE --}}
-        <div class="table-responsive">
-            <table class="table premium-table mb-0">
+        <div class="ui-table-responsive">
+            <table class="ui-table premium-table tw:mb-0!">
                 <thead>
                     <tr>
                         <th>#</th>
@@ -137,7 +137,7 @@
                         <th>Grade / Subject</th>
                         <th>Payment</th>
                         <th>Status</th>
-                        <th class="text-end">Actions</th>
+                        <th class="tw:text-right!">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -147,7 +147,7 @@
                             <td>
                                 <div class="cell-title">{{ $class->class_name }}</div>
                                 @if (isset($classesWithFees) && !in_array($class->id, $classesWithFees, true))
-                                    <a href="{{ route('student-classes.edit', $class) }}" class="nx-badge nx-badge-amber text-decoration-none mt-1"><i class="bi bi-exclamation-triangle-fill"></i> Fees not set</a>
+                                    <a href="{{ route('student-classes.edit', $class) }}" class="nx-badge nx-badge-amber tw:[text-decoration:none]! tw:mt-1!"><i class="bi bi-exclamation-triangle-fill"></i> Fees not set</a>
                                 @endif
                                 <small class="cell-sub">{{ ucfirst($class->class_type) }} / {{ $class->medium }}</small>
                             </td>
@@ -176,12 +176,12 @@
                                 @endif
                                 <br>
                                 @if ($class->is_ongoing)
-                                    <span class="nx-badge nx-badge-blue mt-1">Ongoing</span>
+                                    <span class="nx-badge nx-badge-blue tw:mt-1!">Ongoing</span>
                                 @else
-                                    <span class="nx-badge nx-badge-gray mt-1">Stopped</span>
+                                    <span class="nx-badge nx-badge-gray tw:mt-1!">Stopped</span>
                                 @endif
                             </td>
-                            <td class="text-end">
+                            <td class="tw:text-right!">
                                 <div class="action-buttons">
                                     <a href="{{ route('student-classes.show', $class) }}" class="action-btn" title="View" aria-label="View">
                                         <i class="bi bi-eye-fill"></i>
@@ -223,8 +223,8 @@
                     @empty
                         <tr>
                             <td colspan="7" class="empty-table">
-                                <i class="bi bi-journal-x fs-2 d-block mb-2"></i>
-                                <strong class="d-block">No classes found</strong>
+                                <i class="bi bi-journal-x tw:text-[length:calc(1.325rem_+_0.9vw)]! tw:xl:text-[length:2rem]! tw:block! tw:mb-2!"></i>
+                                <strong class="tw:block!">No classes found</strong>
                             </td>
                         </tr>
                     @endforelse
@@ -232,7 +232,7 @@
             </table>
         </div>
 
-        <div class="p-3 border-top">
+        <div class="tw:p-4! tw:bs-border-t!">
             {{ $classes->links() }}
         </div>
     </div>

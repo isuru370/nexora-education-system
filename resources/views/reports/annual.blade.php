@@ -37,7 +37,7 @@
     <div class="dashboard-page">
 
         {{-- HERO --}}
-        <div class="hero-section mb-4">
+        <div class="hero-section tw:mb-6!">
             <div class="hero-content">
                 <div class="hero-left">
                     <span class="greeting-badge">nexoraEDU</span>
@@ -62,31 +62,31 @@
 
         {{-- ALERTS --}}
         @if (session('error'))
-            <div class="nx-alert nx-alert-red mb-4"><i class="bi bi-exclamation-triangle-fill"></i><span>{{ session('error') }}</span></div>
+            <div class="nx-alert nx-alert-red tw:mb-6!"><i class="bi bi-exclamation-triangle-fill"></i><span>{{ session('error') }}</span></div>
         @endif
         @if ($errors->any())
-            <div class="nx-alert nx-alert-red mb-4">
+            <div class="nx-alert nx-alert-red tw:mb-6!">
                 <div>
                     @foreach ($errors->all() as $error)
-                        <div><i class="bi bi-exclamation-circle-fill me-1"></i>{{ $error }}</div>
+                        <div><i class="bi bi-exclamation-circle-fill tw:mr-1!"></i>{{ $error }}</div>
                     @endforeach
                 </div>
             </div>
         @endif
 
         {{-- FILTER --}}
-        <div class="nx-card mb-4">
+        <div class="nx-card tw:mb-6!">
             <div class="nx-card-header">
                 <div>
-                    <h5 class="nx-card-title"><i class="bi bi-funnel text-primary"></i> Year</h5>
+                    <h5 class="nx-card-title"><i class="bi bi-funnel tw:text-(color:--nx-blue)!"></i> Year</h5>
                     <p class="nx-card-subtitle">The current year is shown up to today and compared with the same period last year</p>
                 </div>
             </div>
-            <div class="p-3">
-                <form method="GET" action="{{ route('reports.annual.index') }}" class="row g-3 align-items-end">
-                    <div class="col-lg-3 col-md-4">
+            <div class="tw:p-4!">
+                <form method="GET" action="{{ route('reports.annual.index') }}" class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2 tw:items-end!">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%] tw:lg:flex-[0_0_auto] tw:lg:w-[25%]">
                         <label class="nx-label">Year</label>
-                        <select name="year" class="form-select nx-input">
+                        <select name="year" class="ui-form-select nx-input">
                             @foreach ($years as $option)
                                 <option value="{{ $option }}" {{ (int) $option === (int) $year ? 'selected' : '' }}>{{ $option }}</option>
                             @endforeach
@@ -94,9 +94,9 @@
                     </div>
 
                     @if ($branches->count() > 1)
-                        <div class="col-lg-3 col-md-4">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%] tw:lg:flex-[0_0_auto] tw:lg:w-[25%]">
                             <label class="nx-label">Branch</label>
-                            <select name="branch_id" class="form-select nx-input">
+                            <select name="branch_id" class="ui-form-select nx-input">
                                 <option value="">All branches</option>
                                 @foreach ($branches as $branch)
                                     <option value="{{ $branch->id }}" {{ (int) $filter->branchId === (int) $branch->id ? 'selected' : '' }}>
@@ -107,8 +107,8 @@
                         </div>
                     @endif
 
-                    <div class="col-lg-2 col-md-4 d-flex gap-2">
-                        <button type="submit" class="nx-btn nx-btn-primary flex-grow-1"><i class="bi bi-funnel"></i> Show</button>
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%] tw:lg:flex-[0_0_auto] tw:lg:w-[16.66666667%] tw:flex! tw:gap-2!">
+                        <button type="submit" class="nx-btn nx-btn-primary tw:grow!"><i class="bi bi-funnel"></i> Show</button>
                         <a href="{{ route('reports.annual.index') }}" class="nx-btn nx-btn-light" title="This year"><i class="bi bi-arrow-counterclockwise"></i></a>
                     </div>
                 </form>
@@ -116,7 +116,7 @@
         </div>
 
         {{-- STATS --}}
-        <div class="stats-grid mb-4">
+        <div class="stats-grid tw:mb-6!">
             <div class="nx-card stat-card">
                 <div class="stat-icon-wrapper icon-green"><i class="bi bi-arrow-down-circle"></i></div>
                 <div class="stat-info">
@@ -137,7 +137,7 @@
                 <div class="stat-icon-wrapper icon-blue"><i class="bi bi-wallet2"></i></div>
                 <div class="stat-info">
                     <span class="stat-label">Net</span>
-                    <h2 class="stat-number {{ $totals['net'] < 0 ? 'text-danger' : '' }}">Rs. {{ $money($totals['net']) }}</h2>
+                    <h2 class="stat-number {{ $totals['net'] < 0 ? 'tw:text-(color:--nx-red)!' : '' }}">Rs. {{ $money($totals['net']) }}</h2>
                     <span class="stat-change {{ $netGrowth['class'] }}">{{ $netGrowth['text'] }} <span class="stat-change-note">{{ $netGrowth['note'] }}</span></span>
                 </div>
             </div>
@@ -155,10 +155,10 @@
         </div>
 
         {{-- CHART --}}
-        <div class="nx-card mb-4">
+        <div class="nx-card tw:mb-6!">
             <div class="nx-card-header">
                 <div>
-                    <h5 class="nx-card-title"><i class="bi bi-bar-chart-fill text-primary"></i> Income vs Expenses</h5>
+                    <h5 class="nx-card-title"><i class="bi bi-bar-chart-fill tw:text-(color:--nx-blue)!"></i> Income vs Expenses</h5>
                     <p class="nx-card-subtitle">Bars show income and expenses for each month, the line shows net</p>
                 </div>
             </div>
@@ -168,28 +168,28 @@
         </div>
 
         {{-- MONTHLY SUMMARY --}}
-        <div class="nx-card mb-4">
+        <div class="nx-card tw:mb-6!">
             <div class="nx-card-header">
                 <div>
-                    <h5 class="nx-card-title"><i class="bi bi-calendar3 text-primary"></i> Monthly Summary</h5>
+                    <h5 class="nx-card-title"><i class="bi bi-calendar3 tw:text-(color:--nx-blue)!"></i> Monthly Summary</h5>
                     <p class="nx-card-subtitle">
                         {{ number_format($totals['payments']) }} class fee payments from {{ number_format($totals['students']) }} students this year
                     </p>
                 </div>
             </div>
-            <div class="table-responsive">
-                <table class="table premium-table mb-0">
+            <div class="ui-table-responsive">
+                <table class="ui-table premium-table tw:mb-0!">
                     <thead>
                         <tr>
                             <th>Month</th>
-                            <th class="text-end">Class Fees</th>
-                            <th class="text-end">Admission Fees</th>
-                            <th class="text-end">Extra Income</th>
-                            @if (feature('courses'))<th class="text-end">Course Fees</th>@endif
-                            <th class="text-end">Total Income</th>
+                            <th class="tw:text-right!">Class Fees</th>
+                            <th class="tw:text-right!">Admission Fees</th>
+                            <th class="tw:text-right!">Extra Income</th>
+                            @if (feature('courses'))<th class="tw:text-right!">Course Fees</th>@endif
+                            <th class="tw:text-right!">Total Income</th>
                             <th style="min-width: 130px;">Income</th>
-                            <th class="text-end">Expenses</th>
-                            <th class="text-end">Net</th>
+                            <th class="tw:text-right!">Expenses</th>
+                            <th class="tw:text-right!">Net</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -205,33 +205,33 @@
                                         @endif
                                     </small>
                                 </td>
-                                <td class="text-end amount">{{ $money($row['class_fees']) }}</td>
-                                <td class="text-end amount">{{ $money($row['admission_fees']) }}</td>
-                                <td class="text-end amount">{{ $money($row['extra_income']) }}</td>
-                                @if (feature('courses'))<td class="text-end amount">{{ $money($row['course_fees']) }}</td>@endif
-                                <td class="text-end amount fw-bold">{{ $money($row['total_income']) }}</td>
+                                <td class="tw:text-right! amount">{{ $money($row['class_fees']) }}</td>
+                                <td class="tw:text-right! amount">{{ $money($row['admission_fees']) }}</td>
+                                <td class="tw:text-right! amount">{{ $money($row['extra_income']) }}</td>
+                                @if (feature('courses'))<td class="tw:text-right! amount">{{ $money($row['course_fees']) }}</td>@endif
+                                <td class="tw:text-right! amount tw:font-bold!">{{ $money($row['total_income']) }}</td>
                                 <td>
                                     <div class="nx-progress">
                                         <div class="nx-progress-fill {{ $best && $row['month'] === $best['month'] ? 'bg-green' : 'bg-blue' }}"
                                             style="width: {{ round($row['total_income'] / $maxIncome * 100, 1) }}%"></div>
                                     </div>
                                 </td>
-                                <td class="text-end amount {{ $row['total_expenses'] > 0 ? 'text-danger' : '' }}">{{ $money($row['total_expenses']) }}</td>
-                                <td class="text-end amount fw-bold {{ $row['net'] < 0 ? 'text-danger' : ($row['net'] > 0 ? 'text-success' : '') }}">{{ $money($row['net']) }}</td>
+                                <td class="tw:text-right! amount {{ $row['total_expenses'] > 0 ? 'tw:text-(color:--nx-red)!' : '' }}">{{ $money($row['total_expenses']) }}</td>
+                                <td class="tw:text-right! amount tw:font-bold! {{ $row['net'] < 0 ? 'tw:text-(color:--nx-red)!' : ($row['net'] > 0 ? 'tw:text-(color:--nx-green)!' : '') }}">{{ $money($row['net']) }}</td>
                             </tr>
                         @endforeach
                     </tbody>
                     <tfoot>
-                        <tr class="fw-bold">
+                        <tr class="tw:font-bold!">
                             <td>Total {{ $year }}</td>
-                            <td class="text-end amount">{{ $money($totals['class_fees']) }}</td>
-                            <td class="text-end amount">{{ $money($totals['admission_fees']) }}</td>
-                            <td class="text-end amount">{{ $money($totals['extra_income']) }}</td>
-                            @if (feature('courses'))<td class="text-end amount">{{ $money($totals['course_fees']) }}</td>@endif
-                            <td class="text-end amount">{{ $money($totals['total_income']) }}</td>
+                            <td class="tw:text-right! amount">{{ $money($totals['class_fees']) }}</td>
+                            <td class="tw:text-right! amount">{{ $money($totals['admission_fees']) }}</td>
+                            <td class="tw:text-right! amount">{{ $money($totals['extra_income']) }}</td>
+                            @if (feature('courses'))<td class="tw:text-right! amount">{{ $money($totals['course_fees']) }}</td>@endif
+                            <td class="tw:text-right! amount">{{ $money($totals['total_income']) }}</td>
                             <td></td>
-                            <td class="text-end amount text-danger">{{ $money($totals['total_expenses']) }}</td>
-                            <td class="text-end amount {{ $totals['net'] < 0 ? 'text-danger' : 'text-success' }}">{{ $money($totals['net']) }}</td>
+                            <td class="tw:text-right! amount tw:text-(color:--nx-red)!">{{ $money($totals['total_expenses']) }}</td>
+                            <td class="tw:text-right! amount {{ $totals['net'] < 0 ? 'tw:text-(color:--nx-red)!' : 'tw:text-(color:--nx-green)!' }}">{{ $money($totals['net']) }}</td>
                         </tr>
                     </tfoot>
                 </table>
@@ -239,48 +239,48 @@
         </div>
 
         {{-- EXPENSES BY MONTH --}}
-        <div class="nx-card mb-4">
+        <div class="nx-card tw:mb-6!">
             <div class="nx-card-header">
                 <div>
-                    <h5 class="nx-card-title"><i class="bi bi-arrow-up-circle text-danger"></i> Expenses by Month</h5>
+                    <h5 class="nx-card-title"><i class="bi bi-arrow-up-circle tw:text-(color:--nx-red)!"></i> Expenses by Month</h5>
                     <p class="nx-card-subtitle">Paid salaries, advances and institute expenses</p>
                 </div>
             </div>
-            <div class="table-responsive">
-                <table class="table premium-table mb-0">
+            <div class="ui-table-responsive">
+                <table class="ui-table premium-table tw:mb-0!">
                     <thead>
                         <tr>
                             <th>Month</th>
-                            <th class="text-end">Teacher Salaries</th>
-                            <th class="text-end">Teacher Advances</th>
-                            <th class="text-end">Organizer</th>
-                            <th class="text-end">Institute</th>
-                            @if (feature('courses'))<th class="text-end">Course Payouts</th>@endif
-                            <th class="text-end">Total</th>
+                            <th class="tw:text-right!">Teacher Salaries</th>
+                            <th class="tw:text-right!">Teacher Advances</th>
+                            <th class="tw:text-right!">Organizer</th>
+                            <th class="tw:text-right!">Institute</th>
+                            @if (feature('courses'))<th class="tw:text-right!">Course Payouts</th>@endif
+                            <th class="tw:text-right!">Total</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($rows as $row)
                             <tr class="{{ $row['future'] ? 'row-muted' : '' }}">
                                 <td class="cell-title">{{ $row['month_name'] }}</td>
-                                <td class="text-end amount">{{ $money($row['teacher_salaries']) }}</td>
-                                <td class="text-end amount">{{ $money($row['teacher_advances']) }}</td>
-                                <td class="text-end amount">{{ $money($row['organizer_payments']) }}</td>
-                                <td class="text-end amount">{{ $money($row['institute_expenses']) }}</td>
-                                @if (feature('courses'))<td class="text-end amount">{{ $money($row['course_payouts']) }}</td>@endif
-                                <td class="text-end amount fw-bold">{{ $money($row['total_expenses']) }}</td>
+                                <td class="tw:text-right! amount">{{ $money($row['teacher_salaries']) }}</td>
+                                <td class="tw:text-right! amount">{{ $money($row['teacher_advances']) }}</td>
+                                <td class="tw:text-right! amount">{{ $money($row['organizer_payments']) }}</td>
+                                <td class="tw:text-right! amount">{{ $money($row['institute_expenses']) }}</td>
+                                @if (feature('courses'))<td class="tw:text-right! amount">{{ $money($row['course_payouts']) }}</td>@endif
+                                <td class="tw:text-right! amount tw:font-bold!">{{ $money($row['total_expenses']) }}</td>
                             </tr>
                         @endforeach
                     </tbody>
                     <tfoot>
-                        <tr class="fw-bold">
+                        <tr class="tw:font-bold!">
                             <td>Total {{ $year }}</td>
-                            <td class="text-end amount">{{ $money($totals['teacher_salaries']) }}</td>
-                            <td class="text-end amount">{{ $money($totals['teacher_advances']) }}</td>
-                            <td class="text-end amount">{{ $money($totals['organizer_payments']) }}</td>
-                            <td class="text-end amount">{{ $money($totals['institute_expenses']) }}</td>
-                            @if (feature('courses'))<td class="text-end amount">{{ $money($totals['course_payouts']) }}</td>@endif
-                            <td class="text-end amount">{{ $money($totals['total_expenses']) }}</td>
+                            <td class="tw:text-right! amount">{{ $money($totals['teacher_salaries']) }}</td>
+                            <td class="tw:text-right! amount">{{ $money($totals['teacher_advances']) }}</td>
+                            <td class="tw:text-right! amount">{{ $money($totals['organizer_payments']) }}</td>
+                            <td class="tw:text-right! amount">{{ $money($totals['institute_expenses']) }}</td>
+                            @if (feature('courses'))<td class="tw:text-right! amount">{{ $money($totals['course_payouts']) }}</td>@endif
+                            <td class="tw:text-right! amount">{{ $money($totals['total_expenses']) }}</td>
                         </tr>
                     </tfoot>
                 </table>
@@ -288,42 +288,42 @@
         </div>
 
         {{-- CLASS FEE SPLIT BY MONTH --}}
-        <div class="nx-card mb-4">
+        <div class="nx-card tw:mb-6!">
             <div class="nx-card-header">
                 <div>
-                    <h5 class="nx-card-title"><i class="bi bi-pie-chart text-primary"></i> Class Fee Split by Month</h5>
+                    <h5 class="nx-card-title"><i class="bi bi-pie-chart tw:text-(color:--nx-blue)!"></i> Class Fee Split by Month</h5>
                     <p class="nx-card-subtitle">Teacher, organizer and institute share of class fees</p>
                 </div>
             </div>
-            <div class="table-responsive">
-                <table class="table premium-table mb-0">
+            <div class="ui-table-responsive">
+                <table class="ui-table premium-table tw:mb-0!">
                     <thead>
                         <tr>
                             <th>Month</th>
-                            <th class="text-end">Class Fees</th>
-                            <th class="text-end">Teacher</th>
-                            <th class="text-end">Organizer</th>
-                            <th class="text-end">Institute</th>
+                            <th class="tw:text-right!">Class Fees</th>
+                            <th class="tw:text-right!">Teacher</th>
+                            <th class="tw:text-right!">Organizer</th>
+                            <th class="tw:text-right!">Institute</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($rows as $row)
                             <tr class="{{ $row['future'] ? 'row-muted' : '' }}">
                                 <td class="cell-title">{{ $row['month_name'] }}</td>
-                                <td class="text-end amount">{{ $money($row['class_fees']) }}</td>
-                                <td class="text-end amount">{{ $money($row['teacher_share']) }}</td>
-                                <td class="text-end amount">{{ $money($row['organizer_share']) }}</td>
-                                <td class="text-end amount fw-bold">{{ $money($row['institute_share']) }}</td>
+                                <td class="tw:text-right! amount">{{ $money($row['class_fees']) }}</td>
+                                <td class="tw:text-right! amount">{{ $money($row['teacher_share']) }}</td>
+                                <td class="tw:text-right! amount">{{ $money($row['organizer_share']) }}</td>
+                                <td class="tw:text-right! amount tw:font-bold!">{{ $money($row['institute_share']) }}</td>
                             </tr>
                         @endforeach
                     </tbody>
                     <tfoot>
-                        <tr class="fw-bold">
+                        <tr class="tw:font-bold!">
                             <td>Total {{ $year }}</td>
-                            <td class="text-end amount">{{ $money($totals['class_fees']) }}</td>
-                            <td class="text-end amount">{{ $money($totals['teacher_share']) }}</td>
-                            <td class="text-end amount">{{ $money($totals['organizer_share']) }}</td>
-                            <td class="text-end amount">{{ $money($totals['institute_share']) }}</td>
+                            <td class="tw:text-right! amount">{{ $money($totals['class_fees']) }}</td>
+                            <td class="tw:text-right! amount">{{ $money($totals['teacher_share']) }}</td>
+                            <td class="tw:text-right! amount">{{ $money($totals['organizer_share']) }}</td>
+                            <td class="tw:text-right! amount">{{ $money($totals['institute_share']) }}</td>
                         </tr>
                     </tfoot>
                 </table>
