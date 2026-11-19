@@ -809,92 +809,101 @@ class StudentClassEnrollmentService
         int $month,
         int $perPage = 50
     ): array {
-        /** @var Collection<int, int> $accessibleBranchIds */
         $accessibleBranchIds = $this->branchAccessService->getBranchIds();
+        $start = \Carbon\Carbon::create($year, $month, 1)->startOfMonth();
+        $end = $start->copy()->endOfMonth();
 
-        $query = StudentClassEnrollment::query()
-            ->with([
-                'branch',
-                'student',
-                'classCategoryFee.category',
-                'classCategoryFeeOption',
-                'payments' => function ($query) use ($year, $month) {
-                    $query->whereYear('payment_month', $year)
-                        ->whereMonth('payment_month', $month);
-                },
-            ])
-            ->where('student_class_id', $classId)
-            ->where('class_category_fee_id', $classCategoryFeeId)
+        $class = StudentClass::query()
+            ->withTrashed()
+            ->with(['grade:id,grade_name', 'teacher:id,full_name,initials'])
             ->whereIn('branch_id', $accessibleBranchIds)
-            ->where('is_active', true);
+            ->findOrFail($classId);
 
-        /** @var LengthAwarePaginator $paginator */
-        $paginator = $query->orderBy('id')->paginate($perPage);
+        $categoryFee = ClassCategoryFee::query()
+            ->with('category:id,category_name')
+            ->where('student_class_id', $class->id)
+            ->findOrFail($classCategoryFeeId);
 
-        $transformedItems = collect($paginator->items())->map(function ($enrollment) {
+        // every student of the category (the totals are for all of them, not one page)
+        $enrollments = StudentClassEnrollment::query()
+            ->with([
+                'student:id,custom_id,temporary_qr_code,permanent_qr_active,initial_name,full_name,mobile,guardian_mobile',
+                'classCategoryFeeOption:id,class_category_fee_id,label,fee',
+                // completed payments FOR this month (cancelled ones are not money)
+                'payments' => fn ($query) => $query->where('status', 'completed')
+                    ->whereBetween('payment_month', [$start->toDateString(), $end->toDateString()])
+                    ->with('splitSnapshot:id,payment_id,hall_fee')
+                    ->orderBy('paid_at'),
+            ])
+            ->where('student_class_id', $class->id)
+            ->where('class_category_fee_id', $categoryFee->id)
+            ->whereIn('branch_id', $accessibleBranchIds)
+            ->where('is_active', true)
+            ->orderBy('id')
+            ->get();
 
-            $paidAmount = $enrollment->payments->sum('amount');
+        $hallFeeNow = \App\Support\MonthFee::hallFeeCache();
 
-            $finalFee = $enrollment->is_free_card
-                ? 0
-                : (float) $enrollment->getSelectedFee();
+        $rows = $enrollments->map(function (StudentClassEnrollment $enrollment) use ($hallFeeNow) {
+            $student = $enrollment->student;
+            $fee = \App\Support\MonthFee::forEnrollment($enrollment, $enrollment->payments, $hallFeeNow($enrollment));
 
-            return [
+            return $fee + [
                 'enrollment_id' => $enrollment->id,
-                'branch_id' => $enrollment->branch_id,
-                'branch_name' => $enrollment->branch?->name ?? null,
                 'student_id' => $enrollment->student_id,
-
-                'student' => $enrollment->student
-                    ? [
-                        'id' => $enrollment->student->id,
-                        'custom_id' => $enrollment->student->custom_id,
-                        'initial_name' => $enrollment->student->initial_name,
-                        'full_name' => $enrollment->student->full_name,
-                        'mobile' => $enrollment->student->mobile,
-                    ]
-                    : null,
-
-                'class_category_fee_id' =>
-                $enrollment->class_category_fee_id,
-
-                'class_category_fee_option_id' =>
-                $enrollment->class_category_fee_option_id,
-
-                'category_name' =>
-                optional($enrollment->classCategoryFee)->category
-                    ? $enrollment->classCategoryFee->category->category_name
-                    : null,
-
-                'fee_option' =>
-                $enrollment->classCategoryFeeOption
-                    ? [
-                        'id' => $enrollment->classCategoryFeeOption->id,
-                        'label' => $enrollment->classCategoryFeeOption->label,
-                        'fee' => (float) $enrollment->classCategoryFeeOption->fee,
-                    ]
-                    : null,
-
+                'student_code' => $student
+                    ? ($student->permanent_qr_active ? $student->custom_id : ($student->temporary_qr_code ?: $student->custom_id))
+                    : '-',
+                'student_name' => optional($student)->initial_name ?: optional($student)->full_name ?: '-',
+                'mobile' => optional($student)->guardian_mobile ?: optional($student)->mobile,
                 'is_free_card' => (bool) $enrollment->is_free_card,
-                'final_fee' => $finalFee,
-                'paid_amount' => (float) $paidAmount,
-                'balance' => max($finalFee - $paidAmount, 0),
-
-                'payment_status' =>
-                $paidAmount <= 0
-                    ? 'unpaid'
-                    : ($paidAmount < $finalFee ? 'partial' : 'paid'),
-
-                'registered_date' =>
-                $enrollment->enrolled_at
-                    ? $enrollment->enrolled_at->format('Y-m-d')
+                'fee_option' => $enrollment->classCategoryFeeOption
+                    ? ['label' => $enrollment->classCategoryFeeOption->label, 'fee' => (float) $enrollment->classCategoryFeeOption->fee]
                     : null,
+                'paid_on' => $enrollment->payments->pluck('paid_at')->filter()
+                    ->map(fn ($date) => \Carbon\Carbon::parse($date)->format('d M Y'))->unique()->implode(', '),
+                'receipts' => $enrollment->payments->pluck('receipt_number')->filter()->implode(', '),
             ];
-        })->values();
+        });
 
-        $paginator->setCollection($transformedItems);
+        $count = fn (string $status) => $rows->where('status', $status)->count();
+
+        $summary = [
+            'students' => $rows->count(),
+            'paid' => $count(\App\Support\MonthFee::PAID),
+            'partial' => $count(\App\Support\MonthFee::PARTIAL),
+            'unpaid' => $count(\App\Support\MonthFee::UNPAID),
+            'freecard' => $count(\App\Support\MonthFee::FREE_CARD),
+            'class_fee' => round($rows->sum('class_fee'), 2),
+            'hall_fee' => round($rows->sum('hall_fee'), 2),
+            'payable' => round($rows->sum('payable'), 2),
+            'collected' => round($rows->sum('paid'), 2),
+            'hall_paid' => round($rows->sum('hall_paid'), 2),
+            'class_paid' => round($rows->sum('class_paid'), 2),
+            'discount' => round($rows->sum('discount'), 2),
+            'balance' => round($rows->sum('balance'), 2),
+        ];
+
+        $page = max((int) request()->get('page', 1), 1);
+        $paginator = new LengthAwarePaginator(
+            $rows->forPage($page, $perPage)->values(),
+            $rows->count(),
+            $perPage,
+            $page,
+            ['path' => request()->url(), 'query' => request()->query()]
+        );
 
         return [
+            'class' => [
+                'id' => $class->id,
+                'class_name' => $class->class_name,
+                'grade_name' => optional($class->grade)->grade_name,
+                'teacher_name' => optional($class->teacher)->full_name,
+                'branch_id' => $class->branch_id,
+                'teacher_id' => $class->teacher_id,
+            ],
+            'category_name' => optional($categoryFee->category)->category_name ?? 'Category',
+            'summary' => $summary,
             'students' => $paginator,
             'pagination' => [
                 'current_page' => $paginator->currentPage(),

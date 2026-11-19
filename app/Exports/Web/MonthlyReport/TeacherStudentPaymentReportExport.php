@@ -70,34 +70,49 @@ class TeacherStudentPaymentReportExport implements
             $class['grade_name'],
             $category['category_name'],
             $feeOption ? $feeOption['label'] : '',
-            $student['paid_for'] ?? '',
-            $student['paid_on'] ?? '',
             $student['student_code'],
             $student['initial_name'],
-            $student['guardian_mobile'],
-            ['paid' => 'Paid', 'unpaid' => 'Unpaid', 'freecard' => 'Free card', 'noattend' => 'No attendance'][$student['status']] ?? $student['status'],
-            (float) $student['final_fee'],
-            (float) $student['paid_amount'],
+            $student['guardian_mobile'] ?? '',
+            $student['paid_for'] ?? '',
+            $student['paid_on'] ?? '',
+            ($student['carried'] ?? false) ? 'Yes' : '',
+            \App\Support\MonthFee::label($student['status']),
+            (float) ($student['class_fee'] ?? 0),
+            (float) ($student['hall_fee'] ?? 0),
+            (float) ($student['payable'] ?? 0),
             (float) $student['balance'],
+            (float) $student['paid_amount'],
+            (float) ($student['hall_collected'] ?? 0),
+            (float) ($student['class_collected'] ?? 0),
+            (float) ($student['teacher_amount'] ?? 0),
         ];
     }
 
     public function headings(): array
     {
+        $month = Carbon::create($this->year, $this->month, 1)->format('M Y');
+        $bySalary = ($this->report['filter']['basis'] ?? null) === 'paid-date';
+
         return [
             'Class',
             'Grade',
             'Category',
             'Fee Option',
-            'Paid For',
-            'Paid On',
             'Student Code',
             'Student Name',
             'Guardian Mobile',
-            'Status',
-            'Final Fee',
-            'Paid Amount',
-            'Balance',
+            'Fee For',
+            $bySalary ? 'Received On' : 'Paid On',
+            'After Last Salary',
+            $month . ' Status',
+            $month . ' Class Fee',
+            $month . ' Hall Fee',
+            $month . ' To Pay',
+            $month . ' Balance',
+            $bySalary ? 'Received (salary)' : 'Paid',
+            'Hall Fee Part',
+            'Class Fee Part',
+            'Teacher Share',
         ];
     }
 
@@ -105,11 +120,7 @@ class TeacherStudentPaymentReportExport implements
     {
         $money = NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1;
 
-        return [
-            'K' => $money,
-            'L' => $money,
-            'M' => $money,
-        ];
+        return array_fill_keys(['L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S'], $money);
     }
 
     public function styles(Worksheet $sheet): array
@@ -135,10 +146,10 @@ class TeacherStudentPaymentReportExport implements
                 $sheet->freezePane('A2');
 
                 if ($this->rowCount > 0) {
-                    $sheet->setAutoFilter('A1:M' . $lastDataRow);
+                    $sheet->setAutoFilter('A1:S' . $lastDataRow);
 
-                    $sheet->setCellValue('J' . $infoRow, 'Total');
-                    foreach (['K', 'L', 'M'] as $column) {
+                    $sheet->setCellValue('K' . $infoRow, 'Total');
+                    foreach (['L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S'] as $column) {
                         $sheet->setCellValue(
                             $column . $infoRow,
                             '=SUM(' . $column . '2:' . $column . $lastDataRow . ')'
@@ -147,7 +158,7 @@ class TeacherStudentPaymentReportExport implements
                             ->getNumberFormat()
                             ->setFormatCode(NumberFormat::FORMAT_NUMBER_COMMA_SEPARATED1);
                     }
-                    $sheet->getStyle('J' . $infoRow . ':M' . $infoRow)->getFont()->setBold(true);
+                    $sheet->getStyle('K' . $infoRow . ':S' . $infoRow)->getFont()->setBold(true);
                 }
 
                 $teacher = $this->report['teacher'];
