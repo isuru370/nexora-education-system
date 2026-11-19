@@ -9,7 +9,7 @@
     {{-- ===================================================== --}}
     {{-- HERO --}}
     {{-- ===================================================== --}}
-    <div class="hero-section mb-4">
+    <div class="hero-section tw:mb-6!">
         <div class="hero-content">
             <div class="hero-left">
                 <span class="greeting-badge">
@@ -53,14 +53,14 @@
     {{-- ALERTS --}}
     {{-- ===================================================== --}}
     @if (session('success'))
-        <div class="nx-alert nx-alert-green mb-4">
+        <div class="nx-alert nx-alert-green tw:mb-6!">
             <i class="bi bi-check-circle-fill"></i>
             <span>{{ session('success') }}</span>
         </div>
     @endif
 
     @if (session('error'))
-        <div class="nx-alert nx-alert-red mb-4">
+        <div class="nx-alert nx-alert-red tw:mb-6!">
             <i class="bi bi-exclamation-triangle-fill"></i>
             <span>{{ session('error') }}</span>
         </div>
@@ -69,15 +69,15 @@
     {{-- ===================================================== --}}
     {{-- CATEGORY INFORMATION --}}
     {{-- ===================================================== --}}
-    <div class="nx-card mb-4">
+    <div class="nx-card tw:mb-6!">
         <div class="nx-card-header">
             <div>
-                <h5 class="nx-card-title"><i class="bi bi-info-circle-fill text-primary"></i> Category Information</h5>
+                <h5 class="nx-card-title"><i class="bi bi-info-circle-fill tw:text-(color:--nx-blue)!"></i> Category Information</h5>
                 <p class="nx-card-subtitle">Details of this class category</p>
             </div>
         </div>
 
-        <div class="p-3 p-md-4">
+        <div class="tw:p-4! tw:md:p-6!">
             <div class="detail-grid">
 
                 {{-- NAME --}}

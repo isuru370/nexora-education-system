@@ -47,7 +47,7 @@
     <div class="dashboard-page">
 
         {{-- HERO --}}
-        <div class="hero-section mb-4">
+        <div class="hero-section tw:mb-6!">
             <div class="hero-content">
                 <div class="hero-left">
                     <span class="greeting-badge">nexoraEDU</span>
@@ -64,32 +64,32 @@
 
         {{-- ALERTS --}}
         @if (session('error'))
-            <div class="nx-alert nx-alert-red mb-4"><i class="bi bi-exclamation-triangle-fill"></i><span>{{ session('error') }}</span></div>
+            <div class="nx-alert nx-alert-red tw:mb-6!"><i class="bi bi-exclamation-triangle-fill"></i><span>{{ session('error') }}</span></div>
         @endif
         @if ($errors->any())
-            <div class="nx-alert nx-alert-red mb-4">
+            <div class="nx-alert nx-alert-red tw:mb-6!">
                 <div>
                     @foreach ($errors->all() as $error)
-                        <div><i class="bi bi-exclamation-circle-fill me-1"></i>{{ $error }}</div>
+                        <div><i class="bi bi-exclamation-circle-fill tw:mr-1!"></i>{{ $error }}</div>
                     @endforeach
                 </div>
             </div>
         @endif
 
         {{-- ONE FILTER FOR EVERY REPORT --}}
-        <div class="nx-card mb-4">
+        <div class="nx-card tw:mb-6!">
             <div class="nx-card-header">
                 <div>
-                    <h5 class="nx-card-title"><i class="bi bi-funnel text-primary"></i> Report Month</h5>
+                    <h5 class="nx-card-title"><i class="bi bi-funnel tw:text-(color:--nx-blue)!"></i> Report Month</h5>
                     <p class="nx-card-subtitle">Choose the month once - every download below uses it</p>
                 </div>
             </div>
-            <div class="p-3">
-                <form method="GET" action="{{ route('monthly-report.index') }}" class="row g-3 align-items-end" id="monthlyReportFilter">
+            <div class="tw:p-4!">
+                <form method="GET" action="{{ route('monthly-report.index') }}" class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2 tw:items-end!" id="monthlyReportFilter">
                     @if ($branches->count() > 1)
-                        <div class="col-lg-3 col-md-6">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:lg:flex-[0_0_auto] tw:lg:w-[25%]">
                             <label class="nx-label">Branch</label>
-                            <select name="branch_id" class="form-select nx-input">
+                            <select name="branch_id" class="ui-form-select nx-input">
                                 @foreach ($branches as $branchOption)
                                     <option value="{{ $branchOption->id }}" {{ (int) $branchId === (int) $branchOption->id ? 'selected' : '' }}>
                                         {{ $branchOption->name }}
@@ -98,21 +98,21 @@
                             </select>
                         </div>
                     @else
-                        <input type="hidden" name="branch_id" value="{{ $branchId }}">
+                        <input class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full" type="hidden" name="branch_id" value="{{ $branchId }}">
                     @endif
 
-                    <div class="col-lg-2 col-md-3">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[25%] tw:lg:flex-[0_0_auto] tw:lg:w-[16.66666667%]">
                         <label class="nx-label">Year</label>
-                        <select name="year" class="form-select nx-input">
+                        <select name="year" class="ui-form-select nx-input">
                             @for ($y = now()->year; $y >= 2020; $y--)
                                 <option value="{{ $y }}" {{ (int) $year === $y ? 'selected' : '' }}>{{ $y }}</option>
                             @endfor
                         </select>
                     </div>
 
-                    <div class="col-lg-2 col-md-3">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[25%] tw:lg:flex-[0_0_auto] tw:lg:w-[16.66666667%]">
                         <label class="nx-label">Month</label>
-                        <select name="month" class="form-select nx-input">
+                        <select name="month" class="ui-form-select nx-input">
                             @for ($m = 1; $m <= 12; $m++)
                                 <option value="{{ $m }}" {{ (int) $month === $m ? 'selected' : '' }}>
                                     {{ \Carbon\Carbon::create(null, $m, 1)->format('F') }}
@@ -121,9 +121,9 @@
                         </select>
                     </div>
 
-                    <div class="col-lg-3 col-md-8">
-                        <label class="nx-label">Teacher <span class="text-muted fw-normal text-lowercase">(for teacher reports)</span></label>
-                        <select name="teacher_id" class="form-select nx-input">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[66.66666667%] tw:lg:flex-[0_0_auto] tw:lg:w-[25%]">
+                        <label class="nx-label">Teacher <span class="tw:text-(color:--nx-muted)! tw:font-normal! tw:lowercase!">(for teacher reports)</span></label>
+                        <select name="teacher_id" class="ui-form-select nx-input">
                             <option value="">-- Select teacher --</option>
                             @foreach ($teachers as $teacherItem)
                                 <option value="{{ $teacherItem->id }}" {{ (int) $teacherId === (int) $teacherItem->id ? 'selected' : '' }}>
@@ -133,25 +133,25 @@
                         </select>
                     </div>
 
-                    <div class="col-lg-2 col-md-4">
-                        <button type="submit" class="nx-btn nx-btn-primary w-100"><i class="bi bi-check2-circle"></i> Apply</button>
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%] tw:lg:flex-[0_0_auto] tw:lg:w-[16.66666667%]">
+                        <button type="submit" class="nx-btn nx-btn-primary tw:w-full!"><i class="bi bi-check2-circle"></i> Apply</button>
                     </div>
                 </form>
             </div>
         </div>
 
         {{-- BRANCH REPORT --}}
-        <div class="section-heading mb-3">
-            <h6 class="mb-0"><i class="bi bi-building text-primary"></i> Branch report</h6>
+        <div class="section-heading tw:mb-4!">
+            <h6 class="tw:mb-0!"><i class="bi bi-building tw:text-(color:--nx-blue)!"></i> Branch report</h6>
             <small class="cell-sub">{{ $selectedBranch->name ?? 'Branch' }} · {{ $periodLabel }}</small>
         </div>
 
-        <div class="nx-card report-tile mb-4">
+        <div class="nx-card report-tile tw:mb-6!">
             <div class="report-tile-body">
                 <div class="stat-icon-wrapper icon-blue"><i class="bi bi-cash-stack"></i></div>
-                <div class="flex-grow-1">
-                    <h5 class="nx-card-title mb-1">Teacher Salary Summary</h5>
-                    <p class="nx-card-subtitle mb-0">
+                <div class="bs-flex-grow-1 tw:grow!">
+                    <h5 class="nx-card-title tw:mb-1!">Teacher Salary Summary</h5>
+                    <p class="nx-card-subtitle tw:mb-0!">
                         Earnings, deductions and net salary of every teacher in the branch.
                         Same numbers as the Teacher Salary page.
                     </p>
@@ -168,8 +168,8 @@
         </div>
 
         {{-- TEACHER REPORTS --}}
-        <div class="section-heading mb-3">
-            <h6 class="mb-0"><i class="bi bi-person-badge text-primary"></i> Teacher reports</h6>
+        <div class="section-heading tw:mb-4!">
+            <h6 class="tw:mb-0!"><i class="bi bi-person-badge tw:text-(color:--nx-blue)!"></i> Teacher reports</h6>
             <small class="cell-sub">
                 @if ($selectedTeacher)
                     {{ $selectedTeacher->custom_id }} - {{ $selectedTeacher->initials }} · {{ $periodLabel }}
@@ -180,21 +180,21 @@
         </div>
 
         @if (!$teacherId)
-            <div class="nx-alert nx-alert-amber mb-4">
+            <div class="nx-alert nx-alert-amber tw:mb-6!">
                 <i class="bi bi-info-circle-fill"></i>
                 <span>Select a teacher above and click <strong>Apply</strong> to enable the teacher reports.</span>
             </div>
         @endif
 
-        <div class="row g-3 mb-4">
+        <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2 tw:mb-6!">
             {{-- Salary slip --}}
-            <div class="col-lg-6">
-                <div class="nx-card report-tile h-100 {{ $teacherId ? '' : 'is-disabled' }}">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[50%]">
+                <div class="nx-card report-tile tw:h-full! {{ $teacherId ? '' : 'is-disabled' }}">
                     <div class="report-tile-body">
                         <div class="stat-icon-wrapper icon-violet"><i class="bi bi-receipt"></i></div>
-                        <div class="flex-grow-1">
-                            <h5 class="nx-card-title mb-1">Salary Slip</h5>
-                            <p class="nx-card-subtitle mb-0">Print the teacher's salary slip for the month.</p>
+                        <div class="bs-flex-grow-1 tw:grow!">
+                            <h5 class="nx-card-title tw:mb-1!">Salary Slip</h5>
+                            <p class="nx-card-subtitle tw:mb-0!">Print the teacher's salary slip for the month.</p>
                         </div>
                     </div>
                     <div class="report-tile-footer">
@@ -211,13 +211,13 @@
             </div>
 
             @foreach ($teacherReports as $item)
-                <div class="col-lg-6">
-                    <div class="nx-card report-tile h-100 {{ $teacherId ? '' : 'is-disabled' }}">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[50%]">
+                    <div class="nx-card report-tile tw:h-full! {{ $teacherId ? '' : 'is-disabled' }}">
                         <div class="report-tile-body">
                             <div class="stat-icon-wrapper {{ $item['color'] }}"><i class="bi {{ $item['icon'] }}"></i></div>
-                            <div class="flex-grow-1">
-                                <h5 class="nx-card-title mb-1">{{ $item['title'] }}</h5>
-                                <p class="nx-card-subtitle mb-0">{{ $item['text'] }}</p>
+                            <div class="bs-flex-grow-1 tw:grow!">
+                                <h5 class="nx-card-title tw:mb-1!">{{ $item['title'] }}</h5>
+                                <p class="nx-card-subtitle tw:mb-0!">{{ $item['text'] }}</p>
                             </div>
                         </div>
                         <div class="report-tile-footer">
@@ -238,7 +238,7 @@
             @endforeach
         </div>
 
-        <p class="text-center cell-sub mb-0">
+        <p class="tw:text-center! cell-sub tw:mb-0!">
             <i class="bi bi-info-circle"></i>
             <strong>Fee month</strong> = the month a payment is for.
             <strong>Collection date</strong> = the day the money was received.
@@ -266,7 +266,7 @@
         padding: 1.1rem 1.25rem;
         flex: 1 1 auto;
     }
-    .dashboard-page .report-tile-body > .flex-grow-1 { min-width: 0; }
+    .dashboard-page .report-tile-body > .bs-flex-grow-1 { min-width: 0; }
     .dashboard-page .report-tile-body .stat-icon-wrapper { flex-shrink: 0; }
     .dashboard-page .report-tile-actions { display: flex; gap: .5rem; flex-wrap: wrap; flex-shrink: 0; }
     .dashboard-page .report-tile-footer {

@@ -14,22 +14,22 @@
 
             <div>
                 <h4>
-                    <i class="bi bi-person-fill text-primary me-2"></i>
+                    <i class="bi bi-person-fill tw:text-bs-primary! tw:mr-2!"></i>
                     User Profile
                 </h4>
-                <p class="text-muted mb-0">
+                <p class="tw:text-bs-secondary-color! tw:mb-0!">
                     View user details and activity
                 </p>
             </div>
 
             <div class="header-buttons">
                 @if(!$user->trashed())
-                    <a href="{{ route('admin.users.edit', $user) }}" class="btn btn-warning custom-btn">
+                    <a href="{{ route('admin.users.edit', $user) }}" class="ui-btn ui-btn-warning custom-btn">
                         <i class="bi bi-pencil-fill"></i>
                         Edit User
                     </a>
                 @endif
-                <a href="{{ route('admin.users.index') }}" class="btn btn-light border custom-btn">
+                <a href="{{ route('admin.users.index') }}" class="ui-btn ui-btn-light tw:bs-border! custom-btn">
                     <i class="bi bi-arrow-left"></i>
                     Back to List
                 </a>
@@ -39,21 +39,21 @@
 
         <!-- ALERTS -->
         @if($user->trashed())
-            <div class="alert alert-warning custom-alert">
-                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <div class="ui-alert ui-alert-warning custom-alert">
+                <i class="bi bi-exclamation-triangle-fill tw:mr-2!"></i>
                 This user is currently <strong>deleted</strong> and cannot access the system.
-                <div class="mt-2">
-                    <form method="POST" action="{{ route('admin.users.restore', $user->id) }}" class="d-inline">
+                <div class="tw:mt-2!">
+                    <form method="POST" action="{{ route('admin.users.restore', $user->id) }}" class="tw:[display:inline]!">
                         @csrf
-                        <button type="submit" class="btn btn-success btn-sm custom-btn">
+                        <button type="submit" class="ui-btn ui-btn-success ui-btn-sm custom-btn">
                             <i class="bi bi-arrow-counterclockwise"></i>
                             Restore User
                         </button>
                     </form>
-                    <form method="POST" action="{{ route('admin.users.forceDelete', $user->id) }}" class="d-inline">
+                    <form method="POST" action="{{ route('admin.users.forceDelete', $user->id) }}" class="tw:[display:inline]!">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="btn btn-danger btn-sm custom-btn" onclick="return confirm('Permanently delete this user?')">
+                        <button type="submit" class="ui-btn ui-btn-danger ui-btn-sm custom-btn" onclick="return confirm('Permanently delete this user?')">
                             <i class="bi bi-trash3-fill"></i>
                             Permanently Delete
                         </button>
@@ -65,9 +65,9 @@
         <!-- USER PROFILE -->
         <div class="profile-header">
 
-            <div class="row align-items-center">
+            <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row tw:items-center!">
 
-                <div class="col-md-3 text-center text-md-start">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[25%] tw:text-center! tw:md:text-left!">
 
                     <div class="profile-avatar-lg">
                         {{ strtoupper(substr($user->name, 0, 1)) }}
@@ -75,39 +75,39 @@
 
                 </div>
 
-                <div class="col-md-6">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
 
-                    <h2 class="mb-1">{{ $user->name }}</h2>
+                    <h2 class="tw:mb-1!">{{ $user->name }}</h2>
 
-                    <div class="d-flex flex-wrap gap-2 mb-2">
-                        <span class="badge custom-badge bg-light text-dark border">
+                    <div class="bs-d-flex tw:flex! tw:flex-wrap! tw:gap-2! tw:mb-2!">
+                        <span class="ui-badge custom-badge tw:bg-bs-light! tw:text-bs-dark! tw:bs-border!">
                             ID: #{{ $user->id }}
                         </span>
                         @if($user->trashed())
-                            <span class="badge custom-badge bg-danger">Deleted</span>
+                            <span class="ui-badge custom-badge tw:bg-bs-danger!">Deleted</span>
                         @elseif($user->is_active)
-                            <span class="badge custom-badge bg-success">Active</span>
+                            <span class="ui-badge custom-badge tw:bg-bs-success!">Active</span>
                         @else
-                            <span class="badge custom-badge bg-secondary">Inactive</span>
+                            <span class="ui-badge custom-badge tw:bg-bs-secondary!">Inactive</span>
                         @endif
-                        <span class="badge custom-badge bg-primary">
+                        <span class="ui-badge custom-badge tw:bg-bs-primary!">
                             {{ $user->userType->name ?? 'N/A' }}
                         </span>
                     </div>
 
-                    <p class="text-muted mb-1">
-                        <i class="bi bi-envelope-fill me-2"></i>
+                    <p class="tw:text-bs-secondary-color! tw:mb-1!">
+                        <i class="bi bi-envelope-fill tw:mr-2!"></i>
                         {{ $user->email }}
                     </p>
 
-                    <p class="text-muted mb-0">
-                        <i class="bi bi-calendar3 me-2"></i>
+                    <p class="tw:text-bs-secondary-color! tw:mb-0!">
+                        <i class="bi bi-calendar3 tw:mr-2!"></i>
                         Joined: {{ $user->created_at->format('F d, Y H:i:s') }}
                     </p>
 
                 </div>
 
-                <div class="col-md-3">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[25%]">
 
                     <div class="quick-stats">
                         <div class="quick-stat-item">
@@ -127,41 +127,41 @@
         </div>
 
         <!-- TABS -->
-        <ul class="nav nav-tabs custom-tabs mt-4" id="userTabs" role="tablist">
+        <ul class="ui-nav ui-nav-tabs custom-tabs tw:mt-6!" id="userTabs" role="tablist">
 
-            <li class="nav-item" role="presentation">
-                <button class="nav-link active" id="details-tab" data-bs-toggle="tab" data-bs-target="#details" type="button">
-                    <i class="bi bi-info-circle-fill me-1"></i> Details
+            <li class="ui-nav-item" role="presentation">
+                <button class="ui-nav-link active" id="details-tab" data-nx-toggle="tab" data-nx-target="#details" type="button">
+                    <i class="bi bi-info-circle-fill tw:mr-1!"></i> Details
                 </button>
             </li>
 
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="payments-tab" data-bs-toggle="tab" data-bs-target="#payments" type="button">
-                    <i class="bi bi-credit-card-fill me-1"></i> Payments
+            <li class="ui-nav-item" role="presentation">
+                <button class="ui-nav-link" id="payments-tab" data-nx-toggle="tab" data-nx-target="#payments" type="button">
+                    <i class="bi bi-credit-card-fill tw:mr-1!"></i> Payments
                 </button>
             </li>
 
-            <li class="nav-item" role="presentation">
-                <button class="nav-link" id="activity-tab" data-bs-toggle="tab" data-bs-target="#activity" type="button">
-                    <i class="bi bi-clock-history me-1"></i> Activity
+            <li class="ui-nav-item" role="presentation">
+                <button class="ui-nav-link" id="activity-tab" data-nx-toggle="tab" data-nx-target="#activity" type="button">
+                    <i class="bi bi-clock-history tw:mr-1!"></i> Activity
                 </button>
             </li>
 
         </ul>
 
         <!-- TAB CONTENT -->
-        <div class="tab-content mt-4">
+        <div class="ui-tab-content tw:mt-6!">
 
             <!-- DETAILS TAB -->
-            <div class="tab-pane fade show active" id="details">
+            <div class="ui-tab-pane ui-fade show active" id="details">
 
-                <div class="row g-4">
+                <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3 bs-row">
 
-                    <div class="col-md-6">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
 
                         <div class="info-card">
                             <h6 class="info-card-title">
-                                <i class="bi bi-person-fill me-2"></i>
+                                <i class="bi bi-person-fill tw:mr-2!"></i>
                                 Personal Information
                             </h6>
                             <div class="info-row">
@@ -184,11 +184,11 @@
                                 <span class="info-label">Status</span>
                                 <span class="info-value">
                                     @if($user->trashed())
-                                        <span class="badge bg-danger">Deleted</span>
+                                        <span class="ui-badge tw:bg-bs-danger!">Deleted</span>
                                     @elseif($user->is_active)
-                                        <span class="badge bg-success">Active</span>
+                                        <span class="ui-badge tw:bg-bs-success!">Active</span>
                                     @else
-                                        <span class="badge bg-secondary">Inactive</span>
+                                        <span class="ui-badge tw:bg-bs-secondary!">Inactive</span>
                                     @endif
                                 </span>
                             </div>
@@ -196,23 +196,23 @@
 
                     </div>
 
-                    <div class="col-md-6">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
 
                         <div class="info-card">
                             <h6 class="info-card-title">
-                                <i class="bi bi-link-45deg me-2"></i>
+                                <i class="bi bi-link-45deg tw:mr-2!"></i>
                                 Linked Information
                             </h6>
                             <div class="info-row">
                                 <span class="info-label">Linked Teacher</span>
                                 <span class="info-value">
                                     @if($user->teacher)
-                                        <a href="{{ route('admin.teachers.show', $user->teacher) }}" class="text-decoration-none">
+                                        <a href="{{ route('admin.teachers.show', $user->teacher) }}" class="tw:[text-decoration:none]!">
                                             {{ $user->teacher->full_name }}
-                                            <span class="text-muted">({{ $user->teacher->custom_id ?? 'No ID' }})</span>
+                                            <span class="tw:text-bs-secondary-color!">({{ $user->teacher->custom_id ?? 'No ID' }})</span>
                                         </a>
                                     @else
-                                        <span class="text-muted">None</span>
+                                        <span class="tw:text-bs-secondary-color!">None</span>
                                     @endif
                                 </span>
                             </div>
@@ -231,7 +231,7 @@
                             @if($user->deleted_at)
                                 <div class="info-row">
                                     <span class="info-label">Deleted At</span>
-                                    <span class="info-value text-danger">{{ $user->deleted_at->format('Y-m-d H:i:s') }}</span>
+                                    <span class="info-value tw:text-bs-danger!">{{ $user->deleted_at->format('Y-m-d H:i:s') }}</span>
                                 </div>
                             @endif
                         </div>
@@ -243,11 +243,11 @@
             </div>
 
             <!-- PAYMENTS TAB -->
-            <div class="tab-pane fade" id="payments">
+            <div class="ui-tab-pane ui-fade" id="payments">
 
                 @if($user->payments->count() > 0)
-                    <div class="table-responsive">
-                        <table class="table custom-table">
+                    <div class="ui-table-responsive">
+                        <table class="ui-table custom-table">
                             <thead>
                                 <tr>
                                     <th>#</th>
@@ -264,7 +264,7 @@
                                         <td>LKR {{ number_format($payment->amount, 2) }}</td>
                                         <td>{{ $payment->payment_type ?? 'N/A' }}</td>
                                         <td>
-                                            <span class="badge bg-success">Completed</span>
+                                            <span class="ui-badge tw:bg-bs-success!">Completed</span>
                                         </td>
                                         <td>{{ $payment->created_at->format('Y-m-d H:i') }}</td>
                                     </tr>
@@ -272,11 +272,11 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="mt-3">
-                        <p class="text-muted">Showing last 10 payments</p>
+                    <div class="tw:mt-4!">
+                        <p class="tw:text-bs-secondary-color!">Showing last 10 payments</p>
                     </div>
                 @else
-                    <div class="text-center py-5 text-muted">
+                    <div class="tw:text-center! tw:py-12! tw:text-bs-secondary-color!">
                         <i class="bi bi-credit-card" style="font-size: 3rem;"></i>
                         <h5>No Payments Found</h5>
                         <p>This user has not made any payments yet.</p>
@@ -286,9 +286,9 @@
             </div>
 
             <!-- ACTIVITY TAB -->
-            <div class="tab-pane fade" id="activity">
+            <div class="ui-tab-pane ui-fade" id="activity">
 
-                <div class="text-center py-5 text-muted">
+                <div class="tw:text-center! tw:py-12! tw:text-bs-secondary-color!">
                     <i class="bi bi-clock-history" style="font-size: 3rem;"></i>
                     <h5>Activity Log</h5>
                     <p>User activity tracking coming soon.</p>
@@ -417,7 +417,7 @@
         border-bottom: 2px solid #eef2f7;
     }
 
-    .custom-tabs .nav-link {
+    .custom-tabs .ui-nav-link {
         border: none;
         color: #64748b;
         font-weight: 600;
@@ -426,17 +426,17 @@
         transition: all 0.2s ease;
     }
 
-    .custom-tabs .nav-link:hover {
+    .custom-tabs .ui-nav-link:hover {
         color: #1e293b;
     }
 
-    .custom-tabs .nav-link.active {
+    .custom-tabs .ui-nav-link.active {
         color: #4f46e5;
         border-bottom: 3px solid #4f46e5;
         background: transparent;
     }
 
-    .custom-tabs .nav-link i {
+    .custom-tabs .ui-nav-link i {
         font-size: 1.1rem;
     }
 
@@ -510,7 +510,7 @@
             justify-content: center;
         }
 
-        .profile-header .row {
+        .profile-header .bs-row {
             gap: 1.5rem;
         }
 
@@ -530,7 +530,7 @@
             padding: 0.6rem 1rem;
         }
 
-        .custom-tabs .nav-link {
+        .custom-tabs .ui-nav-link {
             padding: 0.6rem 0.8rem;
             font-size: 0.85rem;
         }

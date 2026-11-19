@@ -4,30 +4,30 @@
 @section('page-title', 'Teacher Classes')
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-    <li class="breadcrumb-item"><a href="{{ route('teachers.index') }}">Teachers</a></li>
-    <li class="breadcrumb-item active">Teacher Classes</li>
+    <li class="ui-breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
+    <li class="ui-breadcrumb-item"><a href="{{ route('teachers.index') }}">Teachers</a></li>
+    <li class="ui-breadcrumb-item active">Teacher Classes</li>
 @endsection
 
 @section('content')
-    <div class="container-fluid">
+    <div class="ui-container-fluid">
         <!-- Header -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row tw:mb-6!">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:flex-[0_0_auto] tw:w-[100%]">
+                <div class="bs-d-flex tw:flex! tw:justify-between! tw:items-center! tw:mb-4!">
                     <div>
-                        <h2 class="h3 mb-1">Teacher Classes</h2>
-                        <div class="d-flex align-items-center gap-3">
-                            <span class="badge bg-light text-dark fs-6" id="teacherName">Loading...</span>
-                            <span class="badge bg-secondary fs-6" id="teacherId">ID: Loading...</span>
+                        <h2 class="ui-h3 tw:mb-1!">Teacher Classes</h2>
+                        <div class="bs-d-flex tw:flex! tw:items-center! tw:gap-4!">
+                            <span class="ui-badge tw:bg-bs-light! tw:text-bs-dark! tw:text-[length:1rem]!" id="teacherName">Loading...</span>
+                            <span class="ui-badge tw:bg-bs-secondary! tw:text-[length:1rem]!" id="teacherId">ID: Loading...</span>
                         </div>
                     </div>
-                    <div class="d-flex gap-2">
-                        <button class="btn btn-outline-primary btn-sm" onclick="loadTeacherClasses()">
+                    <div class="bs-d-flex tw:flex! tw:gap-2!">
+                        <button class="ui-btn ui-btn-outline-primary ui-btn-sm" onclick="loadTeacherClasses()">
                             <i class="fas fa-sync-alt"></i>
                         </button>
-                        <a href="{{ route('class_rooms.create') }}" class="btn btn-primary btn-sm">
-                            <i class="fas fa-plus me-1"></i>New Class
+                        <a href="{{ route('class_rooms.create') }}" class="ui-btn ui-btn-primary ui-btn-sm">
+                            <i class="fas fa-plus tw:mr-1!"></i>New Class
                         </a>
                     </div>
                 </div>
@@ -35,62 +35,62 @@
         </div>
 
         <!-- Stats Cards -->
-        <div class="row mb-4">
-            <div class="col-xl-3 col-md-6 mb-3">
-                <div class="card bg-primary text-white">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between">
+        <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row tw:mb-6!">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%] tw:mb-4!">
+                <div class="ui-card tw:bg-bs-primary! tw:text-bs-white!">
+                    <div class="ui-card-body">
+                        <div class="bs-d-flex tw:flex! tw:justify-between!">
                             <div>
-                                <h4 class="card-title fs-2 fw-bold mb-1" id="totalClasses">0</h4>
-                                <p class="card-text mb-0">Total Classes</p>
+                                <h4 class="ui-card-title tw:text-[length:calc(1.325rem_+_0.9vw)]! tw:xl:text-[length:2rem]! tw:font-bold! tw:mb-1!" id="totalClasses">0</h4>
+                                <p class="ui-card-text tw:mb-0!">Total Classes</p>
                             </div>
-                            <div class="align-self-center">
-                                <i class="fas fa-layer-group fs-1 opacity-75"></i>
+                            <div class="tw:self-center!">
+                                <i class="fas fa-layer-group tw:text-[length:calc(1.375rem_+_1.5vw)]! tw:xl:text-[length:2.5rem]! tw:[opacity:0.75]!"></i>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-xl-3 col-md-6 mb-3">
-                <div class="card bg-success text-white">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%] tw:mb-4!">
+                <div class="ui-card tw:bg-bs-success! tw:text-bs-white!">
+                    <div class="ui-card-body">
+                        <div class="bs-d-flex tw:flex! tw:justify-between!">
                             <div>
-                                <h4 class="card-title fs-2 fw-bold mb-1" id="activeClasses">0</h4>
-                                <p class="card-text mb-0">Active Classes</p>
+                                <h4 class="ui-card-title tw:text-[length:calc(1.325rem_+_0.9vw)]! tw:xl:text-[length:2rem]! tw:font-bold! tw:mb-1!" id="activeClasses">0</h4>
+                                <p class="ui-card-text tw:mb-0!">Active Classes</p>
                             </div>
-                            <div class="align-self-center">
-                                <i class="fas fa-play-circle fs-1 opacity-75"></i>
+                            <div class="tw:self-center!">
+                                <i class="fas fa-play-circle tw:text-[length:calc(1.375rem_+_1.5vw)]! tw:xl:text-[length:2.5rem]! tw:[opacity:0.75]!"></i>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-xl-3 col-md-6 mb-3">
-                <div class="card bg-warning text-white">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%] tw:mb-4!">
+                <div class="ui-card tw:bg-bs-warning! tw:text-bs-white!">
+                    <div class="ui-card-body">
+                        <div class="bs-d-flex tw:flex! tw:justify-between!">
                             <div>
-                                <h4 class="card-title fs-2 fw-bold mb-1" id="ongoingClasses">0</h4>
-                                <p class="card-text mb-0">Ongoing</p>
+                                <h4 class="ui-card-title tw:text-[length:calc(1.325rem_+_0.9vw)]! tw:xl:text-[length:2rem]! tw:font-bold! tw:mb-1!" id="ongoingClasses">0</h4>
+                                <p class="ui-card-text tw:mb-0!">Ongoing</p>
                             </div>
-                            <div class="align-self-center">
-                                <i class="fas fa-running fs-1 opacity-75"></i>
+                            <div class="tw:self-center!">
+                                <i class="fas fa-running tw:text-[length:calc(1.375rem_+_1.5vw)]! tw:xl:text-[length:2.5rem]! tw:[opacity:0.75]!"></i>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="col-xl-3 col-md-6 mb-3">
-                <div class="card bg-info text-white">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%] tw:mb-4!">
+                <div class="ui-card tw:bg-bs-info! tw:text-bs-white!">
+                    <div class="ui-card-body">
+                        <div class="bs-d-flex tw:flex! tw:justify-between!">
                             <div>
-                                <h4 class="card-title fs-2 fw-bold mb-1" id="subjectsCount">0</h4>
-                                <p class="card-text mb-0">Subjects</p>
+                                <h4 class="ui-card-title tw:text-[length:calc(1.325rem_+_0.9vw)]! tw:xl:text-[length:2rem]! tw:font-bold! tw:mb-1!" id="subjectsCount">0</h4>
+                                <p class="ui-card-text tw:mb-0!">Subjects</p>
                             </div>
-                            <div class="align-self-center">
-                                <i class="fas fa-book fs-1 opacity-75"></i>
+                            <div class="tw:self-center!">
+                                <i class="fas fa-book tw:text-[length:calc(1.375rem_+_1.5vw)]! tw:xl:text-[length:2.5rem]! tw:[opacity:0.75]!"></i>
                             </div>
                         </div>
                     </div>
@@ -99,17 +99,17 @@
         </div>
 
         <!-- Search Section -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="card">
-                    <div class="card-body">
-                        <div class="input-group">
-                            <span class="input-group-text bg-light border-end-0">
-                                <i class="fas fa-search text-muted"></i>
+        <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row tw:mb-6!">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:flex-[0_0_auto] tw:w-[100%]">
+                <div class="ui-card">
+                    <div class="ui-card-body">
+                        <div class="ui-input-group">
+                            <span class="ui-input-group-text tw:bg-bs-light! tw:[border-right:0]!">
+                                <i class="fas fa-search tw:text-bs-secondary-color!"></i>
                             </span>
-                            <input type="text" id="searchInput" class="form-control border-start-0"
+                            <input type="text" id="searchInput" class="ui-form-control tw:[border-left:0]!"
                                 placeholder="Search classes by name, subject, or grade...">
-                            <button class="btn btn-outline-secondary" type="button" id="clearSearch">
+                            <button class="ui-btn ui-btn-outline-secondary" type="button" id="clearSearch">
                                 <i class="fas fa-times"></i>
                             </button>
                         </div>
@@ -119,41 +119,41 @@
         </div>
 
         <!-- Classes Grid -->
-        <div class="row">
-            <div class="col-12">
+        <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:flex-[0_0_auto] tw:w-[100%]">
                 <!-- Loading State -->
-                <div id="loadingState" class="text-center py-5">
-                    <div class="spinner-border text-primary mb-3" style="width: 3rem; height: 3rem;"></div>
-                    <h4 class="text-muted">Loading Classes</h4>
-                    <p class="text-muted">Please wait while we fetch the class information</p>
+                <div id="loadingState" class="tw:text-center! tw:py-12!">
+                    <div class="ui-spinner-border tw:text-bs-primary! tw:mb-4!" style="width: 3rem; height: 3rem;"></div>
+                    <h4 class="tw:text-bs-secondary-color!">Loading Classes</h4>
+                    <p class="tw:text-bs-secondary-color!">Please wait while we fetch the class information</p>
                 </div>
 
                 <!-- Empty State -->
-                <div id="emptyState" class="text-center py-5" style="display: none;">
-                    <div class="mb-4">
-                        <i class="fas fa-chalkboard-teacher fa-4x text-muted"></i>
+                <div id="emptyState" class="tw:text-center! tw:py-12!" style="display: none;">
+                    <div class="tw:mb-6!">
+                        <i class="fas fa-chalkboard-teacher fa-4x tw:text-bs-secondary-color!"></i>
                     </div>
-                    <h4 class="text-muted">No Classes Assigned</h4>
-                    <p class="text-muted mb-4">This teacher doesn't have any classes assigned yet</p>
-                    <a href="{{ route('class_rooms.create') }}" class="btn btn-primary">
-                        <i class="fas fa-plus me-2"></i>Assign First Class
+                    <h4 class="tw:text-bs-secondary-color!">No Classes Assigned</h4>
+                    <p class="tw:text-bs-secondary-color! tw:mb-6!">This teacher doesn't have any classes assigned yet</p>
+                    <a href="{{ route('class_rooms.create') }}" class="ui-btn ui-btn-primary">
+                        <i class="fas fa-plus tw:mr-2!"></i>Assign First Class
                     </a>
                 </div>
 
                 <!-- Error State -->
-                <div id="errorState" class="text-center py-5" style="display: none;">
-                    <div class="mb-4">
-                        <i class="fas fa-exclamation-triangle fa-4x text-danger"></i>
+                <div id="errorState" class="tw:text-center! tw:py-12!" style="display: none;">
+                    <div class="tw:mb-6!">
+                        <i class="fas fa-exclamation-triangle fa-4x tw:text-bs-danger!"></i>
                     </div>
-                    <h4 class="text-danger">Unable to Load Classes</h4>
-                    <p class="text-muted mb-4">There was an error loading the classes</p>
-                    <button class="btn btn-outline-primary" onclick="loadTeacherClasses()">
-                        <i class="fas fa-redo me-2"></i>Try Again
+                    <h4 class="tw:text-bs-danger!">Unable to Load Classes</h4>
+                    <p class="tw:text-bs-secondary-color! tw:mb-6!">There was an error loading the classes</p>
+                    <button class="ui-btn ui-btn-outline-primary" onclick="loadTeacherClasses()">
+                        <i class="fas fa-redo tw:mr-2!"></i>Try Again
                     </button>
                 </div>
 
                 <!-- Classes Grid -->
-                <div id="classesGrid" class="row g-3" style="display: none;">
+                <div id="classesGrid" class="bs-row ui-row ui-g-3" style="display: none;">
                     <!-- Classes will be loaded here -->
                 </div>
             </div>
@@ -258,54 +258,54 @@
                 'N/A';
 
             return `
-            <div class="col-xl-4 col-lg-6 mb-3">
-                <div class="card h-100 shadow-sm">
-                    <div class="card-header bg-light">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <h5 class="card-title mb-0 text-dark">${className}</h5>
-                            <div class="d-flex gap-1">
-                                <span class="badge ${classRoom.is_active ? 'bg-success' : 'bg-secondary'}">
+            <div class="ui-col-xl-4 ui-col-lg-6 tw:mb-4!">
+                <div class="ui-card tw:h-full! tw:shadow-bs-sm!">
+                    <div class="ui-card-header tw:bg-bs-light!">
+                        <div class="bs-d-flex tw:flex! tw:justify-between! tw:items-start!">
+                            <h5 class="ui-card-title tw:mb-0! tw:text-bs-dark!">${className}</h5>
+                            <div class="bs-d-flex tw:flex! tw:gap-1!">
+                                <span class="ui-badge ${classRoom.is_active ? 'tw:bg-bs-success!' : 'tw:bg-bs-secondary!'}">
                                     ${classRoom.is_active ? 'Active' : 'Inactive'}
                                 </span>
-                                ${classRoom.is_ongoing ? '<span class="badge bg-info">Ongoing</span>' : ''}
+                                ${classRoom.is_ongoing ? '<span class="ui-badge tw:bg-bs-info!">Ongoing</span>' : ''}
                             </div>
                         </div>
                     </div>
-                    <div class="card-body">
-                        <div class="row g-2">
-                            <div class="col-12">
-                                <div class="d-flex align-items-center">
-                                    <i class="fas fa-book text-primary me-2"></i>
+                    <div class="ui-card-body">
+                        <div class="tw:flex tw:flex-wrap tw:-mt-2 tw:-mx-1 bs-row">
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-1 tw:mt-2 tw:flex-[0_0_auto] tw:w-[100%]">
+                                <div class="bs-d-flex tw:flex! tw:items-center!">
+                                    <i class="fas fa-book tw:text-bs-primary! tw:mr-2!"></i>
                                     <div>
-                                        <small class="text-muted">Subject</small>
-                                        <p class="mb-0 fw-semibold">${subjectName}</p>
+                                        <small class="tw:text-bs-secondary-color!">Subject</small>
+                                        <p class="tw:mb-0! tw:font-semibold!">${subjectName}</p>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-12">
-                                <div class="d-flex align-items-center">
-                                    <i class="fas fa-graduation-cap text-warning me-2"></i>
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-1 tw:mt-2 tw:flex-[0_0_auto] tw:w-[100%]">
+                                <div class="bs-d-flex tw:flex! tw:items-center!">
+                                    <i class="fas fa-graduation-cap tw:text-bs-warning! tw:mr-2!"></i>
                                     <div>
-                                        <small class="text-muted">Grade</small>
-                                        <p class="mb-0 fw-semibold">${gradeName}</p>
+                                        <small class="tw:text-bs-secondary-color!">Grade</small>
+                                        <p class="tw:mb-0! tw:font-semibold!">${gradeName}</p>
                                     </div>
                                 </div>
                             </div>
-                            <div class="col-12">
-                                <div class="d-flex align-items-center">
-                                    <i class="fas fa-calendar text-success me-2"></i>
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-1 tw:mt-2 tw:flex-[0_0_auto] tw:w-[100%]">
+                                <div class="bs-d-flex tw:flex! tw:items-center!">
+                                    <i class="fas fa-calendar tw:text-bs-success! tw:mr-2!"></i>
                                     <div>
-                                        <small class="text-muted">Created</small>
-                                        <p class="mb-0 fw-semibold">${createdDate}</p>
+                                        <small class="tw:text-bs-secondary-color!">Created</small>
+                                        <p class="tw:mb-0! tw:font-semibold!">${createdDate}</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="card-footer bg-white border-top-0">
-                        <div class="d-flex">
-                            <a href="/teachers/view_student/${classRoom.id}" class="btn btn-outline-warning btn-sm flex-fill">
-                                <i class="fas fa-users me-1"></i> View Students
+                    <div class="ui-card-footer tw:bg-bs-white! tw:[border-top:0]!">
+                        <div class="bs-d-flex tw:flex!">
+                            <a href="/teachers/view_student/${classRoom.id}" class="ui-btn ui-btn-outline-warning ui-btn-sm tw:[flex:1_1_auto]!">
+                                <i class="fas fa-users tw:mr-1!"></i> View Students
                             </a>
                         </div>
                     </div>

@@ -16,51 +16,51 @@
         @method('PUT')
     @endif
 
-    <div class="nx-card mb-4">
+    <div class="nx-card tw:mb-6!">
         {{-- DETAILS --}}
         <div class="form-section">
-            <div class="form-section-title"><i class="bi bi-mortarboard text-primary"></i> Course</div>
+            <div class="form-section-title"><i class="bi bi-mortarboard tw:text-(color:--nx-blue)!"></i> Course</div>
             <div class="form-section-sub">Name and branch</div>
-            <div class="row g-3">
-                <div class="col-md-6">
+            <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
                     <label class="nx-label" for="name">Course name *</label>
-                    <input id="name" name="name" class="form-control nx-input" maxlength="150" required value="{{ $value('name') }}" placeholder="e.g. Diploma in IT">
+                    <input id="name" name="name" class="ui-form-control nx-input" maxlength="150" required value="{{ $value('name') }}" placeholder="e.g. Diploma in IT">
                 </div>
-                <div class="col-md-3">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[25%]">
                     <label class="nx-label" for="code">Code</label>
-                    <input id="code" class="form-control nx-input" value="{{ $course->code ?? '' }}" placeholder="Made on save (e.g. CMB-C26001)" readonly aria-readonly="true">
+                    <input id="code" class="ui-form-control nx-input" value="{{ $course->code ?? '' }}" placeholder="Made on save (e.g. CMB-C26001)" readonly aria-readonly="true">
                 </div>
-                <div class="col-md-3">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[25%]">
                     <label class="nx-label" for="branch_id">Branch *</label>
-                    <select id="branch_id" name="branch_id" class="form-select nx-input" required>
+                    <select id="branch_id" name="branch_id" class="ui-form-select nx-input" required>
                         @foreach ($branches as $branch)
                             <option value="{{ $branch->id }}" {{ (string) $value('branch_id', $branches->count() === 1 ? $branch->id : '') === (string) $branch->id ? 'selected' : '' }}>{{ $branch->name }}</option>
                         @endforeach
                     </select>
                 </div>
-                <div class="col-12">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:flex-[0_0_auto] tw:w-[100%]">
                     <label class="nx-label" for="description">Description</label>
-                    <textarea id="description" name="description" rows="2" class="form-control nx-input" maxlength="2000">{{ $value('description') }}</textarea>
+                    <textarea id="description" name="description" rows="2" class="ui-form-control nx-input" maxlength="2000">{{ $value('description') }}</textarea>
                 </div>
             </div>
         </div>
 
         {{-- SCHEDULE --}}
         <div class="form-section">
-            <div class="form-section-title"><i class="bi bi-calendar-week text-primary"></i> Schedule</div>
+            <div class="form-section-title"><i class="bi bi-calendar-week tw:text-(color:--nx-blue)!"></i> Schedule</div>
             <div class="form-section-sub">Each week day has its own time and hall. Every such day between the start and end date becomes a class day.</div>
-            <div class="row g-3 mb-3">
-                <div class="col-sm-6 col-lg-3">
+            <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2 tw:mb-4!">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:sm:flex-[0_0_auto] tw:sm:w-[50%] tw:lg:flex-[0_0_auto] tw:lg:w-[25%]">
                     <label class="nx-label" for="start_date">Start date *</label>
-                    <input type="date" id="start_date" name="start_date" class="form-control nx-input" required value="{{ $date('start_date') }}">
+                    <input type="date" id="start_date" name="start_date" class="ui-form-control nx-input" required value="{{ $date('start_date') }}">
                 </div>
-                <div class="col-sm-6 col-lg-3">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:sm:flex-[0_0_auto] tw:sm:w-[50%] tw:lg:flex-[0_0_auto] tw:lg:w-[25%]">
                     <label class="nx-label" for="end_date">End date *</label>
-                    <input type="date" id="end_date" name="end_date" class="form-control nx-input" required value="{{ $date('end_date') }}">
+                    <input type="date" id="end_date" name="end_date" class="ui-form-control nx-input" required value="{{ $date('end_date') }}">
                 </div>
             </div>
 
-            <div class="day-row day-head d-none d-md-grid">
+            <div class="day-row day-head tw:hidden! tw:md:grid!">
                 <span class="nx-label">Day *</span><span class="nx-label">Start *</span><span class="nx-label">End *</span><span class="nx-label">Hall</span><span></span>
             </div>
             <div id="dayRows">
@@ -68,57 +68,57 @@
                     @include('courses.partials.day-row', ['i' => $i, 'row' => $row])
                 @endforeach
             </div>
-            <button type="button" class="nx-btn nx-btn-light mb-3" id="addDay"><i class="bi bi-plus-lg"></i> Add class day</button>
+            <button type="button" class="nx-btn nx-btn-light tw:mb-4!" id="addDay"><i class="bi bi-plus-lg"></i> Add class day</button>
 
             <div class="preview-box" id="schedulePreview">Choose the dates and class days to see the number of classes and months.</div>
         </div>
 
         {{-- FEES --}}
         <div class="form-section">
-            <div class="form-section-title"><i class="bi bi-cash-coin text-primary"></i> Fees</div>
+            <div class="form-section-title"><i class="bi bi-cash-coin tw:text-(color:--nx-blue)!"></i> Fees</div>
             <div class="form-section-sub">Installments: the full fee split into one payment per course month. Paid at once: the one-time fee.</div>
-            <div class="row g-3">
-                <div class="col-sm-6 col-lg-4">
+            <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:sm:flex-[0_0_auto] tw:sm:w-[50%] tw:lg:flex-[0_0_auto] tw:lg:w-[33.33333333%]">
                     <label class="nx-label" for="full_fee">Full fee (installments) *</label>
-                    <input type="number" step="0.01" min="0" id="full_fee" name="full_fee" class="form-control nx-input" required value="{{ $value('full_fee') }}" placeholder="12000">
+                    <input type="number" step="0.01" min="0" id="full_fee" name="full_fee" class="ui-form-control nx-input" required value="{{ $value('full_fee') }}" placeholder="12000">
                 </div>
-                <div class="col-sm-6 col-lg-4">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:sm:flex-[0_0_auto] tw:sm:w-[50%] tw:lg:flex-[0_0_auto] tw:lg:w-[33.33333333%]">
                     <label class="nx-label" for="one_time_fee">One-time fee (paid at once) *</label>
-                    <input type="number" step="0.01" min="0" id="one_time_fee" name="one_time_fee" class="form-control nx-input" required value="{{ $value('one_time_fee') }}" placeholder="10000">
+                    <input type="number" step="0.01" min="0" id="one_time_fee" name="one_time_fee" class="ui-form-control nx-input" required value="{{ $value('one_time_fee') }}" placeholder="10000">
                 </div>
-                <div class="col-lg-4 d-flex align-items-end">
-                    <div class="preview-box w-100" id="feePreview">—</div>
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[33.33333333%] tw:flex! tw:items-end!">
+                    <div class="preview-box tw:w-full!" id="feePreview">—</div>
                 </div>
             </div>
             @if ($course)
-                <small class="cell-sub d-block mt-2">A fee change applies to new enrollments. Students already enrolled keep their fee.</small>
+                <small class="cell-sub tw:block! tw:mt-2!">A fee change applies to new enrollments. Students already enrolled keep their fee.</small>
             @endif
         </div>
 
         {{-- TEACHERS --}}
         <div class="form-section">
-            <div class="form-section-title"><i class="bi bi-people text-primary"></i> Teachers and income share</div>
+            <div class="form-section-title"><i class="bi bi-people tw:text-(color:--nx-blue)!"></i> Teachers and income share</div>
             <div class="form-section-sub">Each teacher's % of every course payment. The rest goes to the institute. A change applies to new payments.</div>
 
             <div id="teacherRows">
                 @foreach ($oldTeachers as $i => $row)
                     <div class="share-row">
-                        <select name="teachers[{{ $i }}][teacher_id]" class="form-select nx-input" aria-label="Teacher">
+                        <select name="teachers[{{ $i }}][teacher_id]" class="ui-form-select nx-input" aria-label="Teacher">
                             <option value="">Select teacher</option>
                             @foreach ($allTeachers as $teacher)
                                 <option value="{{ $teacher->id }}" {{ (string) ($row['teacher_id'] ?? '') === (string) $teacher->id ? 'selected' : '' }}>{{ $teacher->full_name }} ({{ $teacher->custom_id }})</option>
                             @endforeach
                         </select>
-                        <div class="input-group">
-                            <input type="number" step="0.01" min="0" max="100" name="teachers[{{ $i }}][percentage]" class="form-control nx-input share-input" value="{{ $row['percentage'] ?? '' }}" placeholder="35" aria-label="Percentage">
-                            <span class="input-group-text">%</span>
+                        <div class="ui-input-group">
+                            <input type="number" step="0.01" min="0" max="100" name="teachers[{{ $i }}][percentage]" class="ui-form-control nx-input share-input" value="{{ $row['percentage'] ?? '' }}" placeholder="35" aria-label="Percentage">
+                            <span class="ui-input-group-text">%</span>
                         </div>
                         <button type="button" class="action-btn action-btn-danger remove-teacher" title="Remove" aria-label="Remove teacher"><i class="bi bi-x-lg"></i></button>
                     </div>
                 @endforeach
             </div>
 
-            <button type="button" class="nx-btn nx-btn-light mb-3" id="addTeacher"><i class="bi bi-plus-lg"></i> Add teacher</button>
+            <button type="button" class="nx-btn nx-btn-light tw:mb-4!" id="addTeacher"><i class="bi bi-plus-lg"></i> Add teacher</button>
 
             <div class="share-total" id="shareTotal">
                 <span>Teachers: <strong id="teachersPct">0%</strong></span>
@@ -126,7 +126,7 @@
             </div>
         </div>
 
-        <div class="form-section d-flex gap-2 justify-content-end">
+        <div class="form-section tw:flex! tw:gap-2! tw:justify-end!">
             <a href="{{ $course ? route('courses.show', $course) : route('courses.index') }}" class="nx-btn nx-btn-light">Cancel</a>
             <button type="submit" class="nx-btn nx-btn-primary"><i class="bi bi-check-lg"></i> {{ $course ? 'Save changes' : 'Create course' }}</button>
         </div>
@@ -139,15 +139,15 @@
 
 <template id="teacherRowTemplate">
     <div class="share-row">
-        <select name="teachers[__i__][teacher_id]" class="form-select nx-input" aria-label="Teacher">
+        <select name="teachers[__i__][teacher_id]" class="ui-form-select nx-input" aria-label="Teacher">
             <option value="">Select teacher</option>
             @foreach ($allTeachers as $teacher)
                 <option value="{{ $teacher->id }}">{{ $teacher->full_name }} ({{ $teacher->custom_id }})</option>
             @endforeach
         </select>
-        <div class="input-group">
-            <input type="number" step="0.01" min="0" max="100" name="teachers[__i__][percentage]" class="form-control nx-input share-input" placeholder="35" aria-label="Percentage">
-            <span class="input-group-text">%</span>
+        <div class="ui-input-group">
+            <input type="number" step="0.01" min="0" max="100" name="teachers[__i__][percentage]" class="ui-form-control nx-input share-input" placeholder="35" aria-label="Percentage">
+            <span class="ui-input-group-text">%</span>
         </div>
         <button type="button" class="action-btn action-btn-danger remove-teacher" title="Remove" aria-label="Remove teacher"><i class="bi bi-x-lg"></i></button>
     </div>

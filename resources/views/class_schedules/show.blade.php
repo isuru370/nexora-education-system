@@ -45,7 +45,7 @@
 <div class="dashboard-page">
 
     {{-- HERO --}}
-    <div class="hero-section mb-4">
+    <div class="hero-section tw:mb-6!">
         <div class="hero-content">
             <div class="hero-left">
                 <span class="greeting-badge">Class Schedule</span>
@@ -86,32 +86,32 @@
 
     {{-- ALERTS --}}
     @if (session('success'))
-        <div class="nx-alert nx-alert-green mb-4">
+        <div class="nx-alert nx-alert-green tw:mb-6!">
             <i class="bi bi-check-circle-fill"></i>
             <span>{{ session('success') }}</span>
         </div>
     @endif
 
     @if (session('error'))
-        <div class="nx-alert nx-alert-red mb-4">
+        <div class="nx-alert nx-alert-red tw:mb-6!">
             <i class="bi bi-exclamation-triangle-fill"></i>
             <span>{{ session('error') }}</span>
         </div>
     @endif
 
     {{-- INFO GRID --}}
-    <div class="row g-4 mb-4">
+    <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3 tw:mb-6!">
 
         {{-- CLASS --}}
-        <div class="col-lg-6">
-            <div class="nx-card h-100">
+        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[50%]">
+            <div class="nx-card tw:h-full!">
                 <div class="nx-card-header">
                     <div>
-                        <h5 class="nx-card-title"><i class="bi bi-book text-primary"></i> Class Information</h5>
+                        <h5 class="nx-card-title"><i class="bi bi-book tw:text-(color:--nx-blue)!"></i> Class Information</h5>
                         <p class="nx-card-subtitle">Class, grade, subject and teacher</p>
                     </div>
                 </div>
-                <div class="p-3">
+                <div class="tw:p-4!">
                     <div class="detail-line"><span class="detail-label">Class</span><span class="detail-value">{{ $className }}</span></div>
                     <div class="detail-line"><span class="detail-label">Grade</span><span class="detail-value">{{ $gradeName }}</span></div>
                     <div class="detail-line"><span class="detail-label">Subject</span><span class="detail-value">{{ $subjectName }}</span></div>
@@ -124,15 +124,15 @@
         </div>
 
         {{-- SCHEDULE --}}
-        <div class="col-lg-6">
-            <div class="nx-card h-100">
+        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[50%]">
+            <div class="nx-card tw:h-full!">
                 <div class="nx-card-header">
                     <div>
-                        <h5 class="nx-card-title"><i class="bi bi-calendar2-week text-primary"></i> Schedule Information</h5>
+                        <h5 class="nx-card-title"><i class="bi bi-calendar2-week tw:text-(color:--nx-blue)!"></i> Schedule Information</h5>
                         <p class="nx-card-subtitle">Date, time, status and metadata</p>
                     </div>
                 </div>
-                <div class="p-3">
+                <div class="tw:p-4!">
                     <div class="detail-line"><span class="detail-label">Date</span><span class="detail-value">{{ $classDate }}</span></div>
                     <div class="detail-line"><span class="detail-label">Day</span><span class="detail-value">{{ ucfirst($classSchedule->day_of_week) }}</span></div>
                     <div class="detail-line"><span class="detail-label">Time</span><span class="detail-value">{{ $startTime }} – {{ $endTime }}</span></div>
@@ -157,29 +157,29 @@
 
         {{-- CANCEL DETAILS --}}
         @if ($classSchedule->status === 'cancelled')
-            <div class="col-12">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:flex-[0_0_auto] tw:w-[100%]">
                 <div class="nx-card">
                     <div class="nx-card-header">
                         <div>
-                            <h5 class="nx-card-title"><i class="bi bi-x-circle text-danger"></i> Cancel Details</h5>
+                            <h5 class="nx-card-title"><i class="bi bi-x-circle tw:text-(color:--nx-red)!"></i> Cancel Details</h5>
                             <p class="nx-card-subtitle">Why and when this schedule was cancelled</p>
                         </div>
                     </div>
-                    <div class="p-3">
-                        <div class="row g-3">
-                            <div class="col-lg-4 col-md-6">
+                    <div class="tw:p-4!">
+                        <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2">
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:lg:flex-[0_0_auto] tw:lg:w-[33.33333333%]">
                                 <div class="detail-line detail-line-stacked">
                                     <span class="detail-label">Reason</span>
                                     <span class="detail-value">{{ $cancelReason }}</span>
                                 </div>
                             </div>
-                            <div class="col-lg-4 col-md-6">
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:lg:flex-[0_0_auto] tw:lg:w-[33.33333333%]">
                                 <div class="detail-line detail-line-stacked">
                                     <span class="detail-label">Cancelled By</span>
                                     <span class="detail-value">{{ $cancelledByName }}</span>
                                 </div>
                             </div>
-                            <div class="col-lg-4 col-md-6">
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:lg:flex-[0_0_auto] tw:lg:w-[33.33333333%]">
                                 <div class="detail-line detail-line-stacked" style="border-bottom: 0;">
                                     <span class="detail-label">Cancelled At</span>
                                     <span class="detail-value">{{ $cancelledAt }}</span>
@@ -192,14 +192,14 @@
         @endif
 
         {{-- NOTE --}}
-        <div class="col-12">
+        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:flex-[0_0_auto] tw:w-[100%]">
             <div class="nx-card">
                 <div class="nx-card-header">
                     <div>
-                        <h5 class="nx-card-title"><i class="bi bi-chat-left-text text-primary"></i> Note</h5>
+                        <h5 class="nx-card-title"><i class="bi bi-chat-left-text tw:text-(color:--nx-blue)!"></i> Note</h5>
                     </div>
                 </div>
-                <div class="p-3">
+                <div class="tw:p-4!">
                     <div class="note-box">{{ $note }}</div>
                 </div>
             </div>

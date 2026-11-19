@@ -5,20 +5,20 @@
 
 @section('content')
 
-<div class="container-fluid">
+<div class="ui-container-fluid">
 
     {{-- Header --}}
-    <div class="d-flex justify-content-between align-items-center mb-4">
+    <div class="tw:flex! tw:justify-between! tw:items-center! tw:mb-6!">
 
         <div>
-            <h4 class="fw-bold mb-1">Student Card History</h4>
-            <p class="text-muted mb-0">
+            <h4 class="tw:font-bold! tw:mb-1!">Student Card History</h4>
+            <p class="tw:text-bs-secondary-color! tw:mb-0!">
                 Complete card assignment and replacement history
             </p>
         </div>
 
         <a href="{{ route('admin.students.show', $student->id) }}"
-           class="btn btn-secondary">
+           class="ui-btn ui-btn-secondary">
             <i class="bi bi-arrow-left"></i>
             Back
         </a>
@@ -26,47 +26,47 @@
     </div>
 
     {{-- Student Information --}}
-    <div class="card shadow-sm border-0 mb-4">
+    <div class="ui-card tw:shadow-bs-sm! tw:[border:0]! tw:mb-6!">
 
-        <div class="card-header bg-primary text-white">
-            <h5 class="mb-0">
+        <div class="ui-card-header bs-bg-primary tw:bg-bs-primary! tw:text-bs-white!">
+            <h5 class="tw:mb-0!">
                 <i class="bi bi-person-badge"></i>
                 Student Information
             </h5>
         </div>
 
-        <div class="card-body">
+        <div class="ui-card-body">
 
-            <div class="row">
+            <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3">
 
-                <div class="col-md-3 mb-3">
-                    <label class="text-muted">Student Name</label>
-                    <h6 class="fw-bold">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[25%] tw:mb-4!">
+                    <label class="tw:text-bs-secondary-color!">Student Name</label>
+                    <h6 class="tw:font-bold!">
                         {{ $student->full_name }}
                     </h6>
                 </div>
 
-                <div class="col-md-3 mb-3">
-                    <label class="text-muted">Registration No</label>
-                    <h6 class="fw-bold">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[25%] tw:mb-4!">
+                    <label class="tw:text-bs-secondary-color!">Registration No</label>
+                    <h6 class="tw:font-bold!">
                         {{ $student->registration_number }}
                     </h6>
                 </div>
 
-                <div class="col-md-3 mb-3">
-                    <label class="text-muted">Current QR</label>
+                <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[25%] tw:mb-4!">
+                    <label class="tw:text-bs-secondary-color!">Current QR</label>
 
                     @if($student->custom_id)
 
                         <div>
-                            <span class="badge bg-success">
+                            <span class="ui-badge tw:bg-bs-success!">
                                 {{ $student->custom_id }}
                             </span>
                         </div>
 
                     @else
 
-                        <span class="badge bg-danger">
+                        <span class="ui-badge tw:bg-bs-danger!">
                             No Active Card
                         </span>
 
@@ -74,14 +74,14 @@
 
                 </div>
 
-                <div class="col-md-3 mb-3">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[25%] tw:mb-4!">
 
-                    <label class="text-muted">Status</label>
+                    <label class="tw:text-bs-secondary-color!">Status</label>
 
                     @if($student->student_disable)
 
                         <div>
-                            <span class="badge bg-danger">
+                            <span class="ui-badge tw:bg-bs-danger!">
                                 Disabled
                             </span>
                         </div>
@@ -89,7 +89,7 @@
                     @else
 
                         <div>
-                            <span class="badge bg-success">
+                            <span class="ui-badge tw:bg-bs-success!">
                                 Active
                             </span>
                         </div>
@@ -105,24 +105,24 @@
     </div>
 
     {{-- History Table --}}
-    <div class="card shadow-sm border-0">
+    <div class="ui-card tw:shadow-bs-sm! tw:[border:0]!">
 
-        <div class="card-header">
+        <div class="ui-card-header">
 
-            <h5 class="mb-0">
+            <h5 class="tw:mb-0!">
                 <i class="bi bi-clock-history"></i>
                 Card History
             </h5>
 
         </div>
 
-        <div class="card-body p-0">
+        <div class="ui-card-body tw:p-0!">
 
-            <div class="table-responsive">
+            <div class="ui-table-responsive">
 
-                <table class="table table-hover align-middle mb-0">
+                <table class="ui-table ui-table-hover tw:align-middle! tw:mb-0!">
 
-                    <thead class="table-light">
+                    <thead class="ui-table-light">
 
                     <tr>
 
@@ -154,31 +154,31 @@
                                 @switch($history->action)
 
                                     @case('assigned')
-                                        <span class="badge bg-primary">
+                                        <span class="ui-badge bs-bg-primary tw:bg-bs-primary!">
                                             Assigned
                                         </span>
                                     @break
 
                                     @case('replaced')
-                                        <span class="badge bg-info">
+                                        <span class="ui-badge tw:bg-bs-info!">
                                             Replaced
                                         </span>
                                     @break
 
                                     @case('lost')
-                                        <span class="badge bg-danger">
+                                        <span class="ui-badge tw:bg-bs-danger!">
                                             Lost
                                         </span>
                                     @break
 
                                     @case('damaged')
-                                        <span class="badge bg-warning text-dark">
+                                        <span class="ui-badge tw:bg-bs-warning! tw:text-bs-dark!">
                                             Damaged
                                         </span>
                                     @break
 
                                     @case('deactivated')
-                                        <span class="badge bg-secondary">
+                                        <span class="ui-badge tw:bg-bs-secondary!">
                                             Deactivated
                                         </span>
                                     @break
@@ -216,15 +216,15 @@
 
                         <tr>
 
-                            <td colspan="8" class="text-center py-5">
+                            <td colspan="8" class="tw:text-center! tw:py-12!">
 
-                                <i class="bi bi-clock-history fs-1 text-muted"></i>
+                                <i class="bi bi-clock-history tw:text-[length:calc(1.375rem_+_1.5vw)]! tw:xl:text-[length:2.5rem]! tw:text-bs-secondary-color!"></i>
 
-                                <h5 class="mt-3">
+                                <h5 class="tw:mt-4!">
                                     No Card History Found
                                 </h5>
 
-                                <p class="text-muted mb-0">
+                                <p class="tw:text-bs-secondary-color! tw:mb-0!">
                                     This student has no recorded card history.
                                 </p>
 
@@ -244,7 +244,7 @@
 
         @if($cards->hasPages())
 
-            <div class="card-footer bg-white">
+            <div class="ui-card-footer tw:bg-bs-white!">
 
                 {{ $cards->links() }}
 
@@ -263,30 +263,30 @@
 
 <style>
 
-.card{
+.ui-card{
     border-radius:16px;
 }
 
-.card-header{
+.ui-card-header{
     font-weight:600;
 }
 
-.table th{
+.ui-table th{
     font-size:14px;
     font-weight:600;
     white-space:nowrap;
 }
 
-.table td{
+.ui-table td{
     vertical-align:middle;
 }
 
-.badge{
+.ui-badge{
     font-size:12px;
     padding:7px 10px;
 }
 
-.table tbody tr:hover{
+.ui-table tbody tr:hover{
     background:#f8f9fa;
 }
 
@@ -301,26 +301,26 @@ h6{
     margin-bottom:0;
 }
 
-.card-header.bg-primary{
+.ui-card-header.bs-bg-primary{
     border-radius:16px 16px 0 0;
 }
 
-.pagination{
+.ui-pagination{
     margin-bottom:0;
 }
 
-.pagination .page-link{
+.ui-pagination .ui-page-link{
     border-radius:8px;
     margin:0 2px;
 }
 
 @media(max-width:768px){
 
-    .table{
+    .ui-table{
         font-size:13px;
     }
 
-    .badge{
+    .ui-badge{
         font-size:11px;
     }
 

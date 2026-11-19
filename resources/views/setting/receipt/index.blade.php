@@ -5,7 +5,7 @@
 
 @section('content')
     <div class="dashboard-page">
-        <div class="hero-section mb-4">
+        <div class="hero-section tw:mb-6!">
             <div class="hero-content">
                 <div class="hero-left">
                     <span class="greeting-badge">nexoraEDU</span>
@@ -22,32 +22,32 @@
         </div>
 
         @if (session('success'))
-            <div class="alert alert-success">{{ session('success') }}</div>
+            <div class="ui-alert ui-alert-success">{{ session('success') }}</div>
         @endif
         @if ($errors->any())
-            <div class="alert alert-danger">{{ $errors->first() }}</div>
+            <div class="ui-alert ui-alert-danger">{{ $errors->first() }}</div>
         @endif
 
-        <div class="row g-4">
-            <div class="col-lg-7">
+        <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[58.33333333%]">
                 <form method="POST" action="{{ route('admin.setting.receipt.update') }}" id="receipt-form">
                     @csrf
                     @method('PUT')
 
-                    <div class="nx-card mb-3">
+                    <div class="nx-card tw:mb-4!">
                         <div class="nx-card-header">
                             <div>
-                                <h5 class="nx-card-title"><i class="bi bi-receipt text-primary"></i> Shown on the receipt</h5>
+                                <h5 class="nx-card-title"><i class="bi bi-receipt tw:text-(color:--nx-blue)!"></i> Shown on the receipt</h5>
                                 <p class="nx-card-subtitle">Turn off what you do not want printed. The staff app follows this after it is updated.</p>
                             </div>
                         </div>
-                        <div class="p-3 pt-0">
+                        <div class="tw:p-4! tw:pt-0!">
                             @foreach ($fields as $name => [$key, $label])
-                                <div class="form-check form-switch d-flex align-items-center justify-content-between border-bottom py-2 ps-0">
-                                    <label class="form-check-label" for="r-{{ $name }}">{{ $label }}</label>
+                                <div class="ui-form-check ui-form-switch tw:flex! tw:items-center! tw:justify-between! tw:bs-border-b! tw:py-2! tw:pl-0!">
+                                    <label class="ui-form-check-label" for="r-{{ $name }}">{{ $label }}</label>
                                     <span>
                                         <input type="hidden" name="{{ $name }}" value="0">
-                                        <input class="form-check-input fs-5 ms-0 receipt-toggle" type="checkbox" role="switch"
+                                        <input class="ui-form-check-input tw:text-[length:1.25rem]! tw:ml-0! receipt-toggle" type="checkbox" role="switch"
                                             name="{{ $name }}" value="1" id="r-{{ $name }}" data-field="{{ $name }}"
                                             {{ old($name, $rules[$name]) ? 'checked' : '' }}>
                                     </span>
@@ -56,15 +56,15 @@
                         </div>
                     </div>
 
-                    <div class="nx-card mb-3">
+                    <div class="nx-card tw:mb-4!">
                         <div class="nx-card-header">
                             <div>
-                                <h5 class="nx-card-title"><i class="bi bi-chat-square-text text-info"></i> Footer line (optional)</h5>
+                                <h5 class="nx-card-title"><i class="bi bi-chat-square-text tw:text-bs-info!"></i> Footer line (optional)</h5>
                                 <p class="nx-card-subtitle">Printed at the bottom, e.g. a phone number. Up to {{ \App\Support\ReceiptRules::FOOTER_MAX }} letters.</p>
                             </div>
                         </div>
-                        <div class="p-3 pt-0">
-                            <input type="text" name="footer" id="r-footer" class="form-control" maxlength="{{ \App\Support\ReceiptRules::FOOTER_MAX }}"
+                        <div class="tw:p-4! tw:pt-0!">
+                            <input type="text" name="footer" id="r-footer" class="ui-form-control" maxlength="{{ \App\Support\ReceiptRules::FOOTER_MAX }}"
                                 value="{{ old('footer', $rules['footer']) }}" placeholder="e.g. Call 077 123 4567">
                         </div>
                     </div>
@@ -75,7 +75,7 @@
                 </form>
             </div>
 
-            <div class="col-lg-5">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[41.66666667%]">
                 <div class="nx-card">
                     <div class="nx-card-header">
                         <div>
@@ -83,8 +83,8 @@
                             <p class="nx-card-subtitle">Example data</p>
                         </div>
                     </div>
-                    <div class="p-3 pt-0">
-                        <pre id="receipt-preview" class="bg-light border rounded p-3 mb-0" style="font-size: 12px; white-space: pre-wrap;"></pre>
+                    <div class="tw:p-4! tw:pt-0!">
+                        <pre id="receipt-preview" class="tw:bg-bs-light! tw:bs-border! tw:rounded-bs! tw:p-4! tw:mb-0!" style="font-size: 12px; white-space: pre-wrap;"></pre>
                     </div>
                 </div>
             </div>

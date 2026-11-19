@@ -24,7 +24,7 @@
         {{-- ===================================================== --}}
         {{-- HERO --}}
         {{-- ===================================================== --}}
-        <div class="hero-section mb-4">
+        <div class="hero-section tw:mb-6!">
             <div class="hero-content">
                 <div class="hero-left">
                     <span class="greeting-badge">Category View</span>
@@ -60,8 +60,8 @@
         {{-- ===================================================== --}}
         {{-- SUMMARY --}}
         {{-- ===================================================== --}}
-        <div class="row g-4 mb-4">
-            <div class="col-lg-6">
+        <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3 tw:mb-6!">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[50%]">
                 <div class="summary-card summary-blue">
                     <div class="summary-icon"><i class="bi bi-book"></i></div>
                     <div>
@@ -72,7 +72,7 @@
                 </div>
             </div>
 
-            <div class="col-lg-6">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[50%]">
                 <div class="summary-card summary-green">
                     <div class="summary-icon"><i class="bi bi-collection"></i></div>
                     <div>
@@ -87,38 +87,38 @@
         {{-- ===================================================== --}}
         {{-- SEARCH --}}
         {{-- ===================================================== --}}
-        <div class="nx-card mb-4">
+        <div class="nx-card tw:mb-6!">
             <div class="nx-card-header">
                 <div>
-                    <h5 class="nx-card-title"><i class="bi bi-calendar-event text-primary"></i> Filter Schedules</h5>
+                    <h5 class="nx-card-title"><i class="bi bi-calendar-event tw:text-(color:--nx-blue)!"></i> Filter Schedules</h5>
                     <p class="nx-card-subtitle">Pick a date to filter schedules</p>
                 </div>
             </div>
-            <div class="p-3">
+            <div class="tw:p-4!">
                 <form method="GET" action="{{ route('class-schedules.categorySchedules') }}">
                     <input type="hidden" name="student_class_id" value="{{ $studentClass->id }}">
                     <input type="hidden" name="class_category_fee_id" value="{{ $categoryFee->id }}">
 
-                    <div class="row g-3">
-                        <div class="col-md-8 col-lg-9">
+                    <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[66.66666667%] tw:lg:flex-[0_0_auto] tw:lg:w-[75%]">
                             <div class="search-input-wrapper">
                                 <i class="bi bi-calendar-event"></i>
-                                <input type="date" name="search" class="form-control nx-input search-input"
+                                <input type="date" name="search" class="ui-form-control nx-input search-input"
                                     value="{{ $searchValue }}">
                             </div>
                         </div>
 
-                        <div class="col-md-2 d-grid">
-                            <button type="submit" class="nx-btn nx-btn-primary w-100">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[16.66666667%] tw:grid!">
+                            <button type="submit" class="nx-btn nx-btn-primary tw:w-full!">
                                 <i class="bi bi-search"></i> Search
                             </button>
                         </div>
 
-                        <div class="col-md-2 d-grid">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[16.66666667%] tw:grid!">
                             <a href="{{ route('class-schedules.categorySchedules', [
                                 'student_class_id' => $studentClass->id,
                                 'class_category_fee_id' => $categoryFee->id,
-                            ]) }}" class="nx-btn nx-btn-light w-100">
+                            ]) }}" class="nx-btn nx-btn-light tw:w-full!">
                                 Reset
                             </a>
                         </div>
@@ -130,10 +130,10 @@
         {{-- ===================================================== --}}
         {{-- TABLE --}}
         {{-- ===================================================== --}}
-        <div class="nx-card mb-4">
+        <div class="nx-card tw:mb-6!">
             <div class="nx-card-header">
                 <div>
-                    <h5 class="nx-card-title"><i class="bi bi-list-ul text-primary"></i> Schedules</h5>
+                    <h5 class="nx-card-title"><i class="bi bi-list-ul tw:text-(color:--nx-blue)!"></i> Schedules</h5>
                     <p class="nx-card-subtitle">All schedules for this class and category</p>
                 </div>
                 <span class="nx-badge nx-badge-blue">
@@ -142,8 +142,8 @@
                 </span>
             </div>
 
-            <div class="table-responsive">
-                <table class="table premium-table mb-0">
+            <div class="ui-table-responsive">
+                <table class="ui-table premium-table tw:mb-0!">
                     <thead>
                         <tr>
                             <th>#</th>
@@ -152,7 +152,7 @@
                             <th>Time</th>
                             <th>Hall</th>
                             <th>Status</th>
-                            <th class="text-end">Action</th>
+                            <th class="tw:text-right!">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -216,7 +216,7 @@
                                 <td class="cell-sub">{{ $hallName }}</td>
 
                                 <td>
-                                    <div class="d-flex flex-column gap-1">
+                                    <div class="tw:flex! tw:flex-col! tw:gap-1!">
                                         <span class="nx-badge {{ $statusClass }}">
                                             {{ ucfirst($schedule->status) }}
                                         </span>
@@ -226,7 +226,7 @@
                                     </div>
                                 </td>
 
-                                <td class="text-end">
+                                <td class="tw:text-right!">
                                     <div class="action-buttons">
 
                                         {{-- VIEW --}}
@@ -262,8 +262,8 @@
                                             @if ($isCancelable)
                                                 <button type="button"
                                                     class="action-btn action-btn-danger"
-                                                    data-bs-toggle="modal"
-                                                    data-bs-target="#cancelModal{{ $schedule->id }}"
+                                                    data-nx-toggle="modal"
+                                                    data-nx-target="#cancelModal{{ $schedule->id }}"
                                                     title="Cancel schedule"
                                                     aria-label="Cancel schedule">
                                                     <i class="bi bi-x-circle-fill"></i>
@@ -276,8 +276,8 @@
                         @empty
                             <tr>
                                 <td colspan="7" class="empty-table">
-                                    <i class="bi bi-calendar-x fs-1 d-block mb-3"></i>
-                                    <strong class="d-block">No schedules found</strong>
+                                    <i class="bi bi-calendar-x tw:text-[length:calc(1.375rem_+_1.5vw)]! tw:xl:text-[length:2.5rem]! tw:block! tw:mb-4!"></i>
+                                    <strong class="tw:block!">No schedules found</strong>
                                     <span class="cell-sub">No schedules found for this category.</span>
                                 </td>
                             </tr>
@@ -287,7 +287,7 @@
             </div>
 
             @if ($schedules->hasPages())
-                <div class="p-3 border-top d-flex justify-content-center">
+                <div class="tw:p-4! tw:bs-border-t! tw:flex! tw:justify-center!">
                     {{ $schedules->withQueryString()->links() }}
                 </div>
             @endif
@@ -309,20 +309,20 @@
         @endphp
 
         @if ($isCancelable && $canManageSchedules)
-            <div class="modal fade" id="cancelModal{{ $schedule->id }}" tabindex="-1" aria-hidden="true">
-                <div class="modal-dialog modal-dialog-centered">
-                    <div class="modal-content">
+            <div class="ui-modal ui-fade" id="cancelModal{{ $schedule->id }}" tabindex="-1" aria-hidden="true">
+                <div class="ui-modal-dialog ui-modal-dialog-centered">
+                    <div class="ui-modal-content">
                         <form method="POST" action="{{ route('class-schedules.cancel', $schedule) }}">
                             @csrf
                             @method('PATCH')
 
-                            <div class="modal-header">
-                                <h5 class="modal-title">Cancel Schedule</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <div class="ui-modal-header">
+                                <h5 class="ui-modal-title">Cancel Schedule</h5>
+                                <button type="button" class="ui-btn-close" data-nx-dismiss="modal" aria-label="Close"></button>
                             </div>
 
-                            <div class="modal-body">
-                                <p class="cell-sub mb-3">
+                            <div class="ui-modal-body">
+                                <p class="cell-sub tw:mb-4!">
                                     {{ \Carbon\Carbon::parse($schedule->class_date)->format('Y-m-d') }}
                                     | {{ ucfirst($schedule->day_of_week) }}
                                     | {{ \Carbon\Carbon::parse($schedule->start_time)->format('h:i A') }}
@@ -330,7 +330,7 @@
                                 </p>
 
                                 @if ($isToday)
-                                    <div class="nx-alert nx-alert-amber mb-3">
+                                    <div class="nx-alert nx-alert-amber tw:mb-4!">
                                         <i class="bi bi-exclamation-triangle-fill"></i>
                                         <span>This is today's class. Parents will be notified by SMS.</span>
                                     </div>
@@ -338,12 +338,12 @@
 
                                 <label for="cancel_reason_{{ $schedule->id }}" class="nx-label">Cancel Reason *</label>
                                 <textarea name="cancel_reason" id="cancel_reason_{{ $schedule->id }}"
-                                    class="form-control nx-input" rows="3"
+                                    class="ui-form-control nx-input" rows="3"
                                     placeholder="Enter cancellation reason" required></textarea>
                             </div>
 
-                            <div class="modal-footer">
-                                <button type="button" class="nx-btn nx-btn-light" data-bs-dismiss="modal">
+                            <div class="ui-modal-footer">
+                                <button type="button" class="nx-btn nx-btn-light" data-nx-dismiss="modal">
                                     Close
                                 </button>
                                 <button type="submit" class="nx-btn nx-btn-danger">

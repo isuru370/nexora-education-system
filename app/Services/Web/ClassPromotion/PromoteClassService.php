@@ -116,7 +116,7 @@ class PromoteClassService
         if ($until->lt($start)) {
             throw ValidationException::withMessages(['schedule_until' => 'Schedule until must be on or after the start date.']);
         }
-        if ($start->diffInDays($until) > self::MAX_SCHEDULE_DAYS) {
+        if ((int) $start->diffInDays($until) > self::MAX_SCHEDULE_DAYS) {
             throw ValidationException::withMessages(['schedule_until' => 'Schedule until can be at most about 18 months after the start date.']);
         }
 

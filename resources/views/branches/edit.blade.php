@@ -7,7 +7,7 @@
 <div class="dashboard-page">
 
     {{-- HERO --}}
-    <div class="hero-section mb-4">
+    <div class="hero-section tw:mb-6!">
         <div class="hero-content">
             <div class="hero-left">
                 <span class="greeting-badge">nexoraEDU</span>
@@ -61,7 +61,7 @@
     </div>
 
     {{-- EDIT MODE INFO --}}
-    <div class="nx-alert nx-alert-blue mb-4">
+    <div class="nx-alert nx-alert-blue tw:mb-6!">
         <i class="bi bi-info-circle-fill"></i>
         <div>
             <strong>Editing Mode</strong>
@@ -71,15 +71,15 @@
         </div>
     </div>
 
-    <div class="row g-4">
+    <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3">
 
         {{-- MAIN FORM --}}
-        <div class="col-lg-8">
+        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[66.66666667%]">
             <div class="nx-card">
 
                 <div class="nx-card-header">
                     <div>
-                        <h5 class="nx-card-title"><i class="bi bi-pencil-square text-primary"></i> Branch Information</h5>
+                        <h5 class="nx-card-title"><i class="bi bi-pencil-square tw:text-(color:--nx-blue)!"></i> Branch Information</h5>
                         <p class="nx-card-subtitle">Update the fields you want to change</p>
                     </div>
                     <span class="nx-badge nx-badge-blue" style="font-family: ui-monospace, monospace;">
@@ -87,7 +87,7 @@
                     </span>
                 </div>
 
-                <div class="p-3 p-md-4">
+                <div class="tw:p-4! tw:md:p-6!">
                     <form action="{{ route('branches.update', $branch->id) }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @method('PUT')
@@ -98,16 +98,16 @@
         </div>
 
         {{-- SIDEBAR --}}
-        <div class="col-lg-4">
+        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[33.33333333%]">
 
             {{-- BRANCH DETAILS --}}
-            <div class="nx-card mb-4">
+            <div class="nx-card tw:mb-6!">
                 <div class="nx-card-header">
                     <div>
-                        <h5 class="nx-card-title"><i class="bi bi-info-circle-fill text-primary"></i> Branch Details</h5>
+                        <h5 class="nx-card-title"><i class="bi bi-info-circle-fill tw:text-(color:--nx-blue)!"></i> Branch Details</h5>
                     </div>
                 </div>
-                <div class="p-3">
+                <div class="tw:p-4!">
                     <div class="details-list">
 
                         <div class="detail-row">
@@ -148,7 +148,7 @@
             </div>
 
             {{-- WARNING --}}
-            <div class="nx-alert nx-alert-amber mb-4">
+            <div class="nx-alert nx-alert-amber tw:mb-6!">
                 <i class="bi bi-exclamation-triangle-fill"></i>
                 <div>
                     <strong>Important</strong>
@@ -169,8 +169,8 @@
                     </div>
                 </div>
 
-                <div class="p-3">
-                    <p class="cell-sub mb-3">
+                <div class="tw:p-4!">
+                    <p class="cell-sub tw:mb-4!">
                         Once deleted, this branch cannot be recovered. Please be certain.
                     </p>
 
@@ -178,7 +178,7 @@
                         onsubmit="return confirm('Are you sure you want to delete this branch permanently? This action cannot be undone.');">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="nx-btn nx-btn-danger w-100">
+                        <button type="submit" class="nx-btn nx-btn-danger tw:w-full!">
                             <i class="bi bi-trash3"></i> Delete This Branch
                         </button>
                     </form>

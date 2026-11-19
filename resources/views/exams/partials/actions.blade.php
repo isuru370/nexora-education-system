@@ -44,8 +44,8 @@
     @if ($showCancel)
         <button type="button"
             class="action-btn action-btn-danger"
-            data-bs-toggle="modal"
-            data-bs-target="#cancelModal"
+            data-nx-toggle="modal"
+            data-nx-target="#cancelModal"
             data-exam-id="{{ $exam->id }}"
             data-exam-title="{{ $exam->title }}"
             data-exam-route="{{ route('admin.exams.cancel', $exam->id) }}"

@@ -48,7 +48,7 @@ kbd {
     font-family: inherit;
 }
 
-.input-group-text {
+.ui-input-group-text {
     border-radius: 8px 0 0 8px !important;
     border-right: none;
 }
@@ -63,7 +63,7 @@ kbd {
     box-shadow: none;
 }
 
-.input-group .btn {
+.ui-input-group .ui-btn {
     border-radius: 0 8px 8px 0 !important;
 }
 
@@ -102,7 +102,7 @@ kbd {
 /* =========================================
    4. TABLE (Global)
 ========================================= */
-.table td {
+.ui-table td {
     vertical-align: middle;
 }
 
@@ -164,7 +164,7 @@ kbd {
     font-weight: 700;
 }
 
-.text-center {
+.bs-text-center {
     text-align: center;
 }
 
@@ -172,21 +172,21 @@ kbd {
 /* =========================================
    7. MODALS
 ========================================= */
-.modal-content {
+.ui-modal-content {
     border-radius: 20px;
     border: none;
     box-shadow: 0 20px 60px rgba(0, 0, 0, .15);
 }
 
-.modal-header {
+.ui-modal-header {
     padding: 1.25rem 1.5rem;
 }
 
-.modal-body {
+.ui-modal-body {
     padding: 1.5rem;
 }
 
-.modal-footer {
+.ui-modal-footer {
     padding: 1rem 1.5rem;
 }
 
@@ -274,7 +274,7 @@ kbd {
     gap: 10px;
 }
 
-.class-payment-card-footer .btn {
+.class-payment-card-footer .ui-btn {
     min-width: 75px;
 }
 
@@ -360,7 +360,7 @@ kbd {
    11. RESPONSIVE — Tablet (≤ 767px)
 ========================================= */
 @media (max-width: 767px) {
-    .card-header .d-flex {
+    .ui-card-header .bs-d-flex {
         flex-wrap: wrap;
     }
 
@@ -388,7 +388,7 @@ kbd {
         align-items: stretch;
     }
 
-    .class-payment-card-footer .btn {
+    .class-payment-card-footer .ui-btn {
         width: 100%;
     }
 
@@ -402,7 +402,7 @@ kbd {
         padding: .75rem !important;
     }
 
-    .input-group .btn span:not(.spinner-border) {
+    .ui-input-group .ui-btn span:not(.ui-spinner-border) {
         display: none;
     }
 
@@ -423,24 +423,24 @@ kbd {
         margin: .5rem;
     }
 
-    #receiptModal .modal-body {
+    #receiptModal .ui-modal-body {
         padding: 1rem;
     }
 
-    #receiptModal .modal-footer {
+    #receiptModal .ui-modal-footer {
         padding: .75rem 1rem 1.25rem;
     }
 
-    #paymentModal .modal-footer {
+    #paymentModal .ui-modal-footer {
         flex-direction: column-reverse;
         gap: .5rem;
     }
 
-    #paymentModal .modal-footer .btn {
+    #paymentModal .ui-modal-footer .ui-btn {
         width: 100%;
     }
 
-    #paymentModal .modal-body {
+    #paymentModal .ui-modal-body {
         padding: 1rem;
     }
 }

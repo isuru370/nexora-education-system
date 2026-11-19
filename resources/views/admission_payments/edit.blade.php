@@ -12,7 +12,7 @@
 <div class="dashboard-page">
 
     {{-- HERO --}}
-    <div class="hero-section mb-4">
+    <div class="hero-section tw:mb-6!">
         <div class="hero-content">
             <div class="hero-left">
                 <span class="greeting-badge">nexoraEDU</span>
@@ -32,18 +32,18 @@
     </div>
 
     {{-- CURRENT PAYMENT SUMMARY --}}
-    <div class="nx-card mb-4">
+    <div class="nx-card tw:mb-6!">
         <div class="nx-card-header">
             <div>
-                <h5 class="nx-card-title"><i class="bi bi-info-circle text-primary"></i> Current Payment</h5>
+                <h5 class="nx-card-title"><i class="bi bi-info-circle tw:text-(color:--nx-blue)!"></i> Current Payment</h5>
                 <p class="nx-card-subtitle">Quick overview of the payment being edited</p>
             </div>
         </div>
 
-        <div class="p-3">
-            <div class="row g-3">
+        <div class="tw:p-4!">
+            <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2">
 
-                <div class="col-md-4">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
                     <div class="summary-item">
                         <i class="bi bi-receipt"></i>
                         <div>
@@ -53,7 +53,7 @@
                     </div>
                 </div>
 
-                <div class="col-md-4">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
                     <div class="summary-item">
                         <i class="bi bi-person"></i>
                         <div>
@@ -63,7 +63,7 @@
                     </div>
                 </div>
 
-                <div class="col-md-4">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
                     <div class="summary-item">
                         <i class="bi bi-info-circle"></i>
                         <div>
@@ -77,15 +77,15 @@
     </div>
 
     {{-- FORM CARD --}}
-    <div class="nx-card mb-4">
+    <div class="nx-card tw:mb-6!">
         <div class="nx-card-header">
             <div>
-                <h5 class="nx-card-title"><i class="bi bi-pencil-square text-primary"></i> Payment Details</h5>
+                <h5 class="nx-card-title"><i class="bi bi-pencil-square tw:text-(color:--nx-blue)!"></i> Payment Details</h5>
                 <p class="nx-card-subtitle">Update the selected payment and save the changes</p>
             </div>
         </div>
 
-        <div class="p-3 p-md-4">
+        <div class="tw:p-4! tw:md:p-6!">
             <form action="{{ route('admission-payments.update', $admissionPayment) }}" method="POST">
                 @csrf
                 @method('PUT')

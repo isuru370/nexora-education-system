@@ -38,11 +38,11 @@
 @endphp
 
 @if ($errors->any())
-    <div class="nx-alert nx-alert-red mb-4">
+    <div class="nx-alert nx-alert-red tw:mb-6!">
         <i class="bi bi-exclamation-triangle-fill"></i>
         <div>
             <strong>Please fix the following errors:</strong>
-            <ul class="mb-0 mt-2">
+            <ul class="tw:mb-0! tw:mt-2!">
                 @foreach ($errors->all() as $error)
                     <li>{{ $error }}</li>
                 @endforeach
@@ -60,13 +60,13 @@
         <input type="hidden" name="schedule_type" value="{{ $currentScheduleType }}">
     @endif
 
-    <div class="row g-3">
+    <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2">
 
         {{-- ===================================================== --}}
         {{-- SECTION: Schedule Information --}}
         {{-- ===================================================== --}}
-        <div class="col-12">
-            <div class="section-header mb-3">
+        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:flex-[0_0_auto] tw:w-[100%]">
+            <div class="section-header tw:mb-4!">
                 <div class="section-icon icon-blue"><i class="bi bi-calendar2-week"></i></div>
                 <div>
                     <h5 class="section-title">
@@ -87,16 +87,16 @@
                 @endif
             </div>
 
-            <div class="row g-3 mb-4">
+            <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2 tw:mb-6!">
 
                 {{-- CLASS --}}
-                <div class="col-lg-6">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[50%]">
                     <label class="nx-label">Class <span style="color: var(--nx-red);">*</span></label>
                     <input type="hidden" name="student_class_id" value="{{ $selectedClassValue }}">
 
                     <div class="selected-box">
                         @if (!empty($selectedClass))
-                            <div class="fw-bold">{{ $selectedClass->class_name }}</div>
+                            <div class="tw:font-bold!">{{ $selectedClass->class_name }}</div>
                             <div class="cell-sub">
                                 Grade: {{ optional($selectedClass->grade)->grade_name ?? 'N/A' }} |
                                 Subject: {{ optional($selectedClass->subject)->subject_name ?? 'N/A' }}
@@ -114,14 +114,14 @@
                 </div>
 
                 {{-- CATEGORY --}}
-                <div class="col-lg-6">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[50%]">
                     <label class="nx-label">Fee Category <span style="color: var(--nx-red);">*</span></label>
                     <input type="hidden" name="class_category_fee_id"
                         value="{{ $selectedCategoryFeeId ?? request('class_category_fee_id') }}">
 
                     <div class="selected-box">
                         @if (!empty($selectedCategory))
-                            <div class="fw-bold">{{ $selectedCategory->category_name }}</div>
+                            <div class="tw:font-bold!">{{ $selectedCategory->category_name }}</div>
                             <div class="cell-sub">
                                 @if (!empty($selectedCategory->code))
                                     Code: {{ $selectedCategory->code }}
@@ -139,10 +139,10 @@
                 </div>
 
                 {{-- HALL --}}
-                <div class="col-lg-6">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[50%]">
                     <label class="nx-label">Hall</label>
                     <select name="class_hall_id"
-                        class="form-select nx-input @error('class_hall_id') is-invalid @enderror">
+                        class="ui-form-select nx-input @error('class_hall_id') ui-is-invalid @enderror">
                         <option value="">No Hall / Not selected</option>
                         @foreach ($halls as $hall)
                             <option value="{{ $hall->id }}"
@@ -159,10 +159,10 @@
 
                 {{-- DATE FIELDS --}}
                 @if ($isEdit)
-                    <div class="col-lg-6">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[50%]">
                         <label class="nx-label">Class Date <span style="color: var(--nx-red);">*</span></label>
                         <input type="date" name="class_date"
-                            class="form-control nx-input @error('class_date') is-invalid @enderror"
+                            class="ui-form-control nx-input @error('class_date') ui-is-invalid @enderror"
                             value="{{ $classDateValue }}" required>
                         @error('class_date')
                             <div class="nx-error"><i class="bi bi-exclamation-circle"></i> {{ $message }}</div>
@@ -170,38 +170,38 @@
                     </div>
                 @else
                     @if ($currentScheduleType === 'single')
-                        <div class="col-lg-6">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[50%]">
                             <label class="nx-label">Class Date <span style="color: var(--nx-red);">*</span></label>
                             <input type="date" name="class_date"
-                                class="form-control nx-input @error('class_date') is-invalid @enderror"
+                                class="ui-form-control nx-input @error('class_date') ui-is-invalid @enderror"
                                 value="{{ old('class_date') }}" required>
                             @error('class_date')
                                 <div class="nx-error"><i class="bi bi-exclamation-circle"></i> {{ $message }}</div>
                             @enderror
                         </div>
                     @else
-                        <div class="col-lg-4">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[33.33333333%]">
                             <label class="nx-label">Start Date <span style="color: var(--nx-red);">*</span></label>
                             <input type="date" name="start_date"
-                                class="form-control nx-input @error('start_date') is-invalid @enderror"
+                                class="ui-form-control nx-input @error('start_date') ui-is-invalid @enderror"
                                 value="{{ old('start_date', $startDateValue) }}" required>
                             @error('start_date')
                                 <div class="nx-error"><i class="bi bi-exclamation-circle"></i> {{ $message }}</div>
                             @enderror
                         </div>
-                        <div class="col-lg-4">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[33.33333333%]">
                             <label class="nx-label">End Date <span style="color: var(--nx-red);">*</span></label>
                             <input type="date" name="end_date"
-                                class="form-control nx-input @error('end_date') is-invalid @enderror"
+                                class="ui-form-control nx-input @error('end_date') ui-is-invalid @enderror"
                                 value="{{ old('end_date', $endDateValue) }}" required>
                             @error('end_date')
                                 <div class="nx-error"><i class="bi bi-exclamation-circle"></i> {{ $message }}</div>
                             @enderror
                         </div>
-                        <div class="col-lg-4">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[33.33333333%]">
                             <label class="nx-label">Class Day <span style="color: var(--nx-red);">*</span></label>
                             <select name="class_day"
-                                class="form-select nx-input @error('class_day') is-invalid @enderror" required>
+                                class="ui-form-select nx-input @error('class_day') ui-is-invalid @enderror" required>
                                 <option value="">Select Day</option>
                                 @foreach (['monday','tuesday','wednesday','thursday','friday','saturday','sunday'] as $day)
                                     <option value="{{ $day }}" {{ old('class_day') === $day ? 'selected' : '' }}>
@@ -217,10 +217,10 @@
                 @endif
 
                 {{-- START TIME --}}
-                <div class="col-lg-6">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[50%]">
                     <label class="nx-label">Start Time <span style="color: var(--nx-red);">*</span></label>
                     <input type="time" name="start_time"
-                        class="form-control nx-input @error('start_time') is-invalid @enderror"
+                        class="ui-form-control nx-input @error('start_time') ui-is-invalid @enderror"
                         value="{{ old('start_time', $startTimeValue) }}" required>
                     @error('start_time')
                         <div class="nx-error"><i class="bi bi-exclamation-circle"></i> {{ $message }}</div>
@@ -228,10 +228,10 @@
                 </div>
 
                 {{-- END TIME --}}
-                <div class="col-lg-6">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[50%]">
                     <label class="nx-label">End Time <span style="color: var(--nx-red);">*</span></label>
                     <input type="time" name="end_time"
-                        class="form-control nx-input @error('end_time') is-invalid @enderror"
+                        class="ui-form-control nx-input @error('end_time') ui-is-invalid @enderror"
                         value="{{ old('end_time', $endTimeValue) }}" required>
                     @error('end_time')
                         <div class="nx-error"><i class="bi bi-exclamation-circle"></i> {{ $message }}</div>
@@ -240,10 +240,10 @@
 
                 {{-- STATUS --}}
                 @if ($isEdit)
-                    <div class="col-lg-6">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[50%]">
                         <label class="nx-label">Status <span style="color: var(--nx-red);">*</span></label>
                         <select name="status"
-                            class="form-select nx-input @error('status') is-invalid @enderror" required>
+                            class="ui-form-select nx-input @error('status') ui-is-invalid @enderror" required>
                             @foreach (['scheduled','ongoing','completed','cancelled'] as $status)
                                 <option value="{{ $status }}" {{ $statusValue === $status ? 'selected' : '' }}>
                                     {{ ucfirst($status) }}
@@ -257,12 +257,12 @@
                 @endif
 
                 {{-- ACTIVE --}}
-                <div class="col-lg-6">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[50%]">
                     <label class="nx-label">Active</label>
                     <input type="hidden" name="is_active" value="0">
                     <div class="toggle-switch">
                         <input type="checkbox" name="is_active" value="1" id="is_active"
-                            class="form-check-input flex-shrink-0"
+                            class="ui-form-check-input tw:shrink-0!"
                             style="width: 3em; height: 1.5em; cursor: pointer;"
                             {{ $isActiveValue ? 'checked' : '' }}>
                         <label for="is_active" class="toggle-content">
@@ -274,12 +274,12 @@
 
                 {{-- CANCEL REASON (edit only) --}}
                 @if ($isEdit)
-                    <div class="col-12">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:flex-[0_0_auto] tw:w-[100%]">
                         <label class="nx-label">Cancel Reason</label>
                         <textarea name="cancel_reason"
-                            class="form-control nx-input @error('cancel_reason') is-invalid @enderror"
+                            class="ui-form-control nx-input @error('cancel_reason') ui-is-invalid @enderror"
                             rows="2" placeholder="Reason if status is cancelled">{{ $cancelReasonValue }}</textarea>
-                        <small class="cell-sub d-block mt-1">
+                        <small class="cell-sub tw:block! tw:mt-1!">
                             This is used only when status is set to cancelled.
                         </small>
                         @error('cancel_reason')
@@ -289,10 +289,10 @@
                 @endif
 
                 {{-- NOTE --}}
-                <div class="col-12">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:flex-[0_0_auto] tw:w-[100%]">
                     <label class="nx-label">Note</label>
                     <textarea name="note" rows="3"
-                        class="form-control nx-input @error('note') is-invalid @enderror"
+                        class="ui-form-control nx-input @error('note') ui-is-invalid @enderror"
                         placeholder="Optional note">{{ $noteValue }}</textarea>
                     @error('note')
                         <div class="nx-error"><i class="bi bi-exclamation-circle"></i> {{ $message }}</div>
@@ -304,7 +304,7 @@
         {{-- ===================================================== --}}
         {{-- ACTIONS --}}
         {{-- ===================================================== --}}
-        <div class="col-12">
+        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:flex-[0_0_auto] tw:w-[100%]">
             <div class="nx-form-actions">
                 <a href="{{ route('class-schedules.index') }}" class="nx-btn nx-btn-light">
                     <i class="bi bi-x-circle"></i> Cancel

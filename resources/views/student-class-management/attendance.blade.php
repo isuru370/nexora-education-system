@@ -7,7 +7,7 @@
 <div class="dashboard-page">
 
     {{-- HERO --}}
-    <div class="hero-section mb-4">
+    <div class="hero-section tw:mb-6!">
         <div class="hero-content">
             <div class="hero-left">
                 <span class="greeting-badge">nexoraEDU</span>
@@ -25,7 +25,7 @@
     </div>
 
     {{-- SUMMARY --}}
-    <div class="stats-grid mb-4">
+    <div class="stats-grid tw:mb-6!">
         <div class="nx-card stat-card">
             <div class="stat-icon-wrapper icon-blue"><i class="bi bi-calendar-week"></i></div>
             <div class="stat-info">
@@ -61,10 +61,10 @@
     </div>
 
     {{-- MONTHLY BAR CHART --}}
-    <div class="nx-card mb-4">
+    <div class="nx-card tw:mb-6!">
         <div class="nx-card-header">
             <div>
-                <h5 class="nx-card-title"><i class="bi bi-bar-chart-fill text-primary"></i> Monthly Attendance Overview</h5>
+                <h5 class="nx-card-title"><i class="bi bi-bar-chart-fill tw:text-(color:--nx-blue)!"></i> Monthly Attendance Overview</h5>
                 <p class="nx-card-subtitle">Completed classes, attended and absent by month</p>
             </div>
             <span class="nx-badge nx-badge-green">
@@ -73,7 +73,7 @@
             </span>
         </div>
 
-        <div class="p-3">
+        <div class="tw:p-4!">
             @if (isset($data['monthly_attendance']) && $data['monthly_attendance']->count() > 0)
                 <div class="monthly-chart-wrapper">
                     @foreach ($data['monthly_attendance'] as $month)
@@ -125,8 +125,8 @@
                 </div>
             @else
                 <div class="empty-table">
-                    <i class="bi bi-bar-chart fs-2 d-block mb-2"></i>
-                    <strong class="d-block">No Monthly Attendance Data</strong>
+                    <i class="bi bi-bar-chart tw:text-[length:calc(1.325rem_+_0.9vw)]! tw:xl:text-[length:2rem]! tw:block! tw:mb-2!"></i>
+                    <strong class="tw:block!">No Monthly Attendance Data</strong>
                     <span class="cell-sub">No completed class schedules were found after the enrollment date.</span>
                 </div>
             @endif
@@ -134,16 +134,16 @@
     </div>
 
     {{-- MONTHLY ATTENDANCE HISTORY --}}
-    <div class="nx-card mb-4">
+    <div class="nx-card tw:mb-6!">
         <div class="nx-card-header">
             <div>
-                <h5 class="nx-card-title"><i class="bi bi-clock-history text-primary"></i> Monthly Attendance History</h5>
+                <h5 class="nx-card-title"><i class="bi bi-clock-history tw:text-(color:--nx-blue)!"></i> Monthly Attendance History</h5>
                 <p class="nx-card-subtitle">Completed class schedules and attendance by month</p>
             </div>
             <span class="nx-badge nx-badge-blue">{{ $data['total_days'] ?? 0 }} Days</span>
         </div>
 
-        <div class="p-3">
+        <div class="tw:p-4!">
             @if (isset($data['monthly_attendance']) && $data['monthly_attendance']->count() > 0)
                 <div class="monthly-history">
                     @foreach ($data['monthly_attendance'] as $month)
@@ -175,8 +175,8 @@
                             </div>
 
                             @if ($monthAttendanceData->count() > 0)
-                                <div class="table-responsive">
-                                    <table class="table premium-table mb-0">
+                                <div class="ui-table-responsive">
+                                    <table class="ui-table premium-table tw:mb-0!">
                                         <thead>
                                             <tr><th>#</th><th>Date</th><th>Time</th><th>Status</th></tr>
                                         </thead>
@@ -185,7 +185,7 @@
                                                 <tr>
                                                     <td class="row-number">{{ $index + 1 }}</td>
                                                     <td>
-                                                        <i class="bi bi-calendar3 me-1 text-muted"></i>
+                                                        <i class="bi bi-calendar3 tw:mr-1! tw:text-(color:--nx-muted)!"></i>
                                                         {{ $attendance['date'] ?? 'N/A' }}
                                                     </td>
                                                     <td class="cell-sub">
@@ -213,8 +213,8 @@
                 </div>
             @else
                 <div class="empty-table">
-                    <i class="bi bi-calendar-x fs-2 d-block mb-2"></i>
-                    <strong class="d-block">No Monthly Attendance Data</strong>
+                    <i class="bi bi-calendar-x tw:text-[length:calc(1.325rem_+_0.9vw)]! tw:xl:text-[length:2rem]! tw:block! tw:mb-2!"></i>
+                    <strong class="tw:block!">No Monthly Attendance Data</strong>
                     <span class="cell-sub">No completed class schedules were found after the enrollment date.</span>
                 </div>
             @endif
@@ -222,14 +222,14 @@
     </div>
 
     {{-- ENROLLMENT DETAILS --}}
-    <div class="nx-card mb-4">
+    <div class="nx-card tw:mb-6!">
         <div class="nx-card-header">
             <div>
-                <h5 class="nx-card-title"><i class="bi bi-info-circle text-primary"></i> Enrollment Details</h5>
+                <h5 class="nx-card-title"><i class="bi bi-info-circle tw:text-(color:--nx-blue)!"></i> Enrollment Details</h5>
                 <p class="nx-card-subtitle">Student class enrollment information</p>
             </div>
         </div>
-        <div class="p-3">
+        <div class="tw:p-4!">
             <div class="detail-grid">
                 <div class="detail-item"><span class="detail-label">Student ID</span><strong class="detail-value">{{ $data['student']->custom_id ?? 'N/A' }}</strong></div>
                 <div class="detail-item"><span class="detail-label">Class</span><strong class="detail-value">{{ $data['class']->class_name ?? 'N/A' }}</strong></div>

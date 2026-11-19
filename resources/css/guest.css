@@ -1,0 +1,42 @@
+/*
+ * Pages without the app layout and without Bootstrap (login ...):
+ * full Tailwind, with its base styles (preflight). Built into
+ * public/css/guest.css by `npm run css`.
+ */
+
+@layer theme, base, components, utilities;
+
+@import "tailwindcss/theme.css" layer(theme) prefix(tw);
+@import "tailwindcss/preflight.css" layer(base);
+@import "tailwindcss/utilities.css" layer(utilities);
+
+@theme {
+    --breakpoint-sm: 576px;
+    --breakpoint-md: 768px;
+    --breakpoint-lg: 992px;
+    --breakpoint-xl: 1200px;
+    --breakpoint-2xl: 1400px;
+
+    --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+@keyframes float {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-25px); }
+    100% { transform: translateY(0); }
+}
+
+@layer components {
+    /* Checkbox tick (same as Bootstrap's form-check-input) */
+    .nx-check:checked {
+        background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='m6 10 3 3 6-6'/%3e%3c/svg%3e");
+    }
+
+    /* Browser autofill keeps the dark glass look */
+    .nx-glass-input:-webkit-autofill,
+    .nx-glass-input:-webkit-autofill:hover,
+    .nx-glass-input:-webkit-autofill:focus {
+        -webkit-text-fill-color: #fff;
+        transition: background-color 9999s ease-in-out 0s;
+    }
+}

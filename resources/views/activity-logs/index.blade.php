@@ -9,7 +9,7 @@
         {{-- ===================================================== --}}
         {{-- HERO --}}
         {{-- ===================================================== --}}
-        <div class="hero-section mb-4">
+        <div class="hero-section tw:mb-6!">
             <div class="hero-content">
                 <div class="hero-left">
                     <span class="greeting-badge">nexoraEDU</span>
@@ -49,14 +49,14 @@
         {{-- ALERTS --}}
         {{-- ===================================================== --}}
         @if (session('success'))
-            <div class="nx-alert nx-alert-green mb-4">
+            <div class="nx-alert nx-alert-green tw:mb-6!">
                 <i class="bi bi-check-circle-fill"></i>
                 <span>{{ session('success') }}</span>
             </div>
         @endif
 
         @if (session('error'))
-            <div class="nx-alert nx-alert-red mb-4">
+            <div class="nx-alert nx-alert-red tw:mb-6!">
                 <i class="bi bi-exclamation-triangle-fill"></i>
                 <span>{{ session('error') }}</span>
             </div>
@@ -65,7 +65,7 @@
         {{-- ===================================================== --}}
         {{-- KPI CARDS --}}
         {{-- ===================================================== --}}
-        <div class="stats-grid mb-4">
+        <div class="stats-grid tw:mb-6!">
 
             <div class="nx-card stat-card">
                 <div class="stat-icon-wrapper icon-blue"><i class="bi bi-activity"></i></div>
@@ -109,11 +109,11 @@
         {{-- ===================================================== --}}
         {{-- MAIN CARD --}}
         {{-- ===================================================== --}}
-        <div class="nx-card mb-4">
+        <div class="nx-card tw:mb-6!">
 
             <div class="nx-card-header">
                 <div>
-                    <h5 class="nx-card-title"><i class="bi bi-clock-history text-primary"></i> Activity Logs</h5>
+                    <h5 class="nx-card-title"><i class="bi bi-clock-history tw:text-(color:--nx-blue)!"></i> Activity Logs</h5>
                     <p class="nx-card-subtitle">Track and monitor all system activities and changes</p>
                 </div>
 
@@ -122,7 +122,7 @@
                         <i class="bi bi-download"></i> Export CSV
                     </a>
                     <button type="button" class="nx-btn nx-btn-danger"
-                        data-bs-toggle="modal" data-bs-target="#clearLogsModal">
+                        data-nx-toggle="modal" data-nx-target="#clearLogsModal">
                         <i class="bi bi-trash-fill"></i> Clear Old
                     </button>
                 </div>
@@ -131,17 +131,17 @@
             {{-- FILTER --}}
             <div class="nx-search">
                 <form method="GET" action="{{ route('admin.activity-logs.index') }}" id="filterForm">
-                    <div class="row g-3">
-                        <div class="col-lg-3">
+                    <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2 bs-row">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[25%]">
                             <div class="search-input-wrapper">
                                 <i class="bi bi-search"></i>
-                                <input type="text" name="search" class="form-control custom-input"
+                                <input type="text" name="search" class="ui-form-control custom-input"
                                     placeholder="Search by user, table or record ID..." value="{{ request('search') }}">
                             </div>
                         </div>
 
-                        <div class="col-lg-2">
-                            <select name="action" class="form-select custom-input">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[16.66666667%]">
+                            <select name="action" class="ui-form-select custom-input">
                                 <option value="">All Actions</option>
                                 @foreach ($actions as $action)
                                     <option value="{{ $action }}" {{ request('action') == $action ? 'selected' : '' }}>
@@ -151,8 +151,8 @@
                             </select>
                         </div>
 
-                        <div class="col-lg-2">
-                            <select name="table_name" class="form-select custom-input">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[16.66666667%]">
+                            <select name="table_name" class="ui-form-select custom-input">
                                 <option value="">All Tables</option>
                                 @foreach ($tables as $table)
                                     <option value="{{ $table }}" {{ request('table_name') == $table ? 'selected' : '' }}>
@@ -162,8 +162,8 @@
                             </select>
                         </div>
 
-                        <div class="col-lg-2">
-                            <select name="user_id" class="form-select custom-input">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[16.66666667%]">
+                            <select name="user_id" class="ui-form-select custom-input">
                                 <option value="">All Users</option>
                                 @foreach ($users as $user)
                                     <option value="{{ $user->id }}" {{ request('user_id') == $user->id ? 'selected' : '' }}>
@@ -173,18 +173,18 @@
                             </select>
                         </div>
 
-                        <div class="col-lg-2">
-                            <input type="date" name="date_from" class="form-control custom-input"
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[16.66666667%]">
+                            <input type="date" name="date_from" class="ui-form-control custom-input"
                                 placeholder="From Date" value="{{ request('date_from') }}">
                         </div>
 
-                        <div class="col-lg-1">
-                            <input type="date" name="date_to" class="form-control custom-input"
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[8.33333333%]">
+                            <input type="date" name="date_to" class="ui-form-control custom-input"
                                 placeholder="To Date" value="{{ request('date_to') }}">
                         </div>
 
-                        <div class="col-lg-12">
-                            <div class="d-flex gap-2 flex-wrap">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[100%]">
+                            <div class="tw:flex! tw:gap-2! tw:flex-wrap!">
                                 <button type="submit" class="nx-btn nx-btn-primary">
                                     <i class="bi bi-funnel"></i> Apply Filters
                                 </button>
@@ -198,8 +198,8 @@
             </div>
 
             {{-- TABLE --}}
-            <div class="table-responsive">
-                <table class="table premium-table mb-0">
+            <div class="ui-table-responsive">
+                <table class="ui-table premium-table tw:mb-0!">
                     <thead>
                         <tr>
                             <th style="width: 160px;">Date &amp; Time</th>
@@ -207,7 +207,7 @@
                             <th style="width: 130px;">Action</th>
                             <th>Table</th>
                             <th style="width: 90px;">Record ID</th>
-                            <th style="width: 100px;" class="text-end">Actions</th>
+                            <th style="width: 100px;" class="tw:text-right!">Actions</th>
                         </tr>
                     </thead>
 
@@ -216,7 +216,7 @@
                             <tr>
                                 <td>
                                     <div class="cell-title">
-                                        <i class="bi bi-calendar3 me-1 text-muted"></i>
+                                        <i class="bi bi-calendar3 tw:mr-1! tw:text-(color:--nx-muted)!"></i>
                                         {{ $log->created_at?->format('Y-m-d') }}
                                     </div>
                                     <small class="cell-sub">
@@ -226,7 +226,7 @@
                                 </td>
 
                                 <td>
-                                    <div class="d-flex align-items-center gap-2">
+                                    <div class="tw:flex! tw:items-center! tw:gap-2!">
                                         <div class="log-avatar">
                                             {{ strtoupper(substr($log->user?->name ?? 'S', 0, 1)) }}
                                         </div>
@@ -265,10 +265,10 @@
                                     <span class="id-badge">#{{ $log->record_id }}</span>
                                 </td>
 
-                                <td class="text-end">
+                                <td class="tw:text-right!">
                                     <div class="action-buttons">
-                                        <button type="button" class="action-btn" data-bs-toggle="modal"
-                                            data-bs-target="#logDetailsModal" data-id="{{ $log->id }}"
+                                        <button type="button" class="action-btn" data-nx-toggle="modal"
+                                            data-nx-target="#logDetailsModal" data-id="{{ $log->id }}"
                                             data-date="{{ $log->created_at?->format('Y-m-d h:i A') }}"
                                             data-user="{{ $log->user?->name ?? 'System' }}"
                                             data-userid="{{ $log->user_id ?? '-' }}" data-action="{{ $log->action }}"
@@ -284,8 +284,8 @@
                         @empty
                             <tr>
                                 <td colspan="6" class="empty-table">
-                                    <i class="bi bi-inbox fs-2 d-block mb-2"></i>
-                                    <strong class="d-block">No Activity Logs Found</strong>
+                                    <i class="bi bi-inbox tw:text-[length:calc(1.325rem_+_0.9vw)]! tw:xl:text-[length:2rem]! tw:block! tw:mb-2!"></i>
+                                    <strong class="tw:block!">No Activity Logs Found</strong>
                                     <span class="cell-sub">Try adjusting your search filters</span>
                                 </td>
                             </tr>
@@ -295,7 +295,7 @@
             </div>
 
             @if ($logs->hasPages())
-                <div class="p-3 border-top">
+                <div class="tw:p-4! tw:bs-border-t!">
                     {{ $logs->links() }}
                 </div>
             @endif
@@ -306,36 +306,36 @@
     {{-- ===================================================== --}}
     {{-- CLEAR LOGS MODAL --}}
     {{-- ===================================================== --}}
-    <div class="modal fade" id="clearLogsModal" tabindex="-1" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title">
-                        <i class="bi bi-exclamation-triangle-fill text-warning me-2"></i>
+    <div class="ui-modal ui-fade" id="clearLogsModal" tabindex="-1" aria-hidden="true">
+        <div class="ui-modal-dialog ui-modal-dialog-centered">
+            <div class="ui-modal-content">
+                <div class="ui-modal-header">
+                    <h5 class="ui-modal-title">
+                        <i class="bi bi-exclamation-triangle-fill tw:text-(color:--nx-amber)! tw:mr-2!"></i>
                         Clear Old Logs
                     </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    <button type="button" class="ui-btn-close" data-nx-dismiss="modal"></button>
                 </div>
 
                 <form action="{{ route('admin.activity-logs.clear') }}" method="POST">
                     @csrf
-                    <div class="modal-body">
+                    <div class="ui-modal-body">
                         <p>Delete activity logs older than:</p>
-                        <select name="days" class="form-select">
+                        <select name="days" class="ui-form-select">
                             <option value="30">30 days</option>
                             <option value="60">60 days</option>
                             <option value="90">90 days</option>
                             <option value="180">180 days</option>
                             <option value="365">1 year</option>
                         </select>
-                        <div class="alert alert-warning mt-3 mb-0 d-flex align-items-center gap-2">
+                        <div class="ui-alert ui-alert-warning tw:mt-4! tw:mb-0! tw:flex! tw:items-center! tw:gap-2!">
                             <i class="bi bi-info-circle-fill"></i>
                             <span>This action cannot be undone.</span>
                         </div>
                     </div>
-                    <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button type="submit" class="btn btn-danger">Clear Logs</button>
+                    <div class="ui-modal-footer">
+                        <button type="button" class="ui-btn ui-btn-secondary" data-nx-dismiss="modal">Cancel</button>
+                        <button type="submit" class="ui-btn ui-btn-danger">Clear Logs</button>
                     </div>
                 </form>
             </div>
@@ -345,25 +345,25 @@
     {{-- ===================================================== --}}
     {{-- LOG DETAILS MODAL — Terminal/Code Viewer --}}
     {{-- ===================================================== --}}
-    <div class="modal fade" id="logDetailsModal" tabindex="-1" aria-labelledby="logDetailsModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-xl modal-dialog-scrollable">
-            <div class="modal-content">
-                <div class="modal-header">
+    <div class="ui-modal ui-fade" id="logDetailsModal" tabindex="-1" aria-labelledby="logDetailsModalLabel" aria-hidden="true">
+        <div class="ui-modal-dialog ui-modal-xl ui-modal-dialog-scrollable">
+            <div class="ui-modal-content">
+                <div class="ui-modal-header">
                     <div>
-                        <h5 class="modal-title mb-0">
-                            <i class="bi bi-code-square me-2"></i>
+                        <h5 class="ui-modal-title tw:mb-0!">
+                            <i class="bi bi-code-square tw:mr-2!"></i>
                             Activity Log Details
                         </h5>
-                        <small class="text-muted" id="modalLogDate"></small>
+                        <small class="tw:text-(color:--nx-muted)!" id="modalLogDate"></small>
                     </div>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="ui-btn-close" data-nx-dismiss="modal" aria-label="Close"></button>
                 </div>
 
-                <div class="modal-body">
+                <div class="ui-modal-body">
 
                     {{-- INFO CARDS --}}
-                    <div class="row g-3 mb-4">
-                        <div class="col-md-6">
+                    <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2 bs-row tw:mb-6!">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
                             <div class="log-info-card">
                                 <div class="log-info-icon">
                                     <i class="bi bi-person-fill"></i>
@@ -378,7 +378,7 @@
                             </div>
                         </div>
 
-                        <div class="col-md-6">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
                             <div class="log-info-card">
                                 <div class="log-info-icon log-info-icon-warning">
                                     <i class="bi bi-lightning-charge-fill"></i>
@@ -396,8 +396,8 @@
                     </div>
 
                     {{-- CODE VIEWERS --}}
-                    <div class="row g-3">
-                        <div class="col-md-6">
+                    <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2 bs-row">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
                             <div class="code-card">
                                 <div class="code-card-header">
                                     <div class="code-header-left">
@@ -418,7 +418,7 @@
                             </div>
                         </div>
 
-                        <div class="col-md-6">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
                             <div class="code-card">
                                 <div class="code-card-header">
                                     <div class="code-header-left">
@@ -442,9 +442,9 @@
 
                 </div>
 
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
-                        <i class="bi bi-x-lg me-1"></i> Close
+                <div class="ui-modal-footer">
+                    <button type="button" class="ui-btn ui-btn-secondary" data-nx-dismiss="modal">
+                        <i class="bi bi-x-lg tw:mr-1!"></i> Close
                     </button>
                 </div>
             </div>
@@ -477,53 +477,53 @@
 
     /* ============================================================
        ✅ MODAL STYLES — scoped to IDs
-       (Bootstrap teleports .modal to <body>, outside .dashboard-page,
+       (Bootstrap teleports .ui-modal to <body>, outside .dashboard-page,
         so we can't use .dashboard-page scope here.)
        ============================================================ */
 
     /* ---------- Modal container ---------- */
-    #clearLogsModal .modal-content,
-    #logDetailsModal .modal-content {
+    #clearLogsModal .ui-modal-content,
+    #logDetailsModal .ui-modal-content {
         border: 0;
         border-radius: 12px;
         box-shadow: 0 10px 40px rgba(15, 23, 42, .15);
         overflow: hidden;
     }
 
-    #clearLogsModal .modal-header,
-    #logDetailsModal .modal-header {
+    #clearLogsModal .ui-modal-header,
+    #logDetailsModal .ui-modal-header {
         border-bottom: 1px solid #d1d8e3;
         padding: 1rem 1.25rem;
         background: #fafbfd;
     }
 
-    #clearLogsModal .modal-title,
-    #logDetailsModal .modal-title {
+    #clearLogsModal .ui-modal-title,
+    #logDetailsModal .ui-modal-title {
         font-weight: 700;
         font-size: .95rem;
         color: #0f172a;
     }
 
-    #clearLogsModal .modal-body,
-    #logDetailsModal .modal-body {
+    #clearLogsModal .ui-modal-body,
+    #logDetailsModal .ui-modal-body {
         padding: 1.25rem;
         background: #f4f6fa;
     }
 
-    #clearLogsModal .modal-footer,
-    #logDetailsModal .modal-footer {
+    #clearLogsModal .ui-modal-footer,
+    #logDetailsModal .ui-modal-footer {
         border-top: 1px solid #d1d8e3;
         padding: .85rem 1.25rem;
         background: #fafbfd;
     }
 
     /* ---------- Modal XL width ---------- */
-    #logDetailsModal .modal-dialog {
+    #logDetailsModal .ui-modal-dialog {
         max-width: 1140px;
     }
 
     /* Prevent grid columns from blowing out */
-    #logDetailsModal .modal-body .row > [class*="col-"] {
+    #logDetailsModal .ui-modal-body .bs-row > [class*="col-"] {
         min-width: 0;
     }
 
@@ -738,7 +738,7 @@
             width: 100%;
         }
 
-        #logDetailsModal .modal-dialog {
+        #logDetailsModal .ui-modal-dialog {
             max-width: calc(100% - 1rem);
             margin: .5rem auto;
         }
@@ -782,7 +782,7 @@
                             if (/:$/.test(match)) {
                                 cls = 'json-key';
                                 match = match.replace(/:/g, '');
-                                return '<span class="' + cls + '">' + match + '</span>:';
+                                return '<span class="' + cls">' + match + '</span>:';
                             }
                             cls = 'json-string';
                         } else if (/true|false/.test(match)) {
@@ -791,7 +791,7 @@
                             cls = 'json-null';
                         }
 
-                        return '<span class="' + cls + '">' + match + '</span>';
+                        return '<span class="' + cls">' + match + '</span>';
                     }
                 );
             } catch (e) {
@@ -846,7 +846,7 @@
         /* -----------------------------------------------------------
          | Modal open — populate details
          * --------------------------------------------------------- */
-        modal.addEventListener('show.bs.modal', function (event) {
+        modal.addEventListener('show.nx.modal', function (event) {
             const button = event.relatedTarget;
 
             const date   = button.getAttribute('data-date') || '-';

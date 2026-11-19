@@ -251,7 +251,7 @@
                     $isPermanent = $student->permanent_qr_active == 1;
                     $rowClass = $isPermanent ? 'row-permanent' : 'row-temporary';
                     $expireDate = $student->temporary_qr_code_expire_date;
-                    $daysLeft = $expireDate ? now()->diffInDays($expireDate, false) : null;
+                    $daysLeft = $expireDate ? (int) now()->diffInDays($expireDate, false) : null;
                 @endphp
 
                 <tr class="{{ $rowClass }}">

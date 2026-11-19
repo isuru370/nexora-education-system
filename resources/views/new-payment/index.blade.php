@@ -4,18 +4,18 @@
 @section('page-title', 'New Payment')
 
 @section('content')
-    <div class="container-fluid py-4">
+    <div class="ui-container-fluid tw:py-6!">
         @include('new-payment.partials.header')
         @include('new-payment.partials.student-search')
 
-        <div id="payment-loading" class="text-center py-5 d-none">
-            <div class="spinner-border text-primary" role="status"></div>
-            <div class="mt-2 text-muted">Loading student information...</div>
+        <div id="payment-loading" class="bs-text-center tw:text-center! tw:py-12! tw:hidden!">
+            <div class="ui-spinner-border tw:text-bs-primary!" role="status"></div>
+            <div class="tw:mt-2! tw:text-bs-secondary-color!">Loading student information...</div>
         </div>
 
-        <div id="payment-error" class="alert alert-danger d-none"></div>
+        <div id="payment-error" class="ui-alert ui-alert-danger tw:hidden!"></div>
 
-        <div id="student-section" class="d-none">
+        <div id="student-section" class="tw:hidden!">
             @include('new-payment.partials.student-info')
             @include('new-payment.partials.classes')
         </div>

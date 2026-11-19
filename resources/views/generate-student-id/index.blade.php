@@ -17,14 +17,14 @@
 
         {{-- ==================== ALERTS ==================== --}}
         @if (session('error'))
-            <div class="nx-alert nx-alert-red mb-4">
+            <div class="nx-alert nx-alert-red tw:mb-6!">
                 <i class="bi bi-exclamation-triangle-fill"></i>
                 <span>{{ session('error') }}</span>
             </div>
         @endif
 
         @if (session('success'))
-            <div class="nx-alert nx-alert-green mb-4">
+            <div class="nx-alert nx-alert-green tw:mb-6!">
                 <i class="bi bi-check-circle-fill"></i>
                 <span>{{ session('success') }}</span>
             </div>
@@ -47,7 +47,7 @@
 
         {{-- ==================== STUDENT CARDS GRID ==================== --}}
         @if ($students->count() > 0)
-            <div class="row g-3" id="studentsGrid">
+            <div class="bs-row ui-row ui-g-3" id="studentsGrid">
                 @foreach ($students as $student)
                     @include('generate-student-id.components.student-card', [
                         'student' => $student,
@@ -56,10 +56,10 @@
                 @endforeach
             </div>
         @else
-            <div class="nx-card mb-4">
-                <div class="empty-table py-5">
-                    <i class="bi bi-inbox fs-1 d-block mb-3 text-muted"></i>
-                    <strong class="d-block mb-2">No Students Found</strong>
+            <div class="nx-card tw:mb-6!">
+                <div class="empty-table tw:py-12!">
+                    <i class="bi bi-inbox tw:text-[length:calc(1.375rem_+_1.5vw)]! tw:xl:text-[length:2.5rem]! tw:block! tw:mb-4! tw:text-(color:--nx-muted)!"></i>
+                    <strong class="tw:block! tw:mb-2!">No Students Found</strong>
                     <span class="cell-sub">
                         @if (request('search'))
                             No matching students found.
@@ -163,7 +163,7 @@
         cursor: not-allowed;
     }
 
-    .dashboard-page .btn-secondary:disabled {
+    .dashboard-page .ui-btn-secondary:disabled {
         opacity: .6;
         cursor: not-allowed;
     }
@@ -182,12 +182,12 @@
         .nx-search,
         .bulk-actions,
         .download-btn,
-        .pagination,
+        .ui-pagination,
         .student-top,
         .student-action-area,
-        .form-check,
+        .ui-form-check,
         .student-id-badge,
-        .row > .col-xl-4,
+        .bs-row > .bs-col-xl-4,
         .premium-student-card {
             display: none !important;
         }

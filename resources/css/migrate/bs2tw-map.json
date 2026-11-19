@@ -1,0 +1,4143 @@
+{
+ "border_order": {
+  "border": 194657,
+  "border-0": 194761,
+  "border-1": 197416,
+  "border-2": 197463,
+  "border-3": 197510,
+  "border-4": 197557,
+  "border-5": 197604,
+  "border-black": 196476,
+  "border-bottom": 195122,
+  "border-bottom-0": 195240,
+  "border-danger": 196101,
+  "border-danger-subtle": 197164,
+  "border-dark": 196353,
+  "border-dark-subtle": 197334,
+  "border-end": 194959,
+  "border-end-0": 195073,
+  "border-info": 195849,
+  "border-info-subtle": 196994,
+  "border-light": 196228,
+  "border-light-subtle": 197250,
+  "border-primary": 195458,
+  "border-primary-subtle": 196726,
+  "border-secondary": 195587,
+  "border-secondary-subtle": 196814,
+  "border-start": 195293,
+  "border-start-0": 195408,
+  "border-success": 195720,
+  "border-success-subtle": 196906,
+  "border-top": 194800,
+  "border-top-0": 194912,
+  "border-warning": 195972,
+  "border-warning-subtle": 197076,
+  "border-white": 196601
+ },
+ "utilities": {
+  "align-baseline": [
+   "tw:align-baseline!"
+  ],
+  "align-bottom": [
+   "tw:align-bottom!"
+  ],
+  "align-content-around": [
+   "tw:[align-content:space-around]!"
+  ],
+  "align-content-between": [
+   "tw:[align-content:space-between]!"
+  ],
+  "align-content-center": [
+   "tw:[align-content:center]!"
+  ],
+  "align-content-end": [
+   "tw:[align-content:flex-end]!"
+  ],
+  "align-content-lg-around": [
+   "tw:lg:[align-content:space-around]!"
+  ],
+  "align-content-lg-between": [
+   "tw:lg:[align-content:space-between]!"
+  ],
+  "align-content-lg-center": [
+   "tw:lg:[align-content:center]!"
+  ],
+  "align-content-lg-end": [
+   "tw:lg:[align-content:flex-end]!"
+  ],
+  "align-content-lg-start": [
+   "tw:lg:[align-content:flex-start]!"
+  ],
+  "align-content-lg-stretch": [
+   "tw:lg:[align-content:stretch]!"
+  ],
+  "align-content-md-around": [
+   "tw:md:[align-content:space-around]!"
+  ],
+  "align-content-md-between": [
+   "tw:md:[align-content:space-between]!"
+  ],
+  "align-content-md-center": [
+   "tw:md:[align-content:center]!"
+  ],
+  "align-content-md-end": [
+   "tw:md:[align-content:flex-end]!"
+  ],
+  "align-content-md-start": [
+   "tw:md:[align-content:flex-start]!"
+  ],
+  "align-content-md-stretch": [
+   "tw:md:[align-content:stretch]!"
+  ],
+  "align-content-sm-around": [
+   "tw:sm:[align-content:space-around]!"
+  ],
+  "align-content-sm-between": [
+   "tw:sm:[align-content:space-between]!"
+  ],
+  "align-content-sm-center": [
+   "tw:sm:[align-content:center]!"
+  ],
+  "align-content-sm-end": [
+   "tw:sm:[align-content:flex-end]!"
+  ],
+  "align-content-sm-start": [
+   "tw:sm:[align-content:flex-start]!"
+  ],
+  "align-content-sm-stretch": [
+   "tw:sm:[align-content:stretch]!"
+  ],
+  "align-content-start": [
+   "tw:[align-content:flex-start]!"
+  ],
+  "align-content-stretch": [
+   "tw:[align-content:stretch]!"
+  ],
+  "align-content-xl-around": [
+   "tw:xl:[align-content:space-around]!"
+  ],
+  "align-content-xl-between": [
+   "tw:xl:[align-content:space-between]!"
+  ],
+  "align-content-xl-center": [
+   "tw:xl:[align-content:center]!"
+  ],
+  "align-content-xl-end": [
+   "tw:xl:[align-content:flex-end]!"
+  ],
+  "align-content-xl-start": [
+   "tw:xl:[align-content:flex-start]!"
+  ],
+  "align-content-xl-stretch": [
+   "tw:xl:[align-content:stretch]!"
+  ],
+  "align-content-xxl-around": [
+   "tw:2xl:[align-content:space-around]!"
+  ],
+  "align-content-xxl-between": [
+   "tw:2xl:[align-content:space-between]!"
+  ],
+  "align-content-xxl-center": [
+   "tw:2xl:[align-content:center]!"
+  ],
+  "align-content-xxl-end": [
+   "tw:2xl:[align-content:flex-end]!"
+  ],
+  "align-content-xxl-start": [
+   "tw:2xl:[align-content:flex-start]!"
+  ],
+  "align-content-xxl-stretch": [
+   "tw:2xl:[align-content:stretch]!"
+  ],
+  "align-items-baseline": [
+   "tw:items-baseline!"
+  ],
+  "align-items-center": [
+   "tw:items-center!"
+  ],
+  "align-items-end": [
+   "tw:items-end!"
+  ],
+  "align-items-lg-baseline": [
+   "tw:lg:items-baseline!"
+  ],
+  "align-items-lg-center": [
+   "tw:lg:items-center!"
+  ],
+  "align-items-lg-end": [
+   "tw:lg:items-end!"
+  ],
+  "align-items-lg-start": [
+   "tw:lg:items-start!"
+  ],
+  "align-items-lg-stretch": [
+   "tw:lg:items-stretch!"
+  ],
+  "align-items-md-baseline": [
+   "tw:md:items-baseline!"
+  ],
+  "align-items-md-center": [
+   "tw:md:items-center!"
+  ],
+  "align-items-md-end": [
+   "tw:md:items-end!"
+  ],
+  "align-items-md-start": [
+   "tw:md:items-start!"
+  ],
+  "align-items-md-stretch": [
+   "tw:md:items-stretch!"
+  ],
+  "align-items-sm-baseline": [
+   "tw:sm:items-baseline!"
+  ],
+  "align-items-sm-center": [
+   "tw:sm:items-center!"
+  ],
+  "align-items-sm-end": [
+   "tw:sm:items-end!"
+  ],
+  "align-items-sm-start": [
+   "tw:sm:items-start!"
+  ],
+  "align-items-sm-stretch": [
+   "tw:sm:items-stretch!"
+  ],
+  "align-items-start": [
+   "tw:items-start!"
+  ],
+  "align-items-stretch": [
+   "tw:items-stretch!"
+  ],
+  "align-items-xl-baseline": [
+   "tw:xl:items-baseline!"
+  ],
+  "align-items-xl-center": [
+   "tw:xl:items-center!"
+  ],
+  "align-items-xl-end": [
+   "tw:xl:items-end!"
+  ],
+  "align-items-xl-start": [
+   "tw:xl:items-start!"
+  ],
+  "align-items-xl-stretch": [
+   "tw:xl:items-stretch!"
+  ],
+  "align-items-xxl-baseline": [
+   "tw:2xl:items-baseline!"
+  ],
+  "align-items-xxl-center": [
+   "tw:2xl:items-center!"
+  ],
+  "align-items-xxl-end": [
+   "tw:2xl:items-end!"
+  ],
+  "align-items-xxl-start": [
+   "tw:2xl:items-start!"
+  ],
+  "align-items-xxl-stretch": [
+   "tw:2xl:items-stretch!"
+  ],
+  "align-middle": [
+   "tw:align-middle!"
+  ],
+  "align-self-auto": [
+   "tw:self-auto!"
+  ],
+  "align-self-baseline": [
+   "tw:self-baseline!"
+  ],
+  "align-self-center": [
+   "tw:self-center!"
+  ],
+  "align-self-end": [
+   "tw:self-end!"
+  ],
+  "align-self-lg-auto": [
+   "tw:lg:self-auto!"
+  ],
+  "align-self-lg-baseline": [
+   "tw:lg:self-baseline!"
+  ],
+  "align-self-lg-center": [
+   "tw:lg:self-center!"
+  ],
+  "align-self-lg-end": [
+   "tw:lg:self-end!"
+  ],
+  "align-self-lg-start": [
+   "tw:lg:self-start!"
+  ],
+  "align-self-lg-stretch": [
+   "tw:lg:self-stretch!"
+  ],
+  "align-self-md-auto": [
+   "tw:md:self-auto!"
+  ],
+  "align-self-md-baseline": [
+   "tw:md:self-baseline!"
+  ],
+  "align-self-md-center": [
+   "tw:md:self-center!"
+  ],
+  "align-self-md-end": [
+   "tw:md:self-end!"
+  ],
+  "align-self-md-start": [
+   "tw:md:self-start!"
+  ],
+  "align-self-md-stretch": [
+   "tw:md:self-stretch!"
+  ],
+  "align-self-sm-auto": [
+   "tw:sm:self-auto!"
+  ],
+  "align-self-sm-baseline": [
+   "tw:sm:self-baseline!"
+  ],
+  "align-self-sm-center": [
+   "tw:sm:self-center!"
+  ],
+  "align-self-sm-end": [
+   "tw:sm:self-end!"
+  ],
+  "align-self-sm-start": [
+   "tw:sm:self-start!"
+  ],
+  "align-self-sm-stretch": [
+   "tw:sm:self-stretch!"
+  ],
+  "align-self-start": [
+   "tw:self-start!"
+  ],
+  "align-self-stretch": [
+   "tw:self-stretch!"
+  ],
+  "align-self-xl-auto": [
+   "tw:xl:self-auto!"
+  ],
+  "align-self-xl-baseline": [
+   "tw:xl:self-baseline!"
+  ],
+  "align-self-xl-center": [
+   "tw:xl:self-center!"
+  ],
+  "align-self-xl-end": [
+   "tw:xl:self-end!"
+  ],
+  "align-self-xl-start": [
+   "tw:xl:self-start!"
+  ],
+  "align-self-xl-stretch": [
+   "tw:xl:self-stretch!"
+  ],
+  "align-self-xxl-auto": [
+   "tw:2xl:self-auto!"
+  ],
+  "align-self-xxl-baseline": [
+   "tw:2xl:self-baseline!"
+  ],
+  "align-self-xxl-center": [
+   "tw:2xl:self-center!"
+  ],
+  "align-self-xxl-end": [
+   "tw:2xl:self-end!"
+  ],
+  "align-self-xxl-start": [
+   "tw:2xl:self-start!"
+  ],
+  "align-self-xxl-stretch": [
+   "tw:2xl:self-stretch!"
+  ],
+  "align-text-bottom": [
+   "tw:align-text-bottom!"
+  ],
+  "align-text-top": [
+   "tw:align-text-top!"
+  ],
+  "align-top": [
+   "tw:align-top!"
+  ],
+  "bg-black": [
+   "tw:bg-bs-black!"
+  ],
+  "bg-body": [
+   "tw:bg-bs-body-bg!"
+  ],
+  "bg-body-secondary": [
+   "tw:bg-bs-secondary-bg!"
+  ],
+  "bg-body-tertiary": [
+   "tw:bg-bs-tertiary-bg!"
+  ],
+  "bg-danger": [
+   "tw:bg-bs-danger!"
+  ],
+  "bg-danger-subtle": [
+   "tw:bg-bs-danger-bg-subtle!"
+  ],
+  "bg-dark": [
+   "tw:bg-bs-dark!"
+  ],
+  "bg-dark-subtle": [
+   "tw:bg-bs-dark-bg-subtle!"
+  ],
+  "bg-gradient": [
+   "tw:[background-image:linear-gradient(180deg,_rgba(255,255,255,0.15),_rgba(255,255,255,0))]!"
+  ],
+  "bg-info": [
+   "tw:bg-bs-info!"
+  ],
+  "bg-info-subtle": [
+   "tw:bg-bs-info-bg-subtle!"
+  ],
+  "bg-light": [
+   "tw:bg-bs-light!"
+  ],
+  "bg-light-subtle": [
+   "tw:bg-bs-light-bg-subtle!"
+  ],
+  "bg-primary": [
+   "tw:bg-bs-primary!"
+  ],
+  "bg-primary-subtle": [
+   "tw:bg-bs-primary-bg-subtle!"
+  ],
+  "bg-secondary": [
+   "tw:bg-bs-secondary!"
+  ],
+  "bg-secondary-subtle": [
+   "tw:bg-bs-secondary-bg-subtle!"
+  ],
+  "bg-success": [
+   "tw:bg-bs-success!"
+  ],
+  "bg-success-subtle": [
+   "tw:bg-bs-success-bg-subtle!"
+  ],
+  "bg-transparent": [
+   "tw:bg-[transparent]!"
+  ],
+  "bg-warning": [
+   "tw:bg-bs-warning!"
+  ],
+  "bg-warning-subtle": [
+   "tw:bg-bs-warning-bg-subtle!"
+  ],
+  "bg-white": [
+   "tw:bg-bs-white!"
+  ],
+  "border": [
+   "tw:bs-border!"
+  ],
+  "border-0": [
+   "tw:[border:0]!"
+  ],
+  "border-1": [
+   "tw:[border-width:1px]!"
+  ],
+  "border-2": [
+   "tw:[border-width:2px]!"
+  ],
+  "border-3": [
+   "tw:[border-width:3px]!"
+  ],
+  "border-4": [
+   "tw:[border-width:4px]!"
+  ],
+  "border-5": [
+   "tw:[border-width:5px]!"
+  ],
+  "border-black": [
+   "tw:[border-color:#000]!"
+  ],
+  "border-bottom": [
+   "tw:bs-border-b!"
+  ],
+  "border-bottom-0": [
+   "tw:[border-bottom:0]!"
+  ],
+  "border-danger": [
+   "tw:border-bs-danger!"
+  ],
+  "border-danger-subtle": [
+   "tw:border-bs-danger-border-subtle!"
+  ],
+  "border-dark": [
+   "tw:border-bs-dark!"
+  ],
+  "border-dark-subtle": [
+   "tw:border-bs-dark-border-subtle!"
+  ],
+  "border-end": [
+   "tw:bs-border-r!"
+  ],
+  "border-end-0": [
+   "tw:[border-right:0]!"
+  ],
+  "border-info": [
+   "tw:border-bs-info!"
+  ],
+  "border-info-subtle": [
+   "tw:border-bs-info-border-subtle!"
+  ],
+  "border-light": [
+   "tw:border-bs-light!"
+  ],
+  "border-light-subtle": [
+   "tw:border-bs-light-border-subtle!"
+  ],
+  "border-primary": [
+   "tw:border-bs-primary!"
+  ],
+  "border-primary-subtle": [
+   "tw:border-bs-primary-border-subtle!"
+  ],
+  "border-secondary": [
+   "tw:border-bs-secondary!"
+  ],
+  "border-secondary-subtle": [
+   "tw:border-bs-secondary-border-subtle!"
+  ],
+  "border-start": [
+   "tw:bs-border-l!"
+  ],
+  "border-start-0": [
+   "tw:[border-left:0]!"
+  ],
+  "border-success": [
+   "tw:border-bs-success!"
+  ],
+  "border-success-subtle": [
+   "tw:border-bs-success-border-subtle!"
+  ],
+  "border-top": [
+   "tw:bs-border-t!"
+  ],
+  "border-top-0": [
+   "tw:[border-top:0]!"
+  ],
+  "border-warning": [
+   "tw:border-bs-warning!"
+  ],
+  "border-warning-subtle": [
+   "tw:border-bs-warning-border-subtle!"
+  ],
+  "border-white": [
+   "tw:[border-color:#fff]!"
+  ],
+  "bottom-0": [
+   "tw:bottom-0!"
+  ],
+  "bottom-100": [
+   "tw:[bottom:100%]!"
+  ],
+  "bottom-50": [
+   "tw:[bottom:50%]!"
+  ],
+  "column-gap-0": [
+   "tw:[-moz-column-gap:0]!",
+   "tw:gap-x-0!"
+  ],
+  "column-gap-1": [
+   "tw:[-moz-column-gap:0.25rem]!",
+   "tw:gap-x-1!"
+  ],
+  "column-gap-2": [
+   "tw:[-moz-column-gap:0.5rem]!",
+   "tw:gap-x-2!"
+  ],
+  "column-gap-3": [
+   "tw:[-moz-column-gap:1rem]!",
+   "tw:gap-x-4!"
+  ],
+  "column-gap-4": [
+   "tw:[-moz-column-gap:1.5rem]!",
+   "tw:gap-x-6!"
+  ],
+  "column-gap-5": [
+   "tw:[-moz-column-gap:3rem]!",
+   "tw:gap-x-12!"
+  ],
+  "column-gap-lg-0": [
+   "tw:lg:[-moz-column-gap:0]!",
+   "tw:lg:gap-x-0!"
+  ],
+  "column-gap-lg-1": [
+   "tw:lg:[-moz-column-gap:0.25rem]!",
+   "tw:lg:gap-x-1!"
+  ],
+  "column-gap-lg-2": [
+   "tw:lg:[-moz-column-gap:0.5rem]!",
+   "tw:lg:gap-x-2!"
+  ],
+  "column-gap-lg-3": [
+   "tw:lg:[-moz-column-gap:1rem]!",
+   "tw:lg:gap-x-4!"
+  ],
+  "column-gap-lg-4": [
+   "tw:lg:[-moz-column-gap:1.5rem]!",
+   "tw:lg:gap-x-6!"
+  ],
+  "column-gap-lg-5": [
+   "tw:lg:[-moz-column-gap:3rem]!",
+   "tw:lg:gap-x-12!"
+  ],
+  "column-gap-md-0": [
+   "tw:md:[-moz-column-gap:0]!",
+   "tw:md:gap-x-0!"
+  ],
+  "column-gap-md-1": [
+   "tw:md:[-moz-column-gap:0.25rem]!",
+   "tw:md:gap-x-1!"
+  ],
+  "column-gap-md-2": [
+   "tw:md:[-moz-column-gap:0.5rem]!",
+   "tw:md:gap-x-2!"
+  ],
+  "column-gap-md-3": [
+   "tw:md:[-moz-column-gap:1rem]!",
+   "tw:md:gap-x-4!"
+  ],
+  "column-gap-md-4": [
+   "tw:md:[-moz-column-gap:1.5rem]!",
+   "tw:md:gap-x-6!"
+  ],
+  "column-gap-md-5": [
+   "tw:md:[-moz-column-gap:3rem]!",
+   "tw:md:gap-x-12!"
+  ],
+  "column-gap-sm-0": [
+   "tw:sm:[-moz-column-gap:0]!",
+   "tw:sm:gap-x-0!"
+  ],
+  "column-gap-sm-1": [
+   "tw:sm:[-moz-column-gap:0.25rem]!",
+   "tw:sm:gap-x-1!"
+  ],
+  "column-gap-sm-2": [
+   "tw:sm:[-moz-column-gap:0.5rem]!",
+   "tw:sm:gap-x-2!"
+  ],
+  "column-gap-sm-3": [
+   "tw:sm:[-moz-column-gap:1rem]!",
+   "tw:sm:gap-x-4!"
+  ],
+  "column-gap-sm-4": [
+   "tw:sm:[-moz-column-gap:1.5rem]!",
+   "tw:sm:gap-x-6!"
+  ],
+  "column-gap-sm-5": [
+   "tw:sm:[-moz-column-gap:3rem]!",
+   "tw:sm:gap-x-12!"
+  ],
+  "column-gap-xl-0": [
+   "tw:xl:[-moz-column-gap:0]!",
+   "tw:xl:gap-x-0!"
+  ],
+  "column-gap-xl-1": [
+   "tw:xl:[-moz-column-gap:0.25rem]!",
+   "tw:xl:gap-x-1!"
+  ],
+  "column-gap-xl-2": [
+   "tw:xl:[-moz-column-gap:0.5rem]!",
+   "tw:xl:gap-x-2!"
+  ],
+  "column-gap-xl-3": [
+   "tw:xl:[-moz-column-gap:1rem]!",
+   "tw:xl:gap-x-4!"
+  ],
+  "column-gap-xl-4": [
+   "tw:xl:[-moz-column-gap:1.5rem]!",
+   "tw:xl:gap-x-6!"
+  ],
+  "column-gap-xl-5": [
+   "tw:xl:[-moz-column-gap:3rem]!",
+   "tw:xl:gap-x-12!"
+  ],
+  "column-gap-xxl-0": [
+   "tw:2xl:[-moz-column-gap:0]!",
+   "tw:2xl:gap-x-0!"
+  ],
+  "column-gap-xxl-1": [
+   "tw:2xl:[-moz-column-gap:0.25rem]!",
+   "tw:2xl:gap-x-1!"
+  ],
+  "column-gap-xxl-2": [
+   "tw:2xl:[-moz-column-gap:0.5rem]!",
+   "tw:2xl:gap-x-2!"
+  ],
+  "column-gap-xxl-3": [
+   "tw:2xl:[-moz-column-gap:1rem]!",
+   "tw:2xl:gap-x-4!"
+  ],
+  "column-gap-xxl-4": [
+   "tw:2xl:[-moz-column-gap:1.5rem]!",
+   "tw:2xl:gap-x-6!"
+  ],
+  "column-gap-xxl-5": [
+   "tw:2xl:[-moz-column-gap:3rem]!",
+   "tw:2xl:gap-x-12!"
+  ],
+  "d-block": [
+   "tw:block!"
+  ],
+  "d-flex": [
+   "tw:flex!"
+  ],
+  "d-grid": [
+   "tw:grid!"
+  ],
+  "d-inline": [
+   "tw:[display:inline]!"
+  ],
+  "d-inline-block": [
+   "tw:[display:inline-block]!"
+  ],
+  "d-inline-flex": [
+   "tw:[display:inline-flex]!"
+  ],
+  "d-inline-grid": [
+   "tw:[display:inline-grid]!"
+  ],
+  "d-lg-block": [
+   "tw:lg:block!"
+  ],
+  "d-lg-flex": [
+   "tw:lg:flex!"
+  ],
+  "d-lg-grid": [
+   "tw:lg:grid!"
+  ],
+  "d-lg-inline": [
+   "tw:lg:[display:inline]!"
+  ],
+  "d-lg-inline-block": [
+   "tw:lg:[display:inline-block]!"
+  ],
+  "d-lg-inline-flex": [
+   "tw:lg:[display:inline-flex]!"
+  ],
+  "d-lg-inline-grid": [
+   "tw:lg:[display:inline-grid]!"
+  ],
+  "d-lg-none": [
+   "tw:lg:hidden!"
+  ],
+  "d-lg-table": [
+   "tw:lg:[display:table]!"
+  ],
+  "d-lg-table-cell": [
+   "tw:lg:[display:table-cell]!"
+  ],
+  "d-lg-table-row": [
+   "tw:lg:[display:table-row]!"
+  ],
+  "d-md-block": [
+   "tw:md:block!"
+  ],
+  "d-md-flex": [
+   "tw:md:flex!"
+  ],
+  "d-md-grid": [
+   "tw:md:grid!"
+  ],
+  "d-md-inline": [
+   "tw:md:[display:inline]!"
+  ],
+  "d-md-inline-block": [
+   "tw:md:[display:inline-block]!"
+  ],
+  "d-md-inline-flex": [
+   "tw:md:[display:inline-flex]!"
+  ],
+  "d-md-inline-grid": [
+   "tw:md:[display:inline-grid]!"
+  ],
+  "d-md-none": [
+   "tw:md:hidden!"
+  ],
+  "d-md-table": [
+   "tw:md:[display:table]!"
+  ],
+  "d-md-table-cell": [
+   "tw:md:[display:table-cell]!"
+  ],
+  "d-md-table-row": [
+   "tw:md:[display:table-row]!"
+  ],
+  "d-none": [
+   "tw:hidden!"
+  ],
+  "d-print-block": [
+   "tw:print:block!"
+  ],
+  "d-print-flex": [
+   "tw:print:flex!"
+  ],
+  "d-print-grid": [
+   "tw:print:grid!"
+  ],
+  "d-print-inline": [
+   "tw:print:[display:inline]!"
+  ],
+  "d-print-inline-block": [
+   "tw:print:[display:inline-block]!"
+  ],
+  "d-print-inline-flex": [
+   "tw:print:[display:inline-flex]!"
+  ],
+  "d-print-inline-grid": [
+   "tw:print:[display:inline-grid]!"
+  ],
+  "d-print-none": [
+   "tw:print:hidden!"
+  ],
+  "d-print-table": [
+   "tw:print:[display:table]!"
+  ],
+  "d-print-table-cell": [
+   "tw:print:[display:table-cell]!"
+  ],
+  "d-print-table-row": [
+   "tw:print:[display:table-row]!"
+  ],
+  "d-sm-block": [
+   "tw:sm:block!"
+  ],
+  "d-sm-flex": [
+   "tw:sm:flex!"
+  ],
+  "d-sm-grid": [
+   "tw:sm:grid!"
+  ],
+  "d-sm-inline": [
+   "tw:sm:[display:inline]!"
+  ],
+  "d-sm-inline-block": [
+   "tw:sm:[display:inline-block]!"
+  ],
+  "d-sm-inline-flex": [
+   "tw:sm:[display:inline-flex]!"
+  ],
+  "d-sm-inline-grid": [
+   "tw:sm:[display:inline-grid]!"
+  ],
+  "d-sm-none": [
+   "tw:sm:hidden!"
+  ],
+  "d-sm-table": [
+   "tw:sm:[display:table]!"
+  ],
+  "d-sm-table-cell": [
+   "tw:sm:[display:table-cell]!"
+  ],
+  "d-sm-table-row": [
+   "tw:sm:[display:table-row]!"
+  ],
+  "d-table": [
+   "tw:[display:table]!"
+  ],
+  "d-table-cell": [
+   "tw:[display:table-cell]!"
+  ],
+  "d-table-row": [
+   "tw:[display:table-row]!"
+  ],
+  "d-xl-block": [
+   "tw:xl:block!"
+  ],
+  "d-xl-flex": [
+   "tw:xl:flex!"
+  ],
+  "d-xl-grid": [
+   "tw:xl:grid!"
+  ],
+  "d-xl-inline": [
+   "tw:xl:[display:inline]!"
+  ],
+  "d-xl-inline-block": [
+   "tw:xl:[display:inline-block]!"
+  ],
+  "d-xl-inline-flex": [
+   "tw:xl:[display:inline-flex]!"
+  ],
+  "d-xl-inline-grid": [
+   "tw:xl:[display:inline-grid]!"
+  ],
+  "d-xl-none": [
+   "tw:xl:hidden!"
+  ],
+  "d-xl-table": [
+   "tw:xl:[display:table]!"
+  ],
+  "d-xl-table-cell": [
+   "tw:xl:[display:table-cell]!"
+  ],
+  "d-xl-table-row": [
+   "tw:xl:[display:table-row]!"
+  ],
+  "d-xxl-block": [
+   "tw:2xl:block!"
+  ],
+  "d-xxl-flex": [
+   "tw:2xl:flex!"
+  ],
+  "d-xxl-grid": [
+   "tw:2xl:grid!"
+  ],
+  "d-xxl-inline": [
+   "tw:2xl:[display:inline]!"
+  ],
+  "d-xxl-inline-block": [
+   "tw:2xl:[display:inline-block]!"
+  ],
+  "d-xxl-inline-flex": [
+   "tw:2xl:[display:inline-flex]!"
+  ],
+  "d-xxl-inline-grid": [
+   "tw:2xl:[display:inline-grid]!"
+  ],
+  "d-xxl-none": [
+   "tw:2xl:hidden!"
+  ],
+  "d-xxl-table": [
+   "tw:2xl:[display:table]!"
+  ],
+  "d-xxl-table-cell": [
+   "tw:2xl:[display:table-cell]!"
+  ],
+  "d-xxl-table-row": [
+   "tw:2xl:[display:table-row]!"
+  ],
+  "end-0": [
+   "tw:right-0!"
+  ],
+  "end-100": [
+   "tw:[right:100%]!"
+  ],
+  "end-50": [
+   "tw:[right:50%]!"
+  ],
+  "flex-column": [
+   "tw:flex-col!"
+  ],
+  "flex-column-reverse": [
+   "tw:flex-col-reverse!"
+  ],
+  "flex-fill": [
+   "tw:[flex:1_1_auto]!"
+  ],
+  "flex-grow-0": [
+   "tw:grow-0!"
+  ],
+  "flex-grow-1": [
+   "tw:grow!"
+  ],
+  "flex-lg-column": [
+   "tw:lg:flex-col!"
+  ],
+  "flex-lg-column-reverse": [
+   "tw:lg:flex-col-reverse!"
+  ],
+  "flex-lg-fill": [
+   "tw:lg:[flex:1_1_auto]!"
+  ],
+  "flex-lg-grow-0": [
+   "tw:lg:grow-0!"
+  ],
+  "flex-lg-grow-1": [
+   "tw:lg:grow!"
+  ],
+  "flex-lg-nowrap": [
+   "tw:lg:flex-nowrap!"
+  ],
+  "flex-lg-row": [
+   "tw:lg:flex-row!"
+  ],
+  "flex-lg-row-reverse": [
+   "tw:lg:flex-row-reverse!"
+  ],
+  "flex-lg-shrink-0": [
+   "tw:lg:shrink-0!"
+  ],
+  "flex-lg-shrink-1": [
+   "tw:lg:shrink!"
+  ],
+  "flex-lg-wrap": [
+   "tw:lg:flex-wrap!"
+  ],
+  "flex-lg-wrap-reverse": [
+   "tw:lg:flex-wrap-reverse!"
+  ],
+  "flex-md-column": [
+   "tw:md:flex-col!"
+  ],
+  "flex-md-column-reverse": [
+   "tw:md:flex-col-reverse!"
+  ],
+  "flex-md-fill": [
+   "tw:md:[flex:1_1_auto]!"
+  ],
+  "flex-md-grow-0": [
+   "tw:md:grow-0!"
+  ],
+  "flex-md-grow-1": [
+   "tw:md:grow!"
+  ],
+  "flex-md-nowrap": [
+   "tw:md:flex-nowrap!"
+  ],
+  "flex-md-row": [
+   "tw:md:flex-row!"
+  ],
+  "flex-md-row-reverse": [
+   "tw:md:flex-row-reverse!"
+  ],
+  "flex-md-shrink-0": [
+   "tw:md:shrink-0!"
+  ],
+  "flex-md-shrink-1": [
+   "tw:md:shrink!"
+  ],
+  "flex-md-wrap": [
+   "tw:md:flex-wrap!"
+  ],
+  "flex-md-wrap-reverse": [
+   "tw:md:flex-wrap-reverse!"
+  ],
+  "flex-nowrap": [
+   "tw:flex-nowrap!"
+  ],
+  "flex-row": [
+   "tw:flex-row!"
+  ],
+  "flex-row-reverse": [
+   "tw:flex-row-reverse!"
+  ],
+  "flex-shrink-0": [
+   "tw:shrink-0!"
+  ],
+  "flex-shrink-1": [
+   "tw:shrink!"
+  ],
+  "flex-sm-column": [
+   "tw:sm:flex-col!"
+  ],
+  "flex-sm-column-reverse": [
+   "tw:sm:flex-col-reverse!"
+  ],
+  "flex-sm-fill": [
+   "tw:sm:[flex:1_1_auto]!"
+  ],
+  "flex-sm-grow-0": [
+   "tw:sm:grow-0!"
+  ],
+  "flex-sm-grow-1": [
+   "tw:sm:grow!"
+  ],
+  "flex-sm-nowrap": [
+   "tw:sm:flex-nowrap!"
+  ],
+  "flex-sm-row": [
+   "tw:sm:flex-row!"
+  ],
+  "flex-sm-row-reverse": [
+   "tw:sm:flex-row-reverse!"
+  ],
+  "flex-sm-shrink-0": [
+   "tw:sm:shrink-0!"
+  ],
+  "flex-sm-shrink-1": [
+   "tw:sm:shrink!"
+  ],
+  "flex-sm-wrap": [
+   "tw:sm:flex-wrap!"
+  ],
+  "flex-sm-wrap-reverse": [
+   "tw:sm:flex-wrap-reverse!"
+  ],
+  "flex-wrap": [
+   "tw:flex-wrap!"
+  ],
+  "flex-wrap-reverse": [
+   "tw:flex-wrap-reverse!"
+  ],
+  "flex-xl-column": [
+   "tw:xl:flex-col!"
+  ],
+  "flex-xl-column-reverse": [
+   "tw:xl:flex-col-reverse!"
+  ],
+  "flex-xl-fill": [
+   "tw:xl:[flex:1_1_auto]!"
+  ],
+  "flex-xl-grow-0": [
+   "tw:xl:grow-0!"
+  ],
+  "flex-xl-grow-1": [
+   "tw:xl:grow!"
+  ],
+  "flex-xl-nowrap": [
+   "tw:xl:flex-nowrap!"
+  ],
+  "flex-xl-row": [
+   "tw:xl:flex-row!"
+  ],
+  "flex-xl-row-reverse": [
+   "tw:xl:flex-row-reverse!"
+  ],
+  "flex-xl-shrink-0": [
+   "tw:xl:shrink-0!"
+  ],
+  "flex-xl-shrink-1": [
+   "tw:xl:shrink!"
+  ],
+  "flex-xl-wrap": [
+   "tw:xl:flex-wrap!"
+  ],
+  "flex-xl-wrap-reverse": [
+   "tw:xl:flex-wrap-reverse!"
+  ],
+  "flex-xxl-column": [
+   "tw:2xl:flex-col!"
+  ],
+  "flex-xxl-column-reverse": [
+   "tw:2xl:flex-col-reverse!"
+  ],
+  "flex-xxl-fill": [
+   "tw:2xl:[flex:1_1_auto]!"
+  ],
+  "flex-xxl-grow-0": [
+   "tw:2xl:grow-0!"
+  ],
+  "flex-xxl-grow-1": [
+   "tw:2xl:grow!"
+  ],
+  "flex-xxl-nowrap": [
+   "tw:2xl:flex-nowrap!"
+  ],
+  "flex-xxl-row": [
+   "tw:2xl:flex-row!"
+  ],
+  "flex-xxl-row-reverse": [
+   "tw:2xl:flex-row-reverse!"
+  ],
+  "flex-xxl-shrink-0": [
+   "tw:2xl:shrink-0!"
+  ],
+  "flex-xxl-shrink-1": [
+   "tw:2xl:shrink!"
+  ],
+  "flex-xxl-wrap": [
+   "tw:2xl:flex-wrap!"
+  ],
+  "flex-xxl-wrap-reverse": [
+   "tw:2xl:flex-wrap-reverse!"
+  ],
+  "float-end": [
+   "tw:float-right!"
+  ],
+  "float-lg-end": [
+   "tw:lg:float-right!"
+  ],
+  "float-lg-none": [
+   "tw:lg:float-none!"
+  ],
+  "float-lg-start": [
+   "tw:lg:float-left!"
+  ],
+  "float-md-end": [
+   "tw:md:float-right!"
+  ],
+  "float-md-none": [
+   "tw:md:float-none!"
+  ],
+  "float-md-start": [
+   "tw:md:float-left!"
+  ],
+  "float-none": [
+   "tw:float-none!"
+  ],
+  "float-sm-end": [
+   "tw:sm:float-right!"
+  ],
+  "float-sm-none": [
+   "tw:sm:float-none!"
+  ],
+  "float-sm-start": [
+   "tw:sm:float-left!"
+  ],
+  "float-start": [
+   "tw:float-left!"
+  ],
+  "float-xl-end": [
+   "tw:xl:float-right!"
+  ],
+  "float-xl-none": [
+   "tw:xl:float-none!"
+  ],
+  "float-xl-start": [
+   "tw:xl:float-left!"
+  ],
+  "float-xxl-end": [
+   "tw:2xl:float-right!"
+  ],
+  "float-xxl-none": [
+   "tw:2xl:float-none!"
+  ],
+  "float-xxl-start": [
+   "tw:2xl:float-left!"
+  ],
+  "font-monospace": [
+   "tw:[font-family:SFMono-Regular,_Menlo,_Monaco,_Consolas,_\"Liberation_Mono\",_\"Courier_New\",_monospace]!"
+  ],
+  "fs-1": [
+   "tw:text-[length:calc(1.375rem_+_1.5vw)]!",
+   "tw:xl:text-[length:2.5rem]!"
+  ],
+  "fs-2": [
+   "tw:text-[length:calc(1.325rem_+_0.9vw)]!",
+   "tw:xl:text-[length:2rem]!"
+  ],
+  "fs-3": [
+   "tw:text-[length:calc(1.3rem_+_0.6vw)]!",
+   "tw:xl:text-[length:1.75rem]!"
+  ],
+  "fs-4": [
+   "tw:text-[length:calc(1.275rem_+_0.3vw)]!",
+   "tw:xl:text-[length:1.5rem]!"
+  ],
+  "fs-5": [
+   "tw:text-[length:1.25rem]!"
+  ],
+  "fs-6": [
+   "tw:text-[length:1rem]!"
+  ],
+  "fst-italic": [
+   "tw:italic!"
+  ],
+  "fst-normal": [
+   "tw:not-italic!"
+  ],
+  "fw-bold": [
+   "tw:font-bold!"
+  ],
+  "fw-bolder": [
+   "tw:[font-weight:bolder]!"
+  ],
+  "fw-light": [
+   "tw:font-light!"
+  ],
+  "fw-lighter": [
+   "tw:[font-weight:lighter]!"
+  ],
+  "fw-medium": [
+   "tw:font-medium!"
+  ],
+  "fw-normal": [
+   "tw:font-normal!"
+  ],
+  "fw-semibold": [
+   "tw:font-semibold!"
+  ],
+  "gap-0": [
+   "tw:gap-0!"
+  ],
+  "gap-1": [
+   "tw:gap-1!"
+  ],
+  "gap-2": [
+   "tw:gap-2!"
+  ],
+  "gap-3": [
+   "tw:gap-4!"
+  ],
+  "gap-4": [
+   "tw:gap-6!"
+  ],
+  "gap-5": [
+   "tw:gap-12!"
+  ],
+  "gap-lg-0": [
+   "tw:lg:gap-0!"
+  ],
+  "gap-lg-1": [
+   "tw:lg:gap-1!"
+  ],
+  "gap-lg-2": [
+   "tw:lg:gap-2!"
+  ],
+  "gap-lg-3": [
+   "tw:lg:gap-4!"
+  ],
+  "gap-lg-4": [
+   "tw:lg:gap-6!"
+  ],
+  "gap-lg-5": [
+   "tw:lg:gap-12!"
+  ],
+  "gap-md-0": [
+   "tw:md:gap-0!"
+  ],
+  "gap-md-1": [
+   "tw:md:gap-1!"
+  ],
+  "gap-md-2": [
+   "tw:md:gap-2!"
+  ],
+  "gap-md-3": [
+   "tw:md:gap-4!"
+  ],
+  "gap-md-4": [
+   "tw:md:gap-6!"
+  ],
+  "gap-md-5": [
+   "tw:md:gap-12!"
+  ],
+  "gap-sm-0": [
+   "tw:sm:gap-0!"
+  ],
+  "gap-sm-1": [
+   "tw:sm:gap-1!"
+  ],
+  "gap-sm-2": [
+   "tw:sm:gap-2!"
+  ],
+  "gap-sm-3": [
+   "tw:sm:gap-4!"
+  ],
+  "gap-sm-4": [
+   "tw:sm:gap-6!"
+  ],
+  "gap-sm-5": [
+   "tw:sm:gap-12!"
+  ],
+  "gap-xl-0": [
+   "tw:xl:gap-0!"
+  ],
+  "gap-xl-1": [
+   "tw:xl:gap-1!"
+  ],
+  "gap-xl-2": [
+   "tw:xl:gap-2!"
+  ],
+  "gap-xl-3": [
+   "tw:xl:gap-4!"
+  ],
+  "gap-xl-4": [
+   "tw:xl:gap-6!"
+  ],
+  "gap-xl-5": [
+   "tw:xl:gap-12!"
+  ],
+  "gap-xxl-0": [
+   "tw:2xl:gap-0!"
+  ],
+  "gap-xxl-1": [
+   "tw:2xl:gap-1!"
+  ],
+  "gap-xxl-2": [
+   "tw:2xl:gap-2!"
+  ],
+  "gap-xxl-3": [
+   "tw:2xl:gap-4!"
+  ],
+  "gap-xxl-4": [
+   "tw:2xl:gap-6!"
+  ],
+  "gap-xxl-5": [
+   "tw:2xl:gap-12!"
+  ],
+  "h-100": [
+   "tw:h-full!"
+  ],
+  "h-25": [
+   "tw:h-[25%]!"
+  ],
+  "h-50": [
+   "tw:h-[50%]!"
+  ],
+  "h-75": [
+   "tw:h-[75%]!"
+  ],
+  "h-auto": [
+   "tw:h-auto!"
+  ],
+  "invisible": [
+   "tw:[visibility:hidden]!"
+  ],
+  "justify-content-around": [
+   "tw:justify-around!"
+  ],
+  "justify-content-between": [
+   "tw:justify-between!"
+  ],
+  "justify-content-center": [
+   "tw:justify-center!"
+  ],
+  "justify-content-end": [
+   "tw:justify-end!"
+  ],
+  "justify-content-evenly": [
+   "tw:justify-evenly!"
+  ],
+  "justify-content-lg-around": [
+   "tw:lg:justify-around!"
+  ],
+  "justify-content-lg-between": [
+   "tw:lg:justify-between!"
+  ],
+  "justify-content-lg-center": [
+   "tw:lg:justify-center!"
+  ],
+  "justify-content-lg-end": [
+   "tw:lg:justify-end!"
+  ],
+  "justify-content-lg-evenly": [
+   "tw:lg:justify-evenly!"
+  ],
+  "justify-content-lg-start": [
+   "tw:lg:justify-start!"
+  ],
+  "justify-content-md-around": [
+   "tw:md:justify-around!"
+  ],
+  "justify-content-md-between": [
+   "tw:md:justify-between!"
+  ],
+  "justify-content-md-center": [
+   "tw:md:justify-center!"
+  ],
+  "justify-content-md-end": [
+   "tw:md:justify-end!"
+  ],
+  "justify-content-md-evenly": [
+   "tw:md:justify-evenly!"
+  ],
+  "justify-content-md-start": [
+   "tw:md:justify-start!"
+  ],
+  "justify-content-sm-around": [
+   "tw:sm:justify-around!"
+  ],
+  "justify-content-sm-between": [
+   "tw:sm:justify-between!"
+  ],
+  "justify-content-sm-center": [
+   "tw:sm:justify-center!"
+  ],
+  "justify-content-sm-end": [
+   "tw:sm:justify-end!"
+  ],
+  "justify-content-sm-evenly": [
+   "tw:sm:justify-evenly!"
+  ],
+  "justify-content-sm-start": [
+   "tw:sm:justify-start!"
+  ],
+  "justify-content-start": [
+   "tw:justify-start!"
+  ],
+  "justify-content-xl-around": [
+   "tw:xl:justify-around!"
+  ],
+  "justify-content-xl-between": [
+   "tw:xl:justify-between!"
+  ],
+  "justify-content-xl-center": [
+   "tw:xl:justify-center!"
+  ],
+  "justify-content-xl-end": [
+   "tw:xl:justify-end!"
+  ],
+  "justify-content-xl-evenly": [
+   "tw:xl:justify-evenly!"
+  ],
+  "justify-content-xl-start": [
+   "tw:xl:justify-start!"
+  ],
+  "justify-content-xxl-around": [
+   "tw:2xl:justify-around!"
+  ],
+  "justify-content-xxl-between": [
+   "tw:2xl:justify-between!"
+  ],
+  "justify-content-xxl-center": [
+   "tw:2xl:justify-center!"
+  ],
+  "justify-content-xxl-end": [
+   "tw:2xl:justify-end!"
+  ],
+  "justify-content-xxl-evenly": [
+   "tw:2xl:justify-evenly!"
+  ],
+  "justify-content-xxl-start": [
+   "tw:2xl:justify-start!"
+  ],
+  "lh-1": [
+   "tw:[line-height:1]!"
+  ],
+  "lh-base": [
+   "tw:[line-height:1.5]!"
+  ],
+  "lh-lg": [
+   "tw:[line-height:2]!"
+  ],
+  "lh-sm": [
+   "tw:[line-height:1.25]!"
+  ],
+  "link-body-emphasis": [
+   "tw:text-bs-emphasis-color!",
+   "tw:[-webkit-text-decoration-color:#000]!",
+   "tw:[text-decoration-color:#000]!"
+  ],
+  "link-danger": [
+   "tw:text-bs-danger!",
+   "tw:[-webkit-text-decoration-color:#dc3545]!",
+   "tw:[text-decoration-color:#dc3545]!"
+  ],
+  "link-dark": [
+   "tw:text-bs-dark!",
+   "tw:[-webkit-text-decoration-color:#212529]!",
+   "tw:[text-decoration-color:#212529]!"
+  ],
+  "link-info": [
+   "tw:text-bs-info!",
+   "tw:[-webkit-text-decoration-color:#0dcaf0]!",
+   "tw:[text-decoration-color:#0dcaf0]!"
+  ],
+  "link-light": [
+   "tw:text-bs-light!",
+   "tw:[-webkit-text-decoration-color:#f8f9fa]!",
+   "tw:[text-decoration-color:#f8f9fa]!"
+  ],
+  "link-offset-1": [
+   "tw:[text-underline-offset:0.125em]!"
+  ],
+  "link-offset-2": [
+   "tw:[text-underline-offset:0.25em]!"
+  ],
+  "link-offset-3": [
+   "tw:[text-underline-offset:0.375em]!"
+  ],
+  "link-primary": [
+   "tw:text-bs-primary!",
+   "tw:[-webkit-text-decoration-color:#0d6efd]!",
+   "tw:[text-decoration-color:#0d6efd]!"
+  ],
+  "link-secondary": [
+   "tw:text-bs-secondary!",
+   "tw:[-webkit-text-decoration-color:#6c757d]!",
+   "tw:[text-decoration-color:#6c757d]!"
+  ],
+  "link-success": [
+   "tw:text-bs-success!",
+   "tw:[-webkit-text-decoration-color:#198754]!",
+   "tw:[text-decoration-color:#198754]!"
+  ],
+  "link-underline": [
+   "tw:[-webkit-text-decoration-color:#0d6efd]!",
+   "tw:[text-decoration-color:#0d6efd]!"
+  ],
+  "link-underline-danger": [
+   "tw:[-webkit-text-decoration-color:#dc3545]!",
+   "tw:[text-decoration-color:#dc3545]!"
+  ],
+  "link-underline-dark": [
+   "tw:[-webkit-text-decoration-color:#212529]!",
+   "tw:[text-decoration-color:#212529]!"
+  ],
+  "link-underline-info": [
+   "tw:[-webkit-text-decoration-color:#0dcaf0]!",
+   "tw:[text-decoration-color:#0dcaf0]!"
+  ],
+  "link-underline-light": [
+   "tw:[-webkit-text-decoration-color:#f8f9fa]!",
+   "tw:[text-decoration-color:#f8f9fa]!"
+  ],
+  "link-underline-primary": [
+   "tw:[-webkit-text-decoration-color:#0d6efd]!",
+   "tw:[text-decoration-color:#0d6efd]!"
+  ],
+  "link-underline-secondary": [
+   "tw:[-webkit-text-decoration-color:#6c757d]!",
+   "tw:[text-decoration-color:#6c757d]!"
+  ],
+  "link-underline-success": [
+   "tw:[-webkit-text-decoration-color:#198754]!",
+   "tw:[text-decoration-color:#198754]!"
+  ],
+  "link-underline-warning": [
+   "tw:[-webkit-text-decoration-color:#ffc107]!",
+   "tw:[text-decoration-color:#ffc107]!"
+  ],
+  "link-warning": [
+   "tw:text-bs-warning!",
+   "tw:[-webkit-text-decoration-color:#ffc107]!",
+   "tw:[text-decoration-color:#ffc107]!"
+  ],
+  "m-0": [
+   "tw:m-0!"
+  ],
+  "m-1": [
+   "tw:m-1!"
+  ],
+  "m-2": [
+   "tw:m-2!"
+  ],
+  "m-3": [
+   "tw:m-4!"
+  ],
+  "m-4": [
+   "tw:m-6!"
+  ],
+  "m-5": [
+   "tw:m-12!"
+  ],
+  "m-auto": [
+   "tw:m-auto!"
+  ],
+  "m-lg-0": [
+   "tw:lg:m-0!"
+  ],
+  "m-lg-1": [
+   "tw:lg:m-1!"
+  ],
+  "m-lg-2": [
+   "tw:lg:m-2!"
+  ],
+  "m-lg-3": [
+   "tw:lg:m-4!"
+  ],
+  "m-lg-4": [
+   "tw:lg:m-6!"
+  ],
+  "m-lg-5": [
+   "tw:lg:m-12!"
+  ],
+  "m-lg-auto": [
+   "tw:lg:m-auto!"
+  ],
+  "m-md-0": [
+   "tw:md:m-0!"
+  ],
+  "m-md-1": [
+   "tw:md:m-1!"
+  ],
+  "m-md-2": [
+   "tw:md:m-2!"
+  ],
+  "m-md-3": [
+   "tw:md:m-4!"
+  ],
+  "m-md-4": [
+   "tw:md:m-6!"
+  ],
+  "m-md-5": [
+   "tw:md:m-12!"
+  ],
+  "m-md-auto": [
+   "tw:md:m-auto!"
+  ],
+  "m-sm-0": [
+   "tw:sm:m-0!"
+  ],
+  "m-sm-1": [
+   "tw:sm:m-1!"
+  ],
+  "m-sm-2": [
+   "tw:sm:m-2!"
+  ],
+  "m-sm-3": [
+   "tw:sm:m-4!"
+  ],
+  "m-sm-4": [
+   "tw:sm:m-6!"
+  ],
+  "m-sm-5": [
+   "tw:sm:m-12!"
+  ],
+  "m-sm-auto": [
+   "tw:sm:m-auto!"
+  ],
+  "m-xl-0": [
+   "tw:xl:m-0!"
+  ],
+  "m-xl-1": [
+   "tw:xl:m-1!"
+  ],
+  "m-xl-2": [
+   "tw:xl:m-2!"
+  ],
+  "m-xl-3": [
+   "tw:xl:m-4!"
+  ],
+  "m-xl-4": [
+   "tw:xl:m-6!"
+  ],
+  "m-xl-5": [
+   "tw:xl:m-12!"
+  ],
+  "m-xl-auto": [
+   "tw:xl:m-auto!"
+  ],
+  "m-xxl-0": [
+   "tw:2xl:m-0!"
+  ],
+  "m-xxl-1": [
+   "tw:2xl:m-1!"
+  ],
+  "m-xxl-2": [
+   "tw:2xl:m-2!"
+  ],
+  "m-xxl-3": [
+   "tw:2xl:m-4!"
+  ],
+  "m-xxl-4": [
+   "tw:2xl:m-6!"
+  ],
+  "m-xxl-5": [
+   "tw:2xl:m-12!"
+  ],
+  "m-xxl-auto": [
+   "tw:2xl:m-auto!"
+  ],
+  "mb-0": [
+   "tw:mb-0!"
+  ],
+  "mb-1": [
+   "tw:mb-1!"
+  ],
+  "mb-2": [
+   "tw:mb-2!"
+  ],
+  "mb-3": [
+   "tw:mb-4!"
+  ],
+  "mb-4": [
+   "tw:mb-6!"
+  ],
+  "mb-5": [
+   "tw:mb-12!"
+  ],
+  "mb-auto": [
+   "tw:mb-auto!"
+  ],
+  "mb-lg-0": [
+   "tw:lg:mb-0!"
+  ],
+  "mb-lg-1": [
+   "tw:lg:mb-1!"
+  ],
+  "mb-lg-2": [
+   "tw:lg:mb-2!"
+  ],
+  "mb-lg-3": [
+   "tw:lg:mb-4!"
+  ],
+  "mb-lg-4": [
+   "tw:lg:mb-6!"
+  ],
+  "mb-lg-5": [
+   "tw:lg:mb-12!"
+  ],
+  "mb-lg-auto": [
+   "tw:lg:mb-auto!"
+  ],
+  "mb-md-0": [
+   "tw:md:mb-0!"
+  ],
+  "mb-md-1": [
+   "tw:md:mb-1!"
+  ],
+  "mb-md-2": [
+   "tw:md:mb-2!"
+  ],
+  "mb-md-3": [
+   "tw:md:mb-4!"
+  ],
+  "mb-md-4": [
+   "tw:md:mb-6!"
+  ],
+  "mb-md-5": [
+   "tw:md:mb-12!"
+  ],
+  "mb-md-auto": [
+   "tw:md:mb-auto!"
+  ],
+  "mb-sm-0": [
+   "tw:sm:mb-0!"
+  ],
+  "mb-sm-1": [
+   "tw:sm:mb-1!"
+  ],
+  "mb-sm-2": [
+   "tw:sm:mb-2!"
+  ],
+  "mb-sm-3": [
+   "tw:sm:mb-4!"
+  ],
+  "mb-sm-4": [
+   "tw:sm:mb-6!"
+  ],
+  "mb-sm-5": [
+   "tw:sm:mb-12!"
+  ],
+  "mb-sm-auto": [
+   "tw:sm:mb-auto!"
+  ],
+  "mb-xl-0": [
+   "tw:xl:mb-0!"
+  ],
+  "mb-xl-1": [
+   "tw:xl:mb-1!"
+  ],
+  "mb-xl-2": [
+   "tw:xl:mb-2!"
+  ],
+  "mb-xl-3": [
+   "tw:xl:mb-4!"
+  ],
+  "mb-xl-4": [
+   "tw:xl:mb-6!"
+  ],
+  "mb-xl-5": [
+   "tw:xl:mb-12!"
+  ],
+  "mb-xl-auto": [
+   "tw:xl:mb-auto!"
+  ],
+  "mb-xxl-0": [
+   "tw:2xl:mb-0!"
+  ],
+  "mb-xxl-1": [
+   "tw:2xl:mb-1!"
+  ],
+  "mb-xxl-2": [
+   "tw:2xl:mb-2!"
+  ],
+  "mb-xxl-3": [
+   "tw:2xl:mb-4!"
+  ],
+  "mb-xxl-4": [
+   "tw:2xl:mb-6!"
+  ],
+  "mb-xxl-5": [
+   "tw:2xl:mb-12!"
+  ],
+  "mb-xxl-auto": [
+   "tw:2xl:mb-auto!"
+  ],
+  "me-0": [
+   "tw:mr-0!"
+  ],
+  "me-1": [
+   "tw:mr-1!"
+  ],
+  "me-2": [
+   "tw:mr-2!"
+  ],
+  "me-3": [
+   "tw:mr-4!"
+  ],
+  "me-4": [
+   "tw:mr-6!"
+  ],
+  "me-5": [
+   "tw:mr-12!"
+  ],
+  "me-auto": [
+   "tw:mr-auto!"
+  ],
+  "me-lg-0": [
+   "tw:lg:mr-0!"
+  ],
+  "me-lg-1": [
+   "tw:lg:mr-1!"
+  ],
+  "me-lg-2": [
+   "tw:lg:mr-2!"
+  ],
+  "me-lg-3": [
+   "tw:lg:mr-4!"
+  ],
+  "me-lg-4": [
+   "tw:lg:mr-6!"
+  ],
+  "me-lg-5": [
+   "tw:lg:mr-12!"
+  ],
+  "me-lg-auto": [
+   "tw:lg:mr-auto!"
+  ],
+  "me-md-0": [
+   "tw:md:mr-0!"
+  ],
+  "me-md-1": [
+   "tw:md:mr-1!"
+  ],
+  "me-md-2": [
+   "tw:md:mr-2!"
+  ],
+  "me-md-3": [
+   "tw:md:mr-4!"
+  ],
+  "me-md-4": [
+   "tw:md:mr-6!"
+  ],
+  "me-md-5": [
+   "tw:md:mr-12!"
+  ],
+  "me-md-auto": [
+   "tw:md:mr-auto!"
+  ],
+  "me-sm-0": [
+   "tw:sm:mr-0!"
+  ],
+  "me-sm-1": [
+   "tw:sm:mr-1!"
+  ],
+  "me-sm-2": [
+   "tw:sm:mr-2!"
+  ],
+  "me-sm-3": [
+   "tw:sm:mr-4!"
+  ],
+  "me-sm-4": [
+   "tw:sm:mr-6!"
+  ],
+  "me-sm-5": [
+   "tw:sm:mr-12!"
+  ],
+  "me-sm-auto": [
+   "tw:sm:mr-auto!"
+  ],
+  "me-xl-0": [
+   "tw:xl:mr-0!"
+  ],
+  "me-xl-1": [
+   "tw:xl:mr-1!"
+  ],
+  "me-xl-2": [
+   "tw:xl:mr-2!"
+  ],
+  "me-xl-3": [
+   "tw:xl:mr-4!"
+  ],
+  "me-xl-4": [
+   "tw:xl:mr-6!"
+  ],
+  "me-xl-5": [
+   "tw:xl:mr-12!"
+  ],
+  "me-xl-auto": [
+   "tw:xl:mr-auto!"
+  ],
+  "me-xxl-0": [
+   "tw:2xl:mr-0!"
+  ],
+  "me-xxl-1": [
+   "tw:2xl:mr-1!"
+  ],
+  "me-xxl-2": [
+   "tw:2xl:mr-2!"
+  ],
+  "me-xxl-3": [
+   "tw:2xl:mr-4!"
+  ],
+  "me-xxl-4": [
+   "tw:2xl:mr-6!"
+  ],
+  "me-xxl-5": [
+   "tw:2xl:mr-12!"
+  ],
+  "me-xxl-auto": [
+   "tw:2xl:mr-auto!"
+  ],
+  "mh-100": [
+   "tw:max-h-full!"
+  ],
+  "min-vh-100": [
+   "tw:[min-height:100vh]!"
+  ],
+  "min-vw-100": [
+   "tw:[min-width:100vw]!"
+  ],
+  "ms-0": [
+   "tw:ml-0!"
+  ],
+  "ms-1": [
+   "tw:ml-1!"
+  ],
+  "ms-2": [
+   "tw:ml-2!"
+  ],
+  "ms-3": [
+   "tw:ml-4!"
+  ],
+  "ms-4": [
+   "tw:ml-6!"
+  ],
+  "ms-5": [
+   "tw:ml-12!"
+  ],
+  "ms-auto": [
+   "tw:ml-auto!"
+  ],
+  "ms-lg-0": [
+   "tw:lg:ml-0!"
+  ],
+  "ms-lg-1": [
+   "tw:lg:ml-1!"
+  ],
+  "ms-lg-2": [
+   "tw:lg:ml-2!"
+  ],
+  "ms-lg-3": [
+   "tw:lg:ml-4!"
+  ],
+  "ms-lg-4": [
+   "tw:lg:ml-6!"
+  ],
+  "ms-lg-5": [
+   "tw:lg:ml-12!"
+  ],
+  "ms-lg-auto": [
+   "tw:lg:ml-auto!"
+  ],
+  "ms-md-0": [
+   "tw:md:ml-0!"
+  ],
+  "ms-md-1": [
+   "tw:md:ml-1!"
+  ],
+  "ms-md-2": [
+   "tw:md:ml-2!"
+  ],
+  "ms-md-3": [
+   "tw:md:ml-4!"
+  ],
+  "ms-md-4": [
+   "tw:md:ml-6!"
+  ],
+  "ms-md-5": [
+   "tw:md:ml-12!"
+  ],
+  "ms-md-auto": [
+   "tw:md:ml-auto!"
+  ],
+  "ms-sm-0": [
+   "tw:sm:ml-0!"
+  ],
+  "ms-sm-1": [
+   "tw:sm:ml-1!"
+  ],
+  "ms-sm-2": [
+   "tw:sm:ml-2!"
+  ],
+  "ms-sm-3": [
+   "tw:sm:ml-4!"
+  ],
+  "ms-sm-4": [
+   "tw:sm:ml-6!"
+  ],
+  "ms-sm-5": [
+   "tw:sm:ml-12!"
+  ],
+  "ms-sm-auto": [
+   "tw:sm:ml-auto!"
+  ],
+  "ms-xl-0": [
+   "tw:xl:ml-0!"
+  ],
+  "ms-xl-1": [
+   "tw:xl:ml-1!"
+  ],
+  "ms-xl-2": [
+   "tw:xl:ml-2!"
+  ],
+  "ms-xl-3": [
+   "tw:xl:ml-4!"
+  ],
+  "ms-xl-4": [
+   "tw:xl:ml-6!"
+  ],
+  "ms-xl-5": [
+   "tw:xl:ml-12!"
+  ],
+  "ms-xl-auto": [
+   "tw:xl:ml-auto!"
+  ],
+  "ms-xxl-0": [
+   "tw:2xl:ml-0!"
+  ],
+  "ms-xxl-1": [
+   "tw:2xl:ml-1!"
+  ],
+  "ms-xxl-2": [
+   "tw:2xl:ml-2!"
+  ],
+  "ms-xxl-3": [
+   "tw:2xl:ml-4!"
+  ],
+  "ms-xxl-4": [
+   "tw:2xl:ml-6!"
+  ],
+  "ms-xxl-5": [
+   "tw:2xl:ml-12!"
+  ],
+  "ms-xxl-auto": [
+   "tw:2xl:ml-auto!"
+  ],
+  "mt-0": [
+   "tw:mt-0!"
+  ],
+  "mt-1": [
+   "tw:mt-1!"
+  ],
+  "mt-2": [
+   "tw:mt-2!"
+  ],
+  "mt-3": [
+   "tw:mt-4!"
+  ],
+  "mt-4": [
+   "tw:mt-6!"
+  ],
+  "mt-5": [
+   "tw:mt-12!"
+  ],
+  "mt-auto": [
+   "tw:mt-auto!"
+  ],
+  "mt-lg-0": [
+   "tw:lg:mt-0!"
+  ],
+  "mt-lg-1": [
+   "tw:lg:mt-1!"
+  ],
+  "mt-lg-2": [
+   "tw:lg:mt-2!"
+  ],
+  "mt-lg-3": [
+   "tw:lg:mt-4!"
+  ],
+  "mt-lg-4": [
+   "tw:lg:mt-6!"
+  ],
+  "mt-lg-5": [
+   "tw:lg:mt-12!"
+  ],
+  "mt-lg-auto": [
+   "tw:lg:mt-auto!"
+  ],
+  "mt-md-0": [
+   "tw:md:mt-0!"
+  ],
+  "mt-md-1": [
+   "tw:md:mt-1!"
+  ],
+  "mt-md-2": [
+   "tw:md:mt-2!"
+  ],
+  "mt-md-3": [
+   "tw:md:mt-4!"
+  ],
+  "mt-md-4": [
+   "tw:md:mt-6!"
+  ],
+  "mt-md-5": [
+   "tw:md:mt-12!"
+  ],
+  "mt-md-auto": [
+   "tw:md:mt-auto!"
+  ],
+  "mt-sm-0": [
+   "tw:sm:mt-0!"
+  ],
+  "mt-sm-1": [
+   "tw:sm:mt-1!"
+  ],
+  "mt-sm-2": [
+   "tw:sm:mt-2!"
+  ],
+  "mt-sm-3": [
+   "tw:sm:mt-4!"
+  ],
+  "mt-sm-4": [
+   "tw:sm:mt-6!"
+  ],
+  "mt-sm-5": [
+   "tw:sm:mt-12!"
+  ],
+  "mt-sm-auto": [
+   "tw:sm:mt-auto!"
+  ],
+  "mt-xl-0": [
+   "tw:xl:mt-0!"
+  ],
+  "mt-xl-1": [
+   "tw:xl:mt-1!"
+  ],
+  "mt-xl-2": [
+   "tw:xl:mt-2!"
+  ],
+  "mt-xl-3": [
+   "tw:xl:mt-4!"
+  ],
+  "mt-xl-4": [
+   "tw:xl:mt-6!"
+  ],
+  "mt-xl-5": [
+   "tw:xl:mt-12!"
+  ],
+  "mt-xl-auto": [
+   "tw:xl:mt-auto!"
+  ],
+  "mt-xxl-0": [
+   "tw:2xl:mt-0!"
+  ],
+  "mt-xxl-1": [
+   "tw:2xl:mt-1!"
+  ],
+  "mt-xxl-2": [
+   "tw:2xl:mt-2!"
+  ],
+  "mt-xxl-3": [
+   "tw:2xl:mt-4!"
+  ],
+  "mt-xxl-4": [
+   "tw:2xl:mt-6!"
+  ],
+  "mt-xxl-5": [
+   "tw:2xl:mt-12!"
+  ],
+  "mt-xxl-auto": [
+   "tw:2xl:mt-auto!"
+  ],
+  "mw-100": [
+   "tw:max-w-full!"
+  ],
+  "mx-0": [
+   "tw:mx-0!"
+  ],
+  "mx-1": [
+   "tw:mx-1!"
+  ],
+  "mx-2": [
+   "tw:mx-2!"
+  ],
+  "mx-3": [
+   "tw:mx-4!"
+  ],
+  "mx-4": [
+   "tw:mx-6!"
+  ],
+  "mx-5": [
+   "tw:mx-12!"
+  ],
+  "mx-auto": [
+   "tw:mx-auto!"
+  ],
+  "mx-lg-0": [
+   "tw:lg:mx-0!"
+  ],
+  "mx-lg-1": [
+   "tw:lg:mx-1!"
+  ],
+  "mx-lg-2": [
+   "tw:lg:mx-2!"
+  ],
+  "mx-lg-3": [
+   "tw:lg:mx-4!"
+  ],
+  "mx-lg-4": [
+   "tw:lg:mx-6!"
+  ],
+  "mx-lg-5": [
+   "tw:lg:mx-12!"
+  ],
+  "mx-lg-auto": [
+   "tw:lg:mx-auto!"
+  ],
+  "mx-md-0": [
+   "tw:md:mx-0!"
+  ],
+  "mx-md-1": [
+   "tw:md:mx-1!"
+  ],
+  "mx-md-2": [
+   "tw:md:mx-2!"
+  ],
+  "mx-md-3": [
+   "tw:md:mx-4!"
+  ],
+  "mx-md-4": [
+   "tw:md:mx-6!"
+  ],
+  "mx-md-5": [
+   "tw:md:mx-12!"
+  ],
+  "mx-md-auto": [
+   "tw:md:mx-auto!"
+  ],
+  "mx-sm-0": [
+   "tw:sm:mx-0!"
+  ],
+  "mx-sm-1": [
+   "tw:sm:mx-1!"
+  ],
+  "mx-sm-2": [
+   "tw:sm:mx-2!"
+  ],
+  "mx-sm-3": [
+   "tw:sm:mx-4!"
+  ],
+  "mx-sm-4": [
+   "tw:sm:mx-6!"
+  ],
+  "mx-sm-5": [
+   "tw:sm:mx-12!"
+  ],
+  "mx-sm-auto": [
+   "tw:sm:mx-auto!"
+  ],
+  "mx-xl-0": [
+   "tw:xl:mx-0!"
+  ],
+  "mx-xl-1": [
+   "tw:xl:mx-1!"
+  ],
+  "mx-xl-2": [
+   "tw:xl:mx-2!"
+  ],
+  "mx-xl-3": [
+   "tw:xl:mx-4!"
+  ],
+  "mx-xl-4": [
+   "tw:xl:mx-6!"
+  ],
+  "mx-xl-5": [
+   "tw:xl:mx-12!"
+  ],
+  "mx-xl-auto": [
+   "tw:xl:mx-auto!"
+  ],
+  "mx-xxl-0": [
+   "tw:2xl:mx-0!"
+  ],
+  "mx-xxl-1": [
+   "tw:2xl:mx-1!"
+  ],
+  "mx-xxl-2": [
+   "tw:2xl:mx-2!"
+  ],
+  "mx-xxl-3": [
+   "tw:2xl:mx-4!"
+  ],
+  "mx-xxl-4": [
+   "tw:2xl:mx-6!"
+  ],
+  "mx-xxl-5": [
+   "tw:2xl:mx-12!"
+  ],
+  "mx-xxl-auto": [
+   "tw:2xl:mx-auto!"
+  ],
+  "my-0": [
+   "tw:my-0!"
+  ],
+  "my-1": [
+   "tw:my-1!"
+  ],
+  "my-2": [
+   "tw:my-2!"
+  ],
+  "my-3": [
+   "tw:my-4!"
+  ],
+  "my-4": [
+   "tw:my-6!"
+  ],
+  "my-5": [
+   "tw:my-12!"
+  ],
+  "my-auto": [
+   "tw:my-auto!"
+  ],
+  "my-lg-0": [
+   "tw:lg:my-0!"
+  ],
+  "my-lg-1": [
+   "tw:lg:my-1!"
+  ],
+  "my-lg-2": [
+   "tw:lg:my-2!"
+  ],
+  "my-lg-3": [
+   "tw:lg:my-4!"
+  ],
+  "my-lg-4": [
+   "tw:lg:my-6!"
+  ],
+  "my-lg-5": [
+   "tw:lg:my-12!"
+  ],
+  "my-lg-auto": [
+   "tw:lg:my-auto!"
+  ],
+  "my-md-0": [
+   "tw:md:my-0!"
+  ],
+  "my-md-1": [
+   "tw:md:my-1!"
+  ],
+  "my-md-2": [
+   "tw:md:my-2!"
+  ],
+  "my-md-3": [
+   "tw:md:my-4!"
+  ],
+  "my-md-4": [
+   "tw:md:my-6!"
+  ],
+  "my-md-5": [
+   "tw:md:my-12!"
+  ],
+  "my-md-auto": [
+   "tw:md:my-auto!"
+  ],
+  "my-sm-0": [
+   "tw:sm:my-0!"
+  ],
+  "my-sm-1": [
+   "tw:sm:my-1!"
+  ],
+  "my-sm-2": [
+   "tw:sm:my-2!"
+  ],
+  "my-sm-3": [
+   "tw:sm:my-4!"
+  ],
+  "my-sm-4": [
+   "tw:sm:my-6!"
+  ],
+  "my-sm-5": [
+   "tw:sm:my-12!"
+  ],
+  "my-sm-auto": [
+   "tw:sm:my-auto!"
+  ],
+  "my-xl-0": [
+   "tw:xl:my-0!"
+  ],
+  "my-xl-1": [
+   "tw:xl:my-1!"
+  ],
+  "my-xl-2": [
+   "tw:xl:my-2!"
+  ],
+  "my-xl-3": [
+   "tw:xl:my-4!"
+  ],
+  "my-xl-4": [
+   "tw:xl:my-6!"
+  ],
+  "my-xl-5": [
+   "tw:xl:my-12!"
+  ],
+  "my-xl-auto": [
+   "tw:xl:my-auto!"
+  ],
+  "my-xxl-0": [
+   "tw:2xl:my-0!"
+  ],
+  "my-xxl-1": [
+   "tw:2xl:my-1!"
+  ],
+  "my-xxl-2": [
+   "tw:2xl:my-2!"
+  ],
+  "my-xxl-3": [
+   "tw:2xl:my-4!"
+  ],
+  "my-xxl-4": [
+   "tw:2xl:my-6!"
+  ],
+  "my-xxl-5": [
+   "tw:2xl:my-12!"
+  ],
+  "my-xxl-auto": [
+   "tw:2xl:my-auto!"
+  ],
+  "object-fit-contain": [
+   "tw:[-o-object-fit:contain]!",
+   "tw:object-contain!"
+  ],
+  "object-fit-cover": [
+   "tw:[-o-object-fit:cover]!",
+   "tw:object-cover!"
+  ],
+  "object-fit-fill": [
+   "tw:[-o-object-fit:fill]!",
+   "tw:[object-fit:fill]!"
+  ],
+  "object-fit-lg-contain": [
+   "tw:lg:[-o-object-fit:contain]!",
+   "tw:lg:object-contain!"
+  ],
+  "object-fit-lg-cover": [
+   "tw:lg:[-o-object-fit:cover]!",
+   "tw:lg:object-cover!"
+  ],
+  "object-fit-lg-fill": [
+   "tw:lg:[-o-object-fit:fill]!",
+   "tw:lg:[object-fit:fill]!"
+  ],
+  "object-fit-lg-none": [
+   "tw:lg:[-o-object-fit:none]!",
+   "tw:lg:[object-fit:none]!"
+  ],
+  "object-fit-lg-scale": [
+   "tw:lg:[-o-object-fit:scale-down]!",
+   "tw:lg:[object-fit:scale-down]!"
+  ],
+  "object-fit-md-contain": [
+   "tw:md:[-o-object-fit:contain]!",
+   "tw:md:object-contain!"
+  ],
+  "object-fit-md-cover": [
+   "tw:md:[-o-object-fit:cover]!",
+   "tw:md:object-cover!"
+  ],
+  "object-fit-md-fill": [
+   "tw:md:[-o-object-fit:fill]!",
+   "tw:md:[object-fit:fill]!"
+  ],
+  "object-fit-md-none": [
+   "tw:md:[-o-object-fit:none]!",
+   "tw:md:[object-fit:none]!"
+  ],
+  "object-fit-md-scale": [
+   "tw:md:[-o-object-fit:scale-down]!",
+   "tw:md:[object-fit:scale-down]!"
+  ],
+  "object-fit-none": [
+   "tw:[-o-object-fit:none]!",
+   "tw:[object-fit:none]!"
+  ],
+  "object-fit-scale": [
+   "tw:[-o-object-fit:scale-down]!",
+   "tw:[object-fit:scale-down]!"
+  ],
+  "object-fit-sm-contain": [
+   "tw:sm:[-o-object-fit:contain]!",
+   "tw:sm:object-contain!"
+  ],
+  "object-fit-sm-cover": [
+   "tw:sm:[-o-object-fit:cover]!",
+   "tw:sm:object-cover!"
+  ],
+  "object-fit-sm-fill": [
+   "tw:sm:[-o-object-fit:fill]!",
+   "tw:sm:[object-fit:fill]!"
+  ],
+  "object-fit-sm-none": [
+   "tw:sm:[-o-object-fit:none]!",
+   "tw:sm:[object-fit:none]!"
+  ],
+  "object-fit-sm-scale": [
+   "tw:sm:[-o-object-fit:scale-down]!",
+   "tw:sm:[object-fit:scale-down]!"
+  ],
+  "object-fit-xl-contain": [
+   "tw:xl:[-o-object-fit:contain]!",
+   "tw:xl:object-contain!"
+  ],
+  "object-fit-xl-cover": [
+   "tw:xl:[-o-object-fit:cover]!",
+   "tw:xl:object-cover!"
+  ],
+  "object-fit-xl-fill": [
+   "tw:xl:[-o-object-fit:fill]!",
+   "tw:xl:[object-fit:fill]!"
+  ],
+  "object-fit-xl-none": [
+   "tw:xl:[-o-object-fit:none]!",
+   "tw:xl:[object-fit:none]!"
+  ],
+  "object-fit-xl-scale": [
+   "tw:xl:[-o-object-fit:scale-down]!",
+   "tw:xl:[object-fit:scale-down]!"
+  ],
+  "object-fit-xxl-contain": [
+   "tw:2xl:[-o-object-fit:contain]!",
+   "tw:2xl:object-contain!"
+  ],
+  "object-fit-xxl-cover": [
+   "tw:2xl:[-o-object-fit:cover]!",
+   "tw:2xl:object-cover!"
+  ],
+  "object-fit-xxl-fill": [
+   "tw:2xl:[-o-object-fit:fill]!",
+   "tw:2xl:[object-fit:fill]!"
+  ],
+  "object-fit-xxl-none": [
+   "tw:2xl:[-o-object-fit:none]!",
+   "tw:2xl:[object-fit:none]!"
+  ],
+  "object-fit-xxl-scale": [
+   "tw:2xl:[-o-object-fit:scale-down]!",
+   "tw:2xl:[object-fit:scale-down]!"
+  ],
+  "opacity-0": [
+   "tw:[opacity:0]!"
+  ],
+  "opacity-100": [
+   "tw:[opacity:1]!"
+  ],
+  "opacity-25": [
+   "tw:[opacity:0.25]!"
+  ],
+  "opacity-50": [
+   "tw:[opacity:0.5]!"
+  ],
+  "opacity-75": [
+   "tw:[opacity:0.75]!"
+  ],
+  "order-0": [
+   "tw:[order:0]!"
+  ],
+  "order-1": [
+   "tw:[order:1]!"
+  ],
+  "order-2": [
+   "tw:[order:2]!"
+  ],
+  "order-3": [
+   "tw:[order:3]!"
+  ],
+  "order-4": [
+   "tw:[order:4]!"
+  ],
+  "order-5": [
+   "tw:[order:5]!"
+  ],
+  "order-first": [
+   "tw:[order:-1]!"
+  ],
+  "order-last": [
+   "tw:[order:6]!"
+  ],
+  "order-lg-0": [
+   "tw:lg:[order:0]!"
+  ],
+  "order-lg-1": [
+   "tw:lg:[order:1]!"
+  ],
+  "order-lg-2": [
+   "tw:lg:[order:2]!"
+  ],
+  "order-lg-3": [
+   "tw:lg:[order:3]!"
+  ],
+  "order-lg-4": [
+   "tw:lg:[order:4]!"
+  ],
+  "order-lg-5": [
+   "tw:lg:[order:5]!"
+  ],
+  "order-lg-first": [
+   "tw:lg:[order:-1]!"
+  ],
+  "order-lg-last": [
+   "tw:lg:[order:6]!"
+  ],
+  "order-md-0": [
+   "tw:md:[order:0]!"
+  ],
+  "order-md-1": [
+   "tw:md:[order:1]!"
+  ],
+  "order-md-2": [
+   "tw:md:[order:2]!"
+  ],
+  "order-md-3": [
+   "tw:md:[order:3]!"
+  ],
+  "order-md-4": [
+   "tw:md:[order:4]!"
+  ],
+  "order-md-5": [
+   "tw:md:[order:5]!"
+  ],
+  "order-md-first": [
+   "tw:md:[order:-1]!"
+  ],
+  "order-md-last": [
+   "tw:md:[order:6]!"
+  ],
+  "order-sm-0": [
+   "tw:sm:[order:0]!"
+  ],
+  "order-sm-1": [
+   "tw:sm:[order:1]!"
+  ],
+  "order-sm-2": [
+   "tw:sm:[order:2]!"
+  ],
+  "order-sm-3": [
+   "tw:sm:[order:3]!"
+  ],
+  "order-sm-4": [
+   "tw:sm:[order:4]!"
+  ],
+  "order-sm-5": [
+   "tw:sm:[order:5]!"
+  ],
+  "order-sm-first": [
+   "tw:sm:[order:-1]!"
+  ],
+  "order-sm-last": [
+   "tw:sm:[order:6]!"
+  ],
+  "order-xl-0": [
+   "tw:xl:[order:0]!"
+  ],
+  "order-xl-1": [
+   "tw:xl:[order:1]!"
+  ],
+  "order-xl-2": [
+   "tw:xl:[order:2]!"
+  ],
+  "order-xl-3": [
+   "tw:xl:[order:3]!"
+  ],
+  "order-xl-4": [
+   "tw:xl:[order:4]!"
+  ],
+  "order-xl-5": [
+   "tw:xl:[order:5]!"
+  ],
+  "order-xl-first": [
+   "tw:xl:[order:-1]!"
+  ],
+  "order-xl-last": [
+   "tw:xl:[order:6]!"
+  ],
+  "order-xxl-0": [
+   "tw:2xl:[order:0]!"
+  ],
+  "order-xxl-1": [
+   "tw:2xl:[order:1]!"
+  ],
+  "order-xxl-2": [
+   "tw:2xl:[order:2]!"
+  ],
+  "order-xxl-3": [
+   "tw:2xl:[order:3]!"
+  ],
+  "order-xxl-4": [
+   "tw:2xl:[order:4]!"
+  ],
+  "order-xxl-5": [
+   "tw:2xl:[order:5]!"
+  ],
+  "order-xxl-first": [
+   "tw:2xl:[order:-1]!"
+  ],
+  "order-xxl-last": [
+   "tw:2xl:[order:6]!"
+  ],
+  "overflow-auto": [
+   "tw:overflow-auto!"
+  ],
+  "overflow-hidden": [
+   "tw:overflow-hidden!"
+  ],
+  "overflow-scroll": [
+   "tw:overflow-scroll!"
+  ],
+  "overflow-visible": [
+   "tw:overflow-visible!"
+  ],
+  "overflow-x-auto": [
+   "tw:overflow-x-auto!"
+  ],
+  "overflow-x-hidden": [
+   "tw:overflow-x-hidden!"
+  ],
+  "overflow-x-scroll": [
+   "tw:[overflow-x:scroll]!"
+  ],
+  "overflow-x-visible": [
+   "tw:[overflow-x:visible]!"
+  ],
+  "overflow-y-auto": [
+   "tw:overflow-y-auto!"
+  ],
+  "overflow-y-hidden": [
+   "tw:overflow-y-hidden!"
+  ],
+  "overflow-y-scroll": [
+   "tw:[overflow-y:scroll]!"
+  ],
+  "overflow-y-visible": [
+   "tw:[overflow-y:visible]!"
+  ],
+  "p-0": [
+   "tw:p-0!"
+  ],
+  "p-1": [
+   "tw:p-1!"
+  ],
+  "p-2": [
+   "tw:p-2!"
+  ],
+  "p-3": [
+   "tw:p-4!"
+  ],
+  "p-4": [
+   "tw:p-6!"
+  ],
+  "p-5": [
+   "tw:p-12!"
+  ],
+  "p-lg-0": [
+   "tw:lg:p-0!"
+  ],
+  "p-lg-1": [
+   "tw:lg:p-1!"
+  ],
+  "p-lg-2": [
+   "tw:lg:p-2!"
+  ],
+  "p-lg-3": [
+   "tw:lg:p-4!"
+  ],
+  "p-lg-4": [
+   "tw:lg:p-6!"
+  ],
+  "p-lg-5": [
+   "tw:lg:p-12!"
+  ],
+  "p-md-0": [
+   "tw:md:p-0!"
+  ],
+  "p-md-1": [
+   "tw:md:p-1!"
+  ],
+  "p-md-2": [
+   "tw:md:p-2!"
+  ],
+  "p-md-3": [
+   "tw:md:p-4!"
+  ],
+  "p-md-4": [
+   "tw:md:p-6!"
+  ],
+  "p-md-5": [
+   "tw:md:p-12!"
+  ],
+  "p-sm-0": [
+   "tw:sm:p-0!"
+  ],
+  "p-sm-1": [
+   "tw:sm:p-1!"
+  ],
+  "p-sm-2": [
+   "tw:sm:p-2!"
+  ],
+  "p-sm-3": [
+   "tw:sm:p-4!"
+  ],
+  "p-sm-4": [
+   "tw:sm:p-6!"
+  ],
+  "p-sm-5": [
+   "tw:sm:p-12!"
+  ],
+  "p-xl-0": [
+   "tw:xl:p-0!"
+  ],
+  "p-xl-1": [
+   "tw:xl:p-1!"
+  ],
+  "p-xl-2": [
+   "tw:xl:p-2!"
+  ],
+  "p-xl-3": [
+   "tw:xl:p-4!"
+  ],
+  "p-xl-4": [
+   "tw:xl:p-6!"
+  ],
+  "p-xl-5": [
+   "tw:xl:p-12!"
+  ],
+  "p-xxl-0": [
+   "tw:2xl:p-0!"
+  ],
+  "p-xxl-1": [
+   "tw:2xl:p-1!"
+  ],
+  "p-xxl-2": [
+   "tw:2xl:p-2!"
+  ],
+  "p-xxl-3": [
+   "tw:2xl:p-4!"
+  ],
+  "p-xxl-4": [
+   "tw:2xl:p-6!"
+  ],
+  "p-xxl-5": [
+   "tw:2xl:p-12!"
+  ],
+  "pb-0": [
+   "tw:pb-0!"
+  ],
+  "pb-1": [
+   "tw:pb-1!"
+  ],
+  "pb-2": [
+   "tw:pb-2!"
+  ],
+  "pb-3": [
+   "tw:pb-4!"
+  ],
+  "pb-4": [
+   "tw:pb-6!"
+  ],
+  "pb-5": [
+   "tw:pb-12!"
+  ],
+  "pb-lg-0": [
+   "tw:lg:pb-0!"
+  ],
+  "pb-lg-1": [
+   "tw:lg:pb-1!"
+  ],
+  "pb-lg-2": [
+   "tw:lg:pb-2!"
+  ],
+  "pb-lg-3": [
+   "tw:lg:pb-4!"
+  ],
+  "pb-lg-4": [
+   "tw:lg:pb-6!"
+  ],
+  "pb-lg-5": [
+   "tw:lg:pb-12!"
+  ],
+  "pb-md-0": [
+   "tw:md:pb-0!"
+  ],
+  "pb-md-1": [
+   "tw:md:pb-1!"
+  ],
+  "pb-md-2": [
+   "tw:md:pb-2!"
+  ],
+  "pb-md-3": [
+   "tw:md:pb-4!"
+  ],
+  "pb-md-4": [
+   "tw:md:pb-6!"
+  ],
+  "pb-md-5": [
+   "tw:md:pb-12!"
+  ],
+  "pb-sm-0": [
+   "tw:sm:pb-0!"
+  ],
+  "pb-sm-1": [
+   "tw:sm:pb-1!"
+  ],
+  "pb-sm-2": [
+   "tw:sm:pb-2!"
+  ],
+  "pb-sm-3": [
+   "tw:sm:pb-4!"
+  ],
+  "pb-sm-4": [
+   "tw:sm:pb-6!"
+  ],
+  "pb-sm-5": [
+   "tw:sm:pb-12!"
+  ],
+  "pb-xl-0": [
+   "tw:xl:pb-0!"
+  ],
+  "pb-xl-1": [
+   "tw:xl:pb-1!"
+  ],
+  "pb-xl-2": [
+   "tw:xl:pb-2!"
+  ],
+  "pb-xl-3": [
+   "tw:xl:pb-4!"
+  ],
+  "pb-xl-4": [
+   "tw:xl:pb-6!"
+  ],
+  "pb-xl-5": [
+   "tw:xl:pb-12!"
+  ],
+  "pb-xxl-0": [
+   "tw:2xl:pb-0!"
+  ],
+  "pb-xxl-1": [
+   "tw:2xl:pb-1!"
+  ],
+  "pb-xxl-2": [
+   "tw:2xl:pb-2!"
+  ],
+  "pb-xxl-3": [
+   "tw:2xl:pb-4!"
+  ],
+  "pb-xxl-4": [
+   "tw:2xl:pb-6!"
+  ],
+  "pb-xxl-5": [
+   "tw:2xl:pb-12!"
+  ],
+  "pe-0": [
+   "tw:pr-0!"
+  ],
+  "pe-1": [
+   "tw:pr-1!"
+  ],
+  "pe-2": [
+   "tw:pr-2!"
+  ],
+  "pe-3": [
+   "tw:pr-4!"
+  ],
+  "pe-4": [
+   "tw:pr-6!"
+  ],
+  "pe-5": [
+   "tw:pr-12!"
+  ],
+  "pe-auto": [
+   "tw:pointer-events-auto!"
+  ],
+  "pe-lg-0": [
+   "tw:lg:pr-0!"
+  ],
+  "pe-lg-1": [
+   "tw:lg:pr-1!"
+  ],
+  "pe-lg-2": [
+   "tw:lg:pr-2!"
+  ],
+  "pe-lg-3": [
+   "tw:lg:pr-4!"
+  ],
+  "pe-lg-4": [
+   "tw:lg:pr-6!"
+  ],
+  "pe-lg-5": [
+   "tw:lg:pr-12!"
+  ],
+  "pe-md-0": [
+   "tw:md:pr-0!"
+  ],
+  "pe-md-1": [
+   "tw:md:pr-1!"
+  ],
+  "pe-md-2": [
+   "tw:md:pr-2!"
+  ],
+  "pe-md-3": [
+   "tw:md:pr-4!"
+  ],
+  "pe-md-4": [
+   "tw:md:pr-6!"
+  ],
+  "pe-md-5": [
+   "tw:md:pr-12!"
+  ],
+  "pe-none": [
+   "tw:pointer-events-none!"
+  ],
+  "pe-sm-0": [
+   "tw:sm:pr-0!"
+  ],
+  "pe-sm-1": [
+   "tw:sm:pr-1!"
+  ],
+  "pe-sm-2": [
+   "tw:sm:pr-2!"
+  ],
+  "pe-sm-3": [
+   "tw:sm:pr-4!"
+  ],
+  "pe-sm-4": [
+   "tw:sm:pr-6!"
+  ],
+  "pe-sm-5": [
+   "tw:sm:pr-12!"
+  ],
+  "pe-xl-0": [
+   "tw:xl:pr-0!"
+  ],
+  "pe-xl-1": [
+   "tw:xl:pr-1!"
+  ],
+  "pe-xl-2": [
+   "tw:xl:pr-2!"
+  ],
+  "pe-xl-3": [
+   "tw:xl:pr-4!"
+  ],
+  "pe-xl-4": [
+   "tw:xl:pr-6!"
+  ],
+  "pe-xl-5": [
+   "tw:xl:pr-12!"
+  ],
+  "pe-xxl-0": [
+   "tw:2xl:pr-0!"
+  ],
+  "pe-xxl-1": [
+   "tw:2xl:pr-1!"
+  ],
+  "pe-xxl-2": [
+   "tw:2xl:pr-2!"
+  ],
+  "pe-xxl-3": [
+   "tw:2xl:pr-4!"
+  ],
+  "pe-xxl-4": [
+   "tw:2xl:pr-6!"
+  ],
+  "pe-xxl-5": [
+   "tw:2xl:pr-12!"
+  ],
+  "position-absolute": [
+   "tw:absolute!"
+  ],
+  "position-fixed": [
+   "tw:fixed!"
+  ],
+  "position-relative": [
+   "tw:relative!"
+  ],
+  "position-static": [
+   "tw:static!"
+  ],
+  "position-sticky": [
+   "tw:[position:-webkit-sticky]!",
+   "tw:sticky!"
+  ],
+  "ps-0": [
+   "tw:pl-0!"
+  ],
+  "ps-1": [
+   "tw:pl-1!"
+  ],
+  "ps-2": [
+   "tw:pl-2!"
+  ],
+  "ps-3": [
+   "tw:pl-4!"
+  ],
+  "ps-4": [
+   "tw:pl-6!"
+  ],
+  "ps-5": [
+   "tw:pl-12!"
+  ],
+  "ps-lg-0": [
+   "tw:lg:pl-0!"
+  ],
+  "ps-lg-1": [
+   "tw:lg:pl-1!"
+  ],
+  "ps-lg-2": [
+   "tw:lg:pl-2!"
+  ],
+  "ps-lg-3": [
+   "tw:lg:pl-4!"
+  ],
+  "ps-lg-4": [
+   "tw:lg:pl-6!"
+  ],
+  "ps-lg-5": [
+   "tw:lg:pl-12!"
+  ],
+  "ps-md-0": [
+   "tw:md:pl-0!"
+  ],
+  "ps-md-1": [
+   "tw:md:pl-1!"
+  ],
+  "ps-md-2": [
+   "tw:md:pl-2!"
+  ],
+  "ps-md-3": [
+   "tw:md:pl-4!"
+  ],
+  "ps-md-4": [
+   "tw:md:pl-6!"
+  ],
+  "ps-md-5": [
+   "tw:md:pl-12!"
+  ],
+  "ps-sm-0": [
+   "tw:sm:pl-0!"
+  ],
+  "ps-sm-1": [
+   "tw:sm:pl-1!"
+  ],
+  "ps-sm-2": [
+   "tw:sm:pl-2!"
+  ],
+  "ps-sm-3": [
+   "tw:sm:pl-4!"
+  ],
+  "ps-sm-4": [
+   "tw:sm:pl-6!"
+  ],
+  "ps-sm-5": [
+   "tw:sm:pl-12!"
+  ],
+  "ps-xl-0": [
+   "tw:xl:pl-0!"
+  ],
+  "ps-xl-1": [
+   "tw:xl:pl-1!"
+  ],
+  "ps-xl-2": [
+   "tw:xl:pl-2!"
+  ],
+  "ps-xl-3": [
+   "tw:xl:pl-4!"
+  ],
+  "ps-xl-4": [
+   "tw:xl:pl-6!"
+  ],
+  "ps-xl-5": [
+   "tw:xl:pl-12!"
+  ],
+  "ps-xxl-0": [
+   "tw:2xl:pl-0!"
+  ],
+  "ps-xxl-1": [
+   "tw:2xl:pl-1!"
+  ],
+  "ps-xxl-2": [
+   "tw:2xl:pl-2!"
+  ],
+  "ps-xxl-3": [
+   "tw:2xl:pl-4!"
+  ],
+  "ps-xxl-4": [
+   "tw:2xl:pl-6!"
+  ],
+  "ps-xxl-5": [
+   "tw:2xl:pl-12!"
+  ],
+  "pt-0": [
+   "tw:pt-0!"
+  ],
+  "pt-1": [
+   "tw:pt-1!"
+  ],
+  "pt-2": [
+   "tw:pt-2!"
+  ],
+  "pt-3": [
+   "tw:pt-4!"
+  ],
+  "pt-4": [
+   "tw:pt-6!"
+  ],
+  "pt-5": [
+   "tw:pt-12!"
+  ],
+  "pt-lg-0": [
+   "tw:lg:pt-0!"
+  ],
+  "pt-lg-1": [
+   "tw:lg:pt-1!"
+  ],
+  "pt-lg-2": [
+   "tw:lg:pt-2!"
+  ],
+  "pt-lg-3": [
+   "tw:lg:pt-4!"
+  ],
+  "pt-lg-4": [
+   "tw:lg:pt-6!"
+  ],
+  "pt-lg-5": [
+   "tw:lg:pt-12!"
+  ],
+  "pt-md-0": [
+   "tw:md:pt-0!"
+  ],
+  "pt-md-1": [
+   "tw:md:pt-1!"
+  ],
+  "pt-md-2": [
+   "tw:md:pt-2!"
+  ],
+  "pt-md-3": [
+   "tw:md:pt-4!"
+  ],
+  "pt-md-4": [
+   "tw:md:pt-6!"
+  ],
+  "pt-md-5": [
+   "tw:md:pt-12!"
+  ],
+  "pt-sm-0": [
+   "tw:sm:pt-0!"
+  ],
+  "pt-sm-1": [
+   "tw:sm:pt-1!"
+  ],
+  "pt-sm-2": [
+   "tw:sm:pt-2!"
+  ],
+  "pt-sm-3": [
+   "tw:sm:pt-4!"
+  ],
+  "pt-sm-4": [
+   "tw:sm:pt-6!"
+  ],
+  "pt-sm-5": [
+   "tw:sm:pt-12!"
+  ],
+  "pt-xl-0": [
+   "tw:xl:pt-0!"
+  ],
+  "pt-xl-1": [
+   "tw:xl:pt-1!"
+  ],
+  "pt-xl-2": [
+   "tw:xl:pt-2!"
+  ],
+  "pt-xl-3": [
+   "tw:xl:pt-4!"
+  ],
+  "pt-xl-4": [
+   "tw:xl:pt-6!"
+  ],
+  "pt-xl-5": [
+   "tw:xl:pt-12!"
+  ],
+  "pt-xxl-0": [
+   "tw:2xl:pt-0!"
+  ],
+  "pt-xxl-1": [
+   "tw:2xl:pt-1!"
+  ],
+  "pt-xxl-2": [
+   "tw:2xl:pt-2!"
+  ],
+  "pt-xxl-3": [
+   "tw:2xl:pt-4!"
+  ],
+  "pt-xxl-4": [
+   "tw:2xl:pt-6!"
+  ],
+  "pt-xxl-5": [
+   "tw:2xl:pt-12!"
+  ],
+  "px-0": [
+   "tw:px-0!"
+  ],
+  "px-1": [
+   "tw:px-1!"
+  ],
+  "px-2": [
+   "tw:px-2!"
+  ],
+  "px-3": [
+   "tw:px-4!"
+  ],
+  "px-4": [
+   "tw:px-6!"
+  ],
+  "px-5": [
+   "tw:px-12!"
+  ],
+  "px-lg-0": [
+   "tw:lg:px-0!"
+  ],
+  "px-lg-1": [
+   "tw:lg:px-1!"
+  ],
+  "px-lg-2": [
+   "tw:lg:px-2!"
+  ],
+  "px-lg-3": [
+   "tw:lg:px-4!"
+  ],
+  "px-lg-4": [
+   "tw:lg:px-6!"
+  ],
+  "px-lg-5": [
+   "tw:lg:px-12!"
+  ],
+  "px-md-0": [
+   "tw:md:px-0!"
+  ],
+  "px-md-1": [
+   "tw:md:px-1!"
+  ],
+  "px-md-2": [
+   "tw:md:px-2!"
+  ],
+  "px-md-3": [
+   "tw:md:px-4!"
+  ],
+  "px-md-4": [
+   "tw:md:px-6!"
+  ],
+  "px-md-5": [
+   "tw:md:px-12!"
+  ],
+  "px-sm-0": [
+   "tw:sm:px-0!"
+  ],
+  "px-sm-1": [
+   "tw:sm:px-1!"
+  ],
+  "px-sm-2": [
+   "tw:sm:px-2!"
+  ],
+  "px-sm-3": [
+   "tw:sm:px-4!"
+  ],
+  "px-sm-4": [
+   "tw:sm:px-6!"
+  ],
+  "px-sm-5": [
+   "tw:sm:px-12!"
+  ],
+  "px-xl-0": [
+   "tw:xl:px-0!"
+  ],
+  "px-xl-1": [
+   "tw:xl:px-1!"
+  ],
+  "px-xl-2": [
+   "tw:xl:px-2!"
+  ],
+  "px-xl-3": [
+   "tw:xl:px-4!"
+  ],
+  "px-xl-4": [
+   "tw:xl:px-6!"
+  ],
+  "px-xl-5": [
+   "tw:xl:px-12!"
+  ],
+  "px-xxl-0": [
+   "tw:2xl:px-0!"
+  ],
+  "px-xxl-1": [
+   "tw:2xl:px-1!"
+  ],
+  "px-xxl-2": [
+   "tw:2xl:px-2!"
+  ],
+  "px-xxl-3": [
+   "tw:2xl:px-4!"
+  ],
+  "px-xxl-4": [
+   "tw:2xl:px-6!"
+  ],
+  "px-xxl-5": [
+   "tw:2xl:px-12!"
+  ],
+  "py-0": [
+   "tw:py-0!"
+  ],
+  "py-1": [
+   "tw:py-1!"
+  ],
+  "py-2": [
+   "tw:py-2!"
+  ],
+  "py-3": [
+   "tw:py-4!"
+  ],
+  "py-4": [
+   "tw:py-6!"
+  ],
+  "py-5": [
+   "tw:py-12!"
+  ],
+  "py-lg-0": [
+   "tw:lg:py-0!"
+  ],
+  "py-lg-1": [
+   "tw:lg:py-1!"
+  ],
+  "py-lg-2": [
+   "tw:lg:py-2!"
+  ],
+  "py-lg-3": [
+   "tw:lg:py-4!"
+  ],
+  "py-lg-4": [
+   "tw:lg:py-6!"
+  ],
+  "py-lg-5": [
+   "tw:lg:py-12!"
+  ],
+  "py-md-0": [
+   "tw:md:py-0!"
+  ],
+  "py-md-1": [
+   "tw:md:py-1!"
+  ],
+  "py-md-2": [
+   "tw:md:py-2!"
+  ],
+  "py-md-3": [
+   "tw:md:py-4!"
+  ],
+  "py-md-4": [
+   "tw:md:py-6!"
+  ],
+  "py-md-5": [
+   "tw:md:py-12!"
+  ],
+  "py-sm-0": [
+   "tw:sm:py-0!"
+  ],
+  "py-sm-1": [
+   "tw:sm:py-1!"
+  ],
+  "py-sm-2": [
+   "tw:sm:py-2!"
+  ],
+  "py-sm-3": [
+   "tw:sm:py-4!"
+  ],
+  "py-sm-4": [
+   "tw:sm:py-6!"
+  ],
+  "py-sm-5": [
+   "tw:sm:py-12!"
+  ],
+  "py-xl-0": [
+   "tw:xl:py-0!"
+  ],
+  "py-xl-1": [
+   "tw:xl:py-1!"
+  ],
+  "py-xl-2": [
+   "tw:xl:py-2!"
+  ],
+  "py-xl-3": [
+   "tw:xl:py-4!"
+  ],
+  "py-xl-4": [
+   "tw:xl:py-6!"
+  ],
+  "py-xl-5": [
+   "tw:xl:py-12!"
+  ],
+  "py-xxl-0": [
+   "tw:2xl:py-0!"
+  ],
+  "py-xxl-1": [
+   "tw:2xl:py-1!"
+  ],
+  "py-xxl-2": [
+   "tw:2xl:py-2!"
+  ],
+  "py-xxl-3": [
+   "tw:2xl:py-4!"
+  ],
+  "py-xxl-4": [
+   "tw:2xl:py-6!"
+  ],
+  "py-xxl-5": [
+   "tw:2xl:py-12!"
+  ],
+  "rounded": [
+   "tw:rounded-bs!"
+  ],
+  "rounded-0": [
+   "tw:rounded-[0]!"
+  ],
+  "rounded-1": [
+   "tw:rounded-bs-sm!"
+  ],
+  "rounded-2": [
+   "tw:rounded-bs!"
+  ],
+  "rounded-3": [
+   "tw:rounded-bs-lg!"
+  ],
+  "rounded-4": [
+   "tw:rounded-bs-xl!"
+  ],
+  "rounded-5": [
+   "tw:rounded-bs-xxl!"
+  ],
+  "rounded-bottom": [
+   "tw:[border-bottom-right-radius:0.375rem]!",
+   "tw:[border-bottom-left-radius:0.375rem]!"
+  ],
+  "rounded-bottom-0": [
+   "tw:[border-bottom-right-radius:0]!",
+   "tw:[border-bottom-left-radius:0]!"
+  ],
+  "rounded-bottom-1": [
+   "tw:[border-bottom-right-radius:0.25rem]!",
+   "tw:[border-bottom-left-radius:0.25rem]!"
+  ],
+  "rounded-bottom-2": [
+   "tw:[border-bottom-right-radius:0.375rem]!",
+   "tw:[border-bottom-left-radius:0.375rem]!"
+  ],
+  "rounded-bottom-3": [
+   "tw:[border-bottom-right-radius:0.5rem]!",
+   "tw:[border-bottom-left-radius:0.5rem]!"
+  ],
+  "rounded-bottom-4": [
+   "tw:[border-bottom-right-radius:1rem]!",
+   "tw:[border-bottom-left-radius:1rem]!"
+  ],
+  "rounded-bottom-5": [
+   "tw:[border-bottom-right-radius:2rem]!",
+   "tw:[border-bottom-left-radius:2rem]!"
+  ],
+  "rounded-bottom-circle": [
+   "tw:[border-bottom-right-radius:50%]!",
+   "tw:[border-bottom-left-radius:50%]!"
+  ],
+  "rounded-bottom-pill": [
+   "tw:[border-bottom-right-radius:50rem]!",
+   "tw:[border-bottom-left-radius:50rem]!"
+  ],
+  "rounded-circle": [
+   "tw:rounded-[50%]!"
+  ],
+  "rounded-end": [
+   "tw:[border-top-right-radius:0.375rem]!",
+   "tw:[border-bottom-right-radius:0.375rem]!"
+  ],
+  "rounded-end-0": [
+   "tw:[border-top-right-radius:0]!",
+   "tw:[border-bottom-right-radius:0]!"
+  ],
+  "rounded-end-1": [
+   "tw:[border-top-right-radius:0.25rem]!",
+   "tw:[border-bottom-right-radius:0.25rem]!"
+  ],
+  "rounded-end-2": [
+   "tw:[border-top-right-radius:0.375rem]!",
+   "tw:[border-bottom-right-radius:0.375rem]!"
+  ],
+  "rounded-end-3": [
+   "tw:[border-top-right-radius:0.5rem]!",
+   "tw:[border-bottom-right-radius:0.5rem]!"
+  ],
+  "rounded-end-4": [
+   "tw:[border-top-right-radius:1rem]!",
+   "tw:[border-bottom-right-radius:1rem]!"
+  ],
+  "rounded-end-5": [
+   "tw:[border-top-right-radius:2rem]!",
+   "tw:[border-bottom-right-radius:2rem]!"
+  ],
+  "rounded-end-circle": [
+   "tw:[border-top-right-radius:50%]!",
+   "tw:[border-bottom-right-radius:50%]!"
+  ],
+  "rounded-end-pill": [
+   "tw:[border-top-right-radius:50rem]!",
+   "tw:[border-bottom-right-radius:50rem]!"
+  ],
+  "rounded-pill": [
+   "tw:rounded-bs-pill!"
+  ],
+  "rounded-start": [
+   "tw:[border-bottom-left-radius:0.375rem]!",
+   "tw:[border-top-left-radius:0.375rem]!"
+  ],
+  "rounded-start-0": [
+   "tw:[border-bottom-left-radius:0]!",
+   "tw:[border-top-left-radius:0]!"
+  ],
+  "rounded-start-1": [
+   "tw:[border-bottom-left-radius:0.25rem]!",
+   "tw:[border-top-left-radius:0.25rem]!"
+  ],
+  "rounded-start-2": [
+   "tw:[border-bottom-left-radius:0.375rem]!",
+   "tw:[border-top-left-radius:0.375rem]!"
+  ],
+  "rounded-start-3": [
+   "tw:[border-bottom-left-radius:0.5rem]!",
+   "tw:[border-top-left-radius:0.5rem]!"
+  ],
+  "rounded-start-4": [
+   "tw:[border-bottom-left-radius:1rem]!",
+   "tw:[border-top-left-radius:1rem]!"
+  ],
+  "rounded-start-5": [
+   "tw:[border-bottom-left-radius:2rem]!",
+   "tw:[border-top-left-radius:2rem]!"
+  ],
+  "rounded-start-circle": [
+   "tw:[border-bottom-left-radius:50%]!",
+   "tw:[border-top-left-radius:50%]!"
+  ],
+  "rounded-start-pill": [
+   "tw:[border-bottom-left-radius:50rem]!",
+   "tw:[border-top-left-radius:50rem]!"
+  ],
+  "rounded-top": [
+   "tw:[border-top-left-radius:0.375rem]!",
+   "tw:[border-top-right-radius:0.375rem]!"
+  ],
+  "rounded-top-0": [
+   "tw:[border-top-left-radius:0]!",
+   "tw:[border-top-right-radius:0]!"
+  ],
+  "rounded-top-1": [
+   "tw:[border-top-left-radius:0.25rem]!",
+   "tw:[border-top-right-radius:0.25rem]!"
+  ],
+  "rounded-top-2": [
+   "tw:[border-top-left-radius:0.375rem]!",
+   "tw:[border-top-right-radius:0.375rem]!"
+  ],
+  "rounded-top-3": [
+   "tw:[border-top-left-radius:0.5rem]!",
+   "tw:[border-top-right-radius:0.5rem]!"
+  ],
+  "rounded-top-4": [
+   "tw:[border-top-left-radius:1rem]!",
+   "tw:[border-top-right-radius:1rem]!"
+  ],
+  "rounded-top-5": [
+   "tw:[border-top-left-radius:2rem]!",
+   "tw:[border-top-right-radius:2rem]!"
+  ],
+  "rounded-top-circle": [
+   "tw:[border-top-left-radius:50%]!",
+   "tw:[border-top-right-radius:50%]!"
+  ],
+  "rounded-top-pill": [
+   "tw:[border-top-left-radius:50rem]!",
+   "tw:[border-top-right-radius:50rem]!"
+  ],
+  "row-gap-0": [
+   "tw:gap-y-0!"
+  ],
+  "row-gap-1": [
+   "tw:gap-y-1!"
+  ],
+  "row-gap-2": [
+   "tw:gap-y-2!"
+  ],
+  "row-gap-3": [
+   "tw:gap-y-4!"
+  ],
+  "row-gap-4": [
+   "tw:gap-y-6!"
+  ],
+  "row-gap-5": [
+   "tw:gap-y-12!"
+  ],
+  "row-gap-lg-0": [
+   "tw:lg:gap-y-0!"
+  ],
+  "row-gap-lg-1": [
+   "tw:lg:gap-y-1!"
+  ],
+  "row-gap-lg-2": [
+   "tw:lg:gap-y-2!"
+  ],
+  "row-gap-lg-3": [
+   "tw:lg:gap-y-4!"
+  ],
+  "row-gap-lg-4": [
+   "tw:lg:gap-y-6!"
+  ],
+  "row-gap-lg-5": [
+   "tw:lg:gap-y-12!"
+  ],
+  "row-gap-md-0": [
+   "tw:md:gap-y-0!"
+  ],
+  "row-gap-md-1": [
+   "tw:md:gap-y-1!"
+  ],
+  "row-gap-md-2": [
+   "tw:md:gap-y-2!"
+  ],
+  "row-gap-md-3": [
+   "tw:md:gap-y-4!"
+  ],
+  "row-gap-md-4": [
+   "tw:md:gap-y-6!"
+  ],
+  "row-gap-md-5": [
+   "tw:md:gap-y-12!"
+  ],
+  "row-gap-sm-0": [
+   "tw:sm:gap-y-0!"
+  ],
+  "row-gap-sm-1": [
+   "tw:sm:gap-y-1!"
+  ],
+  "row-gap-sm-2": [
+   "tw:sm:gap-y-2!"
+  ],
+  "row-gap-sm-3": [
+   "tw:sm:gap-y-4!"
+  ],
+  "row-gap-sm-4": [
+   "tw:sm:gap-y-6!"
+  ],
+  "row-gap-sm-5": [
+   "tw:sm:gap-y-12!"
+  ],
+  "row-gap-xl-0": [
+   "tw:xl:gap-y-0!"
+  ],
+  "row-gap-xl-1": [
+   "tw:xl:gap-y-1!"
+  ],
+  "row-gap-xl-2": [
+   "tw:xl:gap-y-2!"
+  ],
+  "row-gap-xl-3": [
+   "tw:xl:gap-y-4!"
+  ],
+  "row-gap-xl-4": [
+   "tw:xl:gap-y-6!"
+  ],
+  "row-gap-xl-5": [
+   "tw:xl:gap-y-12!"
+  ],
+  "row-gap-xxl-0": [
+   "tw:2xl:gap-y-0!"
+  ],
+  "row-gap-xxl-1": [
+   "tw:2xl:gap-y-1!"
+  ],
+  "row-gap-xxl-2": [
+   "tw:2xl:gap-y-2!"
+  ],
+  "row-gap-xxl-3": [
+   "tw:2xl:gap-y-4!"
+  ],
+  "row-gap-xxl-4": [
+   "tw:2xl:gap-y-6!"
+  ],
+  "row-gap-xxl-5": [
+   "tw:2xl:gap-y-12!"
+  ],
+  "shadow": [
+   "tw:shadow-bs!"
+  ],
+  "shadow-lg": [
+   "tw:shadow-bs-lg!"
+  ],
+  "shadow-none": [
+   "tw:[box-shadow:none]!"
+  ],
+  "shadow-sm": [
+   "tw:shadow-bs-sm!"
+  ],
+  "start-0": [
+   "tw:left-0!"
+  ],
+  "start-100": [
+   "tw:[left:100%]!"
+  ],
+  "start-50": [
+   "tw:[left:50%]!"
+  ],
+  "text-bg-danger": [
+   "tw:text-bs-body-bg!",
+   "tw:bg-bs-danger!"
+  ],
+  "text-bg-dark": [
+   "tw:text-bs-body-bg!",
+   "tw:bg-bs-dark!"
+  ],
+  "text-bg-info": [
+   "tw:text-bs-black!",
+   "tw:bg-bs-info!"
+  ],
+  "text-bg-light": [
+   "tw:text-bs-black!",
+   "tw:bg-bs-light!"
+  ],
+  "text-bg-primary": [
+   "tw:text-bs-body-bg!",
+   "tw:bg-bs-primary!"
+  ],
+  "text-bg-secondary": [
+   "tw:text-bs-body-bg!",
+   "tw:bg-bs-secondary!"
+  ],
+  "text-bg-success": [
+   "tw:text-bs-body-bg!",
+   "tw:bg-bs-success!"
+  ],
+  "text-bg-warning": [
+   "tw:text-bs-black!",
+   "tw:bg-bs-warning!"
+  ],
+  "text-black": [
+   "tw:text-bs-black!"
+  ],
+  "text-black-50": [
+   "tw:text-[rgba(0,0,0,0.5)]!"
+  ],
+  "text-body": [
+   "tw:text-bs-body-color!"
+  ],
+  "text-body-emphasis": [
+   "tw:text-bs-emphasis-color!"
+  ],
+  "text-body-secondary": [
+   "tw:text-bs-secondary-color!"
+  ],
+  "text-body-tertiary": [
+   "tw:text-bs-tertiary-color!"
+  ],
+  "text-break": [
+   "tw:[word-wrap:break-word]!",
+   "tw:[word-break:break-word]!"
+  ],
+  "text-capitalize": [
+   "tw:capitalize!"
+  ],
+  "text-center": [
+   "tw:text-center!"
+  ],
+  "text-danger": [
+   "tw:text-bs-danger!"
+  ],
+  "text-danger-emphasis": [
+   "tw:text-bs-danger-text-emphasis!"
+  ],
+  "text-dark": [
+   "tw:text-bs-dark!"
+  ],
+  "text-dark-emphasis": [
+   "tw:text-bs-dark-text-emphasis!"
+  ],
+  "text-decoration-line-through": [
+   "tw:[text-decoration:line-through]!"
+  ],
+  "text-decoration-none": [
+   "tw:[text-decoration:none]!"
+  ],
+  "text-decoration-underline": [
+   "tw:[text-decoration:underline]!"
+  ],
+  "text-end": [
+   "tw:text-right!"
+  ],
+  "text-info": [
+   "tw:text-bs-info!"
+  ],
+  "text-info-emphasis": [
+   "tw:text-bs-info-text-emphasis!"
+  ],
+  "text-lg-center": [
+   "tw:lg:text-center!"
+  ],
+  "text-lg-end": [
+   "tw:lg:text-right!"
+  ],
+  "text-lg-start": [
+   "tw:lg:text-left!"
+  ],
+  "text-light": [
+   "tw:text-bs-light!"
+  ],
+  "text-light-emphasis": [
+   "tw:text-bs-light-text-emphasis!"
+  ],
+  "text-lowercase": [
+   "tw:lowercase!"
+  ],
+  "text-md-center": [
+   "tw:md:text-center!"
+  ],
+  "text-md-end": [
+   "tw:md:text-right!"
+  ],
+  "text-md-start": [
+   "tw:md:text-left!"
+  ],
+  "text-muted": [
+   "tw:text-bs-secondary-color!"
+  ],
+  "text-nowrap": [
+   "tw:whitespace-nowrap!"
+  ],
+  "text-primary": [
+   "tw:text-bs-primary!"
+  ],
+  "text-primary-emphasis": [
+   "tw:text-bs-primary-text-emphasis!"
+  ],
+  "text-reset": [
+   "tw:text-[inherit]!"
+  ],
+  "text-secondary": [
+   "tw:text-bs-secondary!"
+  ],
+  "text-secondary-emphasis": [
+   "tw:text-bs-secondary-text-emphasis!"
+  ],
+  "text-sm-center": [
+   "tw:sm:text-center!"
+  ],
+  "text-sm-end": [
+   "tw:sm:text-right!"
+  ],
+  "text-sm-start": [
+   "tw:sm:text-left!"
+  ],
+  "text-start": [
+   "tw:text-left!"
+  ],
+  "text-success": [
+   "tw:text-bs-success!"
+  ],
+  "text-success-emphasis": [
+   "tw:text-bs-success-text-emphasis!"
+  ],
+  "text-uppercase": [
+   "tw:uppercase!"
+  ],
+  "text-warning": [
+   "tw:text-bs-warning!"
+  ],
+  "text-warning-emphasis": [
+   "tw:text-bs-warning-text-emphasis!"
+  ],
+  "text-white": [
+   "tw:text-bs-white!"
+  ],
+  "text-white-50": [
+   "tw:text-[rgba(255,255,255,0.5)]!"
+  ],
+  "text-wrap": [
+   "tw:whitespace-normal!"
+  ],
+  "text-xl-center": [
+   "tw:xl:text-center!"
+  ],
+  "text-xl-end": [
+   "tw:xl:text-right!"
+  ],
+  "text-xl-start": [
+   "tw:xl:text-left!"
+  ],
+  "text-xxl-center": [
+   "tw:2xl:text-center!"
+  ],
+  "text-xxl-end": [
+   "tw:2xl:text-right!"
+  ],
+  "text-xxl-start": [
+   "tw:2xl:text-left!"
+  ],
+  "top-0": [
+   "tw:top-0!"
+  ],
+  "top-100": [
+   "tw:[top:100%]!"
+  ],
+  "top-50": [
+   "tw:[top:50%]!"
+  ],
+  "translate-middle": [
+   "tw:[transform:translate(-50%,_-50%)]!"
+  ],
+  "translate-middle-x": [
+   "tw:[transform:translateX(-50%)]!"
+  ],
+  "translate-middle-y": [
+   "tw:[transform:translateY(-50%)]!"
+  ],
+  "user-select-all": [
+   "tw:[-webkit-user-select:all]!",
+   "tw:[-moz-user-select:all]!",
+   "tw:select-all!"
+  ],
+  "user-select-auto": [
+   "tw:[-webkit-user-select:auto]!",
+   "tw:[-moz-user-select:auto]!",
+   "tw:select-auto!"
+  ],
+  "user-select-none": [
+   "tw:[-webkit-user-select:none]!",
+   "tw:[-moz-user-select:none]!",
+   "tw:select-none!"
+  ],
+  "vh-100": [
+   "tw:[height:100vh]!"
+  ],
+  "visible": [
+   "tw:[visibility:visible]!"
+  ],
+  "visually-hidden": [
+   "tw:[width:1px]!",
+   "tw:[height:1px]!",
+   "tw:p-0!",
+   "tw:[margin:-1px]!",
+   "tw:overflow-hidden!",
+   "tw:[clip:rect(0,_0,_0,_0)]!",
+   "tw:whitespace-nowrap!",
+   "tw:[border:0]!"
+  ],
+  "vw-100": [
+   "tw:[width:100vw]!"
+  ],
+  "w-100": [
+   "tw:w-full!"
+  ],
+  "w-25": [
+   "tw:w-[25%]!"
+  ],
+  "w-50": [
+   "tw:w-[50%]!"
+  ],
+  "w-75": [
+   "tw:w-[75%]!"
+  ],
+  "w-auto": [
+   "tw:w-auto!"
+  ],
+  "z-0": [
+   "tw:z-0!"
+  ],
+  "z-1": [
+   "tw:z-1!"
+  ],
+  "z-2": [
+   "tw:z-2!"
+  ],
+  "z-3": [
+   "tw:z-3!"
+  ],
+  "z-n1": [
+   "tw:[z-index:-1]!"
+  ]
+ }
+}

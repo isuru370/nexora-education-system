@@ -4,38 +4,38 @@
 @section('page-title', 'Student Exam Results')
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-    <li class="breadcrumb-item"><a href="{{ route('students.index') }}">Students</a></li>
-    <li class="breadcrumb-item"><a href="{{ url()->previous() }}">Student Analytics</a></li>
-    <li class="breadcrumb-item active">Exam Results</li>
+    <li class="ui-breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
+    <li class="ui-breadcrumb-item"><a href="{{ route('students.index') }}">Students</a></li>
+    <li class="ui-breadcrumb-item"><a href="{{ url()->previous() }}">Student Analytics</a></li>
+    <li class="ui-breadcrumb-item active">Exam Results</li>
 @endsection
 
 @section('content')
-    <div class="container-fluid px-2 px-md-3">
+    <div class="ui-container-fluid tw:px-2! tw:md:px-4!">
         <!-- Header Card -->
-        <div class="row mb-3">
-            <div class="col-12">
-                <div class="card border-0 shadow-sm">
-                    <div class="card-body py-3">
-                        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
-                            <div class="d-flex align-items-center mb-2 mb-md-0">
-                                <div class="bg-primary bg-opacity-10 p-2 rounded-circle me-2">
-                                    <i class="fas fa-chart-line text-primary" style="font-size: 1.2rem;"></i>
+        <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row tw:mb-4!">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:flex-[0_0_auto] tw:w-[100%]">
+                <div class="ui-card tw:[border:0]! bs-shadow-sm tw:shadow-bs-sm!">
+                    <div class="ui-card-body tw:py-4!">
+                        <div class="tw:flex! tw:flex-col! tw:md:flex-row! tw:justify-between! tw:items-start! tw:md:items-center!">
+                            <div class="tw:flex! tw:items-center! tw:mb-2! tw:md:mb-0!">
+                                <div class="tw:bg-[rgba(13,110,253,0.1)]! tw:p-2! tw:rounded-[50%]! tw:mr-2!">
+                                    <i class="fas fa-chart-line tw:text-bs-primary!" style="font-size: 1.2rem;"></i>
                                 </div>
                                 <div>
-                                    <h5 class="mb-0 fw-semibold" id="studentName">Loading...</h5>
-                                    <small class="text-muted" id="className">Please wait</small>
+                                    <h5 class="tw:mb-0! tw:font-semibold!" id="studentName">Loading...</h5>
+                                    <small class="tw:text-bs-secondary-color!" id="className">Please wait</small>
                                 </div>
                             </div>
-                            <div class="d-flex gap-2">
-                                <button class="btn btn-sm btn-outline-primary" onclick="window.print()">
-                                    <i class="fas fa-print me-1"></i>Print
+                            <div class="tw:flex! tw:gap-2!">
+                                <button class="ui-btn ui-btn-sm ui-btn-outline-primary" onclick="window.print()">
+                                    <i class="fas fa-print tw:mr-1!"></i>Print
                                 </button>
-                                <button class="btn btn-sm btn-outline-success" onclick="exportChart()">
-                                    <i class="fas fa-download me-1"></i>Export
+                                <button class="ui-btn ui-btn-sm ui-btn-outline-success" onclick="exportChart()">
+                                    <i class="fas fa-download tw:mr-1!"></i>Export
                                 </button>
-                                <a href="{{ url()->previous() }}" class="btn btn-sm btn-outline-secondary">
-                                    <i class="fas fa-arrow-left me-1"></i>Back
+                                <a href="{{ url()->previous() }}" class="ui-btn ui-btn-sm ui-btn-outline-secondary">
+                                    <i class="fas fa-arrow-left tw:mr-1!"></i>Back
                                 </a>
                             </div>
                         </div>
@@ -45,66 +45,66 @@
         </div>
 
         <!-- Chart Card -->
-        <div class="row mb-3">
-            <div class="col-12">
-                <div class="card border-0 shadow-sm">
-                    <div class="card-header bg-white py-2 border-bottom">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h5 class="mb-0 fw-semibold">
-                                <i class="fas fa-chart-bar me-2 text-primary"></i>
+        <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row tw:mb-4!">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:flex-[0_0_auto] tw:w-[100%]">
+                <div class="ui-card tw:[border:0]! bs-shadow-sm tw:shadow-bs-sm!">
+                    <div class="ui-card-header tw:bg-bs-white! tw:py-2! tw:bs-border-b!">
+                        <div class="tw:flex! tw:justify-between! tw:items-center!">
+                            <h5 class="tw:mb-0! tw:font-semibold!">
+                                <i class="fas fa-chart-bar tw:mr-2! tw:text-bs-primary!"></i>
                                 Performance Trend
                             </h5>
-                            <div class="btn-group btn-group-sm">
-                                <button class="btn btn-outline-secondary" onclick="changeChartType('line')">
+                            <div class="ui-btn-group ui-btn-group-sm">
+                                <button class="ui-btn ui-btn-outline-secondary" onclick="changeChartType('line')">
                                     <i class="fas fa-chart-line"></i>
                                 </button>
-                                <button class="btn btn-outline-secondary active" onclick="changeChartType('bar')">
+                                <button class="ui-btn ui-btn-outline-secondary active" onclick="changeChartType('bar')">
                                     <i class="fas fa-chart-bar"></i>
                                 </button>
                             </div>
                         </div>
                     </div>
-                    <div class="card-body p-3">
+                    <div class="ui-card-body tw:p-4!">
                         <!-- Loading State -->
-                        <div id="chartLoading" class="text-center py-4">
-                            <div class="spinner-border text-primary mb-2" role="status">
-                                <span class="visually-hidden">Loading...</span>
+                        <div id="chartLoading" class="tw:text-center! tw:py-6!">
+                            <div class="ui-spinner-border tw:text-bs-primary! tw:mb-2!" role="status">
+                                <span class="tw:sr-only">Loading...</span>
                             </div>
-                            <p class="text-muted mb-0">Loading exam data...</p>
+                            <p class="tw:text-bs-secondary-color! tw:mb-0!">Loading exam data...</p>
                         </div>
 
                         <!-- Chart Container -->
-                        <div id="chartContainer" style="height: 300px; position: relative;" class="d-none">
+                        <div id="chartContainer" style="height: 300px; position: relative;" class="tw:hidden!">
                             <canvas id="examChart"></canvas>
                         </div>
 
                         <!-- No Data State -->
-                        <div id="noDataMessage" class="text-center py-4 d-none">
-                            <div class="bg-light rounded-circle d-inline-flex p-3 mb-2">
-                                <i class="fas fa-chart-bar text-muted" style="font-size: 2rem;"></i>
+                        <div id="noDataMessage" class="tw:text-center! tw:py-6! tw:hidden!">
+                            <div class="tw:bg-bs-light! tw:rounded-[50%]! tw:[display:inline-flex]! tw:p-4! tw:mb-2!">
+                                <i class="fas fa-chart-bar tw:text-bs-secondary-color!" style="font-size: 2rem;"></i>
                             </div>
-                            <h6 class="text-muted mb-1">No Exam Results Found</h6>
-                            <p class="text-muted mb-0">No exam records available for this student.</p>
+                            <h6 class="tw:text-bs-secondary-color! tw:mb-1!">No Exam Results Found</h6>
+                            <p class="tw:text-bs-secondary-color! tw:mb-0!">No exam records available for this student.</p>
                         </div>
 
                         <!-- Stats Summary -->
-                        <div id="statsSummary" class="row g-2 mt-3 d-none">
-                            <div class="col-4">
-                                <div class="bg-light rounded p-2 text-center">
-                                    <small class="text-muted d-block">Average</small>
-                                    <span class="fw-bold fs-5 text-primary" id="avgMarks">0</span>
+                        <div id="statsSummary" class="tw:flex tw:flex-wrap tw:-mt-2 tw:-mx-1 bs-row tw:mt-4! tw:hidden!">
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-1 tw:mt-2 tw:flex-[0_0_auto] tw:w-[33.33333333%]">
+                                <div class="tw:bg-bs-light! tw:rounded-bs! tw:p-2! tw:text-center!">
+                                    <small class="tw:text-bs-secondary-color! tw:block!">Average</small>
+                                    <span class="tw:font-bold! bs-fs-5 tw:text-[length:1.1rem]! tw:text-bs-primary!" id="avgMarks">0</span>
                                 </div>
                             </div>
-                            <div class="col-4">
-                                <div class="bg-light rounded p-2 text-center">
-                                    <small class="text-muted d-block">Highest</small>
-                                    <span class="fw-bold fs-5 text-success" id="highestMarks">0</span>
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-1 tw:mt-2 tw:flex-[0_0_auto] tw:w-[33.33333333%]">
+                                <div class="tw:bg-bs-light! tw:rounded-bs! tw:p-2! tw:text-center!">
+                                    <small class="tw:text-bs-secondary-color! tw:block!">Highest</small>
+                                    <span class="tw:font-bold! bs-fs-5 tw:text-[length:1.1rem]! tw:text-bs-success!" id="highestMarks">0</span>
                                 </div>
                             </div>
-                            <div class="col-4">
-                                <div class="bg-light rounded p-2 text-center">
-                                    <small class="text-muted d-block">Lowest</small>
-                                    <span class="fw-bold fs-5 text-danger" id="lowestMarks">0</span>
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-1 tw:mt-2 tw:flex-[0_0_auto] tw:w-[33.33333333%]">
+                                <div class="tw:bg-bs-light! tw:rounded-bs! tw:p-2! tw:text-center!">
+                                    <small class="tw:text-bs-secondary-color! tw:block!">Lowest</small>
+                                    <span class="tw:font-bold! bs-fs-5 tw:text-[length:1.1rem]! tw:text-bs-danger!" id="lowestMarks">0</span>
                                 </div>
                             </div>
                         </div>
@@ -114,45 +114,45 @@
         </div>
 
         <!-- Exam Results Table -->
-        <div class="row">
-            <div class="col-12">
-                <div class="card border-0 shadow-sm">
-                    <div class="card-header bg-white py-2 border-bottom">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <h5 class="mb-0 fw-semibold">
-                                <i class="fas fa-table me-2 text-primary"></i>
+        <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:flex-[0_0_auto] tw:w-[100%]">
+                <div class="ui-card tw:[border:0]! bs-shadow-sm tw:shadow-bs-sm!">
+                    <div class="ui-card-header tw:bg-bs-white! tw:py-2! tw:bs-border-b!">
+                        <div class="tw:flex! tw:justify-between! tw:items-center!">
+                            <h5 class="tw:mb-0! tw:font-semibold!">
+                                <i class="fas fa-table tw:mr-2! tw:text-bs-primary!"></i>
                                 Exam History
                             </h5>
-                            <div class="input-group input-group-sm" style="width: 250px;">
-                                <span class="input-group-text bg-white border-end-0">
-                                    <i class="fas fa-search text-muted"></i>
+                            <div class="ui-input-group ui-input-group-sm" style="width: 250px;">
+                                <span class="ui-input-group-text tw:bg-bs-white! tw:[border-right:0]!">
+                                    <i class="fas fa-search tw:text-bs-secondary-color!"></i>
                                 </span>
-                                <input type="text" class="form-control border-start-0" 
+                                <input type="text" class="ui-form-control tw:[border-left:0]!" 
                                        placeholder="Search exams..." id="searchExams">
                             </div>
                         </div>
                     </div>
-                    <div class="card-body p-0">
+                    <div class="ui-card-body tw:p-0!">
                         <!-- Table Loading -->
-                        <div id="tableLoading" class="text-center py-4">
-                            <div class="spinner-border text-primary mb-2" role="status">
-                                <span class="visually-hidden">Loading...</span>
+                        <div id="tableLoading" class="tw:text-center! tw:py-6!">
+                            <div class="ui-spinner-border tw:text-bs-primary! tw:mb-2!" role="status">
+                                <span class="tw:sr-only">Loading...</span>
                             </div>
-                            <p class="text-muted mb-0">Loading exam list...</p>
+                            <p class="tw:text-bs-secondary-color! tw:mb-0!">Loading exam list...</p>
                         </div>
 
                         <!-- Table Container -->
-                        <div id="tableContainer" class="d-none">
-                            <div class="table-responsive">
-                                <table class="table table-hover align-middle mb-0">
-                                    <thead class="bg-light">
+                        <div id="tableContainer" class="tw:hidden!">
+                            <div class="ui-table-responsive">
+                                <table class="ui-table ui-table-hover tw:align-middle! tw:mb-0!">
+                                    <thead class="tw:bg-bs-light!">
                                         <tr>
-                                            <th class="py-2 ps-3">#</th>
-                                            <th class="py-2">Exam Title</th>
-                                            <th class="py-2">Date</th>
-                                            <th class="py-2 text-center">Marks</th>
-                                            <th class="py-2 text-center">Status</th>
-                                            <th class="py-2 text-end pe-3">Actions</th>
+                                            <th class="tw:py-2! tw:pl-4!">#</th>
+                                            <th class="tw:py-2!">Exam Title</th>
+                                            <th class="tw:py-2!">Date</th>
+                                            <th class="tw:py-2! tw:text-center!">Marks</th>
+                                            <th class="tw:py-2! tw:text-center!">Status</th>
+                                            <th class="tw:py-2! tw:text-right! tw:pr-4!">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody id="examTableBody">
@@ -162,14 +162,14 @@
                             </div>
                             
                             <!-- Table Footer with Pagination -->
-                            <div class="d-flex justify-content-between align-items-center p-2 bg-light border-top">
-                                <small class="text-muted" id="tableInfo">Showing 0 exams</small>
-                                <div class="btn-group btn-group-sm">
-                                    <button class="btn btn-outline-secondary" onclick="prevPage()" id="prevBtn" disabled>
+                            <div class="tw:flex! tw:justify-between! tw:items-center! tw:p-2! tw:bg-bs-light! tw:bs-border-t!">
+                                <small class="tw:text-bs-secondary-color!" id="tableInfo">Showing 0 exams</small>
+                                <div class="ui-btn-group ui-btn-group-sm">
+                                    <button class="ui-btn ui-btn-outline-secondary" onclick="prevPage()" id="prevBtn" disabled>
                                         <i class="fas fa-chevron-left"></i>
                                     </button>
-                                    <span class="btn btn-outline-secondary disabled" id="pageInfo">Page 1 of 1</span>
-                                    <button class="btn btn-outline-secondary" onclick="nextPage()" id="nextBtn" disabled>
+                                    <span class="ui-btn ui-btn-outline-secondary disabled" id="pageInfo">Page 1 of 1</span>
+                                    <button class="ui-btn ui-btn-outline-secondary" onclick="nextPage()" id="nextBtn" disabled>
                                         <i class="fas fa-chevron-right"></i>
                                     </button>
                                 </div>
@@ -185,37 +185,37 @@
 @push('styles')
     <style>
         /* Custom styles */
-        .card {
+        .ui-card {
             border-radius: 10px;
             transition: all 0.2s ease;
         }
         
-        .btn-group .btn {
+        .ui-btn-group .ui-btn {
             padding: 0.25rem 0.6rem;
         }
         
-        .table th {
+        .ui-table th {
             font-weight: 600;
             color: #495057;
         }
         
-        .badge {
+        .ui-badge {
             font-size: 0.75rem;
             padding: 0.35rem 0.65rem;
         }
         
         /* Status badge colors */
-        .badge.bg-success { background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important; }
-        .badge.bg-info { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important; }
-        .badge.bg-warning { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important; }
-        .badge.bg-danger { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important; }
+        .ui-badge.bs-bg-success { background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important; }
+        .ui-badge.bs-bg-info { background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important; }
+        .ui-badge.bs-bg-warning { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important; }
+        .ui-badge.bs-bg-danger { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important; }
         
         /* Print styles */
         @media print {
-            .btn, .btn-group, .input-group, footer, nav, .breadcrumb {
+            .ui-btn, .ui-btn-group, .ui-input-group, footer, nav, .ui-breadcrumb {
                 display: none !important;
             }
-            .card {
+            .ui-card {
                 border: 1px solid #ddd !important;
                 box-shadow: none !important;
             }
@@ -235,16 +235,16 @@
             font-size: 1.1rem;
         }
         
-        .table td {
+        .ui-table td {
             font-size: 0.9rem;
             padding: 0.75rem 0.5rem;
         }
         
-        .table th {
+        .ui-table th {
             font-size: 0.85rem;
         }
         
-        .fs-5 {
+        .bs-fs-5 {
             font-size: 1.1rem !important;
         }
         
@@ -318,11 +318,11 @@
         async function loadExamResults() {
             try {
                 // Show loading states
-                if (elements.chartLoading) elements.chartLoading.classList.remove('d-none');
-                if (elements.tableLoading) elements.tableLoading.classList.remove('d-none');
-                if (elements.chartContainer) elements.chartContainer.classList.add('d-none');
-                if (elements.tableContainer) elements.tableContainer.classList.add('d-none');
-                if (elements.noDataMessage) elements.noDataMessage.classList.add('d-none');
+                if (elements.chartLoading) elements.chartLoading.classList.remove('tw:hidden!');
+                if (elements.tableLoading) elements.tableLoading.classList.remove('tw:hidden!');
+                if (elements.chartContainer) elements.chartContainer.classList.add('tw:hidden!');
+                if (elements.tableContainer) elements.tableContainer.classList.add('tw:hidden!');
+                if (elements.noDataMessage) elements.noDataMessage.classList.add('tw:hidden!');
                 
                 const response = await fetch(`/api/exams/results/${classCategoryHasStudentClassId}/${studentId}`);
                 const result = await response.json();
@@ -344,16 +344,16 @@
                     renderTable();
                     
                     // Hide loading, show content
-                    if (elements.chartLoading) elements.chartLoading.classList.add('d-none');
-                    if (elements.tableLoading) elements.tableLoading.classList.add('d-none');
-                    if (elements.chartContainer) elements.chartContainer.classList.remove('d-none');
-                    if (elements.tableContainer) elements.tableContainer.classList.remove('d-none');
-                    if (elements.statsSummary) elements.statsSummary.classList.remove('d-none');
+                    if (elements.chartLoading) elements.chartLoading.classList.add('tw:hidden!');
+                    if (elements.tableLoading) elements.tableLoading.classList.add('tw:hidden!');
+                    if (elements.chartContainer) elements.chartContainer.classList.remove('tw:hidden!');
+                    if (elements.tableContainer) elements.tableContainer.classList.remove('tw:hidden!');
+                    if (elements.statsSummary) elements.statsSummary.classList.remove('tw:hidden!');
                 } else {
                     // No data
-                    if (elements.chartLoading) elements.chartLoading.classList.add('d-none');
-                    if (elements.tableLoading) elements.tableLoading.classList.add('d-none');
-                    if (elements.noDataMessage) elements.noDataMessage.classList.remove('d-none');
+                    if (elements.chartLoading) elements.chartLoading.classList.add('tw:hidden!');
+                    if (elements.tableLoading) elements.tableLoading.classList.add('tw:hidden!');
+                    if (elements.noDataMessage) elements.noDataMessage.classList.remove('tw:hidden!');
                     
                     // Show default message in header
                     if (elements.studentName) elements.studentName.textContent = 'No Exam Data';
@@ -363,9 +363,9 @@
                 console.error('Error loading exam results:', error);
                 showError('Failed to load exam results. Please try again.');
                 
-                if (elements.chartLoading) elements.chartLoading.classList.add('d-none');
-                if (elements.tableLoading) elements.tableLoading.classList.add('d-none');
-                if (elements.noDataMessage) elements.noDataMessage.classList.remove('d-none');
+                if (elements.chartLoading) elements.chartLoading.classList.add('tw:hidden!');
+                if (elements.tableLoading) elements.tableLoading.classList.add('tw:hidden!');
+                if (elements.noDataMessage) elements.noDataMessage.classList.remove('tw:hidden!');
             }
         }
         
@@ -552,36 +552,36 @@
                 });
                 
                 // Status based on marks
-                let statusClass = 'bg-success';
+                let statusClass = 'tw:bg-bs-success! bs-bg-success';
                 let statusText = 'Excellent';
                 if (marks < 40) {
-                    statusClass = 'bg-danger';
+                    statusClass = 'tw:bg-bs-danger! bs-bg-danger';
                     statusText = 'Needs Improvement';
                 } else if (marks < 60) {
-                    statusClass = 'bg-warning';
+                    statusClass = 'tw:bg-bs-warning! bs-bg-warning';
                     statusText = 'Average';
                 } else if (marks < 75) {
-                    statusClass = 'bg-info';
+                    statusClass = 'tw:bg-bs-info! bs-bg-info';
                     statusText = 'Good';
                 }
                 
                 html += `
                     <tr>
-                        <td class="ps-3 fw-medium">${start + index + 1}</td>
+                        <td class="tw:pl-4! tw:font-medium!">${start + index + 1}</td>
                         <td>
-                            <span class="fw-medium">${exam.exam_title}</span>
-                            ${exam.is_updated ? '<br><small class="text-muted"><i class="fas fa-edit me-1"></i>Updated</small>' : ''}
+                            <span class="tw:font-medium!">${exam.exam_title}</span>
+                            ${exam.is_updated ? '<br><small class="tw:text-bs-secondary-color!"><i class="fas fa-edit tw:mr-1!"></i>Updated</small>' : ''}
                         </td>
                         <td>${formattedDate}</td>
-                        <td class="text-center fw-bold fs-5 ${marks >= 75 ? 'text-success' : (marks >= 60 ? 'text-info' : (marks >= 40 ? 'text-warning' : 'text-danger'))}">${marks}</td>
-                        <td class="text-center">
-                            <span class="badge ${statusClass}">${statusText}</span>
+                        <td class="tw:text-center! tw:font-bold! bs-fs-5 tw:text-[length:1.1rem]! ${marks >= 75 ? 'tw:text-bs-success!' : (marks >= 60 ? 'tw:text-bs-info!' : (marks >= 40 ? 'tw:text-bs-warning!' : 'tw:text-bs-danger!'))}">${marks}</td>
+                        <td class="tw:text-center!">
+                            <span class="ui-badge ${statusClass}">${statusText}</span>
                         </td>
-                        <td class="text-end pe-3">
-                            <button class="btn btn-sm btn-link text-primary p-0 me-2" onclick="viewExamDetails(${exam.exam_id})" title="View Details">
+                        <td class="tw:text-right! tw:pr-4!">
+                            <button class="ui-btn ui-btn-sm ui-btn-link tw:text-bs-primary! tw:p-0! tw:mr-2!" onclick="viewExamDetails(${exam.exam_id})" title="View Details">
                                 <i class="fas fa-eye"></i>
                             </button>
-                            <button class="btn btn-sm btn-link text-success p-0" onclick="printExamResult(${exam.exam_id})" title="Print Result">
+                            <button class="ui-btn ui-btn-sm ui-btn-link tw:text-bs-success! tw:p-0!" onclick="printExamResult(${exam.exam_id})" title="Print Result">
                                 <i class="fas fa-print"></i>
                             </button>
                         </td>

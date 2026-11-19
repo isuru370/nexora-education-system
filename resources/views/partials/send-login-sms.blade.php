@@ -7,11 +7,11 @@
     $smsBoxId = $id ?? 'sendLoginSms';
 @endphp
 <input type="hidden" name="send_sms" value="0">
-<div class="form-check">
-    <input class="form-check-input" type="checkbox" name="send_sms" value="1" id="{{ $smsBoxId }}"
+<div class="ui-form-check">
+    <input class="ui-form-check-input" type="checkbox" name="send_sms" value="1" id="{{ $smsBoxId }}"
         {{ old('send_sms', '1') ? 'checked' : '' }}>
-    <label class="form-check-label fw-semibold" for="{{ $smsBoxId }}">
+    <label class="ui-form-check-label tw:font-semibold!" for="{{ $smsBoxId }}">
         <i class="bi bi-chat-dots"></i> Send login details by SMS
     </label>
-    <div class="form-text">Username, password, institute name and the login link go to their mobile.</div>
+    <div class="ui-form-text">Username, password, institute name and the login link go to their mobile.</div>
 </div>

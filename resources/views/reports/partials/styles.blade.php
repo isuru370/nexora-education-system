@@ -71,14 +71,14 @@
         .stat-primary { background: linear-gradient(135deg, #2563eb, #3b82f6); }
         .stat-amber { background: linear-gradient(135deg, #d97706, #f59e0b); }
 
-        .report-tabs .nav-link {
+        .report-tabs .ui-nav-link {
             border-radius: 12px;
             font-weight: 600;
             color: #475569;
             padding: .55rem 1rem;
         }
 
-        .report-tabs .nav-link.active {
+        .report-tabs .ui-nav-link.active {
             background: #2563eb;
             color: #fff;
         }

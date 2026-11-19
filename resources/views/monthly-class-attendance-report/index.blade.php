@@ -32,7 +32,7 @@
         {{-- ===================================================== --}}
         {{-- HERO --}}
         {{-- ===================================================== --}}
-        <div class="hero-section mb-4">
+        <div class="hero-section tw:mb-6!">
             <div class="hero-content">
                 <div class="hero-left">
                     <span class="greeting-badge">nexoraEDU</span>
@@ -96,7 +96,7 @@
         {{-- ===================================================== --}}
         {{-- KPI CARDS --}}
         {{-- ===================================================== --}}
-        <div class="stats-grid mb-4">
+        <div class="stats-grid tw:mb-6!">
 
             <div class="nx-card stat-card">
                 <div class="stat-icon-wrapper icon-blue"><i class="bi bi-book"></i></div>
@@ -154,25 +154,25 @@
         {{-- ===================================================== --}}
         {{-- QUICK STATS BAR --}}
         {{-- ===================================================== --}}
-        <div class="nx-card mb-4">
+        <div class="nx-card tw:mb-6!">
             <div class="quick-stats-bar">
                 <div class="quick-stat-item">
-                    <span class="quick-stat-label"><i class="bi bi-calendar-check text-primary"></i> Month</span>
+                    <span class="quick-stat-label"><i class="bi bi-calendar-check tw:text-(color:--nx-blue)!"></i> Month</span>
                     <span class="quick-stat-value">{{ $report['month_name'] }}</span>
                 </div>
                 <div class="quick-stat-divider"></div>
                 <div class="quick-stat-item">
-                    <span class="quick-stat-label"><i class="bi bi-person-check text-success"></i> Present</span>
+                    <span class="quick-stat-label"><i class="bi bi-person-check tw:text-(color:--nx-green)!"></i> Present</span>
                     <span class="quick-stat-value">{{ number_format($totalPresent) }}</span>
                 </div>
                 <div class="quick-stat-divider"></div>
                 <div class="quick-stat-item">
-                    <span class="quick-stat-label"><i class="bi bi-person-x text-danger"></i> Absent</span>
+                    <span class="quick-stat-label"><i class="bi bi-person-x tw:text-(color:--nx-red)!"></i> Absent</span>
                     <span class="quick-stat-value">{{ number_format($totalAbsent) }}</span>
                 </div>
                 <div class="quick-stat-divider"></div>
                 <div class="quick-stat-item">
-                    <span class="quick-stat-label"><i class="bi bi-calendar-week text-info"></i> Total Class Days</span>
+                    <span class="quick-stat-label"><i class="bi bi-calendar-week tw:text-bs-info!"></i> Total Class Days</span>
                     <span class="quick-stat-value">{{ number_format($totalDays) }}</span>
                 </div>
             </div>
@@ -183,11 +183,11 @@
         {{-- ===================================================== --}}
         @forelse ($report['classes'] ?? [] as $classIndex => $class)
 
-            <div class="nx-card mb-4">
+            <div class="nx-card tw:mb-6!">
 
                 {{-- CLASS HEADER --}}
                 <div class="nx-card-header att-class-header">
-                    <div class="d-flex align-items-center gap-3">
+                    <div class="tw:flex! tw:items-center! tw:gap-4!">
                         <div class="att-class-icon">
                             {{ substr($class['class_name'], 0, 2) }}
                         </div>
@@ -228,7 +228,7 @@
                 </div>
 
                 {{-- CLASS BODY --}}
-                <div class="p-3">
+                <div class="tw:p-4!">
 
                     @foreach ($class['categories'] as $categoryIndex => $category)
 
@@ -236,7 +236,7 @@
 
                             {{-- CATEGORY HEADER --}}
                             <div class="att-category-header">
-                                <div class="d-flex align-items-center gap-2 flex-wrap">
+                                <div class="tw:flex! tw:items-center! tw:gap-2! tw:flex-wrap!">
                                     <span class="att-category-dot"
                                         style="background: {{ ['#4f46e5', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6', '#06b6d4', '#ec4899', '#f97316'][$categoryIndex % 8] }};"></span>
                                     <h6 class="att-category-name">{{ $category['category_name'] }}</h6>
@@ -248,7 +248,7 @@
 
                                 <div class="att-category-stats">
                                     <span class="att-cat-stat">
-                                        <i class="bi bi-person-plus text-success"></i>
+                                        <i class="bi bi-person-plus tw:text-(color:--nx-green)!"></i>
                                         {{ $category['new_students'] }} New
                                     </span>
                                     <span class="att-cat-stat">
@@ -264,15 +264,15 @@
 
                             {{-- SCROLLABLE STUDENT TABLE --}}
                             <div class="att-table-scroll">
-                                <table class="table premium-table mb-0">
+                                <table class="ui-table premium-table tw:mb-0!">
                                     <thead>
                                         <tr>
                                             <th>Student</th>
                                             <th>ID</th>
-                                            <th class="text-center">Class Days</th>
-                                            <th class="text-center">Attended</th>
-                                            <th class="text-center">Absent</th>
-                                            <th class="text-center">Attendance %</th>
+                                            <th class="tw:text-center!">Class Days</th>
+                                            <th class="tw:text-center!">Attended</th>
+                                            <th class="tw:text-center!">Absent</th>
+                                            <th class="tw:text-center!">Attendance %</th>
                                         </tr>
                                     </thead>
 
@@ -285,7 +285,7 @@
 
                                             <tr class="att-student-row att-row-{{ $tone }}">
                                                 <td>
-                                                    <div class="d-flex align-items-center gap-2">
+                                                    <div class="tw:flex! tw:items-center! tw:gap-2!">
                                                         <div class="att-avatar">
                                                             {{ strtoupper(substr($student['student_name'], 0, 1)) }}
                                                         </div>
@@ -300,25 +300,25 @@
                                                     <span class="id-badge">{{ $student['student_custom_id'] }}</span>
                                                 </td>
 
-                                                <td class="text-center">
+                                                <td class="tw:text-center!">
                                                     <span class="cell-title" style="color: var(--nx-blue);">
                                                         {{ $student['class_days'] }}
                                                     </span>
                                                 </td>
 
-                                                <td class="text-center">
+                                                <td class="tw:text-center!">
                                                     <span class="cell-title" style="color: var(--nx-green);">
                                                         {{ $student['attended'] }}
                                                     </span>
                                                 </td>
 
-                                                <td class="text-center">
+                                                <td class="tw:text-center!">
                                                     <span class="cell-title" style="color: var(--nx-red);">
                                                         {{ $student['absent'] }}
                                                     </span>
                                                 </td>
 
-                                                <td class="text-center">
+                                                <td class="tw:text-center!">
                                                     <span class="nx-badge nx-badge-{{ $tone }}">
                                                         {{ number_format($student['attendance_percentage'], 1) }}%
                                                     </span>
@@ -327,8 +327,8 @@
                                         @empty
                                             <tr>
                                                 <td colspan="6" class="empty-table">
-                                                    <i class="bi bi-inbox fs-2 d-block mb-2"></i>
-                                                    <strong class="d-block">No students found</strong>
+                                                    <i class="bi bi-inbox tw:text-[length:calc(1.325rem_+_0.9vw)]! tw:xl:text-[length:2rem]! tw:block! tw:mb-2!"></i>
+                                                    <strong class="tw:block!">No students found</strong>
                                                     <span class="cell-sub">No students in this category</span>
                                                 </td>
                                             </tr>
@@ -358,10 +358,10 @@
 
         @empty
             <div class="nx-card">
-                <div class="empty-table py-5">
-                    <i class="bi bi-calendar-x fs-1 d-block mb-3"></i>
-                    <strong class="d-block mb-2">No Attendance Data</strong>
-                    <p class="cell-sub mb-2">
+                <div class="empty-table tw:py-12!">
+                    <i class="bi bi-calendar-x tw:text-[length:calc(1.375rem_+_1.5vw)]! tw:xl:text-[length:2.5rem]! tw:block! tw:mb-4!"></i>
+                    <strong class="tw:block! tw:mb-2!">No Attendance Data</strong>
+                    <p class="cell-sub tw:mb-2!">
                         No attendance records found for <strong>{{ $report['month_name'] }}</strong>
                     </p>
                     <span class="cell-sub">Please try selecting a different month</span>

@@ -7,7 +7,7 @@
 <div class="dashboard-page">
 
     {{-- HERO --}}
-    <div class="hero-section mb-4">
+    <div class="hero-section tw:mb-6!">
         <div class="hero-content">
             <div class="hero-left">
                 <span class="greeting-badge">
@@ -48,33 +48,33 @@
 
     {{-- ALERTS --}}
     @if (session('success'))
-        <div class="nx-alert nx-alert-green mb-4">
+        <div class="nx-alert nx-alert-green tw:mb-6!">
             <i class="bi bi-check-circle-fill"></i>
             <span>{{ session('success') }}</span>
         </div>
     @endif
 
     @if (session('error'))
-        <div class="nx-alert nx-alert-red mb-4">
+        <div class="nx-alert nx-alert-red tw:mb-6!">
             <i class="bi bi-exclamation-triangle-fill"></i>
             <span>{{ session('error') }}</span>
         </div>
     @endif
 
     {{-- INFO GRID --}}
-    <div class="row g-4 mb-4">
+    <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3 tw:mb-6!">
 
         {{-- HALL INFO --}}
-        <div class="col-md-6">
-            <div class="nx-card h-100">
+        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
+            <div class="nx-card tw:h-full!">
                 <div class="nx-card-header">
                     <div>
-                        <h5 class="nx-card-title"><i class="bi bi-info-circle-fill text-primary"></i> Hall Information</h5>
+                        <h5 class="nx-card-title"><i class="bi bi-info-circle-fill tw:text-(color:--nx-blue)!"></i> Hall Information</h5>
                         <p class="nx-card-subtitle">Details of this hall</p>
                     </div>
                 </div>
 
-                <div class="p-3">
+                <div class="tw:p-4!">
                     <div class="detail-line">
                         <span class="detail-label">Code</span>
                         <span class="detail-value" style="font-family: ui-monospace, monospace;">{{ $classHall->code }}</span>
@@ -111,16 +111,16 @@
         </div>
 
         {{-- SYSTEM INFO --}}
-        <div class="col-md-6">
-            <div class="nx-card h-100">
+        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
+            <div class="nx-card tw:h-full!">
                 <div class="nx-card-header">
                     <div>
-                        <h5 class="nx-card-title"><i class="bi bi-gear-fill text-primary"></i> System Information</h5>
+                        <h5 class="nx-card-title"><i class="bi bi-gear-fill tw:text-(color:--nx-blue)!"></i> System Information</h5>
                         <p class="nx-card-subtitle">Metadata for this record</p>
                     </div>
                 </div>
 
-                <div class="p-3">
+                <div class="tw:p-4!">
                     <div class="detail-line">
                         <span class="detail-label">Created At</span>
                         <span class="detail-value">{{ $classHall->created_at?->format('Y-m-d h:i A') }}</span>

@@ -16,7 +16,7 @@
 <div class="dashboard-page">
 
     {{-- HERO --}}
-    <div class="hero-section mb-4">
+    <div class="hero-section tw:mb-6!">
         <div class="hero-content">
             <div class="hero-left">
                 <span class="greeting-badge">
@@ -73,23 +73,23 @@
 
     {{-- ALERTS --}}
     @if (session('success'))
-        <div class="nx-alert nx-alert-green mb-4">
+        <div class="nx-alert nx-alert-green tw:mb-6!">
             <i class="bi bi-check-circle-fill"></i>
             <span>{{ session('success') }}</span>
         </div>
     @endif
 
     @if (session('error'))
-        <div class="nx-alert nx-alert-red mb-4">
+        <div class="nx-alert nx-alert-red tw:mb-6!">
             <i class="bi bi-exclamation-triangle-fill"></i>
             <span>{{ session('error') }}</span>
         </div>
     @endif
 
     @if (!$isPublished && $results->isNotEmpty() && $exam->status !== 'cancelled')
-        <div class="nx-alert nx-alert-blue mb-4">
+        <div class="nx-alert nx-alert-blue tw:mb-6!">
             <i class="bi bi-megaphone-fill"></i>
-            <div class="flex-grow-1">
+            <div class="tw:grow!">
                 <strong>Marks are in.</strong>
                 Publish to finalise the ranks and mark the exam as completed.
             </div>
@@ -103,7 +103,7 @@
     @endif
 
     {{-- STATS --}}
-    <div class="stats-grid mb-4">
+    <div class="stats-grid tw:mb-6!">
         <div class="nx-card stat-card">
             <div class="stat-icon-wrapper icon-green"><i class="bi bi-check-circle-fill"></i></div>
             <div class="stat-info">
@@ -144,30 +144,30 @@
         </div>
     </div>
 
-    <div class="row g-4 mb-4">
+    <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3 tw:mb-6!">
 
         {{-- RESULTS TABLE --}}
-        <div class="col-xl-9">
-            <div class="nx-card h-100">
+        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:xl:flex-[0_0_auto] tw:xl:w-[75%]">
+            <div class="nx-card tw:h-full!">
                 <div class="nx-card-header">
                     <div>
-                        <h5 class="nx-card-title"><i class="bi bi-list-ol text-primary"></i> Rank List</h5>
+                        <h5 class="nx-card-title"><i class="bi bi-list-ol tw:text-(color:--nx-blue)!"></i> Rank List</h5>
                         <p class="nx-card-subtitle">Highest marks first. Same marks share a rank.</p>
                     </div>
                     <div class="search-input-wrapper results-filter">
                         <i class="bi bi-search"></i>
-                        <input type="text" id="resultFilter" class="form-control custom-input" placeholder="Find a student...">
+                        <input type="text" id="resultFilter" class="ui-form-control custom-input" placeholder="Find a student...">
                     </div>
                 </div>
 
-                <div class="table-responsive">
-                    <table class="table premium-table mb-0" id="resultsTable">
+                <div class="ui-table-responsive">
+                    <table class="ui-table premium-table tw:mb-0!" id="resultsTable">
                         <thead>
                             <tr>
                                 <th style="width: 70px;">Rank</th>
                                 <th>Student</th>
-                                <th class="text-end">Marks</th>
-                                <th class="text-end">%</th>
+                                <th class="tw:text-right!">Marks</th>
+                                <th class="tw:text-right!">%</th>
                                 <th>Grade</th>
                                 <th>Status</th>
                                 <th>Remark</th>
@@ -192,7 +192,7 @@
                                         <div class="cell-title">{{ $s->initial_name ?? 'Deleted student' }}</div>
                                         <small class="cell-sub">{{ $studentCode($s) }}</small>
                                     </td>
-                                    <td class="text-end cell-title">
+                                    <td class="tw:text-right! cell-title">
                                         @if ($result->is_absent)
                                             -
                                         @else
@@ -200,7 +200,7 @@
                                             <small class="cell-sub">/ {{ $fmtNum($result->max_marks) }}</small>
                                         @endif
                                     </td>
-                                    <td class="text-end">{{ $result->is_absent || $result->percentage === null ? '-' : $fmtNum($result->percentage) }}</td>
+                                    <td class="tw:text-right!">{{ $result->is_absent || $result->percentage === null ? '-' : $fmtNum($result->percentage) }}</td>
                                     <td>
                                         @if ($g && !$result->is_absent)
                                             <span class="nx-badge {{ $gradeBadge[$g] ?? 'nx-badge-gray' }}">{{ $g }}</span>
@@ -221,10 +221,10 @@
                             @empty
                                 <tr>
                                     <td colspan="7" class="empty-table">
-                                        <i class="bi bi-clipboard-x fs-2 d-block mb-2"></i>
-                                        <strong class="d-block">No marks entered yet</strong>
+                                        <i class="bi bi-clipboard-x tw:text-[length:calc(1.325rem_+_0.9vw)]! tw:xl:text-[length:2rem]! tw:block! tw:mb-2!"></i>
+                                        <strong class="tw:block!">No marks entered yet</strong>
                                         @if ($exam->status !== 'cancelled')
-                                            <a href="{{ route('admin.exams.mark-entry', $exam->id) }}" class="nx-btn nx-btn-primary mt-2">
+                                            <a href="{{ route('admin.exams.mark-entry', $exam->id) }}" class="nx-btn nx-btn-primary tw:mt-2!">
                                                 <i class="bi bi-journal-check"></i> Enter Marks
                                             </a>
                                         @endif
@@ -238,32 +238,32 @@
         </div>
 
         {{-- GRADE SPREAD --}}
-        <div class="col-xl-3">
-            <div class="nx-card h-100">
+        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:xl:flex-[0_0_auto] tw:xl:w-[25%]">
+            <div class="nx-card tw:h-full!">
                 <div class="nx-card-header">
                     <div>
-                        <h5 class="nx-card-title"><i class="bi bi-bar-chart-steps text-primary"></i> Grades</h5>
+                        <h5 class="nx-card-title"><i class="bi bi-bar-chart-steps tw:text-(color:--nx-blue)!"></i> Grades</h5>
                         <p class="nx-card-subtitle">Students per grade</p>
                     </div>
                 </div>
 
-                <div class="p-3">
+                <div class="tw:p-4!">
                     @foreach ($summary['grades'] as $g => $count)
                         <div class="grade-row">
-                            <span class="nx-badge {{ $gradeBadge[$g] }} grade-letter">{{ $g }}</span>
-                            <div class="nx-progress flex-grow-1">
+                            <span class="nx-badge grade-letter {{ $gradeBadge[$g] }}">{{ $g }}</span>
+                            <div class="nx-progress tw:grow!">
                                 <div class="nx-progress-fill" style="width: {{ round($count / $maxGradeCount * 100) }}%; background: {{ $gradeBar[$g] }};"></div>
                             </div>
                             <span class="grade-count">{{ $count }}</span>
                         </div>
                     @endforeach
 
-                    <small class="cell-sub d-block mt-3">A 75+, B 65+, C 50+, S 35+, F below 35</small>
+                    <small class="cell-sub tw:block! tw:mt-4!">A 75+, B 65+, C 50+, S 35+, F below 35</small>
 
                     @if ($isPublished && $results->isNotEmpty())
-                        <form method="POST" action="{{ route('admin.exams.recalculate-ranks', $exam->id) }}" class="mt-3">
+                        <form method="POST" action="{{ route('admin.exams.recalculate-ranks', $exam->id) }}" class="tw:mt-4!">
                             @csrf
-                            <button type="submit" class="nx-btn nx-btn-light w-100">
+                            <button type="submit" class="nx-btn nx-btn-light tw:w-full!">
                                 <i class="bi bi-arrow-repeat"></i> Recalculate Ranks
                             </button>
                         </form>

@@ -22,17 +22,17 @@
     <div class="teacher-payment-details-page">
 
         <!-- HERO -->
-        <div class="hero-card mb-4">
+        <div class="hero-card tw:mb-6!">
             <div class="hero-content">
 
-                <div class="d-flex align-items-center gap-3">
+                <div class="tw:flex! tw:items-center! tw:gap-4!">
                     <div class="profile-avatar">
                         {{ strtoupper(substr($teacher->full_name, 0, 1)) }}
                     </div>
 
                     <div>
-                        <h3 class="mb-1 fw-bold">{{ $teacher->full_name }}</h3>
-                        <p class="mb-0 text-muted">
+                        <h3 class="tw:mb-1! tw:font-bold!">{{ $teacher->full_name }}</h3>
+                        <p class="tw:mb-0! tw:text-bs-secondary-color!">
                             Payment Details • {{ $periodLabel }}
                             @if ($branch)
                                 • <i class="bi bi-building"></i> {{ $branch->name }}
@@ -48,8 +48,8 @@
                         'month' => $month,
                         'branch_id' => $branch_id,
                     ]) }}"
-                        class="btn btn-outline-secondary custom-btn">
-                        <i class="bi bi-arrow-left me-1"></i>
+                        class="ui-btn ui-btn-outline-secondary custom-btn">
+                        <i class="bi bi-arrow-left tw:mr-1!"></i>
                         Back to Salary Details
                     </a>
                 </div>
@@ -58,11 +58,11 @@
         </div>
 
         <!-- STATUS / SUMMARY -->
-        <div class="row g-4 mb-4">
+        <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3 tw:mb-6!">
 
-            <div class="col-xl-3 col-md-6">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%]">
                 <div class="summary-card summary-blue">
-                    <div class="card-body">
+                    <div class="ui-card-body">
                         <i class="bi bi-receipt-cutoff summary-icon"></i>
                         <h6>Total Payments</h6>
                         <h3>LKR {{ number_format($totalAll, 2) }}</h3>
@@ -73,9 +73,9 @@
                 </div>
             </div>
 
-            <div class="col-xl-3 col-md-6">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%]">
                 <div class="summary-card summary-orange">
-                    <div class="card-body">
+                    <div class="ui-card-body">
                         <i class="bi bi-arrow-up-circle summary-icon"></i>
                         <h6>Advances</h6>
                         <h3>LKR {{ number_format($totalAdvance, 2) }}</h3>
@@ -86,9 +86,9 @@
                 </div>
             </div>
 
-            <div class="col-xl-3 col-md-6">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%]">
                 <div class="summary-card summary-red">
-                    <div class="card-body">
+                    <div class="ui-card-body">
                         <i class="bi bi-arrow-down-circle summary-icon"></i>
                         <h6>Deductions</h6>
                         <h3>LKR {{ number_format($totalDeduction, 2) }}</h3>
@@ -99,9 +99,9 @@
                 </div>
             </div>
 
-            <div class="col-xl-3 col-md-6">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%]">
                 <div class="summary-card summary-green">
-                    <div class="card-body">
+                    <div class="ui-card-body">
                         <i class="bi bi-three-dots summary-icon"></i>
                         <h6>Other</h6>
                         <h3>LKR {{ number_format($totalOther, 2) }}</h3>
@@ -118,36 +118,36 @@
         </div>
 
         <!-- TEACHER INFO -->
-        <div class="info-card mb-4">
+        <div class="info-card tw:mb-6!">
             <div class="section-header">
-                <h6 class="mb-0 fw-bold">Teacher Information</h6>
+                <h6 class="tw:mb-0! tw:font-bold!">Teacher Information</h6>
                 <span class="section-pill">{{ $periodLabel }}</span>
             </div>
 
-            <div class="row g-3">
+            <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2">
 
-                <div class="col-lg-4 col-md-6">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:lg:flex-[0_0_auto] tw:lg:w-[33.33333333%]">
                     <div class="info-box">
-                        <small class="text-muted d-block">Teacher Name</small>
-                        <div class="fw-bold">{{ $teacher->full_name }}</div>
+                        <small class="tw:text-bs-secondary-color! tw:block!">Teacher Name</small>
+                        <div class="tw:font-bold!">{{ $teacher->full_name }}</div>
                     </div>
                 </div>
 
-                <div class="col-lg-4 col-md-6">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:lg:flex-[0_0_auto] tw:lg:w-[33.33333333%]">
                     <div class="info-box">
-                        <small class="text-muted d-block">Teacher ID</small>
-                        <div class="fw-bold">{{ $teacher->custom_id }}</div>
+                        <small class="tw:text-bs-secondary-color! tw:block!">Teacher ID</small>
+                        <div class="tw:font-bold!">{{ $teacher->custom_id }}</div>
                     </div>
                 </div>
 
-                <div class="col-lg-4 col-md-6">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:lg:flex-[0_0_auto] tw:lg:w-[33.33333333%]">
                     <div class="info-box">
-                        <small class="text-muted d-block">Salary Status</small>
+                        <small class="tw:text-bs-secondary-color! tw:block!">Salary Status</small>
                         <div>
                             @if ($isPaid)
-                                <span class="badge bg-success custom-badge">Paid</span>
+                                <span class="ui-badge tw:bg-bs-success! custom-badge">Paid</span>
                             @else
-                                <span class="badge bg-warning text-dark custom-badge">Pending</span>
+                                <span class="ui-badge tw:bg-bs-warning! tw:text-bs-dark! custom-badge">Pending</span>
                             @endif
                         </div>
                     </div>
@@ -157,7 +157,7 @@
         </div>
 
         <!-- INCOME BREAKDOWN -->
-        <div class="main-card mb-4">
+        <div class="main-card tw:mb-6!">
             <div class="main-card-header">
                 <div>
                     <h4>Income Breakdown</h4>
@@ -165,33 +165,33 @@
                 </div>
             </div>
 
-            <div class="row g-4">
+            <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3">
 
-                <div class="col-xl-3 col-md-6">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%]">
                     <div class="mini-stat">
-                        <small class="text-muted">Total Class Income</small>
-                        <h5 class="text-primary mb-0">LKR {{ number_format($data['total_class_income'] ?? 0, 2) }}</h5>
+                        <small class="tw:text-bs-secondary-color!">Total Class Income</small>
+                        <h5 class="tw:text-bs-primary! tw:mb-0!">LKR {{ number_format($data['total_class_income'] ?? 0, 2) }}</h5>
                     </div>
                 </div>
 
-                <div class="col-xl-3 col-md-6">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%]">
                     <div class="mini-stat">
-                        <small class="text-muted">Teacher Earnings</small>
-                        <h5 class="text-success mb-0">LKR {{ number_format($data['teacher_earnings'] ?? 0, 2) }}</h5>
+                        <small class="tw:text-bs-secondary-color!">Teacher Earnings</small>
+                        <h5 class="tw:text-bs-success! tw:mb-0!">LKR {{ number_format($data['teacher_earnings'] ?? 0, 2) }}</h5>
                     </div>
                 </div>
 
-                <div class="col-xl-3 col-md-6">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%]">
                     <div class="mini-stat">
-                        <small class="text-muted">Institute Earnings</small>
-                        <h5 class="text-dark mb-0">LKR {{ number_format($data['institute_earnings'] ?? 0, 2) }}</h5>
+                        <small class="tw:text-bs-secondary-color!">Institute Earnings</small>
+                        <h5 class="tw:text-bs-dark! tw:mb-0!">LKR {{ number_format($data['institute_earnings'] ?? 0, 2) }}</h5>
                     </div>
                 </div>
 
-                <div class="col-xl-3 col-md-6">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%]">
                     <div class="mini-stat">
-                        <small class="text-muted">Organizer Earnings</small>
-                        <h5 class="text-dark mb-0">LKR {{ number_format($data['organizer_earnings'] ?? 0, 2) }}</h5>
+                        <small class="tw:text-bs-secondary-color!">Organizer Earnings</small>
+                        <h5 class="tw:text-bs-dark! tw:mb-0!">LKR {{ number_format($data['organizer_earnings'] ?? 0, 2) }}</h5>
                     </div>
                 </div>
 
@@ -199,7 +199,7 @@
         </div>
 
         <!-- PAYMENT HISTORY -->
-        <div class="main-card mb-4">
+        <div class="main-card tw:mb-6!">
 
             <div class="main-card-header">
                 <div>
@@ -212,8 +212,8 @@
                 </div>
             </div>
 
-            <div class="table-responsive">
-                <table class="table custom-table align-middle mb-0">
+            <div class="ui-table-responsive">
+                <table class="ui-table custom-table tw:align-middle! tw:mb-0!">
                     <thead>
                         <tr>
                             <th>#</th>
@@ -222,7 +222,7 @@
                             <th>Amount (LKR)</th>
                             <th>Reason</th>
                             <th>Note</th>
-                            <th class="text-center">Actions</th>
+                            <th class="tw:text-center!">Actions</th>
                         </tr>
                     </thead>
 
@@ -237,30 +237,30 @@
 
                                 <td>
                                     @if ($payment->payment_type == 'advance')
-                                        <span class="badge bg-warning text-dark custom-badge">
-                                            <i class="bi bi-arrow-up-circle me-1"></i>
+                                        <span class="ui-badge tw:bg-bs-warning! tw:text-bs-dark! custom-badge">
+                                            <i class="bi bi-arrow-up-circle tw:mr-1!"></i>
                                             Advance
                                         </span>
                                     @elseif($payment->payment_type == 'deduction')
-                                        <span class="badge bg-danger custom-badge">
-                                            <i class="bi bi-arrow-down-circle me-1"></i>
+                                        <span class="ui-badge tw:bg-bs-danger! custom-badge">
+                                            <i class="bi bi-arrow-down-circle tw:mr-1!"></i>
                                             Deduction
                                         </span>
                                     @else
-                                        <span class="badge bg-info custom-badge">
-                                            <i class="bi bi-three-dots me-1"></i>
+                                        <span class="ui-badge tw:bg-bs-info! custom-badge">
+                                            <i class="bi bi-three-dots tw:mr-1!"></i>
                                             Other
                                         </span>
                                     @endif
                                 </td>
 
-                                <td class="fw-semibold">
+                                <td class="tw:font-semibold!">
                                     @if ($payment->payment_type == 'advance')
-                                        <span class="text-warning">+ LKR {{ number_format($payment->amount, 2) }}</span>
+                                        <span class="tw:text-bs-warning!">+ LKR {{ number_format($payment->amount, 2) }}</span>
                                     @elseif($payment->payment_type == 'deduction')
-                                        <span class="text-danger">- LKR {{ number_format($payment->amount, 2) }}</span>
+                                        <span class="tw:text-bs-danger!">- LKR {{ number_format($payment->amount, 2) }}</span>
                                     @else
-                                        <span class="text-info">LKR {{ number_format($payment->amount, 2) }}</span>
+                                        <span class="tw:text-bs-info!">LKR {{ number_format($payment->amount, 2) }}</span>
                                     @endif
                                 </td>
 
@@ -270,38 +270,38 @@
 
                                 <td>
                                     @if ($payment->note)
-                                        <span class="note-icon" data-bs-toggle="tooltip" title="{{ $payment->note }}">
-                                            <i class="bi bi-info-circle-fill text-muted"></i>
+                                        <span class="note-icon" title="{{ $payment->note }}">
+                                            <i class="bi bi-info-circle-fill tw:text-bs-secondary-color!"></i>
                                         </span>
                                     @else
-                                        <span class="text-muted">—</span>
+                                        <span class="tw:text-bs-secondary-color!">—</span>
                                     @endif
                                 </td>
 
-                                <td class="text-center">
+                                <td class="tw:text-center!">
                                     @if ($isPaid)
-                                        <button class="btn btn-sm btn-secondary action-btn" disabled
+                                        <button class="ui-btn ui-btn-sm ui-btn-secondary action-btn" disabled
                                             title="Record is locked because salary is paid">
-                                            <i class="bi bi-lock-fill me-1"></i>
+                                            <i class="bi bi-lock-fill tw:mr-1!"></i>
                                             Delete
                                         </button>
                                     @elseif (!auth()->user()->isAdmin())
-                                        <button class="btn btn-sm btn-secondary action-btn" disabled
+                                        <button class="ui-btn ui-btn-sm ui-btn-secondary action-btn" disabled
                                             title="Only an Admin can delete this record">
-                                            <i class="bi bi-lock-fill me-1"></i>
+                                            <i class="bi bi-lock-fill tw:mr-1!"></i>
                                             Admin only
                                         </button>
                                     @else
                                         <form method="POST"
                                             action="{{ route('teacher-salaries.payment-delete', $payment->id) }}"
-                                            class="d-inline"
+                                            class="tw:[display:inline]!"
                                             onsubmit="return confirm('Are you sure you want to delete this payment record? This action cannot be undone.');">
                                             @csrf
                                             @method('DELETE')
 
-                                            <button type="submit" class="btn btn-sm btn-outline-danger action-btn"
+                                            <button type="submit" class="ui-btn ui-btn-sm ui-btn-outline-danger action-btn"
                                                 title="Delete payment record">
-                                                <i class="bi bi-trash-fill me-1"></i>
+                                                <i class="bi bi-trash-fill tw:mr-1!"></i>
                                                 Delete
                                             </button>
                                         </form>
@@ -310,11 +310,11 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="7" class="text-center py-5 text-muted">
+                                <td colspan="7" class="tw:text-center! tw:py-12! tw:text-bs-secondary-color!">
                                     <div class="empty-state">
                                         <i class="bi bi-inbox"></i>
                                         <h5>No payment records found for this month</h5>
-                                        <p class="mb-0">There are no teacher payment adjustments in this period.</p>
+                                        <p class="tw:mb-0!">There are no teacher payment adjustments in this period.</p>
                                     </div>
                                 </td>
                             </tr>
@@ -323,9 +323,9 @@
 
                     @if ($totalPayments > 0)
                         <tfoot>
-                            <tr class="table-light">
-                                <td colspan="3" class="text-end fw-bold">Total:</td>
-                                <td class="fw-bold">LKR {{ number_format($totalAll, 2) }}</td>
+                            <tr class="ui-table-light">
+                                <td colspan="3" class="tw:text-right! tw:font-bold!">Total:</td>
+                                <td class="tw:font-bold!">LKR {{ number_format($totalAll, 2) }}</td>
                                 <td colspan="3"></td>
                             </tr>
                         </tfoot>
@@ -335,41 +335,41 @@
         </div>
 
         <!-- FINAL SUMMARY -->
-        <div class="row g-4">
-            <div class="col-lg-4">
+        <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[33.33333333%]">
                 <div class="final-card">
-                    <small class="text-muted d-block">Gross Earnings</small>
-                    <h4 class="text-success mb-0">LKR {{ number_format($data['teacher_earnings'] ?? 0, 2) }}</h4>
+                    <small class="tw:text-bs-secondary-color! tw:block!">Gross Earnings</small>
+                    <h4 class="tw:text-bs-success! tw:mb-0!">LKR {{ number_format($data['teacher_earnings'] ?? 0, 2) }}</h4>
                 </div>
             </div>
 
-            <div class="col-lg-4">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[33.33333333%]">
                 <div class="final-card">
-                    <small class="text-muted d-block">Total Deductions</small>
-                    <h4 class="text-danger mb-0">LKR {{ number_format($totalAdvance + $totalDeduction + $totalOther + $totalWelfare, 2) }}
+                    <small class="tw:text-bs-secondary-color! tw:block!">Total Deductions</small>
+                    <h4 class="tw:text-bs-danger! tw:mb-0!">LKR {{ number_format($totalAdvance + $totalDeduction + $totalOther + $totalWelfare, 2) }}
                     </h4>
                 </div>
             </div>
 
-            <div class="col-lg-4">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[33.33333333%]">
                 <div class="final-card highlight">
-                    <small class="text-muted d-block">Net Payable</small>
-                    <h3 class="text-primary mb-0">LKR {{ number_format($data['net_payable'] ?? 0, 2) }}</h3>
+                    <small class="tw:text-bs-secondary-color! tw:block!">Net Payable</small>
+                    <h3 class="tw:text-bs-primary! tw:mb-0!">LKR {{ number_format($data['net_payable'] ?? 0, 2) }}</h3>
                 </div>
             </div>
         </div>
 
         <!-- STATUS ALERT -->
-        <div class="mt-4">
+        <div class="tw:mt-6!">
             @if ($isPaid)
-                <div class="alert alert-secondary custom-alert mb-0">
-                    <i class="bi bi-lock-fill me-2"></i>
+                <div class="ui-alert ui-alert-secondary custom-alert tw:mb-0!">
+                    <i class="bi bi-lock-fill tw:mr-2!"></i>
                     <strong>Records Locked:</strong> This salary has been paid. Payment records cannot be modified or
                     deleted.
                 </div>
             @else
-                <div class="alert alert-info custom-alert mb-0">
-                    <i class="bi bi-info-circle-fill me-2"></i>
+                <div class="ui-alert ui-alert-info custom-alert tw:mb-0!">
+                    <i class="bi bi-info-circle-fill tw:mr-2!"></i>
                     <strong>Delete Available:</strong> You can delete payment records while salary is unpaid.
                 </div>
             @endif
@@ -446,7 +446,7 @@
             border: none;
         }
 
-        .summary-card .card-body {
+        .summary-card .ui-card-body {
             padding: 1.4rem;
             position: relative;
         }
@@ -571,7 +571,7 @@
             background: #f8fafc;
         }
 
-        .badge {
+        .ui-badge {
             border-radius: 10px;
             padding: .5rem .7rem;
             font-size: .75rem;
@@ -625,15 +625,15 @@
                 width: 100%;
             }
 
-            .hero-actions .btn {
+            .hero-actions .ui-btn {
                 flex: 1;
             }
         }
 
         @media print {
 
-            .btn,
-            .alert,
+            .ui-btn,
+            .ui-alert,
             .sidebar,
             .navbar {
                 display: none !important;
@@ -653,13 +653,3 @@
     </style>
 @endpush
 
-@push('scripts')
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-            tooltipTriggerList.map(function(tooltipTriggerEl) {
-                return new bootstrap.Tooltip(tooltipTriggerEl);
-            });
-        });
-    </script>
-@endpush

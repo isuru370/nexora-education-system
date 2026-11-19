@@ -5,59 +5,59 @@
 
 @section('content')
 
-    <div class="container-fluid">
+    <div class="ui-container-fluid">
 
         {{-- =========================================================
         HEADER
     ========================================================== --}}
-        <div class="card border-0 shadow-sm rounded-4 mb-4">
+        <div class="ui-card tw:[border:0]! tw:shadow-bs-sm! tw:rounded-bs-xl! tw:mb-6!">
 
-            <div class="card-header bg-white border-0 py-3">
+            <div class="ui-card-header tw:bg-bs-white! tw:[border:0]! tw:py-4!">
 
-                <div class="d-flex justify-content-between align-items-center flex-wrap gap-3">
+                <div class="tw:flex! tw:justify-between! tw:items-center! tw:flex-wrap! tw:gap-4!">
 
                     <div>
 
-                        <h5 class="mb-1 fw-bold">
+                        <h5 class="tw:mb-1! tw:font-bold!">
 
                             {{ $studentClass->class_name }}
 
                             {{-- ✅ Branch badge --}}
                             @if ($studentClass->branch)
-                                <span class="badge bg-info text-dark ms-2">
-                                    <i class="bi bi-building me-1"></i>
+                                <span class="ui-badge tw:bg-bs-info! tw:text-bs-dark! tw:ml-2!">
+                                    <i class="bi bi-building tw:mr-1!"></i>
                                     {{ $studentClass->branch->name }}
                                 </span>
                             @endif
 
                         </h5>
 
-                        <small class="text-muted">
+                        <small class="tw:text-bs-secondary-color!">
 
                             Grade:
                             {{ optional($studentClass->grade)->grade_name ?? '-' }}
 
-                            <span class="mx-1">|</span>
+                            <span class="tw:mx-1!">|</span>
 
                             Subject:
                             {{ optional($studentClass->subject)->subject_name ?? '-' }}
 
-                            <span class="mx-1">|</span>
+                            <span class="tw:mx-1!">|</span>
 
                             Teacher:
                             {{ optional($studentClass->teacher)->initials ?? '-' }}
 
-                            <span class="mx-1">|</span>
+                            <span class="tw:mx-1!">|</span>
 
                             Category:
-                            <strong class="text-primary">{{ $classCategory->category_name }}</strong>
+                            <strong class="tw:text-bs-primary!">{{ $classCategory->category_name }}</strong>
 
                         </small>
 
                     </div>
 
 
-                    <div class="d-flex gap-2 flex-wrap">
+                    <div class="tw:flex! tw:gap-2! tw:flex-wrap!">
 
                         {{-- PDF Export --}}
                         <a href="{{ route(
@@ -67,9 +67,9 @@
                                 'classCategory' => $classCategory->id,
                             ] + request()->query(),
                         ) }}"
-                            class="btn btn-danger btn-sm">
+                            class="ui-btn ui-btn-danger ui-btn-sm">
 
-                            <i class="bi bi-file-earmark-pdf me-1"></i>
+                            <i class="bi bi-file-earmark-pdf tw:mr-1!"></i>
                             PDF
 
                         </a>
@@ -83,18 +83,18 @@
                                 'classCategory' => $classCategory->id,
                             ] + request()->query(),
                         ) }}"
-                            class="btn btn-success btn-sm">
+                            class="ui-btn ui-btn-success ui-btn-sm">
 
-                            <i class="bi bi-file-earmark-excel me-1"></i>
+                            <i class="bi bi-file-earmark-excel tw:mr-1!"></i>
                             Excel
 
                         </a>
 
 
                         {{-- Back --}}
-                        <a href="{{ route('student-class-enrollments.index') }}" class="btn btn-outline-secondary btn-sm">
+                        <a href="{{ route('student-class-enrollments.index') }}" class="ui-btn ui-btn-outline-secondary ui-btn-sm">
 
-                            <i class="bi bi-arrow-left me-1"></i>
+                            <i class="bi bi-arrow-left tw:mr-1!"></i>
                             Back
 
                         </a>
@@ -109,21 +109,21 @@
             {{-- =====================================================
             BODY
         ====================================================== --}}
-            <div class="card-body">
+            <div class="ui-card-body">
 
                 {{-- =================================================
                 ALERTS
             ================================================== --}}
                 @if (session('success'))
-                    <div class="alert alert-success border-0 shadow-sm rounded-3">
-                        <i class="bi bi-check-circle me-1"></i>
+                    <div class="ui-alert ui-alert-success tw:[border:0]! tw:shadow-bs-sm! tw:rounded-bs-lg!">
+                        <i class="bi bi-check-circle tw:mr-1!"></i>
                         {{ session('success') }}
                     </div>
                 @endif
 
                 @if (session('error'))
-                    <div class="alert alert-danger border-0 shadow-sm rounded-3">
-                        <i class="bi bi-exclamation-circle me-1"></i>
+                    <div class="ui-alert ui-alert-danger tw:[border:0]! tw:shadow-bs-sm! tw:rounded-bs-lg!">
+                        <i class="bi bi-exclamation-circle tw:mr-1!"></i>
                         {{ session('error') }}
                     </div>
                 @endif
@@ -137,17 +137,17 @@
                         'studentClass' => $studentClass->id,
                         'classCategory' => $classCategory->id,
                     ]) }}"
-                    class="row g-2 mb-4">
+                    class="tw:flex tw:flex-wrap tw:-mt-2 tw:-mx-1 tw:mb-6!">
 
-                    <div class="col-md-7">
-                        <input type="text" name="search" class="form-control"
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-1 tw:mt-2 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[58.33333333%]">
+                        <input type="text" name="search" class="ui-form-control"
                             placeholder="Search Student ID / QR / Initial Name / Full Name / Mobile..."
                             value="{{ request('search') }}">
                     </div>
 
 
-                    <div class="col-md-2">
-                        <select name="per_page" class="form-select">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-1 tw:mt-2 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[16.66666667%]">
+                        <select name="per_page" class="ui-form-select">
                             @foreach ([10, 20, 50, 100] as $count)
                                 <option value="{{ $count }}"
                                     {{ (int) request('per_page', 20) === $count ? 'selected' : '' }}>
@@ -158,19 +158,19 @@
                     </div>
 
 
-                    <div class="col-md-1">
-                        <button class="btn btn-primary w-100" type="submit">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-1 tw:mt-2 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[8.33333333%]">
+                        <button class="ui-btn ui-btn-primary tw:w-full!" type="submit">
                             <i class="bi bi-search"></i>
                         </button>
                     </div>
 
 
-                    <div class="col-md-2">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-1 tw:mt-2 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[16.66666667%]">
                         <a href="{{ route('student-class-enrollments.category-students', [
                             'studentClass' => $studentClass->id,
                             'classCategory' => $classCategory->id,
                         ]) }}"
-                            class="btn btn-outline-secondary w-100">
+                            class="ui-btn ui-btn-outline-secondary tw:w-full!">
                             Reset
                         </a>
                     </div>
@@ -181,21 +181,21 @@
                 {{-- =================================================
                 SUMMARY BADGES
             ================================================== --}}
-                <div class="d-flex gap-2 mb-3 flex-wrap">
+                <div class="tw:flex! tw:gap-2! tw:mb-4! tw:flex-wrap!">
 
-                    <span class="badge bg-primary">
+                    <span class="ui-badge tw:bg-bs-primary!">
                         Total: {{ $enrollments->total() }}
                     </span>
 
-                    <span class="badge bg-success">
+                    <span class="ui-badge tw:bg-bs-success!">
                         Active: {{ $enrollments->where('is_active', true)->count() }}
                     </span>
 
-                    <span class="badge bg-secondary">
+                    <span class="ui-badge tw:bg-bs-secondary!">
                         Inactive: {{ $enrollments->where('is_active', false)->count() }}
                     </span>
 
-                    <span class="badge bg-warning text-dark">
+                    <span class="ui-badge tw:bg-bs-warning! tw:text-bs-dark!">
                         Free Cards: {{ $enrollments->where('is_free_card', true)->count() }}
                     </span>
 
@@ -205,20 +205,20 @@
                 {{-- =================================================
                 STUDENTS TABLE
             ================================================== --}}
-                <div class="table-responsive">
+                <div class="ui-table-responsive">
 
-                    <table class="table table-hover align-middle">
+                    <table class="ui-table ui-table-hover tw:align-middle!">
 
-                        <thead class="table-light">
+                        <thead class="ui-table-light">
                             <tr>
                                 <th>#</th>
                                 <th>Student</th>
                                 <th>Branch</th>
                                 <th>Contact</th>
                                 <th>Fee Option</th>
-                                <th class="text-end">Fee</th>
+                                <th class="tw:text-right!">Fee</th>
                                 <th>Status</th>
-                                <th class="text-end">Actions</th>
+                                <th class="tw:text-right!">Actions</th>
                             </tr>
                         </thead>
 
@@ -237,7 +237,7 @@
                                 */
                                     $studentCode = '-';
                                     $qrType = '-';
-                                    $qrBadge = 'bg-secondary';
+                                    $qrBadge = 'tw:bg-bs-secondary!';
 
                                     if (
                                         $student &&
@@ -247,11 +247,11 @@
                                     ) {
                                         $studentCode = $student->custom_id;
                                         $qrType = 'Permanent QR';
-                                        $qrBadge = 'bg-success';
+                                        $qrBadge = 'tw:bg-bs-success!';
                                     } elseif ($student && $student->temporary_qr_code) {
                                         $studentCode = $student->temporary_qr_code;
                                         $qrType = 'Temporary QR';
-                                        $qrBadge = 'bg-warning text-dark';
+                                        $qrBadge = 'tw:bg-bs-warning! tw:text-bs-dark!';
                                     }
 
                                     /*
@@ -273,22 +273,22 @@
                                 <tr>
 
                                     {{-- # --}}
-                                    <td class="text-muted">
+                                    <td class="tw:text-bs-secondary-color!">
                                         {{ $enrollments->firstItem() + $key }}
                                     </td>
 
 
                                     {{-- STUDENT --}}
                                     <td>
-                                        <div class="fw-bold">
+                                        <div class="tw:font-bold!">
                                             {{ $student->full_name ?? '-' }}
                                         </div>
 
-                                        <small class="text-muted d-block">
+                                        <small class="tw:text-bs-secondary-color! tw:block!">
                                             {{ $student->initial_name ?? '-' }}
                                         </small>
 
-                                        <small class="text-muted">
+                                        <small class="tw:text-bs-secondary-color!">
                                             ID: {{ $student->custom_id ?? '-' }}
                                         </small>
                                     </td>
@@ -297,12 +297,12 @@
                                     {{-- BRANCH --}}
                                     <td>
                                         @if ($enrollment->branch)
-                                            <span class="badge bg-info text-dark">
-                                                <i class="bi bi-building me-1"></i>
+                                            <span class="ui-badge tw:bg-bs-info! tw:text-bs-dark!">
+                                                <i class="bi bi-building tw:mr-1!"></i>
                                                 {{ $enrollment->branch->name }}
                                             </span>
                                         @else
-                                            <span class="text-muted">-</span>
+                                            <span class="tw:text-bs-secondary-color!">-</span>
                                         @endif
                                     </td>
 
@@ -314,7 +314,7 @@
                                                 {{ $student->mobile }}
                                             </a>
                                         @else
-                                            <span class="text-muted">-</span>
+                                            <span class="tw:text-bs-secondary-color!">-</span>
                                         @endif
                                     </td>
 
@@ -322,47 +322,47 @@
                                     {{-- FEE OPTION --}}
                                     <td>
                                         @if ($enrollment->is_free_card)
-                                            <span class="badge bg-dark">
-                                                <i class="bi bi-gift me-1"></i>
+                                            <span class="ui-badge tw:bg-bs-dark!">
+                                                <i class="bi bi-gift tw:mr-1!"></i>
                                                 Free Card
                                             </span>
                                         @elseif($feeOption)
-                                            <span class="badge bg-primary">
+                                            <span class="ui-badge tw:bg-bs-primary!">
                                                 {{ $feeOption->label }}
                                             </span>
 
                                             @if ($feeOption->is_default)
                                                 <br>
-                                                <small class="text-muted">
-                                                    <i class="bi bi-star-fill text-warning"></i>
+                                                <small class="tw:text-bs-secondary-color!">
+                                                    <i class="bi bi-star-fill tw:text-bs-warning!"></i>
                                                     Default Option
                                                 </small>
                                             @endif
                                         @else
-                                            <span class="text-muted">-</span>
+                                            <span class="tw:text-bs-secondary-color!">-</span>
                                         @endif
                                     </td>
 
 
                                     {{-- FEE --}}
-                                    <td class="text-end">
+                                    <td class="tw:text-right!">
                                         @if ($enrollment->is_free_card)
-                                            <span class="fw-bold text-success">
+                                            <span class="tw:font-bold! tw:text-bs-success!">
                                                 Free
                                             </span>
                                         @elseif($feeOption)
-                                            <span class="fw-bold text-primary">
+                                            <span class="tw:font-bold! tw:text-bs-primary!">
                                                 Rs. {{ number_format((float) $selectedFee, 2) }}
                                             </span>
 
                                             @if ((float) $feeOption->fee !== (float) $selectedFee)
                                                 <br>
-                                                <small class="text-muted">
+                                                <small class="tw:text-bs-secondary-color!">
                                                     Option: Rs. {{ number_format((float) $feeOption->fee, 2) }}
                                                 </small>
                                             @endif
                                         @else
-                                            <span class="text-muted">-</span>
+                                            <span class="tw:text-bs-secondary-color!">-</span>
                                         @endif
                                     </td>
 
@@ -370,19 +370,19 @@
                                     {{-- STATUS --}}
                                     <td>
                                         @if ($enrollment->is_active)
-                                            <span class="badge bg-success">
-                                                <i class="bi bi-check-circle me-1"></i>
+                                            <span class="ui-badge tw:bg-bs-success!">
+                                                <i class="bi bi-check-circle tw:mr-1!"></i>
                                                 Active
                                             </span>
                                         @else
-                                            <span class="badge bg-secondary">
-                                                <i class="bi bi-x-circle me-1"></i>
+                                            <span class="ui-badge tw:bg-bs-secondary!">
+                                                <i class="bi bi-x-circle tw:mr-1!"></i>
                                                 Inactive
                                             </span>
 
                                             @if ($enrollment->left_at)
                                                 <br>
-                                                <small class="text-muted">
+                                                <small class="tw:text-bs-secondary-color!">
                                                     Left: {{ $enrollment->left_at->format('Y-m-d') }}
                                                 </small>
                                             @endif
@@ -391,19 +391,19 @@
 
 
                                     {{-- ACTIONS --}}
-                                    <td class="text-end">
-                                        <div class="d-flex justify-content-end gap-1 flex-wrap">
+                                    <td class="tw:text-right!">
+                                        <div class="tw:flex! tw:justify-end! tw:gap-1! tw:flex-wrap!">
 
                                             {{-- View --}}
                                             <a href="{{ route('student-class-enrollments.show', $enrollment) }}"
-                                                class="btn btn-sm btn-outline-primary" title="View Details">
+                                                class="ui-btn ui-btn-sm ui-btn-outline-primary" title="View Details">
                                                 <i class="bi bi-eye"></i>
                                             </a>
 
 
                                             {{-- Edit --}}
                                             <a href="{{ route('student-class-enrollments.edit', $enrollment) }}"
-                                                class="btn btn-sm btn-outline-warning" title="Edit">
+                                                class="ui-btn ui-btn-sm ui-btn-outline-warning" title="Edit">
                                                 <i class="bi bi-pencil"></i>
                                             </a>
 
@@ -416,12 +416,12 @@
                                                 @method('PATCH')
 
                                                 @if ($enrollment->is_active)
-                                                    <button type="submit" class="btn btn-sm btn-outline-secondary"
+                                                    <button type="submit" class="ui-btn ui-btn-sm ui-btn-outline-secondary"
                                                         title="Deactivate">
                                                         <i class="bi bi-pause-fill"></i>
                                                     </button>
                                                 @else
-                                                    <button type="submit" class="btn btn-sm btn-outline-success"
+                                                    <button type="submit" class="ui-btn ui-btn-sm ui-btn-outline-success"
                                                         title="Activate">
                                                         <i class="bi bi-play-fill"></i>
                                                     </button>
@@ -436,10 +436,10 @@
                             @empty
 
                                 <tr>
-                                    <td colspan="9" class="text-center text-muted py-5">
-                                        <i class="bi bi-people fs-1 d-block mb-2 text-muted"></i>
+                                    <td colspan="9" class="tw:text-center! tw:text-bs-secondary-color! tw:py-12!">
+                                        <i class="bi bi-people tw:text-[length:calc(1.375rem_+_1.5vw)]! tw:xl:text-[length:2.5rem]! tw:block! tw:mb-2! tw:text-bs-secondary-color!"></i>
 
-                                        <div class="fw-semibold">
+                                        <div class="tw:font-semibold!">
                                             No students found
                                         </div>
 
@@ -461,7 +461,7 @@
                 {{-- =================================================
                 PAGINATION
             ================================================== --}}
-                <div class="mt-3">
+                <div class="tw:mt-4!">
                     {{ $enrollments->appends(request()->query())->links() }}
                 </div>
 

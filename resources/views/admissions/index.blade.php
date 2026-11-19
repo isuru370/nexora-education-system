@@ -9,7 +9,7 @@
         {{-- ===================================================== --}}
         {{-- HERO --}}
         {{-- ===================================================== --}}
-        <div class="hero-section mb-4">
+        <div class="hero-section tw:mb-6!">
             <div class="hero-content">
                 <div class="hero-left">
                     <span class="greeting-badge">
@@ -53,7 +53,7 @@
         {{-- ===================================================== --}}
         {{-- KPI CARDS --}}
         {{-- ===================================================== --}}
-        <div class="stats-grid stats-grid-3 mb-4">
+        <div class="stats-grid stats-grid-3 tw:mb-6!">
 
             <div class="nx-card stat-card">
                 <div class="stat-icon-wrapper icon-blue"><i class="bi bi-journal-bookmark-fill"></i></div>
@@ -86,24 +86,24 @@
         {{-- ===================================================== --}}
         {{-- FILTER --}}
         {{-- ===================================================== --}}
-        <div class="nx-card mb-4">
+        <div class="nx-card tw:mb-6!">
             <div class="nx-card-header">
                 <div>
-                    <h5 class="nx-card-title"><i class="bi bi-search text-primary"></i> Search Admissions</h5>
+                    <h5 class="nx-card-title"><i class="bi bi-search tw:text-(color:--nx-blue)!"></i> Search Admissions</h5>
                     <p class="nx-card-subtitle">Search by admission name or note</p>
                 </div>
             </div>
 
-            <div class="p-3">
-                <form method="GET" action="{{ route('admissions.index') }}" class="row g-3 align-items-end">
-                    <div class="col-md-8">
+            <div class="tw:p-4!">
+                <form method="GET" action="{{ route('admissions.index') }}" class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2 tw:items-end!">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[66.66666667%]">
                         <label class="nx-label">Search</label>
-                        <input type="text" name="search" value="{{ request('search') }}" class="form-control nx-input"
+                        <input type="text" name="search" value="{{ request('search') }}" class="ui-form-control nx-input"
                             placeholder="Search by admission name or note...">
                     </div>
-                    <div class="col-md-4">
-                        <div class="d-flex gap-2">
-                            <button type="submit" class="nx-btn nx-btn-primary flex-grow-1">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
+                        <div class="tw:flex! tw:gap-2!">
+                            <button type="submit" class="nx-btn nx-btn-primary tw:grow!">
                                 <i class="bi bi-search"></i> Search
                             </button>
                             @if (request('search'))
@@ -120,11 +120,11 @@
         {{-- ===================================================== --}}
         {{-- TABLE --}}
         {{-- ===================================================== --}}
-        <div class="nx-card mb-4">
+        <div class="nx-card tw:mb-6!">
 
             <div class="nx-card-header">
                 <div>
-                    <h5 class="nx-card-title"><i class="bi bi-table text-primary"></i> Admissions List</h5>
+                    <h5 class="nx-card-title"><i class="bi bi-table tw:text-(color:--nx-blue)!"></i> Admissions List</h5>
                     <p class="nx-card-subtitle">All admission fee records</p>
                 </div>
                 <div class="header-buttons">
@@ -134,8 +134,8 @@
                 </div>
             </div>
 
-            <div class="table-responsive">
-                <table class="table premium-table mb-0">
+            <div class="ui-table-responsive">
+                <table class="ui-table premium-table tw:mb-0!">
                     <thead>
                         <tr>
                             <th style="width: 5%;">#</th>
@@ -143,7 +143,7 @@
                             <th style="width: 15%;">Amount</th>
                             <th style="width: 10%;">Status</th>
                             <th style="width: 30%;">Note</th>
-                            <th style="width: 15%;" class="text-end">Actions</th>
+                            <th style="width: 15%;" class="tw:text-right!">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -154,7 +154,7 @@
                                 <td class="cell-title">
                                     {{ $admission->name }}
                                     @if ($admission->for_card_replacement)
-                                        <span class="nx-badge nx-badge-amber ms-1"><i class="bi bi-person-vcard"></i> Card replacement</span>
+                                        <span class="nx-badge nx-badge-amber tw:ml-1!"><i class="bi bi-person-vcard"></i> Card replacement</span>
                                     @endif
                                 </td>
 
@@ -180,7 +180,7 @@
                                     @endif
                                 </td>
 
-                                <td class="text-end">
+                                <td class="tw:text-right!">
                                     <div class="action-buttons">
                                         <a href="{{ route('admissions.show', $admission) }}" class="action-btn" title="View" aria-label="View">
                                             <i class="bi bi-eye-fill"></i>
@@ -204,10 +204,10 @@
                         @empty
                             <tr>
                                 <td colspan="6" class="empty-table">
-                                    <i class="bi bi-inbox fs-2 d-block mb-2"></i>
-                                    <strong class="d-block">No Admissions Found</strong>
+                                    <i class="bi bi-inbox tw:text-[length:calc(1.325rem_+_0.9vw)]! tw:xl:text-[length:2rem]! tw:block! tw:mb-2!"></i>
+                                    <strong class="tw:block!">No Admissions Found</strong>
                                     <span class="cell-sub">Click "Add New Admission" to create your first admission record.</span>
-                                    <div class="mt-3">
+                                    <div class="tw:mt-4!">
                                         <a href="{{ route('admissions.create') }}" class="nx-btn nx-btn-primary">
                                             <i class="bi bi-plus-lg"></i> Add New Admission
                                         </a>
@@ -220,14 +220,14 @@
             </div>
 
             @if ($admissions->hasPages())
-                <div class="p-3 border-top">
+                <div class="tw:p-4! tw:bs-border-t!">
                     {{ $admissions->links() }}
                 </div>
             @endif
         </div>
 
         {{-- FOOTER NOTE --}}
-        <div class="text-center">
+        <div class="tw:text-center!">
             <small class="cell-sub">
                 <i class="bi bi-info-circle"></i>
                 Showing {{ $admissions->firstItem() ?? 0 }} to {{ $admissions->lastItem() ?? 0 }} of

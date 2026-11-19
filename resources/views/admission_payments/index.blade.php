@@ -30,7 +30,7 @@
         {{-- ===================================================== --}}
         {{-- HERO --}}
         {{-- ===================================================== --}}
-        <div class="hero-section mb-4">
+        <div class="hero-section tw:mb-6!">
             <div class="hero-content">
                 <div class="hero-left">
                     <span class="greeting-badge">nexoraEDU</span>
@@ -69,7 +69,7 @@
         {{-- ===================================================== --}}
         {{-- KPI CARDS --}}
         {{-- ===================================================== --}}
-        <div class="stats-grid mb-4">
+        <div class="stats-grid tw:mb-6!">
 
             <div class="nx-card stat-card">
                 <div class="stat-icon-wrapper icon-blue"><i class="bi bi-receipt"></i></div>
@@ -125,18 +125,18 @@
         {{-- ===================================================== --}}
         {{-- MAIN CARD --}}
         {{-- ===================================================== --}}
-        <div class="nx-card mb-4">
+        <div class="nx-card tw:mb-6!">
 
             <div class="nx-card-header">
                 <div>
-                    <h5 class="nx-card-title"><i class="bi bi-receipt text-primary"></i> Admission Payments</h5>
+                    <h5 class="nx-card-title"><i class="bi bi-receipt tw:text-(color:--nx-blue)!"></i> Admission Payments</h5>
                     <p class="nx-card-subtitle">Manage student admission payment records, status and payment details</p>
                 </div>
             </div>
 
             {{-- ALERTS --}}
             @if (session('success'))
-                <div class="p-3 pb-0">
+                <div class="tw:p-4! tw:pb-0!">
                     <div class="nx-alert nx-alert-green">
                         <i class="bi bi-check-circle-fill"></i>
                         <span>{{ session('success') }}</span>
@@ -145,7 +145,7 @@
             @endif
 
             @if (session('error'))
-                <div class="p-3 pb-0">
+                <div class="tw:p-4! tw:pb-0!">
                     <div class="nx-alert nx-alert-red">
                         <i class="bi bi-exclamation-triangle-fill"></i>
                         <span>{{ session('error') }}</span>
@@ -156,19 +156,19 @@
             {{-- SEARCH / FILTER --}}
             <div class="nx-search">
                 <form method="GET" action="{{ route('admission-payments.index') }}">
-                    <div class="row g-3 align-items-center">
+                    <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2 tw:items-center!">
 
-                        <div class="col-lg-6">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[50%]">
                             <div class="search-input-wrapper">
                                 <i class="bi bi-search"></i>
                                 <input type="text" name="search" value="{{ request('search') }}"
-                                    class="form-control custom-input"
+                                    class="ui-form-control custom-input"
                                     placeholder="Search receipt / student name / student ID / admission">
                             </div>
                         </div>
 
-                        <div class="col-lg-3">
-                            <select name="status" class="form-select custom-input">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[25%]">
+                            <select name="status" class="ui-form-select custom-input">
                                 <option value="">All Status</option>
                                 @foreach ($statusBadges as $value => [$class, $label])
                                     <option value="{{ $value }}" {{ (request('status') === $value) ? 'selected' : '' }}>{{ $label }}</option>
@@ -176,8 +176,8 @@
                             </select>
                         </div>
 
-                        <div class="col-lg-3 d-flex gap-2">
-                            <button type="submit" class="nx-btn nx-btn-primary flex-grow-1">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[25%] tw:flex! tw:gap-2!">
+                            <button type="submit" class="nx-btn nx-btn-primary tw:grow!">
                                 <i class="bi bi-funnel-fill"></i> Search
                             </button>
 
@@ -193,8 +193,8 @@
 
             {{-- RESULT COUNT --}}
             @if ($payments->total() > 0)
-                <div class="p-3 pb-0">
-                    <p class="cell-sub mb-0">
+                <div class="tw:p-4! tw:pb-0!">
+                    <p class="cell-sub tw:mb-0!">
                         Showing {{ $payments->firstItem() }}–{{ $payments->lastItem() }} of {{ number_format($payments->total()) }}
                         {{ $hasFilters ? 'matching' : '' }} payments
                     </p>
@@ -202,8 +202,8 @@
             @endif
 
             {{-- TABLE --}}
-            <div class="table-responsive">
-                <table class="table premium-table mb-0">
+            <div class="ui-table-responsive">
+                <table class="ui-table premium-table tw:mb-0!">
                     <thead>
                         <tr>
                             <th>#</th>
@@ -213,7 +213,7 @@
                             <th>Amount</th>
                             <th>Method</th>
                             <th>Status</th>
-                            <th class="text-end">Actions</th>
+                            <th class="tw:text-right!">Actions</th>
                         </tr>
                     </thead>
 
@@ -268,7 +268,7 @@
                                 </td>
 
                                 {{-- ACTIONS --}}
-                                <td class="text-end">
+                                <td class="tw:text-right!">
                                     <div class="action-buttons">
                                         <a href="{{ route('admission-payments.show', $payment) }}" class="action-btn" title="View" aria-label="View">
                                             <i class="bi bi-eye-fill"></i>
@@ -301,8 +301,8 @@
                         @empty
                             <tr>
                                 <td colspan="8" class="empty-table">
-                                    <i class="bi bi-receipt fs-2 d-block mb-2"></i>
-                                    <strong class="d-block">No Payments Found</strong>
+                                    <i class="bi bi-receipt tw:text-[length:calc(1.325rem_+_0.9vw)]! tw:xl:text-[length:2rem]! tw:block! tw:mb-2!"></i>
+                                    <strong class="tw:block!">No Payments Found</strong>
                                     <span class="cell-sub">
                                         @if ($hasFilters)
                                             No payments match your search.
@@ -312,7 +312,7 @@
                                     </span>
 
                                     @if ($hasFilters)
-                                        <div class="mt-3">
+                                        <div class="tw:mt-4!">
                                             <a href="{{ route('admission-payments.index') }}" class="nx-btn nx-btn-light">
                                                 <i class="bi bi-x-lg"></i> Clear filters
                                             </a>
@@ -327,7 +327,7 @@
 
             {{-- PAGINATION --}}
             @if ($payments->hasPages())
-                <div class="p-3 border-top d-flex justify-content-center">
+                <div class="tw:p-4! tw:bs-border-t! tw:flex! tw:justify-center!">
                     {{ $payments->links() }}
                 </div>
             @endif

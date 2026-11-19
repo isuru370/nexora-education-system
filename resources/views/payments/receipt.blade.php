@@ -19,7 +19,7 @@
         .receipt-paper { width: 58mm; box-sizing: border-box; padding: 3mm; margin: 0 auto; }
         .receipt-line { border-top: 1px dashed #000; margin: 6px 0; }
         .receipt-item, .receipt-summary { line-height: 1.5; word-break: break-word; }
-        .text-center { text-align: center; }
+        .bs-text-center { text-align: center; }
         .reprint { font-size: 9px; }
         .no-print { text-align: center; margin: 12px 0; font-family: sans-serif; }
         .no-print button { padding: 6px 14px; font-size: 13px; cursor: pointer; }
@@ -29,7 +29,7 @@
 
 <body>
     <div class="receipt-paper">
-        <div class="text-center">
+        <div class="bs-text-center tw:text-center!">
             <strong>NEXORA EDU</strong><br>
             PAYMENT RECEIPT<br>
             <span class="reprint">(COPY)</span>
@@ -66,7 +66,7 @@
         <div class="receipt-line"></div>
         Payment: {{ $receipt['payment_method'] ?? '-' }}<br>
         Printed: {{ now()->format('Y-m-d H:i') }}<br><br>
-        <div class="text-center">Thank You!</div>
+        <div class="bs-text-center tw:text-center!">Thank You!</div>
     </div>
 
     <div class="no-print">

@@ -7,7 +7,7 @@
 <div class="dashboard-page">
 
     {{-- HERO --}}
-    <div class="hero-section mb-4">
+    <div class="hero-section tw:mb-6!">
         <div class="hero-content">
             <div class="hero-left">
                 <span class="greeting-badge">nexoraEDU</span>
@@ -31,22 +31,22 @@
         </div>
     </div>
 
-    <div class="row g-4">
+    <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3">
 
         {{-- MAIN FORM --}}
-        <div class="col-lg-8">
+        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[66.66666667%]">
             <div class="nx-card">
 
                 <div class="nx-card-header">
                     <div>
-                        <h5 class="nx-card-title"><i class="bi bi-pencil-square text-primary"></i> Branch Information</h5>
+                        <h5 class="nx-card-title"><i class="bi bi-pencil-square tw:text-(color:--nx-blue)!"></i> Branch Information</h5>
                         <p class="nx-card-subtitle">
                             All fields marked <strong style="color: var(--nx-red);">*</strong> are required
                         </p>
                     </div>
                 </div>
 
-                <div class="p-3 p-md-4">
+                <div class="tw:p-4! tw:md:p-6!">
                     <form action="{{ route('branches.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
                         @include('branches.partials.form')
@@ -56,33 +56,33 @@
         </div>
 
         {{-- SIDEBAR --}}
-        <div class="col-lg-4">
+        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[33.33333333%]">
 
             {{-- TIPS --}}
-            <div class="nx-card mb-4">
+            <div class="nx-card tw:mb-6!">
                 <div class="nx-card-header">
                     <div>
-                        <h5 class="nx-card-title"><i class="bi bi-lightbulb-fill text-primary"></i> Quick Tips</h5>
+                        <h5 class="nx-card-title"><i class="bi bi-lightbulb-fill tw:text-(color:--nx-blue)!"></i> Quick Tips</h5>
                         <p class="nx-card-subtitle">Helpful hints for branch setup</p>
                     </div>
                 </div>
 
-                <div class="p-3">
+                <div class="tw:p-4!">
                     <ul class="tips-list">
                         <li>
-                            <i class="bi bi-check-circle-fill text-success"></i>
+                            <i class="bi bi-check-circle-fill tw:text-(color:--nx-green)!"></i>
                             <span>Use a <strong>unique branch code</strong> for easy identification.</span>
                         </li>
                         <li>
-                            <i class="bi bi-check-circle-fill text-success"></i>
+                            <i class="bi bi-check-circle-fill tw:text-(color:--nx-green)!"></i>
                             <span>Provide accurate <strong>contact details</strong> for communication.</span>
                         </li>
                         <li>
-                            <i class="bi bi-check-circle-fill text-success"></i>
+                            <i class="bi bi-check-circle-fill tw:text-(color:--nx-green)!"></i>
                             <span>Set the branch <strong>active</strong> to make it available immediately.</span>
                         </li>
                         <li>
-                            <i class="bi bi-check-circle-fill text-success"></i>
+                            <i class="bi bi-check-circle-fill tw:text-(color:--nx-green)!"></i>
                             <span>You can <strong>edit details</strong> anytime after creation.</span>
                         </li>
                     </ul>
@@ -91,7 +91,7 @@
 
             {{-- INFO CARD --}}
             <div class="nx-card">
-                <div class="p-3">
+                <div class="tw:p-4!">
                     <div class="info-card-info">
                         <div class="info-icon-circle">
                             <i class="bi bi-shield-check"></i>

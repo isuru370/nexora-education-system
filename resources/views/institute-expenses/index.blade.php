@@ -373,12 +373,12 @@
         border-top: 1px solid #eef2f7;
     }
 
-    .pagination {
+    .ui-pagination {
         margin: 0;
         gap: .25rem;
     }
 
-    .pagination .page-link {
+    .ui-pagination .ui-page-link {
         border-radius: 10px;
         border: 1px solid #e2e8f0;
         color: #475569;
@@ -386,7 +386,7 @@
         padding: .5rem 1rem;
     }
 
-    .pagination .active .page-link {
+    .ui-pagination .active .ui-page-link {
         background: linear-gradient(135deg, #2563eb, #1d4ed8);
         border-color: #2563eb;
         color: white;
@@ -435,12 +435,12 @@
     ========================================================== --}}
     <div class="header-card">
 
-        <div class="row align-items-center justify-content-between">
+        <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 tw:items-center! tw:justify-between!">
 
-            <div class="col-md-7 mb-3 mb-md-0">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[58.33333333%] tw:mb-4! tw:md:mb-0!">
 
                 <div class="header-title">
-                    <i class="bi bi-receipt-cutoff me-2"></i>
+                    <i class="bi bi-receipt-cutoff tw:mr-2!"></i>
                     Institute Expenses
                 </div>
 
@@ -448,18 +448,18 @@
                     View and manage institute expense transactions
                 </p>
 
-                <a href="{{ route('admin.institute-expenses.create') }}" class="btn btn-light fw-semibold rounded-3 mt-2">
-                    <i class="bi bi-plus-circle me-1"></i>
+                <a href="{{ route('admin.institute-expenses.create') }}" class="ui-btn ui-btn-light tw:font-semibold! tw:rounded-bs-lg! tw:mt-2!">
+                    <i class="bi bi-plus-circle tw:mr-1!"></i>
                     Add Expense
                 </a>
 
             </div>
 
-            <div class="col-md-5">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[41.66666667%]">
 
-                <div class="row g-2">
+                <div class="tw:flex tw:flex-wrap tw:-mt-2 tw:-mx-1">
 
-                    <div class="col-6">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-1 tw:mt-2 tw:flex-[0_0_auto] tw:w-[50%]">
 
                         <div class="stat-badge">
 
@@ -476,7 +476,7 @@
 
                     </div>
 
-                    <div class="col-6">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-1 tw:mt-2 tw:flex-[0_0_auto] tw:w-[50%]">
 
                         <div class="stat-badge">
 
@@ -517,10 +517,10 @@
             id="filterForm"
         >
 
-            <div class="row g-3">
+            <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2">
 
                 {{-- Search --}}
-                <div class="col-md-3">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[25%]">
 
                     <div class="filter-label">
                         Search
@@ -538,7 +538,7 @@
 
 
                 {{-- From Date --}}
-                <div class="col-md-2">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[16.66666667%]">
 
                     <div class="filter-label">
                         From Date
@@ -555,7 +555,7 @@
 
 
                 {{-- To Date --}}
-                <div class="col-md-2">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[16.66666667%]">
 
                     <div class="filter-label">
                         To Date
@@ -572,7 +572,7 @@
 
 
                 {{-- User --}}
-                <div class="col-md-2">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[16.66666667%]">
 
                     <div class="filter-label">
                         User
@@ -604,7 +604,7 @@
 
 
                 {{-- Status --}}
-                <div class="col-md-2">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[16.66666667%]">
 
                     <div class="filter-label">
                         Status
@@ -653,7 +653,7 @@
 
 
                 {{-- Current Month --}}
-                <div class="col-md-1">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[8.33333333%]">
 
                     <div class="filter-label">
                         Current
@@ -681,7 +681,7 @@
 
 
                 {{-- Min Amount --}}
-                <div class="col-md-2">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[16.66666667%]">
 
                     <div class="filter-label">
                         Min Amount
@@ -701,7 +701,7 @@
 
 
                 {{-- Max Amount --}}
-                <div class="col-md-2">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[16.66666667%]">
 
                     <div class="filter-label">
                         Max Amount
@@ -721,7 +721,7 @@
 
 
                 {{-- Month --}}
-                <div class="col-md-2">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[16.66666667%]">
 
                     <div class="filter-label">
                         Month
@@ -753,7 +753,7 @@
 
 
                 {{-- Year --}}
-                <div class="col-md-2">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[16.66666667%]">
 
                     <div class="filter-label">
                         Year
@@ -785,7 +785,7 @@
 
 
                 {{-- Filter --}}
-                <div class="col-md-2">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[16.66666667%]">
 
                     <div class="filter-label">
                         &nbsp;
@@ -803,7 +803,7 @@
 
 
                 {{-- Reset --}}
-                <div class="col-md-2">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[16.66666667%]">
 
                     <div class="filter-label">
                         &nbsp;
@@ -840,7 +840,7 @@
                     Expense Transactions
                 </h5>
 
-                <div class="result-count mt-1">
+                <div class="result-count tw:mt-1!">
                     Showing
                     {{ $expenses->firstItem() ?? 0 }}
                     -
@@ -855,7 +855,7 @@
         </div>
 
 
-        <div class="table-responsive">
+        <div class="ui-table-responsive">
 
             <table class="expense-table">
 
@@ -941,13 +941,13 @@
 
                             @if($isCurrentMonth)
 
-                                <span class="badge-current ms-1">
+                                <span class="badge-current tw:ml-1!">
                                     Current
                                 </span>
 
                             @else
 
-                                <span class="badge-past ms-1">
+                                <span class="badge-past tw:ml-1!">
                                     Past
                                 </span>
 
@@ -971,19 +971,19 @@
                         {{-- Reason --}}
                         <td>
 
-                            <div class="fw-semibold">
+                            <div class="tw:font-semibold!">
                                 {{ optional($expense->paymentReason)->name ?: ($expense->reason ?: '-') }}
                             </div>
 
                             @if($expense->reason_code && optional($expense->paymentReason)->name)
 
-                                <small class="text-muted">
+                                <small class="tw:text-bs-secondary-color!">
                                     {{ $expense->reason_code }}
                                 </small>
 
                             @elseif($expense->note)
 
-                                <small class="text-muted">
+                                <small class="tw:text-bs-secondary-color!">
                                     {{ Str::limit(
                                         $expense->note,
                                         55
@@ -1000,13 +1000,13 @@
 
                             @if($expense->reason_code)
 
-                                <span class="badge bg-light text-dark border">
+                                <span class="ui-badge tw:bg-bs-light! tw:text-bs-dark! tw:bs-border!">
                                     {{ $expense->reason_code }}
                                 </span>
 
                             @else
 
-                                <span class="text-muted">
+                                <span class="tw:text-bs-secondary-color!">
                                     -
                                 </span>
 
@@ -1060,7 +1060,7 @@
                         {{-- User --}}
                         <td>
 
-                            <div class="fw-semibold">
+                            <div class="tw:font-semibold!">
 
                                 {{
                                     optional($expense->user)->name
@@ -1069,7 +1069,7 @@
 
                             </div>
 
-                            <small class="text-muted">
+                            <small class="tw:text-bs-secondary-color!">
 
                                 {{
                                     optional($expense->created_at)
@@ -1084,7 +1084,7 @@
                         {{-- Actions --}}
                         <td>
 
-                            <div class="d-flex gap-1">
+                            <div class="tw:flex! tw:gap-1!">
 
                                 {{-- View --}}
                                 <a
@@ -1117,7 +1117,7 @@
 
                                     <button
                                         type="button"
-                                        class="action-btn btn-edit opacity-50"
+                                        class="action-btn btn-edit tw:[opacity:0.5]!"
                                         disabled
                                         title="Only current month records can be edited"
                                     >
@@ -1133,8 +1133,8 @@
                                     <button
                                         type="button"
                                         class="action-btn btn-delete"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#deleteModal{{ $expense->id }}"
+                                        data-nx-toggle="modal"
+                                        data-nx-target="#deleteModal{{ $expense->id }}"
                                         title="Delete"
                                     >
                                         <i class="bi bi-trash"></i>
@@ -1144,7 +1144,7 @@
 
                                     <button
                                         type="button"
-                                        class="action-btn btn-delete opacity-50"
+                                        class="action-btn btn-delete tw:[opacity:0.5]!"
                                         disabled
                                         title="Only current month records can be deleted"
                                     >
@@ -1166,43 +1166,43 @@
                     @if($isCurrentMonth)
 
                         <div
-                            class="modal fade"
+                            class="ui-modal ui-fade"
                             id="deleteModal{{ $expense->id }}"
                             tabindex="-1"
                             aria-hidden="true"
                         >
 
-                            <div class="modal-dialog modal-dialog-centered">
+                            <div class="ui-modal-dialog ui-modal-dialog-centered">
 
-                                <div class="modal-content border-0 shadow rounded-4">
+                                <div class="ui-modal-content tw:[border:0]! tw:shadow-bs! tw:rounded-bs-xl!">
 
-                                    <div class="modal-header">
+                                    <div class="ui-modal-header">
 
-                                        <h5 class="modal-title fw-bold">
+                                        <h5 class="ui-modal-title tw:font-bold!">
                                             Confirm Delete
                                         </h5>
 
                                         <button
                                             type="button"
-                                            class="btn-close"
-                                            data-bs-dismiss="modal"
+                                            class="ui-btn-close"
+                                            data-nx-dismiss="modal"
                                         ></button>
 
                                     </div>
 
 
-                                    <div class="modal-body text-center">
+                                    <div class="ui-modal-body tw:text-center!">
 
                                         <i
-                                            class="bi bi-exclamation-triangle-fill text-danger"
+                                            class="bi bi-exclamation-triangle-fill tw:text-bs-danger!"
                                             style="font-size: 3rem;"
                                         ></i>
 
-                                        <h5 class="mt-3">
+                                        <h5 class="tw:mt-4!">
                                             Are you sure?
                                         </h5>
 
-                                        <p class="text-muted">
+                                        <p class="tw:text-bs-secondary-color!">
 
                                             Delete expense of
 
@@ -1228,12 +1228,12 @@
                                     </div>
 
 
-                                    <div class="modal-footer">
+                                    <div class="ui-modal-footer">
 
                                         <button
                                             type="button"
-                                            class="btn btn-outline-secondary"
-                                            data-bs-dismiss="modal"
+                                            class="ui-btn ui-btn-outline-secondary"
+                                            data-nx-dismiss="modal"
                                         >
                                             Cancel
                                         </button>
@@ -1253,9 +1253,9 @@
 
                                             <button
                                                 type="submit"
-                                                class="btn btn-danger"
+                                                class="ui-btn ui-btn-danger"
                                             >
-                                                <i class="bi bi-trash me-1"></i>
+                                                <i class="bi bi-trash tw:mr-1!"></i>
                                                 Delete Expense
                                             </button>
 
@@ -1286,7 +1286,7 @@
                                 No Expenses Found
                             </h5>
 
-                            <p class="mb-0">
+                            <p class="tw:mb-0!">
                                 No institute expense records match
                                 your current filters.
                             </p>

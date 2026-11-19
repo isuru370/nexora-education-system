@@ -14,11 +14,11 @@
     {{-- ===================================================== --}}
     {{-- MAIN CARD --}}
     {{-- ===================================================== --}}
-    <div class="nx-card mb-4">
+    <div class="nx-card tw:mb-6!">
 
         <div class="nx-card-header">
             <div>
-                <h5 class="nx-card-title"><i class="bi bi-journal-bookmark-fill text-primary"></i> Exam Management</h5>
+                <h5 class="nx-card-title"><i class="bi bi-journal-bookmark-fill tw:text-(color:--nx-blue)!"></i> Exam Management</h5>
                 <p class="nx-card-subtitle">Manage all exams, schedules, and results</p>
             </div>
 
@@ -40,14 +40,14 @@
 
         {{-- UPCOMING EXAMS ALERT --}}
         @if (isset($upcomingExams) && count($upcomingExams) > 0)
-            <div class="p-3 pb-0">
+            <div class="tw:p-4! tw:pb-0!">
                 <div class="nx-alert nx-alert-blue">
                     <i class="bi bi-info-circle-fill"></i>
                     <div>
                         <strong>Upcoming Exams:</strong>
                         @foreach ($upcomingExams as $exam)
-                            <span class="nx-badge nx-badge-blue ms-1">{{ $exam->title }}</span>
-                            <small class="ms-1">({{ $exam->exam_date->format('d M Y') }})</small>
+                            <span class="nx-badge nx-badge-blue tw:ml-1!">{{ $exam->title }}</span>
+                            <small class="tw:ml-1!">({{ $exam->exam_date->format('d M Y') }})</small>
                             @if (!$loop->last) | @endif
                         @endforeach
                     </div>
@@ -58,17 +58,17 @@
         {{-- SEARCH --}}
         <div class="nx-search">
             <form method="GET" action="{{ route('admin.exams.index') }}">
-                <div class="row g-3">
-                    <div class="col-lg-4">
+                <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[33.33333333%]">
                         <div class="search-input-wrapper">
                             <i class="bi bi-search"></i>
-                            <input type="text" name="search" class="form-control custom-input"
+                            <input type="text" name="search" class="ui-form-control custom-input"
                                 placeholder="Search exam title..." value="{{ request('search') }}">
                         </div>
                     </div>
 
-                    <div class="col-lg-2">
-                        <select name="status" class="form-select custom-input">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[16.66666667%]">
+                        <select name="status" class="ui-form-select custom-input">
                             <option value="">All Status</option>
                             <option value="scheduled" {{ request('status') == 'scheduled' ? 'selected' : '' }}>Scheduled</option>
                             <option value="ongoing" {{ request('status') == 'ongoing' ? 'selected' : '' }}>Ongoing</option>
@@ -77,8 +77,8 @@
                         </select>
                     </div>
 
-                    <div class="col-lg-2">
-                        <select name="student_class_id" class="form-select custom-input">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[16.66666667%]">
+                        <select name="student_class_id" class="ui-form-select custom-input">
                             <option value="">All Classes</option>
                             @foreach ($classes ?? [] as $class)
                                 <option value="{{ $class->id }}" {{ request('student_class_id') == $class->id ? 'selected' : '' }}>
@@ -88,19 +88,19 @@
                         </select>
                     </div>
 
-                    <div class="col-lg-2">
-                        <input type="date" name="exam_date_from" class="form-control custom-input"
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[16.66666667%]">
+                        <input type="date" name="exam_date_from" class="ui-form-control custom-input"
                             value="{{ request('exam_date_from') }}" placeholder="Date From">
                     </div>
 
-                    <div class="col-lg-1">
-                        <button type="submit" class="nx-btn nx-btn-primary w-100" aria-label="Search">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[8.33333333%]">
+                        <button type="submit" class="nx-btn nx-btn-primary tw:w-full!" aria-label="Search">
                             <i class="bi bi-search"></i>
                         </button>
                     </div>
 
-                    <div class="col-lg-1">
-                        <a href="{{ route('admin.exams.index') }}" class="nx-btn nx-btn-light w-100">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[8.33333333%]">
+                        <a href="{{ route('admin.exams.index') }}" class="nx-btn nx-btn-light tw:w-full!">
                             Reset
                         </a>
                     </div>
@@ -109,8 +109,8 @@
         </div>
 
         {{-- TABLE --}}
-        <div class="table-responsive">
-            <table class="table premium-table mb-0">
+        <div class="ui-table-responsive">
+            <table class="ui-table premium-table tw:mb-0!">
                 <thead>
                     <tr>
                         <th>#</th>
@@ -120,7 +120,7 @@
                         <th>Hall</th>
                         <th>Date &amp; Time</th>
                         <th>Status</th>
-                        <th class="text-end">Actions</th>
+                        <th class="tw:text-right!">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -187,7 +187,7 @@
                             <td>
                                 <div class="cell-title">{{ $exam->title }}</div>
                                 @if ($exam->note)
-                                    <small class="cell-sub d-block">
+                                    <small class="cell-sub tw:block!">
                                         <i class="bi bi-pencil"></i> {{ Str::limit($exam->note, 30) }}
                                     </small>
                                 @endif
@@ -214,10 +214,10 @@
                                 <div class="cell-title">
                                     {{ $exam->exam_date->format('d M Y') }}
                                     @if ($isToday)
-                                        <span class="nx-badge nx-badge-green ms-1">Today</span>
+                                        <span class="nx-badge nx-badge-green tw:ml-1!">Today</span>
                                     @endif
                                 </div>
-                                <small class="cell-sub d-block">
+                                <small class="cell-sub tw:block!">
                                     <i class="bi bi-clock"></i>
                                     {{ $exam->start_time }} – {{ $exam->end_time }}
                                 </small>
@@ -228,8 +228,7 @@
                                 <span class="nx-badge {{ $statusClass }}">{{ ucfirst($status) }}</span>
 
                                 @if ($status == 'cancelled' && $exam->cancel_reason)
-                                    <small class="cell-sub text-danger d-block mt-1"
-                                        data-bs-toggle="tooltip"
+                                    <small class="cell-sub tw:text-(color:--nx-red)! tw:block! tw:mt-1!"
                                         title="{{ $exam->cancel_reason }}">
                                         <i class="bi bi-info-circle"></i> Cancelled
                                     </small>
@@ -237,7 +236,7 @@
                             </td>
 
                             {{-- ACTIONS --}}
-                            <td class="text-end">
+                            <td class="tw:text-right!">
                                 @include('exams.partials.actions', [
                                     'exam' => $exam,
                                     'showEdit' => $showEdit,
@@ -251,8 +250,8 @@
                     @empty
                         <tr>
                             <td colspan="8" class="empty-table">
-                                <i class="bi bi-calendar-x fs-2 d-block mb-2"></i>
-                                <strong class="d-block">No exams found</strong>
+                                <i class="bi bi-calendar-x tw:text-[length:calc(1.325rem_+_0.9vw)]! tw:xl:text-[length:2rem]! tw:block! tw:mb-2!"></i>
+                                <strong class="tw:block!">No exams found</strong>
                                 <span class="cell-sub">Try adjusting your search filters or create a new exam.</span>
                             </td>
                         </tr>
@@ -262,7 +261,7 @@
         </div>
 
         {{-- PAGINATION --}}
-        <div class="p-3 border-top">
+        <div class="tw:p-4! tw:bs-border-t!">
             {{ $exams->appends(request()->query())->links() }}
         </div>
     </div>
@@ -272,31 +271,31 @@
 {{-- ===================================================== --}}
 {{-- SINGLE CANCEL MODAL --}}
 {{-- ===================================================== --}}
-<div class="modal fade" id="cancelModal" tabindex="-1" aria-labelledby="cancelModalLabel" aria-hidden="true"
-    data-bs-backdrop="static" data-bs-keyboard="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
+<div class="ui-modal ui-fade" id="cancelModal" tabindex="-1" aria-labelledby="cancelModalLabel" aria-hidden="true"
+    data-nx-backdrop="static" data-nx-keyboard="true">
+    <div class="ui-modal-dialog">
+        <div class="ui-modal-content">
             <form id="cancelForm" method="POST" action="">
                 @csrf
-                <div class="modal-header">
-                    <h5 class="modal-title" id="cancelModalLabel">
-                        <i class="bi bi-exclamation-triangle-fill text-danger me-2"></i>
+                <div class="ui-modal-header">
+                    <h5 class="ui-modal-title" id="cancelModalLabel">
+                        <i class="bi bi-exclamation-triangle-fill tw:text-(color:--nx-red)! tw:mr-2!"></i>
                         Cancel Exam
                     </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="ui-btn-close" data-nx-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
+                <div class="ui-modal-body">
                     <p>Are you sure you want to cancel <strong id="cancelExamTitle">"Exam Name"</strong>?</p>
 
-                    <div class="mt-3">
+                    <div class="tw:mt-4!">
                         <label class="nx-label">Reason for cancellation</label>
-                        <textarea name="cancel_reason" class="form-control nx-input" rows="3" required
+                        <textarea name="cancel_reason" class="ui-form-control nx-input" rows="3" required
                             placeholder="Enter cancellation reason..."></textarea>
-                        <small class="cell-sub d-block mt-1">This reason will be visible to students and staff.</small>
+                        <small class="cell-sub tw:block! tw:mt-1!">This reason will be visible to students and staff.</small>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="nx-btn nx-btn-light" data-bs-dismiss="modal">
+                <div class="ui-modal-footer">
+                    <button type="button" class="nx-btn nx-btn-light" data-nx-dismiss="modal">
                         <i class="bi bi-x"></i> Close
                     </button>
                     <button type="submit" class="nx-btn nx-btn-danger">
@@ -350,9 +349,6 @@
         'use strict';
 
         /* 1. Tooltips */
-        document.querySelectorAll('[data-bs-toggle="tooltip"]').forEach(function (el) {
-            new bootstrap.Tooltip(el, { placement: 'top', trigger: 'hover' });
-        });
 
         /* 2. Auto-submit on select / date change */
         document.querySelectorAll('.nx-search select, .nx-search input[type="date"]').forEach(function (el) {
@@ -387,7 +383,7 @@
         /* 4. Single cancel modal population */
         var cancelModal = document.getElementById('cancelModal');
         if (cancelModal) {
-            cancelModal.addEventListener('show.bs.modal', function (event) {
+            cancelModal.addEventListener('show.nx.modal', function (event) {
                 var button = event.relatedTarget;
                 var examTitle = button.getAttribute('data-exam-title');
                 var examRoute = button.getAttribute('data-exam-route');
@@ -441,7 +437,7 @@
         var params = new URLSearchParams(window.location.search);
         if (params.toString().length > 0) {
             var badge = document.createElement('span');
-            badge.className = 'nx-badge nx-badge-blue ms-2';
+            badge.className = 'nx-badge nx-badge-blue tw:ml-2!';
             badge.textContent = 'Filters Active';
             var headerTitle = document.querySelector('.nx-card-header h5');
             if (headerTitle) headerTitle.appendChild(badge);

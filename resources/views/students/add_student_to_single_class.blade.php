@@ -4,29 +4,29 @@
 @section('page-title', 'Add Student to Class')
 
 @section('breadcrumb')
-    <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-    <li class="breadcrumb-item"><a href="{{ route('students.index') }}">Students</a></li>
-    <li class="breadcrumb-item active">Add Student</li>
+    <li class="ui-breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
+    <li class="ui-breadcrumb-item"><a href="{{ route('students.index') }}">Students</a></li>
+    <li class="ui-breadcrumb-item active">Add Student</li>
 @endsection
 
 @section('content')
-    <div class="container-fluid">
+    <div class="ui-container-fluid">
         <!-- Student Information Section -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="card border-0 shadow-lg">
-                    <div class="card-header bg-primary bg-gradient text-white py-3">
-                        <h5 class="card-title mb-0">
-                            <i class="fas fa-user me-2"></i>Student Information
+        <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row tw:mb-6!">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:flex-[0_0_auto] tw:w-[100%]">
+                <div class="ui-card tw:[border:0]! tw:shadow-bs-lg!">
+                    <div class="ui-card-header tw:bg-bs-primary! tw:[background-image:linear-gradient(180deg,_rgba(255,255,255,0.15),_rgba(255,255,255,0))]! tw:text-bs-white! tw:py-4!">
+                        <h5 class="ui-card-title tw:mb-0!">
+                            <i class="fas fa-user tw:mr-2!"></i>Student Information
                         </h5>
                     </div>
-                    <div class="card-body">
+                    <div class="ui-card-body">
                         <div id="studentInfo">
-                            <div class="text-center py-3">
-                                <div class="spinner-border text-primary" role="status">
-                                    <span class="visually-hidden">Loading...</span>
+                            <div class="tw:text-center! tw:py-4!">
+                                <div class="ui-spinner-border tw:text-bs-primary!" role="status">
+                                    <span class="tw:sr-only">Loading...</span>
                                 </div>
-                                <p class="mt-2 mb-0">Loading student information...</p>
+                                <p class="tw:mt-2! tw:mb-0!">Loading student information...</p>
                             </div>
                         </div>
                     </div>
@@ -35,62 +35,62 @@
         </div>
 
         <!-- Class Search Section -->
-        <div class="row mb-4">
-            <div class="col-12">
-                <div class="card border-0 shadow-lg">
-                    <div class="card-header bg-info bg-gradient text-white py-3">
-                        <h5 class="card-title mb-0">
-                            <i class="fas fa-search me-2"></i>Search and Select Class
+        <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row tw:mb-6!">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:flex-[0_0_auto] tw:w-[100%]">
+                <div class="ui-card tw:[border:0]! tw:shadow-bs-lg!">
+                    <div class="ui-card-header bs-bg-info tw:bg-bs-info! tw:[background-image:linear-gradient(180deg,_rgba(255,255,255,0.15),_rgba(255,255,255,0))]! tw:text-bs-white! tw:py-4!">
+                        <h5 class="ui-card-title tw:mb-0!">
+                            <i class="fas fa-search tw:mr-2!"></i>Search and Select Class
                         </h5>
                     </div>
-                    <div class="card-body">
+                    <div class="ui-card-body">
                         <!-- Search Input -->
-                        <div class="row mb-4">
-                            <div class="col-md-8">
-                                <label class="form-label fw-semibold">Search Classes</label>
-                                <div class="input-group">
-                                    <input type="text" id="classSearch" class="form-control"
+                        <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row tw:mb-6!">
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[66.66666667%]">
+                                <label class="ui-form-label tw:font-semibold!">Search Classes</label>
+                                <div class="ui-input-group">
+                                    <input type="text" id="classSearch" class="ui-form-control"
                                         placeholder="Search by class name, teacher name, teacher ID, or category...">
-                                    <button class="btn btn-outline-secondary" type="button" id="clearSearch">
+                                    <button class="ui-btn ui-btn-outline-secondary" type="button" id="clearSearch">
                                         <i class="fas fa-times"></i>
                                     </button>
                                 </div>
-                                <small class="text-muted">Search by class name, teacher name, teacher custom ID, or category
+                                <small class="tw:text-bs-secondary-color!">Search by class name, teacher name, teacher custom ID, or category
                                     name</small>
                             </div>
-                            <div class="col-md-4">
-                                <label class="form-label fw-semibold">&nbsp;</label>
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
+                                <label class="ui-form-label tw:font-semibold!">&nbsp;</label>
                                 <div>
-                                    <button class="btn btn-success w-100" onclick="searchClasses()">
-                                        <i class="fas fa-search me-2"></i>Search Classes
+                                    <button class="ui-btn ui-btn-success tw:w-full!" onclick="searchClasses()">
+                                        <i class="fas fa-search tw:mr-2!"></i>Search Classes
                                     </button>
                                 </div>
                             </div>
                         </div>
 
                         <!-- Search Results -->
-                        <div id="searchResults" class="d-none">
-                            <h6 class="mb-3 fw-semibold">Search Results:</h6>
-                            <div class="row flex-nowrap overflow-auto pb-3" id="classesList" style="scrollbar-width: thin;">
+                        <div id="searchResults" class="tw:hidden!">
+                            <h6 class="tw:mb-4! tw:font-semibold!">Search Results:</h6>
+                            <div class="bs-row ui-row bs-flex-nowrap tw:flex-nowrap! tw:overflow-auto! tw:pb-4!" id="classesList" style="scrollbar-width: thin;">
                                 <!-- Cards will appear here -->
                             </div>
                         </div>
 
                         <!-- Loading State -->
-                        <div id="searchLoading" class="text-center py-4 d-none">
-                            <div class="spinner-border text-info" role="status">
-                                <span class="visually-hidden">Loading...</span>
+                        <div id="searchLoading" class="tw:text-center! tw:py-6! tw:hidden!">
+                            <div class="ui-spinner-border tw:text-bs-info!" role="status">
+                                <span class="tw:sr-only">Loading...</span>
                             </div>
-                            <p class="mt-2 text-muted">Searching classes...</p>
+                            <p class="tw:mt-2! tw:text-bs-secondary-color!">Searching classes...</p>
                         </div>
 
                         <!-- Empty State -->
-                        <div id="searchEmpty" class="text-center py-5 d-none">
-                            <div class="empty-state-icon mb-3">
-                                <i class="fas fa-chalkboard fa-3x text-muted"></i>
+                        <div id="searchEmpty" class="tw:text-center! tw:py-12! tw:hidden!">
+                            <div class="empty-state-icon tw:mb-4!">
+                                <i class="fas fa-chalkboard fa-3x tw:text-bs-secondary-color!"></i>
                             </div>
-                            <h4 class="text-muted">No Classes Found</h4>
-                            <p class="text-muted">No classes match your search criteria.</p>
+                            <h4 class="tw:text-bs-secondary-color!">No Classes Found</h4>
+                            <p class="tw:text-bs-secondary-color!">No classes match your search criteria.</p>
                         </div>
                     </div>
                 </div>
@@ -98,29 +98,29 @@
         </div>
 
         <!-- Selected Class Confirmation -->
-        <div class="row">
-            <div class="col-12">
-                <div class="card border-0 shadow-lg">
-                    <div class="card-header bg-success bg-gradient text-white py-3">
-                        <h5 class="card-title mb-0">
-                            <i class="fas fa-check-circle me-2"></i>Confirm Selection
+        <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:flex-[0_0_auto] tw:w-[100%]">
+                <div class="ui-card tw:[border:0]! tw:shadow-bs-lg!">
+                    <div class="ui-card-header bs-bg-success tw:bg-bs-success! tw:[background-image:linear-gradient(180deg,_rgba(255,255,255,0.15),_rgba(255,255,255,0))]! tw:text-bs-white! tw:py-4!">
+                        <h5 class="ui-card-title tw:mb-0!">
+                            <i class="fas fa-check-circle tw:mr-2!"></i>Confirm Selection
                         </h5>
                     </div>
-                    <div class="card-body">
-                        <div id="confirmationSection" class="d-none">
-                            <div class="alert alert-warning">
-                                <h6 class="alert-heading">Please Confirm Student Enrollment</h6>
-                                <p class="mb-0">Review the details below before adding the student to the class.</p>
+                    <div class="ui-card-body">
+                        <div id="confirmationSection" class="tw:hidden!">
+                            <div class="ui-alert ui-alert-warning">
+                                <h6 class="ui-alert-heading">Please Confirm Student Enrollment</h6>
+                                <p class="tw:mb-0!">Review the details below before adding the student to the class.</p>
                             </div>
 
-                            <div class="row">
+                            <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row">
                                 <!-- Student Details -->
-                                <div class="col-md-6">
-                                    <div class="card h-100 border-0 shadow-sm">
-                                        <div class="card-header bg-light">
-                                            <h6 class="card-title mb-0 fw-semibold">Student Details</h6>
+                                <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
+                                    <div class="ui-card tw:h-full! tw:[border:0]! bs-shadow-sm tw:shadow-bs-sm!">
+                                        <div class="ui-card-header tw:bg-bs-light!">
+                                            <h6 class="ui-card-title tw:mb-0! tw:font-semibold!">Student Details</h6>
                                         </div>
-                                        <div class="card-body">
+                                        <div class="ui-card-body">
                                             <div id="studentDetails">
                                                 <!-- Student details will be populated here -->
                                             </div>
@@ -129,12 +129,12 @@
                                 </div>
 
                                 <!-- Class Details -->
-                                <div class="col-md-6">
-                                    <div class="card h-100 border-0 shadow-sm">
-                                        <div class="card-header bg-light">
-                                            <h6 class="card-title mb-0 fw-semibold">Class Details</h6>
+                                <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
+                                    <div class="ui-card tw:h-full! tw:[border:0]! bs-shadow-sm tw:shadow-bs-sm!">
+                                        <div class="ui-card-header tw:bg-bs-light!">
+                                            <h6 class="ui-card-title tw:mb-0! tw:font-semibold!">Class Details</h6>
                                         </div>
-                                        <div class="card-body">
+                                        <div class="ui-card-body">
                                             <div id="classDetails">
                                                 <!-- Class details will be populated here -->
                                             </div>
@@ -144,21 +144,21 @@
                             </div>
 
                             <!-- Fee Options -->
-                            <div class="row mt-4">
-                                <div class="col-12">
-                                    <div class="card border-0 shadow-sm">
-                                        <div class="card-header bg-light">
-                                            <h6 class="card-title mb-0 fw-semibold">Fee Options</h6>
+                            <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row tw:mt-6!">
+                                <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:flex-[0_0_auto] tw:w-[100%]">
+                                    <div class="ui-card tw:[border:0]! bs-shadow-sm tw:shadow-bs-sm!">
+                                        <div class="ui-card-header tw:bg-bs-light!">
+                                            <h6 class="ui-card-title tw:mb-0! tw:font-semibold!">Fee Options</h6>
                                         </div>
-                                        <div class="card-body">
+                                        <div class="ui-card-body">
                                             <!-- Free Card Option -->
-                                            <div class="form-check form-switch mb-3">
-                                                <input class="form-check-input" type="checkbox" id="freeCardCheckbox"
+                                            <div class="ui-form-check ui-form-switch tw:mb-4!">
+                                                <input class="ui-form-check-input" type="checkbox" id="freeCardCheckbox"
                                                     style="transform: scale(1.2);" onchange="toggleFeeFields()">
-                                                <label class="form-check-label fw-semibold" for="freeCardCheckbox">
-                                                    <i class="fas fa-id-card me-2 text-warning"></i>Mark as Free Card
+                                                <label class="ui-form-check-label tw:font-semibold!" for="freeCardCheckbox">
+                                                    <i class="fas fa-id-card tw:mr-2! tw:text-bs-warning!"></i>Mark as Free Card
                                                 </label>
-                                                <small class="form-text text-muted d-block mt-1">
+                                                <small class="ui-form-text tw:text-bs-secondary-color! tw:block! tw:mt-1!">
                                                     Enable this if the student should have free access to this class without
                                                     payment.
                                                 </small>
@@ -166,34 +166,34 @@
 
                                             <!-- Custom Fee and Discount Fields -->
                                             <div id="feeFields">
-                                                <div class="row">
-                                                    <div class="col-md-6 mb-3">
-                                                        <label for="customFee" class="form-label">Custom Fee</label>
-                                                        <div class="input-group">
-                                                            <span class="input-group-text">Rs.</span>
-                                                            <input type="number" class="form-control" id="customFee"
+                                                <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row">
+                                                    <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:mb-4!">
+                                                        <label for="customFee" class="ui-form-label">Custom Fee</label>
+                                                        <div class="ui-input-group">
+                                                            <span class="ui-input-group-text">Rs.</span>
+                                                            <input type="number" class="ui-form-control" id="customFee"
                                                                 placeholder="Enter custom fee" step="0.01" min="0">
                                                         </div>
-                                                        <small class="text-muted">Override the default class fee</small>
+                                                        <small class="tw:text-bs-secondary-color!">Override the default class fee</small>
                                                     </div>
-                                                    <div class="col-md-6 mb-3">
-                                                        <label for="discountPercentage" class="form-label">Discount
+                                                    <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:mb-4!">
+                                                        <label for="discountPercentage" class="ui-form-label">Discount
                                                             Percentage</label>
-                                                        <div class="input-group">
-                                                            <input type="number" class="form-control"
+                                                        <div class="ui-input-group">
+                                                            <input type="number" class="ui-form-control"
                                                                 id="discountPercentage" placeholder="Enter discount %"
                                                                 step="0.01" min="0" max="100">
-                                                            <span class="input-group-text">%</span>
+                                                            <span class="ui-input-group-text">%</span>
                                                         </div>
-                                                        <small class="text-muted">Apply percentage discount to the
+                                                        <small class="tw:text-bs-secondary-color!">Apply percentage discount to the
                                                             fee</small>
                                                     </div>
                                                 </div>
 
-                                                <div class="mb-3">
-                                                    <label for="discountType" class="form-label">Discount Type
+                                                <div class="tw:mb-4!">
+                                                    <label for="discountType" class="ui-form-label">Discount Type
                                                         (Optional)</label>
-                                                    <select class="form-select" id="discountType">
+                                                    <select class="ui-form-select" id="discountType">
                                                         <option value="">Select discount type</option>
                                                         <option value="half_card">Half Card</option>
                                                         <option value="early_bird">Early Bird</option>
@@ -201,7 +201,7 @@
                                                         <option value="referral">Referral</option>
                                                         <option value="other">Other</option>
                                                     </select>
-                                                    <small class="text-muted">Type of discount being applied</small>
+                                                    <small class="tw:text-bs-secondary-color!">Type of discount being applied</small>
                                                 </div>
                                             </div>
                                         </div>
@@ -210,14 +210,14 @@
                             </div>
 
                             <!-- Action Buttons -->
-                            <div class="row mt-4">
-                                <div class="col-12">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <button class="btn btn-outline-secondary" onclick="clearSelection()">
-                                            <i class="fas fa-times me-2"></i>Cancel
+                            <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row tw:mt-6!">
+                                <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:flex-[0_0_auto] tw:w-[100%]">
+                                    <div class="tw:flex! tw:justify-between! tw:items-center!">
+                                        <button class="ui-btn ui-btn-outline-secondary" onclick="clearSelection()">
+                                            <i class="fas fa-times tw:mr-2!"></i>Cancel
                                         </button>
-                                        <button class="btn btn-success" id="addToClassBtn" onclick="addStudentToClass()">
-                                            <i class="fas fa-user-plus me-2"></i>Add Student to Class
+                                        <button class="ui-btn ui-btn-success" id="addToClassBtn" onclick="addStudentToClass()">
+                                            <i class="fas fa-user-plus tw:mr-2!"></i>Add Student to Class
                                         </button>
                                     </div>
                                 </div>
@@ -225,12 +225,12 @@
                         </div>
 
                         <!-- Initial State -->
-                        <div id="initialState" class="text-center py-5">
-                            <div class="empty-state-icon mb-3">
-                                <i class="fas fa-mouse-pointer fa-3x text-muted"></i>
+                        <div id="initialState" class="tw:text-center! tw:py-12!">
+                            <div class="empty-state-icon tw:mb-4!">
+                                <i class="fas fa-mouse-pointer fa-3x tw:text-bs-secondary-color!"></i>
                             </div>
-                            <h4 class="text-muted">Select a Class</h4>
-                            <p class="text-muted">Search and select a class to add the student.</p>
+                            <h4 class="tw:text-bs-secondary-color!">Select a Class</h4>
+                            <p class="tw:text-bs-secondary-color!">Search and select a class to add the student.</p>
                         </div>
                     </div>
                 </div>
@@ -238,26 +238,26 @@
         </div>
 
         <!-- Current Enrollments Section -->
-        <div class="row mb-4" id="enrollmentsSection" style="display: none;">
-            <div class="col-12">
-                <div class="card border-0 shadow-lg">
-                    <div class="card-header bg-warning bg-gradient text-dark py-3">
-                        <div class="d-flex align-items-center">
-                            <i class="fas fa-list fa-lg me-3"></i>
-                            <h5 class="card-title mb-0 fw-bold">Current Class Enrollments</h5>
-                            <span class="badge bg-dark bg-opacity-25 ms-2 fs-6" id="enrollmentCount">0</span>
+        <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row tw:mb-6!" id="enrollmentsSection" style="display: none;">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:flex-[0_0_auto] tw:w-[100%]">
+                <div class="ui-card tw:[border:0]! tw:shadow-bs-lg!">
+                    <div class="ui-card-header bs-bg-warning tw:bg-bs-warning! tw:[background-image:linear-gradient(180deg,_rgba(255,255,255,0.15),_rgba(255,255,255,0))]! tw:text-bs-dark! tw:py-4!">
+                        <div class="tw:flex! tw:items-center!">
+                            <i class="fas fa-list fa-lg tw:mr-4!"></i>
+                            <h5 class="ui-card-title tw:mb-0! tw:font-bold!">Current Class Enrollments</h5>
+                            <span class="ui-badge tw:bg-[rgba(33,37,41,0.25)]! tw:ml-2! tw:text-[length:1rem]!" id="enrollmentCount">0</span>
                         </div>
                     </div>
-                    <div class="card-body p-4">
-                        <div class="row flex-nowrap overflow-auto pb-3 g-3" id="enrollmentsList">
+                    <div class="ui-card-body tw:p-6!">
+                        <div class="bs-row ui-row bs-flex-nowrap tw:flex-nowrap! tw:overflow-auto! tw:pb-4! ui-g-3" id="enrollmentsList">
                             <!-- Enrollments will be loaded here -->
                         </div>
-                        <div id="noEnrollments" class="text-center py-5 d-none">
-                            <div class="mb-4">
-                                <i class="fas fa-chalkboard-teacher fa-4x text-muted opacity-50"></i>
+                        <div id="noEnrollments" class="tw:text-center! tw:py-12! tw:hidden!">
+                            <div class="tw:mb-6!">
+                                <i class="fas fa-chalkboard-teacher fa-4x tw:text-bs-secondary-color! tw:[opacity:0.5]!"></i>
                             </div>
-                            <h5 class="text-muted fw-semibold mb-2">No Current Enrollments</h5>
-                            <p class="text-muted mb-0">This student is not enrolled in any classes yet.</p>
+                            <h5 class="tw:text-bs-secondary-color! tw:font-semibold! tw:mb-2!">No Current Enrollments</h5>
+                            <p class="tw:text-bs-secondary-color! tw:mb-0!">This student is not enrolled in any classes yet.</p>
                         </div>
                     </div>
                 </div>
@@ -304,26 +304,26 @@
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15) !important;
         }
 
-        .row.flex-nowrap {
+        .bs-row.bs-flex-nowrap {
             scrollbar-width: thin;
             scrollbar-color: #c1c1c1 #f1f1f1;
         }
 
-        .row.flex-nowrap::-webkit-scrollbar {
+        .bs-row.bs-flex-nowrap::-webkit-scrollbar {
             height: 8px;
         }
 
-        .row.flex-nowrap::-webkit-scrollbar-track {
+        .bs-row.bs-flex-nowrap::-webkit-scrollbar-track {
             background: #f1f1f1;
             border-radius: 4px;
         }
 
-        .row.flex-nowrap::-webkit-scrollbar-thumb {
+        .bs-row.bs-flex-nowrap::-webkit-scrollbar-thumb {
             background: #c1c1c1;
             border-radius: 4px;
         }
 
-        .row.flex-nowrap::-webkit-scrollbar-thumb:hover {
+        .bs-row.bs-flex-nowrap::-webkit-scrollbar-thumb:hover {
             background: #a8a8a8;
         }
 
@@ -331,7 +331,7 @@
             font-size: 0.875rem !important;
         }
 
-        .action-buttons .btn {
+        .action-buttons .ui-btn {
             font-size: 0.8rem;
             padding: 0.25rem 0.5rem;
         }
@@ -357,7 +357,7 @@
         }
 
         /* Update Modal Styles */
-        .update-modal .modal-header {
+        .update-modal .ui-modal-header {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
 
@@ -565,13 +565,13 @@
 
                 const isActive = enrollment.status === true || enrollment.status === 1 || enrollment.status === 'active';
                 const statusBadge = isActive ?
-                    '<span class="badge bg-success bg-gradient rounded-pill px-3 py-2">Active</span>' :
-                    '<span class="badge bg-secondary bg-gradient rounded-pill px-3 py-2">Inactive</span>';
+                    '<span class="ui-badge bs-bg-success tw:bg-bs-success! tw:[background-image:linear-gradient(180deg,_rgba(255,255,255,0.15),_rgba(255,255,255,0))]! tw:rounded-bs-pill! tw:px-4! tw:py-2!">Active</span>' :
+                    '<span class="ui-badge tw:bg-bs-secondary! tw:[background-image:linear-gradient(180deg,_rgba(255,255,255,0.15),_rgba(255,255,255,0))]! tw:rounded-bs-pill! tw:px-4! tw:py-2!">Inactive</span>';
 
                 const freeCardStatus = enrollment.is_free_card === true || enrollment.is_free_card === 1;
                 const freeCardBadge = freeCardStatus ?
-                    '<span class="badge bg-warning bg-gradient text-dark rounded-pill px-2 py-1"><i class="fas fa-id-card me-1"></i>Free Card</span>' :
-                    '<span class="badge bg-light bg-gradient text-dark border rounded-pill px-2 py-1"><i class="fas fa-money-bill me-1"></i>Paid</span>';
+                    '<span class="ui-badge bs-bg-warning tw:bg-bs-warning! tw:[background-image:linear-gradient(180deg,_rgba(255,255,255,0.15),_rgba(255,255,255,0))]! tw:text-bs-dark! tw:rounded-bs-pill! tw:px-2! tw:py-1!"><i class="fas fa-id-card tw:mr-1!"></i>Free Card</span>' :
+                    '<span class="ui-badge tw:bg-bs-light! tw:[background-image:linear-gradient(180deg,_rgba(255,255,255,0.15),_rgba(255,255,255,0))]! tw:text-bs-dark! tw:bs-border! tw:rounded-bs-pill! tw:px-2! tw:py-1!"><i class="fas fa-money-bill tw:mr-1!"></i>Paid</span>';
 
                 // Get enrollment date from created_at or enrollment_date
                 const enrollmentDate = enrollment.created_at ? formatDate(enrollment.created_at) :
@@ -587,84 +587,84 @@
                 // Build fee info display
                 let feeInfo = '';
                 if (freeCardStatus) {
-                    feeInfo = '<span class="badge bg-warning text-dark"><i class="fas fa-gift me-1"></i>Free Card</span>';
+                    feeInfo = '<span class="ui-badge bs-bg-warning tw:bg-bs-warning! tw:text-bs-dark!"><i class="fas fa-gift tw:mr-1!"></i>Free Card</span>';
                 } else if (customFee) {
-                    feeInfo = `<span class="badge bg-info"><i class="fas fa-tag me-1"></i>Custom Fee: Rs. ${parseFloat(customFee).toFixed(2)}</span>`;
+                    feeInfo = `<span class="ui-badge bs-bg-info tw:bg-bs-info!"><i class="fas fa-tag tw:mr-1!"></i>Custom Fee: Rs. ${parseFloat(customFee).toFixed(2)}</span>`;
                 } else if (discountPercentage) {
-                    feeInfo = `<span class="badge bg-info"><i class="fas fa-percent me-1"></i>${discountPercentage}% Discount ${discountType ? '(' + discountType.replace('_', ' ') + ')' : ''}</span>`;
+                    feeInfo = `<span class="ui-badge bs-bg-info tw:bg-bs-info!"><i class="fas fa-percent tw:mr-1!"></i>${discountPercentage}% Discount ${discountType ? '(' + discountType.replace('_', ' ') + ')' : ''}</span>`;
                 }
 
                 enrollmentsHTML += `
-                <div class="col-auto">
-                    <div class="card border-0 shadow-sm h-100 enrollment-card position-relative" style="width: 350px;">
-                        ${freeCardStatus ? '<div class="free-card-indicator"><i class="fas fa-crown me-1"></i>FREE</div>' : ''}
-                        <div class="card-header bg-primary bg-gradient text-white py-3">
-                            <div class="d-flex justify-content-between align-items-start">
-                                <h6 class="card-title mb-0 fw-bold text-truncate" style="max-width: 200px;" title="${className}">${escapeHtml(className)}</h6>
-                                <span class="badge bg-light text-dark fs-7">${escapeHtml(gradeName)}</span>
+                <div class="ui-col-auto">
+                    <div class="ui-card tw:[border:0]! bs-shadow-sm tw:shadow-bs-sm! tw:h-full! enrollment-card tw:relative!" style="width: 350px;">
+                        ${freeCardStatus ? '<div class="free-card-indicator"><i class="fas fa-crown tw:mr-1!"></i>FREE</div>' : ''}
+                        <div class="ui-card-header tw:bg-bs-primary! tw:[background-image:linear-gradient(180deg,_rgba(255,255,255,0.15),_rgba(255,255,255,0))]! tw:text-bs-white! tw:py-4!">
+                            <div class="tw:flex! tw:justify-between! tw:items-start!">
+                                <h6 class="ui-card-title tw:mb-0! tw:font-bold! tw:truncate" style="max-width: 200px;" title="${className}">${escapeHtml(className)}</h6>
+                                <span class="ui-badge tw:bg-bs-light! tw:text-bs-dark! fs-7">${escapeHtml(gradeName)}</span>
                             </div>
                         </div>
-                        <div class="card-body p-3">
-                            <div class="d-flex justify-content-between align-items-center mb-3">
+                        <div class="ui-card-body tw:p-4!">
+                            <div class="tw:flex! tw:justify-between! tw:items-center! tw:mb-4!">
                                 <div>
                                     ${statusBadge}
                                     ${freeCardBadge}
                                 </div>
-                                <span class="badge bg-primary bg-gradient fs-6">Rs. ${finalFee}</span>
+                                <span class="ui-badge tw:bg-bs-primary! tw:[background-image:linear-gradient(180deg,_rgba(255,255,255,0.15),_rgba(255,255,255,0))]! tw:text-[length:1rem]!">Rs. ${finalFee}</span>
                             </div>
 
-                            <div class="mb-2">
-                                <div class="d-flex align-items-center mb-2">
-                                    <i class="fas fa-chalkboard-teacher text-muted me-2 fs-7" style="width: 20px;"></i>
-                                    <small class="text-muted"><strong>Teacher:</strong></small>
-                                    <small class="ms-2">${escapeHtml(teacherName)}</small>
+                            <div class="tw:mb-2!">
+                                <div class="tw:flex! tw:items-center! tw:mb-2!">
+                                    <i class="fas fa-chalkboard-teacher tw:text-bs-secondary-color! tw:mr-2! fs-7" style="width: 20px;"></i>
+                                    <small class="tw:text-bs-secondary-color!"><strong>Teacher:</strong></small>
+                                    <small class="tw:ml-2!">${escapeHtml(teacherName)}</small>
                                 </div>
-                                <div class="d-flex align-items-center mb-2">
-                                    <i class="fas fa-book text-muted me-2 fs-7" style="width: 20px;"></i>
-                                    <small class="text-muted"><strong>Subject:</strong></small>
-                                    <small class="ms-2">${escapeHtml(subjectName)}</small>
+                                <div class="tw:flex! tw:items-center! tw:mb-2!">
+                                    <i class="fas fa-book tw:text-bs-secondary-color! tw:mr-2! fs-7" style="width: 20px;"></i>
+                                    <small class="tw:text-bs-secondary-color!"><strong>Subject:</strong></small>
+                                    <small class="tw:ml-2!">${escapeHtml(subjectName)}</small>
                                 </div>
-                                <div class="d-flex align-items-center mb-2">
-                                    <i class="fas fa-tag text-muted me-2 fs-7" style="width: 20px;"></i>
-                                    <small class="text-muted"><strong>Category:</strong></small>
-                                    <small class="ms-2">${escapeHtml(categoryName)}</small>
+                                <div class="tw:flex! tw:items-center! tw:mb-2!">
+                                    <i class="fas fa-tag tw:text-bs-secondary-color! tw:mr-2! fs-7" style="width: 20px;"></i>
+                                    <small class="tw:text-bs-secondary-color!"><strong>Category:</strong></small>
+                                    <small class="tw:ml-2!">${escapeHtml(categoryName)}</small>
                                 </div>
                             </div>
 
-                            <div class="border-top pt-2 mt-2">
-                                <div class="row g-1 mb-3">
-                                    <div class="col-6">
-                                        <small class="text-muted d-block">
-                                            <i class="fas fa-calendar me-1"></i>
+                            <div class="tw:bs-border-t! tw:pt-2! tw:mt-2!">
+                                <div class="tw:flex tw:flex-wrap tw:-mt-1 tw:mx-[-0.125rem] bs-row tw:mb-4!">
+                                    <div class="tw:shrink-0 tw:max-w-full tw:px-[0.125rem] tw:mt-1 tw:flex-[0_0_auto] tw:w-[50%]">
+                                        <small class="tw:text-bs-secondary-color! tw:block!">
+                                            <i class="fas fa-calendar tw:mr-1!"></i>
                                             <strong>Enrolled:</strong>
                                         </small>
-                                        <small class="text-dark fw-semibold">${enrollmentDate}</small>
+                                        <small class="tw:text-bs-dark! tw:font-semibold!">${enrollmentDate}</small>
                                     </div>
-                                    <div class="col-6 text-end">
-                                        <small class="text-muted d-block">
+                                    <div class="tw:shrink-0 tw:max-w-full tw:px-[0.125rem] tw:mt-1 tw:flex-[0_0_auto] tw:w-[50%] tw:text-right!">
+                                        <small class="tw:text-bs-secondary-color! tw:block!">
                                             <strong>Enrollment ID:</strong>
                                         </small>
-                                        <small class="text-dark fw-semibold">#${enrollment.id || 'N/A'}</small>
+                                        <small class="tw:text-bs-dark! tw:font-semibold!">#${enrollment.id || 'N/A'}</small>
                                     </div>
                                 </div>
 
                                 ${defaultFee !== 'N/A' && defaultFee !== finalFee && !freeCardStatus && !customFee ?
-                        `<div class="text-center mb-2">
-                                        <small class="text-muted">Default Fee: Rs. ${defaultFee}</small>
+                        `<div class="tw:text-center! tw:mb-2!">
+                                        <small class="tw:text-bs-secondary-color!">Default Fee: Rs. ${defaultFee}</small>
                                     </div>` : ''}
 
-                                ${feeInfo ? `<div class="text-center mb-2">${feeInfo}</div>` : ''}
+                                ${feeInfo ? `<div class="tw:text-center! tw:mb-2!">${feeInfo}</div>` : ''}
 
-                                <div class="action-buttons d-flex gap-2">
-                                    <button class="btn btn-outline-primary btn-sm flex-grow-1" onclick="openUpdateModal(${enrollment.id})">
-                                        <i class="fas fa-edit me-1"></i>Update
+                                <div class="action-buttons tw:flex! tw:gap-2!">
+                                    <button class="ui-btn ui-btn-outline-primary ui-btn-sm tw:grow!" onclick="openUpdateModal(${enrollment.id})">
+                                        <i class="fas fa-edit tw:mr-1!"></i>Update
                                     </button>
                                     ${isActive ?
-                        `<button class="btn btn-outline-danger btn-sm flex-grow-1" onclick="deactivateEnrollment(${enrollment.id})">
-                                                <i class="fas fa-pause me-1"></i>Deactivate
+                        `<button class="ui-btn ui-btn-outline-danger ui-btn-sm tw:grow!" onclick="deactivateEnrollment(${enrollment.id})">
+                                                <i class="fas fa-pause tw:mr-1!"></i>Deactivate
                                             </button>` :
-                        `<button class="btn btn-outline-success btn-sm flex-grow-1" onclick="activateEnrollment(${enrollment.id})">
-                                                <i class="fas fa-play me-1"></i>Activate
+                        `<button class="ui-btn ui-btn-outline-success ui-btn-sm tw:grow!" onclick="activateEnrollment(${enrollment.id})">
+                                                <i class="fas fa-play tw:mr-1!"></i>Activate
                                             </button>`
                     }
                                 </div>
@@ -676,7 +676,7 @@
             });
 
             enrollmentsList.innerHTML = enrollmentsHTML;
-            noEnrollmentsDiv.classList.add('d-none');
+            noEnrollmentsDiv.classList.add('tw:hidden!');
         }
 
         // Helper function to escape HTML
@@ -787,39 +787,39 @@
 
             // Create modal HTML
             const modalHtml = `
-            <div class="modal fade update-modal" id="updateEnrollmentModal" tabindex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">
-                <div class="modal-dialog modal-lg">
-                    <div class="modal-content">
-                        <div class="modal-header text-white" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
-                            <h5 class="modal-title" id="updateModalLabel">
-                                <i class="fas fa-edit me-2"></i>Update Enrollment
+            <div class="ui-modal ui-fade update-modal" id="updateEnrollmentModal" tabindex="-1" aria-labelledby="updateModalLabel" aria-hidden="true">
+                <div class="ui-modal-dialog ui-modal-lg">
+                    <div class="ui-modal-content">
+                        <div class="ui-modal-header tw:text-bs-white!" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);">
+                            <h5 class="ui-modal-title" id="updateModalLabel">
+                                <i class="fas fa-edit tw:mr-2!"></i>Update Enrollment
                             </h5>
-                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                            <button type="button" class="ui-btn-close ui-btn-close-white" data-nx-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <div class="modal-body">
-                            <div class="row mb-4">
-                                <div class="col-md-6">
-                                    <div class="card bg-light">
-                                        <div class="card-body">
-                                            <h6 class="fw-bold mb-2"><i class="fas fa-user-graduate me-2"></i>Student</h6>
-                                            <p class="mb-1"><strong>${currentStudent ? escapeHtml(currentStudent.fname + ' ' + currentStudent.lname) : 'N/A'}</strong></p>
-                                            <small class="text-muted">ID: ${currentStudent ? currentStudent.custom_id : studentId}</small>
+                        <div class="ui-modal-body">
+                            <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row tw:mb-6!">
+                                <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
+                                    <div class="ui-card tw:bg-bs-light!">
+                                        <div class="ui-card-body">
+                                            <h6 class="tw:font-bold! tw:mb-2!"><i class="fas fa-user-graduate tw:mr-2!"></i>Student</h6>
+                                            <p class="tw:mb-1!"><strong>${currentStudent ? escapeHtml(currentStudent.fname + ' ' + currentStudent.lname) : 'N/A'}</strong></p>
+                                            <small class="tw:text-bs-secondary-color!">ID: ${currentStudent ? currentStudent.custom_id : studentId}</small>
                                         </div>
                                     </div>
                                 </div>
-                                <div class="col-md-6">
-                                    <div class="card bg-light">
-                                        <div class="card-body">
-                                            <h6 class="fw-bold mb-2"><i class="fas fa-chalkboard me-2"></i>Class</h6>
-                                            <p class="mb-1"><strong>${escapeHtml(className)} ${escapeHtml(gradeName)}</strong></p>
-                                            <small class="text-muted">Teacher: ${escapeHtml(teacherName)} | Subject: ${escapeHtml(subjectName)}</small>
+                                <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
+                                    <div class="ui-card tw:bg-bs-light!">
+                                        <div class="ui-card-body">
+                                            <h6 class="tw:font-bold! tw:mb-2!"><i class="fas fa-chalkboard tw:mr-2!"></i>Class</h6>
+                                            <p class="tw:mb-1!"><strong>${escapeHtml(className)} ${escapeHtml(gradeName)}</strong></p>
+                                            <small class="tw:text-bs-secondary-color!">Teacher: ${escapeHtml(teacherName)} | Subject: ${escapeHtml(subjectName)}</small>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="alert alert-info mb-3">
-                                <i class="fas fa-info-circle me-2"></i>
+                            <div class="ui-alert ui-alert-info tw:mb-4!">
+                                <i class="fas fa-info-circle tw:mr-2!"></i>
                                 <strong>Default Fee:</strong> Rs. ${defaultFee}
                             </div>
 
@@ -827,52 +827,52 @@
                                 <input type="hidden" id="update_enrollment_id" value="${enrollment.id}">
                                 <input type="hidden" id="update_category_id" value="${categoryId}">
 
-                                <div class="mb-3">
-                                    <label class="form-label fw-semibold">Status</label>
-                                    <select class="form-select" id="update_status">
+                                <div class="tw:mb-4!">
+                                    <label class="ui-form-label tw:font-semibold!">Status</label>
+                                    <select class="ui-form-select" id="update_status">
                                         <option value="1" ${currentStatus === 1 ? 'selected' : ''}>Active</option>
                                         <option value="0" ${currentStatus === 0 ? 'selected' : ''}>Inactive</option>
                                     </select>
                                 </div>
 
-                                <div class="mb-3">
-                                    <div class="form-check form-switch">
-                                        <input class="form-check-input" type="checkbox" id="update_freeCardCheckbox" 
+                                <div class="tw:mb-4!">
+                                    <div class="ui-form-check ui-form-switch">
+                                        <input class="ui-form-check-input" type="checkbox" id="update_freeCardCheckbox" 
                                             ${isFreeCardCurrent ? 'checked' : ''} onchange="toggleUpdateFeeFields()">
-                                        <label class="form-check-label fw-semibold" for="update_freeCardCheckbox">
-                                            <i class="fas fa-id-card me-2 text-warning"></i>Free Card
+                                        <label class="ui-form-check-label tw:font-semibold!" for="update_freeCardCheckbox">
+                                            <i class="fas fa-id-card tw:mr-2! tw:text-bs-warning!"></i>Free Card
                                         </label>
-                                        <small class="form-text text-muted d-block mt-1">
+                                        <small class="ui-form-text tw:text-bs-secondary-color! tw:block! tw:mt-1!">
                                             Enable if this enrollment should be free
                                         </small>
                                     </div>
                                 </div>
 
                                 <div id="update_feeFields" style="${isFreeCardCurrent ? 'display: none;' : 'display: block;'}">
-                                    <div class="row">
-                                        <div class="col-md-6 mb-3">
-                                            <label for="update_customFee" class="form-label">Custom Fee</label>
-                                            <div class="input-group">
-                                                <span class="input-group-text">Rs.</span>
-                                                <input type="number" class="form-control" id="update_customFee" 
+                                    <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row">
+                                        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:mb-4!">
+                                            <label for="update_customFee" class="ui-form-label">Custom Fee</label>
+                                            <div class="ui-input-group">
+                                                <span class="ui-input-group-text">Rs.</span>
+                                                <input type="number" class="ui-form-control" id="update_customFee" 
                                                     placeholder="Enter custom fee" step="0.01" min="0" value="${customFeeCurrent}">
                                             </div>
-                                            <small class="text-muted">Override the default class fee (Rs. ${defaultFee})</small>
+                                            <small class="tw:text-bs-secondary-color!">Override the default class fee (Rs. ${defaultFee})</small>
                                         </div>
-                                        <div class="col-md-6 mb-3">
-                                            <label for="update_discountPercentage" class="form-label">Discount Percentage</label>
-                                            <div class="input-group">
-                                                <input type="number" class="form-control" id="update_discountPercentage" 
+                                        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:mb-4!">
+                                            <label for="update_discountPercentage" class="ui-form-label">Discount Percentage</label>
+                                            <div class="ui-input-group">
+                                                <input type="number" class="ui-form-control" id="update_discountPercentage" 
                                                     placeholder="Enter discount %" step="0.01" min="0" max="100" value="${discountPercentageCurrent}">
-                                                <span class="input-group-text">%</span>
+                                                <span class="ui-input-group-text">%</span>
                                             </div>
-                                            <small class="text-muted">Apply percentage discount to the fee</small>
+                                            <small class="tw:text-bs-secondary-color!">Apply percentage discount to the fee</small>
                                         </div>
                                     </div>
 
-                                    <div class="mb-3">
-                                        <label for="update_discountType" class="form-label">Discount Type</label>
-                                        <select class="form-select" id="update_discountType">
+                                    <div class="tw:mb-4!">
+                                        <label for="update_discountType" class="ui-form-label">Discount Type</label>
+                                        <select class="ui-form-select" id="update_discountType">
                                             <option value="">Select discount type</option>
                                             <option value="half_card" ${discountTypeCurrent === 'half_card' ? 'selected' : ''}>Half Card</option>
                                             <option value="early_bird" ${discountTypeCurrent === 'early_bird' ? 'selected' : ''}>Early Bird</option>
@@ -883,16 +883,16 @@
                                     </div>
                                 </div>
 
-                                <div class="alert alert-secondary mt-3" id="feeCalculationInfo">
-                                    <i class="fas fa-calculator me-2"></i>
+                                <div class="ui-alert ui-alert-secondary tw:mt-4!" id="feeCalculationInfo">
+                                    <i class="fas fa-calculator tw:mr-2!"></i>
                                     <span id="feeCalculationText">Fee calculation will be shown here</span>
                                 </div>
                             </form>
                         </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                            <button type="button" class="btn btn-primary" onclick="submitUpdateEnrollment()">
-                                <i class="fas fa-save me-2"></i>Save Changes
+                        <div class="ui-modal-footer">
+                            <button type="button" class="ui-btn ui-btn-secondary" data-nx-dismiss="modal">Cancel</button>
+                            <button type="button" class="ui-btn ui-btn-primary" onclick="submitUpdateEnrollment()">
+                                <i class="fas fa-save tw:mr-2!"></i>Save Changes
                             </button>
                         </div>
                     </div>
@@ -911,7 +911,7 @@
 
             // Initialize modal
             const modalElement = document.getElementById('updateEnrollmentModal');
-            const modal = new bootstrap.Modal(modalElement);
+            const modal = new NxUi.Modal(modalElement);
 
             // Add event listeners for fee calculation
             const customFeeInput = document.getElementById('update_customFee');
@@ -929,7 +929,7 @@
             modal.show();
 
             // Clean up modal when hidden
-            modalElement.addEventListener('hidden.bs.modal', function () {
+            modalElement.addEventListener('hidden.nx.modal', function () {
                 modalElement.remove();
                 currentEditingEnrollment = null;
             });
@@ -950,7 +950,7 @@
             }
 
             if (customFee > 0 && discountPercentage > 0) {
-                calculationText.innerHTML = '<span class="text-danger"><strong>Note:</strong> Custom fee and discount percentage cannot both be set. Please choose only one.</span>';
+                calculationText.innerHTML = '<span class="tw:text-bs-danger!"><strong>Note:</strong> Custom fee and discount percentage cannot both be set. Please choose only one.</span>';
                 return;
             }
 
@@ -994,12 +994,12 @@
                 return;
             }
 
-            const updateBtn = document.querySelector('#updateEnrollmentModal .btn-primary');
+            const updateBtn = document.querySelector('#updateEnrollmentModal .ui-btn-primary');
             const originalText = updateBtn.innerHTML;
 
             try {
                 updateBtn.disabled = true;
-                updateBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Saving...';
+                updateBtn.innerHTML = '<i class="fas fa-spinner fa-spin tw:mr-2!"></i>Saving...';
 
                 const response = await fetch(api(`student-classes/${enrollmentId}`), {
                     method: 'PUT',
@@ -1017,7 +1017,7 @@
                     showAlert('Enrollment updated successfully!', 'success');
 
                     // Close modal
-                    const modal = bootstrap.Modal.getInstance(document.getElementById('updateEnrollmentModal'));
+                    const modal = NxUi.Modal.getInstance(document.getElementById('updateEnrollmentModal'));
                     if (modal) modal.hide();
 
                     // Reload enrollments
@@ -1071,7 +1071,7 @@
             }
 
             if (customFee > 0 && discountPercentage > 0) {
-                calculationText.innerHTML = '<span class="text-danger"><strong>Note:</strong> Custom fee and discount percentage cannot both be set. Please choose only one.</span>';
+                calculationText.innerHTML = '<span class="tw:text-bs-danger!"><strong>Note:</strong> Custom fee and discount percentage cannot both be set. Please choose only one.</span>';
                 return;
             }
 
@@ -1111,12 +1111,12 @@
                 return;
             }
 
-            const updateBtn = document.querySelector('#updateEnrollmentModal .btn-primary');
+            const updateBtn = document.querySelector('#updateEnrollmentModal .ui-btn-primary');
             const originalText = updateBtn.innerHTML;
 
             try {
                 updateBtn.disabled = true;
-                updateBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Saving...';
+                updateBtn.innerHTML = '<i class="fas fa-spinner fa-spin tw:mr-2!"></i>Saving...';
 
                 const response = await fetch(api(`student-classes/${enrollmentId}`), {
                     method: 'PUT',
@@ -1134,7 +1134,7 @@
                     showAlert('Enrollment updated successfully!', 'success');
 
                     // Close modal
-                    const modal = bootstrap.Modal.getInstance(document.getElementById('updateEnrollmentModal'));
+                    const modal = NxUi.Modal.getInstance(document.getElementById('updateEnrollmentModal'));
                     modal.hide();
 
                     // Reload enrollments
@@ -1220,7 +1220,7 @@
 
             enrollmentsList.innerHTML = '';
             enrollmentsSection.style.display = 'block';
-            noEnrollmentsDiv.classList.remove('d-none');
+            noEnrollmentsDiv.classList.remove('tw:hidden!');
         }
 
         // Format date for display
@@ -1240,20 +1240,20 @@
 
             if (student) {
                 studentInfoDiv.innerHTML = `
-                        <div class="row">
-                            <div class="col-md-3">
+                        <div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3 bs-row">
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[25%]">
                                 <strong>Student ID:</strong><br>
-                                <span class="badge bg-secondary fs-6">${student.custom_id || 'N/A'} / ${student.temporary_qr_code || ''}</span>
+                                <span class="ui-badge tw:bg-bs-secondary! tw:text-[length:1rem]!">${student.custom_id || 'N/A'} / ${student.temporary_qr_code || ''}</span>
                             </div>
-                            <div class="col-md-3">
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[25%]">
                                 <strong>Name:</strong><br>
-                                <span class="fs-6 fw-bold">${student.initial_name || ''}</span>
+                                <span class="tw:text-[length:1rem]! tw:font-bold!">${student.initial_name || ''}</span>
                             </div>
-                            <div class="col-md-3">
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[25%]">
                                 <strong>Grade:</strong><br>
-                                <span class="badge bg-info">${student.grade ? 'Grade ' + student.grade.grade_name : 'N/A'}</span>
+                                <span class="ui-badge bs-bg-info tw:bg-bs-info!">${student.grade ? 'Grade ' + student.grade.grade_name : 'N/A'}</span>
                             </div>
-                            <div class="col-md-3">
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[25%]">
                                 <strong>Mobile:</strong><br>
                                 <span>${student.mobile || 'N/A'}</span>
                             </div>
@@ -1261,8 +1261,8 @@
                     `;
             } else {
                 studentInfoDiv.innerHTML = `
-                        <div class="alert alert-warning">
-                            <i class="fas fa-exclamation-triangle me-2"></i>
+                        <div class="ui-alert ui-alert-warning">
+                            <i class="fas fa-exclamation-triangle tw:mr-2!"></i>
                             Student information not available. Student ID: ${studentId}
                         </div>
                     `;
@@ -1308,13 +1308,13 @@
             classesListDiv.innerHTML = '';
 
             if (classes.length === 0) {
-                resultsDiv.classList.add('d-none');
-                emptyState.classList.remove('d-none');
+                resultsDiv.classList.add('tw:hidden!');
+                emptyState.classList.remove('tw:hidden!');
                 return;
             }
 
-            emptyState.classList.add('d-none');
-            resultsDiv.classList.remove('d-none');
+            emptyState.classList.add('tw:hidden!');
+            resultsDiv.classList.remove('tw:hidden!');
 
             classes.forEach(classItem => {
                 const studentClass = classItem.student_class;
@@ -1327,25 +1327,25 @@
                 const fullClassName = `${className} ${gradeName}`;
 
                 const classCard = `
-                        <div class="col-auto">
-                            <div class="card class-card h-100" onclick='selectClass(${JSON.stringify(classItem).replace(/'/g, "&#39;")})'>
-                                <div class="card-body">
-                                    <h6 class="card-title">${highlightSearchTerm(fullClassName, searchTerm)}</h6>
-                                    <div class="mb-2">
-                                        <small class="text-muted">Teacher:</small><br>
+                        <div class="ui-col-auto">
+                            <div class="ui-card class-card tw:h-full!" onclick='selectClass(${JSON.stringify(classItem).replace(/'/g, "&#39;")})'>
+                                <div class="ui-card-body">
+                                    <h6 class="ui-card-title">${highlightSearchTerm(fullClassName, searchTerm)}</h6>
+                                    <div class="tw:mb-2!">
+                                        <small class="tw:text-bs-secondary-color!">Teacher:</small><br>
                                         <strong>${studentClass.teacher ? highlightSearchTerm(studentClass.teacher.fname + ' ' + studentClass.teacher.lname, searchTerm) : 'N/A'}</strong>
                                         <br>
-                                        <small class="text-muted">${studentClass.teacher ? studentClass.teacher.custom_id : ''}</small>
+                                        <small class="tw:text-bs-secondary-color!">${studentClass.teacher ? studentClass.teacher.custom_id : ''}</small>
                                     </div>
-                                    <div class="mb-2">
-                                        <small class="text-muted">Subject:</small><br>
-                                        <span class="badge bg-light text-dark">${studentClass.subject ? studentClass.subject.subject_name : 'N/A'}</span>
-                                        <span class="badge bg-info">Grade ${studentClass.grade ? studentClass.grade.grade_name : 'N/A'}</span>
+                                    <div class="tw:mb-2!">
+                                        <small class="tw:text-bs-secondary-color!">Subject:</small><br>
+                                        <span class="ui-badge tw:bg-bs-light! tw:text-bs-dark!">${studentClass.subject ? studentClass.subject.subject_name : 'N/A'}</span>
+                                        <span class="ui-badge bs-bg-info tw:bg-bs-info!">Grade ${studentClass.grade ? studentClass.grade.grade_name : 'N/A'}</span>
                                     </div>
-                                    <div class="mt-2">
-                                        <small class="text-muted">Category & Fee:</small><br>
-                                        <span class="badge bg-success">${classCategory ? highlightSearchTerm(classCategory.category_name, searchTerm) : 'N/A'}</span>
-                                        <span class="badge bg-primary ms-1">Rs. ${classItem.fees || 0}</span>
+                                    <div class="tw:mt-2!">
+                                        <small class="tw:text-bs-secondary-color!">Category & Fee:</small><br>
+                                        <span class="ui-badge bs-bg-success tw:bg-bs-success!">${classCategory ? highlightSearchTerm(classCategory.category_name, searchTerm) : 'N/A'}</span>
+                                        <span class="ui-badge tw:bg-bs-primary! tw:ml-1!">Rs. ${classItem.fees || 0}</span>
                                     </div>
                                 </div>
                             </div>
@@ -1394,49 +1394,49 @@
 
             // Populate student details
             document.getElementById('studentDetails').innerHTML = `
-                    <div class="mb-2">
+                    <div class="tw:mb-2!">
                         <strong>Student ID:</strong> ${currentStudent ? currentStudent.custom_id : studentId}
                     </div>
-                    <div class="mb-2">
+                    <div class="tw:mb-2!">
                         <strong>Name:</strong> ${currentStudent ? currentStudent.fname + ' ' + currentStudent.lname : 'N/A'}
                     </div>
-                    <div class="mb-2">
-                        <strong>Grade:</strong> <span class="badge bg-info">${currentStudent && currentStudent.grade ? 'Grade ' + currentStudent.grade.grade_name : 'N/A'}</span>
+                    <div class="tw:mb-2!">
+                        <strong>Grade:</strong> <span class="ui-badge bs-bg-info tw:bg-bs-info!">${currentStudent && currentStudent.grade ? 'Grade ' + currentStudent.grade.grade_name : 'N/A'}</span>
                     </div>
-                    <div class="mb-2">
+                    <div class="tw:mb-2!">
                         <strong>Mobile:</strong> ${currentStudent ? currentStudent.mobile : 'N/A'}
                     </div>
                 `;
 
             // Populate class details
             document.getElementById('classDetails').innerHTML = `
-                    <div class="mb-3">
+                    <div class="tw:mb-4!">
                         <strong>Class Name:</strong> 
-                        <div class="class-name-highlight mt-1 p-2 bg-primary text-white rounded text-center fw-bold">
+                        <div class="class-name-highlight tw:mt-1! tw:p-2! tw:bg-bs-primary! tw:text-bs-white! tw:rounded-bs! tw:text-center! tw:font-bold!">
                             ${fullClassName}
                         </div>
                     </div>
-                    <div class="mb-2">
+                    <div class="tw:mb-2!">
                         <strong>Teacher:</strong> ${studentClass.teacher ? studentClass.teacher.fname + ' ' + studentClass.teacher.lname : 'N/A'}
-                        <br><small class="text-muted">${studentClass.teacher ? studentClass.teacher.custom_id : ''}</small>
+                        <br><small class="tw:text-bs-secondary-color!">${studentClass.teacher ? studentClass.teacher.custom_id : ''}</small>
                     </div>
-                    <div class="mb-2">
-                        <strong>Subject:</strong> <span class="badge bg-light text-dark">${studentClass.subject ? studentClass.subject.subject_name : 'N/A'}</span>
+                    <div class="tw:mb-2!">
+                        <strong>Subject:</strong> <span class="ui-badge tw:bg-bs-light! tw:text-bs-dark!">${studentClass.subject ? studentClass.subject.subject_name : 'N/A'}</span>
                     </div>
-                    <div class="mb-2">
-                        <strong>Grade:</strong> <span class="badge bg-info">${studentClass.grade ? 'Grade ' + studentClass.grade.grade_name : 'N/A'}</span>
+                    <div class="tw:mb-2!">
+                        <strong>Grade:</strong> <span class="ui-badge bs-bg-info tw:bg-bs-info!">${studentClass.grade ? 'Grade ' + studentClass.grade.grade_name : 'N/A'}</span>
                     </div>
-                    <div class="mb-2">
-                        <strong>Category:</strong> <span class="badge bg-success">${classCategory ? classCategory.category_name : 'N/A'}</span>
+                    <div class="tw:mb-2!">
+                        <strong>Category:</strong> <span class="ui-badge bs-bg-success tw:bg-bs-success!">${classCategory ? classCategory.category_name : 'N/A'}</span>
                     </div>
-                    <div class="mb-2">
-                        <strong>Default Fee:</strong> <span class="badge bg-primary">Rs. ${classData.fees || 0}</span>
+                    <div class="tw:mb-2!">
+                        <strong>Default Fee:</strong> <span class="ui-badge tw:bg-bs-primary!">Rs. ${classData.fees || 0}</span>
                     </div>
                 `;
 
             // Show confirmation section
-            document.getElementById('confirmationSection').classList.remove('d-none');
-            document.getElementById('initialState').classList.add('d-none');
+            document.getElementById('confirmationSection').classList.remove('tw:hidden!');
+            document.getElementById('initialState').classList.add('tw:hidden!');
         }
 
         // Add Student to Class - UPDATED to match controller
@@ -1451,7 +1451,7 @@
 
             try {
                 addBtn.disabled = true;
-                addBtn.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Adding Student...';
+                addBtn.innerHTML = '<i class="fas fa-spinner fa-spin tw:mr-2!"></i>Adding Student...';
 
                 const isFreeCard = document.getElementById('freeCardCheckbox').checked;
                 const customFee = document.getElementById('customFee').value;
@@ -1516,8 +1516,8 @@
             document.querySelectorAll('.class-card').forEach(card => {
                 card.classList.remove('selected');
             });
-            document.getElementById('confirmationSection').classList.add('d-none');
-            document.getElementById('initialState').classList.remove('d-none');
+            document.getElementById('confirmationSection').classList.add('tw:hidden!');
+            document.getElementById('initialState').classList.remove('tw:hidden!');
             document.getElementById('freeCardCheckbox').checked = false;
             document.getElementById('customFee').value = '';
             document.getElementById('discountPercentage').value = '';
@@ -1526,31 +1526,31 @@
         }
 
         function showSearchLoading() {
-            document.getElementById('searchLoading').classList.remove('d-none');
-            document.getElementById('searchResults').classList.add('d-none');
-            document.getElementById('searchEmpty').classList.add('d-none');
+            document.getElementById('searchLoading').classList.remove('tw:hidden!');
+            document.getElementById('searchResults').classList.add('tw:hidden!');
+            document.getElementById('searchEmpty').classList.add('tw:hidden!');
         }
 
         function hideSearchLoading() {
-            document.getElementById('searchLoading').classList.add('d-none');
+            document.getElementById('searchLoading').classList.add('tw:hidden!');
         }
 
         function showSearchEmptyState() {
-            document.getElementById('searchEmpty').classList.remove('d-none');
-            document.getElementById('searchResults').classList.add('d-none');
+            document.getElementById('searchEmpty').classList.remove('tw:hidden!');
+            document.getElementById('searchResults').classList.add('tw:hidden!');
         }
 
         function showAlert(message, type) {
             // Remove any existing alerts
-            const existingAlerts = document.querySelectorAll('.alert.position-fixed');
+            const existingAlerts = document.querySelectorAll('.ui-alert.bs-position-fixed');
             existingAlerts.forEach(alert => alert.remove());
 
             const alertDiv = document.createElement('div');
-            alertDiv.className = `alert alert-${type} alert-dismissible fade show position-fixed`;
+            alertDiv.className = `ui-alert ui-alert-${type} ui-alert-dismissible ui-fade show bs-position-fixed tw:fixed!`;
             alertDiv.style.cssText = 'top: 20px; right: 20px; z-index: 9999; min-width: 300px;';
             alertDiv.innerHTML = `
                     <strong>${type === 'success' ? 'Success!' : type === 'warning' ? 'Warning!' : 'Error!'}</strong> ${message}
-                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    <button type="button" class="ui-btn-close" data-nx-dismiss="alert"></button>
                 `;
 
             document.body.appendChild(alertDiv);

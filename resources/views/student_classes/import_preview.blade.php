@@ -22,7 +22,7 @@
 @endphp
 <div class="dashboard-page">
 
-    <div class="hero-section mb-4">
+    <div class="hero-section tw:mb-6!">
         <div class="hero-content">
             <div class="hero-left">
                 <span class="greeting-badge">{{ $fileName }}</span>
@@ -38,7 +38,7 @@
         </div>
     </div>
 
-    <div class="stats-grid mb-4">
+    <div class="stats-grid tw:mb-6!">
         @foreach ($tiles as [$label, $value, $tone, $icon])
             <div class="nx-card stat-card">
                 <div class="stat-icon-wrapper {{ $tone }}"><i class="bi {{ $icon }}"></i></div>
@@ -50,16 +50,16 @@
         @endforeach
     </div>
 
-    <div class="nx-card mb-4">
+    <div class="nx-card tw:mb-6!">
         <div class="nx-card-header">
             <div>
-                <h5 class="nx-card-title"><i class="bi bi-list-ol text-primary"></i> Rows</h5>
+                <h5 class="nx-card-title"><i class="bi bi-list-ol tw:text-(color:--nx-blue)!"></i> Rows</h5>
                 <p class="nx-card-subtitle">Row numbers are the lines in your file.</p>
             </div>
             <div class="header-buttons">
                 <a href="{{ route('class-import.index') }}" class="nx-btn nx-btn-light"><i class="bi bi-arrow-left"></i> Upload another file</a>
                 @if ($token)
-                    <form method="POST" action="{{ route('class-import.apply') }}" class="d-inline" onsubmit="this.querySelector('button').disabled = true;">
+                    <form method="POST" action="{{ route('class-import.apply') }}" class="tw:[display:inline]!" onsubmit="this.querySelector('button').disabled = true;">
                         @csrf
                         <input type="hidden" name="token" value="{{ $token }}">
                         <button class="nx-btn nx-btn-primary"><i class="bi bi-check2-circle"></i> Confirm and save</button>
@@ -67,14 +67,14 @@
                 @endif
             </div>
         </div>
-        <div class="table-responsive">
-            <table class="table premium-table mb-0">
+        <div class="ui-table-responsive">
+            <table class="ui-table premium-table tw:mb-0!">
                 <thead>
                     <tr>
                         <th>Row</th>
                         <th>Class</th>
                         <th>Category / option</th>
-                        <th class="text-end">Fee</th>
+                        <th class="tw:text-right!">Fee</th>
                         <th>Status</th>
                         <th>Details</th>
                     </tr>
@@ -82,7 +82,7 @@
                 <tbody>
                     @foreach ($result['rows'] as $line => $r)
                         @php [$cls, $label] = $badge[$r['status']] ?? $badge['unchanged']; @endphp
-                        <tr class="{{ $r['status'] === 'error' ? 'table-danger' : '' }}">
+                        <tr class="{{ $r['status'] === 'error' ? 'ui-table-danger' : '' }}">
                             <td class="row-number">{{ $line }}</td>
                             <td>
                                 <div class="cell-title">{{ $r['row']['class_name'] ?: '-' }}</div>
@@ -92,11 +92,11 @@
                                 <div class="cell-title">{{ $r['row']['category'] ?: '-' }}</div>
                                 <small class="cell-sub">{{ $r['row']['option_label'] }}</small>
                             </td>
-                            <td class="text-end">{{ $r['row']['fee'] !== '' ? number_format((float) str_replace(',', '', $r['row']['fee']), 2) : '' }}</td>
+                            <td class="tw:text-right!">{{ $r['row']['fee'] !== '' ? number_format((float) str_replace(',', '', $r['row']['fee']), 2) : '' }}</td>
                             <td><span class="nx-badge {{ $cls }}">{{ $label }}</span></td>
-                            <td class="small">
+                            <td class="tw:text-[.875em]">
                                 @foreach ($r['changes'] as $change)
-                                    <div class="{{ $r['status'] === 'error' ? 'text-danger fw-semibold' : '' }}">{{ $change }}</div>
+                                    <div class="{{ $r['status'] === 'error' ? 'tw:text-(color:--nx-red)! tw:font-semibold!' : '' }}">{{ $change }}</div>
                                 @endforeach
                             </td>
                         </tr>

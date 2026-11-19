@@ -31,7 +31,7 @@ class CompleteFinishedClassesTest extends TestCase
         ] + $row);
     }
 
-    private function status(int $id): string
+    private function scheduleStatus(int $id): string
     {
         return DB::table('class_schedules')->where('id', $id)->value('status');
     }
@@ -45,18 +45,18 @@ class CompleteFinishedClassesTest extends TestCase
         // 8.45 PM: the evening class is still going on - left open
         Carbon::setTestNow('2026-11-04 20:45:00');
         $this->artisan('class-schedules:complete-finished')->assertExitCode(0);
-        $this->assertSame('scheduled', $this->status($evening));
-        $this->assertSame('completed', $this->status($attended));   // 17:00 + 3h = 20:00
+        $this->assertSame('scheduled', $this->scheduleStatus($evening));
+        $this->assertSame('completed', $this->scheduleStatus($attended));   // 17:00 + 3h = 20:00
 
         // 11.59 PM: still open (closes at 00:30)
         Carbon::setTestNow('2026-11-04 23:59:00');
         $this->artisan('class-schedules:complete-finished')->assertExitCode(0);
-        $this->assertSame('scheduled', $this->status($evening));
+        $this->assertSame('scheduled', $this->scheduleStatus($evening));
 
         // 00:30: nobody was marked -> cancelled
         Carbon::setTestNow('2026-11-05 00:30:00');
         $this->artisan('class-schedules:complete-finished')->assertExitCode(0);
-        $this->assertSame('cancelled', $this->status($evening));
+        $this->assertSame('cancelled', $this->scheduleStatus($evening));
         $this->assertSame('Class ended without attendance.',
             DB::table('class_schedules')->where('id', $evening)->value('cancel_reason'));
     }
@@ -68,11 +68,11 @@ class CompleteFinishedClassesTest extends TestCase
 
         Carbon::setTestNow('2026-11-05 00:15:00');
         $this->artisan('class-schedules:complete-finished')->assertExitCode(0);
-        $this->assertSame('ongoing', $this->status($evening));
+        $this->assertSame('ongoing', $this->scheduleStatus($evening));
 
         Carbon::setTestNow('2026-11-05 00:45:00');
         $this->artisan('class-schedules:complete-finished')->assertExitCode(0);
-        $this->assertSame('completed', $this->status($evening));
+        $this->assertSame('completed', $this->scheduleStatus($evening));
     }
 
     public function test_future_classes_are_left_alone(): void
@@ -82,6 +82,6 @@ class CompleteFinishedClassesTest extends TestCase
 
         Carbon::setTestNow('2026-11-05 23:00:00');
         $this->artisan('class-schedules:complete-finished')->assertExitCode(0);
-        $this->assertSame('scheduled', $this->status($tomorrow));
+        $this->assertSame('scheduled', $this->scheduleStatus($tomorrow));
     }
 }

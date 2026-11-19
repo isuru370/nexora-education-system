@@ -13,7 +13,7 @@
     $userName = $user?->name ?? 'User';
 @endphp
 
-<div class="hero-section hero-section-id mb-4">
+<div class="hero-section hero-section-id tw:mb-6!">
     <div class="hero-content">
 
         {{-- ==================== LEFT SIDE ==================== --}}

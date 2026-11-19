@@ -13,7 +13,7 @@
 @endphp
 <div class="dashboard-page">
 
-    <div class="hero-section mb-4">
+    <div class="hero-section tw:mb-6!">
         <div class="hero-content">
             <div class="hero-left">
                 <span class="greeting-badge">{{ $course->name }}</span>
@@ -39,23 +39,23 @@
 
     @include('courses.partials.alerts')
 
-    <div class="row g-4 mb-4">
+    <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3 tw:mb-6!">
         {{-- FEES + PAY --}}
-        <div class="col-lg-5">
-            <div class="nx-card h-100">
-                <div class="nx-card-header"><h5 class="nx-card-title"><i class="bi bi-wallet2 text-primary"></i> Fees</h5></div>
-                <div class="p-3">
-                    <dl class="kv mb-3">
+        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[41.66666667%]">
+            <div class="nx-card tw:h-full!">
+                <div class="nx-card-header"><h5 class="nx-card-title"><i class="bi bi-wallet2 tw:text-(color:--nx-blue)!"></i> Fees</h5></div>
+                <div class="tw:p-4!">
+                    <dl class="kv tw:mb-4!">
                         @if ($fees['special_fee'])
-                            <dt>Course fee</dt><dd class="money text-muted"><s>Rs. {{ number_format($fees['standard_fee'], 2) }}</s></dd>
+                            <dt>Course fee</dt><dd class="money tw:text-(color:--nx-muted)!"><s>Rs. {{ number_format($fees['standard_fee'], 2) }}</s></dd>
                             <dt>Special fee</dt><dd class="money">Rs. {{ number_format($fees['total_fee'], 2) }} <span class="nx-badge nx-badge-amber">{{ $fees['fee_reason'] }}</span></dd>
                         @else
                             <dt>Course fee</dt><dd class="money">Rs. {{ number_format($fees['total_fee'], 2) }}</dd>
                         @endif
-                        <dt>Paid</dt><dd class="money text-success">Rs. {{ number_format($fees['paid'], 2) }}</dd>
+                        <dt>Paid</dt><dd class="money tw:text-(color:--nx-green)!">Rs. {{ number_format($fees['paid'], 2) }}</dd>
                         <dt>Balance</dt><dd class="money">Rs. {{ number_format($fees['balance'], 2) }}</dd>
                         @if ($fees['overdue'] > 0)
-                            <dt>Overdue</dt><dd class="money text-danger">Rs. {{ number_format($fees['overdue'], 2) }}</dd>
+                            <dt>Overdue</dt><dd class="money tw:text-(color:--nx-red)!">Rs. {{ number_format($fees['overdue'], 2) }}</dd>
                         @endif
                         <dt>Attendance</dt><dd>{{ $attendance['attended'] }} / {{ $attendance['held'] }} ({{ $attendance['percentage'] }}%)</dd>
                     </dl>
@@ -63,54 +63,54 @@
                     @if ($enrollment->isActive() && $fees['balance'] > 0)
                         <form method="POST" action="{{ route('courses.payments.store', [$course, $enrollment]) }}" onsubmit="this.querySelector('button[type=submit]').disabled = true;">
                             @csrf
-                            <div class="row g-2">
-                                <div class="col-sm-6">
+                            <div class="tw:flex tw:flex-wrap tw:-mt-2 tw:-mx-1">
+                                <div class="tw:shrink-0 tw:max-w-full tw:px-1 tw:mt-2 tw:w-full tw:sm:flex-[0_0_auto] tw:sm:w-[50%]">
                                     <label class="nx-label" for="amount">Amount *</label>
-                                    <input id="amount" type="number" step="0.01" min="1" max="{{ $fees['balance'] }}" name="amount" class="form-control nx-input" required
+                                    <input id="amount" type="number" step="0.01" min="1" max="{{ $fees['balance'] }}" name="amount" class="ui-form-control nx-input" required
                                         value="{{ old('amount', $next ? $next['remaining'] : $fees['balance']) }}">
                                 </div>
-                                <div class="col-sm-6">
+                                <div class="tw:shrink-0 tw:max-w-full tw:px-1 tw:mt-2 tw:w-full tw:sm:flex-[0_0_auto] tw:sm:w-[50%]">
                                     <label class="nx-label" for="payment_method">Method</label>
-                                    <select id="payment_method" name="payment_method" class="form-select nx-input">
+                                    <select id="payment_method" name="payment_method" class="ui-form-select nx-input">
                                         @foreach ($methods as $method)
                                             <option value="{{ $method }}" {{ old('payment_method', 'cash') === $method ? 'selected' : '' }}>{{ ucwords(str_replace('_', ' ', $method)) }}</option>
                                         @endforeach
                                     </select>
                                 </div>
-                                <div class="col-12">
+                                <div class="tw:shrink-0 tw:max-w-full tw:px-1 tw:mt-2 tw:flex-[0_0_auto] tw:w-[100%]">
                                     <label class="nx-label" for="note">Note</label>
-                                    <input id="note" name="note" class="form-control nx-input" maxlength="500" value="{{ old('note') }}">
+                                    <input id="note" name="note" class="ui-form-control nx-input" maxlength="500" value="{{ old('note') }}">
                                 </div>
-                                <div class="col-12 d-flex flex-wrap gap-2 mt-2">
+                                <div class="tw:shrink-0 tw:max-w-full tw:px-1 tw:mt-2 tw:flex-[0_0_auto] tw:w-[100%] tw:flex! tw:flex-wrap! tw:gap-2! tw:mt-2!">
                                     @if ($next)
                                         <button type="button" class="nx-btn nx-btn-light" onclick="document.getElementById('amount').value='{{ $next['remaining'] }}'">Installment {{ $next['installment_no'] }}: {{ number_format($next['remaining'], 2) }}</button>
                                     @endif
                                     <button type="button" class="nx-btn nx-btn-light" onclick="document.getElementById('amount').value='{{ $fees['balance'] }}'">Full balance</button>
-                                    <button type="submit" class="nx-btn nx-btn-primary ms-auto"><i class="bi bi-cash-coin"></i> Take payment</button>
+                                    <button type="submit" class="nx-btn nx-btn-primary tw:ml-auto!"><i class="bi bi-cash-coin"></i> Take payment</button>
                                 </div>
                             </div>
                         </form>
                     @elseif ($fees['balance'] <= 0)
-                        <div class="nx-alert nx-alert-green mb-0"><i class="bi bi-check-circle-fill"></i><span>{{ $fees['total_fee'] > 0 ? 'Fully paid.' : 'Free - no payment.' }}</span></div>
+                        <div class="nx-alert nx-alert-green tw:mb-0!"><i class="bi bi-check-circle-fill"></i><span>{{ $fees['total_fee'] > 0 ? 'Fully paid.' : 'Free - no payment.' }}</span></div>
                     @endif
 
                     @if ($canChangeFee && $enrollment->isActive())
-                        <details class="special-fee mt-3 pt-3 border-top" {{ $errors->has('fee') || $errors->has('fee_reason') ? 'open' : '' }}>
+                        <details class="special-fee tw:mt-4! tw:pt-4! tw:bs-border-t!" {{ $errors->has('fee') || $errors->has('fee_reason') ? 'open' : '' }}>
                             <summary>Change fee</summary>
-                            <form method="POST" action="{{ route('courses.enrollments.fee', [$course, $enrollment]) }}" class="mt-2" onsubmit="return confirm('Change this student\'s fee to Rs. ' + this.fee.value + '?')">
+                            <form method="POST" action="{{ route('courses.enrollments.fee', [$course, $enrollment]) }}" class="tw:mt-2!" onsubmit="return confirm('Change this student\'s fee to Rs. ' + this.fee.value + '?')">
                                 @csrf @method('PATCH')
-                                <div class="row g-2">
-                                    <div class="col-sm-5">
+                                <div class="tw:flex tw:flex-wrap tw:-mt-2 tw:-mx-1">
+                                    <div class="tw:shrink-0 tw:max-w-full tw:px-1 tw:mt-2 tw:w-full tw:sm:flex-[0_0_auto] tw:sm:w-[41.66666667%]">
                                         <label class="nx-label" for="new_fee">New fee</label>
-                                        <input id="new_fee" type="number" step="0.01" min="{{ $fees['paid'] }}" name="fee" class="form-control nx-input" value="{{ old('fee', $fees['total_fee']) }}" required>
+                                        <input id="new_fee" type="number" step="0.01" min="{{ $fees['paid'] }}" name="fee" class="ui-form-control nx-input" value="{{ old('fee', $fees['total_fee']) }}" required>
                                     </div>
-                                    <div class="col-sm-7">
+                                    <div class="tw:shrink-0 tw:max-w-full tw:px-1 tw:mt-2 tw:w-full tw:sm:flex-[0_0_auto] tw:sm:w-[58.33333333%]">
                                         <label class="nx-label" for="new_fee_reason">Reason</label>
-                                        <input id="new_fee_reason" name="fee_reason" class="form-control nx-input" maxlength="255" value="{{ old('fee_reason', $fees['fee_reason']) }}" required placeholder="Scholarship from December">
+                                        <input id="new_fee_reason" name="fee_reason" class="ui-form-control nx-input" maxlength="255" value="{{ old('fee_reason', $fees['fee_reason']) }}" required placeholder="Scholarship from December">
                                     </div>
                                 </div>
-                                <small class="cell-sub d-block mt-1">Paid Rs. {{ number_format($fees['paid'], 2) }} stays. The rest is spread over the installments not paid yet.</small>
-                                <button class="nx-btn nx-btn-primary mt-2" type="submit">Save new fee</button>
+                                <small class="cell-sub tw:block! tw:mt-1!">Paid Rs. {{ number_format($fees['paid'], 2) }} stays. The rest is spread over the installments not paid yet.</small>
+                                <button class="nx-btn nx-btn-primary tw:mt-2!" type="submit">Save new fee</button>
                             </form>
                         </details>
                     @endif
@@ -119,20 +119,20 @@
         </div>
 
         {{-- INSTALLMENTS --}}
-        <div class="col-lg-7">
-            <div class="nx-card h-100">
-                <div class="nx-card-header"><h5 class="nx-card-title"><i class="bi bi-calendar3 text-primary"></i> {{ $enrollment->payment_plan === 'full' ? 'Payment' : 'Installments' }}</h5></div>
-                <div class="table-responsive">
-                    <table class="table premium-table mb-0">
-                        <thead><tr><th>#</th><th>Due</th><th class="text-end">Amount</th><th class="text-end">Paid</th><th class="text-end">Left</th><th>Status</th></tr></thead>
+        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[58.33333333%]">
+            <div class="nx-card tw:h-full!">
+                <div class="nx-card-header"><h5 class="nx-card-title"><i class="bi bi-calendar3 tw:text-(color:--nx-blue)!"></i> {{ $enrollment->payment_plan === 'full' ? 'Payment' : 'Installments' }}</h5></div>
+                <div class="ui-table-responsive">
+                    <table class="ui-table premium-table tw:mb-0!">
+                        <thead><tr><th>#</th><th>Due</th><th class="tw:text-right!">Amount</th><th class="tw:text-right!">Paid</th><th class="tw:text-right!">Left</th><th>Status</th></tr></thead>
                         <tbody>
                             @foreach ($fees['installments'] as $row)
                                 <tr>
                                     <td>{{ $row['installment_no'] }}</td>
                                     <td>{{ \Carbon\Carbon::parse($row['due_date'])->format('d M Y') }}</td>
-                                    <td class="text-end money">{{ number_format($row['amount'], 2) }}</td>
-                                    <td class="text-end money">{{ number_format($row['paid'], 2) }}</td>
-                                    <td class="text-end money">{{ number_format($row['remaining'], 2) }}</td>
+                                    <td class="tw:text-right! money">{{ number_format($row['amount'], 2) }}</td>
+                                    <td class="tw:text-right! money">{{ number_format($row['paid'], 2) }}</td>
+                                    <td class="tw:text-right! money">{{ number_format($row['remaining'], 2) }}</td>
                                     <td>@include('courses.partials.status-badge', ['status' => $row['status']])</td>
                                 </tr>
                             @endforeach
@@ -143,13 +143,13 @@
         </div>
     </div>
 
-    <div class="row g-4">
-        <div class="col-lg-8">
+    <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3">
+        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[66.66666667%]">
             <div class="nx-card">
-                <div class="nx-card-header"><h5 class="nx-card-title"><i class="bi bi-receipt text-primary"></i> Payments</h5></div>
-                <div class="table-responsive">
-                    <table class="table premium-table mb-0">
-                        <thead><tr><th>Receipt</th><th>Date</th><th>Method</th><th class="text-end">Amount</th><th>Status</th><th class="text-end"></th></tr></thead>
+                <div class="nx-card-header"><h5 class="nx-card-title"><i class="bi bi-receipt tw:text-(color:--nx-blue)!"></i> Payments</h5></div>
+                <div class="ui-table-responsive">
+                    <table class="ui-table premium-table tw:mb-0!">
+                        <thead><tr><th>Receipt</th><th>Date</th><th>Method</th><th class="tw:text-right!">Amount</th><th>Status</th><th class="tw:text-right!"></th></tr></thead>
                         <tbody>
                             @forelse ($payments as $payment)
                                 @include('courses.partials.payment-row', ['payment' => $payment, 'showStudent' => false])
@@ -161,14 +161,14 @@
                 </div>
             </div>
         </div>
-        <div class="col-lg-4">
+        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[33.33333333%]">
             <div class="nx-card">
-                <div class="nx-card-header"><h5 class="nx-card-title"><i class="bi bi-person-check text-primary"></i> Attended</h5></div>
-                <ul class="list-group list-group-flush">
+                <div class="nx-card-header"><h5 class="nx-card-title"><i class="bi bi-person-check tw:text-(color:--nx-blue)!"></i> Attended</h5></div>
+                <ul class="ui-list-group ui-list-group-flush">
                     @forelse ($attended as $row)
-                        <li class="list-group-item d-flex justify-content-between"><span>{{ $row->session->session_date->format('D, d M Y') }}</span><small class="cell-sub">{{ $row->attended_at->format('h:i A') }}</small></li>
+                        <li class="ui-list-group-item tw:flex! tw:justify-between!"><span>{{ $row->session->session_date->format('D, d M Y') }}</span><small class="cell-sub">{{ $row->attended_at->format('h:i A') }}</small></li>
                     @empty
-                        <li class="list-group-item cell-sub">No attendance yet.</li>
+                        <li class="ui-list-group-item cell-sub">No attendance yet.</li>
                     @endforelse
                 </ul>
             </div>

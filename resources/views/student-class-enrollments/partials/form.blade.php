@@ -1,7 +1,7 @@
 @if ($errors->any())
-    <div class="alert alert-danger border-0 shadow-sm rounded-4">
+    <div class="ui-alert ui-alert-danger tw:[border:0]! tw:shadow-bs-sm! tw:rounded-bs-xl!">
         <strong>Please fix the following errors:</strong>
-        <ul class="mb-0 mt-2">
+        <ul class="tw:mb-0! tw:mt-2!">
             @foreach ($errors->all() as $error)
                 <li>{{ $error }}</li>
             @endforeach
@@ -10,15 +10,15 @@
 @endif
 
 
-<div class="row">
+<div class="tw:flex tw:flex-wrap tw:mt-0 tw:-mx-3">
 
     {{-- =========================================================
         STUDENT
     ========================================================== --}}
-    <div class="col-md-6 mb-3">
+    <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:mb-4!">
 
-        <label for="student_id" class="form-label">
-            Student <span class="text-danger">*</span>
+        <label for="student_id" class="ui-form-label">
+            Student <span class="tw:text-bs-danger!">*</span>
         </label>
 
         @if ($enrollment->exists)
@@ -28,7 +28,7 @@
                    value="{{ $enrollment->student_id }}">
 
             <input type="text"
-                   class="form-control"
+                   class="ui-form-control"
                    value="{{ $enrollment->student?->custom_id ?? '-' }} - {{ $enrollment->student?->initial_name ?? '-' }}"
                    readonly>
 
@@ -36,7 +36,7 @@
 
             <select name="student_id"
                     id="student_id"
-                    class="form-control @error('student_id') is-invalid @enderror"
+                    class="ui-form-control @error('student_id') ui-is-invalid @enderror"
                     required>
 
                 @if ($enrollment->student)
@@ -52,7 +52,7 @@
             </select>
 
             @error('student_id')
-                <div class="invalid-feedback">{{ $message }}</div>
+                <div class="ui-invalid-feedback">{{ $message }}</div>
             @enderror
 
         @endif
@@ -63,10 +63,10 @@
     {{-- =========================================================
         CLASS
     ========================================================== --}}
-    <div class="col-md-6 mb-3">
+    <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:mb-4!">
 
-        <label for="student_class_id" class="form-label">
-            Class <span class="text-danger">*</span>
+        <label for="student_class_id" class="ui-form-label">
+            Class <span class="tw:text-bs-danger!">*</span>
         </label>
 
         @if ($enrollment->exists)
@@ -76,7 +76,7 @@
                    value="{{ $enrollment->student_class_id }}">
 
             <input type="text"
-                   class="form-control"
+                   class="ui-form-control"
                    value="{{ $enrollment->studentClass?->class_name ?? '-' }} | Grade: {{ optional($enrollment->studentClass?->grade)->grade_name ?? '-' }} | Subject: {{ optional($enrollment->studentClass?->subject)->subject_name ?? '-' }} | Teacher: {{ optional($enrollment->studentClass?->teacher)->initials ?? '-' }}"
                    readonly>
 
@@ -84,7 +84,7 @@
 
             <select name="student_class_id"
                     id="student_class_id"
-                    class="form-control @error('student_class_id') is-invalid @enderror"
+                    class="ui-form-control @error('student_class_id') ui-is-invalid @enderror"
                     required>
 
                 @if ($enrollment->studentClass)
@@ -101,7 +101,7 @@
             </select>
 
             @error('student_class_id')
-                <div class="invalid-feedback">{{ $message }}</div>
+                <div class="ui-invalid-feedback">{{ $message }}</div>
             @enderror
 
         @endif
@@ -112,15 +112,15 @@
     {{-- =========================================================
         CATEGORY
     ========================================================== --}}
-    <div class="col-md-6 mb-3">
+    <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:mb-4!">
 
-        <label for="class_category_fee_id" class="form-label">
-            Category <span class="text-danger">*</span>
+        <label for="class_category_fee_id" class="ui-form-label">
+            Category <span class="tw:text-bs-danger!">*</span>
         </label>
 
         <select name="class_category_fee_id"
                 id="class_category_fee_id"
-                class="form-control @error('class_category_fee_id') is-invalid @enderror"
+                class="ui-form-control @error('class_category_fee_id') ui-is-invalid @enderror"
                 required>
 
             @if ($enrollment->classCategoryFee)
@@ -138,7 +138,7 @@
         </select>
 
         @error('class_category_fee_id')
-            <div class="invalid-feedback">{{ $message }}</div>
+            <div class="ui-invalid-feedback">{{ $message }}</div>
         @enderror
 
     </div>
@@ -147,15 +147,15 @@
     {{-- =========================================================
         FEE OPTION
     ========================================================== --}}
-    <div class="col-md-6 mb-3">
+    <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:mb-4!">
 
-        <label for="class_category_fee_option_id" class="form-label">
-            Fee Option <span class="text-danger">*</span>
+        <label for="class_category_fee_option_id" class="ui-form-label">
+            Fee Option <span class="tw:text-bs-danger!">*</span>
         </label>
 
         <select name="class_category_fee_option_id"
                 id="class_category_fee_option_id"
-                class="form-control @error('class_category_fee_option_id') is-invalid @enderror"
+                class="ui-form-control @error('class_category_fee_option_id') ui-is-invalid @enderror"
                 required>
 
             <option value="">Select category first</option>
@@ -182,7 +182,7 @@
         </select>
 
         @error('class_category_fee_option_id')
-            <div class="invalid-feedback">{{ $message }}</div>
+            <div class="ui-invalid-feedback">{{ $message }}</div>
         @enderror
 
     </div>
@@ -191,15 +191,15 @@
     {{-- =========================================================
         SELECTED FEE
     ========================================================== --}}
-    <div class="col-md-3 mb-3">
+    <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[25%] tw:mb-4!">
 
-        <label for="selected_fee" class="form-label">
+        <label for="selected_fee" class="ui-form-label">
             Selected Fee
         </label>
 
         <input type="text"
                id="selected_fee"
-               class="form-control"
+               class="ui-form-control"
                value="0.00"
                readonly>
 
@@ -209,15 +209,15 @@
     {{-- =========================================================
         FREE CARD
     ========================================================== --}}
-    <div class="col-md-3 mb-3">
+    <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[25%] tw:mb-4!">
 
-        <label for="is_free_card" class="form-label">
+        <label for="is_free_card" class="ui-form-label">
             Free Card
         </label>
 
         <select name="is_free_card"
                 id="is_free_card"
-                class="form-control">
+                class="ui-form-control">
 
             <option value="0"
                 {{ old('is_free_card', $enrollment->is_free_card) == 0 ? 'selected' : '' }}>
@@ -237,16 +237,16 @@
     {{-- =========================================================
         ENROLLED AT
     ========================================================== --}}
-    <div class="col-md-3 mb-3">
+    <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[25%] tw:mb-4!">
 
-        <label for="enrolled_at" class="form-label">
+        <label for="enrolled_at" class="ui-form-label">
             Enrolled At
         </label>
 
         <input type="date"
                name="enrolled_at"
                id="enrolled_at"
-               class="form-control"
+               class="ui-form-control"
                value="{{ old('enrolled_at', optional($enrollment->enrolled_at)->format('Y-m-d')) }}">
 
     </div>
@@ -257,15 +257,15 @@
     ========================================================== --}}
     @if ($enrollment->exists)
 
-        <div class="col-md-3 mb-3">
+        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[25%] tw:mb-4!">
 
-            <label for="is_active" class="form-label">
+            <label for="is_active" class="ui-form-label">
                 Active Status
             </label>
 
             <select name="is_active"
                     id="is_active"
-                    class="form-control">
+                    class="ui-form-control">
 
                 <option value="1"
                     {{ old('is_active', $enrollment->is_active) == 1 ? 'selected' : '' }}>
@@ -289,16 +289,16 @@
     ========================================================== --}}
     @if ($enrollment->exists)
 
-        <div class="col-md-3 mb-3">
+        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[25%] tw:mb-4!">
 
-            <label for="left_at" class="form-label">
+            <label for="left_at" class="ui-form-label">
                 Left At
             </label>
 
             <input type="date"
                    name="left_at"
                    id="left_at"
-                   class="form-control"
+                   class="ui-form-control"
                    value="{{ old('left_at', optional($enrollment->left_at)->format('Y-m-d')) }}">
 
         </div>
@@ -309,15 +309,15 @@
     {{-- =========================================================
         NOTE
     ========================================================== --}}
-    <div class="col-md-12 mb-3">
+    <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-0 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[100%] tw:mb-4!">
 
-        <label for="note" class="form-label">
+        <label for="note" class="ui-form-label">
             Note
         </label>
 
         <textarea name="note"
                   id="note"
-                  class="form-control"
+                  class="ui-form-control"
                   rows="3">{{ old('note', $enrollment->note) }}</textarea>
 
     </div>
@@ -328,15 +328,15 @@
 {{-- =============================================================
     BUTTONS
 ============================================================= --}}
-<div class="d-flex gap-2">
+<div class="tw:flex! tw:gap-2!">
 
-    <button type="submit" class="btn btn-primary">
-        <i class="bi bi-check-lg me-1"></i>
+    <button type="submit" class="ui-btn ui-btn-primary">
+        <i class="bi bi-check-lg tw:mr-1!"></i>
         {{ $buttonText ?? 'Save' }}
     </button>
 
     <a href="{{ route('student-class-enrollments.index') }}"
-       class="btn btn-secondary">
+       class="ui-btn ui-btn-secondary">
         Cancel
     </a>
 

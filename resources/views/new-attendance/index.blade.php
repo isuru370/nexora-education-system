@@ -7,7 +7,7 @@
     <div class="dashboard-page">
 
         {{-- HERO --}}
-        <div class="hero-section mb-4">
+        <div class="hero-section tw:mb-6!">
             <div class="hero-content">
                 <div class="hero-left">
                     <span class="greeting-badge">nexoraEDU</span>
@@ -21,29 +21,29 @@
         </div>
 
         {{-- SCANNER + MANUAL --}}
-        <div class="row g-4 mb-4">
-            <div class="col-lg-4 col-md-5">
-                <div class="nx-card h-100">
+        <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3 tw:mb-6!">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[41.66666667%] tw:lg:flex-[0_0_auto] tw:lg:w-[33.33333333%]">
+                <div class="nx-card tw:h-full!">
                     <div class="nx-card-header">
-                        <h5 class="nx-card-title"><i class="bi bi-qr-code-scan text-primary"></i> QR Scanner</h5>
+                        <h5 class="nx-card-title"><i class="bi bi-qr-code-scan bs-text-primary tw:text-(color:--nx-blue)!"></i> QR Scanner</h5>
                     </div>
-                    <div class="p-3">
+                    <div class="tw:p-4!">
                         <div id="qr-reader" class="qr-reader-box"></div>
                         <div id="scannerMessage" class="scanner-message">Point the camera at the student's QR code.</div>
                     </div>
                 </div>
             </div>
 
-            <div class="col-lg-8 col-md-7">
-                <div class="nx-card h-100">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[58.33333333%] tw:lg:flex-[0_0_auto] tw:lg:w-[66.66666667%]">
+                <div class="nx-card tw:h-full!">
                     <div class="nx-card-header">
-                        <h5 class="nx-card-title"><i class="bi bi-keyboard text-primary"></i> Manual Attendance</h5>
+                        <h5 class="nx-card-title"><i class="bi bi-keyboard bs-text-primary tw:text-(color:--nx-blue)!"></i> Manual Attendance</h5>
                     </div>
-                    <div class="p-3">
+                    <div class="tw:p-4!">
                         <form id="manualAttendanceForm" autocomplete="off">
                             <label for="manualCode" class="nx-label">Student ID / QR Code</label>
-                            <div class="nx-input-group mb-2">
-                                <input type="text" id="manualCode" class="form-control nx-input"
+                            <div class="nx-input-group tw:mb-2!">
+                                <input type="text" id="manualCode" class="ui-form-control nx-input"
                                     placeholder="Enter Student ID" maxlength="255">
                                 <button type="submit" id="manualSubmitBtn" class="nx-btn nx-btn-primary">
                                     <i class="bi bi-check-lg"></i> Mark
@@ -57,93 +57,93 @@
         </div>
 
         {{-- ERROR --}}
-        <div id="errorResult" class="nx-alert nx-alert-red mb-4 d-none" role="alert"></div>
+        <div id="errorResult" class="nx-alert nx-alert-red tw:mb-6! tw:hidden!" role="alert"></div>
 
         {{-- Shown when the student has more than one class open now --}}
-        <div id="classChooser" class="mb-4 d-none"></div>
+        <div id="classChooser" class="tw:mb-6! tw:hidden!"></div>
 
         {{-- EMPTY STATE --}}
         <div id="emptyState" class="nx-card">
             <div class="empty-state-box">
                 <i class="bi bi-person-badge empty-icon"></i>
                 <h5 class="empty-title">Waiting for Student</h5>
-                <p class="cell-sub mb-0">Scan a QR code or enter a Student ID.</p>
+                <p class="cell-sub tw:mb-0!">Scan a QR code or enter a Student ID.</p>
             </div>
         </div>
 
         {{-- STUDENT RESULT --}}
-        <div id="studentResult" class="d-none">
-            <div class="nx-card mb-4">
-                <div class="p-3">
-                    <div class="row align-items-center g-3">
-                        <div class="col-auto">
-                            <img id="studentImage" src="" alt="Student" class="student-photo d-none">
+        <div id="studentResult" class="tw:hidden!">
+            <div class="nx-card tw:mb-6!">
+                <div class="tw:p-4!">
+                    <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2 tw:items-center!">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:flex-[0_0_auto] tw:w-auto">
+                            <img id="studentImage" src="" alt="Student" class="student-photo tw:hidden!">
                             <div id="studentImagePlaceholder" class="student-photo-placeholder"><i class="bi bi-person"></i></div>
                         </div>
-                        <div class="col">
-                            <h4 id="studentName" class="student-name mb-1">-</h4>
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:flex-[1_0_0%] tw:w-full">
+                            <h4 id="studentName" class="student-name tw:mb-1!">-</h4>
                             <div class="cell-sub">ID: <strong id="studentCustomId">-</strong></div>
                             <div class="cell-sub">Grade: <span id="studentGrade">-</span></div>
                         </div>
-                        <div class="col-auto">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:flex-[0_0_auto] tw:w-auto">
                             <span id="attendanceBadge" class="nx-badge nx-badge-green attendance-badge">PRESENT</span>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="row g-4 mb-4">
-                <div class="col-lg-6">
-                    <div class="nx-card h-100">
+            <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3 tw:mb-6!">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[50%]">
+                    <div class="nx-card tw:h-full!">
                         <div class="nx-card-header">
-                            <h5 class="nx-card-title"><i class="bi bi-journal-bookmark-fill text-primary"></i> Class Information</h5>
+                            <h5 class="nx-card-title"><i class="bi bi-journal-bookmark-fill bs-text-primary tw:text-(color:--nx-blue)!"></i> Class Information</h5>
                         </div>
-                        <div class="p-3">
-                            <div class="row g-2">
-                                <div class="col-12"><div class="info-item"><small>Class</small><div id="className">-</div></div></div>
-                                <div class="col-6"><div class="info-item"><small>Category</small><div id="classCategory">-</div></div></div>
-                                <div class="col-6"><div class="info-item"><small><i class="bi bi-building me-1"></i>Branch</small><div id="classBranch">-</div></div></div>
-                                <div class="col-12"><div class="info-item"><small><i class="bi bi-calendar3 me-1"></i>Date</small><div id="classDate">-</div></div></div>
-                                <div class="col-6"><div class="info-item"><small><i class="bi bi-clock me-1"></i>Start</small><div id="startTime">-</div></div></div>
-                                <div class="col-6"><div class="info-item"><small><i class="bi bi-clock me-1"></i>End</small><div id="endTime">-</div></div></div>
+                        <div class="tw:p-4!">
+                            <div class="tw:flex tw:flex-wrap tw:-mt-2 tw:-mx-1">
+                                <div class="tw:shrink-0 tw:max-w-full tw:px-1 tw:mt-2 tw:flex-[0_0_auto] tw:w-[100%]"><div class="info-item"><small>Class</small><div id="className">-</div></div></div>
+                                <div class="tw:shrink-0 tw:max-w-full tw:px-1 tw:mt-2 tw:flex-[0_0_auto] tw:w-[50%]"><div class="info-item"><small>Category</small><div id="classCategory">-</div></div></div>
+                                <div class="tw:shrink-0 tw:max-w-full tw:px-1 tw:mt-2 tw:flex-[0_0_auto] tw:w-[50%]"><div class="info-item"><small><i class="bi bi-building tw:mr-1!"></i>Branch</small><div id="classBranch">-</div></div></div>
+                                <div class="tw:shrink-0 tw:max-w-full tw:px-1 tw:mt-2 tw:flex-[0_0_auto] tw:w-[100%]"><div class="info-item"><small><i class="bi bi-calendar3 tw:mr-1!"></i>Date</small><div id="classDate">-</div></div></div>
+                                <div class="tw:shrink-0 tw:max-w-full tw:px-1 tw:mt-2 tw:flex-[0_0_auto] tw:w-[50%]"><div class="info-item"><small><i class="bi bi-clock tw:mr-1!"></i>Start</small><div id="startTime">-</div></div></div>
+                                <div class="tw:shrink-0 tw:max-w-full tw:px-1 tw:mt-2 tw:flex-[0_0_auto] tw:w-[50%]"><div class="info-item"><small><i class="bi bi-clock tw:mr-1!"></i>End</small><div id="endTime">-</div></div></div>
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="col-lg-6">
-                    <div class="nx-card h-100">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[50%]">
+                    <div class="nx-card tw:h-full!">
                         <div class="nx-card-header">
-                            <h5 class="nx-card-title"><i class="bi bi-graph-up-arrow text-primary"></i> This Month Attendance</h5>
+                            <h5 class="nx-card-title"><i class="bi bi-graph-up-arrow bs-text-primary tw:text-(color:--nx-blue)!"></i> This Month Attendance</h5>
                         </div>
-                        <div class="p-3">
-                            <div class="row g-2">
-                                <div class="col-6"><div class="attendance-stat"><div class="stat-icon stat-primary"><i class="bi bi-calendar-event"></i></div><div class="stat-info"><span class="stat-label">Class Days</span><h3 id="classDays" class="stat-number">0</h3></div></div></div>
-                                <div class="col-6"><div class="attendance-stat"><div class="stat-icon stat-success"><i class="bi bi-check-circle"></i></div><div class="stat-info"><span class="stat-label">Attended</span><h3 id="attendedDays" class="stat-number text-success">0</h3></div></div></div>
-                                <div class="col-6"><div class="attendance-stat"><div class="stat-icon stat-danger"><i class="bi bi-x-circle"></i></div><div class="stat-info"><span class="stat-label">Absent</span><h3 id="absentDays" class="stat-number text-danger">0</h3></div></div></div>
-                                <div class="col-6"><div class="attendance-stat"><div class="stat-icon stat-warning"><i class="bi bi-percent"></i></div><div class="stat-info"><span class="stat-label">Percentage</span><h3 id="attendancePercentage" class="stat-number text-primary">0%</h3></div></div></div>
+                        <div class="tw:p-4!">
+                            <div class="tw:flex tw:flex-wrap tw:-mt-2 tw:-mx-1">
+                                <div class="tw:shrink-0 tw:max-w-full tw:px-1 tw:mt-2 tw:flex-[0_0_auto] tw:w-[50%]"><div class="attendance-stat"><div class="stat-icon stat-primary"><i class="bi bi-calendar-event"></i></div><div class="stat-info"><span class="stat-label">Class Days</span><h3 id="classDays" class="stat-number">0</h3></div></div></div>
+                                <div class="tw:shrink-0 tw:max-w-full tw:px-1 tw:mt-2 tw:flex-[0_0_auto] tw:w-[50%]"><div class="attendance-stat"><div class="stat-icon stat-success"><i class="bi bi-check-circle"></i></div><div class="stat-info"><span class="stat-label">Attended</span><h3 id="attendedDays" class="stat-number bs-text-success tw:text-(color:--nx-green)!">0</h3></div></div></div>
+                                <div class="tw:shrink-0 tw:max-w-full tw:px-1 tw:mt-2 tw:flex-[0_0_auto] tw:w-[50%]"><div class="attendance-stat"><div class="stat-icon stat-danger"><i class="bi bi-x-circle"></i></div><div class="stat-info"><span class="stat-label">Absent</span><h3 id="absentDays" class="stat-number bs-text-danger tw:text-(color:--nx-red)!">0</h3></div></div></div>
+                                <div class="tw:shrink-0 tw:max-w-full tw:px-1 tw:mt-2 tw:flex-[0_0_auto] tw:w-[50%]"><div class="attendance-stat"><div class="stat-icon stat-warning"><i class="bi bi-percent"></i></div><div class="stat-info"><span class="stat-label">Percentage</span><h3 id="attendancePercentage" class="stat-number bs-text-primary tw:text-(color:--nx-blue)!">0%</h3></div></div></div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <div class="nx-card mb-4">
+            <div class="nx-card tw:mb-6!">
                 <div class="nx-card-header">
-                    <h5 class="nx-card-title"><i class="bi bi-cash-stack text-primary"></i> Last Payment</h5>
+                    <h5 class="nx-card-title"><i class="bi bi-cash-stack bs-text-primary tw:text-(color:--nx-blue)!"></i> Last Payment</h5>
                 </div>
-                <div class="p-3">
+                <div class="tw:p-4!">
                     <div id="paymentEmpty" class="cell-sub">No payment information.</div>
-                    <div id="paymentDetails" class="d-none">
-                        <div class="row g-3">
-                            <div class="col-md-3 col-6"><small class="cell-sub">Amount</small><div id="paymentAmount" class="fw-semibold">-</div></div>
-                            <div class="col-md-3 col-6"><small class="cell-sub">Payment Month</small><div id="paymentMonth" class="fw-semibold">-</div></div>
-                            <div class="col-md-3 col-6"><small class="cell-sub">Payment Method</small><div id="paymentMethod" class="fw-semibold text-capitalize">-</div></div>
-                            <div class="col-md-3 col-6"><small class="cell-sub">Receipt</small><div id="paymentReceipt" class="fw-semibold">-</div></div>
+                    <div id="paymentDetails" class="tw:hidden!">
+                        <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2">
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:flex-[0_0_auto] tw:w-[50%] tw:md:flex-[0_0_auto] tw:md:w-[25%]"><small class="cell-sub">Amount</small><div id="paymentAmount" class="tw:font-semibold!">-</div></div>
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:flex-[0_0_auto] tw:w-[50%] tw:md:flex-[0_0_auto] tw:md:w-[25%]"><small class="cell-sub">Payment Month</small><div id="paymentMonth" class="tw:font-semibold!">-</div></div>
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:flex-[0_0_auto] tw:w-[50%] tw:md:flex-[0_0_auto] tw:md:w-[25%]"><small class="cell-sub">Payment Method</small><div id="paymentMethod" class="tw:font-semibold! tw:capitalize!">-</div></div>
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:flex-[0_0_auto] tw:w-[50%] tw:md:flex-[0_0_auto] tw:md:w-[25%]"><small class="cell-sub">Receipt</small><div id="paymentReceipt" class="tw:font-semibold!">-</div></div>
                         </div>
-                        <hr class="my-3">
+                        <hr class="tw:my-4!">
                         <small class="cell-sub">Paid At</small>
-                        <div id="paymentPaidAt" class="fw-semibold">-</div>
+                        <div id="paymentPaidAt" class="tw:font-semibold!">-</div>
                     </div>
                 </div>
             </div>
@@ -297,14 +297,14 @@
         color: var(--nx-text);
     }
 
-    .dashboard-page .badge.bg-success { background: var(--nx-green) !important; }
-    .dashboard-page .badge.bg-warning { background: var(--nx-amber) !important; color: #fff !important; }
-    .dashboard-page .badge.bg-danger  { background: var(--nx-red) !important; }
-    .dashboard-page .badge.bg-secondary { background: var(--nx-muted) !important; }
+    .dashboard-page .ui-badge.bs-bg-success { background: var(--nx-green) !important; }
+    .dashboard-page .ui-badge.bs-bg-warning { background: var(--nx-amber) !important; color: #fff !important; }
+    .dashboard-page .ui-badge.bs-bg-danger  { background: var(--nx-red) !important; }
+    .dashboard-page .ui-badge.bs-bg-secondary { background: var(--nx-muted) !important; }
 
-    .dashboard-page .text-success { color: var(--nx-green) !important; }
-    .dashboard-page .text-danger  { color: var(--nx-red) !important; }
-    .dashboard-page .text-primary { color: var(--nx-blue) !important; }
+    .dashboard-page .bs-text-success { color: var(--nx-green) !important; }
+    .dashboard-page .bs-text-danger  { color: var(--nx-red) !important; }
+    .dashboard-page .bs-text-primary { color: var(--nx-blue) !important; }
 
     @media (max-width: 768px) {
         .dashboard-page .qr-reader-box { max-width: 280px; }
@@ -547,8 +547,8 @@
                 const attendance = data.attendance || {};
                 const summary = data.attendance_summary || {};
 
-                el.emptyState.classList.add('d-none');
-                el.studentResult.classList.remove('d-none');
+                el.emptyState.classList.add('tw:hidden!');
+                el.studentResult.classList.remove('tw:hidden!');
 
                 // Student
                 setText('studentName', student.initial_name || student.full_name);
@@ -583,8 +583,8 @@
             }
 
             function renderPayment(payment) {
-                el.paymentEmpty.classList.toggle('d-none', Boolean(payment));
-                el.paymentDetails.classList.toggle('d-none', !payment);
+                el.paymentEmpty.classList.toggle('tw:hidden!', Boolean(payment));
+                el.paymentDetails.classList.toggle('tw:hidden!', !payment);
 
                 if (!payment) {
                     return;
@@ -606,8 +606,8 @@
                     el.studentImage.removeAttribute('src');
                 }
 
-                el.studentImage.classList.toggle('d-none', !hasImage);
-                el.studentImagePlaceholder.classList.toggle('d-none', hasImage);
+                el.studentImage.classList.toggle('tw:hidden!', !hasImage);
+                el.studentImagePlaceholder.classList.toggle('tw:hidden!', hasImage);
             }
 
             // Show placeholder if the image URL is broken.
@@ -634,13 +634,13 @@
                     const info = item.class || {};
                     const when = formatTime(item.start_time) + ' - ' + formatTime(item.end_time);
                     const state = item.already_marked
-                        ? '<span class="nx-badge nx-badge-amber ms-2">Already marked</span>'
+                        ? '<span class="nx-badge nx-badge-amber tw:ml-2!">Already marked</span>'
                         : (item.is_started
-                            ? '<span class="nx-badge nx-badge-green ms-2">In progress</span>'
-                            : '<span class="nx-badge nx-badge-blue ms-2">Starts ' + escapeHtml(formatTime(item.start_time)) + '</span>');
+                            ? '<span class="nx-badge nx-badge-green tw:ml-2!">In progress</span>'
+                            : '<span class="nx-badge nx-badge-blue tw:ml-2!">Starts ' + escapeHtml(formatTime(item.start_time)) + '</span>');
 
-                    return '<button type="button" class="nx-btn nx-btn-light w-100 text-start mb-2 class-choice" style="display:block;width:100%;text-align:left" data-schedule="' + Number(item.schedule_id) + '">'
-                        + '<div class="fw-semibold">' + escapeHtml(info.class_name || '-')
+                    return '<button type="button" class="nx-btn nx-btn-light tw:w-full! tw:text-left! tw:mb-2! class-choice" style="display:block;width:100%;text-align:left" data-schedule="' + Number(item.schedule_id) + '">'
+                        + '<div class="tw:font-semibold!">' + escapeHtml(info.class_name || '-')
                         + (info.category ? ' <span class="cell-sub">(' + escapeHtml(info.category) + ')</span>' : '') + state + '</div>'
                         + '<div class="cell-sub">' + escapeHtml(when)
                         + (item.hall ? ' &middot; ' + escapeHtml(item.hall) : '')
@@ -649,14 +649,14 @@
                 }).join('');
 
                 el.classChooser.innerHTML = '<div class="nx-alert nx-alert-blue"><div style="width:100%">'
-                    + '<div class="mb-2"><strong>' + escapeHtml(result.message || 'Choose the class.') + '</strong></div>'
-                    + '<div class="cell-sub mb-3">' + escapeHtml(student.initial_name || student.full_name || '-')
+                    + '<div class="tw:mb-2!"><strong>' + escapeHtml(result.message || 'Choose the class.') + '</strong></div>'
+                    + '<div class="cell-sub tw:mb-4!">' + escapeHtml(student.initial_name || student.full_name || '-')
                     + ' &middot; ' + escapeHtml(student.custom_id || '-') + '</div>'
                     + buttons
-                    + '<button type="button" class="nx-btn nx-btn-light w-100 mt-1" id="classChooserCancel">Cancel</button>'
+                    + '<button type="button" class="nx-btn nx-btn-light tw:w-full! tw:mt-1!" id="classChooserCancel">Cancel</button>'
                     + '</div></div>';
 
-                el.classChooser.classList.remove('d-none');
+                el.classChooser.classList.remove('tw:hidden!');
                 el.classChooser.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
 
                 el.classChooser.querySelectorAll('.class-choice').forEach(function(button) {
@@ -674,7 +674,7 @@
             }
 
             function hideClassChooser() {
-                el.classChooser.classList.add('d-none');
+                el.classChooser.classList.add('tw:hidden!');
                 el.classChooser.innerHTML = '';
             }
 
@@ -704,14 +704,14 @@
                 }
 
                 showError(message, `
-                    <div class="d-flex flex-wrap gap-2 mt-2">
-                        <div class="bg-light px-3 py-1 rounded">
+                    <div class="tw:flex! tw:flex-wrap! tw:gap-2! tw:mt-2!">
+                        <div class="tw:bg-bs-light! tw:px-4! tw:py-1! tw:rounded-bs!">
                             <strong>Student:</strong> ${escapeHtml(student.initial_name || student.full_name || '-')}
                         </div>
-                        <div class="bg-light px-3 py-1 rounded">
+                        <div class="tw:bg-bs-light! tw:px-4! tw:py-1! tw:rounded-bs!">
                             <strong>ID:</strong> ${escapeHtml(student.custom_id || student.student_code || '-')}
                         </div>
-                        <div class="bg-light px-3 py-1 rounded">
+                        <div class="tw:bg-bs-light! tw:px-4! tw:py-1! tw:rounded-bs!">
                             <strong>Grade:</strong> ${escapeHtml(gradeName(student))}
                         </div>
                     </div>
@@ -724,14 +724,14 @@
              */
             function showError(message, extraHtml = '') {
                 el.error.innerHTML = `
-                    <div class="d-flex align-items-center">
-                        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    <div class="tw:flex! tw:items-center!">
+                        <i class="bi bi-exclamation-triangle-fill tw:mr-2!"></i>
                         <strong>${escapeHtml(message)}</strong>
                     </div>
                     ${extraHtml}
                 `;
 
-                el.error.classList.remove('d-none');
+                el.error.classList.remove('tw:hidden!');
                 el.error.scrollIntoView({
                     behavior: 'smooth',
                     block: 'nearest'
@@ -739,7 +739,7 @@
             }
 
             function hideError() {
-                el.error.classList.add('d-none');
+                el.error.classList.add('tw:hidden!');
                 el.error.innerHTML = '';
             }
 

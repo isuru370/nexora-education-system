@@ -26,57 +26,57 @@
     );
 @endphp
 
-<div class="row g-4">
+<div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3">
     @include('partials.branch-select', ['branches' => $branches ?? collect(), 'selected' => $extraIncome->branch_id ?? null])
 
 
-    <div class="col-lg-6">
-        <label class="form-label fw-semibold">
-            Amount <span class="text-danger">*</span>
+    <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[50%]">
+        <label class="ui-form-label tw:font-semibold!">
+            Amount <span class="tw:text-bs-danger!">*</span>
         </label>
 
         <input type="number" step="0.01" min="0.01" name="amount"
-            class="form-control custom-input @error('amount') is-invalid @enderror"
+            class="ui-form-control custom-input @error('amount') ui-is-invalid @enderror"
             value="{{ old('amount', $extraIncome->amount ?? '') }}" placeholder="Enter amount" required>
 
         @error('amount')
-            <div class="invalid-feedback d-block">{{ $message }}</div>
+            <div class="ui-invalid-feedback tw:block!">{{ $message }}</div>
         @enderror
     </div>
 
-    <div class="col-lg-6">
-        <label class="form-label fw-semibold">
-            Income Date <span class="text-danger">*</span>
+    <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[50%]">
+        <label class="ui-form-label tw:font-semibold!">
+            Income Date <span class="tw:text-bs-danger!">*</span>
         </label>
 
         <input type="date" name="income_date"
-            class="form-control custom-input @error('income_date') is-invalid @enderror" value="{{ $incomeDateValue }}"
+            class="ui-form-control custom-input @error('income_date') ui-is-invalid @enderror" value="{{ $incomeDateValue }}"
             required>
 
         @error('income_date')
-            <div class="invalid-feedback d-block">{{ $message }}</div>
+            <div class="ui-invalid-feedback tw:block!">{{ $message }}</div>
         @enderror
     </div>
 
-    <div class="col-lg-6">
-        <label class="form-label fw-semibold">
+    <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[50%]">
+        <label class="ui-form-label tw:font-semibold!">
             Reason
         </label>
 
-        <input type="text" name="reason" class="form-control custom-input @error('reason') is-invalid @enderror"
+        <input type="text" name="reason" class="ui-form-control custom-input @error('reason') ui-is-invalid @enderror"
             value="{{ old('reason', $extraIncome->reason ?? '') }}" placeholder="Enter reason">
 
         @error('reason')
-            <div class="invalid-feedback d-block">{{ $message }}</div>
+            <div class="ui-invalid-feedback tw:block!">{{ $message }}</div>
         @enderror
     </div>
 
-    <div class="col-lg-6">
-        <label class="form-label fw-semibold">
+    <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[50%]">
+        <label class="ui-form-label tw:font-semibold!">
             Income Type
         </label>
 
-        <select name="income_type" class="form-select custom-input @error('income_type') is-invalid @enderror">
+        <select name="income_type" class="ui-form-select custom-input @error('income_type') ui-is-invalid @enderror">
             @foreach($incomeTypes as $typeValue => $typeLabel)
                 <option value="{{ $typeValue }}" {{ $selectedIncomeType === $typeValue ? 'selected="selected"' : '' }}>
                     {{ $typeLabel }}
@@ -85,16 +85,16 @@
         </select>
 
         @error('income_type')
-            <div class="invalid-feedback d-block">{{ $message }}</div>
+            <div class="ui-invalid-feedback tw:block!">{{ $message }}</div>
         @enderror
     </div>
 
-    <div class="col-lg-6">
-        <label class="form-label fw-semibold">
+    <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[50%]">
+        <label class="ui-form-label tw:font-semibold!">
             Status
         </label>
 
-        <select name="status" class="form-select custom-input @error('status') is-invalid @enderror">
+        <select name="status" class="ui-form-select custom-input @error('status') ui-is-invalid @enderror">
             @foreach($statuses as $statusValue => $statusLabel)
                 <option value="{{ $statusValue }}" {{ $selectedStatus === $statusValue ? 'selected="selected"' : '' }}>
                     {{ $statusLabel }}
@@ -103,31 +103,31 @@
         </select>
 
         @error('status')
-            <div class="invalid-feedback d-block">{{ $message }}</div>
+            <div class="ui-invalid-feedback tw:block!">{{ $message }}</div>
         @enderror
     </div>
 
-    <div class="col-12">
-        <label class="form-label fw-semibold">
+    <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:flex-[0_0_auto] tw:w-[100%]">
+        <label class="ui-form-label tw:font-semibold!">
             Note
         </label>
 
-        <textarea name="note" rows="4" class="form-control custom-input @error('note') is-invalid @enderror"
+        <textarea name="note" rows="4" class="ui-form-control custom-input @error('note') ui-is-invalid @enderror"
             placeholder="Optional note">{{ old('note', $extraIncome->note ?? '') }}</textarea>
 
         @error('note')
-            <div class="invalid-feedback d-block">{{ $message }}</div>
+            <div class="ui-invalid-feedback tw:block!">{{ $message }}</div>
         @enderror
     </div>
 
-    <div class="col-12 d-flex justify-content-end gap-2 pt-2">
-        <a href="{{ route('admin.extra-incomes.index') }}" class="btn btn-outline-secondary custom-btn">
-            <i class="bi bi-x-lg me-1"></i>
+    <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:flex-[0_0_auto] tw:w-[100%] tw:flex! tw:justify-end! tw:gap-2! tw:pt-2!">
+        <a href="{{ route('admin.extra-incomes.index') }}" class="ui-btn ui-btn-outline-secondary custom-btn">
+            <i class="bi bi-x-lg tw:mr-1!"></i>
             Cancel
         </a>
 
-        <button type="submit" class="btn btn-primary custom-btn">
-            <i class="bi bi-save me-1"></i>
+        <button type="submit" class="ui-btn ui-btn-primary custom-btn">
+            <i class="bi bi-save tw:mr-1!"></i>
             {{ $buttonText ?? 'Save' }}
         </button>
     </div>

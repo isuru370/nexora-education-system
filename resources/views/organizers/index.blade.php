@@ -7,7 +7,7 @@
 <div class="dashboard-page">
 
     {{-- HERO --}}
-    <div class="hero-section mb-4">
+    <div class="hero-section tw:mb-6!">
         <div class="hero-content">
             <div class="hero-left">
                 <span class="greeting-badge">nexoraEDU</span>
@@ -50,7 +50,7 @@
     </div>
 
     {{-- KPI CARDS --}}
-    <div class="stats-grid mb-4">
+    <div class="stats-grid tw:mb-6!">
 
         <div class="nx-card stat-card">
             <div class="stat-icon-wrapper icon-blue"><i class="bi bi-people-fill"></i></div>
@@ -98,11 +98,11 @@
     </div>
 
     {{-- MAIN CARD --}}
-    <div class="nx-card mb-4">
+    <div class="nx-card tw:mb-6!">
 
         <div class="nx-card-header">
             <div>
-                <h5 class="nx-card-title"><i class="bi bi-person-badge text-primary"></i> Organizers Management</h5>
+                <h5 class="nx-card-title"><i class="bi bi-person-badge tw:text-(color:--nx-blue)!"></i> Organizers Management</h5>
                 <p class="nx-card-subtitle">Manage organizer profiles and account status</p>
             </div>
 
@@ -125,17 +125,17 @@
         {{-- SEARCH --}}
         <div class="nx-search">
             <form method="GET" action="{{ route('organizers.index') }}">
-                <div class="row g-3">
-                    <div class="col-lg-4">
+                <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[33.33333333%]">
                         <div class="search-input-wrapper">
                             <i class="bi bi-search"></i>
-                            <input type="text" name="search" class="form-control custom-input"
+                            <input type="text" name="search" class="ui-form-control custom-input"
                                 placeholder="Search name / mobile / code / NIC" value="{{ request('search') }}">
                         </div>
                     </div>
 
-                    <div class="col-lg-3">
-                        <select name="branch_id" class="form-select custom-input" aria-label="Filter by branch">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[25%]">
+                        <select name="branch_id" class="ui-form-select custom-input" aria-label="Filter by branch">
                             <option value="">All Accessible Branches</option>
                             @foreach ($branches as $branch)
                                 <option value="{{ $branch->id }}"
@@ -146,22 +146,22 @@
                         </select>
                     </div>
 
-                    <div class="col-lg-2">
-                        <select name="is_active" class="form-select custom-input" aria-label="Filter by status">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[16.66666667%]">
+                        <select name="is_active" class="ui-form-select custom-input" aria-label="Filter by status">
                             <option value="">All Status</option>
                             <option value="true" {{ request('is_active') === 'true' ? 'selected' : '' }}>Active</option>
                             <option value="false" {{ request('is_active') === 'false' ? 'selected' : '' }}>Inactive</option>
                         </select>
                     </div>
 
-                    <div class="col-lg-1">
-                        <button class="nx-btn nx-btn-primary w-100" type="submit" aria-label="Search">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[8.33333333%]">
+                        <button class="nx-btn nx-btn-primary tw:w-full!" type="submit" aria-label="Search">
                             <i class="bi bi-search"></i>
                         </button>
                     </div>
 
-                    <div class="col-lg-2">
-                        <a href="{{ route('organizers.index') }}" class="nx-btn nx-btn-light w-100">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[16.66666667%]">
+                        <a href="{{ route('organizers.index') }}" class="nx-btn nx-btn-light tw:w-full!">
                             Reset
                         </a>
                     </div>
@@ -170,8 +170,8 @@
         </div>
 
         {{-- TABLE --}}
-        <div class="table-responsive">
-            <table class="table premium-table mb-0">
+        <div class="ui-table-responsive">
+            <table class="ui-table premium-table tw:mb-0!">
                 <thead>
                     <tr>
                         <th>#</th>
@@ -180,7 +180,7 @@
                         <th>Contact</th>
                         <th>NIC</th>
                         <th>Status</th>
-                        <th class="text-end">Actions</th>
+                        <th class="tw:text-right!">Actions</th>
                     </tr>
                 </thead>
 
@@ -192,7 +192,7 @@
                             </td>
 
                             <td>
-                                <div class="d-flex align-items-center gap-3">
+                                <div class="tw:flex! tw:items-center! tw:gap-4!">
                                     <div class="organizer-avatar">
                                         {{ strtoupper(substr($organizer->name, 0, 1)) }}
                                     </div>
@@ -205,7 +205,7 @@
 
                             <td>
                                 @forelse ($organizer->branches as $branch)
-                                    <span class="nx-badge nx-badge-gray mb-1">{{ $branch->name }}</span>
+                                    <span class="nx-badge nx-badge-gray tw:mb-1!">{{ $branch->name }}</span>
                                 @empty
                                     <span class="cell-sub">N/A</span>
                                 @endforelse
@@ -228,7 +228,7 @@
                                 @endif
                             </td>
 
-                            <td class="text-end">
+                            <td class="tw:text-right!">
                                 <div class="action-buttons">
                                     <a href="{{ route('organizers.show', $organizer) }}" class="action-btn" title="View" aria-label="View">
                                         <i class="bi bi-eye-fill"></i>
@@ -260,8 +260,8 @@
                     @empty
                         <tr>
                             <td colspan="7" class="empty-table">
-                                <i class="bi bi-person-x fs-2 d-block mb-2"></i>
-                                <strong class="d-block">No Organizers Found</strong>
+                                <i class="bi bi-person-x tw:text-[length:calc(1.325rem_+_0.9vw)]! tw:xl:text-[length:2rem]! tw:block! tw:mb-2!"></i>
+                                <strong class="tw:block!">No Organizers Found</strong>
                                 <span class="cell-sub">Try adjusting the search filters</span>
                             </td>
                         </tr>
@@ -270,7 +270,7 @@
             </table>
         </div>
 
-        <div class="p-3 border-top">
+        <div class="tw:p-4! tw:bs-border-t!">
             {{ $organizers->links() }}
         </div>
     </div>

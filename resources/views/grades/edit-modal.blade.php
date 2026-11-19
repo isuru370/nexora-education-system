@@ -1,63 +1,63 @@
 <!-- Edit Grade Modal -->
-<div class="modal fade"
+<div class="ui-modal ui-fade"
      id="editGradeModal"
      tabindex="-1"
      aria-labelledby="editGradeModalLabel"
      aria-hidden="true">
 
-    <div class="modal-dialog">
+    <div class="ui-modal-dialog">
 
         <form id="editGradeForm" method="POST">
 
             @csrf
             @method('PUT')
 
-            <div class="modal-content">
+            <div class="ui-modal-content">
 
-                <div class="modal-header bg-warning">
+                <div class="ui-modal-header tw:bg-bs-warning!">
 
-                    <h5 class="modal-title" id="editGradeModalLabel">
+                    <h5 class="ui-modal-title" id="editGradeModalLabel">
                         <i class="fas fa-edit"></i>
                         Edit Grade
                     </h5>
 
                     <button type="button"
-                            class="btn-close"
-                            data-bs-dismiss="modal">
+                            class="ui-btn-close"
+                            data-nx-dismiss="modal">
                     </button>
 
                 </div>
 
-                <div class="modal-body">
+                <div class="ui-modal-body">
 
                     {{-- Grade Name --}}
-                    <div class="mb-3">
+                    <div class="tw:mb-4!">
 
-                        <label class="form-label">
+                        <label class="ui-form-label">
                             Grade Name
-                            <span class="text-danger">*</span>
+                            <span class="tw:text-bs-danger!">*</span>
                         </label>
 
                         <input
                             type="text"
                             name="grade_name"
                             id="edit_grade_name"
-                            class="form-control"
+                            class="ui-form-control"
                             required>
 
                     </div>
 
                     {{-- Status --}}
-                    <div class="form-check form-switch">
+                    <div class="ui-form-check ui-form-switch">
 
                         <input
-                            class="form-check-input"
+                            class="ui-form-check-input"
                             type="checkbox"
                             name="is_active"
                             id="edit_is_active"
                             value="1">
 
-                        <label class="form-check-label">
+                        <label class="ui-form-check-label">
                             Active
                         </label>
 
@@ -65,12 +65,12 @@
 
                 </div>
 
-                <div class="modal-footer">
+                <div class="ui-modal-footer">
 
                     <button
                         type="button"
-                        class="btn btn-secondary"
-                        data-bs-dismiss="modal">
+                        class="ui-btn ui-btn-secondary"
+                        data-nx-dismiss="modal">
 
                         Close
 
@@ -78,7 +78,7 @@
 
                     <button
                         type="submit"
-                        class="btn btn-warning">
+                        class="ui-btn ui-btn-warning">
 
                         <i class="fas fa-save"></i>
 
@@ -119,7 +119,7 @@ document.addEventListener('DOMContentLoaded', function () {
             document.getElementById('editGradeForm').action =
                 "{{ url('admin/grades') }}/" + id;
 
-            let modal = new bootstrap.Modal(
+            let modal = new NxUi.Modal(
                 document.getElementById('editGradeModal')
             );
 
