@@ -18,7 +18,7 @@
 {{-- ===================================================== --}}
 {{-- CLASS CATEGORY (readonly) --}}
 {{-- ===================================================== --}}
-<div class="section-header mb-3">
+<div class="section-header tw:mb-4!">
     <div class="section-icon icon-blue"><i class="bi bi-tag-fill"></i></div>
     <div>
         <h5 class="section-title">Class Category</h5>
@@ -26,13 +26,13 @@
     </div>
 </div>
 
-<div class="mb-4">
+<div class="tw:mb-6!">
     <label class="nx-label">Category</label>
     <input type="text"
-        class="form-control nx-input readonly-box"
+        class="ui-form-control nx-input readonly-box"
         value="{{ $classCategoryFee->category->category_name ?? 'N/A' }}"
         readonly>
-    <small class="cell-sub d-block mt-1">
+    <small class="cell-sub tw:block! tw:mt-1!">
         <i class="bi bi-mortarboard"></i>
         {{ $classCategoryFee->studentClass->class_name ?? '' }}
     </small>
@@ -42,7 +42,7 @@
 {{-- ===================================================== --}}
 {{-- FEE OPTION DETAILS --}}
 {{-- ===================================================== --}}
-<div class="section-header mb-3 pt-3 border-top">
+<div class="section-header tw:mb-4! tw:pt-4! tw:bs-border-t!">
     <div class="section-icon icon-green"><i class="bi bi-cash-stack"></i></div>
     <div>
         <h5 class="section-title">Fee Option Details</h5>
@@ -51,12 +51,12 @@
 </div>
 
 {{-- LABEL --}}
-<div class="mb-4">
+<div class="tw:mb-6!">
     <label for="label" class="nx-label">
         Fee Option Name <span style="color: var(--nx-red);">*</span>
     </label>
     <input type="text" name="label" id="label"
-        class="form-control nx-input @error('label') is-invalid @enderror"
+        class="ui-form-control nx-input @error('label') ui-is-invalid @enderror"
         value="{{ $labelValue }}"
         placeholder="e.g. Theory Only"
         maxlength="150"
@@ -64,20 +64,20 @@
     @error('label')
         <div class="nx-error"><i class="bi bi-exclamation-circle"></i> {{ $message }}</div>
     @enderror
-    <small class="cell-sub d-block mt-1">
+    <small class="cell-sub tw:block! tw:mt-1!">
         Enter a clear name for this fee option.
     </small>
 </div>
 
 {{-- FEE --}}
-<div class="mb-4">
+<div class="tw:mb-6!">
     <label for="fee" class="nx-label">
         Fee Amount <span style="color: var(--nx-red);">*</span>
     </label>
     <div class="nx-input-group">
         <span class="nx-input-group-text">Rs.</span>
         <input type="number" name="fee" id="fee"
-            class="form-control nx-input @error('fee') is-invalid @enderror"
+            class="ui-form-control nx-input @error('fee') ui-is-invalid @enderror"
             value="{{ $feeValue }}"
             placeholder="2500.00"
             min="0"
@@ -87,7 +87,7 @@
     @error('fee')
         <div class="nx-error"><i class="bi bi-exclamation-circle"></i> {{ $message }}</div>
     @enderror
-    <small class="cell-sub d-block mt-1">
+    <small class="cell-sub tw:block! tw:mt-1!">
         Enter the fee amount for this option.
     </small>
 </div>
@@ -96,7 +96,7 @@
 {{-- ===================================================== --}}
 {{-- STATUS + DEFAULT --}}
 {{-- ===================================================== --}}
-<div class="section-header mb-3 pt-3 border-top">
+<div class="section-header tw:mb-4! tw:pt-4! tw:bs-border-t!">
     <div class="section-icon icon-amber"><i class="bi bi-toggles"></i></div>
     <div>
         <h5 class="section-title">Status &amp; Default</h5>
@@ -104,13 +104,13 @@
     </div>
 </div>
 
-<div class="toggle-switch-group mb-4">
+<div class="toggle-switch-group tw:mb-6!">
 
     {{-- STATUS --}}
     <div class="toggle-switch">
         <input type="hidden" name="is_active" value="0">
         <input type="checkbox" name="is_active" id="is_active" value="1"
-            class="form-check-input flex-shrink-0"
+            class="ui-form-check-input tw:shrink-0!"
             style="width: 3em; height: 1.5em; cursor: pointer;"
             {{ $isActiveValue ? 'checked' : '' }}>
         <label for="is_active" class="toggle-content">
@@ -127,7 +127,7 @@
     <div class="toggle-switch">
         <input type="hidden" name="is_default" value="0">
         <input type="checkbox" name="is_default" id="is_default" value="1"
-            class="form-check-input flex-shrink-0"
+            class="ui-form-check-input tw:shrink-0!"
             style="width: 3em; height: 1.5em; cursor: pointer;"
             {{ $isDefaultValue ? 'checked' : '' }}>
         <label for="is_default" class="toggle-content">
@@ -142,7 +142,7 @@
 
 </div>
 
-<small class="cell-sub d-block mb-4">
+<small class="cell-sub tw:block! tw:mb-6!">
     <i class="bi bi-info-circle"></i>
     Only one fee option can be the default option for this class category.
 </small>
@@ -151,10 +151,10 @@
 {{-- ===================================================== --}}
 {{-- NOTE --}}
 {{-- ===================================================== --}}
-<div class="mb-4">
+<div class="tw:mb-6!">
     <label for="note" class="nx-label">Note</label>
     <textarea name="note" id="note" rows="4"
-        class="form-control nx-input @error('note') is-invalid @enderror"
+        class="ui-form-control nx-input @error('note') ui-is-invalid @enderror"
         placeholder="Optional note about this fee option...">{{ $noteValue }}</textarea>
     @error('note')
         <div class="nx-error"><i class="bi bi-exclamation-circle"></i> {{ $message }}</div>

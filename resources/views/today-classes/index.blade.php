@@ -14,7 +14,7 @@
     <div class="dashboard-page">
 
         {{-- HERO --}}
-        <div class="hero-section mb-4">
+        <div class="hero-section tw:mb-6!">
             <div class="hero-content">
                 <div class="hero-left">
                     <span class="greeting-badge">nexoraEDU</span>
@@ -61,7 +61,7 @@
         </div>
 
         {{-- KPI CARDS --}}
-        <div class="stats-grid mb-4">
+        <div class="stats-grid tw:mb-6!">
 
             <div class="nx-card stat-card">
                 <div class="stat-icon-wrapper icon-blue"><i class="bi bi-calendar2-week-fill"></i></div>
@@ -101,11 +101,11 @@
         </div>
 
         {{-- MAIN CARD --}}
-        <div class="nx-card mb-4">
+        <div class="nx-card tw:mb-6!">
 
             <div class="nx-card-header">
                 <div>
-                    <h5 class="nx-card-title"><i class="bi bi-calendar-day text-primary"></i> Today's Schedule</h5>
+                    <h5 class="nx-card-title"><i class="bi bi-calendar-day tw:text-(color:--nx-blue)!"></i> Today's Schedule</h5>
                     <p class="nx-card-subtitle">{{ $todayDate->format('l, d M Y') }}</p>
                 </div>
             </div>
@@ -113,24 +113,24 @@
             {{-- SEARCH --}}
             <div class="nx-search">
                 <form method="GET" action="{{ url()->current() }}">
-                    <div class="row g-3">
-                        <div class="col-lg-10">
+                    <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[83.33333333%]">
                             <div class="search-input-wrapper">
                                 <i class="bi bi-search"></i>
-                                <input type="text" name="search" class="form-control custom-input"
+                                <input type="text" name="search" class="ui-form-control custom-input"
                                     placeholder="Search class, grade, subject, teacher, category..."
                                     value="{{ $searchValue }}">
                             </div>
                         </div>
-                        <div class="col-lg-2">
-                            <button type="submit" class="nx-btn nx-btn-primary w-100">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[16.66666667%]">
+                            <button type="submit" class="nx-btn nx-btn-primary tw:w-full!">
                                 <i class="bi bi-search"></i> Search
                             </button>
                         </div>
                     </div>
 
                     @if ($searchValue !== '')
-                        <div class="mt-3">
+                        <div class="tw:mt-4!">
                             <a href="{{ url()->current() }}" class="nx-btn nx-btn-light">
                                 <i class="bi bi-x-circle"></i> Clear Search
                             </a>
@@ -168,7 +168,7 @@
                                 {{ $studentClass['class_name'] }}
 
                                 @if ($branch)
-                                    <span class="nx-badge nx-badge-blue ms-2">
+                                    <span class="nx-badge nx-badge-blue tw:ml-2!">
                                         <i class="bi bi-building"></i> {{ $branch['name'] }}
                                     </span>
                                 @endif
@@ -191,8 +191,8 @@
                         </div>
                     </div>
 
-                    <div class="table-responsive">
-                        <table class="table premium-table mb-0">
+                    <div class="ui-table-responsive">
+                        <table class="ui-table premium-table tw:mb-0!">
                             <thead>
                                 <tr>
                                     <th>Time</th>
@@ -200,7 +200,7 @@
                                     <th>Category & Fees</th>
                                     <th>Teacher</th>
                                     <th>Hall</th>
-                                    <th class="text-end">Actions</th>
+                                    <th class="tw:text-right!">Actions</th>
                                 </tr>
                             </thead>
 
@@ -225,8 +225,8 @@
 
                                     <td>
                                         @if ($categoryFee && !empty($categoryFee['category']))
-                                            <div class="category-name mb-2">
-                                                <i class="bi bi-tag-fill me-1"></i>
+                                            <div class="category-name tw:mb-2!">
+                                                <i class="bi bi-tag-fill tw:mr-1!"></i>
                                                 {{ $categoryFee['category']['category_name'] }}
                                             </div>
 
@@ -268,7 +268,7 @@
                                         @endif
                                     </td>
 
-                                    <td class="text-end">
+                                    <td class="tw:text-right!">
                                         <div class="action-buttons">
                                             <a href="{{ route('class-schedules.show', $schedule['id']) }}"
                                                 class="action-btn" title="View Schedule" aria-label="View Schedule">
@@ -286,8 +286,8 @@
             @empty
 
                 <div class="empty-table">
-                    <i class="bi bi-info-circle fs-2 d-block mb-2"></i>
-                    <strong class="d-block">No classes scheduled for today.</strong>
+                    <i class="bi bi-info-circle tw:text-[length:calc(1.325rem_+_0.9vw)]! tw:xl:text-[length:2rem]! tw:block! tw:mb-2!"></i>
+                    <strong class="tw:block!">No classes scheduled for today.</strong>
                     <span class="cell-sub">Check back later or try a different date.</span>
                 </div>
 

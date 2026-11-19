@@ -49,18 +49,18 @@ document.addEventListener('DOMContentLoaded', function () {
             if (!CARD_FEES.length) {
                 overlay.innerHTML = `
                     <div class="cf-box" role="dialog" aria-modal="true" aria-labelledby="cfTitle">
-                        <h5 id="cfTitle"><i class="bi bi-person-vcard text-primary"></i> Card fee</h5>
+                        <h5 id="cfTitle"><i class="bi bi-person-vcard tw:text-(color:--nx-blue)!"></i> Card fee</h5>
                         <div class="cf-sub">
                             ${escapeHtml(studentLabel)}'s ID card was already downloaded. A card fee is needed to download it again,
                             but no card fee is set up yet.
                         </div>
-                        <div class="alert alert-warning small mb-4">
+                        <div class="ui-alert ui-alert-warning tw:text-[.875em] tw:mb-6!">
                             Add one in <strong>Admissions &gt; New</strong>: tick <strong>Use for card replacement</strong>
                             (Rs. 0 for a free card). Then refresh this page.
                         </div>
-                        <div class="d-flex gap-2 justify-content-end">
-                            <button type="button" class="btn btn-light" data-cf="cancel">Close</button>
-                            <a href="${ADD_FEE_URL}" target="_blank" rel="noopener" class="btn btn-primary"><i class="bi bi-plus-lg"></i> Add card fee</a>
+                        <div class="tw:flex! tw:gap-2! tw:justify-end!">
+                            <button type="button" class="ui-btn ui-btn-light" data-cf="cancel">Close</button>
+                            <a href="${ADD_FEE_URL}" target="_blank" rel="noopener" class="ui-btn ui-btn-primary"><i class="bi bi-plus-lg"></i> Add card fee</a>
                         </div>
                     </div>`;
                 overlay.addEventListener('click', e => {
@@ -72,26 +72,26 @@ document.addEventListener('DOMContentLoaded', function () {
 
             overlay.innerHTML = `
                 <div class="cf-box" role="dialog" aria-modal="true" aria-labelledby="cfTitle">
-                    <h5 id="cfTitle"><i class="bi bi-person-vcard text-primary"></i> Card fee</h5>
+                    <h5 id="cfTitle"><i class="bi bi-person-vcard tw:text-(color:--nx-blue)!"></i> Card fee</h5>
                     <div class="cf-sub">
                         ${escapeHtml(studentLabel)}'s ID card was already downloaded
                         ${info.times ? escapeHtml(info.times) + ' time(s)' : ''}${info.last_at ? ' (last ' + escapeHtml(info.last_at) + ')' : ''}.
                         Choose the fee for the new card.
                     </div>
                     <label for="cfItem">Fee</label>
-                    <select id="cfItem" class="form-select mb-3">
+                    <select id="cfItem" class="ui-form-select tw:mb-4!">
                         ${CARD_FEES.map(f => `<option value="${f.id}">${escapeHtml(f.name)} - ${f.amount > 0 ? 'Rs. ' + f.amount.toFixed(2) : 'Free'}</option>`).join('')}
                     </select>
                     <label for="cfMethod">Payment method</label>
-                    <select id="cfMethod" class="form-select mb-4">
+                    <select id="cfMethod" class="ui-form-select tw:mb-6!">
                         <option value="cash" selected>Cash</option>
                         <option value="bank_transfer">Bank transfer</option>
                         <option value="card">Card</option>
                         <option value="online">Online</option>
                     </select>
-                    <div class="d-flex gap-2 justify-content-end">
-                        <button type="button" class="btn btn-light" data-cf="cancel">Cancel</button>
-                        <button type="button" class="btn btn-primary" data-cf="ok"><i class="bi bi-download"></i> Save fee &amp; download</button>
+                    <div class="tw:flex! tw:gap-2! tw:justify-end!">
+                        <button type="button" class="ui-btn ui-btn-light" data-cf="cancel">Cancel</button>
+                        <button type="button" class="ui-btn ui-btn-primary" data-cf="ok"><i class="bi bi-download"></i> Save fee &amp; download</button>
                     </div>
                 </div>`;
 

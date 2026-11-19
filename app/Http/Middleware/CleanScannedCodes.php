@@ -21,7 +21,8 @@ class CleanScannedCodes
     {
         foreach ([$request->query, $request->request] as $bag) {
             foreach (self::FIELDS as $field) {
-                $value = $bag->get($field);
+                // all() + key: get() throws on an array value (Symfony 6+)
+                $value = $bag->all()[$field] ?? null;
 
                 if (is_string($value) && str_starts_with(ltrim($value), '{')) {
                     $bag->set($field, ScannedCode::clean($value));
@@ -32,9 +33,10 @@ class CleanScannedCodes
         // JSON bodies (staff app)
         if ($request->isJson()) {
             $json = $request->json();
+            $body = $json->all();
 
             foreach (self::FIELDS as $field) {
-                $value = $json->get($field);
+                $value = $body[$field] ?? null;
 
                 if (is_string($value) && str_starts_with(ltrim($value), '{')) {
                     $json->set($field, ScannedCode::clean($value));
@@ -42,7 +44,7 @@ class CleanScannedCodes
             }
 
             // bulk payments: payments[*].code
-            $payments = $json->get('payments');
+            $payments = $body['payments'] ?? null;
             if (is_array($payments)) {
                 foreach ($payments as $i => $payment) {
                     if (is_array($payment) && is_string($payment['code'] ?? null) && str_starts_with(ltrim($payment['code']), '{')) {

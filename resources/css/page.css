@@ -1,0 +1,19 @@
+/*
+ * Pages that are a whole HTML document of their own (forgot password,
+ * contact administrator, ID card design): Bootstrap's look (ui-kit) +
+ * Tailwind (tw: classes). Built into public/css/page.css (npm run css).
+ */
+
+@import "./nexora/ui-kit.css";
+
+@import "tailwindcss/theme.css" prefix(tw);
+@import "./bootstrap-theme.css";
+@import "tailwindcss/utilities.css";
+
+@theme {
+    --breakpoint-sm: 576px;
+    --breakpoint-md: 768px;
+    --breakpoint-lg: 992px;
+    --breakpoint-xl: 1200px;
+    --breakpoint-2xl: 1400px;
+}

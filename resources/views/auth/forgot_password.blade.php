@@ -8,7 +8,7 @@
     <title>Forgot Password - {{ config('app.name', 'Nexora Education') }}</title>
 
     {{-- Bootstrap --}}
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/page.css') }}?v={{ @filemtime(public_path('css/page.css')) }}">
 
     {{-- Bootstrap Icons --}}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -249,7 +249,7 @@
             box-shadow: 0 0 0 3px rgba(29, 78, 216, .18);
         }
 
-        .fp-input-group .input-group-text {
+        .fp-input-group .ui-input-group-text {
             background: transparent;
             border: none;
             color: #cbd5e1;
@@ -464,7 +464,7 @@
                 {{-- SUCCESS --}}
                 @if (session('success'))
                     <div class="fp-alert fp-alert-success" role="alert">
-                        <i class="bi bi-check-circle-fill me-1"></i>
+                        <i class="bi bi-check-circle-fill tw:mr-1!"></i>
                         {{ session('success') }}
                     </div>
                 @endif
@@ -486,14 +486,14 @@
                 @if ($step === 'email')
                     <form method="POST" action="{{ route('forgot_password.send_otp') }}">
                         @csrf
-                        <div class="mb-4">
+                        <div class="tw:mb-6!">
                             <label class="fp-label" for="email">Email Address</label>
-                            <div class="input-group fp-input-group">
-                                <span class="input-group-text">
+                            <div class="ui-input-group fp-input-group">
+                                <span class="ui-input-group-text">
                                     <i class="bi bi-envelope-fill"></i>
                                 </span>
                                 <input type="email" name="email" id="email"
-                                    class="form-control fp-input"
+                                    class="ui-form-control fp-input"
                                     placeholder="Enter your email"
                                     required
                                     value="{{ old('email') }}">
@@ -513,27 +513,27 @@
                         @csrf
                         <input type="hidden" name="email" value="{{ $email }}">
 
-                        <div class="mb-3">
+                        <div class="tw:mb-4!">
                             <label class="fp-label" for="otp_email">Email</label>
-                            <div class="input-group fp-input-group">
-                                <span class="input-group-text">
+                            <div class="ui-input-group fp-input-group">
+                                <span class="ui-input-group-text">
                                     <i class="bi bi-envelope-fill"></i>
                                 </span>
                                 <input type="email" id="otp_email"
-                                    class="form-control fp-input"
+                                    class="ui-form-control fp-input"
                                     value="{{ $email }}"
                                     readonly>
                             </div>
                         </div>
 
-                        <div class="mb-3">
+                        <div class="tw:mb-4!">
                             <label class="fp-label" for="otp">Enter 6-Digit OTP</label>
-                            <div class="input-group fp-input-group">
-                                <span class="input-group-text">
+                            <div class="ui-input-group fp-input-group">
+                                <span class="ui-input-group-text">
                                     <i class="bi bi-shield-lock-fill"></i>
                                 </span>
                                 <input type="text" name="otp" id="otp"
-                                    class="form-control fp-input"
+                                    class="ui-form-control fp-input"
                                     maxlength="6"
                                     placeholder="Enter 6-digit code"
                                     required>
@@ -544,7 +544,7 @@
                             OTP expires in: <strong id="countdown">03:00</strong>
                         </div>
 
-                        <button type="submit" class="btn-fp btn-fp-success mb-2">
+                        <button type="submit" class="btn-fp btn-fp-success tw:mb-2!">
                             <i class="bi bi-check-circle-fill"></i> Verify OTP
                         </button>
                     </form>
@@ -566,27 +566,27 @@
                         @csrf
                         <input type="hidden" name="email" value="{{ $email }}">
 
-                        <div class="mb-3">
+                        <div class="tw:mb-4!">
                             <label class="fp-label" for="password">New Password</label>
-                            <div class="input-group fp-input-group">
-                                <span class="input-group-text">
+                            <div class="ui-input-group fp-input-group">
+                                <span class="ui-input-group-text">
                                     <i class="bi bi-lock-fill"></i>
                                 </span>
                                 <input type="password" name="password" id="password"
-                                    class="form-control fp-input"
+                                    class="ui-form-control fp-input"
                                     placeholder="Enter new password"
                                     required>
                             </div>
                         </div>
 
-                        <div class="mb-4">
+                        <div class="tw:mb-6!">
                             <label class="fp-label" for="password_confirmation">Confirm Password</label>
-                            <div class="input-group fp-input-group">
-                                <span class="input-group-text">
+                            <div class="ui-input-group fp-input-group">
+                                <span class="ui-input-group-text">
                                     <i class="bi bi-lock-fill"></i>
                                 </span>
                                 <input type="password" name="password_confirmation" id="password_confirmation"
-                                    class="form-control fp-input"
+                                    class="ui-form-control fp-input"
                                     placeholder="Confirm new password"
                                     required>
                             </div>
@@ -599,7 +599,7 @@
                 @endif
 
                 {{-- BACK TO LOGIN --}}
-                <div class="text-center mt-4">
+                <div class="tw:text-center! tw:mt-6!">
                     <a href="{{ route('login') }}" class="fp-link">
                         <i class="bi bi-arrow-left"></i> Back to Login
                     </a>

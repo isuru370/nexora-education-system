@@ -7,7 +7,7 @@
     $selectedMethod      = old('payment_method', $admissionPayment?->payment_method ?? 'cash');
 @endphp
 
-<div class="row g-3">
+<div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2">
 
     {{-- ===================================================== --}}
     {{-- CREATE ONLY --}}
@@ -15,13 +15,13 @@
     @if (!isset($admissionPayment))
 
         {{-- STUDENT --}}
-        <div class="col-lg-6">
+        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[50%]">
             <label class="nx-label">
                 Student <span style="color: var(--nx-red);">*</span>
             </label>
 
             <select name="student_id"
-                class="form-select nx-input @error('student_id') is-invalid @enderror"
+                class="ui-form-select nx-input @error('student_id') ui-is-invalid @enderror"
                 required>
 
                 <option value="">Select Student</option>
@@ -35,18 +35,18 @@
             </select>
 
             @error('student_id')
-                <div class="invalid-feedback d-block">{{ $message }}</div>
+                <div class="ui-invalid-feedback tw:block!">{{ $message }}</div>
             @enderror
         </div>
 
         {{-- ADMISSION --}}
-        <div class="col-lg-6">
+        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[50%]">
             <label class="nx-label">
                 Admission <span style="color: var(--nx-red);">*</span>
             </label>
 
             <select name="admission_id" id="admissionSelect"
-                class="form-select nx-input @error('admission_id') is-invalid @enderror"
+                class="ui-form-select nx-input @error('admission_id') ui-is-invalid @enderror"
                 required>
 
                 <option value="">Select Admission</option>
@@ -61,26 +61,26 @@
             </select>
 
             @error('admission_id')
-                <div class="invalid-feedback d-block">{{ $message }}</div>
+                <div class="ui-invalid-feedback tw:block!">{{ $message }}</div>
             @enderror
         </div>
 
     @else
 
         {{-- STUDENT READONLY --}}
-        <div class="col-lg-6">
+        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[50%]">
             <label class="nx-label">Student</label>
             <input type="text"
-                class="form-control nx-input readonly-box"
+                class="ui-form-control nx-input readonly-box"
                 value="{{ $admissionPayment->student->custom_id ?? '-' }} - {{ $admissionPayment->student->initial_name ?? '-' }}"
                 readonly>
         </div>
 
         {{-- ADMISSION READONLY --}}
-        <div class="col-lg-6">
+        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[50%]">
             <label class="nx-label">Admission</label>
             <input type="text"
-                class="form-control nx-input readonly-box"
+                class="ui-form-control nx-input readonly-box"
                 value="{{ $admissionPayment->admission->name ?? '-' }}"
                 readonly>
         </div>
@@ -90,31 +90,31 @@
     {{-- ===================================================== --}}
     {{-- AMOUNT --}}
     {{-- ===================================================== --}}
-    <div class="col-lg-6">
+    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[50%]">
         <label class="nx-label">
             Amount <span style="color: var(--nx-red);">*</span>
         </label>
 
         <input type="number" step="0.01" name="amount" id="amountInput"
             value="{{ old('amount', $admissionPayment?->amount ?? '') }}"
-            class="form-control nx-input @error('amount') is-invalid @enderror"
+            class="ui-form-control nx-input @error('amount') ui-is-invalid @enderror"
             required>
 
         @error('amount')
-            <div class="invalid-feedback d-block">{{ $message }}</div>
+            <div class="ui-invalid-feedback tw:block!">{{ $message }}</div>
         @enderror
     </div>
 
     {{-- ===================================================== --}}
     {{-- PAYMENT METHOD --}}
     {{-- ===================================================== --}}
-    <div class="col-lg-6">
+    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[50%]">
         <label class="nx-label">
             Payment Method <span style="color: var(--nx-red);">*</span>
         </label>
 
         <select name="payment_method"
-            class="form-select nx-input @error('payment_method') is-invalid @enderror"
+            class="ui-form-select nx-input @error('payment_method') ui-is-invalid @enderror"
             required>
 
             <option value="cash"          {{ ($selectedMethod === 'cash') ? 'selected' : '' }}>Cash</option>
@@ -125,20 +125,20 @@
         </select>
 
         @error('payment_method')
-            <div class="invalid-feedback d-block">{{ $message }}</div>
+            <div class="ui-invalid-feedback tw:block!">{{ $message }}</div>
         @enderror
     </div>
 
     {{-- ===================================================== --}}
     {{-- STATUS --}}
     {{-- ===================================================== --}}
-    <div class="col-lg-6">
+    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[50%]">
         <label class="nx-label">
             Status <span style="color: var(--nx-red);">*</span>
         </label>
 
         <select name="status"
-            class="form-select nx-input @error('status') is-invalid @enderror"
+            class="ui-form-select nx-input @error('status') ui-is-invalid @enderror"
             required>
 
             <option value="pending"   {{ ($selectedStatus === 'pending') ? 'selected' : '' }}>Pending</option>
@@ -148,21 +148,21 @@
         </select>
 
         @error('status')
-            <div class="invalid-feedback d-block">{{ $message }}</div>
+            <div class="ui-invalid-feedback tw:block!">{{ $message }}</div>
         @enderror
     </div>
 
     {{-- ===================================================== --}}
     {{-- NOTE --}}
     {{-- ===================================================== --}}
-    <div class="col-12">
+    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:flex-[0_0_auto] tw:w-[100%]">
         <label class="nx-label">Note</label>
 
         <textarea name="note" rows="4"
-            class="form-control nx-input @error('note') is-invalid @enderror">{{ old('note', $admissionPayment?->note ?? '') }}</textarea>
+            class="ui-form-control nx-input @error('note') ui-is-invalid @enderror">{{ old('note', $admissionPayment?->note ?? '') }}</textarea>
 
         @error('note')
-            <div class="invalid-feedback d-block">{{ $message }}</div>
+            <div class="ui-invalid-feedback tw:block!">{{ $message }}</div>
         @enderror
     </div>
 

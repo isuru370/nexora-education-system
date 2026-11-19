@@ -27,7 +27,7 @@
         {{-- ===================================================== --}}
         {{-- HERO --}}
         {{-- ===================================================== --}}
-        <div class="hero-section mb-4">
+        <div class="hero-section tw:mb-6!">
             <div class="hero-content">
                 <div class="hero-left">
                     <span class="greeting-badge">
@@ -76,14 +76,14 @@
         {{-- ALERTS --}}
         {{-- ===================================================== --}}
         @if (session('success'))
-            <div class="nx-alert nx-alert-green mb-4">
+            <div class="nx-alert nx-alert-green tw:mb-6!">
                 <i class="bi bi-check-circle-fill"></i>
                 <span>{{ session('success') }}</span>
             </div>
         @endif
 
         @if (session('error'))
-            <div class="nx-alert nx-alert-red mb-4">
+            <div class="nx-alert nx-alert-red tw:mb-6!">
                 <i class="bi bi-exclamation-triangle-fill"></i>
                 <span>{{ session('error') }}</span>
             </div>
@@ -92,18 +92,18 @@
         {{-- ===================================================== --}}
         {{-- MAIN INFO GRID --}}
         {{-- ===================================================== --}}
-        <div class="row g-4 mb-4">
+        <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3 tw:mb-6!">
 
             {{-- CLASS --}}
-            <div class="col-md-6">
-                <div class="nx-card h-100">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
+                <div class="nx-card tw:h-full!">
                     <div class="nx-card-header">
                         <div>
-                            <h5 class="nx-card-title"><i class="bi bi-book text-primary"></i> Class Information</h5>
+                            <h5 class="nx-card-title"><i class="bi bi-book tw:text-(color:--nx-blue)!"></i> Class Information</h5>
                             <p class="nx-card-subtitle">Details of the assigned class</p>
                         </div>
                     </div>
-                    <div class="p-3">
+                    <div class="tw:p-4!">
                         <div class="detail-line">
                             <span class="detail-label">Class</span>
                             <span class="detail-value">{{ $className }}</span>
@@ -134,15 +134,15 @@
             </div>
 
             {{-- CATEGORY --}}
-            <div class="col-md-6">
-                <div class="nx-card h-100">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
+                <div class="nx-card tw:h-full!">
                     <div class="nx-card-header">
                         <div>
-                            <h5 class="nx-card-title"><i class="bi bi-tags text-primary"></i> Category Information</h5>
+                            <h5 class="nx-card-title"><i class="bi bi-tags tw:text-(color:--nx-blue)!"></i> Category Information</h5>
                             <p class="nx-card-subtitle">Details of the category</p>
                         </div>
                     </div>
-                    <div class="p-3">
+                    <div class="tw:p-4!">
                         <div class="detail-line">
                             <span class="detail-label">Category</span>
                             <span class="detail-value">{{ $categoryName }}</span>
@@ -165,15 +165,15 @@
             </div>
 
             {{-- ASSOCIATION STATUS --}}
-            <div class="col-md-6">
-                <div class="nx-card h-100">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
+                <div class="nx-card tw:h-full!">
                     <div class="nx-card-header">
                         <div>
-                            <h5 class="nx-card-title"><i class="bi bi-link-45deg text-primary"></i> Assignment Status</h5>
+                            <h5 class="nx-card-title"><i class="bi bi-link-45deg tw:text-(color:--nx-blue)!"></i> Assignment Status</h5>
                             <p class="nx-card-subtitle">Whether this assignment is active</p>
                         </div>
                     </div>
-                    <div class="p-3">
+                    <div class="tw:p-4!">
                         @if ($feeIsActive)
                             <div class="status-box status-box-green">
                                 <div class="status-box-icon"><i class="bi bi-check-lg"></i></div>
@@ -196,15 +196,15 @@
             </div>
 
             {{-- RECORD INFORMATION --}}
-            <div class="col-md-6">
-                <div class="nx-card h-100">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
+                <div class="nx-card tw:h-full!">
                     <div class="nx-card-header">
                         <div>
-                            <h5 class="nx-card-title"><i class="bi bi-info-circle-fill text-primary"></i> Record Information</h5>
+                            <h5 class="nx-card-title"><i class="bi bi-info-circle-fill tw:text-(color:--nx-blue)!"></i> Record Information</h5>
                             <p class="nx-card-subtitle">Metadata for this record</p>
                         </div>
                     </div>
-                    <div class="p-3">
+                    <div class="tw:p-4!">
                         <div class="detail-line">
                             <span class="detail-label">ID</span>
                             <span class="detail-value" style="font-family: ui-monospace, monospace;">#{{ $classCategoryFee->id }}</span>
@@ -235,14 +235,14 @@
         {{-- NOTE --}}
         {{-- ===================================================== --}}
         @if ($classCategoryFee->note)
-            <div class="nx-card mb-4">
+            <div class="nx-card tw:mb-6!">
                 <div class="nx-card-header">
                     <div>
-                        <h5 class="nx-card-title"><i class="bi bi-sticky-fill text-primary"></i> Note</h5>
+                        <h5 class="nx-card-title"><i class="bi bi-sticky-fill tw:text-(color:--nx-blue)!"></i> Note</h5>
                     </div>
                 </div>
-                <div class="p-3">
-                    <p class="mb-0 cell-title" style="white-space: pre-line;">
+                <div class="tw:p-4!">
+                    <p class="tw:mb-0! cell-title" style="white-space: pre-line;">
                         {{ $classCategoryFee->note }}
                     </p>
                 </div>
@@ -252,10 +252,10 @@
         {{-- ===================================================== --}}
         {{-- FEE OPTIONS --}}
         {{-- ===================================================== --}}
-        <div class="nx-card mb-4">
+        <div class="nx-card tw:mb-6!">
             <div class="nx-card-header">
                 <div>
-                    <h5 class="nx-card-title"><i class="bi bi-list-ul text-primary"></i> Fee Options</h5>
+                    <h5 class="nx-card-title"><i class="bi bi-list-ul tw:text-(color:--nx-blue)!"></i> Fee Options</h5>
                     <p class="nx-card-subtitle">Predefined fee options for this class category</p>
                 </div>
                 <span class="nx-badge nx-badge-blue">
@@ -264,22 +264,22 @@
             </div>
 
             @if ($classCategoryFee->feeOptions->count())
-                <div class="table-responsive">
-                    <table class="table premium-table mb-0">
+                <div class="ui-table-responsive">
+                    <table class="ui-table premium-table tw:mb-0!">
                         <thead>
                             <tr>
                                 <th>Label</th>
-                                <th class="text-end">Fee</th>
-                                <th class="text-center">Default</th>
-                                <th class="text-center">Status</th>
+                                <th class="tw:text-right!">Fee</th>
+                                <th class="tw:text-center!">Default</th>
+                                <th class="tw:text-center!">Status</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($classCategoryFee->feeOptions as $option)
                                 <tr>
                                     <td class="cell-title">{{ $option->label }}</td>
-                                    <td class="text-end cell-title">Rs. {{ number_format($option->fee, 2) }}</td>
-                                    <td class="text-center">
+                                    <td class="tw:text-right! cell-title">Rs. {{ number_format($option->fee, 2) }}</td>
+                                    <td class="tw:text-center!">
                                         @if ($option->is_default)
                                             <span class="nx-badge nx-badge-blue">
                                                 <i class="bi bi-star-fill"></i> Default
@@ -288,7 +288,7 @@
                                             <span class="cell-sub">No</span>
                                         @endif
                                     </td>
-                                    <td class="text-center">
+                                    <td class="tw:text-center!">
                                         @if ($option->is_active)
                                             <span class="nx-badge nx-badge-green">Active</span>
                                         @else
@@ -302,8 +302,8 @@
                 </div>
             @else
                 <div class="empty-table">
-                    <i class="bi bi-cash-stack fs-2 d-block mb-2"></i>
-                    <strong class="d-block">No Fee Options</strong>
+                    <i class="bi bi-cash-stack tw:text-[length:calc(1.325rem_+_0.9vw)]! tw:xl:text-[length:2rem]! tw:block! tw:mb-2!"></i>
+                    <strong class="tw:block!">No Fee Options</strong>
                     <span class="cell-sub">No fee options have been created for this category yet.</span>
                 </div>
             @endif
@@ -312,7 +312,7 @@
         {{-- ===================================================== --}}
         {{-- BOTTOM ACTIONS --}}
         {{-- ===================================================== --}}
-        <div class="d-flex justify-content-end gap-2 flex-wrap">
+        <div class="tw:flex! tw:justify-end! tw:gap-2! tw:flex-wrap!">
             <a href="{{ route('class-category-fees.index') }}" class="nx-btn nx-btn-light">
                 <i class="bi bi-arrow-left"></i> Back to List
             </a>

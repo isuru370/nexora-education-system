@@ -18,7 +18,7 @@
 <div class="dashboard-page">
 
     {{-- HERO --}}
-    <div class="hero-section mb-4">
+    <div class="hero-section tw:mb-6!">
         <div class="hero-content">
             <div class="hero-left">
                 <span class="greeting-badge"><i class="bi bi-bell-fill"></i> Settings</span>
@@ -41,14 +41,14 @@
 
     {{-- ALERTS --}}
     @if (session('success'))
-        <div class="nx-alert nx-alert-green mb-4">
+        <div class="nx-alert nx-alert-green tw:mb-6!">
             <i class="bi bi-check-circle-fill"></i>
             <span>{{ session('success') }}</span>
         </div>
     @endif
 
     @if ($errors->any())
-        <div class="nx-alert nx-alert-red mb-4">
+        <div class="nx-alert nx-alert-red tw:mb-6!">
             <i class="bi bi-exclamation-triangle-fill"></i>
             <span>{{ $errors->first() }}</span>
         </div>
@@ -58,10 +58,10 @@
         @csrf
         @method('PUT')
 
-        <div class="nx-card mb-4">
+        <div class="nx-card tw:mb-6!">
             <div class="nx-card-header">
                 <div>
-                    <h5 class="nx-card-title"><i class="bi bi-sliders text-primary"></i> When to notify parents</h5>
+                    <h5 class="nx-card-title"><i class="bi bi-sliders tw:text-(color:--nx-blue)!"></i> When to notify parents</h5>
                     <p class="nx-card-subtitle">Parent app = free push notification. SMS = reaches every parent, uses SMS credit.</p>
                 </div>
                 <button type="submit" class="nx-btn nx-btn-primary">
@@ -77,13 +77,13 @@
                 @endphp
 
                 <div class="notify-row {{ $enabled ? '' : 'is-off' }}" data-row>
-                    <div class="stat-icon-wrapper {{ $iconColors[$loop->index % count($iconColors)] }} notify-icon">
+                    <div class="stat-icon-wrapper notify-icon {{ $iconColors[$loop->index % count($iconColors)] }}">
                         <i class="bi {{ $icons[$key] ?? 'bi-bell-fill' }}"></i>
                     </div>
 
                     <div class="notify-text">
                         <div class="cell-title">{{ $setting->label }}</div>
-                        <small class="cell-sub d-block">{{ $setting->description }}</small>
+                        <small class="cell-sub tw:block!">{{ $setting->description }}</small>
                         @if ($setting->updatedBy)
                             <small class="cell-sub notify-meta">
                                 Changed by {{ $setting->updatedBy->name }}, {{ $setting->updated_at?->diffForHumans() }}
@@ -97,14 +97,14 @@
                             <span class="nx-badge nx-badge-blue">
                                 <i class="bi bi-chat-dots-fill"></i> SMS only
                             </span>
-                            <small class="cell-sub d-block mt-1">Sends the portal login</small>
+                            <small class="cell-sub tw:block! tw:mt-1!">Sends the portal login</small>
                         @else
                             <div class="channel-toggle" role="radiogroup" aria-label="{{ $setting->label }} channel">
-                                <input type="radio" class="btn-check" name="settings[{{ $key }}][channel]"
+                                <input type="radio" class="ui-btn-check" name="settings[{{ $key }}][channel]"
                                     id="{{ $key }}_push" value="push" {{ $channel === 'push' ? 'checked' : '' }}>
                                 <label for="{{ $key }}_push"><i class="bi bi-phone"></i> Parent app</label>
 
-                                <input type="radio" class="btn-check" name="settings[{{ $key }}][channel]"
+                                <input type="radio" class="ui-btn-check" name="settings[{{ $key }}][channel]"
                                     id="{{ $key }}_sms" value="sms" {{ $channel === 'sms' ? 'checked' : '' }}>
                                 <label for="{{ $key }}_sms"><i class="bi bi-chat-dots"></i> SMS</label>
                             </div>
@@ -113,11 +113,11 @@
 
                     <div class="notify-switch">
                         <input type="hidden" name="settings[{{ $key }}][is_enabled]" value="0">
-                        <div class="form-check form-switch m-0">
-                            <input class="form-check-input" type="checkbox" role="switch" data-switch
+                        <div class="ui-form-check ui-form-switch tw:m-0!">
+                            <input class="ui-form-check-input" type="checkbox" role="switch" data-switch
                                 id="{{ $key }}_enabled" name="settings[{{ $key }}][is_enabled]" value="1"
                                 {{ $enabled ? 'checked' : '' }}>
-                            <label class="form-check-label cell-sub" for="{{ $key }}_enabled" data-switch-label>
+                            <label class="ui-form-check-label cell-sub" for="{{ $key }}_enabled" data-switch-label>
                                 {{ $enabled ? 'On' : 'Off' }}
                             </label>
                         </div>
@@ -125,8 +125,8 @@
                 </div>
             @empty
                 <div class="empty-table">
-                    <i class="bi bi-bell-slash fs-2 d-block mb-2"></i>
-                    <strong class="d-block">No notification settings yet</strong>
+                    <i class="bi bi-bell-slash tw:text-[length:calc(1.325rem_+_0.9vw)]! tw:xl:text-[length:2rem]! tw:block! tw:mb-2!"></i>
+                    <strong class="tw:block!">No notification settings yet</strong>
                     <span class="cell-sub">Run <code>php artisan migrate</code> (or <code>php artisan nexora:deploy</code>).</span>
                 </div>
             @endforelse
@@ -136,10 +136,10 @@
         @php
             $salaryEmailOn = (bool) old('teacher_salary_email', $teacherSalaryEmail);
         @endphp
-        <div class="nx-card mb-4">
+        <div class="nx-card tw:mb-6!">
             <div class="nx-card-header">
                 <div>
-                    <h5 class="nx-card-title"><i class="bi bi-envelope-fill text-primary"></i> Teacher emails</h5>
+                    <h5 class="nx-card-title"><i class="bi bi-envelope-fill tw:text-(color:--nx-blue)!"></i> Teacher emails</h5>
                     <p class="nx-card-subtitle">Sent from the institute name to the teacher's email address.</p>
                 </div>
             </div>
@@ -151,7 +151,7 @@
 
                 <div class="notify-text">
                     <div class="cell-title">Email salary slip to teacher</div>
-                    <small class="cell-sub d-block">
+                    <small class="cell-sub tw:block!">
                         When a salary is paid, the teacher gets the salary slip and the Student Payments
                         (by collection date) report of that branch as PDFs. Teachers without an email are skipped.
                     </small>
@@ -163,11 +163,11 @@
 
                 <div class="notify-switch">
                     <input type="hidden" name="teacher_salary_email" value="0">
-                    <div class="form-check form-switch m-0">
-                        <input class="form-check-input" type="checkbox" role="switch" data-switch
+                    <div class="ui-form-check ui-form-switch tw:m-0!">
+                        <input class="ui-form-check-input" type="checkbox" role="switch" data-switch
                             id="teacher_salary_email" name="teacher_salary_email" value="1"
                             {{ $salaryEmailOn ? 'checked' : '' }}>
-                        <label class="form-check-label cell-sub" for="teacher_salary_email" data-switch-label>
+                        <label class="ui-form-check-label cell-sub" for="teacher_salary_email" data-switch-label>
                             {{ $salaryEmailOn ? 'On' : 'Off' }}
                         </label>
                     </div>
@@ -180,7 +180,7 @@
         <i class="bi bi-info-circle-fill"></i>
         <div>
             <strong>Good to know</strong>
-            <ul class="mb-0 mt-1 ps-3">
+            <ul class="tw:mb-0! tw:mt-1! tw:pl-4!">
                 <li>Parent app notifications only reach parents who installed the app and logged in.</li>
                 <li>SMS is sent by the queue worker: <code>php artisan queue:work --queue=sms,default</code> must be running.</li>
                 <li>A failed notification never stops a registration, payment or attendance from being saved.</li>
@@ -233,20 +233,20 @@
         white-space: nowrap;
         margin: 0;
     }
-    .dashboard-page .channel-toggle .btn-check:checked + label {
+    .dashboard-page .channel-toggle .ui-btn-check:checked + label {
         background: var(--nx-card-bg);
         color: var(--nx-blue);
         box-shadow: var(--nx-shadow);
     }
-    .dashboard-page .channel-toggle .btn-check:focus-visible + label {
+    .dashboard-page .channel-toggle .ui-btn-check:focus-visible + label {
         outline: 2px solid var(--nx-blue);
         outline-offset: 1px;
     }
-    .dashboard-page .channel-toggle .btn-check:disabled + label { cursor: not-allowed; }
+    .dashboard-page .channel-toggle .ui-btn-check:disabled + label { cursor: not-allowed; }
 
     .dashboard-page .notify-switch { justify-self: end; }
-    .dashboard-page .notify-switch .form-check-input { width: 2.6em; height: 1.35em; cursor: pointer; }
-    .dashboard-page .notify-switch .form-check-label { min-width: 26px; font-weight: 700; }
+    .dashboard-page .notify-switch .ui-form-check-input { width: 2.6em; height: 1.35em; cursor: pointer; }
+    .dashboard-page .notify-switch .ui-form-check-label { min-width: 26px; font-weight: 700; }
 
     @media (max-width: 768px) {
         .dashboard-page .notify-row {

@@ -29,15 +29,15 @@
 @endphp
 
 @if($errors->any())
-    <div class="alert alert-danger alert-dismissible fade show mb-4" role="alert">
-        <i class="bi bi-exclamation-triangle-fill me-2"></i>
+    <div class="ui-alert ui-alert-danger ui-alert-dismissible ui-fade show tw:mb-6!" role="alert">
+        <i class="bi bi-exclamation-triangle-fill tw:mr-2!"></i>
         <strong>Please fix the following errors:</strong>
-        <ul class="mb-0 mt-2">
+        <ul class="tw:mb-0! tw:mt-2!">
             @foreach($errors->all() as $error)
                 <li>{{ $error }}</li>
             @endforeach
         </ul>
-        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        <button type="button" class="ui-btn-close" data-nx-dismiss="alert"></button>
     </div>
 @endif
 
@@ -49,30 +49,30 @@
         @method('PUT')
     @endif
 
-    <div class="row g-4">
+    <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3">
 
         {{-- ================================================== --}}
         {{-- CLASS INFORMATION --}}
         {{-- ================================================== --}}
-        <div class="col-12">
-            <div class="section-card p-4">
+        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:flex-[0_0_auto] tw:w-[100%]">
+            <div class="section-card tw:p-6!">
                 <h6 class="section-title">
-                    <i class="bi bi-journal-bookmark me-2"></i> Class Information
+                    <i class="bi bi-journal-bookmark tw:mr-2!"></i> Class Information
                 </h6>
 
-                <div class="row g-3">
+                <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2">
 
                     {{-- ✅ Branch --}}
-                    <div class="col-md-6">
-                        <label for="branch_id" class="form-label fw-semibold">
-                            <i class="bi bi-building me-1"></i>
-                            Branch <span class="text-danger">*</span>
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
+                        <label for="branch_id" class="ui-form-label tw:font-semibold!">
+                            <i class="bi bi-building tw:mr-1!"></i>
+                            Branch <span class="tw:text-bs-danger!">*</span>
                         </label>
 
                         <select
                             name="branch_id"
                             id="branch_id"
-                            class="form-select custom-input @error('branch_id') is-invalid @enderror"
+                            class="ui-form-select custom-input @error('branch_id') ui-is-invalid @enderror"
                             required
                         >
                             <option value="">Select Branch</option>
@@ -91,69 +91,69 @@
                         </select>
 
                         @error('branch_id')
-                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                            <div class="ui-invalid-feedback tw:block!">{{ $message }}</div>
                         @enderror
                     </div>
 
                     {{-- Class Name --}}
-                    <div class="col-md-6">
-                        <label class="form-label fw-semibold">
-                            <i class="bi bi-book me-1"></i>
-                            Class Name <span class="text-danger">*</span>
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
+                        <label class="ui-form-label tw:font-semibold!">
+                            <i class="bi bi-book tw:mr-1!"></i>
+                            Class Name <span class="tw:text-bs-danger!">*</span>
                         </label>
                         <input
                             type="text"
                             name="class_name"
-                            class="form-control custom-input @error('class_name') is-invalid @enderror"
+                            class="ui-form-control custom-input @error('class_name') ui-is-invalid @enderror"
                             value="{{ old('class_name', $studentClass->class_name ?? '') }}"
                             required
                             placeholder="Enter class name">
                         @error('class_name')
-                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                            <div class="ui-invalid-feedback tw:block!">{{ $message }}</div>
                         @enderror
                     </div>
 
                     {{-- Class Type --}}
-                    <div class="col-md-6">
-                        <label class="form-label fw-semibold">
-                            <i class="bi bi-laptop me-1"></i>
-                            Class Type <span class="text-danger">*</span>
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
+                        <label class="ui-form-label tw:font-semibold!">
+                            <i class="bi bi-laptop tw:mr-1!"></i>
+                            Class Type <span class="tw:text-bs-danger!">*</span>
                         </label>
-                        <select name="class_type" class="form-select custom-input @error('class_type') is-invalid @enderror" required>
+                        <select name="class_type" class="ui-form-select custom-input @error('class_type') ui-is-invalid @enderror" required>
                             <option value="offline" {{ $selectedClassType === 'offline' ? 'selected="selected"' : '' }}>Offline</option>
                             <option value="online" {{ $selectedClassType === 'online' ? 'selected="selected"' : '' }}>Online</option>
                             <option value="hybrid" {{ $selectedClassType === 'hybrid' ? 'selected="selected"' : '' }}>Hybrid</option>
                         </select>
                         @error('class_type')
-                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                            <div class="ui-invalid-feedback tw:block!">{{ $message }}</div>
                         @enderror
                     </div>
 
                     {{-- Medium --}}
-                    <div class="col-md-6">
-                        <label class="form-label fw-semibold">
-                            <i class="bi bi-translate me-1"></i>
-                            Medium <span class="text-danger">*</span>
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
+                        <label class="ui-form-label tw:font-semibold!">
+                            <i class="bi bi-translate tw:mr-1!"></i>
+                            Medium <span class="tw:text-bs-danger!">*</span>
                         </label>
                         <input
                             type="text"
                             name="medium"
-                            class="form-control custom-input @error('medium') is-invalid @enderror"
+                            class="ui-form-control custom-input @error('medium') ui-is-invalid @enderror"
                             value="{{ old('medium', $studentClass->medium ?? 'Sinhala') }}"
                             required
                             placeholder="Sinhala / English / Tamil">
                         @error('medium')
-                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                            <div class="ui-invalid-feedback tw:block!">{{ $message }}</div>
                         @enderror
                     </div>
 
                     {{-- Teacher --}}
-                    <div class="col-md-6">
-                        <label class="form-label fw-semibold">
-                            <i class="bi bi-person-workspace me-1"></i>
-                            Teacher <span class="text-danger">*</span>
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
+                        <label class="ui-form-label tw:font-semibold!">
+                            <i class="bi bi-person-workspace tw:mr-1!"></i>
+                            Teacher <span class="tw:text-bs-danger!">*</span>
                         </label>
-                        <select name="teacher_id" class="form-select custom-input @error('teacher_id') is-invalid @enderror" required>
+                        <select name="teacher_id" class="ui-form-select custom-input @error('teacher_id') ui-is-invalid @enderror" required>
                             <option value="">Select Teacher</option>
                             @foreach($teachers as $teacher)
                                 <option value="{{ $teacher->id }}" {{ $selectedTeacherId == $teacher->id ? 'selected="selected"' : '' }}>
@@ -162,17 +162,17 @@
                             @endforeach
                         </select>
                         @error('teacher_id')
-                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                            <div class="ui-invalid-feedback tw:block!">{{ $message }}</div>
                         @enderror
                     </div>
 
                     {{-- Grade --}}
-                    <div class="col-md-6">
-                        <label class="form-label fw-semibold">
-                            <i class="bi bi-mortarboard me-1"></i>
-                            Grade <span class="text-danger">*</span>
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
+                        <label class="ui-form-label tw:font-semibold!">
+                            <i class="bi bi-mortarboard tw:mr-1!"></i>
+                            Grade <span class="tw:text-bs-danger!">*</span>
                         </label>
-                        <select name="grade_id" class="form-select custom-input @error('grade_id') is-invalid @enderror">
+                        <select name="grade_id" class="ui-form-select custom-input @error('grade_id') ui-is-invalid @enderror">
                             <option value="">Select Grade</option>
                             @foreach($grades as $grade)
                                 <option value="{{ $grade->id }}" {{ $selectedGradeId == $grade->id ? 'selected="selected"' : '' }}>
@@ -181,29 +181,29 @@
                             @endforeach
                         </select>
 
-                        <div class="mt-2">
+                        <div class="tw:mt-2!">
                             <input
                                 type="text"
                                 name="new_grade"
-                                class="form-control custom-input @error('new_grade') is-invalid @enderror"
+                                class="ui-form-control custom-input @error('new_grade') ui-is-invalid @enderror"
                                 value="{{ old('new_grade') }}"
                                 placeholder="Or add new grade">
                             @error('new_grade')
-                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                <div class="ui-invalid-feedback tw:block!">{{ $message }}</div>
                             @enderror
                         </div>
                         @error('grade_id')
-                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                            <div class="ui-invalid-feedback tw:block!">{{ $message }}</div>
                         @enderror
                     </div>
 
                     {{-- Subject --}}
-                    <div class="col-md-6">
-                        <label class="form-label fw-semibold">
-                            <i class="bi bi-bookmark me-1"></i>
-                            Subject <span class="text-danger">*</span>
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
+                        <label class="ui-form-label tw:font-semibold!">
+                            <i class="bi bi-bookmark tw:mr-1!"></i>
+                            Subject <span class="tw:text-bs-danger!">*</span>
                         </label>
-                        <select name="subject_id" class="form-select custom-input @error('subject_id') is-invalid @enderror">
+                        <select name="subject_id" class="ui-form-select custom-input @error('subject_id') ui-is-invalid @enderror">
                             <option value="">Select Subject</option>
                             @foreach($subjects as $subject)
                                 <option value="{{ $subject->id }}" {{ $selectedSubjectId == $subject->id ? 'selected="selected"' : '' }}>
@@ -212,19 +212,19 @@
                             @endforeach
                         </select>
 
-                        <div class="mt-2">
+                        <div class="tw:mt-2!">
                             <input
                                 type="text"
                                 name="new_subject"
-                                class="form-control custom-input @error('new_subject') is-invalid @enderror"
+                                class="ui-form-control custom-input @error('new_subject') ui-is-invalid @enderror"
                                 value="{{ old('new_subject') }}"
                                 placeholder="Or add new subject">
                             @error('new_subject')
-                                <div class="invalid-feedback d-block">{{ $message }}</div>
+                                <div class="ui-invalid-feedback tw:block!">{{ $message }}</div>
                             @enderror
                         </div>
                         @error('subject_id')
-                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                            <div class="ui-invalid-feedback tw:block!">{{ $message }}</div>
                         @enderror
                     </div>
 
@@ -235,64 +235,64 @@
         {{-- ================================================== --}}
         {{-- PAYMENT CONFIGURATION --}}
         {{-- ================================================== --}}
-        <div class="col-12">
-            <div class="section-card p-4">
+        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:flex-[0_0_auto] tw:w-[100%]">
+            <div class="section-card tw:p-6!">
                 <h6 class="section-title">
-                    <i class="bi bi-cash-coin me-2"></i> Payment Configuration
+                    <i class="bi bi-cash-coin tw:mr-2!"></i> Payment Configuration
                 </h6>
 
-                <div class="row g-3">
-                    <div class="col-md-4">
-                        <label class="form-label fw-semibold">Teacher Percentage *</label>
+                <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
+                        <label class="ui-form-label tw:font-semibold!">Teacher Percentage *</label>
                         <input
                             type="number"
                             step="0.01"
                             min="0"
                             max="100"
                             name="teacher_percentage"
-                            class="form-control custom-input @error('teacher_percentage') is-invalid @enderror"
+                            class="ui-form-control custom-input @error('teacher_percentage') ui-is-invalid @enderror"
                             value="{{ old('teacher_percentage', $paymentConfig->teacher_percentage ?? '') }}"
                             required>
                         @error('teacher_percentage')
-                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                            <div class="ui-invalid-feedback tw:block!">{{ $message }}</div>
                         @enderror
                     </div>
 
-                    <div class="col-md-4">
-                        <label class="form-label fw-semibold">Organizer Percentage</label>
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
+                        <label class="ui-form-label tw:font-semibold!">Organizer Percentage</label>
                         <input
                             type="number"
                             step="0.01"
                             min="0"
                             max="100"
                             name="organizer_percentage"
-                            class="form-control custom-input @error('organizer_percentage') is-invalid @enderror"
+                            class="ui-form-control custom-input @error('organizer_percentage') ui-is-invalid @enderror"
                             value="{{ old('organizer_percentage', $paymentConfig->organizer_percentage ?? 0) }}">
-                        <small class="text-muted">If there is no organizer, put 0.</small>
+                        <small class="tw:text-bs-secondary-color!">If there is no organizer, put 0.</small>
                         @error('organizer_percentage')
-                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                            <div class="ui-invalid-feedback tw:block!">{{ $message }}</div>
                         @enderror
                     </div>
 
-                    <div class="col-md-4">
-                        <label class="form-label fw-semibold">Institution Percentage *</label>
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
+                        <label class="ui-form-label tw:font-semibold!">Institution Percentage *</label>
                         <input
                             type="number"
                             step="0.01"
                             min="0"
                             max="100"
                             name="institution_percentage"
-                            class="form-control custom-input @error('institution_percentage') is-invalid @enderror"
+                            class="ui-form-control custom-input @error('institution_percentage') ui-is-invalid @enderror"
                             value="{{ old('institution_percentage', $paymentConfig->institution_percentage ?? '') }}"
                             required>
                         @error('institution_percentage')
-                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                            <div class="ui-invalid-feedback tw:block!">{{ $message }}</div>
                         @enderror
                     </div>
 
-                    <div class="col-md-4">
-                        <label class="form-label fw-semibold">Organizer</label>
-                        <select name="organizer_id" class="form-select custom-input @error('organizer_id') is-invalid @enderror">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
+                        <label class="ui-form-label tw:font-semibold!">Organizer</label>
+                        <select name="organizer_id" class="ui-form-select custom-input @error('organizer_id') ui-is-invalid @enderror">
                             <option value="">None</option>
                             @foreach($organizers as $organizer)
                                 <option value="{{ $organizer->id }}" {{ $selectedOrganizerId == $organizer->id ? 'selected="selected"' : '' }}>
@@ -301,31 +301,31 @@
                             @endforeach
                         </select>
                         @error('organizer_id')
-                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                            <div class="ui-invalid-feedback tw:block!">{{ $message }}</div>
                         @enderror
                     </div>
 
-                    <div class="col-md-4">
-                        <label class="form-label fw-semibold">Effective From</label>
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
+                        <label class="ui-form-label tw:font-semibold!">Effective From</label>
                         <input
                             type="date"
                             name="effective_from"
-                            class="form-control custom-input @error('effective_from') is-invalid @enderror"
+                            class="ui-form-control custom-input @error('effective_from') ui-is-invalid @enderror"
                             value="{{ $effectiveFrom }}">
                         @error('effective_from')
-                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                            <div class="ui-invalid-feedback tw:block!">{{ $message }}</div>
                         @enderror
                     </div>
 
-                    <div class="col-md-4">
-                        <label class="form-label fw-semibold">Effective To</label>
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
+                        <label class="ui-form-label tw:font-semibold!">Effective To</label>
                         <input
                             type="date"
                             name="effective_to"
-                            class="form-control custom-input @error('effective_to') is-invalid @enderror"
+                            class="ui-form-control custom-input @error('effective_to') ui-is-invalid @enderror"
                             value="{{ $effectiveTo }}">
                         @error('effective_to')
-                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                            <div class="ui-invalid-feedback tw:block!">{{ $message }}</div>
                         @enderror
                     </div>
                 </div>
@@ -344,17 +344,17 @@
             // students on each saved option (old() does not carry it)
             $studentsOn = collect($feeBlocksSaved)->flatMap(fn ($b) => collect($b['options'])->mapWithKeys(fn ($o) => [$o['id'] => $o['students']]))->all();
         @endphp
-        <div class="col-12">
-            <div class="section-card p-4">
-                <div class="d-flex justify-content-between align-items-start flex-wrap gap-2 mb-3">
-                    <h6 class="section-title mb-0">
-                        <i class="bi bi-tags me-2"></i> Categories &amp; Fees *
+        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:flex-[0_0_auto] tw:w-[100%]">
+            <div class="section-card tw:p-6!">
+                <div class="tw:flex! tw:justify-between! tw:items-start! tw:flex-wrap! tw:gap-2! tw:mb-4!">
+                    <h6 class="section-title tw:mb-0!">
+                        <i class="bi bi-tags tw:mr-2!"></i> Categories &amp; Fees *
                     </h6>
-                    <small class="text-muted">Each category needs at least one fee option. ★ = the default option.</small>
+                    <small class="tw:text-bs-secondary-color!">Each category needs at least one fee option. ★ = the default option.</small>
                 </div>
 
                 @error('fees')
-                    <div class="alert alert-danger py-2">{{ $message }}</div>
+                    <div class="ui-alert ui-alert-danger tw:py-2!">{{ $message }}</div>
                 @enderror
 
                 <div id="feeBlocks" data-next="{{ count($feeBlocks) }}">
@@ -363,8 +363,8 @@
                     @endforeach
                 </div>
 
-                <button type="button" class="btn btn-outline-primary custom-btn mt-2" data-add-block>
-                    <i class="bi bi-plus-lg me-1"></i> Add category
+                <button type="button" class="ui-btn ui-btn-outline-primary custom-btn tw:mt-2!" data-add-block>
+                    <i class="bi bi-plus-lg tw:mr-1!"></i> Add category
                 </button>
 
                 <template id="feeBlockTemplate">
@@ -379,34 +379,34 @@
         {{-- ================================================== --}}
         {{-- STATUS --}}
         {{-- ================================================== --}}
-        <div class="col-12">
-            <div class="section-card p-4">
+        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:flex-[0_0_auto] tw:w-[100%]">
+            <div class="section-card tw:p-6!">
                 <h6 class="section-title">
-                    <i class="bi bi-toggle-on me-2"></i> Status
+                    <i class="bi bi-toggle-on tw:mr-2!"></i> Status
                 </h6>
 
-                <div class="d-flex gap-4 flex-wrap">
-                    <div class="form-check form-switch">
+                <div class="tw:flex! tw:gap-6! tw:flex-wrap!">
+                    <div class="ui-form-check ui-form-switch">
                         <input
                             type="checkbox"
                             name="is_active"
                             value="1"
                             id="is_active"
-                            class="form-check-input"
+                            class="ui-form-check-input"
                             {{ $selectedIsActive ? 'checked="checked"' : '' }}>
-                        <label for="is_active" class="form-check-label fw-semibold">Active</label>
+                        <label for="is_active" class="ui-form-check-label tw:font-semibold!">Active</label>
                     </div>
 
-                    <div class="form-check form-switch">
+                    <div class="ui-form-check ui-form-switch">
                         <input
                             type="checkbox"
                             name="is_ongoing"
                             value="1"
                             disabled
                             id="is_ongoing"
-                            class="form-check-input"
+                            class="ui-form-check-input"
                             {{ $selectedIsOngoing ? 'checked="checked"' : '' }}>
-                        <label for="is_ongoing" class="form-check-label fw-semibold">Ongoing Class</label>
+                        <label for="is_ongoing" class="ui-form-check-label tw:font-semibold!">Ongoing Class</label>
                     </div>
                 </div>
             </div>
@@ -415,12 +415,12 @@
         {{-- ================================================== --}}
         {{-- BUTTONS --}}
         {{-- ================================================== --}}
-        <div class="col-12 d-flex justify-content-end gap-2 pt-2">
-            <a href="{{ route('student-classes.index') }}" class="btn btn-outline-secondary px-4 custom-btn">
-                <i class="bi bi-x-lg me-1"></i> Cancel
+        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:flex-[0_0_auto] tw:w-[100%] tw:flex! tw:justify-end! tw:gap-2! tw:pt-2!">
+            <a href="{{ route('student-classes.index') }}" class="ui-btn ui-btn-outline-secondary tw:px-6! custom-btn">
+                <i class="bi bi-x-lg tw:mr-1!"></i> Cancel
             </a>
-            <button type="submit" class="btn btn-primary px-4 custom-btn">
-                <i class="bi bi-save me-1"></i> {{ $buttonText ?? 'Save Class' }}
+            <button type="submit" class="ui-btn ui-btn-primary tw:px-6! custom-btn">
+                <i class="bi bi-save tw:mr-1!"></i> {{ $buttonText ?? 'Save Class' }}
             </button>
         </div>
 
@@ -474,7 +474,7 @@
     }
 
     /* Branch dropdown - icon alignment */
-    .form-label i {
+    .ui-form-label i {
         opacity: 0.7;
     }
 </style>

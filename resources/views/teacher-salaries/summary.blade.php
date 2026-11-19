@@ -1,1052 +1,234 @@
 @extends('layouts.app')
 
-@section('title', 'Class-wise Payment Summary')
-@section('page-title', 'Class-wise Payment Summary')
+@section('title', 'Salary Breakdown')
+@section('page-title', 'Salary Breakdown')
 
 @section('content')
+    @include('partials.report-page-styles')
 
     @php
-        $teacherTotal = $data['teacher_total'] ?? 0;
-        $totalStudentCount = $data['total_student_count'] ?? 0;
-        $totalClassCount = $data['total_class_count'] ?? 0;
-
-        $reportMonthName = \Carbon\Carbon::create($year, $month, 1)->format('F Y');
+        $teacher = $data['teacher'];
+        $t = $data['totals'];
+        $money = fn ($value) => number_format((float) $value, 2);
+        $routeParams = ['teacher' => $teacherId, 'year' => $year, 'month' => $month, 'branch_id' => $branchId];
+        $monthStart = \Carbon\Carbon::create($year, $month, 1);
     @endphp
 
-
-    <div class="class-payment-summary-page">
-
-        <!-- HERO -->
-        <div class="hero-card mb-4">
-
-            <div class="hero-content">
-
-                <div>
-
-                    <a href="{{ route('teacher-salaries.show', ['teacher' => $teacherId, 'year' => $year, 'month' => $month, 'branch_id' => $branchId]) }}"
-                        class="btn btn-outline-secondary custom-btn mb-3">
-
-                        <i class="bi bi-arrow-left me-1"></i>
-
-                        Back to Salary Report
-
-                    </a>
-
-
-                    <h3 class="fw-bold mb-1">
-                        Class-wise Payment Summary
-                    </h3>
-
-
-                    <p class="text-muted mb-0">
-
-                        Payment details for {{ $reportMonthName }}
-
-                    </p>
-
-                </div>
-
-
-                <div class="hero-actions">
-
-                    <button onclick="window.print()" class="btn btn-primary custom-btn">
-
-                        <i class="bi bi-printer me-1"></i>
-
-                        Print Report
-
-                    </button>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- STATS -->
-
-        <div class="row g-4 mb-4">
-
-            <div class="col-xl-3 col-md-6">
-
-                <div class="summary-card summary-blue">
-
-                    <div class="card-body">
-
-                        <i class="bi bi-cash-stack summary-icon"></i>
-
-                        <h6>
-                            Teacher Total
-                        </h6>
-
-                        <h3>
-                            LKR {{ number_format($teacherTotal, 2) }}
-                        </h3>
-
-                        <small class="summary-sub">
-
-                            Teacher income for
-                            {{ \Carbon\Carbon::create($year, $month, 1)->format('F') }}
-
-                        </small>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <div class="col-xl-3 col-md-6">
-
-                <div class="summary-card summary-green">
-
-                    <div class="card-body">
-
-                        <i class="bi bi-people-fill summary-icon"></i>
-
-                        <h6>
-                            Total Students
-                        </h6>
-
-                        <h3>
-                            {{ number_format($totalStudentCount) }}
-                        </h3>
-
-                        <small class="summary-sub">
-
-                            Across {{ $totalClassCount }} classes
-
-                        </small>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <div class="col-xl-3 col-md-6">
-
-                <div class="summary-card summary-orange">
-
-                    <div class="card-body">
-
-                        <i class="bi bi-grid-3x3-gap-fill summary-icon"></i>
-
-                        <h6>
-                            Total Classes
-                        </h6>
-
-                        <h3>
-                            {{ number_format($totalClassCount) }}
-                        </h3>
-
-                        <small class="summary-sub">
-                            Active classes
-                        </small>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <div class="col-xl-3 col-md-6">
-
-                <div class="summary-card summary-primary">
-
-                    <div class="card-body">
-
-                        <i class="bi bi-calendar-event summary-icon"></i>
-
-                        <h6>
-                            Reporting Month
-                        </h6>
-
-                        <h3>
-                            {{ \Carbon\Carbon::create($year, $month, 1)->format('M Y') }}
-                        </h3>
-
-                        <small class="summary-sub">
-                            Payment summary
-                        </small>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-        </div>
-
-
-        <!-- MAIN CARD -->
-
-        <div class="main-card">
-
-            <div class="main-card-header">
-
-                <div>
-
-                    <h4>
-                        Class Breakdown
-                    </h4>
-
-                    <p>
-                        Monthly payment summary by class and category
-                    </p>
-
-                </div>
-
-
-                <div class="header-badge">
-
-                    {{ count($data['classes'] ?? []) }} Classes
-
-                </div>
-
-            </div>
-
-
-            <div class="row g-4" id="classesGrid">
-
-                @forelse($data['classes'] ?? [] as $class)
-
-                    <div class="col-md-6 col-lg-4">
-
-                        <div class="class-card h-100">
-
-
-                            <!-- CLASS HEADER -->
-
-                            <div class="class-card-header">
-
-                                <div>
-
-                                    <h5 class="fw-bold mb-1">
-
-                                        {{ $class['class_name'] }}
-
-                                    </h5>
-
-
-                                    @if (!empty($class['grade_name']))
-                                        <div class="text-muted fw-semibold">
-
-                                            Grade:
-                                            {{ $class['grade_name'] }}
-
-                                        </div>
-                                    @endif
-
-
-                                    <p class="text-muted small mb-0 mt-1">
-
-                                        <i class="bi bi-people-fill me-1"></i>
-
-                                        Total Students:
-                                        {{ $class['total_students'] }}
-
-                                    </p>
-
-                                </div>
-
-
-                                <span class="badge bg-primary custom-badge">
-
-                                    LKR {{ number_format($class['class_total'], 2) }}
-
-                                </span>
-
-                            </div>
-
-
-                            <!-- CATEGORIES -->
-
-                            @if (!empty($class['categories']) && count($class['categories']) > 0)
-                                <div class="mb-3">
-
-                                    <small class="text-muted d-block mb-2 fw-semibold">
-
-                                        Categories Breakdown
-
-                                    </small>
-
-
-                                    <div class="row g-2">
-
-                                        @foreach ($class['categories'] as $category)
-                                            @php
-
-                                                /*
-                                                |--------------------------------------------------------------------------
-                                                | NEW FEE OPTION ARCHITECTURE
-                                                |--------------------------------------------------------------------------
-                                                */
-
-                                                $feeOptions = $category['fee_options'] ?? [];
-
-                                                $expectedTotal = (float) ($category['expected_total'] ?? 0);
-
-                                                $categoryTotal = (float) ($category['category_total'] ?? 0);
-
-                                                $collectedPercent =
-                                                    $expectedTotal > 0 ? ($categoryTotal / $expectedTotal) * 100 : 0;
-
-                                                if ($collectedPercent > 100) {
-                                                    $collectedPercent = 100;
-                                                }
-
-                                            @endphp
-
-
-                                            <div class="col-12">
-
-                                                <div class="category-item">
-
-
-                                                    <!-- CATEGORY NAME -->
-
-                                                    <div class="d-flex justify-content-between align-items-center mb-2">
-
-                                                        <strong class="small">
-
-                                                            {{ $category['category_name'] }}
-
-                                                        </strong>
-
-
-                                                        <span class="badge bg-secondary custom-badge">
-
-                                                            {{ $category['student_count'] }}
-                                                            Students
-
-                                                        </span>
-
-                                                    </div>
-
-
-                                                    <!-- PAYMENT STATUS -->
-
-                                                    <div class="d-flex flex-wrap gap-1 mb-2">
-
-
-                                                        @if (($category['paid_students'] ?? 0) > 0)
-                                                            <span class="badge bg-success custom-badge">
-
-                                                                <i class="bi bi-check-circle-fill me-1"></i>
-
-                                                                Paid:
-                                                                {{ $category['paid_students'] }}
-
-                                                            </span>
-                                                        @endif
-
-
-                                                        @if (($category['partial_students'] ?? 0) > 0)
-                                                            <span class="badge bg-warning text-dark custom-badge">
-
-                                                                <i class="bi bi-exclamation-triangle-fill me-1"></i>
-
-                                                                Partial:
-                                                                {{ $category['partial_students'] }}
-
-                                                            </span>
-                                                        @endif
-
-
-                                                        @if (($category['free_card_students'] ?? 0) > 0)
-                                                            <span class="badge bg-info custom-badge">
-
-                                                                <i class="bi bi-gift-fill me-1"></i>
-
-                                                                Free:
-                                                                {{ $category['free_card_students'] }}
-
-                                                            </span>
-                                                        @endif
-
-
-                                                        @if (($category['unpaid_students'] ?? 0) > 0)
-                                                            <span class="badge bg-danger custom-badge">
-
-                                                                <i class="bi bi-x-circle-fill me-1"></i>
-
-                                                                Unpaid:
-                                                                {{ $category['unpaid_students'] }}
-
-                                                            </span>
-                                                        @endif
-
-                                                    </div>
-
-
-                                                    <!-- FEE OPTIONS -->
-
-                                                    @if (count($feeOptions) > 0)
-                                                        <div class="fee-options-box mb-2">
-
-                                                            <div class="small text-muted fw-semibold mb-2">
-
-                                                                Fee Options
-
-                                                            </div>
-
-
-                                                            @foreach ($feeOptions as $option)
-                                                                <div class="fee-option-row">
-
-                                                                    <span>
-
-                                                                        {{ $option['label'] ?? 'Fee Option' }}
-
-                                                                    </span>
-
-
-                                                                    <strong>
-
-                                                                        LKR
-                                                                        {{ number_format((float) ($option['fee'] ?? 0), 2) }}
-
-                                                                    </strong>
-
-                                                                </div>
-                                                            @endforeach
-
-                                                        </div>
-                                                    @else
-                                                        <div class="alert alert-warning py-2 px-3 mb-2">
-
-                                                            <small>
-
-                                                                No active fee options found.
-
-                                                            </small>
-
-                                                        </div>
-                                                    @endif
-
-
-                                                    <!-- COLLECTION -->
-
-                                                    <div class="d-flex justify-content-between small text-muted">
-
-                                                        <span>
-
-                                                            Expected:
-                                                            LKR {{ number_format($expectedTotal, 2) }}
-
-                                                        </span>
-
-
-                                                        <span class="text-success fw-semibold">
-
-                                                            Collected:
-                                                            LKR {{ number_format($categoryTotal, 2) }}
-
-                                                        </span>
-
-                                                    </div>
-
-
-                                                    <!-- PROGRESS -->
-
-                                                    <div class="progress mt-2" style="height: 6px;">
-
-                                                        <div class="progress-bar bg-success" role="progressbar"
-                                                            style="width: {{ $collectedPercent }}%">
-
-                                                        </div>
-
-                                                    </div>
-
-
-                                                    <!-- VIEW STUDENTS -->
-
-                                                    <div class="mt-3">
-
-                                                        <a href="{{ route('student-class-enrollments.category-wise-payment', [
-                                                            'class' => $class['class_id'],
-                                                            'classCategoryFee' => $category['category_fee_id'],
-                                                            'year' => $year,
-                                                            'month' => $month,
-                                                        ]) }}"
-                                                            class="btn btn-outline-info btn-sm w-100 custom-btn">
-
-                                                            <i class="bi bi-eye me-1"></i>
-
-                                                            View
-                                                            {{ $category['category_name'] }}
-                                                            Students
-
-                                                        </a>
-
-                                                    </div>
-
-
-                                                </div>
-
-                                            </div>
-                                        @endforeach
-
-                                    </div>
-
-                                </div>
+    <div class="rp-page tw:space-y-6">
+
+        {{-- HEADER --}}
+        <div class="rp-card">
+            <div class="tw:flex tw:flex-wrap tw:items-center tw:justify-between tw:gap-4">
+                <div class="tw:flex tw:items-center tw:gap-4">
+                    <div class="rp-avatar">{{ strtoupper(substr($teacher->full_name, 0, 1)) }}</div>
+                    <div>
+                        <h3 class="rp-title">{{ $teacher->full_name }}</h3>
+                        <p class="rp-sub">
+                            Salary breakdown • {{ $data['month_label'] }}
+                            @if ($data['branch']) • {{ $data['branch']->name }} @endif
+                            •
+                            @if ($data['is_paid'])
+                                <span class="rp-chip rp-chip-paid">Paid {{ $data['paid_at']?->format('d M Y, h:i A') }}</span>
                             @else
-                                <div class="alert alert-light text-center py-3 mb-3">
-
-                                    <i class="bi bi-folder2-open me-1"></i>
-
-                                    <small class="text-muted d-block">
-
-                                        No categories assigned
-
-                                    </small>
-
-                                </div>
+                                <span class="rp-chip rp-chip-partial">Not paid yet</span>
                             @endif
-
-
-                            <!-- CLASS COLLECTION -->
-
-                            @php
-
-                                $totalPaid = collect($class['categories'] ?? [])->sum('paid_students');
-
-                                $totalPartial = collect($class['categories'] ?? [])->sum('partial_students');
-
-                                $totalWithPayment = $totalPaid + $totalPartial;
-
-                                $classStudentCount = (int) ($class['total_students'] ?? 0);
-
-                                $paidPercent =
-                                    $classStudentCount > 0 ? ($totalWithPayment / $classStudentCount) * 100 : 0;
-
-                                if ($paidPercent > 100) {
-                                    $paidPercent = 100;
-                                }
-                            @endphp
-
-
-                            <div class="class-footer">
-
-                                <div class="d-flex justify-content-between small mb-1">
-
-                                    <span class="fw-semibold">
-
-                                        Overall Collection Rate
-
-                                    </span>
-
-
-                                    <span class="fw-semibold">
-
-                                        {{ number_format($paidPercent, 1) }}%
-
-                                    </span>
-
-                                </div>
-
-
-                                <div class="progress" style="height: 8px;">
-
-                                    <div class="progress-bar bg-success" role="progressbar"
-                                        style="width: {{ $paidPercent }}%">
-
-                                    </div>
-
-                                </div>
-
-
-                                <div class="d-flex justify-content-between small mt-2 flex-wrap gap-2">
-
-                                    <span class="text-success">
-
-                                        <i class="bi bi-check-circle-fill me-1"></i>
-
-                                        Paid:
-                                        {{ $totalPaid }}
-
-                                    </span>
-
-
-                                    <span class="text-warning">
-
-                                        <i class="bi bi-exclamation-triangle-fill me-1"></i>
-
-                                        Partial:
-                                        {{ $totalPartial }}
-
-                                    </span>
-
-
-                                    <span class="text-danger">
-
-                                        <i class="bi bi-x-circle-fill me-1"></i>
-
-                                        Unpaid:
-                                        {{ max($classStudentCount - $totalWithPayment, 0) }}
-
-                                    </span>
-
-                                </div>
-
-                            </div>
-
-
-                        </div>
-
+                        </p>
                     </div>
-
-
-                @empty
-
-                    <div class="col-12">
-
-                        <div class="empty-card">
-
-                            <i class="bi bi-inbox"></i>
-
-                            <h5>
-                                No active classes found for this teacher
-                            </h5>
-
-                            <p class="mb-0 text-muted">
-
-                                There are no class records available for
-                                the selected period.
-
-                            </p>
-
-                        </div>
-
-                    </div>
-                @endforelse
-
-            </div>
-
-
-            <!-- GUIDE -->
-
-            <div class="mt-4">
-
-                <div class="alert alert-info custom-alert mb-0">
-
-                    <i class="bi bi-info-circle-fill me-2"></i>
-
-                    <strong>
-                        Payment Status Guide:
-                    </strong>
-
-
-                    <div class="row mt-3 g-3">
-
-
-                        <div class="col-md-3">
-
-                            <span class="badge bg-success custom-badge">
-
-                                ✓ Paid
-
-                            </span>
-
-                            <small class="d-block text-muted mt-1">
-
-                                Full payment completed
-
-                            </small>
-
-                        </div>
-
-
-                        <div class="col-md-3">
-
-                            <span class="badge bg-warning text-dark custom-badge">
-
-                                ⚠ Partial
-
-                            </span>
-
-                            <small class="d-block text-muted mt-1">
-
-                                Partial payment received
-
-                            </small>
-
-                        </div>
-
-
-                        <div class="col-md-3">
-
-                            <span class="badge bg-info custom-badge">
-
-                                🎫 Free Card
-
-                            </span>
-
-                            <small class="d-block text-muted mt-1">
-
-                                Free student (no fee)
-
-                            </small>
-
-                        </div>
-
-
-                        <div class="col-md-3">
-
-                            <span class="badge bg-danger custom-badge">
-
-                                ✗ Unpaid
-
-                            </span>
-
-                            <small class="d-block text-muted mt-1">
-
-                                No payment received
-
-                            </small>
-
-                        </div>
-
-
-                    </div>
-
                 </div>
 
+                <div class="tw:flex tw:flex-wrap tw:gap-2 rp-no-print">
+                    <a href="{{ route('teacher-salaries.show', $routeParams) }}" class="rp-btn"><i class="bi bi-arrow-left"></i> Salary report</a>
+                    <a href="{{ route('teacher-salaries.payment-summary', ['year' => $monthStart->copy()->subMonth()->year, 'month' => $monthStart->copy()->subMonth()->month] + $routeParams) }}" class="rp-btn" title="Previous month"><i class="bi bi-chevron-left"></i></a>
+                    <a href="{{ route('teacher-salaries.payment-summary', ['year' => $monthStart->copy()->addMonth()->year, 'month' => $monthStart->copy()->addMonth()->month] + $routeParams) }}" class="rp-btn" title="Next month"><i class="bi bi-chevron-right"></i></a>
+                    <button type="button" onclick="window.print()" class="rp-btn rp-btn-primary"><i class="bi bi-printer"></i> Print</button>
+                </div>
             </div>
-
-
         </div>
 
+        {{-- SUMMARY --}}
+        <div class="tw:grid tw:grid-cols-1 tw:sm:grid-cols-2 tw:xl:grid-cols-4 tw:gap-4">
+            <div class="rp-stat rp-dark">
+                <i class="bi bi-cash-stack rp-stat-icon"></i>
+                <div class="rp-stat-label">Fees in this salary</div>
+                <div class="rp-stat-value">Rs. {{ $money($t['collected']) }}</div>
+                <div class="rp-stat-note">{{ $t['payments'] }} payments received</div>
+            </div>
+
+            <div class="rp-stat rp-amber">
+                <i class="bi bi-building rp-stat-icon"></i>
+                <div class="rp-stat-label">Hall fees (institute)</div>
+                <div class="rp-stat-value">Rs. {{ $money($t['hall_fee']) }}</div>
+                <div class="rp-stat-note">Taken first from each payment</div>
+            </div>
+
+            <div class="rp-stat rp-blue">
+                <i class="bi bi-journal-text rp-stat-icon"></i>
+                <div class="rp-stat-label">Class fees</div>
+                <div class="rp-stat-value">Rs. {{ $money($t['class_fee']) }}</div>
+                <div class="rp-stat-note">
+                    Institute Rs. {{ $money($t['institute'] - $t['hall_fee']) }}
+                    @if ($t['organizer'] > 0) · Organizer Rs. {{ $money($t['organizer']) }} @endif
+                </div>
+            </div>
+
+            <div class="rp-stat rp-green">
+                <i class="bi bi-person-check rp-stat-icon"></i>
+                <div class="rp-stat-label">Teacher's share</div>
+                <div class="rp-stat-value">Rs. {{ $money($t['teacher']) }}</div>
+                <div class="rp-stat-note">
+                    @if ($data['carried']['payments'] > 0)
+                        Incl. Rs. {{ $money($data['carried']['teacher']) }} from earlier months
+                    @else
+                        Before advances and deductions
+                    @endif
+                </div>
+            </div>
+        </div>
+
+        <div class="rp-note">
+            This salary is made of the class fees <strong>received</strong>
+            @if ($data['is_paid'])
+                from 1 {{ $monthStart->format('M') }} until the salary was paid ({{ $data['paid_at']?->format('d M Y, h:i A') }})
+            @else
+                in {{ $data['month_label'] }}
+            @endif
+            , whatever month each fee was for, plus earlier months' fees received after their salary was paid.
+            The teacher's share is the teacher % of the class fee (the payment without the hall fee).
+            Advances and deductions are on the <a href="{{ route('teacher-salaries.show', $routeParams) }}">salary report</a>.
+        </div>
+
+        {{-- CLASSES --}}
+        @forelse ($data['classes'] as $class)
+            <div class="rp-card">
+                <div class="tw:flex tw:flex-wrap tw:items-start tw:justify-between tw:gap-3 tw:mb-4">
+                    <div>
+                        <h4 class="rp-section-title">
+                            {{ $class['class_name'] }}
+                            @unless ($class['is_active']) <span class="rp-chip">Inactive</span> @endunless
+                        </h4>
+                        <p class="rp-sub">@if ($class['grade_name']) Grade {{ $class['grade_name'] }} • @endif {{ $class['totals']['payments'] }} payments in this salary</p>
+                    </div>
+                    <div class="rp-mini">
+                        <span>Received <b>{{ $money($class['totals']['collected']) }}</b></span>
+                        <span>Hall <b>{{ $money($class['totals']['hall_fee']) }}</b></span>
+                        <span>Class <b>{{ $money($class['totals']['class_fee']) }}</b></span>
+                        <span>Teacher <b class="tw:text-emerald-700">{{ $money($class['totals']['teacher']) }}</b></span>
+                    </div>
+                </div>
+
+                @foreach ($class['categories'] as $category)
+                    @php $fs = $category['fee_status']; @endphp
+                    <div class="tw:mb-5 tw:last:mb-0">
+                        <div class="tw:flex tw:flex-wrap tw:items-center tw:justify-between tw:gap-2 tw:mb-2">
+                            <div class="tw:flex tw:flex-wrap tw:items-center tw:gap-2">
+                                <span class="rp-strong">{{ $category['category_name'] }}</span>
+                                <span class="rp-sub">{{ $category['students'] }} students · {{ $monthStart->format('M') }} fee:</span>
+                                <span class="rp-chip rp-chip-paid">Paid {{ $fs['paid'] }}</span>
+                                @if ($fs['partial']) <span class="rp-chip rp-chip-partial">Partly {{ $fs['partial'] }}</span> @endif
+                                <span class="rp-chip rp-chip-unpaid">Unpaid {{ $fs['unpaid'] }}</span>
+                                @if ($fs['freecard']) <span class="rp-chip rp-chip-freecard">Free card {{ $fs['freecard'] }}</span> @endif
+                            </div>
+                            <a class="rp-btn rp-btn-sm rp-no-print"
+                                href="{{ route('student-class-enrollments.category-wise-payment', ['class' => $class['class_id'], 'classCategoryFee' => $category['category_fee_id'], 'year' => $year, 'month' => $month]) }}">
+                                {{ $monthStart->format('M') }} fee status <i class="bi bi-arrow-right"></i>
+                            </a>
+                        </div>
+
+                        @if (count($category['payments']))
+                            <div class="rp-table-wrap">
+                                <table class="rp-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Student</th>
+                                            <th>Fee for</th>
+                                            <th>Received on</th>
+                                            <th class="rp-num">Amount</th>
+                                            <th class="rp-num">Hall fee</th>
+                                            <th class="rp-num">Class fee</th>
+                                            <th class="rp-num">Teacher %</th>
+                                            <th class="rp-num">Teacher's share</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach ($category['payments'] as $row)
+                                            <tr>
+                                                <td>
+                                                    <div class="rp-strong">{{ $row['student_name'] }}</div>
+                                                    <div class="rp-muted tw:text-xs">{{ $row['student_code'] }}@if ($row['receipt']) · {{ $row['receipt'] }}@endif</div>
+                                                </td>
+                                                <td>
+                                                    {{ $row['paid_for'] }}
+                                                    @if ($row['carried']) <span class="rp-chip rp-chip-carried" title="Received after that month's salary was paid">After last salary</span> @endif
+                                                </td>
+                                                <td>{{ $row['paid_on'] }}</td>
+                                                <td class="rp-num">{{ $money($row['amount']) }}</td>
+                                                <td class="rp-num">{{ $money($row['hall_fee']) }}</td>
+                                                <td class="rp-num">{{ $money($row['class_fee']) }}</td>
+                                                <td class="rp-num">{{ rtrim(rtrim(number_format($row['teacher_percentage'], 2), '0'), '.') }}%</td>
+                                                <td class="rp-num rp-strong tw:text-emerald-700">{{ $money($row['teacher_amount']) }}</td>
+                                            </tr>
+                                        @endforeach
+                                    </tbody>
+                                    <tfoot>
+                                        <tr>
+                                            <td colspan="3">{{ $category['totals']['payments'] }} payments</td>
+                                            <td class="rp-num">{{ $money($category['totals']['collected']) }}</td>
+                                            <td class="rp-num">{{ $money($category['totals']['hall_fee']) }}</td>
+                                            <td class="rp-num">{{ $money($category['totals']['class_fee']) }}</td>
+                                            <td></td>
+                                            <td class="rp-num">{{ $money($category['totals']['teacher']) }}</td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        @else
+                            <p class="rp-sub">No fees received for this category in this salary.</p>
+                        @endif
+                    </div>
+                @endforeach
+            </div>
+        @empty
+            <div class="rp-card tw:text-center rp-sub">No classes or payments for this teacher in {{ $data['month_label'] }}.</div>
+        @endforelse
+
+        {{-- FEES AFTER THE SALARY --}}
+        @if ($data['after_salary']['totals']['payments'] > 0)
+            @php $after = $data['after_salary']; @endphp
+            <div class="rp-card">
+                <h4 class="rp-section-title">Received after this salary was paid</h4>
+                <p class="rp-sub tw:mb-4">
+                    These {{ $after['totals']['payments'] }} payments (teacher's share Rs. {{ $money($after['totals']['teacher']) }}) are not in this salary.
+                    They go into the next salary.
+                </p>
+                <div class="rp-table-wrap">
+                    <table class="rp-table">
+                        <thead>
+                            <tr>
+                                <th>Student</th>
+                                <th>Fee for</th>
+                                <th>Received on</th>
+                                <th class="rp-num">Amount</th>
+                                <th class="rp-num">Hall fee</th>
+                                <th class="rp-num">Class fee</th>
+                                <th class="rp-num">Teacher's share</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($after['payments'] as $row)
+                                <tr>
+                                    <td><span class="rp-strong">{{ $row['student_name'] }}</span> <span class="rp-muted tw:text-xs">{{ $row['student_code'] }}</span></td>
+                                    <td>{{ $row['paid_for'] }}</td>
+                                    <td>{{ $row['paid_on'] }}</td>
+                                    <td class="rp-num">{{ $money($row['amount']) }}</td>
+                                    <td class="rp-num">{{ $money($row['hall_fee']) }}</td>
+                                    <td class="rp-num">{{ $money($row['class_fee']) }}</td>
+                                    <td class="rp-num">{{ $money($row['teacher_amount']) }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        @endif
     </div>
-
 @endsection
-
-
-@push('styles')
-    <style>
-        .class-payment-summary-page {
-            animation: fadeIn .4s ease;
-        }
-
-
-        .hero-card,
-        .main-card,
-        .empty-card {
-            background: #fff;
-            border-radius: 28px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, .05);
-            border: 1px solid #eef2f7;
-            padding: 1.35rem 1.5rem;
-        }
-
-
-        .hero-content {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 1rem;
-            flex-wrap: wrap;
-        }
-
-
-        .hero-actions {
-            display: flex;
-            gap: .7rem;
-            flex-wrap: wrap;
-        }
-
-
-        .custom-btn {
-            border-radius: 14px;
-            padding: .7rem 1.15rem;
-            font-weight: 600;
-            transition: .2s ease;
-        }
-
-
-        .custom-btn:hover {
-            transform: translateY(-2px);
-        }
-
-
-        .summary-card {
-            border-radius: 24px;
-            overflow: hidden;
-            color: #fff;
-            position: relative;
-            min-height: 145px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, .06);
-            border: none;
-        }
-
-
-        .summary-card .card-body {
-            padding: 1.4rem;
-            position: relative;
-        }
-
-
-        .summary-card h6 {
-            opacity: .9;
-            margin-bottom: .6rem;
-        }
-
-
-        .summary-card h3 {
-            margin: 0;
-            font-weight: 800;
-            word-break: break-word;
-        }
-
-
-        .summary-sub {
-            opacity: .85;
-        }
-
-
-        .summary-icon {
-            position: absolute;
-            right: 18px;
-            top: 18px;
-            font-size: 2rem;
-            opacity: .18;
-        }
-
-
-        .summary-blue {
-            background: linear-gradient(135deg, #0f172a, #334155);
-        }
-
-
-        .summary-green {
-            background: linear-gradient(135deg, #10b981, #34d399);
-        }
-
-
-        .summary-orange {
-            background: linear-gradient(135deg, #ea580c, #f97316);
-        }
-
-
-        .summary-primary {
-            background: linear-gradient(135deg, #2563eb, #3b82f6);
-        }
-
-
-        .main-card {
-            padding: 1.5rem;
-        }
-
-
-        .main-card-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-            flex-wrap: wrap;
-        }
-
-
-        .main-card-header h4 {
-            margin: 0;
-            font-weight: 700;
-        }
-
-
-        .main-card-header p {
-            margin: 0;
-            color: #64748b;
-        }
-
-
-        .header-badge {
-            display: inline-flex;
-            align-items: center;
-            padding: .55rem .9rem;
-            border-radius: 999px;
-            background: #eff6ff;
-            color: #2563eb;
-            font-weight: 700;
-        }
-
-
-        .class-card {
-            background: #fff;
-            border-radius: 24px;
-            border: 1px solid #eef2f7;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, .04);
-            transition: .2s ease;
-            padding: 1.25rem;
-            height: 100%;
-        }
-
-
-        .class-card:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, .08);
-        }
-
-
-        .class-card-header {
-            display: flex;
-            justify-content: space-between;
-            gap: 1rem;
-            align-items: flex-start;
-            margin-bottom: 1rem;
-        }
-
-
-        .category-item {
-            transition: all 0.2s ease;
-            background-color: #f8fafc;
-            border: 1px solid #e2e8f0;
-            border-radius: 18px;
-            padding: .85rem;
-        }
-
-
-        .category-item:hover {
-            background-color: #eef2f7;
-            transform: translateX(2px);
-        }
-
-
-        /* NEW FEE OPTION UI */
-
-        .fee-options-box {
-            background: #ffffff;
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            padding: .65rem .75rem;
-        }
-
-
-        .fee-option-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: .75rem;
-            padding: .45rem .5rem;
-            border-bottom: 1px dashed #e2e8f0;
-            font-size: .8rem;
-        }
-
-
-        .fee-option-row:last-child {
-            border-bottom: none;
-        }
-
-
-        .fee-option-row strong {
-            white-space: nowrap;
-        }
-
-
-        .progress {
-            background-color: #e9ecef;
-            border-radius: 10px;
-            overflow: hidden;
-        }
-
-
-        .progress-bar {
-            border-radius: 10px;
-            transition: width 0.5s ease;
-        }
-
-
-        .custom-badge {
-            border-radius: 10px;
-            padding: .5rem .7rem;
-            font-size: .75rem;
-            font-weight: 600;
-        }
-
-
-        .class-footer {
-            margin-top: 1rem;
-            padding-top: 1rem;
-            border-top: 1px solid #eef2f7;
-        }
-
-
-        .empty-card {
-            text-align: center;
-            padding: 4rem 1rem;
-        }
-
-
-        .empty-card i {
-            font-size: 4rem;
-            color: #cbd5e1;
-            margin-bottom: 1rem;
-        }
-
-
-        .empty-card h5 {
-            font-weight: 700;
-        }
-
-
-        .custom-alert {
-            border-radius: 18px;
-        }
-
-
-        @media (max-width: 768px) {
-
-            .hero-content {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-
-            .hero-actions {
-                width: 100%;
-            }
-
-
-            .hero-actions .btn {
-                flex: 1;
-            }
-
-
-            .class-card-header {
-                flex-direction: column;
-                align-items: stretch;
-            }
-
-        }
-
-
-        @media print {
-
-            .btn,
-            .alert,
-            .sidebar,
-            .navbar {
-                display: none !important;
-            }
-
-
-            body {
-                background: #fff !important;
-            }
-
-
-            .hero-card,
-            .main-card,
-            .class-card,
-            .empty-card {
-                box-shadow: none !important;
-            }
-
-        }
-    </style>
-@endpush

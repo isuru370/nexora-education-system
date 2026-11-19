@@ -300,7 +300,9 @@ class PaymentService
         |
         */
 
-        // $this->queueNotification($payment);
+        // Parent SMS / app message, as for bulk payments (Settings > Notifications
+        // decides push, SMS or off; a failed message never fails the payment)
+        $this->queueNotification($payment);
 
         /*
         |--------------------------------------------------------------------------

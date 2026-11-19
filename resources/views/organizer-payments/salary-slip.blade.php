@@ -1,3 +1,67 @@
+{{-- amount in words (defined once: the slip can be rendered more than once per process) --}}
+@php
+    if (!function_exists('convertNumberToWords')) {
+
+    function convertNumberToWords($number)
+    {
+        $number = (int) $number;
+        $words = [
+            0 => 'Zero',
+            1 => 'One',
+            2 => 'Two',
+            3 => 'Three',
+            4 => 'Four',
+            5 => 'Five',
+            6 => 'Six',
+            7 => 'Seven',
+            8 => 'Eight',
+            9 => 'Nine',
+            10 => 'Ten',
+            11 => 'Eleven',
+            12 => 'Twelve',
+            13 => 'Thirteen',
+            14 => 'Fourteen',
+            15 => 'Fifteen',
+            16 => 'Sixteen',
+            17 => 'Seventeen',
+            18 => 'Eighteen',
+            19 => 'Nineteen',
+            20 => 'Twenty',
+            30 => 'Thirty',
+            40 => 'Forty',
+            50 => 'Fifty',
+            60 => 'Sixty',
+            70 => 'Seventy',
+            80 => 'Eighty',
+            90 => 'Ninety'
+        ];
+
+        if ($number < 20) {
+            return $words[$number] ?? '';
+        } elseif ($number < 100) {
+            $tens = floor($number / 10) * 10;
+            $units = $number % 10;
+            return $words[$tens] . ($units ? ' ' . $words[$units] : '');
+        } elseif ($number < 1000) {
+            $hundreds = floor($number / 100);
+            $remainder = $number % 100;
+            return $words[$hundreds] . ' Hundred' . ($remainder ? ' and ' . convertNumberToWords($remainder) : '');
+        } elseif ($number < 100000) {
+            $thousands = floor($number / 1000);
+            $remainder = $number % 1000;
+            return convertNumberToWords($thousands) . ' Thousand' . ($remainder ? ' ' . convertNumberToWords($remainder) : '');
+        } elseif ($number < 10000000) {
+            $lakhs = floor($number / 100000);
+            $remainder = $number % 100000;
+            return convertNumberToWords($lakhs) . ' Lakh' . ($remainder ? ' ' . convertNumberToWords($remainder) : '');
+        } else {
+            $crores = floor($number / 10000000);
+            $remainder = $number % 10000000;
+            return convertNumberToWords($crores) . ' Crore' . ($remainder ? ' ' . convertNumberToWords($remainder) : '');
+        }
+    }
+    }
+@endphp
 <!DOCTYPE html>
 <html lang="en">
 
@@ -253,6 +317,10 @@
                     <div class="info-value">{{ $organizer->name }}</div>
                 </div>
                 <div class="info-item">
+                    <div class="info-label">Branch</div>
+                    <div class="info-value">{{ $branch?->name ?? '-' }}</div>
+                </div>
+                <div class="info-item">
                     <div class="info-label">Mobile</div>
                     <div class="info-value">{{ $organizer->mobile ?? '-' }}</div>
                 </div>
@@ -291,6 +359,13 @@
                         <td class="text-right amount-income">Rs. {{ number_format($totalIncome, 2) }}</td>
                     </tr>
 
+                    @if(abs($earlierBalance) >= 0.01)
+                        <tr>
+                            <td>Balance from earlier months</td>
+                            <td class="text-right amount-income">Rs. {{ number_format($earlierBalance, 2) }}</td>
+                        </tr>
+                    @endif
+
                     {{-- Advance Deduction --}}
                     @if($advanceAmount > 0)
                         <tr>
@@ -315,6 +390,14 @@
                         </tr>
                     @endif
 
+                    {{-- fees of this month paid after the salary: in the next salary --}}
+                    @if($stillOwed >= 0.01)
+                        <tr>
+                            <td>Fees received after this salary (next salary)</td>
+                            <td class="text-right amount-deduction">- Rs. {{ number_format($stillOwed, 2) }}</td>
+                        </tr>
+                    @endif
+
                     {{-- Net Salary --}}
                     <tr class="total-row">
                         <td><strong>NET SALARY PAID</strong></td>
@@ -327,7 +410,7 @@
             <div style="margin-bottom: 20px; padding: 8px 12px; background: #f8fafc; border-radius: 8px;">
                 <span style="font-size: 8px; color: #64748b;">AMOUNT IN WORDS:</span>
                 <span style="font-size: 9px; font-weight: 600; margin-left: 8px;">
-                    {{ ucwords(convertNumberToWords($salaryRecord->amount)) }} Rupees Only
+                    {{ ucwords(convertNumberToWords((int) round((float) $salaryRecord->amount))) }} Rupees Only
                 </span>
             </div>
 
@@ -363,63 +446,3 @@
 </body>
 
 </html>
-
-@php
-    function convertNumberToWords($number)
-    {
-        $words = [
-            0 => 'Zero',
-            1 => 'One',
-            2 => 'Two',
-            3 => 'Three',
-            4 => 'Four',
-            5 => 'Five',
-            6 => 'Six',
-            7 => 'Seven',
-            8 => 'Eight',
-            9 => 'Nine',
-            10 => 'Ten',
-            11 => 'Eleven',
-            12 => 'Twelve',
-            13 => 'Thirteen',
-            14 => 'Fourteen',
-            15 => 'Fifteen',
-            16 => 'Sixteen',
-            17 => 'Seventeen',
-            18 => 'Eighteen',
-            19 => 'Nineteen',
-            20 => 'Twenty',
-            30 => 'Thirty',
-            40 => 'Forty',
-            50 => 'Fifty',
-            60 => 'Sixty',
-            70 => 'Seventy',
-            80 => 'Eighty',
-            90 => 'Ninety'
-        ];
-
-        if ($number < 20) {
-            return $words[$number] ?? '';
-        } elseif ($number < 100) {
-            $tens = floor($number / 10) * 10;
-            $units = $number % 10;
-            return $words[$tens] . ($units ? ' ' . $words[$units] : '');
-        } elseif ($number < 1000) {
-            $hundreds = floor($number / 100);
-            $remainder = $number % 100;
-            return $words[$hundreds] . ' Hundred' . ($remainder ? ' and ' . convertNumberToWords($remainder) : '');
-        } elseif ($number < 100000) {
-            $thousands = floor($number / 1000);
-            $remainder = $number % 1000;
-            return convertNumberToWords($thousands) . ' Thousand' . ($remainder ? ' ' . convertNumberToWords($remainder) : '');
-        } elseif ($number < 10000000) {
-            $lakhs = floor($number / 100000);
-            $remainder = $number % 100000;
-            return convertNumberToWords($lakhs) . ' Lakh' . ($remainder ? ' ' . convertNumberToWords($remainder) : '');
-        } else {
-            $crores = floor($number / 10000000);
-            $remainder = $number % 10000000;
-            return convertNumberToWords($crores) . ' Crore' . ($remainder ? ' ' . convertNumberToWords($remainder) : '');
-        }
-    }
-@endphp

@@ -7,7 +7,7 @@
 <div class="dashboard-page">
 
     {{-- HERO --}}
-    <div class="hero-section mb-4">
+    <div class="hero-section tw:mb-6!">
         <div class="hero-content">
             <div class="hero-left">
                 <span class="greeting-badge">nexoraEDU</span>
@@ -54,7 +54,7 @@
     </div>
 
     {{-- KPI CARDS --}}
-    <div class="stats-grid mb-4">
+    <div class="stats-grid tw:mb-6!">
 
         <div class="nx-card stat-card">
             <div class="stat-icon-wrapper icon-blue"><i class="bi bi-calendar-week"></i></div>
@@ -94,11 +94,11 @@
     </div>
 
     {{-- MAIN CARD --}}
-    <div class="nx-card mb-4">
+    <div class="nx-card tw:mb-6!">
 
         <div class="nx-card-header">
             <div>
-                <h5 class="nx-card-title"><i class="bi bi-calendar-week text-primary"></i> Weekly Class Schedule</h5>
+                <h5 class="nx-card-title"><i class="bi bi-calendar-week tw:text-(color:--nx-blue)!"></i> Weekly Class Schedule</h5>
                 <p class="nx-card-subtitle">View and manage class timetable for the selected week</p>
             </div>
 
@@ -117,19 +117,19 @@
         {{-- SEARCH --}}
         <div class="nx-search">
             <form method="GET" action="{{ route('class-time-table.weekly') }}">
-                <div class="row g-3 align-items-end">
-                    <div class="col-lg-4">
+                <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2 tw:items-end!">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[33.33333333%]">
                         <label class="nx-label">Select Week</label>
                         <div class="search-input-wrapper">
                             <i class="bi bi-calendar-date"></i>
-                            <input type="date" name="week_date" class="form-control custom-input"
+                            <input type="date" name="week_date" class="ui-form-control custom-input"
                                 value="{{ old('week_date', $selectedDate ?? now()->toDateString()) }}">
                         </div>
                     </div>
 
-                    <div class="col-lg-3">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[25%]">
                         <label class="nx-label">Status</label>
-                        <select name="status" class="form-select custom-input">
+                        <select name="status" class="ui-form-select custom-input">
                             <option value="">All Status</option>
                             <option value="scheduled" {{ request('status') == 'scheduled' ? 'selected' : '' }}>Scheduled</option>
                             <option value="ongoing" {{ request('status') == 'ongoing' ? 'selected' : '' }}>Ongoing</option>
@@ -138,12 +138,12 @@
                         </select>
                     </div>
 
-                    <div class="col-lg-3">
-                        <div class="d-flex gap-2">
-                            <button class="nx-btn nx-btn-primary flex-grow-1" type="submit">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[25%]">
+                        <div class="tw:flex! tw:gap-2!">
+                            <button class="nx-btn nx-btn-primary tw:grow!" type="submit">
                                 <i class="bi bi-search"></i> Search
                             </button>
-                            <a href="{{ route('class-time-table.weekly') }}" class="nx-btn nx-btn-light flex-grow-1">
+                            <a href="{{ route('class-time-table.weekly') }}" class="nx-btn nx-btn-light tw:grow!">
                                 <i class="bi bi-arrow-repeat"></i> Reset
                             </a>
                         </div>
@@ -152,14 +152,14 @@
             </form>
 
             @if (session('error'))
-                <div class="nx-alert nx-alert-red mt-3">
+                <div class="nx-alert nx-alert-red tw:mt-4!">
                     <i class="bi bi-exclamation-triangle-fill"></i>
                     <span>{{ session('error') }}</span>
                 </div>
             @endif
 
             @error('week_date')
-                <div class="nx-alert nx-alert-red mt-3">
+                <div class="nx-alert nx-alert-red tw:mt-4!">
                     <i class="bi bi-exclamation-circle-fill"></i>
                     <span>{{ $message }}</span>
                 </div>
@@ -167,8 +167,8 @@
         </div>
 
         {{-- TABLE --}}
-        <div class="table-responsive">
-            <table class="table premium-table mb-0">
+        <div class="ui-table-responsive">
+            <table class="ui-table premium-table tw:mb-0!">
                 <thead>
                     <tr>
                         <th style="width: 4%">#</th>
@@ -206,10 +206,10 @@
 
                             <td>
                                 <div class="cell-title">
-                                    <i class="bi bi-calendar3 text-muted me-1"></i>
+                                    <i class="bi bi-calendar3 tw:text-(color:--nx-muted)! tw:mr-1!"></i>
                                     {{ $classDate ? $classDate->format('d M Y') : '-' }}
                                 </div>
-                                <small class="cell-sub d-block">
+                                <small class="cell-sub tw:block!">
                                     <i class="bi bi-clock"></i>
                                     {{ $startTime ? \Carbon\Carbon::parse($startTime)->format('h:i A') : '-' }}
                                     –
@@ -219,7 +219,7 @@
                             </td>
 
                             <td>
-                                <div class="d-flex align-items-center gap-3">
+                                <div class="tw:flex! tw:items-center! tw:gap-4!">
                                     <div class="class-avatar">
                                         {{ strtoupper(substr($schedule->studentClass?->class_name ?? 'C', 0, 1)) }}
                                     </div>
@@ -293,10 +293,10 @@
                     @empty
                         <tr>
                             <td colspan="8" class="empty-table">
-                                <i class="bi bi-calendar-x fs-2 d-block mb-2"></i>
-                                <strong class="d-block">No Classes Found</strong>
+                                <i class="bi bi-calendar-x tw:text-[length:calc(1.325rem_+_0.9vw)]! tw:xl:text-[length:2rem]! tw:block! tw:mb-2!"></i>
+                                <strong class="tw:block!">No Classes Found</strong>
                                 <span class="cell-sub">No timetable records found for this week</span>
-                                <small class="cell-sub d-block mt-1">Try selecting a different week</small>
+                                <small class="cell-sub tw:block! tw:mt-1!">Try selecting a different week</small>
                             </td>
                         </tr>
                     @endforelse

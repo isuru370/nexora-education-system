@@ -126,33 +126,44 @@ class StudentClassEnrollment extends Model
     }
 
     /**
-     * Total amount paid for this enrollment.
+     * Amount paid for THIS month's fee (completed payments).
      */
     public function getPaidAmountAttribute()
     {
-        return $this->payments()->sum('amount');
+        return (float) $this->payments()
+            ->where('status', 'completed')
+            ->whereDate('payment_month', now()->startOfMonth()->toDateString())
+            ->sum('amount');
     }
 
     /**
-     * Remaining balance.
+     * This month's class fee still to pay.
      */
     public function getBalanceAttribute()
     {
-        return max(
-            $this->final_fee - $this->paid_amount,
-            0
-        );
+        if ($this->payment_status === 'paid') {
+            return 0;
+        }
+
+        return max($this->final_fee - $this->paid_amount, 0);
     }
 
     /**
-     * Payment status.
+     * This month's fee: "paid" when this month is paid (a free card has
+     * nothing to pay), else "unpaid". Was "paid" when ANY month had ever
+     * been paid, so the staff app showed students as paid for the tute.
      */
     public function getPaymentStatusAttribute()
     {
-        if ($this->paid_amount <= 0) {
-            return 'unpaid';
+        if ($this->is_free_card) {
+            return 'paid';
         }
 
-        return 'paid';
+        $paid = $this->payments()
+            ->where('status', 'completed')
+            ->whereDate('payment_month', now()->startOfMonth()->toDateString())
+            ->exists();
+
+        return $paid ? 'paid' : 'unpaid';
     }
 }

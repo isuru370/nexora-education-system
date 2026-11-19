@@ -10,7 +10,7 @@
 @endphp
 <div class="dashboard-page">
 
-    <div class="hero-section mb-4">
+    <div class="hero-section tw:mb-6!">
         <div class="hero-content">
             <div class="hero-left">
                 <span class="greeting-badge">Courses</span>
@@ -37,35 +37,35 @@
     <div class="nx-card">
         <div class="nx-search">
             <form method="GET" action="{{ route('course-payments.index') }}">
-                <div class="row g-3 align-items-end">
-                    <div class="col-sm-6 col-lg-2"><label class="nx-label" for="from">From</label><input type="date" id="from" name="from" class="form-control custom-input" value="{{ $from->toDateString() }}"></div>
-                    <div class="col-sm-6 col-lg-2"><label class="nx-label" for="to">To</label><input type="date" id="to" name="to" class="form-control custom-input" value="{{ $to->toDateString() }}"></div>
-                    <div class="col-sm-6 col-lg-3">
+                <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2 tw:items-end!">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:sm:flex-[0_0_auto] tw:sm:w-[50%] tw:lg:flex-[0_0_auto] tw:lg:w-[16.66666667%]"><label class="nx-label" for="from">From</label><input type="date" id="from" name="from" class="ui-form-control custom-input" value="{{ $from->toDateString() }}"></div>
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:sm:flex-[0_0_auto] tw:sm:w-[50%] tw:lg:flex-[0_0_auto] tw:lg:w-[16.66666667%]"><label class="nx-label" for="to">To</label><input type="date" id="to" name="to" class="ui-form-control custom-input" value="{{ $to->toDateString() }}"></div>
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:sm:flex-[0_0_auto] tw:sm:w-[50%] tw:lg:flex-[0_0_auto] tw:lg:w-[25%]">
                         <label class="nx-label" for="course_id">Course</label>
-                        <select id="course_id" name="course_id" class="form-select custom-input">
+                        <select id="course_id" name="course_id" class="ui-form-select custom-input">
                             <option value="">All courses</option>
                             @foreach ($courses as $c)
                                 <option value="{{ $c->id }}" {{ (string) request('course_id') === (string) $c->id ? 'selected' : '' }}>{{ $c->name }}</option>
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-sm-6 col-lg-2">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:sm:flex-[0_0_auto] tw:sm:w-[50%] tw:lg:flex-[0_0_auto] tw:lg:w-[16.66666667%]">
                         <label class="nx-label" for="status">Status</label>
-                        <select id="status" name="status" class="form-select custom-input">
+                        <select id="status" name="status" class="ui-form-select custom-input">
                             <option value="">All</option>
                             <option value="completed" {{ request('status') === 'completed' ? 'selected' : '' }}>Completed</option>
                             <option value="cancelled" {{ request('status') === 'cancelled' ? 'selected' : '' }}>Cancelled</option>
                         </select>
                     </div>
-                    <div class="col-6 col-lg-1"><button class="nx-btn nx-btn-primary w-100" type="submit" aria-label="Filter"><i class="bi bi-funnel"></i></button></div>
-                    <div class="col-6 col-lg-2"><a href="{{ route('course-payments.index') }}" class="nx-btn nx-btn-light w-100">Today</a></div>
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:flex-[0_0_auto] tw:w-[50%] tw:lg:flex-[0_0_auto] tw:lg:w-[8.33333333%]"><button class="nx-btn nx-btn-primary tw:w-full!" type="submit" aria-label="Filter"><i class="bi bi-funnel"></i></button></div>
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:flex-[0_0_auto] tw:w-[50%] tw:lg:flex-[0_0_auto] tw:lg:w-[16.66666667%]"><a href="{{ route('course-payments.index') }}" class="nx-btn nx-btn-light tw:w-full!">Today</a></div>
                 </div>
             </form>
         </div>
 
-        <div class="table-responsive">
-            <table class="table premium-table mb-0">
-                <thead><tr><th>Receipt</th><th>Date</th><th>Student</th><th>Course</th><th>Method</th><th class="text-end">Amount</th><th>Status</th><th class="text-end"></th></tr></thead>
+        <div class="ui-table-responsive">
+            <table class="ui-table premium-table tw:mb-0!">
+                <thead><tr><th>Receipt</th><th>Date</th><th>Student</th><th>Course</th><th>Method</th><th class="tw:text-right!">Amount</th><th>Status</th><th class="tw:text-right!"></th></tr></thead>
                 <tbody>
                     @forelse ($payments as $payment)
                         @include('courses.partials.payment-row', ['payment' => $payment, 'showStudent' => true, 'showCourse' => true])
@@ -76,7 +76,7 @@
             </table>
         </div>
         @if ($payments->hasPages())
-            <div class="p-3 border-top">{{ $payments->links() }}</div>
+            <div class="tw:p-4! tw:bs-border-t!">{{ $payments->links() }}</div>
         @endif
     </div>
 </div>

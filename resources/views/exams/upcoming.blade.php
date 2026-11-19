@@ -12,7 +12,7 @@
 <div class="dashboard-page">
 
     {{-- STATS --}}
-    <div class="stats-grid mb-4">
+    <div class="stats-grid tw:mb-6!">
         <div class="nx-card stat-card">
             <div class="stat-icon-wrapper icon-blue"><i class="bi bi-calendar-event"></i></div>
             <div class="stat-info">
@@ -41,10 +41,10 @@
         </div>
     </div>
 
-    <div class="nx-card mb-4">
+    <div class="nx-card tw:mb-6!">
         <div class="nx-card-header">
             <div>
-                <h5 class="nx-card-title"><i class="bi bi-calendar-event text-primary"></i> Upcoming Exams</h5>
+                <h5 class="nx-card-title"><i class="bi bi-calendar-event tw:text-(color:--nx-blue)!"></i> Upcoming Exams</h5>
                 <p class="nx-card-subtitle">Scheduled exams from today, nearest first</p>
             </div>
 
@@ -61,17 +61,17 @@
         {{-- SEARCH --}}
         <div class="nx-search">
             <form method="GET" action="{{ route('admin.exams.upcoming') }}">
-                <div class="row g-3">
-                    <div class="col-lg-6">
+                <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[50%]">
                         <div class="search-input-wrapper">
                             <i class="bi bi-search"></i>
-                            <input type="text" name="search" class="form-control custom-input"
+                            <input type="text" name="search" class="ui-form-control custom-input"
                                 placeholder="Search exam title..." value="{{ request('search') }}">
                         </div>
                     </div>
 
-                    <div class="col-lg-4">
-                        <select name="student_class_id" class="form-select custom-input">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[33.33333333%]">
+                        <select name="student_class_id" class="ui-form-select custom-input">
                             <option value="">All Classes</option>
                             @foreach ($classes ?? [] as $class)
                                 <option value="{{ $class->id }}" {{ request('student_class_id') == $class->id ? 'selected' : '' }}>
@@ -81,22 +81,22 @@
                         </select>
                     </div>
 
-                    <div class="col-lg-1">
-                        <button type="submit" class="nx-btn nx-btn-primary w-100" aria-label="Search">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[8.33333333%]">
+                        <button type="submit" class="nx-btn nx-btn-primary tw:w-full!" aria-label="Search">
                             <i class="bi bi-search"></i>
                         </button>
                     </div>
 
-                    <div class="col-lg-1">
-                        <a href="{{ route('admin.exams.upcoming') }}" class="nx-btn nx-btn-light w-100">Reset</a>
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[8.33333333%]">
+                        <a href="{{ route('admin.exams.upcoming') }}" class="nx-btn nx-btn-light tw:w-full!">Reset</a>
                     </div>
                 </div>
             </form>
         </div>
 
         {{-- TABLE --}}
-        <div class="table-responsive">
-            <table class="table premium-table mb-0">
+        <div class="ui-table-responsive">
+            <table class="ui-table premium-table tw:mb-0!">
                 <thead>
                     <tr>
                         <th>When</th>
@@ -105,7 +105,7 @@
                         <th>Category</th>
                         <th>Hall</th>
                         <th>Time</th>
-                        <th class="text-end">Actions</th>
+                        <th class="tw:text-right!">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -128,7 +128,7 @@
                             </td>
                             <td>
                                 <div class="cell-title">{{ $exam->title }}</div>
-                                <span class="nx-badge {{ $whenClass }} mt-1">{{ $whenText }}</span>
+                                <span class="nx-badge tw:mt-1! {{ $whenClass }}">{{ $whenText }}</span>
                             </td>
                             <td>
                                 <div class="cell-title">{{ $exam->studentClass->class_name ?? 'N/A' }}</div>
@@ -140,7 +140,7 @@
                                 <div class="cell-title">{{ $exam->exam_date->format('l') }}</div>
                                 <small class="cell-sub"><i class="bi bi-clock"></i> {{ $fmtTime($exam->start_time) }} - {{ $fmtTime($exam->end_time) }}</small>
                             </td>
-                            <td class="text-end">
+                            <td class="tw:text-right!">
                                 @include('exams.partials.actions', [
                                     'exam' => $exam,
                                     'showEdit' => true,
@@ -154,8 +154,8 @@
                     @empty
                         <tr>
                             <td colspan="7" class="empty-table">
-                                <i class="bi bi-calendar-x fs-2 d-block mb-2"></i>
-                                <strong class="d-block">No upcoming exams</strong>
+                                <i class="bi bi-calendar-x tw:text-[length:calc(1.325rem_+_0.9vw)]! tw:xl:text-[length:2rem]! tw:block! tw:mb-2!"></i>
+                                <strong class="tw:block!">No upcoming exams</strong>
                                 <span class="cell-sub">Scheduled exams from today will show here.</span>
                             </td>
                         </tr>
@@ -164,7 +164,7 @@
             </table>
         </div>
 
-        <div class="p-3 border-top">
+        <div class="tw:p-4! tw:bs-border-t!">
             {{ $exams->links() }}
         </div>
     </div>
@@ -172,25 +172,25 @@
 </div>
 
 {{-- CANCEL MODAL (filled from the clicked row) --}}
-<div class="modal fade" id="cancelModal" tabindex="-1" aria-labelledby="cancelModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
+<div class="ui-modal ui-fade" id="cancelModal" tabindex="-1" aria-labelledby="cancelModalLabel" aria-hidden="true">
+    <div class="ui-modal-dialog">
+        <div class="ui-modal-content">
             <form id="cancelForm" method="POST" action="">
                 @csrf
-                <div class="modal-header">
-                    <h5 class="modal-title" id="cancelModalLabel">
-                        <i class="bi bi-exclamation-triangle-fill text-danger me-2"></i> Cancel Exam
+                <div class="ui-modal-header">
+                    <h5 class="ui-modal-title" id="cancelModalLabel">
+                        <i class="bi bi-exclamation-triangle-fill tw:text-(color:--nx-red)! tw:mr-2!"></i> Cancel Exam
                     </h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="ui-btn-close" data-nx-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class="modal-body">
+                <div class="ui-modal-body">
                     <p>Cancel <strong id="cancelExamTitle"></strong>?</p>
                     <label class="nx-label" for="cancel_reason">Reason for cancellation</label>
-                    <textarea id="cancel_reason" name="cancel_reason" class="form-control custom-input" rows="3" required
+                    <textarea id="cancel_reason" name="cancel_reason" class="ui-form-control custom-input" rows="3" required
                         placeholder="e.g. Hall not available"></textarea>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="nx-btn nx-btn-light" data-bs-dismiss="modal">Close</button>
+                <div class="ui-modal-footer">
+                    <button type="button" class="nx-btn nx-btn-light" data-nx-dismiss="modal">Close</button>
                     <button type="submit" class="nx-btn nx-btn-danger">
                         <i class="bi bi-x-circle"></i> Cancel Exam
                     </button>
@@ -235,7 +235,7 @@
 
         var modal = document.getElementById('cancelModal');
         if (modal) {
-            modal.addEventListener('show.bs.modal', function (event) {
+            modal.addEventListener('show.nx.modal', function (event) {
                 var button = event.relatedTarget;
                 document.getElementById('cancelExamTitle').textContent = button.getAttribute('data-exam-title');
                 var form = document.getElementById('cancelForm');

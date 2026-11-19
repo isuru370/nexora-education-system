@@ -7,7 +7,7 @@
 <div class="dashboard-page">
 
     {{-- HERO --}}
-    <div class="hero-section mb-4">
+    <div class="hero-section tw:mb-6!">
         <div class="hero-content">
             <div class="hero-left">
                 <span class="greeting-badge">nexoraEDU</span>
@@ -25,7 +25,7 @@
     </div>
 
     {{-- SUMMARY --}}
-    <div class="stats-grid mb-4">
+    <div class="stats-grid tw:mb-6!">
         <div class="nx-card stat-card">
             <div class="stat-icon-wrapper icon-blue"><i class="bi bi-journal-bookmark-fill"></i></div>
             <div class="stat-info">
@@ -61,18 +61,18 @@
     </div>
 
     {{-- TUTE HISTORY --}}
-    <div class="nx-card mb-4">
+    <div class="nx-card tw:mb-6!">
         <div class="nx-card-header">
             <div>
-                <h5 class="nx-card-title"><i class="bi bi-journal-bookmark-fill text-primary"></i> Tute History</h5>
+                <h5 class="nx-card-title"><i class="bi bi-journal-bookmark-fill tw:text-(color:--nx-blue)!"></i> Tute History</h5>
                 <p class="nx-card-subtitle">Tute records for this student, class and enrollment</p>
             </div>
             <span class="nx-badge nx-badge-blue">{{ $data['total_tutes'] ?? 0 }} Tutes</span>
         </div>
 
         @if (count($data['tutes'] ?? []) > 0)
-            <div class="table-responsive">
-                <table class="table premium-table mb-0">
+            <div class="ui-table-responsive">
+                <table class="ui-table premium-table tw:mb-0!">
                     <thead>
                         <tr>
                             <th>#</th><th>Month</th><th>Status</th><th>Issued At</th><th>Issued By</th><th>Note</th>
@@ -105,22 +105,22 @@
             </div>
         @else
             <div class="empty-table">
-                <i class="bi bi-journal-x fs-2 d-block mb-2"></i>
-                <strong class="d-block">No Tute Records</strong>
+                <i class="bi bi-journal-x tw:text-[length:calc(1.325rem_+_0.9vw)]! tw:xl:text-[length:2rem]! tw:block! tw:mb-2!"></i>
+                <strong class="tw:block!">No Tute Records</strong>
                 <span class="cell-sub">No tute records were found for this student enrollment.</span>
             </div>
         @endif
     </div>
 
     {{-- ENROLLMENT INFORMATION --}}
-    <div class="nx-card mb-4">
+    <div class="nx-card tw:mb-6!">
         <div class="nx-card-header">
             <div>
-                <h5 class="nx-card-title"><i class="bi bi-info-circle text-primary"></i> Enrollment Information</h5>
+                <h5 class="nx-card-title"><i class="bi bi-info-circle tw:text-(color:--nx-blue)!"></i> Enrollment Information</h5>
                 <p class="nx-card-subtitle">Current class context for these tute records</p>
             </div>
         </div>
-        <div class="p-3">
+        <div class="tw:p-4!">
             <div class="detail-grid">
                 <div class="detail-item"><span class="detail-label">Student ID</span><strong class="detail-value">{{ $data['student']->custom_id ?? 'N/A' }}</strong></div>
                 <div class="detail-item"><span class="detail-label">Class</span><strong class="detail-value">{{ $data['class']->class_name ?? 'N/A' }}</strong></div>

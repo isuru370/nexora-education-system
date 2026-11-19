@@ -9,7 +9,7 @@
     {{-- ===================================================== --}}
     {{-- HERO --}}
     {{-- ===================================================== --}}
-    <div class="hero-section mb-4">
+    <div class="hero-section tw:mb-6!">
         <div class="hero-content">
             <div class="hero-left">
                 <span class="greeting-badge">nexoraEDU</span>
@@ -52,21 +52,21 @@
     {{-- ===================================================== --}}
     {{-- FILTER --}}
     {{-- ===================================================== --}}
-    <div class="nx-card mb-4">
+    <div class="nx-card tw:mb-6!">
         <div class="nx-card-header">
             <div>
-                <h5 class="nx-card-title"><i class="bi bi-funnel text-primary"></i> Filters</h5>
+                <h5 class="nx-card-title"><i class="bi bi-funnel tw:text-(color:--nx-blue)!"></i> Filters</h5>
                 <p class="nx-card-subtitle">Filter by branch, year and month</p>
             </div>
         </div>
 
-        <div class="p-3">
-            <form method="GET" action="{{ route('teacher-salaries.index') }}" class="row g-3 align-items-end">
+        <div class="tw:p-4!">
+            <form method="GET" action="{{ route('teacher-salaries.index') }}" class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2 tw:items-end!">
 
                 @if ($branches->count() > 1)
-                    <div class="col-lg-3 col-md-6">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:lg:flex-[0_0_auto] tw:lg:w-[25%]">
                         <label class="nx-label">Branch</label>
-                        <select name="branch_id" class="form-select nx-input">
+                        <select name="branch_id" class="ui-form-select nx-input">
                             @foreach ($branches as $branchOption)
                                 <option value="{{ $branchOption->id }}" {{ (int) $branchId === (int) $branchOption->id ? 'selected' : '' }}>
                                     {{ $branchOption->name }}
@@ -75,12 +75,12 @@
                         </select>
                     </div>
                 @else
-                    <input type="hidden" name="branch_id" value="{{ $branchId }}">
+                    <input class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full" type="hidden" name="branch_id" value="{{ $branchId }}">
                 @endif
 
-                <div class="col-lg-3 col-md-6">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:lg:flex-[0_0_auto] tw:lg:w-[25%]">
                     <label class="nx-label">Year</label>
-                    <select name="year" class="form-select nx-input">
+                    <select name="year" class="ui-form-select nx-input">
                         @for ($y = now()->year; $y >= 2020; $y--)
                             <option value="{{ $y }}" {{ $year == $y ? 'selected' : '' }}>
                                 {{ $y }}
@@ -89,9 +89,9 @@
                     </select>
                 </div>
 
-                <div class="col-lg-3 col-md-6">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:lg:flex-[0_0_auto] tw:lg:w-[25%]">
                     <label class="nx-label">Month</label>
-                    <select name="month" class="form-select nx-input">
+                    <select name="month" class="ui-form-select nx-input">
                         @for ($m = 1; $m <= 12; $m++)
                             <option value="{{ $m }}" {{ $month == $m ? 'selected' : '' }}>
                                 {{ date('F', mktime(0, 0, 0, $m, 1)) }}
@@ -100,8 +100,8 @@
                     </select>
                 </div>
 
-                <div class="col-lg-2 col-md-6">
-                    <button type="submit" class="nx-btn nx-btn-primary w-100">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:lg:flex-[0_0_auto] tw:lg:w-[16.66666667%]">
+                    <button type="submit" class="nx-btn nx-btn-primary tw:w-full!">
                         <i class="bi bi-funnel"></i> Filter
                     </button>
                 </div>
@@ -112,7 +112,7 @@
     {{-- ===================================================== --}}
     {{-- SUMMARY --}}
     {{-- ===================================================== --}}
-    <div class="stats-grid mb-4">
+    <div class="stats-grid tw:mb-6!">
 
         <div class="nx-card stat-card">
             <div class="stat-icon-wrapper icon-blue"><i class="bi bi-people-fill"></i></div>
@@ -164,11 +164,11 @@
     {{-- ===================================================== --}}
     {{-- TABLE --}}
     {{-- ===================================================== --}}
-    <div class="nx-card mb-4">
+    <div class="nx-card tw:mb-6!">
 
         <div class="nx-card-header">
             <div>
-                <h5 class="nx-card-title"><i class="bi bi-people-fill text-primary"></i> Monthly Teacher Salary Summary</h5>
+                <h5 class="nx-card-title"><i class="bi bi-people-fill tw:text-(color:--nx-blue)!"></i> Monthly Teacher Salary Summary</h5>
                 <p class="nx-card-subtitle">Salary earnings and deductions overview</p>
             </div>
             <span class="nx-badge nx-badge-blue">
@@ -176,22 +176,22 @@
             </span>
         </div>
 
-        <div class="table-responsive">
-            <table class="table premium-table mb-0">
+        <div class="ui-table-responsive">
+            <table class="ui-table premium-table tw:mb-0!">
                 <thead>
                     <tr>
                         <th>#</th>
                         <th>Teacher</th>
-                        <th class="text-end">Gross</th>
-                        <th class="text-end">Advance</th>
-                        <th class="text-end">Deduction</th>
-                        <th class="text-end">Other</th>
+                        <th class="tw:text-right!">Gross</th>
+                        <th class="tw:text-right!">Advance</th>
+                        <th class="tw:text-right!">Deduction</th>
+                        <th class="tw:text-right!">Other</th>
                         @feature('welfare')
-                            <th class="text-end">Welfare</th>
+                            <th class="tw:text-right!">Welfare</th>
                         @endfeature
-                        <th class="text-end">Net Payable</th>
+                        <th class="tw:text-right!">Net Payable</th>
                         <th>Status</th>
-                        <th class="text-center">Action</th>
+                        <th class="tw:text-center!">Action</th>
                     </tr>
                 </thead>
 
@@ -214,36 +214,36 @@
                             </td>
 
                             {{-- GROSS --}}
-                            <td class="text-end cell-title">
+                            <td class="tw:text-right! cell-title">
                                 {{ number_format($row['gross_earnings'] ?? 0, 2) }}
                                 @if (($row['carried'] ?? 0) > 0)
-                                    <small class="d-block text-success" title="Earlier months' fees paid after their salary">+ {{ number_format($row['carried'], 2) }} balance</small>
+                                    <small class="tw:block! tw:text-(color:--nx-green)!" title="Earlier months' fees paid after their salary">+ {{ number_format($row['carried'], 2) }} balance</small>
                                 @endif
                             </td>
 
                             {{-- ADVANCE --}}
-                            <td class="text-end cell-title" style="color: var(--nx-amber);">
+                            <td class="tw:text-right! cell-title" style="color: var(--nx-amber);">
                                 {{ number_format($row['advance'] ?? 0, 2) }}
                             </td>
 
                             {{-- DEDUCTION --}}
-                            <td class="text-end cell-title" style="color: var(--nx-red);">
+                            <td class="tw:text-right! cell-title" style="color: var(--nx-red);">
                                 {{ number_format($row['deduction'] ?? 0, 2) }}
                             </td>
 
                             {{-- OTHER --}}
-                            <td class="text-end cell-sub">
+                            <td class="tw:text-right! cell-sub">
                                 {{ number_format($row['other'] ?? 0, 2) }}
                             </td>
 
                             @feature('welfare')
-                                <td class="text-end cell-sub">
+                                <td class="tw:text-right! cell-sub">
                                     {{ number_format($row['welfare'] ?? 0, 2) }}
                                 </td>
                             @endfeature
 
                             {{-- NET PAYABLE --}}
-                            <td class="text-end cell-title" style="color: var(--nx-green);">
+                            <td class="tw:text-right! cell-title" style="color: var(--nx-green);">
                                 {{ number_format($row['net_payable'] ?? 0, 2) }}
                             </td>
 
@@ -264,8 +264,8 @@
                             </td>
 
                             {{-- ACTION --}}
-                            <td class="text-center">
-                                <div class="action-buttons justify-content-center">
+                            <td class="tw:text-center!">
+                                <div class="action-buttons tw:justify-center!">
                                     <a href="{{ route('teacher-salaries.show', [
                                         'teacher' => $row['teacher_id'],
                                         'year' => $year,
@@ -280,8 +280,8 @@
                     @empty
                         <tr>
                             <td colspan="9" class="empty-table">
-                                <i class="bi bi-receipt fs-2 d-block mb-2"></i>
-                                <strong class="d-block">No salary data found</strong>
+                                <i class="bi bi-receipt tw:text-[length:calc(1.325rem_+_0.9vw)]! tw:xl:text-[length:2rem]! tw:block! tw:mb-2!"></i>
+                                <strong class="tw:block!">No salary data found</strong>
                                 <span class="cell-sub">Try changing the selected branch, month or year</span>
                             </td>
                         </tr>

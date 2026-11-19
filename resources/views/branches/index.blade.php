@@ -8,7 +8,7 @@
     {{-- ===================================================== --}}
     {{-- HERO --}}
     {{-- ===================================================== --}}
-    <div class="hero-section mb-4">
+    <div class="hero-section tw:mb-6!">
         <div class="hero-content">
             <div class="hero-left">
                 <span class="greeting-badge">Branch Management</span>
@@ -40,7 +40,7 @@
                         <span>Branch Directory</span>
                     </div>
                 </div>
-                <a href="{{ route('branches.create') }}" class="nx-btn nx-btn-primary mt-2">
+                <a href="{{ route('branches.create') }}" class="nx-btn nx-btn-primary tw:mt-2!">
                     <i class="bi bi-plus-circle"></i> Add New Branch
                 </a>
             </div>
@@ -50,7 +50,7 @@
     {{-- ===================================================== --}}
     {{-- KPI CARDS --}}
     {{-- ===================================================== --}}
-    <div class="stats-grid stats-grid-3 mb-4">
+    <div class="stats-grid stats-grid-3 tw:mb-6!">
 
         <div class="nx-card stat-card">
             <div class="stat-icon-wrapper icon-blue"><i class="bi bi-buildings"></i></div>
@@ -68,10 +68,10 @@
             <div class="stat-info">
                 <span class="stat-label">Active Branches</span>
                 <h2 class="stat-number">{{ $stats['active'] ?? 0 }}</h2>
-                <div class="nx-progress mt-2">
+                <div class="nx-progress tw:mt-2!">
                     <div class="nx-progress-fill bg-green" style="width: {{ $stats['active_percentage'] ?? 0 }}%"></div>
                 </div>
-                <span class="stat-change up mt-1">
+                <span class="stat-change up tw:mt-1!">
                     {{ $stats['active_percentage'] ?? 0 }}% <span class="stat-change-note">active rate</span>
                 </span>
             </div>
@@ -92,11 +92,11 @@
     {{-- ===================================================== --}}
     {{-- BRANCHES TABLE --}}
     {{-- ===================================================== --}}
-    <div class="nx-card mb-4">
+    <div class="nx-card tw:mb-6!">
 
         <div class="nx-card-header">
             <div>
-                <h5 class="nx-card-title"><i class="bi bi-list-ul text-primary"></i> All Branches</h5>
+                <h5 class="nx-card-title"><i class="bi bi-list-ul tw:text-(color:--nx-blue)!"></i> All Branches</h5>
                 <p class="nx-card-subtitle">View and manage all your institution branches</p>
             </div>
             <span class="nx-badge nx-badge-blue">
@@ -107,23 +107,23 @@
 
         @if ($branches->isEmpty())
             <div class="empty-table">
-                <i class="bi bi-buildings fs-2 d-block mb-2"></i>
-                <strong class="d-block">No branches yet</strong>
-                <span class="cell-sub d-block mb-3">Get started by creating your first branch.</span>
+                <i class="bi bi-buildings tw:text-[length:calc(1.325rem_+_0.9vw)]! tw:xl:text-[length:2rem]! tw:block! tw:mb-2!"></i>
+                <strong class="tw:block!">No branches yet</strong>
+                <span class="cell-sub tw:block! tw:mb-4!">Get started by creating your first branch.</span>
                 <a href="{{ route('branches.create') }}" class="nx-btn nx-btn-primary">
                     <i class="bi bi-plus-circle"></i> Create First Branch
                 </a>
             </div>
         @else
-            <div class="table-responsive">
-                <table class="table premium-table mb-0">
+            <div class="ui-table-responsive">
+                <table class="ui-table premium-table tw:mb-0!">
                     <thead>
                         <tr>
                             <th>Branch</th>
                             <th>Code</th>
                             <th>Contact</th>
                             <th>Status</th>
-                            <th class="text-end">Actions</th>
+                            <th class="tw:text-right!">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -131,14 +131,14 @@
                             <tr>
                                 {{-- BRANCH --}}
                                 <td>
-                                    <div class="d-flex align-items-center gap-3">
+                                    <div class="tw:flex! tw:items-center! tw:gap-4!">
                                         <div class="teacher-avatar">
                                             {{ strtoupper(substr($branch->name, 0, 1)) }}
                                         </div>
                                         <div>
                                             <div class="cell-title">{{ $branch->name }}</div>
                                             @if ($branch->address1)
-                                                <small class="cell-sub d-block">
+                                                <small class="cell-sub tw:block!">
                                                     <i class="bi bi-geo-alt"></i> {{ Str::limit($branch->address1, 40) }}
                                                 </small>
                                             @endif
@@ -157,7 +157,7 @@
                                 <td>
                                     @if ($branch->mobile)
                                         <div class="cell-title">
-                                            <i class="bi bi-telephone text-muted"></i> {{ $branch->mobile }}
+                                            <i class="bi bi-telephone tw:text-(color:--nx-muted)!"></i> {{ $branch->mobile }}
                                         </div>
                                     @endif
                                     @if ($branch->email)
@@ -166,7 +166,7 @@
                                         </div>
                                     @endif
                                     @if (!$branch->mobile && !$branch->email)
-                                        <small class="cell-sub fst-italic">No contact info</small>
+                                        <small class="cell-sub tw:italic!">No contact info</small>
                                     @endif
                                 </td>
 
@@ -184,7 +184,7 @@
                                 </td>
 
                                 {{-- ACTIONS --}}
-                                <td class="text-end">
+                                <td class="tw:text-right!">
                                     <div class="action-buttons">
 
                                         {{-- VIEW --}}
@@ -199,7 +199,7 @@
 
                                         {{-- ACTIVATE / DEACTIVATE --}}
                                         @if ($branch->is_active)
-                                            <form action="{{ route('branches.deactivate', $branch->id) }}" method="POST" class="d-inline">
+                                            <form action="{{ route('branches.deactivate', $branch->id) }}" method="POST" class="tw:[display:inline]!">
                                                 @csrf
                                                 @method('PATCH')
                                                 <button type="submit" class="action-btn action-btn-warning" title="Deactivate" aria-label="Deactivate"
@@ -208,7 +208,7 @@
                                                 </button>
                                             </form>
                                         @else
-                                            <form action="{{ route('branches.activate', $branch->id) }}" method="POST" class="d-inline">
+                                            <form action="{{ route('branches.activate', $branch->id) }}" method="POST" class="tw:[display:inline]!">
                                                 @csrf
                                                 @method('PATCH')
                                                 <button type="submit" class="action-btn action-btn-success" title="Activate" aria-label="Activate"
@@ -219,7 +219,7 @@
                                         @endif
 
                                         {{-- DELETE --}}
-                                        <form action="{{ route('branches.destroy', $branch->id) }}" method="POST" class="d-inline">
+                                        <form action="{{ route('branches.destroy', $branch->id) }}" method="POST" class="tw:[display:inline]!">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="action-btn action-btn-danger" title="Delete" aria-label="Delete"
@@ -236,7 +236,7 @@
             </div>
 
             @if (method_exists($branches, 'links') && $branches->hasPages())
-                <div class="p-3 border-top">
+                <div class="tw:p-4! tw:bs-border-t!">
                     {{ $branches->links() }}
                 </div>
             @endif

@@ -3,79 +3,52 @@
 namespace App\Http\Controllers\Web\OrganizerPayment;
 
 use App\Http\Controllers\Controller;
+use App\Models\Branch;
 use App\Models\Organizer;
 use App\Models\OrganizerPayment;
-use App\Models\PaymentSplitSnapshot;
+use App\Services\Web\Organizer\OrganizerSalaryService;
+use DomainException;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
-use Throwable;
 
+/**
+ * Organizer salary, per branch + month (OrganizerSalaryService has the rules).
+ */
 class OrganizerPaymentController extends Controller
 {
-    public function index(Request $request)
+    public function __construct(
+        protected OrganizerSalaryService $salaries
+    ) {}
+
+    /** year / month / branch from the request (this month, first branch by default) */
+    private function period(Request $request): array
     {
         $year = (int) ($request->year ?? now()->year);
         $month = (int) ($request->month ?? now()->month);
 
-        $organizers = Organizer::query()
-            ->select('id', 'code', 'name', 'mobile')
-            ->where('is_active', true)
-            ->orderBy('name')
-            ->get();
+        if ($month < 1 || $month > 12 || $year < 2000 || $year > 2100) {
+            [$year, $month] = [now()->year, now()->month];
+        }
 
-        $snapshots = PaymentSplitSnapshot::query()
-            ->whereHas('payment', function ($query) use ($year, $month) {
-                $query->where('status', 'completed')
-                    ->whereYear('paid_at', $year)
-                    ->whereMonth('paid_at', $month);
-            })
-            ->get();
+        $branchId = $this->salaries->resolveBranchId($request->filled('branch_id') ? (int) $request->branch_id : null);
 
-        $incomeByOrganizer = $snapshots
-            ->groupBy('organizer_id')
-            ->map(fn($items) => round($items->sum('organizer_amount'), 2));
+        return [$year, $month, $branchId];
+    }
 
-        $payments = OrganizerPayment::query()
-            ->where('status', 'paid')
-            ->whereYear('payment_date', $year)
-            ->whereMonth('payment_date', $month)
-            ->get();
+    public function index(Request $request)
+    {
+        try {
+            [$year, $month, $branchId] = $this->period($request);
+        } catch (DomainException $e) {
+            abort(403, $e->getMessage());
+        }
 
-        $paymentsByOrganizer = $payments->groupBy('organizer_id');
-
-        $organizerRows = $organizers->map(function ($organizer) use ($incomeByOrganizer, $paymentsByOrganizer) {
-            $organizerPayments = $paymentsByOrganizer->get($organizer->id, collect());
-
-            $totalIncome = (float) ($incomeByOrganizer[$organizer->id] ?? 0);
-            $advanceAmount = (float) $organizerPayments->where('payment_type', 'advance')->sum('amount');
-            $deductionAmount = (float) $organizerPayments->where('payment_type', 'deduction')->sum('amount');
-            $otherAmount = (float) $organizerPayments->where('payment_type', 'other')->sum('amount');
-            $salaryPaid = (float) $organizerPayments->where('payment_type', 'salary')->sum('amount');
-
-            $netTotal = max(
-                $totalIncome - $advanceAmount - $deductionAmount - $otherAmount - $salaryPaid,
-                0
-            );
-
-            return [
-                'organizer_id' => $organizer->id,
-                'code' => $organizer->code,
-                'name' => $organizer->name,
-                'mobile' => $organizer->mobile,
-                'total_income' => round($totalIncome, 2),
-                'advance_amount' => round($advanceAmount, 2),
-                'deduction_amount' => round($deductionAmount, 2),
-                'other_amount' => round($otherAmount, 2),
-                'salary_paid' => round($salaryPaid, 2),
-                'net_total' => round($netTotal, 2),
-                'is_salary_paid' => $salaryPaid > 0,
-            ];
-        });
+        $organizerRows = $this->salaries->monthRows($branchId, $year, $month);
 
         return view('organizer-payments.index', [
             'year' => $year,
             'month' => $month,
+            'branchId' => $branchId,
+            'branches' => $this->salaries->branchOptions(),
             'organizerRows' => $organizerRows,
             'summary' => [
                 'total_income' => round($organizerRows->sum('total_income'), 2),
@@ -90,62 +63,43 @@ class OrganizerPaymentController extends Controller
 
     public function pay(Request $request, Organizer $organizer)
     {
-        $year = (int) ($request->year ?? now()->year);
-        $month = (int) ($request->month ?? now()->month);
+        try {
+            [$year, $month, $branchId] = $this->period($request);
+        } catch (DomainException $e) {
+            abort(403, $e->getMessage());
+        }
 
-        $data = $this->calculateOrganizerSalary($organizer, $year, $month);
-
-        return view('organizer-payments.pay', array_merge($data, [
-            'organizer' => $organizer,
-            'year' => $year,
-            'month' => $month,
-        ]));
+        return view('organizer-payments.pay', $this->pageData($organizer, $branchId, $year, $month));
     }
 
     public function store(Request $request, Organizer $organizer)
     {
         $validated = $request->validate([
             'payment_type' => ['required', 'in:salary'],
-            'year' => ['required', 'integer'],
+            'year' => ['required', 'integer', 'between:2000,2100'],
             'month' => ['required', 'integer', 'between:1,12'],
+            'branch_id' => ['required', 'integer'],
+            'expected_net' => ['nullable', 'numeric'],
         ]);
 
-        $year = (int) $validated['year'];
-        $month = (int) $validated['month'];
-
-        $data = $this->calculateOrganizerSalary($organizer, $year, $month);
-
-        if ($data['salaryRecord']) {
-            return redirect()
-                ->back()
-                ->with('error', 'Organizer salary already paid.');
+        try {
+            $this->salaries->paySalary(
+                $organizer->id,
+                (int) $validated['branch_id'],
+                (int) $validated['year'],
+                (int) $validated['month'],
+                isset($validated['expected_net']) ? (float) $validated['expected_net'] : null
+            );
+        } catch (DomainException $e) {
+            return redirect()->back()->with('error', $e->getMessage());
         }
-
-        if ($data['netTotal'] <= 0) {
-            return redirect()
-                ->back()
-                ->with('error', 'No payable salary balance.');
-        }
-
-        DB::transaction(function () use ($organizer, $data) {
-            OrganizerPayment::create([
-                'organizer_id' => $organizer->id,
-                'user_id' => auth()->id(),
-                'payment_type' => 'salary',
-                'amount' => round($data['netTotal'], 2),
-                'payment_date' => now()->toDateString(),
-                'reason_code' => null,
-                'reason' => 'Organizer salary payment',
-                'status' => 'paid',
-                'note' => null,
-            ]);
-        });
 
         return redirect()
             ->route('admin.organizer-payments.salary-slip', [
                 'organizer' => $organizer->id,
-                'year' => $year,
-                'month' => $month,
+                'year' => $validated['year'],
+                'month' => $validated['month'],
+                'branch_id' => $validated['branch_id'],
             ])
             ->with('success', 'Organizer salary paid successfully.');
     }
@@ -156,37 +110,16 @@ class OrganizerPaymentController extends Controller
             'payment_type' => ['required', 'in:advance,deduction,other'],
             'amount' => ['required', 'numeric', 'min:0.01'],
             'payment_date' => ['required', 'date'],
+            'branch_id' => ['required', 'integer'],
             'reason' => ['nullable', 'string', 'max:150'],
             'note' => ['nullable', 'string'],
         ]);
 
-        $paymentDate = \Carbon\Carbon::parse($validated['payment_date']);
-
-        $salaryPaid = OrganizerPayment::query()
-            ->where('organizer_id', $organizer->id)
-            ->where('payment_type', 'salary')
-            ->where('status', 'paid')
-            ->whereYear('payment_date', $paymentDate->year)
-            ->whereMonth('payment_date', $paymentDate->month)
-            ->exists();
-
-        if ($salaryPaid) {
-            return redirect()
-                ->back()
-                ->with('error', 'Cannot add adjustment because organizer salary already paid.');
+        try {
+            $this->salaries->storeAdjustment($organizer->id, (int) $validated['branch_id'], $validated);
+        } catch (DomainException $e) {
+            return redirect()->back()->with('error', $e->getMessage());
         }
-
-        OrganizerPayment::create([
-            'organizer_id' => $organizer->id,
-            'user_id' => auth()->id(),
-            'payment_type' => $validated['payment_type'],
-            'amount' => round((float) $validated['amount'], 2),
-            'payment_date' => $validated['payment_date'],
-            'reason_code' => null,
-            'reason' => $validated['reason'] ?? null,
-            'status' => 'paid',
-            'note' => $validated['note'] ?? null,
-        ]);
 
         return redirect()
             ->back()
@@ -196,105 +129,62 @@ class OrganizerPaymentController extends Controller
     public function destroy(OrganizerPayment $organizerPayment)
     {
         try {
-            $paymentDate = $organizerPayment->payment_date;
-
-            if (
-                $paymentDate->year !== now()->year ||
-                $paymentDate->month !== now()->month
-            ) {
-                return redirect()
-                    ->back()
-                    ->with('error', 'Only current month payments can be deleted.');
-            }
-
-            $salaryPaid = OrganizerPayment::query()
-                ->where('organizer_id', $organizerPayment->organizer_id)
-                ->where('payment_type', 'salary')
-                ->where('status', 'paid')
-                ->whereYear('payment_date', $paymentDate->year)
-                ->whereMonth('payment_date', $paymentDate->month)
-                ->exists();
-
-            if ($salaryPaid && $organizerPayment->payment_type !== 'salary') {
-                return redirect()
-                    ->back()
-                    ->with('error', 'Cannot delete this payment because organizer salary is already paid.');
-            }
-
-            $organizerPayment->delete();
-
-            return redirect()
-                ->back()
-                ->with('success', 'Organizer payment deleted successfully.');
-        } catch (Throwable $e) {
-            Log::error('Organizer payment delete failed', [
-                'payment_id' => $organizerPayment->id,
-                'message' => $e->getMessage(),
-            ]);
-
-            return redirect()
-                ->back()
-                ->with('error', 'Failed to delete organizer payment.');
+            $this->salaries->delete($organizerPayment);
+        } catch (DomainException $e) {
+            return redirect()->back()->with('error', $e->getMessage());
         }
-    }
 
-    private function calculateOrganizerSalary(Organizer $organizer, int $year, int $month): array
-    {
-        $totalIncome = PaymentSplitSnapshot::query()
-            ->where('organizer_id', $organizer->id)
-            ->whereHas('payment', function ($query) use ($year, $month) {
-                $query->where('status', 'completed')
-                    ->whereYear('paid_at', $year)
-                    ->whereMonth('paid_at', $month);
-            })
-            ->sum('organizer_amount');
-
-        $payments = OrganizerPayment::query()
-            ->where('organizer_id', $organizer->id)
-            ->where('status', 'paid')
-            ->whereYear('payment_date', $year)
-            ->whereMonth('payment_date', $month)
-            ->get();
-
-        $advanceAmount = (float) $payments->where('payment_type', 'advance')->sum('amount');
-        $deductionAmount = (float) $payments->where('payment_type', 'deduction')->sum('amount');
-        $otherAmount = (float) $payments->where('payment_type', 'other')->sum('amount');
-        $salaryPaid = (float) $payments->where('payment_type', 'salary')->sum('amount');
-        $salaryRecord = $payments->where('payment_type', 'salary')->first();
-
-        $netTotal = max(
-            $totalIncome - $advanceAmount - $deductionAmount - $otherAmount - $salaryPaid,
-            0
-        );
-
-        return [
-            'totalIncome' => round($totalIncome, 2),
-            'advanceAmount' => round($advanceAmount, 2),
-            'deductionAmount' => round($deductionAmount, 2),
-            'otherAmount' => round($otherAmount, 2),
-            'salaryPaid' => round($salaryPaid, 2),
-            'netTotal' => round($netTotal, 2),
-            'salaryRecord' => $salaryRecord,
-        ];
+        return redirect()->back()->with('success', 'Organizer payment deleted successfully.');
     }
 
     public function salarySlip(Request $request, Organizer $organizer)
     {
-        $year = (int) ($request->year ?? now()->year);
-        $month = (int) ($request->month ?? now()->month);
+        try {
+            [$year, $month, $branchId] = $this->period($request);
+        } catch (DomainException $e) {
+            abort(403, $e->getMessage());
+        }
 
-        $data = $this->calculateOrganizerSalary($organizer, $year, $month);
+        $data = $this->pageData($organizer, $branchId, $year, $month);
 
-        if (! $data['salaryRecord']) {
+        if (!$data['salaryRecord']) {
             return redirect()
-                ->back()
+                ->route('admin.organizer-payments.pay', ['organizer' => $organizer->id, 'year' => $year, 'month' => $month, 'branch_id' => $branchId])
                 ->with('error', 'Salary payment record not found.');
         }
 
-        return view('organizer-payments.salary-slip', array_merge($data, [
+        return view('organizer-payments.salary-slip', $data);
+    }
+
+    private function pageData(Organizer $organizer, int $branchId, int $year, int $month): array
+    {
+        $totals = $this->salaries->forOrganizer($organizer->id, $branchId, $year, $month);
+
+        return [
             'organizer' => $organizer,
             'year' => $year,
             'month' => $month,
-        ]));
+            'branchId' => $branchId,
+            'branch' => Branch::query()->find($branchId),
+            'branches' => $this->salaries->branchOptions(),
+            'totalIncome' => $totals['earned'],
+            'earlierBalance' => $totals['earlier_balance'],
+            'advanceAmount' => $totals['advance'],
+            'deductionAmount' => $totals['deduction'],
+            'otherAmount' => $totals['other'],
+            'salaryPaid' => $totals['salary'] ? round((float) $totals['salary']->amount, 2) : 0.0,
+            'netTotal' => $totals['net'],
+            'stillOwed' => $totals['still_owed'],
+            'salaryRecord' => $totals['salary'],
+            'payBlockReason' => $this->salaries->payBlockReason($year, $month, $totals),
+            'adjustments' => OrganizerPayment::query()
+                ->where('branch_id', $branchId)
+                ->where('organizer_id', $organizer->id)
+                ->whereIn('payment_type', OrganizerSalaryService::ADJUSTMENT_TYPES)
+                ->whereYear('payment_date', $year)
+                ->whereMonth('payment_date', $month)
+                ->orderBy('payment_date')
+                ->get(),
+        ];
     }
 }

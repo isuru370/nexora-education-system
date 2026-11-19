@@ -2,41 +2,41 @@
     $student = $card->student;
 @endphp
 
-<div class="modal fade"
+<div class="ui-modal ui-fade"
      id="tmpPreviewModal{{ $card->id }}"
      tabindex="-1"
      aria-labelledby="tmpPreviewModalLabel{{ $card->id }}"
      aria-hidden="true">
 
-    <div class="modal-dialog modal-dialog-centered tmp-preview-dialog">
-        <div class="modal-content border-0 rounded-4 overflow-hidden tmp-preview-content">
+    <div class="ui-modal-dialog ui-modal-dialog-centered tmp-preview-dialog">
+        <div class="ui-modal-content tw:[border:0]! tw:rounded-bs-xl! tw:overflow-hidden! tmp-preview-content">
 
             {{-- =========================================================
                 HEADER
             ========================================================== --}}
-            <div class="modal-header tmp-preview-header">
+            <div class="ui-modal-header tmp-preview-header">
                 <div>
-                    <h5 class="modal-title fw-bold mb-0"
+                    <h5 class="ui-modal-title tw:font-bold! tw:mb-0!"
                         id="tmpPreviewModalLabel{{ $card->id }}">
-                        <i class="bi bi-credit-card-2-front text-primary me-2"></i>
+                        <i class="bi bi-credit-card-2-front tw:text-bs-primary! tw:mr-2!"></i>
                         Temporary ID Preview
                     </h5>
 
-                    <small class="text-muted mono">
+                    <small class="tw:text-bs-secondary-color! mono">
                         {{ $card->temporary_id_number }} / {{ $card->card_number }}
                     </small>
                 </div>
 
                 <button type="button"
-                        class="btn-close"
-                        data-bs-dismiss="modal"
+                        class="ui-btn-close"
+                        data-nx-dismiss="modal"
                         aria-label="Close"></button>
             </div>
 
             {{-- =========================================================
                 BODY
             ========================================================== --}}
-            <div class="modal-body tmp-preview-body">
+            <div class="ui-modal-body tmp-preview-body">
 
                 {{-- CARD PREVIEW --}}
                 <div class="tmp-card-shell">
@@ -71,11 +71,11 @@
                 </div>
 
                 {{-- META INFO --}}
-                <div class="tmp-meta mt-3">
+                <div class="tmp-meta tw:mt-4!">
 
                     <div class="tmp-meta-item">
                         <div class="label">
-                            <i class="bi bi-person me-1"></i>
+                            <i class="bi bi-person tw:mr-1!"></i>
                             Student Name
                         </div>
                         <div class="value">
@@ -85,7 +85,7 @@
 
                     <div class="tmp-meta-item">
                         <div class="label">
-                            <i class="bi bi-mortarboard me-1"></i>
+                            <i class="bi bi-mortarboard tw:mr-1!"></i>
                             Grade
                         </div>
                         <div class="value">
@@ -95,32 +95,32 @@
 
                     <div class="tmp-meta-item">
                         <div class="label">
-                            <i class="bi bi-flag me-1"></i>
+                            <i class="bi bi-flag tw:mr-1!"></i>
                             Status
                         </div>
                         <div class="value">
                             @if ($card->status === 'pending')
-                                <span class="badge rounded-pill bg-warning bg-opacity-10 text-warning border border-warning px-3 py-2">
-                                    <i class="bi bi-hourglass-split me-1"></i> Pending
+                                <span class="ui-badge tw:rounded-bs-pill! tw:bg-[rgba(255,193,7,0.1)]! tw:text-bs-warning! tw:[border:1px_solid_#ffc107]! tw:px-4! tw:py-2!">
+                                    <i class="bi bi-hourglass-split tw:mr-1!"></i> Pending
                                 </span>
                             @elseif ($card->status === 'downloaded')
-                                <span class="badge rounded-pill bg-primary bg-opacity-10 text-primary border border-primary px-3 py-2">
-                                    <i class="bi bi-download me-1"></i> Downloaded
+                                <span class="ui-badge tw:rounded-bs-pill! tw:bg-[rgba(13,110,253,0.1)]! tw:text-bs-primary! tw:[border:1px_solid_#0d6efd]! tw:px-4! tw:py-2!">
+                                    <i class="bi bi-download tw:mr-1!"></i> Downloaded
                                 </span>
                             @elseif ($card->status === 'issued')
-                                <span class="badge rounded-pill bg-success bg-opacity-10 text-success border border-success px-3 py-2">
-                                    <i class="bi bi-send-check me-1"></i> Issued
+                                <span class="ui-badge tw:rounded-bs-pill! tw:bg-[rgba(25,135,84,0.1)]! tw:text-bs-success! tw:[border:1px_solid_#198754]! tw:px-4! tw:py-2!">
+                                    <i class="bi bi-send-check tw:mr-1!"></i> Issued
                                 </span>
                             @elseif ($card->status === 'active')
-                                <span class="badge rounded-pill bg-success bg-opacity-10 text-success border border-success px-3 py-2">
-                                    <i class="bi bi-check-circle me-1"></i> Active
+                                <span class="ui-badge tw:rounded-bs-pill! tw:bg-[rgba(25,135,84,0.1)]! tw:text-bs-success! tw:[border:1px_solid_#198754]! tw:px-4! tw:py-2!">
+                                    <i class="bi bi-check-circle tw:mr-1!"></i> Active
                                 </span>
                             @elseif ($card->status === 'expired')
-                                <span class="badge rounded-pill bg-danger bg-opacity-10 text-danger border border-danger px-3 py-2">
-                                    <i class="bi bi-x-circle me-1"></i> Expired
+                                <span class="ui-badge tw:rounded-bs-pill! tw:bg-[rgba(220,53,69,0.1)]! tw:text-bs-danger! tw:[border:1px_solid_#dc3545]! tw:px-4! tw:py-2!">
+                                    <i class="bi bi-x-circle tw:mr-1!"></i> Expired
                                 </span>
                             @else
-                                <span class="badge rounded-pill bg-secondary bg-opacity-10 text-secondary border border-secondary px-3 py-2">
+                                <span class="ui-badge tw:rounded-bs-pill! tw:bg-[rgba(108,117,125,0.1)]! tw:text-bs-secondary! tw:[border:1px_solid_#6c757d]! tw:px-4! tw:py-2!">
                                     {{ ucfirst($card->status) }}
                                 </span>
                             @endif

@@ -9,16 +9,16 @@
     {{-- =========================================================
         HERO
     ========================================================== --}}
-    <div class="hero-card mb-4">
+    <div class="hero-card tw:mb-6!">
         <div class="hero-content">
-            <div class="d-flex align-items-center gap-3">
+            <div class="bs-d-flex tw:flex! tw:items-center! tw:gap-4!">
                 <div class="profile-avatar">
                     {{ strtoupper(substr($teacher->full_name, 0, 1)) }}
                 </div>
 
                 <div>
-                    <h4 class="mb-1 fw-bold">{{ $teacher->full_name }}</h4>
-                    <p class="mb-0 text-muted">
+                    <h4 class="tw:mb-1! tw:font-bold!">{{ $teacher->full_name }}</h4>
+                    <p class="tw:mb-0! tw:text-bs-secondary-color!">
                         {{ $teacher->custom_id }}
                         @if($teacher->initials)
                             · {{ $teacher->initials }}
@@ -27,8 +27,8 @@
 
                     {{-- Branch count badge --}}
                     @if($teacher->branches && $teacher->branches->isNotEmpty())
-                        <span class="badge mt-2" style="background: #eff6ff; color: #2563eb; font-size: 0.75rem; font-weight: 700; padding: 0.35rem 0.7rem; border-radius: 8px;">
-                            <i class="bi bi-diagram-3-fill me-1"></i>
+                        <span class="ui-badge tw:mt-2!" style="background: #eff6ff; color: #2563eb; font-size: 0.75rem; font-weight: 700; padding: 0.35rem 0.7rem; border-radius: 8px;">
+                            <i class="bi bi-diagram-3-fill tw:mr-1!"></i>
                             {{ $teacher->branches->count() }}
                             {{ Str::plural('Branch', $teacher->branches->count()) }}
                         </span>
@@ -37,13 +37,13 @@
             </div>
 
             <div class="hero-actions">
-                <a href="{{ route('teachers.edit', $teacher) }}" class="btn btn-warning custom-btn">
-                    <i class="bi bi-pencil-fill me-1"></i>
+                <a href="{{ route('teachers.edit', $teacher) }}" class="ui-btn ui-btn-warning custom-btn">
+                    <i class="bi bi-pencil-fill tw:mr-1!"></i>
                     Edit
                 </a>
 
-                <a href="{{ route('teachers.index') }}" class="btn btn-outline-secondary custom-btn">
-                    <i class="bi bi-arrow-left me-1"></i>
+                <a href="{{ route('teachers.index') }}" class="ui-btn ui-btn-outline-secondary custom-btn">
+                    <i class="bi bi-arrow-left tw:mr-1!"></i>
                     Back
                 </a>
             </div>
@@ -54,9 +54,9 @@
     {{-- =========================================================
         SUMMARY CARDS
     ========================================================== --}}
-    <div class="row g-4 mb-4">
+    <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3 bs-row tw:mb-6!">
 
-        <div class="col-xl-3 col-md-6">
+        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%]">
             <div class="stats-card">
                 <div class="stats-icon blue">
                     <i class="bi bi-person-badge-fill"></i>
@@ -68,7 +68,7 @@
             </div>
         </div>
 
-        <div class="col-xl-3 col-md-6">
+        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%]">
             <div class="stats-card">
                 <div class="stats-icon green">
                     <i class="bi bi-phone-fill"></i>
@@ -80,26 +80,26 @@
             </div>
         </div>
 
-        <div class="col-xl-3 col-md-6">
+        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%]">
             <div class="stats-card">
                 <div class="stats-icon orange">
                     <i class="bi bi-envelope-fill"></i>
                 </div>
                 <div>
-                    <h3 class="text-truncate" title="{{ $teacher->email }}">{{ $teacher->email ?? 'N/A' }}</h3>
+                    <h3 class="tw:truncate" title="{{ $teacher->email }}">{{ $teacher->email ?? 'N/A' }}</h3>
                     <p>Email</p>
                 </div>
             </div>
         </div>
 
-        <div class="col-xl-3 col-md-6">
+        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%]">
             <div class="stats-card">
                 <div class="stats-icon red">
                     <i class="bi bi-shield-check"></i>
                 </div>
                 <div>
                     <h3>
-                        <span class="badge {{ $teacher->is_active ? 'bg-success' : 'bg-secondary' }} custom-badge">
+                        <span class="ui-badge custom-badge {{ $teacher->is_active ? 'tw:bg-bs-success!' : 'tw:bg-bs-secondary!' }}">
                             {{ $teacher->is_active ? 'Active' : 'Inactive' }}
                         </span>
                     </h3>
@@ -114,15 +114,15 @@
     {{-- =========================================================
         CONTENT
     ========================================================== --}}
-    <div class="row g-4">
+    <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3 bs-row">
 
         {{-- ============================
              PERSONAL INFORMATION
         ============================= --}}
-        <div class="col-lg-6">
-            <div class="info-card h-100">
+        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[50%]">
+            <div class="info-card tw:h-full!">
                 <div class="section-header">
-                    <h6 class="mb-0 fw-bold">Personal Information</h6>
+                    <h6 class="tw:mb-0! tw:font-bold!">Personal Information</h6>
                     <span class="section-pill">Profile</span>
                 </div>
 
@@ -161,10 +161,10 @@
         {{-- ============================
              CONTACT INFORMATION
         ============================= --}}
-        <div class="col-lg-6">
-            <div class="info-card h-100">
+        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[50%]">
+            <div class="info-card tw:h-full!">
                 <div class="section-header">
-                    <h6 class="mb-0 fw-bold">Contact Information</h6>
+                    <h6 class="tw:mb-0! tw:font-bold!">Contact Information</h6>
                     <span class="section-pill">Reach</span>
                 </div>
 
@@ -173,7 +173,7 @@
                         <span class="label">Mobile</span>
                         <span class="value">
                             @if($teacher->mobile)
-                                <a href="tel:{{ $teacher->mobile }}" class="text-decoration-none" style="color: #2563eb;">
+                                <a href="tel:{{ $teacher->mobile }}" class="tw:[text-decoration:none]!" style="color: #2563eb;">
                                     {{ $teacher->mobile }}
                                 </a>
                             @else
@@ -186,7 +186,7 @@
                         <span class="label">Email</span>
                         <span class="value">
                             @if($teacher->email)
-                                <a href="mailto:{{ $teacher->email }}" class="text-decoration-none" style="color: #2563eb;">
+                                <a href="mailto:{{ $teacher->email }}" class="tw:[text-decoration:none]!" style="color: #2563eb;">
                                     {{ $teacher->email }}
                                 </a>
                             @else
@@ -215,11 +215,11 @@
         {{-- ============================
              ✅ BANK & INSTITUTE INFORMATION
         ============================= --}}
-        <div class="col-lg-6">
-            <div class="info-card h-100">
+        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[50%]">
+            <div class="info-card tw:h-full!">
 
                 <div class="section-header">
-                    <h6 class="mb-0 fw-bold">
+                    <h6 class="tw:mb-0! tw:font-bold!">
                         Bank & Institute Information
                     </h6>
                     <span class="section-pill">Payments</span>
@@ -230,7 +230,7 @@
                     {{-- BANK --}}
                     <div class="info-row">
                         <span class="label">
-                            <i class="bi bi-bank me-1 text-muted"></i> Bank
+                            <i class="bi bi-bank tw:mr-1! tw:text-bs-secondary-color!"></i> Bank
                         </span>
                         <span class="value">
                             {{ $teacher->bankBranch->bank->bank_name ?? 'N/A' }}
@@ -240,7 +240,7 @@
                     {{-- BANK BRANCH --}}
                     <div class="info-row">
                         <span class="label">
-                            <i class="bi bi-geo-alt me-1 text-muted"></i> Bank Branch
+                            <i class="bi bi-geo-alt tw:mr-1! tw:text-bs-secondary-color!"></i> Bank Branch
                         </span>
                         <span class="value">
                             {{ $teacher->bankBranch->branch_name ?? 'N/A' }}
@@ -250,7 +250,7 @@
                     {{-- ACCOUNT NUMBER --}}
                     <div class="info-row">
                         <span class="label">
-                            <i class="bi bi-credit-card me-1 text-muted"></i> Account Number
+                            <i class="bi bi-credit-card tw:mr-1! tw:text-bs-secondary-color!"></i> Account Number
                         </span>
                         <span class="value" style="font-family: monospace; color: #2563eb;">
                             {{ $teacher->account_number ?? 'N/A' }}
@@ -260,7 +260,7 @@
                     {{-- ✅ INSTITUTE BRANCH --}}
                     <div class="info-row align-start">
                         <span class="label">
-                            <i class="bi bi-diagram-3 me-1" style="color: #2563eb;"></i>
+                            <i class="bi bi-diagram-3 tw:mr-1!" style="color: #2563eb;"></i>
                             Institute Branch
                         </span>
                         <span class="value" style="text-align: right;">
@@ -268,15 +268,15 @@
                             @if($teacher->branches && $teacher->branches->isNotEmpty())
 
                                 {{-- Branch Names --}}
-                                <div class="fw-semibold" style="color: #2563eb;">
+                                <div class="tw:font-semibold!" style="color: #2563eb;">
                                     {{ $teacher->branches->pluck('name')->implode(', ') }}
                                 </div>
 
                                 {{-- Branch Codes --}}
-                                <div class="mt-1 d-flex flex-wrap justify-content-end gap-1">
+                                <div class="tw:mt-1! bs-d-flex tw:flex! tw:flex-wrap! bs-justify-content-end tw:justify-end! tw:gap-1!">
                                     @foreach($teacher->branches as $branch)
                                         @if($branch->code)
-                                            <span class="badge" style="background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; font-family: monospace; font-size: 0.65rem; padding: 2px 6px;">
+                                            <span class="ui-badge" style="background: #eff6ff; color: #2563eb; border: 1px solid #bfdbfe; font-family: monospace; font-size: 0.65rem; padding: 2px 6px;">
                                                 {{ $branch->code }}
                                             </span>
                                         @endif
@@ -285,7 +285,7 @@
 
                             @else
 
-                                <span class="text-muted fst-italic">
+                                <span class="tw:text-bs-secondary-color! tw:italic!">
                                     No branch assigned
                                 </span>
 
@@ -303,10 +303,10 @@
         {{-- ============================
              QUALIFICATION
         ============================= --}}
-        <div class="col-lg-6">
-            <div class="info-card h-100">
+        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[50%]">
+            <div class="info-card tw:h-full!">
                 <div class="section-header">
-                    <h6 class="mb-0 fw-bold">Qualification</h6>
+                    <h6 class="tw:mb-0! tw:font-bold!">Qualification</h6>
                     <span class="section-pill">Academic</span>
                 </div>
 
@@ -332,19 +332,19 @@
         {{-- ============================
              STATUS
         ============================= --}}
-        <div class="col-12">
+        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:flex-[0_0_auto] tw:w-[100%]">
             <div class="info-card">
                 <div class="section-header">
-                    <h6 class="mb-0 fw-bold">Status</h6>
+                    <h6 class="tw:mb-0! tw:font-bold!">Status</h6>
                     <span class="section-pill">Account</span>
                 </div>
 
-                <div class="d-flex align-items-center gap-2">
-                    <span class="badge {{ $teacher->is_active ? 'bg-success' : 'bg-secondary' }} custom-badge">
+                <div class="bs-d-flex tw:flex! tw:items-center! tw:gap-2!">
+                    <span class="ui-badge custom-badge {{ $teacher->is_active ? 'tw:bg-bs-success!' : 'tw:bg-bs-secondary!' }}">
                         {{ $teacher->is_active ? 'Active' : 'Inactive' }}
                     </span>
 
-                    <span class="text-muted small">
+                    <span class="tw:text-bs-secondary-color! tw:text-[.875em]">
                         Teacher account visibility and access status
                     </span>
                 </div>
@@ -555,7 +555,7 @@
             width: 100%;
         }
 
-        .hero-actions .btn {
+        .hero-actions .ui-btn {
             flex: 1;
         }
 
@@ -572,7 +572,7 @@
             min-width: auto;
         }
 
-        .value .d-flex.justify-content-end {
+        .value .bs-d-flex.bs-justify-content-end {
             justify-content: flex-start !important;
         }
     }

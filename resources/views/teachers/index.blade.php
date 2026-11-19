@@ -9,7 +9,7 @@
         {{-- ===================================================== --}}
         {{-- HERO --}}
         {{-- ===================================================== --}}
-        <div class="hero-section mb-4">
+        <div class="hero-section tw:mb-6!">
             <div class="hero-content">
                 <div class="hero-left">
                     <span class="greeting-badge">nexoraEDU</span>
@@ -54,7 +54,7 @@
         {{-- ===================================================== --}}
         {{-- KPI CARDS --}}
         {{-- ===================================================== --}}
-        <div class="stats-grid mb-4">
+        <div class="stats-grid tw:mb-6!">
 
             <div class="nx-card stat-card">
                 <div class="stat-icon-wrapper icon-blue"><i class="bi bi-person-badge-fill"></i></div>
@@ -105,29 +105,29 @@
         {{-- BRANCH SUMMARY --}}
         {{-- ===================================================== --}}
         @if (!empty($stats['branches']))
-            <div class="nx-card mb-4">
+            <div class="nx-card tw:mb-6!">
                 <div class="nx-card-header">
                     <div>
-                        <h5 class="nx-card-title"><i class="bi bi-diagram-3 text-primary"></i> Branches</h5>
+                        <h5 class="nx-card-title"><i class="bi bi-diagram-3 tw:text-(color:--nx-blue)!"></i> Branches</h5>
                         <p class="nx-card-subtitle">Teacher count per institute branch</p>
                     </div>
                 </div>
-                <div class="table-responsive">
-                    <table class="table premium-table mb-0">
+                <div class="ui-table-responsive">
+                    <table class="ui-table premium-table tw:mb-0!">
                         <thead>
                             <tr>
                                 <th>Branch</th>
-                                <th class="text-end">Teachers</th>
+                                <th class="tw:text-right!">Teachers</th>
                             </tr>
                         </thead>
                         <tbody>
                             @foreach ($stats['branches'] as $branch)
                                 <tr>
                                     <td class="cell-title">
-                                        <i class="bi bi-building me-1 text-muted"></i>
+                                        <i class="bi bi-building tw:mr-1! tw:text-(color:--nx-muted)!"></i>
                                         {{ $branch->name }}
                                     </td>
-                                    <td class="text-end"><strong>{{ $branch->teachers_count }}</strong></td>
+                                    <td class="tw:text-right!"><strong>{{ $branch->teachers_count }}</strong></td>
                                 </tr>
                             @endforeach
                         </tbody>
@@ -139,11 +139,11 @@
         {{-- ===================================================== --}}
         {{-- MAIN CARD --}}
         {{-- ===================================================== --}}
-        <div class="nx-card mb-4">
+        <div class="nx-card tw:mb-6!">
 
             <div class="nx-card-header">
                 <div>
-                    <h5 class="nx-card-title"><i class="bi bi-people-fill text-primary"></i> Teachers Management</h5>
+                    <h5 class="nx-card-title"><i class="bi bi-people-fill tw:text-(color:--nx-blue)!"></i> Teachers Management</h5>
                     <p class="nx-card-subtitle">Teacher records, status and banking details</p>
                 </div>
 
@@ -166,32 +166,32 @@
             {{-- SEARCH --}}
             <div class="nx-search">
                 <form method="GET" action="{{ route('teachers.index') }}">
-                    <div class="row g-3">
-                        <div class="col-lg-5">
+                    <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2 bs-row">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[41.66666667%]">
                             <div class="search-input-wrapper">
                                 <i class="bi bi-search"></i>
-                                <input aria-label="Search teachers" type="text" name="search" class="form-control custom-input"
+                                <input aria-label="Search teachers" type="text" name="search" class="ui-form-control custom-input"
                                     placeholder="Name, mobile, NIC, email or teacher ID"
                                     value="{{ request('search') }}">
                             </div>
                         </div>
 
-                        <div class="col-lg-3">
-                            <select aria-label="Teacher status" name="is_active" class="form-select custom-input">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[25%]">
+                            <select aria-label="Teacher status" name="is_active" class="ui-form-select custom-input">
                                 <option value="">All Status</option>
                                 <option value="true" {{ request('is_active') === 'true' ? 'selected' : '' }}>Active</option>
                                 <option value="false" {{ request('is_active') === 'false' ? 'selected' : '' }}>Inactive</option>
                             </select>
                         </div>
 
-                        <div class="col-lg-2">
-                            <button class="nx-btn nx-btn-primary w-100" type="submit">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[16.66666667%]">
+                            <button class="nx-btn nx-btn-primary tw:w-full!" type="submit">
                                 <i class="bi bi-search"></i> Search
                             </button>
                         </div>
 
-                        <div class="col-lg-2">
-                            <a href="{{ route('teachers.index') }}" class="nx-btn nx-btn-light w-100">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[16.66666667%]">
+                            <a href="{{ route('teachers.index') }}" class="nx-btn nx-btn-light tw:w-full!">
                                 Reset
                             </a>
                         </div>
@@ -200,8 +200,8 @@
             </div>
 
             {{-- TABLE --}}
-            <div class="table-responsive">
-                <table class="table premium-table mb-0 custom-table">
+            <div class="ui-table-responsive">
+                <table class="ui-table premium-table tw:mb-0! custom-table">
                     <thead>
                         <tr>
                             <th scope="col" style="width: 50px;">#</th>
@@ -211,7 +211,7 @@
                             <th scope="col" style="width: 240px;">Bank</th>
                             <th scope="col" style="width: 240px;">Institute Branch</th>
                             <th scope="col" style="width: 120px;">Status</th>
-                            <th scope="col" class="text-end" style="width: 230px;">Actions</th>
+                            <th scope="col" class="tw:text-right!" style="width: 230px;">Actions</th>
                         </tr>
                     </thead>
 
@@ -223,14 +223,14 @@
                                 </td>
 
                                 <td>
-                                    <div class="d-flex align-items-center gap-3">
+                                    <div class="bs-d-flex tw:flex! tw:items-center! tw:gap-4!">
                                         <div class="teacher-avatar">
                                             {{ strtoupper(substr($teacher->full_name, 0, 1)) }}
                                         </div>
                                         <div>
                                             <div class="cell-title">{{ $teacher->full_name }}</div>
-                                            <small class="cell-sub d-block">{{ $teacher->initials }}</small>
-                                            <span class="id-badge mt-1 d-inline-block">{{ $teacher->custom_id }}</span>
+                                            <small class="cell-sub tw:block!">{{ $teacher->initials }}</small>
+                                            <span class="id-badge tw:mt-1! tw:[display:inline-block]!">{{ $teacher->custom_id }}</span>
                                         </div>
                                     </div>
                                 </td>
@@ -248,11 +248,11 @@
                                     <div class="cell-title">
                                         {{ $teacher->bankBranch->bank->bank_name ?? 'N/A' }}
                                     </div>
-                                    <small class="cell-sub d-block">
+                                    <small class="cell-sub tw:block!">
                                         Branch: {{ $teacher->bankBranch->branch_name ?? 'No branch selected' }}
                                     </small>
                                     @if ($teacher->account_number)
-                                        <small class="cell-sub d-block mt-1">
+                                        <small class="cell-sub tw:block! tw:mt-1!">
                                             <i class="bi bi-credit-card" style="font-size: 0.7rem;"></i>
                                             Acct:
                                             <span class="account-number">{{ $teacher->account_number }}</span>
@@ -266,7 +266,7 @@
                                             <i class="bi bi-building" style="font-size: 0.75rem;"></i>
                                             {{ $teacher->branches->pluck('name')->implode(', ') }}
                                         </div>
-                                        <div class="mt-1">
+                                        <div class="tw:mt-1!">
                                             @foreach ($teacher->branches as $branch)
                                                 @if ($branch->code)
                                                     <span class="id-badge">{{ $branch->code }}</span>
@@ -274,7 +274,7 @@
                                             @endforeach
                                         </div>
                                     @else
-                                        <span class="cell-sub fst-italic">No branch assigned</span>
+                                        <span class="cell-sub tw:italic!">No branch assigned</span>
                                     @endif
                                 </td>
 
@@ -286,7 +286,7 @@
                                     @endif
                                 </td>
 
-                                <td class="text-end">
+                                <td class="tw:text-right!">
                                     <div class="action-buttons">
                                         <a href="{{ route('teachers.show', $teacher) }}" class="action-btn" title="View" aria-label="View">
                                             <i class="bi bi-eye-fill"></i>
@@ -331,8 +331,8 @@
                         @empty
                             <tr>
                                 <td colspan="8" class="empty-table">
-                                    <i class="bi bi-person-x fs-2 d-block mb-2"></i>
-                                    <strong class="d-block">No Teachers Found</strong>
+                                    <i class="bi bi-person-x tw:text-[length:calc(1.325rem_+_0.9vw)]! tw:xl:text-[length:2rem]! tw:block! tw:mb-2!"></i>
+                                    <strong class="tw:block!">No Teachers Found</strong>
                                     <span class="cell-sub">Try adjusting search filters</span>
                                 </td>
                             </tr>
@@ -342,7 +342,7 @@
             </div>
 
             {{-- PAGINATION --}}
-            <div class="p-3 border-top">
+            <div class="tw:p-4! tw:bs-border-t!">
                 {{ $teachers->appends(request()->query())->links() }}
             </div>
         </div>

@@ -201,8 +201,8 @@
            FORM INPUTS
         ============================================ */
         .custom-input,
-        .form-select,
-        .form-control {
+        .ui-form-select,
+        .ui-form-control {
             border-radius: 12px;
             min-height: 46px;
             border: 1px solid #e2e8f0;
@@ -212,18 +212,18 @@
         }
 
         .custom-input:focus,
-        .form-select:focus,
-        .form-control:focus {
+        .ui-form-select:focus,
+        .ui-form-control:focus {
             border-color: #2563eb;
             box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.10);
         }
 
-        textarea.form-control {
+        textarea.ui-form-control {
             min-height: 110px;
             padding-top: 0.75rem;
         }
 
-        .form-label {
+        .ui-form-label {
             font-size: 0.85rem;
             font-weight: 600;
             color: #334155;
@@ -245,12 +245,12 @@
             transform: translateY(-2px);
         }
 
-        .btn-primary {
+        .ui-btn-primary {
             background: linear-gradient(135deg, #2563eb, #3b82f6);
             border: none;
         }
 
-        .btn-primary:hover {
+        .ui-btn-primary:hover {
             background: linear-gradient(135deg, #1d4ed8, #2563eb);
             box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);
         }
@@ -310,14 +310,14 @@
         /* ============================================
            ALERT
         ============================================ */
-        .alert-danger {
+        .ui-alert-danger {
             background: linear-gradient(135deg, #fef2f2, #fee2e2);
             border: 1px solid #fecaca !important;
             color: #991b1b;
             border-radius: 16px;
         }
 
-        .alert-danger strong {
+        .ui-alert-danger strong {
             color: #7f1d1d;
         }
 
@@ -360,7 +360,7 @@
     ====================================================== --}}
     <div class="hero-card">
         <div class="hero-content">
-            <div class="d-flex align-items-center gap-3 flex-wrap">
+            <div class="bs-d-flex tw:flex! tw:items-center! tw:gap-4! tw:flex-wrap!">
                 <div class="hero-icon">
                     <i class="bi bi-pencil-square"></i>
                 </div>
@@ -374,7 +374,7 @@
                     <h4>Edit Teacher</h4>
 
                     <p>
-                        <i class="bi bi-person me-1"></i>
+                        <i class="bi bi-person tw:mr-1!"></i>
                         Update teacher information and account details.
                     </p>
 
@@ -403,8 +403,8 @@
             </div>
 
             <div>
-                <a href="{{ route('teachers.index') }}" class="btn btn-back">
-                    <i class="bi bi-arrow-left me-1"></i>
+                <a href="{{ route('teachers.index') }}" class="ui-btn btn-back">
+                    <i class="bi bi-arrow-left tw:mr-1!"></i>
                     Back to Teachers
                 </a>
             </div>
@@ -431,14 +431,14 @@
 
         {{-- VALIDATION ERRORS --}}
         @if($errors->any())
-            <div class="alert alert-danger border-0 shadow-sm mb-4">
-                <div class="d-flex align-items-start gap-2">
-                    <i class="bi bi-exclamation-triangle-fill mt-1" style="font-size: 1.1rem;"></i>
-                    <div class="flex-grow-1">
+            <div class="ui-alert ui-alert-danger tw:[border:0]! tw:shadow-bs-sm! tw:mb-6!">
+                <div class="bs-d-flex tw:flex! tw:items-start! tw:gap-2!">
+                    <i class="bi bi-exclamation-triangle-fill tw:mt-1!" style="font-size: 1.1rem;"></i>
+                    <div class="tw:grow!">
                         <strong>Please fix the following errors:</strong>
-                        <ul class="mb-0 mt-2 ps-3">
+                        <ul class="tw:mb-0! tw:mt-2! tw:pl-4!">
                             @foreach($errors->all() as $error)
-                                <li class="small">{{ $error }}</li>
+                                <li class="tw:text-[.875em]">{{ $error }}</li>
                             @endforeach
                         </ul>
                     </div>

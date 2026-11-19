@@ -6,24 +6,24 @@
 @section('content')
     <div class="extra-income-page">
 
-        <div class="hero-card mb-4">
+        <div class="hero-card tw:mb-6!">
             <div class="hero-content">
                 <div>
-                    <h3 class="fw-bold mb-1">Edit Extra Income</h3>
-                    <p class="text-muted mb-0">
+                    <h3 class="tw:font-bold! tw:mb-1!">Edit Extra Income</h3>
+                    <p class="tw:text-bs-secondary-color! tw:mb-0!">
                         Update record details
                     </p>
                 </div>
 
                 <div class="hero-actions">
                     <a href="{{ route('admin.extra-incomes.show', $extraIncome) }}"
-                        class="btn btn-outline-primary custom-btn">
-                        <i class="bi bi-eye me-1"></i>
+                        class="ui-btn ui-btn-outline-primary custom-btn">
+                        <i class="bi bi-eye tw:mr-1!"></i>
                         View
                     </a>
 
-                    <a href="{{ route('admin.extra-incomes.index') }}" class="btn btn-outline-secondary custom-btn">
-                        <i class="bi bi-arrow-left me-1"></i>
+                    <a href="{{ route('admin.extra-incomes.index') }}" class="ui-btn ui-btn-outline-secondary custom-btn">
+                        <i class="bi bi-arrow-left tw:mr-1!"></i>
                         Back
                     </a>
                 </div>

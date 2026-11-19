@@ -113,7 +113,7 @@ class ProductionHardeningTest extends TestCase
     {
         config(['app.debug' => false]);
 
-        $sql = new QueryException('select * from secret_table', [], new \Exception('SQLSTATE[42S02] secret_table'));
+        $sql = new QueryException('mysql', 'select * from secret_table', [], new \Exception('SQLSTATE[42S02] secret_table'));
 
         $this->assertSame(ErrorDetail::FALLBACK, ErrorDetail::safe($sql));
         $this->assertSame(ErrorDetail::FALLBACK, ErrorDetail::safe(new \TypeError('Argument 1 in /var/www/app/X.php')));
