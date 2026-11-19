@@ -43,17 +43,21 @@ class BusinessRulesTest extends TestCase
         ]);
     }
 
-    public function test_more_than_the_fee_is_refused(): void
+    public function test_more_than_the_fee_is_saved_as_it_is(): void
     {
-        // 20,000 typed for 2,000: the teacher would get 12,000
-        $this->pay('S2', $this->inst['e2'], 20000)
-            ->assertStatus(422)
-            ->assertJsonPath('message', 'Payment amount cannot be more than Rs. 2000.00 for this month.');
+        // no upper limit (asked by the institute): a wrong amount is found in
+        // the day's audit and the payment is deleted
+        $this->pay('S2', $this->inst['e2'], 2500)->assertStatus(201);
 
-        $this->assertSame(0, DB::table('payments')->where('student_id', $this->inst['s2'])->count());
+        $payment = DB::table('payments')->where('student_id', $this->inst['s2'])->first();
+        $this->assertEquals(2500, $payment->amount);
+        $this->assertEquals(2500, DB::table('payment_split_snapshots')->where('payment_id', $payment->id)->value('payment_amount'));
 
-        // the exact fee, and fee - discount, are fine
-        $this->pay('S2', $this->inst['e2'], 1800, '2026-10-01', ['discount_amount' => 200])->assertStatus(201);
+        // less than the fee is still refused (no Payment Rules)
+        $this->pay('S2', $this->inst['e2'], 1500, '2026-09-01')->assertStatus(422);
+
+        // fee - discount is fine
+        $this->pay('S2', $this->inst['e2'], 1800, '2026-09-01', ['discount_amount' => 200])->assertStatus(201);
     }
 
     public function test_a_fee_option_change_does_not_make_a_paid_month_payable_again(): void
