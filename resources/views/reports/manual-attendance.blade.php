@@ -11,7 +11,7 @@
 @section('content')
     <div class="dashboard-page">
 
-        <div class="hero-section mb-4">
+        <div class="hero-section tw:mb-6!">
             <div class="hero-content">
                 <div class="hero-left">
                     <span class="greeting-badge"><i class="bi bi-qr-code-scan"></i> Reports</span>
@@ -28,35 +28,35 @@
         </div>
 
         {{-- Filters --}}
-        <div class="nx-card mb-4">
-            <div class="p-3">
-                <form method="GET" action="{{ route('reports.manual-attendance.index') }}" class="row g-3 align-items-end">
-                    <div class="col-lg-3 col-md-6">
+        <div class="nx-card tw:mb-6!">
+            <div class="tw:p-4!">
+                <form method="GET" action="{{ route('reports.manual-attendance.index') }}" class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2 tw:items-end!">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:lg:flex-[0_0_auto] tw:lg:w-[25%]">
                         <label class="nx-label" for="ma-from">From</label>
-                        <input type="date" id="ma-from" name="from" class="form-control nx-input" value="{{ $from->toDateString() }}">
+                        <input type="date" id="ma-from" name="from" class="ui-form-control nx-input" value="{{ $from->toDateString() }}">
                     </div>
-                    <div class="col-lg-3 col-md-6">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:lg:flex-[0_0_auto] tw:lg:w-[25%]">
                         <label class="nx-label" for="ma-to">To</label>
-                        <input type="date" id="ma-to" name="to" class="form-control nx-input" value="{{ $to->toDateString() }}">
+                        <input type="date" id="ma-to" name="to" class="ui-form-control nx-input" value="{{ $to->toDateString() }}">
                     </div>
-                    <div class="col-lg-4 col-md-8">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[66.66666667%] tw:lg:flex-[0_0_auto] tw:lg:w-[33.33333333%]">
                         <label class="nx-label" for="ma-class">Class</label>
-                        <select id="ma-class" name="class_id" class="form-select nx-input">
+                        <select id="ma-class" name="class_id" class="ui-form-select nx-input">
                             <option value="">All classes</option>
                             @foreach ($allClasses as $id => $name)
                                 <option value="{{ $id }}" {{ (int) $classId === (int) $id ? 'selected' : '' }}>{{ $name }}</option>
                             @endforeach
                         </select>
                     </div>
-                    <div class="col-lg-2 col-md-4">
-                        <button type="submit" class="nx-btn nx-btn-primary w-100"><i class="bi bi-funnel"></i> Show</button>
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%] tw:lg:flex-[0_0_auto] tw:lg:w-[16.66666667%]">
+                        <button type="submit" class="nx-btn nx-btn-primary tw:w-full!"><i class="bi bi-funnel"></i> Show</button>
                     </div>
                 </form>
             </div>
         </div>
 
         {{-- Totals --}}
-        <div class="stats-grid stats-grid-3 mb-4">
+        <div class="stats-grid stats-grid-3 tw:mb-6!">
             <div class="nx-card stat-card">
                 <div class="stat-icon-wrapper icon-blue"><i class="bi bi-people-fill"></i></div>
                 <div class="stat-info">
@@ -83,22 +83,22 @@
         </div>
 
         {{-- Per class --}}
-        <div class="nx-card mb-4">
+        <div class="nx-card tw:mb-6!">
             <div class="nx-card-header">
                 <div>
-                    <h5 class="nx-card-title"><i class="bi bi-journal-bookmark-fill text-primary"></i> By class</h5>
+                    <h5 class="nx-card-title"><i class="bi bi-journal-bookmark-fill tw:text-(color:--nx-blue)!"></i> By class</h5>
                     <p class="nx-card-subtitle">Most typed first</p>
                 </div>
             </div>
-            <div class="table-responsive">
-                <table class="table premium-table mb-0 align-middle">
+            <div class="ui-table-responsive">
+                <table class="ui-table premium-table tw:mb-0! tw:align-middle!">
                     <thead>
                         <tr>
                             <th>Class</th>
-                            <th class="text-end">Marked</th>
-                            <th class="text-end">Card scanned</th>
-                            <th class="text-end">Typed (no card)</th>
-                            <th class="text-end">Typed %</th>
+                            <th class="tw:text-right!">Marked</th>
+                            <th class="tw:text-right!">Card scanned</th>
+                            <th class="tw:text-right!">Typed (no card)</th>
+                            <th class="tw:text-right!">Typed %</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -107,13 +107,13 @@
                                 <td class="cell-title">
                                     <a href="{{ route('reports.manual-attendance.index', ['from' => $from->toDateString(), 'to' => $to->toDateString(), 'class_id' => $row['class_id']]) }}">{{ $row['class'] }}</a>
                                 </td>
-                                <td class="text-end">{{ $row['total'] }}</td>
-                                <td class="text-end">{{ $row['qr'] }}</td>
-                                <td class="text-end fw-bold {{ $row['manual'] > 0 ? 'text-warning' : '' }}">{{ $row['manual'] }}</td>
-                                <td class="text-end">{{ $pct($row['manual'], $row['total']) }}%</td>
+                                <td class="tw:text-right!">{{ $row['total'] }}</td>
+                                <td class="tw:text-right!">{{ $row['qr'] }}</td>
+                                <td class="tw:text-right! tw:font-bold! {{ $row['manual'] > 0 ? 'tw:text-(color:--nx-amber)!' : '' }}">{{ $row['manual'] }}</td>
+                                <td class="tw:text-right!">{{ $pct($row['manual'], $row['total']) }}%</td>
                             </tr>
                         @empty
-                            <tr><td colspan="5" class="text-center text-muted py-4">No attendance in this period.</td></tr>
+                            <tr><td colspan="5" class="tw:text-center! tw:text-(color:--nx-muted)! tw:py-6!">No attendance in this period.</td></tr>
                         @endforelse
                     </tbody>
                 </table>
@@ -121,22 +121,22 @@
         </div>
 
         {{-- Students who came without the card --}}
-        <div class="nx-card mb-4">
+        <div class="nx-card tw:mb-6!">
             <div class="nx-card-header">
                 <div>
-                    <h5 class="nx-card-title"><i class="bi bi-person-exclamation text-warning"></i> Marked by typing the Student ID</h5>
+                    <h5 class="nx-card-title"><i class="bi bi-person-exclamation tw:text-(color:--nx-amber)!"></i> Marked by typing the Student ID</h5>
                     <p class="nx-card-subtitle">{{ $students->count() }} students &middot; did not bring the ID card, most often first</p>
                 </div>
             </div>
-            <div class="table-responsive">
-                <table class="table premium-table mb-0 align-middle">
+            <div class="ui-table-responsive">
+                <table class="ui-table premium-table tw:mb-0! tw:align-middle!">
                     <thead>
                         <tr>
                             <th>Student</th>
                             <th>Class</th>
                             <th>Guardian mobile</th>
-                            <th class="text-end">Typed</th>
-                            <th class="text-end">Of classes attended</th>
+                            <th class="tw:text-right!">Typed</th>
+                            <th class="tw:text-right!">Of classes attended</th>
                             <th>Last typed</th>
                         </tr>
                     </thead>
@@ -149,12 +149,12 @@
                                 </td>
                                 <td>{{ $row['class'] }}</td>
                                 <td>{{ $row['guardian_mobile'] ?: '-' }}</td>
-                                <td class="text-end fw-bold text-warning">{{ $row['manual'] }}</td>
-                                <td class="text-end">{{ $row['total'] }}</td>
+                                <td class="tw:text-right! tw:font-bold! tw:text-(color:--nx-amber)!">{{ $row['manual'] }}</td>
+                                <td class="tw:text-right!">{{ $row['total'] }}</td>
                                 <td>{{ optional($row['last_manual'])->format('d M Y, h:i A') }}</td>
                             </tr>
                         @empty
-                            <tr><td colspan="6" class="text-center text-muted py-4">Everyone's card was scanned in this period.</td></tr>
+                            <tr><td colspan="6" class="tw:text-center! tw:text-(color:--nx-muted)! tw:py-6!">Everyone's card was scanned in this period.</td></tr>
                         @endforelse
                     </tbody>
                 </table>

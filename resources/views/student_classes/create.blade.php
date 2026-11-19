@@ -53,7 +53,7 @@
             transform: translateY(-2px);
         }
 
-        .btn-primary {
+        .ui-btn-primary {
             background: linear-gradient(135deg, #2563eb, #3b82f6);
         }
 
@@ -67,7 +67,7 @@
                 width: 100%;
             }
 
-            .hero-actions .btn {
+            .hero-actions .ui-btn {
                 flex: 1;
             }
         }
@@ -80,16 +80,16 @@
         <div class="hero-card">
             <div class="hero-content">
                 <div>
-                    <h4 class="mb-1 fw-bold">Create Class</h4>
-                    <p class="mb-0 text-muted">
+                    <h4 class="tw:mb-1! tw:font-bold!">Create Class</h4>
+                    <p class="tw:mb-0! tw:text-bs-secondary-color!">
                         Add a new class and its payment configuration.
                     </p>
                 </div>
 
                 <div class="hero-actions">
                     <a href="{{ route('student-classes.index') }}"
-                       class="btn btn-outline-secondary custom-btn">
-                        <i class="bi bi-arrow-left me-1"></i>
+                       class="ui-btn ui-btn-outline-secondary custom-btn">
+                        <i class="bi bi-arrow-left tw:mr-1!"></i>
                         Back
                     </a>
                 </div>

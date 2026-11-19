@@ -8,20 +8,20 @@
     {{-- ===================================================== --}}
     {{-- HERO --}}
     {{-- ===================================================== --}}
-    <div class="hero-section mb-4">
+    <div class="hero-section tw:mb-6!">
         <div class="hero-content">
             <div class="hero-left">
                 <span class="greeting-badge">
                     <i class="bi bi-building"></i> Branch Details
                 </span>
 
-                <div class="d-flex align-items-center gap-3 mb-2">
+                <div class="tw:flex! tw:items-center! tw:gap-4! tw:mb-2!">
                     <div class="branch-hero-avatar">
                         {{ strtoupper(substr($branch->name ?? 'B', 0, 1)) }}
                     </div>
                     <div>
-                        <h1 class="hero-title mb-0">{{ $branch->name }}</h1>
-                        <div class="d-flex flex-wrap gap-2 mt-1">
+                        <h1 class="hero-title tw:mb-0!">{{ $branch->name }}</h1>
+                        <div class="tw:flex! tw:flex-wrap! tw:gap-2! tw:mt-1!">
                             @if ($branch->code)
                                 <span class="hero-meta-badge code">
                                     <i class="bi bi-hash"></i>{{ $branch->code }}
@@ -59,16 +59,16 @@
     {{-- ===================================================== --}}
     {{-- MAIN CONTENT --}}
     {{-- ===================================================== --}}
-    <div class="row g-4">
+    <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3">
 
         {{-- LEFT COLUMN --}}
-        <div class="col-lg-8 d-flex flex-column gap-4">
+        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[66.66666667%] tw:flex! tw:flex-col! tw:gap-6!">
 
             {{-- CONTACT INFO --}}
             <div class="nx-card">
                 <div class="nx-card-header">
                     <div>
-                        <h5 class="nx-card-title"><i class="bi bi-telephone-fill text-primary"></i> Contact Information</h5>
+                        <h5 class="nx-card-title"><i class="bi bi-telephone-fill tw:text-(color:--nx-blue)!"></i> Contact Information</h5>
                         <p class="nx-card-subtitle">How to reach this branch</p>
                     </div>
                 </div>
@@ -106,7 +106,7 @@
             <div class="nx-card">
                 <div class="nx-card-header">
                     <div>
-                        <h5 class="nx-card-title"><i class="bi bi-geo-alt-fill text-primary"></i> Address Information</h5>
+                        <h5 class="nx-card-title"><i class="bi bi-geo-alt-fill tw:text-(color:--nx-blue)!"></i> Address Information</h5>
                         <p class="nx-card-subtitle">Physical location of the branch</p>
                     </div>
                 </div>
@@ -133,19 +133,19 @@
         </div>
 
         {{-- RIGHT COLUMN --}}
-        <div class="col-lg-4 d-flex flex-column gap-4">
+        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[33.33333333%] tw:flex! tw:flex-col! tw:gap-6!">
 
             {{-- STATUS CARD --}}
             <div class="nx-card">
                 <div class="nx-card-header">
                     <div>
-                        <h5 class="nx-card-title"><i class="bi bi-toggles text-primary"></i> Branch Status</h5>
+                        <h5 class="nx-card-title"><i class="bi bi-toggles tw:text-(color:--nx-blue)!"></i> Branch Status</h5>
                     </div>
                 </div>
 
-                <div class="p-3">
+                <div class="tw:p-4!">
                     @if ($branch->is_active)
-                        <div class="status-box status-box-green mb-3">
+                        <div class="status-box status-box-green tw:mb-4!">
                             <div class="status-box-icon">
                                 <i class="bi bi-check-lg"></i>
                             </div>
@@ -157,7 +157,7 @@
                             </div>
                         </div>
                     @else
-                        <div class="status-box status-box-amber mb-3">
+                        <div class="status-box status-box-amber tw:mb-4!">
                             <div class="status-box-icon">
                                 <i class="bi bi-exclamation-triangle-fill"></i>
                             </div>
@@ -176,21 +176,21 @@
             <div class="nx-card">
                 <div class="nx-card-header">
                     <div>
-                        <h5 class="nx-card-title"><i class="bi bi-clock-history text-primary"></i> Record Info</h5>
+                        <h5 class="nx-card-title"><i class="bi bi-clock-history tw:text-(color:--nx-blue)!"></i> Record Info</h5>
                     </div>
                 </div>
 
                 <div>
                     <div class="detail-row detail-row-stacked">
                         <div class="detail-label">Created</div>
-                        <div class="detail-value small">
+                        <div class="detail-value tw:text-[.875em]">
                             {{ $branch->created_at ? $branch->created_at->format('d M Y, h:i A') : '—' }}
                         </div>
                     </div>
 
                     <div class="detail-row detail-row-stacked">
                         <div class="detail-label">Last Updated</div>
-                        <div class="detail-value small">
+                        <div class="detail-value tw:text-[.875em]">
                             {{ $branch->updated_at ? $branch->updated_at->format('d M Y, h:i A') : '—' }}
                         </div>
                     </div>
@@ -198,7 +198,7 @@
                     @if($branch->deleted_at)
                         <div class="detail-row detail-row-stacked detail-row-danger">
                             <div class="detail-label">Deleted</div>
-                            <div class="detail-value small text-danger">
+                            <div class="detail-value tw:text-[.875em] tw:text-(color:--nx-red)!">
                                 {{ $branch->deleted_at->format('d M Y, h:i A') }}
                             </div>
                         </div>
@@ -210,11 +210,11 @@
             <div class="nx-card">
                 <div class="nx-card-header">
                     <div>
-                        <h5 class="nx-card-title"><i class="bi bi-gear-fill text-primary"></i> Actions</h5>
+                        <h5 class="nx-card-title"><i class="bi bi-gear-fill tw:text-(color:--nx-blue)!"></i> Actions</h5>
                     </div>
                 </div>
 
-                <div class="p-3 d-flex flex-column gap-2">
+                <div class="tw:p-4! tw:flex! tw:flex-col! tw:gap-2!">
                     
                     <a href="{{ route('branches.edit', $branch->id) }}" class="action-btn action-btn-edit">
                         <i class="bi bi-pencil-square"></i> Edit Branch
@@ -225,7 +225,7 @@
                         <form action="{{ route('branches.deactivate', $branch->id) }}" method="POST" onsubmit="return confirm('Deactivate this branch?')">
                             @csrf
                             @method('PATCH')
-                            <button type="submit" class="action-btn action-btn-deactivate w-100">
+                            <button type="submit" class="action-btn action-btn-deactivate tw:w-full!">
                                 <i class="bi bi-pause-circle"></i> Deactivate Branch
                             </button>
                         </form>
@@ -233,7 +233,7 @@
                         <form action="{{ route('branches.activate', $branch->id) }}" method="POST" onsubmit="return confirm('Activate this branch?')">
                             @csrf
                             @method('PATCH')
-                            <button type="submit" class="action-btn action-btn-activate w-100">
+                            <button type="submit" class="action-btn action-btn-activate tw:w-full!">
                                 <i class="bi bi-check-circle"></i> Activate Branch
                             </button>
                         </form>
@@ -244,7 +244,7 @@
                         <form action="{{ route('branches.restore', $branch->id) }}" method="POST" onsubmit="return confirm('Restore this branch?')">
                             @csrf
                             @method('PATCH')
-                            <button type="submit" class="action-btn action-btn-activate w-100">
+                            <button type="submit" class="action-btn action-btn-activate tw:w-full!">
                                 <i class="bi bi-arrow-counterclockwise"></i> Restore Branch
                             </button>
                         </form>
@@ -259,7 +259,7 @@
                     <form action="{{ route('branches.destroy', $branch->id) }}" method="POST" onsubmit="return confirm('Are you sure you want to delete this branch? This action cannot be undone.');">
                         @csrf
                         @method('DELETE')
-                        <button type="submit" class="action-btn action-btn-delete w-100">
+                        <button type="submit" class="action-btn action-btn-delete tw:w-full!">
                             <i class="bi bi-trash3"></i> Delete Branch
                         </button>
                     </form>

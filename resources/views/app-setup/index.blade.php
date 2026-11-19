@@ -56,7 +56,7 @@
 @section('content')
     <div class="dashboard-page">
 
-        <div class="hero-section mb-4">
+        <div class="hero-section tw:mb-6!">
             <div class="hero-content">
                 <div class="hero-left">
                     <span class="greeting-badge">nexoraEDU</span>
@@ -72,14 +72,14 @@
             </div>
         </div>
 
-        <div class="row g-4">
-            <div class="col-lg-6">
+        <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[50%]">
                 <div class="qr-sheet" id="qrSheet">
                     @if ($institute['logo_url'])
                         <img src="{{ $institute['logo_url'] }}" alt="" class="qr-logo">
                     @endif
-                    <h4 class="mb-1">{{ $institute['name'] }}</h4>
-                    <div class="text-muted mb-3">Nexora EDU staff app</div>
+                    <h4 class="tw:mb-1!">{{ $institute['name'] }}</h4>
+                    <div class="tw:text-(color:--nx-muted)! tw:mb-4!">Nexora EDU staff app</div>
 
                     <div class="qr-box">
                         {!! QrCode::format('svg')->size(280)->margin(1)->errorCorrection('M')->generate($qrContent) !!}
@@ -94,32 +94,32 @@
                 </div>
             </div>
 
-            <div class="col-lg-6">
-                <div class="nx-card mb-4">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[50%]">
+                <div class="nx-card tw:mb-6!">
                     <div class="nx-card-header">
                         <div>
-                            <h5 class="nx-card-title"><i class="bi bi-printer text-primary"></i> Print / share</h5>
+                            <h5 class="nx-card-title"><i class="bi bi-printer tw:text-(color:--nx-blue)!"></i> Print / share</h5>
                             <p class="nx-card-subtitle">Print it for the office, or show it on this screen.</p>
                         </div>
                     </div>
-                    <div class="p-3">
+                    <div class="tw:p-4!">
                         <button type="button" class="nx-btn nx-btn-primary" onclick="window.print()">
                             <i class="bi bi-printer"></i> Print QR
                         </button>
-                        <div class="small text-muted mt-3">
+                        <div class="tw:text-[.875em] tw:text-(color:--nx-muted)! tw:mt-4!">
                             Server: <code>{{ $baseUrl }}</code>
                         </div>
                     </div>
                 </div>
 
-                <div class="nx-card mb-4">
+                <div class="nx-card tw:mb-6!">
                     <div class="nx-card-header">
                         <div>
-                            <h5 class="nx-card-title"><i class="bi bi-shield-lock text-success"></i> Is it safe?</h5>
+                            <h5 class="nx-card-title"><i class="bi bi-shield-lock tw:text-(color:--nx-green)!"></i> Is it safe?</h5>
                         </div>
                     </div>
-                    <div class="p-3 small">
-                        <ul class="mb-0">
+                    <div class="tw:p-4! tw:text-[.875em]">
+                        <ul class="tw:mb-0!">
                             <li>The QR only connects the app to this institute. Nobody can see data without logging in.</li>
                             <li>The app checks the code with this server, and only accepts nexorait.lk servers.</li>
                             <li>If a printed QR is lost or shared outside, create a new one below.</li>
@@ -130,13 +130,13 @@
                 <div class="nx-card">
                     <div class="nx-card-header">
                         <div>
-                            <h5 class="nx-card-title"><i class="bi bi-arrow-repeat text-danger"></i> New QR code</h5>
+                            <h5 class="nx-card-title"><i class="bi bi-arrow-repeat tw:text-(color:--nx-red)!"></i> New QR code</h5>
                             <p class="nx-card-subtitle">
                                 Old QR codes stop working. Phones already set up keep working.
                             </p>
                         </div>
                     </div>
-                    <div class="p-3">
+                    <div class="tw:p-4!">
                         <form method="POST" action="{{ route('app-setup.regenerate') }}"
                             onsubmit="return confirm('Create a new QR code? Old printed QR codes will stop working.');">
                             @csrf

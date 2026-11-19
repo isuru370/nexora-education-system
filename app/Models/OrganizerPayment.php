@@ -17,6 +17,8 @@ class OrganizerPayment extends Model
         'payment_type',
         'amount',
         'payment_date',
+        'salary_year',
+        'salary_month',
         'reason_code',
         'reason',
         'status',
@@ -26,6 +28,8 @@ class OrganizerPayment extends Model
     protected $casts = [
         'amount' => 'decimal:2',
         'payment_date' => 'date',
+        'salary_year' => 'integer',
+        'salary_month' => 'integer',
     ];
 
     public function branch(): BelongsTo

@@ -86,7 +86,7 @@
     const input = (id) => document.getElementById(id);
 
     function showProps() {
-        list.querySelectorAll('.list-group-item').forEach((li) => li.classList.toggle('active', li.dataset.field === selected));
+        list.querySelectorAll('.ui-list-group-item').forEach((li) => li.classList.toggle('active', li.dataset.field === selected));
         card.querySelectorAll('.nx-id-field').forEach((el) => el.classList.toggle('cd-active', el.dataset.field === selected));
 
         if (!selected) {
@@ -161,7 +161,7 @@
     /* ---------------- Field list ---------------- */
 
     list.addEventListener('click', (e) => {
-        const li = e.target.closest('.list-group-item');
+        const li = e.target.closest('.ui-list-group-item');
         if (!li) return;
         if (e.target.classList.contains('cd-on')) {
             fields[li.dataset.field].on = e.target.checked;

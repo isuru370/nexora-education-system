@@ -32,7 +32,9 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Schema::defaultStringLength(191);
-        Paginator::useBootstrap();
+        // Laravel's Bootstrap pagination markup with the ui-kit classes (resources/views/pagination)
+        Paginator::defaultView('pagination.ui');
+        Paginator::defaultSimpleView('pagination.ui-simple');
         Student::observe(StudentObserver::class);
         Payment::observe(PaymentObserver::class);
 

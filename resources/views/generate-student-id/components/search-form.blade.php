@@ -5,20 +5,20 @@
     $showValue   = request('show') === 'pending' ? 'pending' : 'all';
 @endphp
 
-<div class="premium-card search-card mb-4">
+<div class="premium-card search-card tw:mb-6!">
 
     <form method="GET"
           action="{{ url()->current() }}"
           class="search-form"
           id="searchForm">
 
-        <div class="row g-3 align-items-end">
+        <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2 bs-row tw:items-end!">
 
             {{-- ==================== SEARCH INPUT ==================== --}}
-            <div class="col-lg-6 col-md-8">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[66.66666667%] tw:lg:flex-[0_0_auto] tw:lg:w-[50%]">
 
-                <label for="search" class="form-label fw-semibold search-label">
-                    <i class="fas fa-search me-1"></i>
+                <label for="search" class="ui-form-label tw:font-semibold! search-label">
+                    <i class="fas fa-search tw:mr-1!"></i>
                     Search Students
                     @if($hasSearch)
                         <span class="search-active-badge">
@@ -31,7 +31,7 @@
                     <i class="fas fa-search search-input-icon"></i>
 
                     <input type="text"
-                           class="form-control custom-input search-input {{ $hasSearch ? 'has-value' : '' }}"
+                           class="ui-form-control custom-input search-input {{ $hasSearch ? 'has-value' : '' }}"
                            id="search"
                            name="search"
                            value="{{ $searchValue }}"
@@ -49,8 +49,8 @@
                 </div>
 
                 @if($hasSearch)
-                    <small class="text-muted d-block mt-2 search-hint">
-                        <i class="fas fa-info-circle me-1"></i>
+                    <small class="tw:text-(color:--nx-muted)! tw:block! tw:mt-2! search-hint">
+                        <i class="fas fa-info-circle tw:mr-1!"></i>
                         Searching for: <strong>"{{ $searchValue }}"</strong>
                     </small>
                 @endif
@@ -58,11 +58,11 @@
             </div>
 
             {{-- ==================== SHOW FILTER ==================== --}}
-            <div class="col-lg-3 col-md-4">
-                <label for="show" class="form-label fw-semibold search-label">
-                    <i class="fas fa-filter me-1"></i> Show
+            <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%] tw:lg:flex-[0_0_auto] tw:lg:w-[25%]">
+                <label for="show" class="ui-form-label tw:font-semibold! search-label">
+                    <i class="fas fa-filter tw:mr-1!"></i> Show
                 </label>
-                <select id="show" name="show" class="form-select custom-input search-show"
+                <select id="show" name="show" class="ui-form-select custom-input search-show"
                         onchange="this.form.submit()">
                     <option value="all" {{ $showValue === 'all' ? 'selected' : '' }}>All active students</option>
                     <option value="pending" {{ $showValue === 'pending' ? 'selected' : '' }}>No permanent card yet</option>
@@ -70,18 +70,18 @@
             </div>
 
             {{-- ==================== ACTION BUTTONS ==================== --}}
-            <div class="col-lg-3 col-md-4">
-                <div class="d-flex gap-2">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%] tw:lg:flex-[0_0_auto] tw:lg:w-[25%]">
+                <div class="tw:flex! tw:gap-2!">
 
                     <button type="submit"
-                            class="btn btn-primary custom-btn flex-fill search-btn">
-                        <i class="fas fa-search me-1"></i>
+                            class="ui-btn ui-btn-primary custom-btn tw:[flex:1_1_auto]! search-btn">
+                        <i class="fas fa-search tw:mr-1!"></i>
                         Search
                     </button>
 
                     @if($hasSearch)
                         <a href="{{ url()->current() }}"
-                           class="btn btn-outline-secondary custom-btn search-reset-btn"
+                           class="ui-btn ui-btn-outline-secondary custom-btn search-reset-btn"
                            title="Reset search">
                             <i class="fas fa-redo"></i>
                         </a>

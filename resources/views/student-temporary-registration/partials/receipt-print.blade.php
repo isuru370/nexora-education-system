@@ -123,11 +123,11 @@
 
         {{-- PRINT BUTTON (for manual reprint) --}}
         <div class="receipt-actions no-print">
-            <button type="button" class="btn btn-primary" onclick="window.print()">
+            <button type="button" class="ui-btn ui-btn-primary" onclick="window.print()">
                 <i class="bi bi-printer"></i>
                 Print Receipt
             </button>
-            <button type="button" class="btn btn-light border" onclick="closeReceipt()">
+            <button type="button" class="ui-btn ui-btn-light tw:bs-border!" onclick="closeReceipt()">
                 <i class="bi bi-x-circle"></i>
                 Close
             </button>

@@ -33,6 +33,9 @@ return [
         'local' => [
             'driver' => 'local',
             'root' => storage_path('app'),
+            // Laravel 9+ returns false on a failed write unless this is on;
+            // the upload code expects an exception (as on Laravel 8)
+            'throw' => true,
         ],
 
         'public' => [
@@ -40,6 +43,7 @@ return [
             'root' => storage_path('app/public'),
             'url' => env('APP_URL').'/storage',
             'visibility' => 'public',
+            'throw' => true,
         ],
 
         's3' => [

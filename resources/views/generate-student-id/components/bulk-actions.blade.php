@@ -4,21 +4,21 @@
 @endphp
 
 @if($showBulkActions)
-    <div class="bulk-actions mb-4" id="bulkActionsBar">
+    <div class="bulk-actions tw:mb-6!" id="bulkActionsBar">
 
-        <div class="row align-items-center g-3">
+        <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2 bs-row tw:items-center!">
 
             {{-- ==================== LEFT SIDE - COUNTER ==================== --}}
-            <div class="col-lg-6 col-md-12">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[100%] tw:lg:flex-[0_0_auto] tw:lg:w-[50%]">
                 <div class="bulk-counter-wrap">
                     <div class="bulk-counter-icon">
                         <i class="fas fa-id-card"></i>
                     </div>
                     <div class="bulk-counter-text">
-                        <h5 class="mb-0 fw-bold">
+                        <h5 class="tw:mb-0! tw:font-bold!">
                             <span id="selectedCount">0</span> students selected
                         </h5>
-                        <small class="text-muted d-block" id="selectedInfo">
+                        <small class="tw:text-(color:--nx-muted)! tw:block!" id="selectedInfo">
                             Select cards to download in bulk
                         </small>
                     </div>
@@ -26,28 +26,28 @@
             </div>
 
             {{-- ==================== RIGHT SIDE - BUTTONS ==================== --}}
-            <div class="col-lg-6 col-md-12">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[100%] tw:lg:flex-[0_0_auto] tw:lg:w-[50%]">
                 <div class="bulk-btn-wrap">
 
                     <button type="button"
-                            class="btn btn-outline-primary bulk-btn"
+                            class="ui-btn ui-btn-outline-primary bulk-btn"
                             id="selectAllBtn">
-                        <i class="fas fa-check-double me-1"></i>
+                        <i class="fas fa-check-double tw:mr-1!"></i>
                         Select All Pending
                     </button>
 
                     <button type="button"
-                            class="btn btn-outline-secondary bulk-btn"
+                            class="ui-btn ui-btn-outline-secondary bulk-btn"
                             id="deselectAllBtn">
-                        <i class="fas fa-times me-1"></i>
+                        <i class="fas fa-times tw:mr-1!"></i>
                         Deselect All
                     </button>
 
                     <button type="button"
-                            class="btn btn-success bulk-btn bulk-download-btn"
+                            class="ui-btn ui-btn-success bulk-btn bulk-download-btn"
                             id="bulkDownloadBtn"
                             disabled>
-                        <i class="fas fa-download me-1"></i>
+                        <i class="fas fa-download tw:mr-1!"></i>
                         Download (<span id="downloadCount">0</span>)
                     </button>
 
@@ -59,8 +59,8 @@
     </div>
 @else
     {{-- ==================== INFO MESSAGE FOR NON-ADMIN ==================== --}}
-    <div class="alert alert-info border-0 shadow-sm rounded-4 mb-4 d-flex align-items-center">
-        <i class="fas fa-info-circle me-2 fs-5"></i>
+    <div class="ui-alert ui-alert-info tw:[border:0]! tw:shadow-bs-sm! tw:rounded-bs-xl! tw:mb-6! tw:flex! tw:items-center!">
+        <i class="fas fa-info-circle tw:mr-2! tw:text-[length:1.25rem]!"></i>
         <span>Bulk download actions are available for administrators only.</span>
     </div>
 @endif
@@ -183,7 +183,7 @@
     /* ==================================================
        INFO ALERT (Non-Admin)
     ================================================== */
-    .alert-info {
+    .ui-alert-info {
         background: linear-gradient(135deg, #eff6ff, #dbeafe);
         color: #1e40af;
         font-weight: 500;

@@ -8,9 +8,9 @@
 <div class="users-page">
 
     <!-- STATS -->
-    <div class="row g-4 mb-4">
+    <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3 bs-row tw:mb-6!">
 
-        <div class="col-xl-3 col-md-6">
+        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%]">
             <div class="stats-card">
                 <div class="stats-icon blue">
                     <i class="bi bi-people-fill"></i>
@@ -22,7 +22,7 @@
             </div>
         </div>
 
-        <div class="col-xl-3 col-md-6">
+        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%]">
             <div class="stats-card">
                 <div class="stats-icon green">
                     <i class="bi bi-check-circle-fill"></i>
@@ -34,7 +34,7 @@
             </div>
         </div>
 
-        <div class="col-xl-3 col-md-6">
+        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%]">
             <div class="stats-card">
                 <div class="stats-icon orange">
                     <i class="bi bi-pause-circle-fill"></i>
@@ -46,7 +46,7 @@
             </div>
         </div>
 
-        <div class="col-xl-3 col-md-6">
+        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%]">
             <div class="stats-card">
                 <div class="stats-icon red">
                     <i class="bi bi-trash-fill"></i>
@@ -68,10 +68,10 @@
 
             <div>
                 <h4>
-                    <i class="bi bi-people-fill me-2"></i>
+                    <i class="bi bi-people-fill tw:mr-2!"></i>
                     User Management
                 </h4>
-                <p class="text-muted mb-0">
+                <p class="tw:text-bs-secondary-color! tw:mb-0!">
                     Manage system users, roles and permissions
                 </p>
             </div>
@@ -81,11 +81,11 @@
                     <i class="bi bi-plus-lg"></i>
                     Add User
                 </a> --}}
-                <a href="{{ route('admin.users.exportExcel') }}" class="btn btn-success custom-btn">
+                <a href="{{ route('admin.users.exportExcel') }}" class="ui-btn ui-btn-success custom-btn">
                     <i class="bi bi-file-earmark-excel-fill"></i>
                     Excel
                 </a>
-                <a href="{{ route('admin.users.exportPdf') }}" class="btn btn-danger custom-btn">
+                <a href="{{ route('admin.users.exportPdf') }}" class="ui-btn ui-btn-danger custom-btn">
                     <i class="bi bi-file-earmark-pdf-fill"></i>
                     PDF
                 </a>
@@ -98,19 +98,19 @@
 
             <form method="GET" action="{{ route('admin.users.index') }}">
 
-                <div class="row g-3">
+                <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2 bs-row">
 
-                    <div class="col-lg-4">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[33.33333333%]">
                         <div class="search-input-wrapper">
                             <i class="bi bi-search"></i>
-                            <input type="text" name="search" class="form-control custom-input"
+                            <input type="text" name="search" class="ui-form-control custom-input"
                                 placeholder="Search name / email / ID..."
                                 value="{{ request('search') }}">
                         </div>
                     </div>
 
-                    <div class="col-lg-3">
-                        <select name="user_type" class="form-select custom-input">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[25%]">
+                        <select name="user_type" class="ui-form-select custom-input">
                             <option value="">All User Types</option>
                             @foreach($userTypes as $type)
                                 <option value="{{ $type->id }}" {{ request('user_type') == $type->id ? 'selected' : '' }}>
@@ -120,8 +120,8 @@
                         </select>
                     </div>
 
-                    <div class="col-lg-2">
-                        <select name="status" class="form-select custom-input">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[16.66666667%]">
+                        <select name="status" class="ui-form-select custom-input">
                             <option value="">All Status</option>
                             <option value="active" {{ request('status') == 'active' ? 'selected' : '' }}>Active</option>
                             <option value="inactive" {{ request('status') == 'inactive' ? 'selected' : '' }}>Inactive</option>
@@ -129,14 +129,14 @@
                         </select>
                     </div>
 
-                    <div class="col-lg-2">
-                        <button class="btn btn-primary w-100 custom-btn" type="submit">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[16.66666667%]">
+                        <button class="ui-btn ui-btn-primary tw:w-full! custom-btn" type="submit">
                             <i class="bi bi-search"></i> Search
                         </button>
                     </div>
 
-                    <div class="col-lg-1">
-                        <a href="{{ route('admin.users.index') }}" class="btn btn-light border w-100 custom-btn">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[8.33333333%]">
+                        <a href="{{ route('admin.users.index') }}" class="ui-btn ui-btn-light tw:bs-border! tw:w-full! custom-btn">
                             Reset
                         </a>
                     </div>
@@ -148,15 +148,15 @@
         </div>
 
         <!-- BULK ACTIONS -->
-        <div class="bulk-actions mb-3">
+        <div class="bulk-actions tw:mb-4!">
             <form id="bulkActionForm" action="{{ route('admin.users.bulkAction') }}" method="POST">
                 @csrf
-                <div class="row align-items-center g-2">
-                    <div class="col-auto">
-                        <span class="text-muted">Bulk Actions:</span>
+                <div class="tw:flex tw:flex-wrap tw:-mt-2 tw:-mx-1 bs-row tw:items-center!">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-1 tw:mt-2 tw:flex-[0_0_auto] tw:w-auto bs-col-auto">
+                        <span class="tw:text-bs-secondary-color!">Bulk Actions:</span>
                     </div>
-                    <div class="col-auto">
-                        <select name="action" class="form-select form-select-sm" required>
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-1 tw:mt-2 tw:flex-[0_0_auto] tw:w-auto bs-col-auto">
+                        <select name="action" class="ui-form-select ui-form-select-sm" required>
                             <option value="">Select Action</option>
                             <option value="activate">Activate</option>
                             <option value="deactivate">Deactivate</option>
@@ -164,27 +164,27 @@
                             <option value="restore">Restore</option>
                         </select>
                     </div>
-                    <div class="col-auto">
-                        <button type="submit" class="btn btn-sm btn-primary" onclick="return confirm('Are you sure?')">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-1 tw:mt-2 tw:flex-[0_0_auto] tw:w-auto bs-col-auto">
+                        <button type="submit" class="ui-btn ui-btn-sm ui-btn-primary" onclick="return confirm('Are you sure?')">
                             Apply
                         </button>
                     </div>
-                    <div class="col-auto">
-                        <span id="selectedCount" class="text-muted">0 selected</span>
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-1 tw:mt-2 tw:flex-[0_0_auto] tw:w-auto bs-col-auto">
+                        <span id="selectedCount" class="tw:text-bs-secondary-color!">0 selected</span>
                     </div>
                 </div>
             </form>
         </div>
 
         <!-- TABLE -->
-        <div class="table-responsive">
+        <div class="ui-table-responsive">
 
-            <table class="table custom-table align-middle">
+            <table class="ui-table custom-table tw:align-middle!">
 
                 <thead>
                     <tr>
                         <th width="40">
-                            <input type="checkbox" id="selectAll" class="form-check-input">
+                            <input type="checkbox" id="selectAll" class="ui-form-check-input">
                         </th>
                         <th>#</th>
                         <th>User</th>
@@ -192,18 +192,18 @@
                         <th>User Type</th>
                         <th>Linked To</th>
                         <th>Status</th>
-                        <th class="text-end">Actions</th>
+                        <th class="tw:text-right!">Actions</th>
                     </tr>
                 </thead>
 
                 <tbody>
 
                     @forelse($users as $user)
-                        <tr class="{{ $user->trashed() ? 'table-secondary' : '' }}">
+                        <tr class="{{ $user->trashed() ? 'ui-table-secondary' : '' }}">
 
                             <td>
                                 <input type="checkbox" name="user_ids[]" value="{{ $user->id }}"
-                                    class="form-check-input user-checkbox">
+                                    class="ui-form-check-input user-checkbox">
                             </td>
 
                             <td>
@@ -212,7 +212,7 @@
 
                             <!-- USER -->
                             <td>
-                                <div class="d-flex align-items-center gap-3">
+                                <div class="bs-d-flex tw:flex! tw:items-center! bs-gap-3 tw:gap-4!">
                                     <div class="user-avatar">
                                         {{ strtoupper(substr($user->name, 0, 1)) }}
                                     </div>
@@ -220,11 +220,11 @@
                                         <div class="user-name">
                                             {{ $user->name }}
                                         </div>
-                                        <small class="text-muted">
+                                        <small class="tw:text-bs-secondary-color!">
                                             ID: #{{ $user->id }}
                                         </small>
                                         @if($user->trashed())
-                                            <span class="badge bg-danger ms-2">Deleted</span>
+                                            <span class="ui-badge tw:bg-bs-danger! tw:ml-2!">Deleted</span>
                                         @endif
                                     </div>
                                 </div>
@@ -232,22 +232,22 @@
 
                             <!-- EMAIL -->
                             <td>
-                                <div class="fw-semibold">
+                                <div class="tw:font-semibold!">
                                     {{ $user->email }}
                                 </div>
-                                <small class="text-muted">
+                                <small class="tw:text-bs-secondary-color!">
                                     {{ $user->created_at->format('Y-m-d') }}
                                 </small>
                             </td>
 
                             <!-- USER TYPE -->
                             <td>
-                                <span class="badge custom-badge bg-primary">
+                                <span class="ui-badge custom-badge tw:bg-bs-primary!">
                                     {{ $user->userType->name ?? 'N/A' }}
                                 </span>
                                 @if($user->userType)
                                     <br>
-                                    <small class="text-muted">
+                                    <small class="tw:text-bs-secondary-color!">
                                         {{ $user->userType->code ?? '' }}
                                     </small>
                                 @endif
@@ -256,51 +256,51 @@
                             <!-- LINKED TO - Check both Teacher and System User -->
                             <td>
                                 @if($user->teacher)
-                                    <span class="badge custom-badge bg-success">
-                                        <i class="bi bi-person-badge-fill me-1"></i>
+                                    <span class="ui-badge custom-badge tw:bg-bs-success!">
+                                        <i class="bi bi-person-badge-fill tw:mr-1!"></i>
                                         Teacher
                                     </span>
                                     <br>
                                     <small>{{ $user->teacher->full_name ?? '' }}</small>
                                     @if($user->teacher->custom_id)
                                         <br>
-                                        <small class="text-muted">ID: {{ $user->teacher->custom_id }}</small>
+                                        <small class="tw:text-bs-secondary-color!">ID: {{ $user->teacher->custom_id }}</small>
                                     @endif
                                 @elseif($user->systemUser)
-                                    <span class="badge custom-badge bg-info">
-                                        <i class="bi bi-person-badge-fill me-1"></i>
+                                    <span class="ui-badge custom-badge tw:bg-bs-info!">
+                                        <i class="bi bi-person-badge-fill tw:mr-1!"></i>
                                         System User
                                     </span>
                                     <br>
                                     <small>{{ $user->systemUser->full_name ?? '' }}</small>
                                     @if($user->systemUser->custom_id)
                                         <br>
-                                        <small class="text-muted">ID: {{ $user->systemUser->custom_id }}</small>
+                                        <small class="tw:text-bs-secondary-color!">ID: {{ $user->systemUser->custom_id }}</small>
                                     @endif
                                 @else
-                                    <span class="text-muted">None</span>
+                                    <span class="tw:text-bs-secondary-color!">None</span>
                                 @endif
                             </td>
 
                             <!-- STATUS -->
                             <td>
                                 @if($user->trashed())
-                                    <span class="badge bg-danger custom-badge">
+                                    <span class="ui-badge tw:bg-bs-danger! custom-badge">
                                         Deleted
                                     </span>
                                 @elseif($user->is_active)
-                                    <span class="badge bg-success custom-badge">
+                                    <span class="ui-badge tw:bg-bs-success! custom-badge">
                                         Active
                                     </span>
                                 @else
-                                    <span class="badge bg-secondary custom-badge">
+                                    <span class="ui-badge tw:bg-bs-secondary! custom-badge">
                                         Inactive
                                     </span>
                                 @endif
                             </td>
 
                             <!-- ACTIONS -->
-                            <td class="text-end">
+                            <td class="tw:text-right!">
 
                                 <div class="action-buttons">
 
@@ -319,7 +319,7 @@
 
                                         <!-- TOGGLE ACTIVE -->
                                         <form method="POST" action="{{ route('admin.users.toggleActive', $user) }}"
-                                            onsubmit="return confirm('Change user status?')" class="d-inline">
+                                            onsubmit="return confirm('Change user status?')" class="tw:[display:inline]!">
                                             @csrf
                                             @method('PATCH')
                                             <button type="submit" class="action-btn toggle-btn" title="Toggle Status">
@@ -329,13 +329,13 @@
 
                                         <!-- CHANGE PASSWORD -->
                                         <button type="button" class="action-btn password-btn" title="Change Password"
-                                            data-bs-toggle="modal" data-bs-target="#passwordModal{{ $user->id }}">
+                                            data-nx-toggle="modal" data-nx-target="#passwordModal{{ $user->id }}">
                                             <i class="bi bi-key-fill"></i>
                                         </button>
 
                                         <!-- DELETE -->
                                         <form method="POST" action="{{ route('admin.users.destroy', $user) }}"
-                                            onsubmit="return confirm('Delete this user?')" class="d-inline">
+                                            onsubmit="return confirm('Delete this user?')" class="tw:[display:inline]!">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="action-btn delete-btn" title="Delete">
@@ -345,7 +345,7 @@
                                     @else
                                         <!-- RESTORE -->
                                         <form method="POST" action="{{ route('admin.users.restore', $user->id) }}"
-                                            onsubmit="return confirm('Restore this user?')" class="d-inline">
+                                            onsubmit="return confirm('Restore this user?')" class="tw:[display:inline]!">
                                             @csrf
                                             <button type="submit" class="action-btn restore-btn" title="Restore">
                                                 <i class="bi bi-arrow-counterclockwise"></i>
@@ -354,7 +354,7 @@
 
                                         <!-- FORCE DELETE -->
                                         <form method="POST" action="{{ route('admin.users.forceDelete', $user->id) }}"
-                                            onsubmit="return confirm('Permanently delete this user? This cannot be undone!')" class="d-inline">
+                                            onsubmit="return confirm('Permanently delete this user? This cannot be undone!')" class="tw:[display:inline]!">
                                             @csrf
                                             @method('DELETE')
                                             <button type="submit" class="action-btn force-delete-btn" title="Permanently Delete">
@@ -371,30 +371,30 @@
 
                         <!-- PASSWORD MODAL -->
                         @if(!$user->trashed())
-                            <div class="modal fade" id="passwordModal{{ $user->id }}" tabindex="-1">
-                                <div class="modal-dialog">
-                                    <div class="modal-content">
+                            <div class="ui-modal ui-fade" id="passwordModal{{ $user->id }}" tabindex="-1">
+                                <div class="ui-modal-dialog">
+                                    <div class="ui-modal-content">
                                         <form action="{{ route('admin.users.changePassword', $user) }}" method="POST">
                                             @csrf
                                             @method('PATCH')
-                                            <div class="modal-header">
-                                                <h5 class="modal-title">Change Password - {{ $user->name }}</h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                            <div class="ui-modal-header">
+                                                <h5 class="ui-modal-title">Change Password - {{ $user->name }}</h5>
+                                                <button type="button" class="ui-btn-close" data-nx-dismiss="modal"></button>
                                             </div>
-                                            <div class="modal-body">
-                                                <div class="mb-3">
-                                                    <label class="form-label fw-semibold">New Password</label>
-                                                    <input type="password" name="password" class="form-control" required minlength="8">
+                                            <div class="ui-modal-body">
+                                                <div class="tw:mb-4!">
+                                                    <label class="ui-form-label tw:font-semibold!">New Password</label>
+                                                    <input type="password" name="password" class="ui-form-control" required minlength="8">
                                                 </div>
-                                                <div class="mb-3">
-                                                    <label class="form-label fw-semibold">Confirm Password</label>
-                                                    <input type="password" name="password_confirmation" class="form-control" required>
+                                                <div class="tw:mb-4!">
+                                                    <label class="ui-form-label tw:font-semibold!">Confirm Password</label>
+                                                    <input type="password" name="password_confirmation" class="ui-form-control" required>
                                                 </div>
                                                 @include('partials.send-login-sms', ['id' => 'sendSmsPassword' . $user->id])
                                             </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                                                <button type="submit" class="btn btn-primary">Update Password</button>
+                                            <div class="ui-modal-footer">
+                                                <button type="button" class="ui-btn ui-btn-secondary" data-nx-dismiss="modal">Cancel</button>
+                                                <button type="submit" class="ui-btn ui-btn-primary">Update Password</button>
                                             </div>
                                         </form>
                                     </div>
@@ -405,12 +405,12 @@
                     @empty
 
                         <tr>
-                            <td colspan="8" class="text-center py-5 text-muted">
+                            <td colspan="8" class="tw:text-center! tw:py-12! tw:text-bs-secondary-color!">
                                 <div class="empty-state">
                                     <i class="bi bi-people"></i>
                                     <h5>No Users Found</h5>
                                     <p>Try adjusting search filters or create a new user</p>
-                                    <a href="{{ route('admin.users.create') }}" class="btn btn-primary">
+                                    <a href="{{ route('admin.users.create') }}" class="ui-btn ui-btn-primary">
                                         <i class="bi bi-plus-lg"></i> Add User
                                     </a>
                                 </div>
@@ -426,7 +426,7 @@
         </div>
 
         <!-- PAGINATION -->
-        <div class="mt-4">
+        <div class="tw:mt-6!">
             {{ $users->links() }}
         </div>
 
@@ -678,13 +678,13 @@
             justify-content: center;
         }
 
-        .bulk-actions .row {
+        .bulk-actions .bs-row {
             flex-direction: column;
             align-items: stretch !important;
             gap: 0.5rem;
         }
 
-        .bulk-actions .col-auto {
+        .bulk-actions .bs-col-auto {
             width: 100%;
         }
     }
@@ -752,10 +752,10 @@
         }
 
         // Auto-dismiss alerts after 5 seconds
-        const alerts = document.querySelectorAll('.alert');
+        const alerts = document.querySelectorAll('.ui-alert');
         alerts.forEach(alert => {
             setTimeout(() => {
-                const closeBtn = alert.querySelector('.btn-close');
+                const closeBtn = alert.querySelector('.ui-btn-close');
                 if (closeBtn) {
                     closeBtn.click();
                 }

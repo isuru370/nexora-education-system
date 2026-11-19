@@ -9,7 +9,7 @@
         {{-- ===================================================== --}}
         {{-- HERO --}}
         {{-- ===================================================== --}}
-        <div class="hero-section mb-4">
+        <div class="hero-section tw:mb-6!">
             <div class="hero-content">
                 <div class="hero-left">
                     <span class="greeting-badge">
@@ -46,7 +46,7 @@
             $pendingImages  = $quickPhotos->where('is_active', 1)->count();
         @endphp
 
-        <div class="stats-grid stats-grid-3 mb-4">
+        <div class="stats-grid stats-grid-3 tw:mb-6!">
 
             <div class="nx-card stat-card">
                 <div class="stat-icon-wrapper icon-blue"><i class="bi bi-images"></i></div>
@@ -79,26 +79,26 @@
         {{-- ===================================================== --}}
         {{-- FILTER --}}
         {{-- ===================================================== --}}
-        <div class="nx-card mb-4">
+        <div class="nx-card tw:mb-6!">
             <div class="nx-card-header">
                 <div>
-                    <h5 class="nx-card-title"><i class="bi bi-funnel text-primary"></i> Search Student Images</h5>
+                    <h5 class="nx-card-title"><i class="bi bi-funnel tw:text-(color:--nx-blue)!"></i> Search Student Images</h5>
                     <p class="nx-card-subtitle">Search by name, mobile number, or QR code</p>
                 </div>
             </div>
 
-            <div class="p-3">
-                <form method="GET" action="{{ route('admin.student-images.index') }}" class="row g-3 align-items-end">
-                    <div class="col-md-8">
+            <div class="tw:p-4!">
+                <form method="GET" action="{{ route('admin.student-images.index') }}" class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2 tw:items-end!">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[66.66666667%]">
                         <label class="nx-label">
                             <i class="bi bi-search"></i> Search
                         </label>
-                        <input type="text" name="search" value="{{ request('search') }}" class="form-control nx-input"
+                        <input type="text" name="search" value="{{ request('search') }}" class="ui-form-control nx-input"
                             placeholder="Search by name, mobile number, or QR code...">
                     </div>
-                    <div class="col-md-4">
-                        <div class="d-flex gap-2">
-                            <button type="submit" class="nx-btn nx-btn-primary flex-grow-1">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%]">
+                        <div class="tw:flex! tw:gap-2!">
+                            <button type="submit" class="nx-btn nx-btn-primary tw:grow!">
                                 <i class="bi bi-search"></i> Search
                             </button>
                             <a href="{{ route('admin.student-images.index') }}" class="nx-btn nx-btn-light">
@@ -113,11 +113,11 @@
         {{-- ===================================================== --}}
         {{-- TABLE --}}
         {{-- ===================================================== --}}
-        <div class="nx-card mb-4">
+        <div class="nx-card tw:mb-6!">
 
             <div class="nx-card-header">
                 <div>
-                    <h5 class="nx-card-title"><i class="bi bi-images text-primary"></i> Student Images List</h5>
+                    <h5 class="nx-card-title"><i class="bi bi-images tw:text-(color:--nx-blue)!"></i> Student Images List</h5>
                     <p class="nx-card-subtitle">All student images with assignment status</p>
                 </div>
                 <span class="nx-badge nx-badge-blue">
@@ -125,8 +125,8 @@
                 </span>
             </div>
 
-            <div class="table-responsive">
-                <table class="table premium-table mb-0">
+            <div class="ui-table-responsive">
+                <table class="ui-table premium-table tw:mb-0!">
                     <thead>
                         <tr>
                             <th style="width: 5%;">#</th>
@@ -161,7 +161,7 @@
                                     @if ($photo->is_active == 0)
                                         <span class="cell-title">{{ $photo->initial_name ?? 'N/A' }}</span>
                                     @else
-                                        <span class="cell-sub fst-italic">Not Assigned</span>
+                                        <span class="cell-sub tw:italic!">Not Assigned</span>
                                     @endif
                                 </td>
 
@@ -191,7 +191,7 @@
                                         </span>
                                     @else
                                         <button type="button" class="nx-btn nx-btn-primary assign-btn"
-                                            data-bs-toggle="modal" data-bs-target="#assignModal"
+                                            data-nx-toggle="modal" data-nx-target="#assignModal"
                                             data-photo-id="{{ $photo->id }}"
                                             data-photo-code="{{ $photo->custom_id }}"
                                             data-photo-url="{{ asset('storage/' . $photo->image_path) }}"
@@ -204,8 +204,8 @@
                         @empty
                             <tr>
                                 <td colspan="7" class="empty-table">
-                                    <i class="bi bi-inbox fs-2 d-block mb-2"></i>
-                                    <strong class="d-block">No Records Found</strong>
+                                    <i class="bi bi-inbox tw:text-[length:calc(1.325rem_+_0.9vw)]! tw:xl:text-[length:2rem]! tw:block! tw:mb-2!"></i>
+                                    <strong class="tw:block!">No Records Found</strong>
                                     <span class="cell-sub">No student images available in the system.</span>
                                 </td>
                             </tr>
@@ -215,7 +215,7 @@
             </div>
 
             @if (method_exists($quickPhotos, 'links') && $quickPhotos->hasPages())
-                <div class="p-3 border-top">
+                <div class="tw:p-4! tw:bs-border-t!">
                     {{ $quickPhotos->links() }}
                 </div>
             @endif
@@ -226,51 +226,51 @@
     {{-- ===================================================== --}}
     {{-- ASSIGN MODAL --}}
     {{-- ===================================================== --}}
-    <div class="modal fade" id="assignModal" tabindex="-1" aria-labelledby="assignModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content">
+    <div class="ui-modal ui-fade" id="assignModal" tabindex="-1" aria-labelledby="assignModalLabel" aria-hidden="true">
+        <div class="ui-modal-dialog ui-modal-dialog-centered">
+            <div class="ui-modal-content">
                 <form method="POST" id="assignForm" action="">
                     @csrf
 
-                    <div class="modal-header">
-                        <h5 class="modal-title" id="assignModalLabel">
-                            <i class="bi bi-person-badge-fill text-primary me-2"></i>
+                    <div class="ui-modal-header">
+                        <h5 class="ui-modal-title" id="assignModalLabel">
+                            <i class="bi bi-person-badge-fill tw:text-(color:--nx-blue)! tw:mr-2!"></i>
                             Assign Image to Student
                         </h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        <button type="button" class="ui-btn-close" data-nx-dismiss="modal" aria-label="Close"></button>
                     </div>
 
-                    <div class="modal-body">
+                    <div class="ui-modal-body">
                         {{-- PHOTO PREVIEW --}}
                         <div class="photo-preview">
                             <img id="modalPhotoPreview" src="{{ asset('storage/logo/black_logo.png') }}"
                                 alt="Photo Preview" class="photo-preview-img">
-                            <div class="mt-2">
+                            <div class="tw:mt-2!">
                                 <span id="modalPhotoCode" class="id-badge">-</span>
                             </div>
                         </div>
 
                         {{-- QR CODE INPUT --}}
-                        <div class="mb-3">
+                        <div class="tw:mb-4!">
                             <label class="nx-label">
                                 <i class="bi bi-qr-code"></i> Student QR Code
                             </label>
                             <input type="text" name="qr_code" value="{{ old('qr_code') }}"
-                                class="form-control nx-input @error('qr_code') is-invalid @enderror"
+                                class="ui-form-control nx-input @error('qr_code') ui-is-invalid @enderror"
                                 placeholder="Enter student custom_id or temporary QR code"
                                 required>
                             @error('qr_code')
-                                <div class="invalid-feedback">{{ $message }}</div>
+                                <div class="ui-invalid-feedback">{{ $message }}</div>
                             @enderror
-                            <small class="cell-sub d-block mt-2">
+                            <small class="cell-sub tw:block! tw:mt-2!">
                                 <i class="bi bi-info-circle"></i>
                                 Enter the student's custom ID or temporary QR code from their ID card.
                             </small>
                         </div>
                     </div>
 
-                    <div class="modal-footer">
-                        <button type="button" class="nx-btn nx-btn-light" data-bs-dismiss="modal">
+                    <div class="ui-modal-footer">
+                        <button type="button" class="nx-btn nx-btn-light" data-nx-dismiss="modal">
                             <i class="bi bi-x-lg"></i> Cancel
                         </button>
                         <button type="submit" class="nx-btn nx-btn-primary">
@@ -326,31 +326,31 @@
     }
 
     /* Modal is teleported to body — scope with #assignModal */
-    #assignModal .modal-content {
+    #assignModal .ui-modal-content {
         border: 0;
         border-radius: 12px;
         box-shadow: 0 10px 40px rgba(15, 23, 42, .15);
         overflow: hidden;
     }
 
-    #assignModal .modal-header {
+    #assignModal .ui-modal-header {
         border-bottom: 1px solid #d1d8e3;
         padding: 1rem 1.25rem;
         background: #fafbfd;
     }
 
-    #assignModal .modal-title {
+    #assignModal .ui-modal-title {
         font-weight: 700;
         font-size: .95rem;
         color: #0f172a;
     }
 
-    #assignModal .modal-body {
+    #assignModal .ui-modal-body {
         padding: 1.25rem;
         background: #f4f6fa;
     }
 
-    #assignModal .modal-footer {
+    #assignModal .ui-modal-footer {
         border-top: 1px solid #d1d8e3;
         padding: .85rem 1.25rem;
         background: #fafbfd;
@@ -477,16 +477,15 @@
 
         /* Auto-show modal if there are validation errors */
         @if ($errors->has('qr_code'))
-            const assignModal = new bootstrap.Modal(document.getElementById('assignModal'));
+            const assignModal = new NxUi.Modal(document.getElementById('assignModal'));
             assignModal.show();
         @endif
 
         /* Auto-hide alerts after 5 seconds */
-        const alerts = document.querySelectorAll('.alert');
+        const alerts = document.querySelectorAll('.ui-alert');
         alerts.forEach(alert => {
             setTimeout(() => {
-                const bsAlert = bootstrap.Alert.getOrCreateInstance(alert);
-                bsAlert.close();
+                NxUi.fadeOut(alert);
             }, 5000);
         });
     });

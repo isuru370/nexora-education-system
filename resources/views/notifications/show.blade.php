@@ -12,23 +12,23 @@
             <div class="main-card-header">
                 <div>
                     <h4>
-                        <i class="bi bi-envelope-paper-fill text-primary me-2"></i>
+                        <i class="bi bi-envelope-paper-fill tw:text-bs-primary! tw:mr-2!"></i>
                         Notification #{{ $notification->id }}
                     </h4>
                     <p>View full notification details and manage actions</p>
                 </div>
 
                 <div class="header-buttons">
-                    <a href="{{ route('admin.notifications.index') }}" class="btn btn-secondary custom-btn">
+                    <a href="{{ route('admin.notifications.index') }}" class="ui-btn ui-btn-secondary custom-btn">
                         <i class="bi bi-arrow-left"></i>
                         Back
                     </a>
 
                     @if($notification->isPending())
                         <form action="{{ route('admin.notifications.cancel', $notification->id) }}"
-                              method="POST" class="d-inline">
+                              method="POST" class="tw:[display:inline]!">
                             @csrf
-                            <button type="submit" class="btn btn-warning custom-btn"
+                            <button type="submit" class="ui-btn ui-btn-warning custom-btn"
                                     onclick="return confirm('Cancel this notification?')">
                                 <i class="bi bi-ban-fill"></i>
                                 Cancel
@@ -38,9 +38,9 @@
 
                     @if($notification->wasFailed() && $notification->canRetry())
                         <form action="{{ route('admin.notifications.retry', $notification->id) }}"
-                              method="POST" class="d-inline">
+                              method="POST" class="tw:[display:inline]!">
                             @csrf
-                            <button type="submit" class="btn btn-success custom-btn">
+                            <button type="submit" class="ui-btn ui-btn-success custom-btn">
                                 <i class="bi bi-arrow-repeat"></i>
                                 Retry
                             </button>
@@ -49,9 +49,9 @@
 
                     @if(is_null($notification->read_at))
                         <form action="{{ route('admin.notifications.mark-read', $notification->id) }}"
-                              method="POST" class="d-inline">
+                              method="POST" class="tw:[display:inline]!">
                             @csrf
-                            <button type="submit" class="btn btn-info custom-btn">
+                            <button type="submit" class="ui-btn ui-btn-info custom-btn">
                                 <i class="bi bi-check2-circle"></i>
                                 Mark as Read
                             </button>
@@ -62,18 +62,18 @@
 
             {{-- ALERT --}}
             @if(session('success'))
-                <div class="alert alert-success custom-alert">
-                    <i class="bi bi-check-circle-fill me-2"></i>
+                <div class="ui-alert ui-alert-success custom-alert">
+                    <i class="bi bi-check-circle-fill tw:mr-2!"></i>
                     {{ session('success') }}
                 </div>
             @endif
 
-            <div class="row g-4">
+            <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3">
                 {{-- LEFT COLUMN --}}
-                <div class="col-lg-8">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[66.66666667%]">
                     <div class="detail-card">
                         <h5 class="detail-title">
-                            <i class="bi bi-fonts text-primary me-2"></i>
+                            <i class="bi bi-fonts tw:text-bs-primary! tw:mr-2!"></i>
                             Title
                         </h5>
                         <p class="detail-content">{{ $notification->title }}</p>
@@ -81,7 +81,7 @@
 
                     <div class="detail-card">
                         <h5 class="detail-title">
-                            <i class="bi bi-textarea text-primary me-2"></i>
+                            <i class="bi bi-textarea tw:text-bs-primary! tw:mr-2!"></i>
                             Body
                         </h5>
                         <div class="detail-content body-content">
@@ -92,7 +92,7 @@
                     @if($notification->data)
                         <div class="detail-card">
                             <h5 class="detail-title">
-                                <i class="bi bi-database text-primary me-2"></i>
+                                <i class="bi bi-database tw:text-bs-primary! tw:mr-2!"></i>
                                 Additional Data
                             </h5>
                             <pre class="detail-content code-block">{{ json_encode($notification->data, JSON_PRETTY_PRINT) }}</pre>
@@ -101,11 +101,11 @@
                 </div>
 
                 {{-- RIGHT COLUMN --}}
-                <div class="col-lg-4">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[33.33333333%]">
                     <div class="detail-sidebar">
                         <div class="detail-card">
                             <h5 class="detail-title">
-                                <i class="bi bi-info-circle text-primary me-2"></i>
+                                <i class="bi bi-info-circle tw:text-bs-primary! tw:mr-2!"></i>
                                 Details
                             </h5>
 
@@ -119,14 +119,14 @@
                                     <td class="value">
                                         <strong>{{ $notification->student->initial_name ?? 'N/A' }}</strong>
                                         <br>
-                                        <small class="text-muted">{{ $notification->student->custom_id ?? '' }}</small>
+                                        <small class="tw:text-bs-secondary-color!">{{ $notification->student->custom_id ?? '' }}</small>
                                     </td>
                                 </tr>
                                 <tr>
                                     <td class="label">Type</td>
                                     <td class="value">
-                                        <span class="badge custom-badge {{ $notification->type }}-badge">
-                                            <i class="bi {{ $notification->type_icon }} me-1"></i>
+                                        <span class="ui-badge custom-badge {{ $notification->type }}-badge">
+                                            <i class="bi tw:mr-1! {{ $notification->type_icon }}"></i>
                                             {{ $notification->type_label }}
                                         </span>
                                     </td>
@@ -150,8 +150,8 @@
                                                 'cancelled' => 'bi-ban'
                                             ];
                                         @endphp
-                                        <span class="badge custom-badge status-badge bg-{{ $statusColors[$notification->status] ?? 'secondary' }}">
-                                            <i class="bi {{ $statusIcons[$notification->status] ?? 'bi-circle' }} me-1"></i>
+                                        <span class="ui-badge custom-badge status-badge {{ \App\Support\Ui::bg($statusColors[$notification->status] ?? 'secondary') }}">
+                                            <i class="bi tw:mr-1! {{ $statusIcons[$notification->status] ?? 'bi-circle' }}"></i>
                                             {{ $notification->status_label }}
                                         </span>
                                     </td>
@@ -181,7 +181,7 @@
                                 @if($notification->error_message)
                                     <tr>
                                         <td class="label">Error</td>
-                                        <td class="value text-danger">{{ $notification->error_message }}</td>
+                                        <td class="value tw:text-bs-danger!">{{ $notification->error_message }}</td>
                                     </tr>
                                 @endif
                                 <tr>

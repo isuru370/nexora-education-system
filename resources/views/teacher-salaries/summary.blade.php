@@ -17,28 +17,28 @@
     <div class="class-payment-summary-page">
 
         <!-- HERO -->
-        <div class="hero-card mb-4">
+        <div class="hero-card tw:mb-6!">
 
             <div class="hero-content">
 
                 <div>
 
                     <a href="{{ route('teacher-salaries.show', ['teacher' => $teacherId, 'year' => $year, 'month' => $month, 'branch_id' => $branchId]) }}"
-                        class="btn btn-outline-secondary custom-btn mb-3">
+                        class="ui-btn ui-btn-outline-secondary custom-btn tw:mb-4!">
 
-                        <i class="bi bi-arrow-left me-1"></i>
+                        <i class="bi bi-arrow-left tw:mr-1!"></i>
 
                         Back to Salary Report
 
                     </a>
 
 
-                    <h3 class="fw-bold mb-1">
+                    <h3 class="tw:font-bold! tw:mb-1!">
                         Class-wise Payment Summary
                     </h3>
 
 
-                    <p class="text-muted mb-0">
+                    <p class="tw:text-bs-secondary-color! tw:mb-0!">
 
                         Payment details for {{ $reportMonthName }}
 
@@ -49,9 +49,9 @@
 
                 <div class="hero-actions">
 
-                    <button onclick="window.print()" class="btn btn-primary custom-btn">
+                    <button onclick="window.print()" class="ui-btn ui-btn-primary custom-btn">
 
-                        <i class="bi bi-printer me-1"></i>
+                        <i class="bi bi-printer tw:mr-1!"></i>
 
                         Print Report
 
@@ -66,13 +66,13 @@
 
         <!-- STATS -->
 
-        <div class="row g-4 mb-4">
+        <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3 tw:mb-6!">
 
-            <div class="col-xl-3 col-md-6">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%]">
 
                 <div class="summary-card summary-blue">
 
-                    <div class="card-body">
+                    <div class="ui-card-body">
 
                         <i class="bi bi-cash-stack summary-icon"></i>
 
@@ -98,11 +98,11 @@
             </div>
 
 
-            <div class="col-xl-3 col-md-6">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%]">
 
                 <div class="summary-card summary-green">
 
-                    <div class="card-body">
+                    <div class="ui-card-body">
 
                         <i class="bi bi-people-fill summary-icon"></i>
 
@@ -127,11 +127,11 @@
             </div>
 
 
-            <div class="col-xl-3 col-md-6">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%]">
 
                 <div class="summary-card summary-orange">
 
-                    <div class="card-body">
+                    <div class="ui-card-body">
 
                         <i class="bi bi-grid-3x3-gap-fill summary-icon"></i>
 
@@ -154,11 +154,11 @@
             </div>
 
 
-            <div class="col-xl-3 col-md-6">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%]">
 
                 <div class="summary-card summary-primary">
 
-                    <div class="card-body">
+                    <div class="ui-card-body">
 
                         <i class="bi bi-calendar-event summary-icon"></i>
 
@@ -211,13 +211,13 @@
             </div>
 
 
-            <div class="row g-4" id="classesGrid">
+            <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3" id="classesGrid">
 
                 @forelse($data['classes'] ?? [] as $class)
 
-                    <div class="col-md-6 col-lg-4">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:lg:flex-[0_0_auto] tw:lg:w-[33.33333333%]">
 
-                        <div class="class-card h-100">
+                        <div class="class-card tw:h-full!">
 
 
                             <!-- CLASS HEADER -->
@@ -226,7 +226,7 @@
 
                                 <div>
 
-                                    <h5 class="fw-bold mb-1">
+                                    <h5 class="tw:font-bold! tw:mb-1!">
 
                                         {{ $class['class_name'] }}
 
@@ -234,7 +234,7 @@
 
 
                                     @if (!empty($class['grade_name']))
-                                        <div class="text-muted fw-semibold">
+                                        <div class="tw:text-bs-secondary-color! tw:font-semibold!">
 
                                             Grade:
                                             {{ $class['grade_name'] }}
@@ -243,9 +243,9 @@
                                     @endif
 
 
-                                    <p class="text-muted small mb-0 mt-1">
+                                    <p class="tw:text-bs-secondary-color! tw:text-[.875em] tw:mb-0! tw:mt-1!">
 
-                                        <i class="bi bi-people-fill me-1"></i>
+                                        <i class="bi bi-people-fill tw:mr-1!"></i>
 
                                         Total Students:
                                         {{ $class['total_students'] }}
@@ -255,7 +255,7 @@
                                 </div>
 
 
-                                <span class="badge bg-primary custom-badge">
+                                <span class="ui-badge tw:bg-bs-primary! custom-badge">
 
                                     LKR {{ number_format($class['class_total'], 2) }}
 
@@ -267,16 +267,16 @@
                             <!-- CATEGORIES -->
 
                             @if (!empty($class['categories']) && count($class['categories']) > 0)
-                                <div class="mb-3">
+                                <div class="tw:mb-4!">
 
-                                    <small class="text-muted d-block mb-2 fw-semibold">
+                                    <small class="tw:text-bs-secondary-color! tw:block! tw:mb-2! tw:font-semibold!">
 
                                         Categories Breakdown
 
                                     </small>
 
 
-                                    <div class="row g-2">
+                                    <div class="tw:flex tw:flex-wrap tw:-mt-2 tw:-mx-1">
 
                                         @foreach ($class['categories'] as $category)
                                             @php
@@ -303,23 +303,23 @@
                                             @endphp
 
 
-                                            <div class="col-12">
+                                            <div class="tw:shrink-0 tw:max-w-full tw:px-1 tw:mt-2 tw:flex-[0_0_auto] tw:w-[100%]">
 
                                                 <div class="category-item">
 
 
                                                     <!-- CATEGORY NAME -->
 
-                                                    <div class="d-flex justify-content-between align-items-center mb-2">
+                                                    <div class="tw:flex! tw:justify-between! tw:items-center! tw:mb-2!">
 
-                                                        <strong class="small">
+                                                        <strong class="tw:text-[.875em]">
 
                                                             {{ $category['category_name'] }}
 
                                                         </strong>
 
 
-                                                        <span class="badge bg-secondary custom-badge">
+                                                        <span class="ui-badge tw:bg-bs-secondary! custom-badge">
 
                                                             {{ $category['student_count'] }}
                                                             Students
@@ -331,13 +331,13 @@
 
                                                     <!-- PAYMENT STATUS -->
 
-                                                    <div class="d-flex flex-wrap gap-1 mb-2">
+                                                    <div class="tw:flex! tw:flex-wrap! tw:gap-1! tw:mb-2!">
 
 
                                                         @if (($category['paid_students'] ?? 0) > 0)
-                                                            <span class="badge bg-success custom-badge">
+                                                            <span class="ui-badge tw:bg-bs-success! custom-badge">
 
-                                                                <i class="bi bi-check-circle-fill me-1"></i>
+                                                                <i class="bi bi-check-circle-fill tw:mr-1!"></i>
 
                                                                 Paid:
                                                                 {{ $category['paid_students'] }}
@@ -347,9 +347,9 @@
 
 
                                                         @if (($category['partial_students'] ?? 0) > 0)
-                                                            <span class="badge bg-warning text-dark custom-badge">
+                                                            <span class="ui-badge tw:bg-bs-warning! tw:text-bs-dark! custom-badge">
 
-                                                                <i class="bi bi-exclamation-triangle-fill me-1"></i>
+                                                                <i class="bi bi-exclamation-triangle-fill tw:mr-1!"></i>
 
                                                                 Partial:
                                                                 {{ $category['partial_students'] }}
@@ -359,9 +359,9 @@
 
 
                                                         @if (($category['free_card_students'] ?? 0) > 0)
-                                                            <span class="badge bg-info custom-badge">
+                                                            <span class="ui-badge tw:bg-bs-info! custom-badge">
 
-                                                                <i class="bi bi-gift-fill me-1"></i>
+                                                                <i class="bi bi-gift-fill tw:mr-1!"></i>
 
                                                                 Free:
                                                                 {{ $category['free_card_students'] }}
@@ -371,9 +371,9 @@
 
 
                                                         @if (($category['unpaid_students'] ?? 0) > 0)
-                                                            <span class="badge bg-danger custom-badge">
+                                                            <span class="ui-badge tw:bg-bs-danger! custom-badge">
 
-                                                                <i class="bi bi-x-circle-fill me-1"></i>
+                                                                <i class="bi bi-x-circle-fill tw:mr-1!"></i>
 
                                                                 Unpaid:
                                                                 {{ $category['unpaid_students'] }}
@@ -387,9 +387,9 @@
                                                     <!-- FEE OPTIONS -->
 
                                                     @if (count($feeOptions) > 0)
-                                                        <div class="fee-options-box mb-2">
+                                                        <div class="fee-options-box tw:mb-2!">
 
-                                                            <div class="small text-muted fw-semibold mb-2">
+                                                            <div class="tw:text-[.875em] tw:text-bs-secondary-color! tw:font-semibold! tw:mb-2!">
 
                                                                 Fee Options
 
@@ -418,7 +418,7 @@
 
                                                         </div>
                                                     @else
-                                                        <div class="alert alert-warning py-2 px-3 mb-2">
+                                                        <div class="ui-alert ui-alert-warning tw:py-2! tw:px-4! tw:mb-2!">
 
                                                             <small>
 
@@ -432,7 +432,7 @@
 
                                                     <!-- COLLECTION -->
 
-                                                    <div class="d-flex justify-content-between small text-muted">
+                                                    <div class="tw:flex! tw:justify-between! tw:text-[.875em] tw:text-bs-secondary-color!">
 
                                                         <span>
 
@@ -442,7 +442,7 @@
                                                         </span>
 
 
-                                                        <span class="text-success fw-semibold">
+                                                        <span class="tw:text-bs-success! tw:font-semibold!">
 
                                                             Collected:
                                                             LKR {{ number_format($categoryTotal, 2) }}
@@ -454,9 +454,9 @@
 
                                                     <!-- PROGRESS -->
 
-                                                    <div class="progress mt-2" style="height: 6px;">
+                                                    <div class="ui-progress tw:mt-2!" style="height: 6px;">
 
-                                                        <div class="progress-bar bg-success" role="progressbar"
+                                                        <div class="ui-progress-bar tw:bg-bs-success!" role="progressbar"
                                                             style="width: {{ $collectedPercent }}%">
 
                                                         </div>
@@ -466,7 +466,7 @@
 
                                                     <!-- VIEW STUDENTS -->
 
-                                                    <div class="mt-3">
+                                                    <div class="tw:mt-4!">
 
                                                         <a href="{{ route('student-class-enrollments.category-wise-payment', [
                                                             'class' => $class['class_id'],
@@ -474,9 +474,9 @@
                                                             'year' => $year,
                                                             'month' => $month,
                                                         ]) }}"
-                                                            class="btn btn-outline-info btn-sm w-100 custom-btn">
+                                                            class="ui-btn ui-btn-outline-info ui-btn-sm tw:w-full! custom-btn">
 
-                                                            <i class="bi bi-eye me-1"></i>
+                                                            <i class="bi bi-eye tw:mr-1!"></i>
 
                                                             View
                                                             {{ $category['category_name'] }}
@@ -496,11 +496,11 @@
 
                                 </div>
                             @else
-                                <div class="alert alert-light text-center py-3 mb-3">
+                                <div class="ui-alert ui-alert-light tw:text-center! tw:py-4! tw:mb-4!">
 
-                                    <i class="bi bi-folder2-open me-1"></i>
+                                    <i class="bi bi-folder2-open tw:mr-1!"></i>
 
-                                    <small class="text-muted d-block">
+                                    <small class="tw:text-bs-secondary-color! tw:block!">
 
                                         No categories assigned
 
@@ -533,16 +533,16 @@
 
                             <div class="class-footer">
 
-                                <div class="d-flex justify-content-between small mb-1">
+                                <div class="tw:flex! tw:justify-between! tw:text-[.875em] tw:mb-1!">
 
-                                    <span class="fw-semibold">
+                                    <span class="tw:font-semibold!">
 
                                         Overall Collection Rate
 
                                     </span>
 
 
-                                    <span class="fw-semibold">
+                                    <span class="tw:font-semibold!">
 
                                         {{ number_format($paidPercent, 1) }}%
 
@@ -551,9 +551,9 @@
                                 </div>
 
 
-                                <div class="progress" style="height: 8px;">
+                                <div class="ui-progress" style="height: 8px;">
 
-                                    <div class="progress-bar bg-success" role="progressbar"
+                                    <div class="ui-progress-bar tw:bg-bs-success!" role="progressbar"
                                         style="width: {{ $paidPercent }}%">
 
                                     </div>
@@ -561,11 +561,11 @@
                                 </div>
 
 
-                                <div class="d-flex justify-content-between small mt-2 flex-wrap gap-2">
+                                <div class="tw:flex! tw:justify-between! tw:text-[.875em] tw:mt-2! tw:flex-wrap! tw:gap-2!">
 
-                                    <span class="text-success">
+                                    <span class="tw:text-bs-success!">
 
-                                        <i class="bi bi-check-circle-fill me-1"></i>
+                                        <i class="bi bi-check-circle-fill tw:mr-1!"></i>
 
                                         Paid:
                                         {{ $totalPaid }}
@@ -573,9 +573,9 @@
                                     </span>
 
 
-                                    <span class="text-warning">
+                                    <span class="tw:text-bs-warning!">
 
-                                        <i class="bi bi-exclamation-triangle-fill me-1"></i>
+                                        <i class="bi bi-exclamation-triangle-fill tw:mr-1!"></i>
 
                                         Partial:
                                         {{ $totalPartial }}
@@ -583,9 +583,9 @@
                                     </span>
 
 
-                                    <span class="text-danger">
+                                    <span class="tw:text-bs-danger!">
 
-                                        <i class="bi bi-x-circle-fill me-1"></i>
+                                        <i class="bi bi-x-circle-fill tw:mr-1!"></i>
 
                                         Unpaid:
                                         {{ max($classStudentCount - $totalWithPayment, 0) }}
@@ -604,7 +604,7 @@
 
                 @empty
 
-                    <div class="col-12">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:flex-[0_0_auto] tw:w-[100%]">
 
                         <div class="empty-card">
 
@@ -614,7 +614,7 @@
                                 No active classes found for this teacher
                             </h5>
 
-                            <p class="mb-0 text-muted">
+                            <p class="tw:mb-0! tw:text-bs-secondary-color!">
 
                                 There are no class records available for
                                 the selected period.
@@ -631,29 +631,29 @@
 
             <!-- GUIDE -->
 
-            <div class="mt-4">
+            <div class="tw:mt-6!">
 
-                <div class="alert alert-info custom-alert mb-0">
+                <div class="ui-alert ui-alert-info custom-alert tw:mb-0!">
 
-                    <i class="bi bi-info-circle-fill me-2"></i>
+                    <i class="bi bi-info-circle-fill tw:mr-2!"></i>
 
                     <strong>
                         Payment Status Guide:
                     </strong>
 
 
-                    <div class="row mt-3 g-3">
+                    <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2 tw:mt-4!">
 
 
-                        <div class="col-md-3">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[25%]">
 
-                            <span class="badge bg-success custom-badge">
+                            <span class="ui-badge tw:bg-bs-success! custom-badge">
 
                                 ✓ Paid
 
                             </span>
 
-                            <small class="d-block text-muted mt-1">
+                            <small class="tw:block! tw:text-bs-secondary-color! tw:mt-1!">
 
                                 Full payment completed
 
@@ -662,15 +662,15 @@
                         </div>
 
 
-                        <div class="col-md-3">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[25%]">
 
-                            <span class="badge bg-warning text-dark custom-badge">
+                            <span class="ui-badge tw:bg-bs-warning! tw:text-bs-dark! custom-badge">
 
                                 ⚠ Partial
 
                             </span>
 
-                            <small class="d-block text-muted mt-1">
+                            <small class="tw:block! tw:text-bs-secondary-color! tw:mt-1!">
 
                                 Partial payment received
 
@@ -679,15 +679,15 @@
                         </div>
 
 
-                        <div class="col-md-3">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[25%]">
 
-                            <span class="badge bg-info custom-badge">
+                            <span class="ui-badge tw:bg-bs-info! custom-badge">
 
                                 🎫 Free Card
 
                             </span>
 
-                            <small class="d-block text-muted mt-1">
+                            <small class="tw:block! tw:text-bs-secondary-color! tw:mt-1!">
 
                                 Free student (no fee)
 
@@ -696,15 +696,15 @@
                         </div>
 
 
-                        <div class="col-md-3">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[25%]">
 
-                            <span class="badge bg-danger custom-badge">
+                            <span class="ui-badge tw:bg-bs-danger! custom-badge">
 
                                 ✗ Unpaid
 
                             </span>
 
-                            <small class="d-block text-muted mt-1">
+                            <small class="tw:block! tw:text-bs-secondary-color! tw:mt-1!">
 
                                 No payment received
 
@@ -785,7 +785,7 @@
         }
 
 
-        .summary-card .card-body {
+        .summary-card .ui-card-body {
             padding: 1.4rem;
             position: relative;
         }
@@ -948,14 +948,14 @@
         }
 
 
-        .progress {
+        .ui-progress {
             background-color: #e9ecef;
             border-radius: 10px;
             overflow: hidden;
         }
 
 
-        .progress-bar {
+        .ui-progress-bar {
             border-radius: 10px;
             transition: width 0.5s ease;
         }
@@ -1012,7 +1012,7 @@
             }
 
 
-            .hero-actions .btn {
+            .hero-actions .ui-btn {
                 flex: 1;
             }
 
@@ -1027,8 +1027,8 @@
 
         @media print {
 
-            .btn,
-            .alert,
+            .ui-btn,
+            .ui-alert,
             .sidebar,
             .navbar {
                 display: none !important;

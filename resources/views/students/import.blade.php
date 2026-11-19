@@ -4,33 +4,33 @@
 @section('page-title', 'Import Bulk Students')
 
 @section('breadcrumb')
-    <li class="breadcrumb-item">
+    <li class="ui-breadcrumb-item">
         <a href="{{ route('dashboard') }}">Dashboard</a>
     </li>
-    <li class="breadcrumb-item active">Students</li>
+    <li class="ui-breadcrumb-item active">Students</li>
 @endsection
 
 @section('content')
 
-<div class="card">
-    <div class="card-header">
+<div class="ui-card">
+    <div class="ui-card-header">
         <h4>Import Students (CSV / Excel)</h4>
     </div>
 
-    <div class="card-body">
+    <div class="ui-card-body">
 
         {{-- Success Message --}}
         @if(session('success'))
-            <div class="alert alert-success">
+            <div class="ui-alert ui-alert-success">
                 {{ session('success') }}
             </div>
         @endif
 
         {{-- Import Errors --}}
         @if(session('importErrors'))
-            <div class="alert alert-danger">
+            <div class="ui-alert ui-alert-danger">
                 <strong>Import Errors:</strong>
-                <ul class="mb-0">
+                <ul class="tw:mb-0!">
                     @foreach(session('importErrors') as $error)
                         <li>{{ $error }}</li>
                     @endforeach
@@ -40,8 +40,8 @@
 
         {{-- Validation Errors --}}
         @if($errors->any())
-            <div class="alert alert-danger">
-                <ul class="mb-0">
+            <div class="ui-alert ui-alert-danger">
+                <ul class="tw:mb-0!">
                     @foreach($errors->all() as $error)
                         <li>{{ $error }}</li>
                     @endforeach
@@ -52,24 +52,24 @@
         <form action="{{ route('students.import') }}" method="POST" enctype="multipart/form-data">
             @csrf
 
-            <div class="mb-3">
-                <label class="form-label">Select File</label>
+            <div class="tw:mb-4!">
+                <label class="ui-form-label">Select File</label>
                 <input type="file" 
                        name="file" 
-                       class="form-control" 
+                       class="ui-form-control" 
                        accept=".csv,.xlsx,.xls" 
                        required>
-                <small class="text-muted">
+                <small class="tw:text-bs-secondary-color!">
                     Allowed formats: CSV, XLSX, XLS
                 </small>
             </div>
 
-            <button type="submit" class="btn btn-primary">
+            <button type="submit" class="ui-btn ui-btn-primary">
                 Import Students
             </button>
 
             <a href="{{ asset('student_import_template_with_dummy_data.xlsx') }}" 
-               class="btn btn-secondary">
+               class="ui-btn ui-btn-secondary">
                 Download Sample Template
             </a>
         </form>

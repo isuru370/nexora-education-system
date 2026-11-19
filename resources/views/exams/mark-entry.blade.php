@@ -14,7 +14,7 @@
 <div class="dashboard-page">
 
     {{-- HERO --}}
-    <div class="hero-section mb-4">
+    <div class="hero-section tw:mb-6!">
         <div class="hero-content">
             <div class="hero-left">
                 <span class="greeting-badge">
@@ -63,18 +63,18 @@
 
     {{-- ALERTS --}}
     @if (session('error'))
-        <div class="nx-alert nx-alert-red mb-4">
+        <div class="nx-alert nx-alert-red tw:mb-6!">
             <i class="bi bi-exclamation-triangle-fill"></i>
             <span>{{ session('error') }}</span>
         </div>
     @endif
 
     @if ($errors->any())
-        <div class="nx-alert nx-alert-red mb-4">
+        <div class="nx-alert nx-alert-red tw:mb-6!">
             <i class="bi bi-exclamation-triangle-fill"></i>
             <div>
                 <strong>Marks were not saved.</strong> Fix the highlighted rows and save again.
-                <ul class="mb-0 mt-1 ps-3">
+                <ul class="tw:mb-0! tw:mt-1! tw:pl-4!">
                     @foreach (collect($errors->all())->unique()->take(5) as $error)
                         <li>{{ $error }}</li>
                     @endforeach
@@ -84,7 +84,7 @@
     @endif
 
     @if ($exam->status === 'completed')
-        <div class="nx-alert nx-alert-amber mb-4">
+        <div class="nx-alert nx-alert-amber tw:mb-6!">
             <i class="bi bi-info-circle-fill"></i>
             <span>Results for this exam are already published. Saving again updates the marks and ranks.</span>
         </div>
@@ -93,38 +93,38 @@
     <form action="{{ route('admin.exams.save-marks', $exam->id) }}" method="POST" id="markEntryForm" novalidate>
         @csrf
 
-        <div class="nx-card mb-4">
+        <div class="nx-card tw:mb-6!">
             <div class="nx-card-header">
                 <div>
-                    <h5 class="nx-card-title"><i class="bi bi-people-fill text-primary"></i> Students</h5>
+                    <h5 class="nx-card-title"><i class="bi bi-people-fill tw:text-(color:--nx-blue)!"></i> Students</h5>
                     <p class="nx-card-subtitle">Leave marks empty if not entered yet. Press Enter to go to the next student.</p>
                 </div>
 
                 <div class="max-marks-box">
-                    <label for="maxMarks" class="nx-label mb-0">Out of</label>
+                    <label for="maxMarks" class="nx-label tw:mb-0!">Out of</label>
                     <input type="number" id="maxMarks" name="max_marks" min="1" max="1000" step="0.5" required
-                        class="form-control custom-input @error('max_marks') is-invalid @enderror"
+                        class="ui-form-control custom-input @error('max_marks') ui-is-invalid @enderror"
                         value="{{ $maxMarksValue }}">
                 </div>
             </div>
 
             @if ($students->isEmpty())
                 <div class="empty-table">
-                    <i class="bi bi-people fs-2 d-block mb-2"></i>
-                    <strong class="d-block">No students in this class and category</strong>
+                    <i class="bi bi-people tw:text-[length:calc(1.325rem_+_0.9vw)]! tw:xl:text-[length:2rem]! tw:block! tw:mb-2!"></i>
+                    <strong class="tw:block!">No students in this class and category</strong>
                     <span class="cell-sub">Add students to {{ $exam->studentClass->class_name ?? 'the class' }} first.</span>
                 </div>
             @else
-                <div class="nx-search py-2">
+                <div class="nx-search tw:py-2!">
                     <div class="search-input-wrapper">
                         <i class="bi bi-search"></i>
-                        <input type="text" id="studentFilter" class="form-control custom-input"
+                        <input type="text" id="studentFilter" class="ui-form-control custom-input"
                             placeholder="Find a student by name or ID...">
                     </div>
                 </div>
 
-                <div class="table-responsive">
-                    <table class="table premium-table mb-0" id="marksTable">
+                <div class="ui-table-responsive">
+                    <table class="ui-table premium-table tw:mb-0!" id="marksTable">
                         <thead>
                             <tr>
                                 <th style="width: 48px;">#</th>
@@ -155,26 +155,26 @@
                                     <td>
                                         <input type="number" inputmode="decimal" step="0.01" min="0"
                                             name="marks[{{ $s->id }}][marks]"
-                                            class="form-control custom-input mark-input {{ $rowError ? 'is-invalid' : '' }}"
+                                            class="ui-form-control custom-input mark-input {{ $rowError ? 'ui-is-invalid' : '' }}"
                                             value="{{ $markVal }}" {{ $absentVal ? 'disabled' : '' }}
                                             aria-label="Marks for {{ $s->initial_name }}">
                                         @if ($rowError)
-                                            <div class="invalid-feedback d-block">{{ $rowError }}</div>
+                                            <div class="ui-invalid-feedback tw:block!">{{ $rowError }}</div>
                                         @endif
                                     </td>
                                     <td>
                                         <input type="hidden" name="marks[{{ $s->id }}][is_absent]" value="0">
-                                        <div class="form-check form-switch m-0">
-                                            <input class="form-check-input absent-toggle" type="checkbox" role="switch"
+                                        <div class="ui-form-check ui-form-switch tw:m-0!">
+                                            <input class="ui-form-check-input absent-toggle" type="checkbox" role="switch"
                                                 name="marks[{{ $s->id }}][is_absent]" value="1"
                                                 id="absent{{ $s->id }}" {{ $absentVal ? 'checked' : '' }}>
-                                            <label class="form-check-label cell-sub" for="absent{{ $s->id }}">Absent</label>
+                                            <label class="ui-form-check-label cell-sub" for="absent{{ $s->id }}">Absent</label>
                                         </div>
                                     </td>
                                     <td class="result-cell"><span class="nx-badge nx-badge-gray">-</span></td>
                                     <td>
                                         <input type="text" maxlength="255" name="marks[{{ $s->id }}][remark]"
-                                            class="form-control custom-input remark-input" value="{{ $remarkVal }}"
+                                            class="ui-form-control custom-input remark-input" value="{{ $remarkVal }}"
                                             placeholder="Optional" aria-label="Remark for {{ $s->initial_name }}">
                                     </td>
                                 </tr>
@@ -183,11 +183,11 @@
                     </table>
                 </div>
 
-                <div class="p-3 border-top d-flex flex-wrap justify-content-between align-items-center gap-2">
+                <div class="tw:p-4! tw:bs-border-t! tw:flex! tw:flex-wrap! tw:justify-between! tw:items-center! tw:gap-2!">
                     <small class="cell-sub">
                         Grades: A 75+, B 65+, C 50+, S 35+, F below 35. Ranks are worked out when you save.
                     </small>
-                    <div class="d-flex gap-2">
+                    <div class="tw:flex! tw:gap-2!">
                         <a href="{{ route('admin.exams.show', $exam->id) }}" class="nx-btn nx-btn-light">Cancel</a>
                         <button type="submit" class="nx-btn nx-btn-primary" id="saveBtn">
                             <i class="bi bi-save"></i> Save Marks
@@ -253,7 +253,7 @@
 
             input.disabled = absent;
             row.classList.toggle('row-muted', absent);
-            input.classList.remove('is-invalid');
+            input.classList.remove('ui-is-invalid');
 
             if (absent) {
                 cell.innerHTML = '<span class="nx-badge nx-badge-amber">Absent</span>';
@@ -267,7 +267,7 @@
 
             var mark = parseFloat(input.value);
             if (isNaN(mark) || mark < 0 || (max > 0 && mark > max)) {
-                input.classList.add('is-invalid');
+                input.classList.add('ui-is-invalid');
                 cell.innerHTML = '<span class="nx-badge nx-badge-red">Check</span>';
                 return 'invalid';
             }
@@ -275,7 +275,7 @@
             var pct = max > 0 ? (mark / max) * 100 : 0;
             var g = grade(pct);
             var cls = pct >= 35 ? 'nx-badge-green' : 'nx-badge-red';
-            cell.innerHTML = '<span class="nx-badge ' + cls + '">' + g + ' &middot; ' + Math.round(pct) + '%</span>';
+            cell.innerHTML = '<span class="nx-badge ' + cls">' + g + ' &middot; ' + Math.round(pct) + '%</span>';
             return 'entered';
         }
 
@@ -334,7 +334,7 @@
             dirty = false;
             var btn = document.getElementById('saveBtn');
             btn.disabled = true;
-            btn.innerHTML = '<span class="spinner-border spinner-border-sm"></span> Saving...';
+            btn.innerHTML = '<span class="ui-spinner-border ui-spinner-border-sm"></span> Saving...';
         });
 
         window.addEventListener('beforeunload', function (e) {

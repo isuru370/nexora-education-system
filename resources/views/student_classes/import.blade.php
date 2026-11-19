@@ -28,7 +28,7 @@
 @endphp
 <div class="dashboard-page">
 
-    <div class="hero-section mb-4">
+    <div class="hero-section tw:mb-6!">
         <div class="hero-content">
             <div class="hero-left">
                 <span class="greeting-badge">nexoraEDU</span>
@@ -39,24 +39,24 @@
     </div>
 
     @if ($errors->any())
-        <div class="alert alert-danger">{{ $errors->first() }}</div>
+        <div class="ui-alert ui-alert-danger">{{ $errors->first() }}</div>
     @endif
 
-    <div class="row g-4 mb-4">
-        <div class="col-lg-4">
-            <div class="nx-card h-100 p-4">
-                <h5 class="nx-card-title"><span class="badge bg-primary me-2">1</span> Download</h5>
-                <p class="text-muted small mb-3">New classes: start from the template. To change fees or classes: download the current classes, edit them in Excel.</p>
-                <div class="d-grid gap-2">
+    <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3 tw:mb-6!">
+        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[33.33333333%]">
+            <div class="nx-card tw:h-full! tw:p-6!">
+                <h5 class="nx-card-title"><span class="ui-badge tw:[background:var(--nx-blue)]! tw:mr-2!">1</span> Download</h5>
+                <p class="tw:text-(color:--nx-muted)! tw:text-[.875em] tw:mb-4!">New classes: start from the template. To change fees or classes: download the current classes, edit them in Excel.</p>
+                <div class="tw:grid! tw:gap-2!">
                     <a href="{{ route('class-import.template') }}" class="nx-btn nx-btn-light"><i class="bi bi-file-earmark-arrow-down"></i> Empty template</a>
                     <a href="{{ route('class-import.export') }}" class="nx-btn nx-btn-success"><i class="bi bi-file-earmark-spreadsheet"></i> Current classes</a>
                 </div>
             </div>
         </div>
-        <div class="col-lg-4">
-            <div class="nx-card h-100 p-4">
-                <h5 class="nx-card-title"><span class="badge bg-primary me-2">2</span> Edit</h5>
-                <ul class="small text-muted mb-0 ps-3">
+        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[33.33333333%]">
+            <div class="nx-card tw:h-full! tw:p-6!">
+                <h5 class="nx-card-title"><span class="ui-badge tw:[background:var(--nx-blue)]! tw:mr-2!">2</span> Edit</h5>
+                <ul class="tw:text-[.875em] tw:text-(color:--nx-muted)! tw:mb-0! tw:pl-4!">
                     <li>One row = one fee option of a class.</li>
                     <li>A class with 3 options = 3 rows with the same class details.</li>
                     <li>Change the fee, add rows, set <code>option_active</code> to <code>no</code> to stop an option.</li>
@@ -64,65 +64,65 @@
                 </ul>
             </div>
         </div>
-        <div class="col-lg-4">
-            <div class="nx-card h-100 p-4">
-                <h5 class="nx-card-title"><span class="badge bg-primary me-2">3</span> Upload &amp; check</h5>
+        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[33.33333333%]">
+            <div class="nx-card tw:h-full! tw:p-6!">
+                <h5 class="nx-card-title"><span class="ui-badge tw:[background:var(--nx-blue)]! tw:mr-2!">3</span> Upload &amp; check</h5>
                 <form method="POST" action="{{ route('class-import.preview') }}" enctype="multipart/form-data">
                     @csrf
-                    <input type="file" name="file" accept=".csv,text/csv" class="form-control mb-3" required>
-                    <button class="nx-btn nx-btn-primary w-100"><i class="bi bi-eye"></i> Upload and preview</button>
+                    <input type="file" name="file" accept=".csv,text/csv" class="ui-form-control tw:mb-4!" required>
+                    <button class="nx-btn nx-btn-primary tw:w-full!"><i class="bi bi-eye"></i> Upload and preview</button>
                 </form>
-                <p class="small text-muted mt-2 mb-0">Nothing is saved until you confirm the preview.</p>
+                <p class="tw:text-[.875em] tw:text-(color:--nx-muted)! tw:mt-2! tw:mb-0!">Nothing is saved until you confirm the preview.</p>
             </div>
         </div>
     </div>
 
-    <div class="nx-card mb-4">
+    <div class="nx-card tw:mb-6!">
         <div class="nx-card-header">
             <div>
-                <h5 class="nx-card-title"><i class="bi bi-table text-primary"></i> Columns</h5>
+                <h5 class="nx-card-title"><i class="bi bi-table tw:text-(color:--nx-blue)!"></i> Columns</h5>
                 <p class="nx-card-subtitle">Keep the first row of the template exactly as it is.</p>
             </div>
         </div>
-        <div class="table-responsive">
-            <table class="table premium-table mb-0">
+        <div class="ui-table-responsive">
+            <table class="ui-table premium-table tw:mb-0!">
                 <thead><tr><th>Column</th><th>What to write</th></tr></thead>
                 <tbody>
                     @foreach ($columns as $column)
-                        <tr><td><code>{{ $column }}</code></td><td class="small">{{ $help[$column] ?? '' }}</td></tr>
+                        <tr><td><code>{{ $column }}</code></td><td class="tw:text-[.875em]">{{ $help[$column] ?? '' }}</td></tr>
                     @endforeach
                 </tbody>
             </table>
         </div>
     </div>
 
-    <div class="nx-card mb-4">
+    <div class="nx-card tw:mb-6!">
         <div class="nx-card-header">
             <div>
-                <h5 class="nx-card-title"><i class="bi bi-list-check text-primary"></i> Values you can use</h5>
+                <h5 class="nx-card-title"><i class="bi bi-list-check tw:text-(color:--nx-blue)!"></i> Values you can use</h5>
                 <p class="nx-card-subtitle">Copy the exact spelling.</p>
             </div>
         </div>
-        <div class="row g-3 p-3">
-            <div class="col-md-6 col-xl-4">
-                <h6 class="fw-bold">Teachers (ID - name)</h6>
-                <div class="small" style="max-height: 260px; overflow:auto">
+        <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2 tw:p-4!">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[33.33333333%]">
+                <h6 class="tw:font-bold!">Teachers (ID - name)</h6>
+                <div class="tw:text-[.875em]" style="max-height: 260px; overflow:auto">
                     @foreach ($lists['teachers'] as $t)<div><code>{{ $t->custom_id }}</code> {{ $t->full_name }}</div>@endforeach
                 </div>
             </div>
-            <div class="col-md-6 col-xl-4">
-                <h6 class="fw-bold">Branches</h6>
-                <div class="small mb-3">@foreach ($lists['branches'] as $b)<div>{{ $b->name }} <span class="text-muted">({{ $b->code }})</span></div>@endforeach</div>
-                <h6 class="fw-bold">Organizers</h6>
-                <div class="small">@forelse ($lists['organizers'] as $o)<div><code>{{ $o->code }}</code> {{ $o->name }}</div>@empty <span class="text-muted">None</span> @endforelse</div>
+            <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[33.33333333%]">
+                <h6 class="tw:font-bold!">Branches</h6>
+                <div class="tw:text-[.875em] tw:mb-4!">@foreach ($lists['branches'] as $b)<div>{{ $b->name }} <span class="tw:text-(color:--nx-muted)!">({{ $b->code }})</span></div>@endforeach</div>
+                <h6 class="tw:font-bold!">Organizers</h6>
+                <div class="tw:text-[.875em]">@forelse ($lists['organizers'] as $o)<div><code>{{ $o->code }}</code> {{ $o->name }}</div>@empty <span class="tw:text-(color:--nx-muted)!">None</span> @endforelse</div>
             </div>
-            <div class="col-md-6 col-xl-4">
-                <h6 class="fw-bold">Categories</h6>
-                <div class="small mb-3">{{ $lists['categories']->implode(', ') ?: '-' }}</div>
-                <h6 class="fw-bold">Subjects</h6>
-                <div class="small mb-3">{{ $lists['subjects']->implode(', ') ?: '-' }}</div>
-                <h6 class="fw-bold">Grades</h6>
-                <div class="small">{{ $lists['grades']->implode(', ') ?: '-' }}</div>
+            <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[33.33333333%]">
+                <h6 class="tw:font-bold!">Categories</h6>
+                <div class="tw:text-[.875em] tw:mb-4!">{{ $lists['categories']->implode(', ') ?: '-' }}</div>
+                <h6 class="tw:font-bold!">Subjects</h6>
+                <div class="tw:text-[.875em] tw:mb-4!">{{ $lists['subjects']->implode(', ') ?: '-' }}</div>
+                <h6 class="tw:font-bold!">Grades</h6>
+                <div class="tw:text-[.875em]">{{ $lists['grades']->implode(', ') ?: '-' }}</div>
             </div>
         </div>
     </div>

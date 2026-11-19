@@ -16,3 +16,4 @@ yarn-error.log
 
 # maatwebsite/excel temp files
 /storage/framework/laravel-excel
+__pycache__/

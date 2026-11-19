@@ -346,7 +346,7 @@
         {{-- Header --}}
         <div class="form-header">
 
-            <div class="d-flex align-items-center">
+            <div class="tw:flex! tw:items-center!">
 
                 <div class="form-header-icon">
                     <i class="bi bi-pencil-square"></i>
@@ -354,7 +354,7 @@
 
                 <div>
 
-                    <h4 class="fw-bold mb-1">
+                    <h4 class="tw:font-bold! tw:mb-1!">
                         Edit Expense
                     </h4>
 
@@ -378,9 +378,9 @@
             ================================================== --}}
             <div class="expense-info">
 
-                <div class="row g-3">
+                <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2">
 
-                    <div class="col-md-3">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[25%]">
 
                         <div class="expense-info-label">
                             Expense ID
@@ -398,7 +398,7 @@
                     </div>
 
 
-                    <div class="col-md-3">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[25%]">
 
                         <div class="expense-info-label">
                             Original Date
@@ -411,7 +411,7 @@
                     </div>
 
 
-                    <div class="col-md-3">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[25%]">
 
                         <div class="expense-info-label">
                             Current Status
@@ -428,7 +428,7 @@
                     </div>
 
 
-                    <div class="col-md-3">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[25%]">
 
                         <div class="expense-info-label">
                             Recorded By
@@ -457,7 +457,7 @@
 
                 <div class="current-month-alert">
 
-                    <i class="bi bi-info-circle-fill me-2"></i>
+                    <i class="bi bi-info-circle-fill tw:mr-2!"></i>
 
                     <strong>Current Month Record:</strong>
 
@@ -470,7 +470,7 @@
 
                 <div class="warning-alert">
 
-                    <i class="bi bi-exclamation-triangle-fill me-2"></i>
+                    <i class="bi bi-exclamation-triangle-fill tw:mr-2!"></i>
 
                     <strong>Editing Restricted:</strong>
 
@@ -481,7 +481,7 @@
 
                 <div class="edit-disabled-message">
 
-                    <i class="bi bi-lock-fill me-2"></i>
+                    <i class="bi bi-lock-fill tw:mr-2!"></i>
 
                     This record is read-only because only
                     current-month expense records can be edited.
@@ -496,14 +496,14 @@
             ================================================== --}}
             @if($errors->any())
 
-                <div class="alert alert-danger rounded-4 mb-4">
+                <div class="ui-alert ui-alert-danger tw:rounded-bs-xl! tw:mb-6!">
 
-                    <div class="fw-bold mb-2">
-                        <i class="bi bi-exclamation-circle-fill me-1"></i>
+                    <div class="tw:font-bold! tw:mb-2!">
+                        <i class="bi bi-exclamation-circle-fill tw:mr-1!"></i>
                         Please fix the following errors:
                     </div>
 
-                    <ul class="mb-0">
+                    <ul class="tw:mb-0!">
 
                         @foreach($errors->all() as $error)
 
@@ -540,14 +540,14 @@
                     {{ !$isCurrentMonth ? 'disabled' : '' }}
                 >
 
-                    <div class="row g-4">
+                    <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3">
 
-                        @include('partials.branch-select', ['branches' => $branches ?? collect(), 'selected' => $instituteExpense->branch_id, 'wrapperClass' => 'col-12'])
+                        @include('partials.branch-select', ['branches' => $branches ?? collect(), 'selected' => $instituteExpense->branch_id, 'wrapperClass' => 'tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:flex-[0_0_auto] tw:w-[100%]'])
 
                         {{-- =====================================
                              AMOUNT
                         ====================================== --}}
-                        <div class="col-md-6">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
 
                             <label class="form-label-custom">
 
@@ -559,9 +559,9 @@
 
                             </label>
 
-                            <div class="input-group">
+                            <div class="ui-input-group">
 
-                                <span class="input-group-text bg-light border-end-0"
+                                <span class="ui-input-group-text tw:bg-bs-light! tw:[border-right:0]!"
                                       style="border-radius:12px 0 0 12px;">
                                     Rs.
                                 </span>
@@ -571,7 +571,7 @@
                                     step="0.01"
                                     min="0.01"
                                     name="amount"
-                                    class="form-control form-control-custom border-start-0"
+                                    class="ui-form-control form-control-custom tw:[border-left:0]!"
                                     value="{{ old(
                                         'amount',
                                         $instituteExpense->amount
@@ -583,7 +583,7 @@
 
                             @error('amount')
 
-                                <div class="text-danger small mt-1">
+                                <div class="tw:text-bs-danger! tw:text-[.875em] tw:mt-1!">
                                     {{ $message }}
                                 </div>
 
@@ -599,7 +599,7 @@
                         {{-- =====================================
                              PAYMENT DATE
                         ====================================== --}}
-                        <div class="col-md-6">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
 
                             <label class="form-label-custom">
 
@@ -614,7 +614,7 @@
                             <input
                                 type="date"
                                 name="payment_date"
-                                class="form-control form-control-custom"
+                                class="ui-form-control form-control-custom"
                                 value="{{ old(
                                     'payment_date',
                                     $paymentDate->format('Y-m-d')
@@ -624,7 +624,7 @@
 
                             @error('payment_date')
 
-                                <div class="text-danger small mt-1">
+                                <div class="tw:text-bs-danger! tw:text-[.875em] tw:mt-1!">
                                     {{ $message }}
                                 </div>
 
@@ -640,7 +640,7 @@
                         {{-- =====================================
                              REASON CODE
                         ====================================== --}}
-                        <div class="col-md-6">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
 
                             <label class="form-label-custom">
                                 Reason Code
@@ -648,7 +648,7 @@
 
                             <select
                                 name="reason_code"
-                                class="form-control form-control-custom"
+                                class="ui-form-control form-control-custom"
                             >
 
                                 <option value="">
@@ -683,7 +683,7 @@
 
                             @error('reason_code')
 
-                                <div class="text-danger small mt-1">
+                                <div class="tw:text-bs-danger! tw:text-[.875em] tw:mt-1!">
                                     {{ $message }}
                                 </div>
 
@@ -695,7 +695,7 @@
                         {{-- =====================================
                              REASON
                         ====================================== --}}
-                        <div class="col-md-6">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
 
                             <label class="form-label-custom">
                                 Reason
@@ -704,7 +704,7 @@
                             <input
                                 type="text"
                                 name="reason"
-                                class="form-control form-control-custom"
+                                class="ui-form-control form-control-custom"
                                 value="{{ old(
                                     'reason',
                                     $instituteExpense->reason
@@ -715,7 +715,7 @@
 
                             @error('reason')
 
-                                <div class="text-danger small mt-1">
+                                <div class="tw:text-bs-danger! tw:text-[.875em] tw:mt-1!">
                                     {{ $message }}
                                 </div>
 
@@ -731,7 +731,7 @@
                         {{-- =====================================
                              NOTE
                         ====================================== --}}
-                        <div class="col-12">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:flex-[0_0_auto] tw:w-[100%]">
 
                             <label class="form-label-custom">
                                 Note
@@ -740,7 +740,7 @@
                             <textarea
                                 name="note"
                                 rows="4"
-                                class="form-control form-control-custom"
+                                class="ui-form-control form-control-custom"
                                 placeholder="Additional notes..."
                             >{{ old(
                                 'note',
@@ -769,7 +769,7 @@
                             type="submit"
                             class="btn-update"
                         >
-                            <i class="bi bi-check2-circle me-1"></i>
+                            <i class="bi bi-check2-circle tw:mr-1!"></i>
                             Update Expense
                         </button>
 
@@ -777,10 +777,10 @@
 
                         <button
                             type="button"
-                            class="btn-update opacity-50"
+                            class="btn-update tw:[opacity:0.5]!"
                             disabled
                         >
-                            <i class="bi bi-lock-fill me-1"></i>
+                            <i class="bi bi-lock-fill tw:mr-1!"></i>
                             Update Disabled
                         </button>
 
@@ -793,7 +793,7 @@
                         ) }}"
                         class="btn-cancel"
                     >
-                        <i class="bi bi-x-circle me-1"></i>
+                        <i class="bi bi-x-circle tw:mr-1!"></i>
                         Cancel
                     </a>
 

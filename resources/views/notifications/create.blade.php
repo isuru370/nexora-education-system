@@ -14,14 +14,14 @@
             <div class="main-card-header">
                 <div>
                     <h4>
-                        <i class="bi bi-people-fill text-primary me-2"></i>
+                        <i class="bi bi-people-fill tw:text-bs-primary! tw:mr-2!"></i>
                         Bulk Send Notification
                     </h4>
                     <p>Send a notification to multiple students at once</p>
                 </div>
 
                 <div class="header-buttons">
-                    <a href="{{ route('admin.notifications.index') }}" class="btn btn-secondary custom-btn">
+                    <a href="{{ route('admin.notifications.index') }}" class="ui-btn ui-btn-secondary custom-btn">
                         <i class="bi bi-arrow-left"></i>
                         Back to List
                     </a>
@@ -30,8 +30,8 @@
 
             {{-- ALERT --}}
             @if (session('error'))
-                <div class="alert alert-danger custom-alert">
-                    <i class="bi bi-exclamation-circle-fill me-2"></i>
+                <div class="ui-alert ui-alert-danger custom-alert">
+                    <i class="bi bi-exclamation-circle-fill tw:mr-2!"></i>
                     {{ session('error') }}
                 </div>
             @endif
@@ -40,17 +40,17 @@
             <form action="{{ route('admin.notifications.bulk') }}" method="POST">
                 @csrf
 
-                <div class="row g-4">
+                <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3">
 
                     {{-- STUDENTS --}}
-                    <div class="col-12">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:flex-[0_0_auto] tw:w-[100%]">
                         <div class="form-group">
-                            <label class="form-label">
-                                <i class="bi bi-people-fill text-primary me-1"></i>
-                                Select Students <span class="text-danger">*</span>
+                            <label class="ui-form-label">
+                                <i class="bi bi-people-fill tw:text-bs-primary! tw:mr-1!"></i>
+                                Select Students <span class="tw:text-bs-danger!">*</span>
                             </label>
                             <select name="student_ids[]"
-                                class="form-select custom-input @error('student_ids') is-invalid @enderror" multiple
+                                class="ui-form-select custom-input @error('student_ids') ui-is-invalid @enderror" multiple
                                 required style="height: 200px;">
                                 @foreach ($students as $student)
                                     <option value="{{ $student->id }}"
@@ -59,58 +59,58 @@
                                     </option>
                                 @endforeach
                             </select>
-                            <small class="text-muted">Hold Ctrl/Cmd to select multiple students</small>
+                            <small class="tw:text-bs-secondary-color!">Hold Ctrl/Cmd to select multiple students</small>
                             @error('student_ids')
-                                <div class="invalid-feedback">{{ $message }}</div>
+                                <div class="ui-invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
                     </div>
 
                     {{-- TITLE --}}
-                    <div class="col-12">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:flex-[0_0_auto] tw:w-[100%]">
                         <div class="form-group">
-                            <label class="form-label">
-                                <i class="bi bi-fonts text-primary me-1"></i>
-                                Title <span class="text-danger">*</span>
+                            <label class="ui-form-label">
+                                <i class="bi bi-fonts tw:text-bs-primary! tw:mr-1!"></i>
+                                Title <span class="tw:text-bs-danger!">*</span>
                             </label>
                             <div class="search-input-wrapper">
                                 <i class="bi bi-pencil"></i>
                                 <input type="text" name="title"
-                                    class="form-control custom-input @error('title') is-invalid @enderror"
+                                    class="ui-form-control custom-input @error('title') ui-is-invalid @enderror"
                                     value="{{ old('title') }}" maxlength="150" placeholder="Enter notification title..."
                                     required>
                             </div>
-                            <small class="text-muted">Maximum 150 characters</small>
+                            <small class="tw:text-bs-secondary-color!">Maximum 150 characters</small>
                             @error('title')
-                                <div class="invalid-feedback">{{ $message }}</div>
+                                <div class="ui-invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
                     </div>
 
                     {{-- BODY --}}
-                    <div class="col-12">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:flex-[0_0_auto] tw:w-[100%]">
                         <div class="form-group">
-                            <label class="form-label">
-                                <i class="bi bi-textarea text-primary me-1"></i>
-                                Body <span class="text-danger">*</span>
+                            <label class="ui-form-label">
+                                <i class="bi bi-textarea tw:text-bs-primary! tw:mr-1!"></i>
+                                Body <span class="tw:text-bs-danger!">*</span>
                             </label>
-                            <textarea name="body" class="form-control custom-textarea @error('body') is-invalid @enderror" rows="6"
+                            <textarea name="body" class="ui-form-control custom-textarea @error('body') ui-is-invalid @enderror" rows="6"
                                 maxlength="1000" placeholder="Enter notification message..." required>{{ old('body') }}</textarea>
-                            <small class="text-muted">Maximum 1000 characters</small>
+                            <small class="tw:text-bs-secondary-color!">Maximum 1000 characters</small>
                             @error('body')
-                                <div class="invalid-feedback">{{ $message }}</div>
+                                <div class="ui-invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
                     </div>
 
                     {{-- TYPE & SCHEDULE --}}
-                    <div class="col-md-6">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
                         <div class="form-group">
-                            <label class="form-label">
-                                <i class="bi bi-tag-fill text-primary me-1"></i>
-                                Type <span class="text-danger">*</span>
+                            <label class="ui-form-label">
+                                <i class="bi bi-tag-fill tw:text-bs-primary! tw:mr-1!"></i>
+                                Type <span class="tw:text-bs-danger!">*</span>
                             </label>
-                            <select name="type" class="form-select custom-input @error('type') is-invalid @enderror"
+                            <select name="type" class="ui-form-select custom-input @error('type') ui-is-invalid @enderror"
                                 required>
                                 @foreach ($types as $type)
                                     <option value="{{ $type }}" {{ old('type') == $type ? 'selected' : '' }}>
@@ -119,19 +119,19 @@
                                 @endforeach
                             </select>
                             @error('type')
-                                <div class="invalid-feedback">{{ $message }}</div>
+                                <div class="ui-invalid-feedback">{{ $message }}</div>
                             @enderror
                         </div>
                     </div>
 
                     {{-- SUBMIT --}}
-                    <div class="col-12">
+                    <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:flex-[0_0_auto] tw:w-[100%]">
                         <div class="form-actions">
-                            <button type="reset" class="btn btn-light border custom-btn">
+                            <button type="reset" class="ui-btn ui-btn-light tw:bs-border! custom-btn">
                                 <i class="bi bi-arrow-counterclockwise"></i>
                                 Reset
                             </button>
-                            <button type="submit" class="btn btn-primary custom-btn">
+                            <button type="submit" class="ui-btn ui-btn-primary custom-btn">
                                 <i class="bi bi-send-fill"></i>
                                 Send to All Selected Students
                             </button>
@@ -202,28 +202,28 @@
             box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
         }
 
-        .btn-primary.custom-btn {
+        .ui-btn-primary.custom-btn {
             background: linear-gradient(135deg, #2563eb, #3b82f6);
             color: #fff;
         }
 
-        .btn-secondary.custom-btn {
+        .ui-btn-secondary.custom-btn {
             background: #f1f5f9;
             color: #475569;
             border: 1px solid #e2e8f0;
         }
 
-        .btn-secondary.custom-btn:hover {
+        .ui-btn-secondary.custom-btn:hover {
             background: #e2e8f0;
         }
 
-        .btn-light.custom-btn {
+        .ui-btn-light.custom-btn {
             background: #fff;
             color: #475569;
             border: 1px solid #e2e8f0;
         }
 
-        .btn-light.custom-btn:hover {
+        .ui-btn-light.custom-btn:hover {
             background: #f8fafc;
         }
 
@@ -238,7 +238,7 @@
             margin-bottom: 0;
         }
 
-        .form-label {
+        .ui-form-label {
             font-weight: 600;
             color: #1e293b;
             margin-bottom: .5rem;
@@ -316,15 +316,15 @@
             box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1) !important;
         }
 
-        .is-invalid {
+        .ui-is-invalid {
             border-color: #ef4444 !important;
         }
 
-        .is-invalid:focus {
+        .ui-is-invalid:focus {
             box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1) !important;
         }
 
-        .invalid-feedback {
+        .ui-invalid-feedback {
             color: #ef4444;
             font-size: .85rem;
             margin-top: .25rem;

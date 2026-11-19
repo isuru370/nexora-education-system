@@ -69,8 +69,8 @@
         }
 
         .custom-input,
-        .form-select,
-        .form-control {
+        .ui-form-select,
+        .ui-form-control {
             border-radius: 14px;
             min-height: 48px;
             border: 1px solid #e2e8f0;
@@ -78,8 +78,8 @@
         }
 
         .custom-input:focus,
-        .form-select:focus,
-        .form-control:focus {
+        .ui-form-select:focus,
+        .ui-form-control:focus {
             border-color: #2563eb;
             box-shadow: 0 0 0 4px rgba(37, 99, 235, .10);
         }
@@ -96,23 +96,23 @@
             transform: translateY(-2px);
         }
 
-        .btn-primary {
+        .ui-btn-primary {
             background: linear-gradient(135deg, #2563eb, #3b82f6);
         }
 
-        .btn-success {
+        .ui-btn-success {
             background: linear-gradient(135deg, #16a34a, #22c55e);
         }
 
-        .btn-danger {
+        .ui-btn-danger {
             background: linear-gradient(135deg, #dc2626, #ef4444);
         }
 
-        .btn-dark {
+        .ui-btn-dark {
             background: linear-gradient(135deg, #0f172a, #1e293b);
         }
 
-        .table thead th {
+        .ui-table thead th {
             background: #f8fafc;
             color: #334155;
             font-size: .82rem;
@@ -122,7 +122,7 @@
             white-space: nowrap;
         }
 
-        .table tbody td {
+        .ui-table tbody td {
             vertical-align: middle;
         }
 
@@ -192,7 +192,7 @@
                 width: 100%;
             }
 
-            .hero-actions .btn {
+            .hero-actions .ui-btn {
                 flex: 1;
             }
         }
@@ -208,37 +208,37 @@
         <div class="hero-card">
             <div class="hero-content">
                 <div>
-                    <h4 class="mb-1 fw-bold">Temporary ID Cards</h4>
-                    <p class="mb-0 text-muted">Manage temporary ID card numbers, status, preview, and PDF export.</p>
+                    <h4 class="tw:mb-1! tw:font-bold!">Temporary ID Cards</h4>
+                    <p class="tw:mb-0! tw:text-bs-secondary-color!">Manage temporary ID card numbers, status, preview, and PDF export.</p>
                 </div>
 
                 <div class="hero-actions">
                     
                         @cardaccess('generate')
-                        <a href="{{ route('temporary_id_cards.create') }}" class="btn btn-primary custom-btn">
-                            <i class="bi bi-plus-circle me-1"></i> Generate New
+                        <a href="{{ route('temporary_id_cards.create') }}" class="ui-btn ui-btn-primary custom-btn">
+                            <i class="bi bi-plus-circle tw:mr-1!"></i> Generate New
                         </a>
                         @endcardaccess
 
                         @cardaccess('download')
-                        <a href="{{ route('temporary_id_cards.pdf') }}" class="btn btn-danger custom-btn">
-                            <i class="bi bi-file-pdf me-1"></i> Download PDF
+                        <a href="{{ route('temporary_id_cards.pdf') }}" class="ui-btn ui-btn-danger custom-btn">
+                            <i class="bi bi-file-pdf tw:mr-1!"></i> Download PDF
                         </a>
 
-                        <a href="{{ route('temporary_id_cards.preview') }}" class="btn btn-success custom-btn">
-                            <i class="bi bi-eye me-1"></i> Preview
+                        <a href="{{ route('temporary_id_cards.preview') }}" class="ui-btn ui-btn-success custom-btn">
+                            <i class="bi bi-eye tw:mr-1!"></i> Preview
                         </a>
                         @endcardaccess
 
                         @cardaccess('manage')
-                        <a href="{{ route('temporary_id_cards.update-status') }}" class="btn btn-dark custom-btn">
-                            <i class="bi bi-arrow-repeat me-1"></i> Change Status
+                        <a href="{{ route('temporary_id_cards.update-status') }}" class="ui-btn ui-btn-dark custom-btn">
+                            <i class="bi bi-arrow-repeat tw:mr-1!"></i> Change Status
                         </a>
                         @endcardaccess
                    
 
-                    <a href="{{ route('temporary_id_cards.index') }}" class="btn btn-secondary custom-btn">
-                        <i class="bi bi-arrow-clockwise me-1"></i> Refresh
+                    <a href="{{ route('temporary_id_cards.index') }}" class="ui-btn ui-btn-secondary custom-btn">
+                        <i class="bi bi-arrow-clockwise tw:mr-1!"></i> Refresh
                     </a>
                 </div>
             </div>
@@ -248,15 +248,15 @@
             ALERTS
         ========================================================== --}}
         @if (session('success'))
-            <div class="alert alert-success border-0 shadow-sm rounded-4">
-                <i class="bi bi-check-circle-fill me-2"></i>
+            <div class="ui-alert ui-alert-success tw:[border:0]! tw:shadow-bs-sm! tw:rounded-bs-xl!">
+                <i class="bi bi-check-circle-fill tw:mr-2!"></i>
                 {{ session('success') }}
             </div>
         @endif
 
         @if (session('error'))
-            <div class="alert alert-danger border-0 shadow-sm rounded-4">
-                <i class="bi bi-exclamation-triangle-fill me-2"></i>
+            <div class="ui-alert ui-alert-danger tw:[border:0]! tw:shadow-bs-sm! tw:rounded-bs-xl!">
+                <i class="bi bi-exclamation-triangle-fill tw:mr-2!"></i>
                 {{ session('error') }}
             </div>
         @endif
@@ -264,43 +264,43 @@
         {{-- =========================================================
             STATS
         ========================================================== --}}
-        <div class="row g-3 mb-4">
-            <div class="col-md-2 col-6">
+        <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2 tw:mb-6!">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:flex-[0_0_auto] tw:w-[50%] tw:md:flex-[0_0_auto] tw:md:w-[16.66666667%]">
                 <div class="stat-card">
                     <div class="stat-label">Total Cards</div>
                     <div class="stat-value">{{ number_format($counts->total_count ?? 0) }}</div>
                 </div>
             </div>
 
-            <div class="col-md-2 col-6">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:flex-[0_0_auto] tw:w-[50%] tw:md:flex-[0_0_auto] tw:md:w-[16.66666667%]">
                 <div class="stat-card">
                     <div class="stat-label">Pending</div>
                     <div class="stat-value">{{ number_format($counts->pending_count ?? 0) }}</div>
                 </div>
             </div>
 
-            <div class="col-md-2 col-6">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:flex-[0_0_auto] tw:w-[50%] tw:md:flex-[0_0_auto] tw:md:w-[16.66666667%]">
                 <div class="stat-card">
                     <div class="stat-label">Downloaded</div>
                     <div class="stat-value">{{ number_format($counts->downloaded_count ?? 0) }}</div>
                 </div>
             </div>
 
-            <div class="col-md-2 col-6">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:flex-[0_0_auto] tw:w-[50%] tw:md:flex-[0_0_auto] tw:md:w-[16.66666667%]">
                 <div class="stat-card">
                     <div class="stat-label">Issued</div>
                     <div class="stat-value">{{ number_format($counts->issued_count ?? 0) }}</div>
                 </div>
             </div>
 
-            <div class="col-md-2 col-6">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:flex-[0_0_auto] tw:w-[50%] tw:md:flex-[0_0_auto] tw:md:w-[16.66666667%]">
                 <div class="stat-card">
                     <div class="stat-label">Active</div>
                     <div class="stat-value">{{ number_format($counts->active_count ?? 0) }}</div>
                 </div>
             </div>
 
-            <div class="col-md-2 col-6">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:flex-[0_0_auto] tw:w-[50%] tw:md:flex-[0_0_auto] tw:md:w-[16.66666667%]">
                 <div class="stat-card">
                     <div class="stat-label">Expired</div>
                     <div class="stat-value">{{ number_format($counts->expired_count ?? 0) }}</div>
@@ -316,16 +316,16 @@
             {{-- FILTER --}}
             <div class="filter-card">
                 <form method="GET" action="{{ route('temporary_id_cards.index') }}">
-                    <div class="row g-3 align-items-end">
-                        <div class="col-md-5">
-                            <label class="form-label fw-semibold">Search</label>
+                    <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2 tw:items-end!">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[41.66666667%]">
+                            <label class="ui-form-label tw:font-semibold!">Search</label>
                             <input type="text" name="search" value="{{ $search ?? '' }}"
-                                class="form-control custom-input" placeholder="Search TMP number or card number">
+                                class="ui-form-control custom-input" placeholder="Search TMP number or card number">
                         </div>
 
-                        <div class="col-md-3">
-                            <label class="form-label fw-semibold">Status</label>
-                            <select name="status" class="form-select custom-input">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[25%]">
+                            <label class="ui-form-label tw:font-semibold!">Status</label>
+                            <select name="status" class="ui-form-select custom-input">
                                 <option value="">All Status</option>
                                 <option value="pending" {{ (($status ?? '') === 'pending') ? 'selected' : '' }}>Pending</option>
                                 <option value="downloaded" {{ (($status ?? '') === 'downloaded') ? 'selected' : '' }}>Downloaded</option>
@@ -335,14 +335,14 @@
                             </select>
                         </div>
 
-                        <div class="col-md-4 d-flex gap-2">
-                            <button type="submit" class="btn btn-primary custom-btn flex-grow-1">
-                                <i class="bi bi-search me-1"></i> Search
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[33.33333333%] tw:flex! tw:gap-2!">
+                            <button type="submit" class="ui-btn ui-btn-primary custom-btn tw:grow!">
+                                <i class="bi bi-search tw:mr-1!"></i> Search
                             </button>
 
                             <a href="{{ route('temporary_id_cards.index') }}"
-                                class="btn btn-light border custom-btn">
-                                <i class="bi bi-x-circle me-1"></i> Reset
+                                class="ui-btn ui-btn-light tw:bs-border! custom-btn">
+                                <i class="bi bi-x-circle tw:mr-1!"></i> Reset
                             </a>
                         </div>
                     </div>
@@ -350,8 +350,8 @@
             </div>
 
             {{-- TABLE --}}
-            <div class="table-responsive">
-                <table class="table table-hover align-middle mb-0">
+            <div class="ui-table-responsive">
+                <table class="ui-table ui-table-hover tw:align-middle! tw:mb-0!">
                     <thead>
                         <tr>
                             <th style="width: 80px;">#</th>
@@ -370,7 +370,7 @@
                                     {{ $loop->iteration + ($temporaryIdCards->currentPage() - 1) * $temporaryIdCards->perPage() }}
                                 </td>
 
-                                <td class="mono fw-semibold">
+                                <td class="mono tw:font-semibold!">
                                     {{ $card->temporary_id_number }}
                                 </td>
 
@@ -381,23 +381,23 @@
                                 <td>
                                     @if ($card->status === 'pending')
                                         <span class="badge-status badge-pending">
-                                            <i class="bi bi-hourglass-split me-1"></i> Pending
+                                            <i class="bi bi-hourglass-split tw:mr-1!"></i> Pending
                                         </span>
                                     @elseif($card->status === 'downloaded')
                                         <span class="badge-status badge-downloaded">
-                                            <i class="bi bi-download me-1"></i> Downloaded
+                                            <i class="bi bi-download tw:mr-1!"></i> Downloaded
                                         </span>
                                     @elseif($card->status === 'issued')
                                         <span class="badge-status badge-active">
-                                            <i class="bi bi-send-check me-1"></i> Issued
+                                            <i class="bi bi-send-check tw:mr-1!"></i> Issued
                                         </span>
                                     @elseif($card->status === 'active')
                                         <span class="badge-status badge-active">
-                                            <i class="bi bi-check-circle me-1"></i> Active
+                                            <i class="bi bi-check-circle tw:mr-1!"></i> Active
                                         </span>
                                     @elseif($card->status === 'expired')
                                         <span class="badge-status badge-expired">
-                                            <i class="bi bi-x-circle me-1"></i> Expired
+                                            <i class="bi bi-x-circle tw:mr-1!"></i> Expired
                                         </span>
                                     @else
                                         <span class="badge-status badge-expired">
@@ -415,11 +415,11 @@
                                 </td>
 
                                 <td>
-                                    <div class="d-flex flex-wrap gap-2">
+                                    <div class="tw:flex! tw:flex-wrap! tw:gap-2!">
 
-                                        <button type="button" class="btn btn-outline-primary btn-sm action-btn"
-                                            data-bs-toggle="modal" data-bs-target="#tmpPreviewModal{{ $card->id }}">
-                                            <i class="bi bi-eye me-1"></i> Preview
+                                        <button type="button" class="ui-btn ui-btn-outline-primary ui-btn-sm action-btn"
+                                            data-nx-toggle="modal" data-nx-target="#tmpPreviewModal{{ $card->id }}">
+                                            <i class="bi bi-eye tw:mr-1!"></i> Preview
                                         </button>
 
                                     </div>
@@ -437,8 +437,8 @@
                                         <div class="icon">
                                             <i class="bi bi-credit-card-2-front"></i>
                                         </div>
-                                        <h5 class="fw-bold mb-1">No temporary ID cards found</h5>
-                                        <p class="mb-0">Try adjusting your search or generate a new set of cards.</p>
+                                        <h5 class="tw:font-bold! tw:mb-1!">No temporary ID cards found</h5>
+                                        <p class="tw:mb-0!">Try adjusting your search or generate a new set of cards.</p>
                                     </div>
                                 </td>
                             </tr>
@@ -448,8 +448,8 @@
             </div>
 
             {{-- PAGINATION --}}
-            <div class="d-flex justify-content-between align-items-center flex-wrap gap-3 mt-4">
-                <div class="text-muted small">
+            <div class="tw:flex! tw:justify-between! tw:items-center! tw:flex-wrap! tw:gap-4! tw:mt-6!">
+                <div class="tw:text-bs-secondary-color! tw:text-[.875em]">
                     Showing {{ $temporaryIdCards->firstItem() ?? 0 }} to {{ $temporaryIdCards->lastItem() ?? 0 }}
                     of {{ $temporaryIdCards->total() }} records
                 </div>

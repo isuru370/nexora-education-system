@@ -8,44 +8,44 @@
     <div class="extra-income-show-page">
 
         <!-- HERO -->
-        <div class="hero-card mb-4">
+        <div class="hero-card tw:mb-6!">
             <div class="hero-content">
 
                 <div>
-                    <h3 class="fw-bold mb-1">Extra Income Details</h3>
+                    <h3 class="tw:font-bold! tw:mb-1!">Extra Income Details</h3>
 
-                    <p class="text-muted mb-0">
+                    <p class="tw:text-bs-secondary-color! tw:mb-0!">
                         View full income record information
                     </p>
                 </div>
 
                 <div class="hero-actions">
 
-                    <a href="{{ route('admin.extra-incomes.edit', $extraIncome) }}" class="btn btn-warning custom-btn">
+                    <a href="{{ route('admin.extra-incomes.edit', $extraIncome) }}" class="ui-btn ui-btn-warning custom-btn">
 
-                        <i class="bi bi-pencil-square me-1"></i>
+                        <i class="bi bi-pencil-square tw:mr-1!"></i>
                         Edit
 
                     </a>
 
-                    <a href="{{ route('admin.extra-incomes.index') }}" class="btn btn-outline-secondary custom-btn">
+                    <a href="{{ route('admin.extra-incomes.index') }}" class="ui-btn ui-btn-outline-secondary custom-btn">
 
-                        <i class="bi bi-arrow-left me-1"></i>
+                        <i class="bi bi-arrow-left tw:mr-1!"></i>
                         Back
 
                     </a>
 
-                    <button type="button" class="btn btn-outline-primary custom-btn" onclick="window.print()">
+                    <button type="button" class="ui-btn ui-btn-outline-primary custom-btn" onclick="window.print()">
 
-                        <i class="bi bi-printer me-1"></i>
+                        <i class="bi bi-printer tw:mr-1!"></i>
                         Print
 
                     </button>
 
                     <!-- Future Feature -->
-                    <button type="button" class="btn btn-outline-success custom-btn" disabled>
+                    <button type="button" class="ui-btn ui-btn-outline-success custom-btn" disabled>
 
-                        <i class="bi bi-download me-1"></i>
+                        <i class="bi bi-download tw:mr-1!"></i>
                         Export PDF
 
                     </button>
@@ -56,11 +56,11 @@
         </div>
 
         <!-- SUMMARY -->
-        <div class="row g-4 mb-4">
+        <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3 tw:mb-6!">
 
-            <div class="col-xl-3 col-md-6">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%]">
                 <div class="summary-card summary-blue">
-                    <div class="card-body">
+                    <div class="ui-card-body">
 
                         <i class="bi bi-cash-stack summary-icon"></i>
 
@@ -78,9 +78,9 @@
                 </div>
             </div>
 
-            <div class="col-xl-3 col-md-6">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%]">
                 <div class="summary-card summary-green">
-                    <div class="card-body">
+                    <div class="ui-card-body">
 
                         <i class="bi bi-calendar-event summary-icon"></i>
 
@@ -98,9 +98,9 @@
                 </div>
             </div>
 
-            <div class="col-xl-3 col-md-6">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%]">
                 <div class="summary-card summary-warning">
-                    <div class="card-body">
+                    <div class="ui-card-body">
 
                         <i class="bi bi-tags summary-icon"></i>
 
@@ -118,9 +118,9 @@
                 </div>
             </div>
 
-            <div class="col-xl-3 col-md-6">
+            <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%] tw:xl:flex-[0_0_auto] tw:xl:w-[25%]">
                 <div class="summary-card summary-info">
-                    <div class="card-body">
+                    <div class="ui-card-body">
 
                         <i class="bi bi-check-circle summary-icon"></i>
 
@@ -146,11 +146,11 @@
             <div class="main-card-header">
 
                 <div>
-                    <h4 class="mb-1 fw-bold">
+                    <h4 class="tw:mb-1! tw:font-bold!">
                         Income Information
                     </h4>
 
-                    <p class="mb-0 text-muted">
+                    <p class="tw:mb-0! tw:text-bs-secondary-color!">
                         Detailed information about this income record
                     </p>
                 </div>
@@ -161,21 +161,21 @@
 
             </div>
 
-            <div class="row g-4">
+            <div class="tw:flex tw:flex-wrap tw:-mt-6 tw:-mx-3">
 
                 <!-- LEFT -->
-                <div class="col-lg-6">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[50%]">
 
                     <div class="detail-card">
 
                         <h5 class="section-title">
-                            <i class="bi bi-info-circle me-2"></i>
+                            <i class="bi bi-info-circle tw:mr-2!"></i>
                             Basic Information
                         </h5>
 
                         <div class="detail-item">
                             <span class="detail-label">Amount</span>
-                            <span class="detail-value fw-bold text-success">
+                            <span class="detail-value tw:font-bold! tw:text-bs-success!">
                                 Rs. {{ number_format($extraIncome->amount, 2) }}
                             </span>
                         </div>
@@ -190,7 +190,7 @@
                         <div class="detail-item">
                             <span class="detail-label">Income Type</span>
                             <span class="detail-value">
-                                <span class="badge bg-info custom-badge">
+                                <span class="ui-badge tw:bg-bs-info! custom-badge">
                                     {{ ucfirst($extraIncome->income_type) }}
                                 </span>
                             </span>
@@ -202,19 +202,19 @@
                             <span class="detail-value">
 
                                 @if($extraIncome->status == 'received')
-                                    <span class="badge bg-success custom-badge">
+                                    <span class="ui-badge tw:bg-bs-success! custom-badge">
                                         Received
                                     </span>
                                 @elseif($extraIncome->status == 'approved')
-                                    <span class="badge bg-primary custom-badge">
+                                    <span class="ui-badge tw:bg-bs-primary! custom-badge">
                                         Approved
                                     </span>
                                 @elseif($extraIncome->status == 'pending')
-                                    <span class="badge bg-warning text-dark custom-badge">
+                                    <span class="ui-badge tw:bg-bs-warning! tw:text-bs-dark! custom-badge">
                                         Pending
                                     </span>
                                 @else
-                                    <span class="badge bg-danger custom-badge">
+                                    <span class="ui-badge tw:bg-bs-danger! custom-badge">
                                         Cancelled
                                     </span>
                                 @endif
@@ -227,12 +227,12 @@
                 </div>
 
                 <!-- RIGHT -->
-                <div class="col-lg-6">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[50%]">
 
                     <div class="detail-card">
 
                         <h5 class="section-title">
-                            <i class="bi bi-person-circle me-2"></i>
+                            <i class="bi bi-person-circle tw:mr-2!"></i>
                             Record Information
                         </h5>
 
@@ -269,18 +269,18 @@
                 </div>
 
                 <!-- FULL WIDTH -->
-                <div class="col-12">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-3 tw:mt-6 tw:flex-[0_0_auto] tw:w-[100%]">
 
                     <div class="detail-card">
 
                         <h5 class="section-title">
-                            <i class="bi bi-chat-left-text me-2"></i>
+                            <i class="bi bi-chat-left-text tw:mr-2!"></i>
                             Reason & Notes
                         </h5>
 
-                        <div class="mb-4">
+                        <div class="tw:mb-6!">
 
-                            <label class="detail-label d-block mb-2">
+                            <label class="detail-label tw:block! tw:mb-2!">
                                 Reason
                             </label>
 
@@ -292,7 +292,7 @@
 
                         <div>
 
-                            <label class="detail-label d-block mb-2">
+                            <label class="detail-label tw:block! tw:mb-2!">
                                 Notes
                             </label>
 
@@ -367,7 +367,7 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, .06);
         }
 
-        .summary-card .card-body {
+        .summary-card .ui-card-body {
             padding: 1.5rem;
             position: relative;
         }
@@ -502,7 +502,7 @@
                 width: 100%;
             }
 
-            .hero-actions .btn {
+            .hero-actions .ui-btn {
                 flex: 1;
             }
 
@@ -510,7 +510,7 @@
 
         @media print {
 
-            .btn,
+            .ui-btn,
             .sidebar,
             .navbar {
                 display: none !important;

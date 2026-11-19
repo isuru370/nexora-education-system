@@ -73,7 +73,7 @@ class PaymentReportQuery
             [$fromDate, $toDate] = [$toDate->copy()->startOfDay(), $fromDate->copy()->endOfDay()];
         }
 
-        if ($fromDate->diffInDays($toDate) >= self::MAX_RANGE_DAYS) {
+        if ((int) $fromDate->diffInDays($toDate) >= self::MAX_RANGE_DAYS) {
             throw new DomainException('Please select a date range of one year or less.');
         }
 

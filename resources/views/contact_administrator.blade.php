@@ -8,7 +8,7 @@
     <title>Contact Administrator - {{ config('app.name', 'Nexora Education') }}</title>
 
     {{-- Bootstrap --}}
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{{ asset('css/page.css') }}?v={{ @filemtime(public_path('css/page.css')) }}">
 
     {{-- Bootstrap Icons --}}
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
@@ -364,7 +364,7 @@
             line-height: 1.6;
         }
 
-        .form-label {
+        .ui-form-label {
             font-size: .72rem;
             font-weight: 700;
             color: #334155;
@@ -373,8 +373,8 @@
             letter-spacing: .04em;
         }
 
-        .form-control,
-        .form-select {
+        .ui-form-control,
+        .ui-form-select {
             border: 1px solid var(--border);
             border-radius: var(--radius);
             min-height: 44px;
@@ -383,13 +383,13 @@
             color: #0f172a;
         }
 
-        .form-control:focus,
-        .form-select:focus {
+        .ui-form-control:focus,
+        .ui-form-select:focus {
             border-color: var(--primary);
             box-shadow: 0 0 0 3px rgba(29, 78, 216, .12) !important;
         }
 
-        textarea.form-control {
+        textarea.ui-form-control {
             min-height: 132px;
             resize: vertical;
         }
@@ -406,8 +406,8 @@
             z-index: 2;
         }
 
-        .input-icon .form-control,
-        .input-icon .form-select {
+        .input-icon .ui-form-control,
+        .input-icon .ui-form-select {
             padding-left: 36px;
         }
 
@@ -597,12 +597,12 @@
 
     <div class="contact-shell">
         <div class="glass-card">
-            <div class="row g-0">
+            <div class="tw:flex tw:flex-wrap tw:mt-0 tw:mx-0">
 
                 {{-- ===================================================== --}}
                 {{-- LEFT PANEL --}}
                 {{-- ===================================================== --}}
-                <div class="col-lg-4 left-panel">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-0 tw:mt-0 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[33.33333333%] left-panel">
                     <div class="profile-wrap">
                         <div class="profile-image-wrapper">
                             <img src="{{ asset('storage/chief_administrative_officer_image/image.jpeg') }}"
@@ -636,7 +636,7 @@
                         </div>
                     </div>
 
-                    <div class="section-title mt-4">
+                    <div class="section-title tw:mt-6!">
                         <i class="bi bi-person-lines-fill"></i> Contact Information
                     </div>
                     <div class="divider"></div>
@@ -673,7 +673,7 @@
                         </div>
                     </div>
 
-                    <div class="section-title mt-4">
+                    <div class="section-title tw:mt-6!">
                         <i class="bi bi-clock-fill"></i> Office Hours
                     </div>
                     <div class="divider"></div>
@@ -698,7 +698,7 @@
                 {{-- ===================================================== --}}
                 {{-- RIGHT PANEL --}}
                 {{-- ===================================================== --}}
-                <div class="col-lg-8 right-panel">
+                <div class="tw:shrink-0 tw:max-w-full tw:px-0 tw:mt-0 tw:w-full tw:lg:flex-[0_0_auto] tw:lg:w-[66.66666667%] right-panel">
                     <div class="form-title">
                         <i class="bi bi-send-fill"></i> Send a Message
                     </div>
@@ -708,7 +708,7 @@
 
                     @if (session('success'))
                         <div class="contact-alert contact-alert-success">
-                            <i class="bi bi-check-circle-fill me-1"></i>
+                            <i class="bi bi-check-circle-fill tw:mr-1!"></i>
                             {{ session('success') }}
                         </div>
                     @endif
@@ -727,14 +727,14 @@
                         enctype="multipart/form-data">
                         @csrf
 
-                        <div class="row g-3">
+                        <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2">
 
                             {{-- FULL NAME --}}
-                            <div class="col-md-6">
-                                <label class="form-label">Full Name *</label>
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
+                                <label class="ui-form-label">Full Name *</label>
                                 <div class="input-icon">
                                     <i class="bi bi-person-fill icon"></i>
-                                    <input type="text" name="full_name" class="form-control"
+                                    <input type="text" name="full_name" class="ui-form-control"
                                         placeholder="Enter your full name" value="{{ old('full_name') }}">
                                 </div>
                                 @error('full_name')
@@ -743,11 +743,11 @@
                             </div>
 
                             {{-- EMAIL --}}
-                            <div class="col-md-6">
-                                <label class="form-label">Email Address *</label>
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
+                                <label class="ui-form-label">Email Address *</label>
                                 <div class="input-icon">
                                     <i class="bi bi-envelope-fill icon"></i>
-                                    <input type="email" name="email" class="form-control"
+                                    <input type="email" name="email" class="ui-form-control"
                                         placeholder="Enter your email" value="{{ old('email') }}">
                                 </div>
                                 @error('email')
@@ -756,11 +756,11 @@
                             </div>
 
                             {{-- PHONE --}}
-                            <div class="col-md-6">
-                                <label class="form-label">Phone Number *</label>
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
+                                <label class="ui-form-label">Phone Number *</label>
                                 <div class="input-icon">
                                     <i class="bi bi-telephone-fill icon"></i>
-                                    <input type="text" name="phone" class="form-control"
+                                    <input type="text" name="phone" class="ui-form-control"
                                         placeholder="Enter your phone number" value="{{ old('phone') }}">
                                 </div>
                                 @error('phone')
@@ -769,11 +769,11 @@
                             </div>
 
                             {{-- SUBJECT --}}
-                            <div class="col-md-6">
-                                <label class="form-label">Subject *</label>
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:md:flex-[0_0_auto] tw:md:w-[50%]">
+                                <label class="ui-form-label">Subject *</label>
                                 <div class="input-icon">
                                     <i class="bi bi-tag-fill icon"></i>
-                                    <select name="subject" class="form-select">
+                                    <select name="subject" class="ui-form-select">
                                         <option value="">Select a subject</option>
                                         <option value="Admission" {{ old('subject') === 'Admission' ? 'selected' : '' }}>Admission</option>
                                         <option value="Course Inquiry" {{ old('subject') === 'Course Inquiry' ? 'selected' : '' }}>Course Inquiry</option>
@@ -788,9 +788,9 @@
                             </div>
 
                             {{-- MESSAGE --}}
-                            <div class="col-12">
-                                <label class="form-label">Message *</label>
-                                <textarea name="message" class="form-control"
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:flex-[0_0_auto] tw:w-[100%]">
+                                <label class="ui-form-label">Message *</label>
+                                <textarea name="message" class="ui-form-control"
                                     placeholder="Type your message here...">{{ old('message') }}</textarea>
                                 @error('message')
                                     <div class="field-error">{{ $message }}</div>
@@ -798,10 +798,10 @@
                             </div>
 
                             {{-- ATTACHMENT --}}
-                            <div class="col-12">
-                                <label class="form-label">Attachment (Optional)</label>
-                                <input type="file" name="attachment" class="form-control d-none" id="attachmentInput">
-                                <label for="attachmentInput" class="upload-box w-100">
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:flex-[0_0_auto] tw:w-[100%]">
+                                <label class="ui-form-label">Attachment (Optional)</label>
+                                <input type="file" name="attachment" class="ui-form-control tw:hidden!" id="attachmentInput">
+                                <label for="attachmentInput" class="upload-box tw:w-full!">
                                     <div class="upload-icon">
                                         <i class="bi bi-cloud-arrow-up-fill"></i>
                                     </div>
@@ -814,7 +814,7 @@
                             </div>
 
                             {{-- QUICK ACTIONS --}}
-                            <div class="col-12">
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:flex-[0_0_auto] tw:w-[100%]">
                                 <div class="action-row">
                                     <a href="tel:+94766499254" class="btn-action btn-call">
                                         <i class="bi bi-telephone-fill"></i> Call Now
@@ -826,7 +826,7 @@
                             </div>
 
                             {{-- FORM ACTIONS --}}
-                            <div class="col-12 mt-2">
+                            <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:flex-[0_0_auto] tw:w-[100%] tw:mt-2!">
                                 <div class="bottom-actions">
                                     <button type="reset" class="btn-soft">
                                         <i class="bi bi-arrow-counterclockwise"></i> Reset
