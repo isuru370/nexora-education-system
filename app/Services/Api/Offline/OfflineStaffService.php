@@ -59,8 +59,10 @@ class OfflineStaffService
 
         $schedules = ClassSchedule::query()
             ->with([
-                'branch:id,name',
-                'studentClass:id,class_name,teacher_id,grade_id',
+                'branch:id,name,code',
+                'hall:id,hall_name',
+                'studentClass:id,class_name,teacher_id,grade_id,subject_id',
+                'studentClass.subject:id,subject_name',
                 'studentClass.teacher:id,initials,full_name',
                 'studentClass.grade:id,grade_name',
                 'classCategoryFee:id,student_class_id,class_category_id',
@@ -81,7 +83,7 @@ class OfflineStaffService
             ->with([
                 'student:id,custom_id,temporary_qr_code,temporary_qr_code_expire_date,permanent_qr_active,initial_name,full_name,grade_id,is_active,student_disable',
                 'student.grade:id,grade_name',
-                'classCategoryFeeOption:id,label,fee',
+                'classCategoryFeeOption:id,class_category_fee_id,label,fee,is_default,is_active',
             ])
             ->where('is_active', true)
             ->whereIn('branch_id', $branchIds)
@@ -115,6 +117,8 @@ class OfflineStaffService
                     $student->custom_id,
                 ], fn ($code) => $code !== null && $code !== '')),
                 'name' => $student->initial_name ?: $student->full_name,
+                'initial_name' => $student->initial_name,
+                'full_name' => $student->full_name,
                 'grade' => optional($student->grade)->grade_name,
             ];
             $students[$student->id]['codes'] = array_values(array_unique($students[$student->id]['codes']));
@@ -129,7 +133,14 @@ class OfflineStaffService
                 'class_category_fee_id' => (int) $enrollment->class_category_fee_id,
                 'is_free_card' => (bool) $enrollment->is_free_card,
                 'fee_option' => $enrollment->classCategoryFeeOption
-                    ? ['id' => $enrollment->classCategoryFeeOption->id, 'label' => $enrollment->classCategoryFeeOption->label, 'fee' => (float) $enrollment->classCategoryFeeOption->fee]
+                    ? [
+                        'id' => $enrollment->classCategoryFeeOption->id,
+                        'class_category_fee_id' => (int) $enrollment->classCategoryFeeOption->class_category_fee_id,
+                        'label' => $enrollment->classCategoryFeeOption->label,
+                        'fee' => (float) $enrollment->classCategoryFeeOption->fee,
+                        'is_default' => (bool) $enrollment->classCategoryFeeOption->is_default,
+                        'is_active' => (bool) $enrollment->classCategoryFeeOption->is_active,
+                    ]
                     : null,
                 'class_fee' => round($gross - $hallFee, 2),
                 'hall_fee' => $hallFee,
@@ -151,16 +162,23 @@ class OfflineStaffService
                 $end->addDay();   // a class ending after midnight
             }
 
+            $teacher = optional($schedule->studentClass)->teacher;
+
             return [
                 'id' => $schedule->id,
-                'branch' => optional($schedule->branch)->name,
+                'branch' => ['id' => (int) $schedule->branch_id, 'name' => optional($schedule->branch)->name ?? '', 'code' => optional($schedule->branch)->code ?? ''],
+                'class_date' => $day->toDateString(),
+                'start_time' => (string) $schedule->start_time,
+                'end_time' => (string) $schedule->end_time,
+                'hall' => optional($schedule->hall)->hall_name ?? '',
+                'subject' => optional(optional($schedule->studentClass)->subject)->subject_name ?? '',
+                'teacher_name' => optional($teacher)->full_name ?: (optional($teacher)->initials ?? ''),
                 'student_class_id' => (int) $schedule->student_class_id,
                 'class_category_fee_id' => (int) $schedule->class_category_fee_id,
                 'class_name' => optional($schedule->studentClass)->class_name,
                 'category' => optional(optional($schedule->classCategoryFee)->category)->category_name,
                 'grade' => optional(optional($schedule->studentClass)->grade)->grade_name,
-                'teacher' => optional(optional($schedule->studentClass)->teacher)->initials
-                    ?: optional(optional($schedule->studentClass)->teacher)->full_name,
+                'teacher' => optional($teacher)->initials ?: optional($teacher)->full_name,
                 'start_at' => $start->toIso8601String(),
                 'end_at' => $end->toIso8601String(),
                 // when the phone may mark attendance (Payment & Attendance Rules)
