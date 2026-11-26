@@ -19,7 +19,7 @@
                     <div class="rp-avatar"><i class="bi bi-cloud-arrow-up"></i></div>
                     <div>
                         <h3 class="rp-title">Offline Sync</h3>
-                        <p class="rp-sub">Attendance and payments the staff app recorded without internet</p>
+                        <p class="rp-sub">Attendance, payments, new students and classes the staff app recorded without internet</p>
                     </div>
                 </div>
                 <div class="tw:flex tw:gap-2">
@@ -38,6 +38,7 @@
         <div class="rp-note">
             <strong>Conflict</strong>: saved meanwhile somewhere else - most often the same month was paid on two phones (or on a phone and the web).
             The phone's payment was NOT saved; if the cashier took the money, give it back or use it for another month.
+            A <strong>new student</strong> in conflict: the card was already given to another student - register the student on the web with another card.
             <strong>Refused</strong>: a rule did not allow it (e.g. less than the fee, phone time wrong) - enter it on the web if it is right.
         </div>
 
@@ -62,20 +63,22 @@
                         @forelse ($items as $item)
                             @php
                                 $p = $item->payload;
-                                $student = $students->get($p['student_id'] ?? 0);
-                                $enrollment = $enrollments->get($p['enrollment_id'] ?? 0);
+                                $student = $students->get($item->student_id ?: ($p['student_id'] ?? 0));
+                                $enrollment = $enrollments->get($item->student_class_enrollment_id ?: ($p['enrollment_id'] ?? 0));
+                                $className = optional(optional($enrollment)->studentClass)->class_name ?? $classes->get($p['student_class_id'] ?? 0);
+                                $typeLabel = ['student' => 'New student', 'enrollment' => 'Class added'][$item->type] ?? ucfirst($item->type);
                             @endphp
                             <tr>
                                 <td class="tw:whitespace-nowrap">{{ $item->happened_at->format('d M Y, h:i A') }}</td>
-                                <td>{{ ucfirst($item->type) }}</td>
+                                <td>{{ $typeLabel }}</td>
                                 <td>
-                                    <div class="rp-strong tw:whitespace-nowrap">{{ $student ? ($student->initial_name ?: $student->full_name) : '-' }}</div>
-                                    <div class="rp-muted tw:text-xs">{{ optional($student)->custom_id }}</div>
+                                    <div class="rp-strong tw:whitespace-nowrap">{{ $student ? ($student->initial_name ?: $student->full_name) : ($p['student']['initial_name'] ?? '-') }}</div>
+                                    <div class="rp-muted tw:text-xs">{{ optional($student)->custom_id ?? ($p['student']['temporary_qr_code'] ?? $p['student']['card_qr_code'] ?? '') }}</div>
                                 </td>
-                                <td>{{ optional(optional($enrollment)->studentClass)->class_name ?? '-' }}</td>
+                                <td>{{ $className ?? '-' }}</td>
                                 <td>{{ isset($p['payment_month']) ? \Carbon\Carbon::parse($p['payment_month'] . '-01')->format('M Y') : '-' }}</td>
                                 <td class="rp-num">{{ isset($p['amount']) ? $money($p['amount']) : '-' }}</td>
-                                <td class="tw:whitespace-nowrap">{{ $p['receipt_number'] ?? optional($item->payment)->receipt_number ?? '-' }}</td>
+                                <td class="tw:whitespace-nowrap">{{ $p['receipt_number'] ?? $p['admission_receipt_number'] ?? optional($item->payment)->receipt_number ?? '-' }}</td>
                                 <td>
                                     {{ optional($item->user)->name ?? '-' }}
                                     <div class="rp-muted tw:text-xs">{{ $item->device_id }}</div>

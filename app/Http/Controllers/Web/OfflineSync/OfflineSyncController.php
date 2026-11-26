@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Web\OfflineSync;
 use App\Http\Controllers\Controller;
 use App\Models\OfflineSyncItem;
 use App\Models\Student;
+use App\Models\StudentClass;
 use App\Models\StudentClassEnrollment;
 use App\Services\Branch\BranchAccessService;
 use Illuminate\Http\Request;
@@ -33,12 +34,17 @@ class OfflineSyncController extends Controller
             ->paginate(50)
             ->withQueryString();
 
-        $payloads = collect($items->items())->map->payload;
-        $students = Student::query()->whereIn('id', $payloads->pluck('student_id')->filter()->unique())
+        $rows = collect($items->items());
+        $payloads = $rows->map->payload;
+        $students = Student::query()
+            ->whereIn('id', $payloads->pluck('student_id')->merge($rows->pluck('student_id'))->filter()->unique())
             ->get(['id', 'custom_id', 'initial_name', 'full_name'])->keyBy('id');
         $enrollments = StudentClassEnrollment::withTrashed()->with('studentClass:id,class_name')
-            ->whereIn('id', $payloads->pluck('enrollment_id')->filter()->unique())
+            ->whereIn('id', $payloads->pluck('enrollment_id')->merge($rows->pluck('student_class_enrollment_id'))->filter()->unique())
             ->get(['id', 'student_class_id'])->keyBy('id');
+        // enrollment items refused: the class they asked for
+        $classes = StudentClass::query()->whereIn('id', $payloads->pluck('student_class_id')->filter()->unique())
+            ->pluck('class_name', 'id');
 
         $waiting = OfflineSyncItem::query()
             ->where(fn ($q) => $q->whereIn('branch_id', $branchIds)->orWhereNull('branch_id'))
@@ -46,7 +52,7 @@ class OfflineSyncController extends Controller
             ->whereNull('reviewed_at')
             ->count();
 
-        return view('offline-sync.index', compact('items', 'students', 'enrollments', 'show', 'waiting'));
+        return view('offline-sync.index', compact('items', 'students', 'enrollments', 'classes', 'show', 'waiting'));
     }
 
     public function reviewed(OfflineSyncItem $item)

@@ -59,9 +59,12 @@ class StudentTemporaryRegistrationService
      *
      * Used by both Web and Mobile API.
      */
-    public function register(array $data): array
+    /**
+     * @param  array  $offline  staff app offline: paid_at / receipt_number of the admission payment
+     */
+    public function register(array $data, array $offline = []): array
     {
-        return DB::transaction(function () use ($data) {
+        return DB::transaction(function () use ($data, $offline) {
 
             /*
             |--------------------------------------------------------------------------
@@ -226,7 +229,9 @@ class StudentTemporaryRegistrationService
                 $admissionPayment = $this->studentAdmissionService
                     ->createAdmissionPayment(
                         $student,
-                        (int) $admissionId
+                        (int) $admissionId,
+                        $offline['paid_at'] ?? null,
+                        $offline['receipt_number'] ?? null
                     );
             }
 

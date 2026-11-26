@@ -21,6 +21,8 @@ class OfflineSyncItem extends Model
         'payload',
         'student_attendance_id',
         'payment_id',
+        'student_id',
+        'student_class_enrollment_id',
         'reviewed_at',
         'reviewed_by',
     ];
@@ -44,6 +46,16 @@ class OfflineSyncItem extends Model
     public function payment(): BelongsTo
     {
         return $this->belongsTo(Payment::class)->withTrashed();
+    }
+
+    public function student(): BelongsTo
+    {
+        return $this->belongsTo(Student::class);
+    }
+
+    public function enrollment(): BelongsTo
+    {
+        return $this->belongsTo(StudentClassEnrollment::class, 'student_class_enrollment_id');
     }
 
     public function attendance(): BelongsTo
