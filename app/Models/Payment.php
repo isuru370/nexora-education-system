@@ -26,6 +26,7 @@ class Payment extends Model
         'status',
         'receipt_number',
         'reference_number',
+        'local_uuid',
         'is_synced',
         'note',
     ];

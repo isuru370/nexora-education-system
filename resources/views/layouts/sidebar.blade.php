@@ -185,6 +185,7 @@
                         ['Institute Expenses', 'bi-dash-circle-fill', 'admin.institute-expenses.index', ['admin.institute-expenses.*'], $canInstituteExpenses],
                         ['Institute Income', 'bi-bar-chart-line-fill', 'reports.institute-income.index', ['reports.institute-income.*'], $canInstituteIncome],
                         ['Receipts', 'bi-receipt', 'receipts.index', ['receipts.*'], $canReceipts],
+                        ['Offline Sync', 'bi-cloud-arrow-up', 'offline-sync.index', ['offline-sync.*'], $isBranchAdmin],
                     ],
                 ],
                 [

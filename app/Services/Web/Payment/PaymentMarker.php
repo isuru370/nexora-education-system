@@ -162,8 +162,12 @@ class PaymentMarker
             }
         }
 
-        // 16. Receipt number
-        $receiptNumber = $this->receiptNumberService->generate();
+        // 16. Receipt number (offline staff app: the one printed on the
+        //     phone's receipt, e.g. OF-A3F2-0007, so it can be found later)
+        $offlineReceipt = isset($data['receipt_number']) ? trim((string) $data['receipt_number']) : '';
+        $receiptNumber = $offlineReceipt !== '' && !Payment::withTrashed()->where('receipt_number', $offlineReceipt)->exists()
+            ? $offlineReceipt
+            : $this->receiptNumberService->generate();
 
         // 17. Create payment
         try {
@@ -181,6 +185,7 @@ class PaymentMarker
                 'status' => 'completed',
                 'receipt_number' => $receiptNumber,
                 'reference_number' => $data['reference_number'] ?? null,
+                'local_uuid' => $data['local_uuid'] ?? null,
                 'is_synced' => true,
                 'note' => $data['note'] ?? null,
             ]);

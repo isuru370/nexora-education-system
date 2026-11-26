@@ -14,6 +14,9 @@ class AttendanceMarker
     /**
      * Allowed attendance marking methods.
      */
+    /** Set by class-schedules:complete-finished on a class nobody attended. */
+    public const AUTO_CANCEL_REASON = 'Class ended without attendance.';
+
     protected $allowedMethods = [
         'qr_mobile',
         'qr_web',
@@ -44,7 +47,9 @@ class AttendanceMarker
         Student $student,
         StudentClassEnrollment $enrollment,
         ClassSchedule $schedule,
-        string $markMethod
+        string $markMethod,
+        ?\Carbon\CarbonInterface $attendedAt = null,
+        ?string $localUuid = null
     ): array {
 
         /*
@@ -70,7 +75,9 @@ class AttendanceMarker
             $student,
             $enrollment,
             $schedule,
-            $markMethod
+            $markMethod,
+            $attendedAt,
+            $localUuid
         ) {
 
             /*
@@ -217,7 +224,9 @@ class AttendanceMarker
                 'student_id' => $student->id,
                 'class_schedule_id' => $lockedSchedule->id,
                 'student_class_enrollment_id' => $enrollment->id,
-                'attended_at' => now(),
+                // offline (staff app): the time it was scanned, not the sync time
+                'attended_at' => $attendedAt ?? now(),
+                'local_uuid' => $localUuid,
                 'mark_method' => $markMethod,
                 'marked_by' => auth()->id(),
                 'is_synced' => true,
@@ -239,6 +248,17 @@ class AttendanceMarker
 
             if ($lockedSchedule->status === 'scheduled') {
                 $lockedSchedule->status = 'ongoing';
+                $lockedSchedule->save();
+            } elseif (
+                // offline attendance synced after the class was closed as
+                // "ended without attendance" (class-schedules:complete-finished):
+                // it did have students, so it was held
+                $lockedSchedule->status === 'cancelled'
+                && $lockedSchedule->cancel_reason === self::AUTO_CANCEL_REASON
+            ) {
+                $lockedSchedule->status = 'completed';
+                $lockedSchedule->cancel_reason = null;
+                $lockedSchedule->cancelled_at = null;
                 $lockedSchedule->save();
             }
 
