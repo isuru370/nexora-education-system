@@ -119,6 +119,25 @@ class OfflineStaffTest extends TestCase
         $this->assertSame(1, DB::table('offline_sync_items')->where('status', 'conflict')->whereNull('reviewed_at')->count());
     }
 
+    public function test_a_payment_saved_online_whose_answer_was_lost_is_not_a_conflict(): void
+    {
+        // online bulk-pay reached the server, the phone timed out and saved it offline too
+        Carbon::setTestNow('2026-10-13 15:06:00');
+        auth()->shouldUse('sanctum');   // the cashier, as in the API call
+        app(\App\Services\Web\Payment\PaymentService::class)->pay([
+            'code' => 'S2', 'enrollment_id' => $this->inst['e2'], 'amount' => 2000, 'discount_amount' => 0,
+            'payment_month' => '2026-10-01', 'payment_method' => 'cash', 'mark_method' => 'qr_mobile',
+        ]);
+
+        Carbon::setTestNow('2026-10-13 21:00:00');
+        $this->sync([$this->payment($this->inst['s2'], $this->inst['e2'], '2026-10', 2000, '2026-10-13T15:06:30+05:30', 'OF-A3F2-0003')])
+            ->assertOk()
+            ->assertJsonPath('results.0.status', 'duplicate');
+
+        $this->assertSame(1, DB::table('payments')->where('student_id', $this->inst['s2'])->count());
+        $this->assertSame(0, DB::table('offline_sync_items')->whereIn('status', ['conflict', 'failed'])->count());
+    }
+
     public function test_attendance_synced_after_the_class_was_closed_without_attendance_reopens_it_as_held(): void
     {
         DB::table('class_schedules')->where('id', $this->inst['schedule'])->update([

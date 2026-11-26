@@ -398,25 +398,53 @@ class OfflineStaffService
         }
 
         // PaymentService: the same rules as online (amount, month paid, branch) + the parent SMS
-        $result = $this->paymentService->pay([
-            'code' => $enrollment->student->custom_id,
-            'enrollment_id' => $enrollment->id,
-            'amount' => $item['amount'],
-            'discount_amount' => $item['discount_amount'] ?? 0,
-            'payment_month' => $item['payment_month'] . '-01',
-            'fee_option_id' => $item['fee_option_id'] ?? null,
-            'payment_method' => 'cash',
-            'mark_method' => $item['mark_method'] ?? 'qr_mobile',
-            'paid_at' => $at,
-            'receipt_number' => $item['receipt_number'] ?? null,
-            'local_uuid' => $item['local_uuid'],
-            'note' => trim('Offline (staff app). ' . ($item['note'] ?? '')),
-        ]);
+        try {
+            $result = $this->paymentService->pay([
+                'code' => $enrollment->student->custom_id,
+                'enrollment_id' => $enrollment->id,
+                'amount' => $item['amount'],
+                'discount_amount' => $item['discount_amount'] ?? 0,
+                'payment_month' => $item['payment_month'] . '-01',
+                'fee_option_id' => $item['fee_option_id'] ?? null,
+                'payment_method' => 'cash',
+                'mark_method' => $item['mark_method'] ?? 'qr_mobile',
+                'paid_at' => $at,
+                'receipt_number' => $item['receipt_number'] ?? null,
+                'local_uuid' => $item['local_uuid'],
+                'note' => trim('Offline (staff app). ' . ($item['note'] ?? '')),
+            ]);
+        } catch (\RuntimeException $e) {
+            // The online call reached the server but the answer was lost
+            // (timeout), so the phone also saved it offline: same payment.
+            $online = $this->sameOnlinePayment($enrollment, $item, $at);
+            if ($online) {
+                return ['duplicate', 'Already saved online (receipt ' . $online->receipt_number . ').', null, $online->id, (int) $online->branch_id];
+            }
+
+            throw $e;
+        }
 
         $payment = $result['payment'] ?? $result['data'] ?? null;
         $payment = $payment instanceof Payment ? $payment : Payment::withTrashed()->where('local_uuid', $item['local_uuid'])->first();
 
         return ['synced', null, null, optional($payment)->id, optional($payment)->branch_id];
+    }
+
+    /**
+     * A payment the same user saved online for the same class and month,
+     * within 10 minutes of the offline one, with the same amount.
+     */
+    protected function sameOnlinePayment(StudentClassEnrollment $enrollment, array $item, Carbon $at): ?Payment
+    {
+        return Payment::query()
+            ->where('student_class_enrollment_id', $enrollment->id)
+            ->where('user_id', auth()->id())
+            ->whereDate('payment_month', $item['payment_month'] . '-01')
+            ->whereBetween('paid_at', [$at->copy()->subMinutes(10), $at->copy()->addMinutes(10)])
+            ->whereBetween('amount', [(float) $item['amount'] - 0.005, (float) $item['amount'] + 0.005])
+            ->whereNull('local_uuid')
+            ->latest('id')
+            ->first();
     }
 
     protected function result(OfflineSyncItem $row): array
