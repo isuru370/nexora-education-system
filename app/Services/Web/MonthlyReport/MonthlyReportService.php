@@ -3,6 +3,7 @@
 namespace App\Services\Web\MonthlyReport;
 
 use App\Models\StudentClass;
+use App\Support\MonthFee;
 use App\Models\Teacher;
 use App\Models\TeacherPayment;
 use App\Models\User;
@@ -156,72 +157,88 @@ class MonthlyReportService
             ->findOrFail($teacherId);
 
         [$start, $end] = $this->calculator->monthRange($year, $month);
+        $byCollection = $basis === self::BASIS_PAID_DATE;
 
-        // Completed payments that belong to this report (by fee month or by collection date)
-        $inPeriod = function ($paymentQuery) use ($basis, $start, $end) {
-            $paymentQuery->where('status', 'completed');
+        $branchIds = $this->branchAccessService->getBranchIds()
+            ->map(fn ($id) => (int) $id)
+            ->when($branchId !== null, fn ($ids) => $ids->filter(fn ($id) => $id === $branchId))
+            ->values();
 
-            if ($basis === self::BASIS_FEE_MONTH) {
-                $paymentQuery->whereBetween('payment_month', [$start->toDateString(), $end->toDateString()]);
-            } else {
-                $paymentQuery->whereBetween('paid_at', [$start, $end]);
+        // Collection date = the payments the teacher's salary of the month is
+        // made of (per branch, as the Teacher Salary page): received in the
+        // month, plus earlier months' fees received after their salary.
+        $salaryPayments = collect();
+        if ($byCollection) {
+            $salaryBranches = DB::table('teacher_branches')
+                ->where('teacher_id', $teacherId)
+                ->whereIn('branch_id', $branchIds)
+                ->pluck('branch_id');
+
+            foreach ($salaryBranches as $salaryBranch) {
+                $salaryPayments = $salaryPayments->concat(
+                    $this->salaryService->salaryPayments($teacherId, (int) $salaryBranch, $year, $month)['in_salary']
+                );
             }
-        };
+        }
+        $collectedBy = $salaryPayments->groupBy('student_class_enrollment_id');
 
-        // Active classes always; an inactive class only for a month it still has
-        // payments in (e.g. the month it was closed), so later months skip it.
-        // Students: active enrollments, plus anyone who paid in this period.
+        // Fee month = completed payments FOR the month (whatever day received)
+        $feeMonthPayments = function ($query) use ($start, $end) {
+            $query->where('status', 'completed')
+                ->whereBetween('payment_month', [$start->toDateString(), $end->toDateString()]);
+        };
+        $withMoney = $byCollection
+            ? fn ($query) => $query->whereIn('id', $collectedBy->keys())
+            : fn ($query) => $query->whereHas('payments', $feeMonthPayments);
+
+        // Active classes and students, plus any with money in this report
         $classes = StudentClass::query()
-            ->select('id', 'branch_id', 'class_name', 'grade_id', 'teacher_id', 'is_active')
+            ->withTrashed()
+            ->select('id', 'branch_id', 'class_name', 'grade_id', 'teacher_id', 'is_active', 'deleted_at')
             ->where('teacher_id', $teacherId)
-            ->whereIn('branch_id', $this->branchAccessService->getBranchIds())
-            ->when($branchId !== null, fn ($query) => $query->where('branch_id', $branchId))
-            ->where(function ($query) use ($inPeriod) {
-                $query->where('is_active', true)
-                    ->orWhereHas('enrollments.payments', $inPeriod);
+            ->whereIn('branch_id', $branchIds)
+            ->where(function ($query) use ($withMoney) {
+                $query->where(fn ($q) => $q->where('is_active', true)->whereNull('deleted_at'))
+                    ->orWhereHas('enrollments', $withMoney);
             })
             ->with([
                 'grade:id,grade_name',
-                'categoryFees' => function ($query) {
-                    $query->select('id', 'student_class_id', 'class_category_id')
-                        ->with('category:id,category_name')
-                        ->orderBy('id');
-                },
-                'enrollments' => function ($query) use ($inPeriod) {
-                    $query->select(
-                        'id',
-                        'student_id',
-                        'student_class_id',
-                        'class_category_fee_id',
-                        'class_category_fee_option_id',
-                        'is_active',
-                        'is_free_card'
-                    )
-                        ->where(function ($enrollmentQuery) use ($inPeriod) {
-                            $enrollmentQuery->where('is_active', true)
-                                ->orWhereHas('payments', $inPeriod);
-                        })
-                        ->with([
-                            'student:id,permanent_qr_active,custom_id,temporary_qr_code,initial_name,guardian_mobile',
-                            'classCategoryFeeOption:id,class_category_fee_id,label,fee',
-                            'payments' => function ($paymentQuery) use ($inPeriod) {
-                                $paymentQuery->select('id', 'student_class_enrollment_id', 'amount', 'discount_amount', 'status', 'payment_month', 'paid_at');
-                                $inPeriod($paymentQuery);
-                            },
-                        ]);
-                },
+                'categoryFees' => fn ($query) => $query->select('id', 'student_class_id', 'class_category_id')
+                    ->with('category:id,category_name')
+                    ->orderBy('id'),
+                'enrollments' => fn ($query) => $query
+                    ->select('id', 'student_id', 'student_class_id', 'class_category_fee_id', 'class_category_fee_option_id', 'is_active', 'is_free_card')
+                    ->where(fn ($q) => $q->where('is_active', true)->orWhere($withMoney))
+                    ->with([
+                        'student:id,permanent_qr_active,custom_id,temporary_qr_code,initial_name,guardian_mobile',
+                        'classCategoryFeeOption:id,class_category_fee_id,label,fee',
+                        'payments' => fn ($payments) => $payments
+                            ->select('id', 'student_class_enrollment_id', 'amount', 'discount_amount', 'status', 'payment_month', 'paid_at')
+                            ->where($feeMonthPayments)
+                            ->with('splitSnapshot:id,payment_id,hall_fee,teacher_amount'),
+                    ]),
             ])
             ->orderBy('class_name')
             ->get();
+
+        $showPhones = $this->ownTeacherId() === null;
+        $hallFeeNow = MonthFee::hallFeeCache();
 
         $summary = [
             'total_classes' => $classes->count(),
             'total_students' => 0,
             'paid_students' => 0,
+            'partial_students' => 0,
             'unpaid_students' => 0,
             'freecard_students' => 0,
             'noattend_students' => 0,
-            'total_collected' => 0,
+            'total_collected' => 0.0,
+            'total_payable' => 0.0,
+            'total_balance' => 0.0,
+            'hall_collected' => 0.0,
+            'class_collected' => 0.0,
+            'teacher_share' => 0.0,
+            'payments' => 0,
         ];
 
         $reportClasses = [];
@@ -230,41 +247,61 @@ class MonthlyReportService
             $classCategories = [];
 
             foreach ($class->categoryFees as $fee) {
-                $categoryEnrollments = $class->enrollments
-                    ->where('class_category_fee_id', $fee->id)
-                    ->values();
+                $categoryEnrollments = $class->enrollments->where('class_category_fee_id', $fee->id)->values();
 
+                // partly paid students are in "unpaid" (they still owe), status "partial"
                 $groups = ['paid' => [], 'unpaid' => [], 'freecard' => [], 'noattend' => []];
+                $totals = ['payable' => 0.0, 'collected' => 0.0, 'hall' => 0.0, 'class' => 0.0, 'teacher' => 0.0, 'balance' => 0.0];
 
                 foreach ($categoryEnrollments as $enrollment) {
-                    $studentRow = $this->studentRow($enrollment, $start);
+                    $row = $this->studentRow(
+                        $enrollment,
+                        $start,
+                        $hallFeeNow($enrollment),
+                        $byCollection ? $collectedBy->get($enrollment->id, collect()) : null,
+                        $showPhones
+                    );
 
-                    $groups[$studentRow['status']][] = $studentRow;
+                    $group = $row['status'] === MonthFee::PARTIAL ? 'unpaid' : $row['status'];
+                    $groups[$group][] = $row;
 
                     $summary['total_students']++;
-                    $summary[$studentRow['status'] . '_students']++;
-                    $summary['total_collected'] += $studentRow['paid_amount'];
+                    $summary[$row['status'] . '_students']++;
+                    $summary['payments'] += $row['payment_count'];
+
+                    $totals['payable'] += $row['payable'];
+                    $totals['collected'] += $row['paid_amount'];
+                    $totals['hall'] += $row['hall_collected'];
+                    $totals['class'] += $row['class_collected'];
+                    $totals['teacher'] += $row['teacher_amount'];
+                    $totals['balance'] += $row['balance'];
                 }
+
+                $summary['total_payable'] += $totals['payable'];
+                $summary['total_collected'] += $totals['collected'];
+                $summary['hall_collected'] += $totals['hall'];
+                $summary['class_collected'] += $totals['class'];
+                $summary['teacher_share'] += $totals['teacher'];
+                $summary['total_balance'] += $totals['balance'];
 
                 $classCategories[] = [
                     'category_fee_id' => $fee->id,
                     'category_id' => $fee->class_category_id,
                     'category_name' => optional($fee->category)->category_name,
-
                     'fee_options' => $categoryEnrollments
                         ->map(fn ($enrollment) => $this->feeOption($enrollment))
                         ->filter()
                         ->unique('id')
                         ->values()
                         ->all(),
-
                     'total_students' => $categoryEnrollments->count(),
                     'paid_count' => count($groups['paid']),
                     'unpaid_count' => count($groups['unpaid']),
+                    'partial_count' => collect($groups['unpaid'])->where('status', MonthFee::PARTIAL)->count(),
                     'freecard_count' => count($groups['freecard']),
                     // Payment Rules > no attendance (not counted as unpaid)
                     'noattend_count' => count($groups['noattend']),
-
+                    'totals' => array_map(fn ($v) => round($v, 2), $totals),
                     'students' => $groups,
                 ];
             }
@@ -273,12 +310,14 @@ class MonthlyReportService
                 'class_id' => $class->id,
                 'class_name' => $class->class_name,
                 'grade_name' => optional($class->grade)->grade_name,
-                'is_active' => (bool) $class->is_active,
+                'is_active' => (bool) $class->is_active && !$class->trashed(),
                 'categories' => $classCategories,
             ];
         }
 
-        $summary['total_collected'] = round($summary['total_collected'], 2);
+        foreach (['total_collected', 'total_payable', 'total_balance', 'hall_collected', 'class_collected', 'teacher_share'] as $key) {
+            $summary[$key] = round($summary[$key], 2);
+        }
 
         return [
             'teacher' => [
@@ -294,6 +333,7 @@ class MonthlyReportService
                 'basis_label' => self::BASES[$basis],
                 'branch_id' => $branchId,
             ],
+            'show_phones' => $showPhones,
             'summary' => $summary,
             'classes' => $reportClasses,
         ];
@@ -425,28 +465,46 @@ class MonthlyReportService
     |--------------------------------------------------------------------------
     */
 
-    protected function studentRow($enrollment, ?\Carbon\CarbonInterface $month = null): array
+    /**
+     * One student: this month's fee (class fee + hall fee, paid or not) and
+     * the money in the report - the month's payments (fee month) or the
+     * salary's payments (collection date, any fee month).
+     *
+     * @param  Collection<int, \App\Models\PaymentSplitSnapshot>|null  $collected  salary payments (collection date)
+     */
+    protected function studentRow($enrollment, Carbon $month, float $hallFeeNow, ?Collection $collected, bool $showPhones): array
     {
         $student = $enrollment->student;
-        $paidAmount = round((float) $enrollment->payments->sum('amount'), 2);
-        $finalFee = (float) $enrollment->final_fee;
+        $fee = MonthFee::forEnrollment($enrollment, $enrollment->payments, $hallFeeNow);
+        $status = $fee['status'];
         $attendance = null;
 
-        if ($enrollment->is_free_card) {
-            $status = 'freecard';
-        } elseif ($finalFee <= 0 || $paidAmount >= $finalFee || $this->paidWithDiscount($enrollment, $finalFee)) {
-            $status = 'paid';
-        } else {
-            $status = 'unpaid';
+        // Payment Rules > no attendance: not attended this month, so no payment is taken
+        if ($status === MonthFee::UNPAID && \App\Support\PaymentRules::noAttendance()) {
+            $attendance = \App\Services\Web\Payment\PaymentMonthInfoService::attendanceCount($enrollment->id, $month);
 
-            // Payment Rules > no attendance: not attended this month, so no payment is taken
-            if ($month && \App\Support\PaymentRules::noAttendance()) {
-                $attendance = \App\Services\Web\Payment\PaymentMonthInfoService::attendanceCount($enrollment->id, $month);
-
-                if ($attendance === 0) {
-                    $status = 'noattend';
-                }
+            if ($attendance === 0) {
+                $status = 'noattend';
             }
+        }
+
+        if ($collected !== null) {
+            // salary payments: amount, hall part, teacher's share, any fee month
+            $amount = round((float) $collected->sum('payment_amount'), 2);
+            $hall = round($collected->sum(fn ($s) => MonthFee::hallPart((float) $s->payment_amount, $s->hall_fee)), 2);
+            $teacher = round((float) $collected->sum('teacher_amount'), 2);
+            $paidFor = $collected->map(fn ($s) => optional($s->payment)->payment_month);
+            $paidOn = $collected->pluck('payment_date');
+            $count = $collected->count();
+            $carried = $collected->contains(fn ($s) => $s->is_carried ?? false);
+        } else {
+            $amount = $fee['paid'];
+            $hall = $fee['hall_paid'];
+            $teacher = round((float) $enrollment->payments->sum(fn ($p) => (float) optional($p->splitSnapshot)->teacher_amount), 2);
+            $paidFor = $enrollment->payments->pluck('payment_month');
+            $paidOn = $enrollment->payments->pluck('paid_at');
+            $count = $enrollment->payments->count();
+            $carried = false;
         }
 
         return [
@@ -455,43 +513,41 @@ class MonthlyReportService
                 ? optional($student)->custom_id
                 : optional($student)->temporary_qr_code,
             'initial_name' => optional($student)->initial_name,
-            'guardian_mobile' => optional($student)->guardian_mobile,
+            'guardian_mobile' => $showPhones ? optional($student)->guardian_mobile : null,
             'is_free_card' => (bool) $enrollment->is_free_card,
             'fee_option' => $this->feeOption($enrollment),
-            'final_fee' => $finalFee,
-            'paid_amount' => $paidAmount,
-            'balance' => max(round($finalFee - $paidAmount, 2), 0),
-            'status' => $status,
 
-            // Which fee month(s) the payments were for, and when they were paid
-            'paid_for' => $enrollment->payments
-                ->pluck('payment_month')
-                ->filter()
-                ->map(fn ($month) => Carbon::parse($month)->startOfMonth())
+            // this month's fee
+            'class_fee' => $fee['class_fee'],
+            'hall_fee' => $fee['hall_fee'],
+            'payable' => $fee['payable'],
+            'final_fee' => $fee['payable'],
+            'month_paid' => $fee['paid'],
+            'discount' => $fee['discount'],
+            'balance' => $status === 'noattend' ? 0.0 : $fee['balance'],
+            'status' => $status,
+            'attendance' => $attendance,
+
+            // money in this report
+            'paid_amount' => $amount,
+            'hall_collected' => $hall,
+            'class_collected' => round($amount - $hall, 2),
+            'teacher_amount' => $teacher,
+            'payment_count' => $count,
+            'carried' => $carried,
+            'paid_for' => $paidFor->filter()
+                ->map(fn ($m) => Carbon::parse($m)->startOfMonth())
                 ->sort()
-                ->map(fn (Carbon $month) => $month->format('M Y'))
+                ->map(fn (Carbon $m) => $m->format('M Y'))
                 ->unique()
                 ->implode(', '),
-            'paid_on' => $enrollment->payments
-                ->pluck('paid_at')
-                ->filter()
-                ->map(fn ($date) => Carbon::parse($date))
+            'paid_on' => $paidOn->filter()
+                ->map(fn ($d) => Carbon::parse($d))
                 ->sort()
-                ->map(fn (Carbon $date) => $date->format('d M Y'))
+                ->map(fn (Carbon $d) => $d->format('d M Y'))
                 ->unique()
                 ->implode(', '),
         ];
-    }
-
-    /**
-     * A payment with a discount (custom amount / attendance rule) pays the
-     * month even though the amount is below the fee.
-     */
-    protected function paidWithDiscount($enrollment, float $finalFee): bool
-    {
-        return $enrollment->payments->contains(
-            fn ($payment) => (float) $payment->amount + (float) ($payment->discount_amount ?? 0) >= $finalFee
-        );
     }
 
     protected function feeOption($enrollment): ?array

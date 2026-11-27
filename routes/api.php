@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\StudentClass\GradeController;
 use App\Http\Controllers\Api\ClassHall\InstituteHallController;
 use App\Http\Controllers\Api\Dashboard\MobileDashboardController;
 use App\Http\Controllers\Api\Attendance\AttendanceController;
+use App\Http\Controllers\Api\Offline\OfflineStaffController;
 use App\Http\Controllers\Api\Payment\PaymentController;
 use App\Http\Controllers\Api\Notification\NotificationController;
 use App\Http\Controllers\Api\StudentImage\QuickPhotoController;
@@ -271,6 +272,14 @@ Route::middleware([
 | Used by Web + Mobile
 |
 */
+
+    /*
+    | Staff app offline mode (attendance + payments without internet)
+    */
+    Route::get('/offline/pack', [OfflineStaffController::class, 'pack'])->name('api.offline.pack');
+    Route::post('/offline/sync', [OfflineStaffController::class, 'sync'])
+        ->middleware('throttle:60,1')
+        ->name('api.offline.sync');
 
     Route::prefix('new-payment')
         ->name('api.new-payment.')

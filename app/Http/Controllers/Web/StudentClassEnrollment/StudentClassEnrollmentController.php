@@ -539,7 +539,8 @@ class StudentClassEnrollmentController extends Controller
     }
 
     /**
-     * Category-wise payment students.
+     * Students of one class fee category and their fee for one month
+     * (class fee + hall fee, paid / partly paid / unpaid / free card).
      */
     public function classCategoryWisePaymentStudent(
         int $class,
@@ -547,46 +548,28 @@ class StudentClassEnrollmentController extends Controller
         int $year,
         int $month
     ) {
-        try {
-            $perPage = (int) request()->get('per_page', 50);
+        abort_unless($month >= 1 && $month <= 12 && $year >= 2000 && $year <= 2100, 404);
 
-            $data = $this->studentClassEnrollmentService
-                ->classCategoryWisePaymentStudent(
-                    $class,
-                    $classCategoryFee,
-                    $year,
-                    $month,
-                    $perPage
-                );
+        $perPage = (int) request()->get('per_page', 50);
+        $perPage = in_array($perPage, [25, 50, 100, 200], true) ? $perPage : 50;
 
-            return view(
-                'student-class-enrollments.category-wise-payment',
-                [
-                    'students' => $data['students'],
-                    'pagination' => $data['pagination'],
-                    'class' => $class,
-                    'classCategoryFee' => $classCategoryFee,
-                    'year' => $year,
-                    'month' => $month,
-                    'perPage' => $perPage,
-                ]
-            );
-        } catch (Throwable $e) {
-            logger()->error(
-                'Class Category Wise Payment Student Error',
-                [
-                    'message' => $e->getMessage(),
-                    'class' => $class,
-                    'class_category_fee' => $classCategoryFee,
-                    'year' => $year,
-                    'month' => $month,
-                ]
-            );
+        $user = auth()->user();
+        $isTeacher = strtoupper((string) optional($user->userType)->code) === 'TEACHER';
 
-            return back()->with(
-                'error',
-                'Something went wrong while fetching data.'
-            );
+        $data = $this->studentClassEnrollmentService
+            ->classCategoryWisePaymentStudent($class, $classCategoryFee, $year, $month, $perPage);
+
+        // a teacher sees only their own classes, and no phone numbers
+        if ($isTeacher && (int) $data['class']['teacher_id'] !== (int) optional($user->teacher)->id) {
+            abort(403, 'You can only view your own classes.');
         }
+
+        return view('student-class-enrollments.category-wise-payment', $data + [
+            'classCategoryFee' => $classCategoryFee,
+            'year' => $year,
+            'month' => $month,
+            'perPage' => $perPage,
+            'showPhones' => !$isTeacher,
+        ]);
     }
 }

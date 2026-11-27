@@ -55,7 +55,7 @@ class CompleteFinishedClasses extends Command
             ->where('status', 'scheduled')
             ->update([
                 'status' => 'cancelled',
-                'cancel_reason' => 'Class ended without attendance.',
+                'cancel_reason' => \App\Services\Web\Attendance\AttendanceMarker::AUTO_CANCEL_REASON,
                 'cancelled_at' => now(),
                 'updated_at' => now(),
             ]);

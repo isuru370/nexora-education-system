@@ -45,6 +45,27 @@ class StudentClassService
             ])
             ->findOrFail($gradeId);
 
+        return [
+            'grade' => [
+                'id' => $grade->id,
+                'grade_name' => $grade->grade_name,
+            ],
+
+            'data' => $this->classes($gradeId, $branchIds ?? $this->resolveBranchIds(null)),
+        ];
+    }
+
+    /**
+     * Active classes of all grades in these branches, as fetchStudentClasses
+     * gives them (offline pack of the staff app).
+     */
+    public function classesForBranches(Collection $branchIds): array
+    {
+        return $this->classes(null, $branchIds);
+    }
+
+    private function classes(?int $gradeId, Collection $branchIds): array
+    {
         $classes = StudentClass::query()
             ->select([
                 'id',
@@ -94,23 +115,16 @@ class StudentClassService
                         ]);
                 },
             ])
-            ->where('grade_id', $gradeId)
+            ->when($gradeId !== null, fn ($query) => $query->where('grade_id', $gradeId))
             ->where('is_active', true)
-            ->whereIn('branch_id', $branchIds ?? $this->resolveBranchIds(null))
+            ->whereIn('branch_id', $branchIds)
             ->orderBy('class_name')
             ->get();
 
-        return [
-            'grade' => [
-                'id' => $grade->id,
-                'grade_name' => $grade->grade_name,
-            ],
-
-            'data' => $classes
-                ->map(fn ($class) => $this->transformClass($class))
-                ->values()
-                ->all(),
-        ];
+        return $classes
+            ->map(fn ($class) => $this->transformClass($class))
+            ->values()
+            ->all();
     }
 
     /**

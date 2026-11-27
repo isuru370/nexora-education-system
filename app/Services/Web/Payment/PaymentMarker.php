@@ -98,15 +98,8 @@ class PaymentMarker
         $option = $this->chosenFeeOption($enrollment, $data['fee_option_id'] ?? null);
         $optionFee = $option ? round((float) $option->fee + $this->hallFee($enrollment), 2) : null;
 
-        // 12b. Not more than the fee: a typing mistake (20000 for 2000) would be
-        //      saved and split, and the teacher would get the extra share
-        $maximum = max($payableAmount, $optionFee ?? 0);
-        if ($amount > $maximum + 0.009) {
-            throw new \InvalidArgumentException(sprintf(
-                'Payment amount cannot be more than Rs. %.2f for this month.',
-                $maximum
-            ));
-        }
+        // No upper limit: more than the fee is saved as it is (the cashiers
+        // check the day's payments and delete a wrong one).
 
         // 13. Payment amount validation
         //     Payment Rules (per institute, off by default) may allow less:
@@ -169,8 +162,12 @@ class PaymentMarker
             }
         }
 
-        // 16. Receipt number
-        $receiptNumber = $this->receiptNumberService->generate();
+        // 16. Receipt number (offline staff app: the one printed on the
+        //     phone's receipt, e.g. OF-A3F2-0007, so it can be found later)
+        $offlineReceipt = isset($data['receipt_number']) ? trim((string) $data['receipt_number']) : '';
+        $receiptNumber = $offlineReceipt !== '' && !Payment::withTrashed()->where('receipt_number', $offlineReceipt)->exists()
+            ? $offlineReceipt
+            : $this->receiptNumberService->generate();
 
         // 17. Create payment
         try {
@@ -188,6 +185,7 @@ class PaymentMarker
                 'status' => 'completed',
                 'receipt_number' => $receiptNumber,
                 'reference_number' => $data['reference_number'] ?? null,
+                'local_uuid' => $data['local_uuid'] ?? null,
                 'is_synced' => true,
                 'note' => $data['note'] ?? null,
             ]);

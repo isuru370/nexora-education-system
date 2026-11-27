@@ -2590,6 +2590,19 @@ Route::prefix('payments')
 |
 */
 
+Route::prefix('offline-sync')
+    ->name('offline-sync.')
+    ->controller(\App\Http\Controllers\Web\OfflineSync\OfflineSyncController::class)
+    ->middleware([
+        'auth',
+        'user.active',
+        'role:ADMIN,BRANCH_ADMIN',
+    ])
+    ->group(function () {
+        Route::get('/', 'index')->name('index');
+        Route::post('/{item}/reviewed', 'reviewed')->name('reviewed');
+    });
+
 Route::prefix('receipts')
     ->name('receipts.')
     ->controller(ReceiptController::class)

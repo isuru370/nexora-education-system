@@ -23,9 +23,15 @@ class StudentAdmissionService
      * The student's primary branch is used
      * as the admission payment branch.
      */
+    /**
+     * @param  \DateTimeInterface|null  $paidAt         offline (staff app): when it was paid
+     * @param  string|null              $receiptNumber  offline: the receipt the phone printed
+     */
     public function createAdmissionPayment(
         Student $student,
-        int $admissionId
+        int $admissionId,
+        ?\DateTimeInterface $paidAt = null,
+        ?string $receiptNumber = null
     ): ?AdmissionPayment {
         $branchId = (int) $student->branch_id;
 
@@ -36,7 +42,9 @@ class StudentAdmissionService
         return DB::transaction(function () use (
             $student,
             $admissionId,
-            $branchId
+            $branchId,
+            $paidAt,
+            $receiptNumber
         ) {
             $student = Student::query()
                 ->lockForUpdate()
@@ -53,8 +61,10 @@ class StudentAdmissionService
                 'amount' => $admission->amount,
                 'payment_method' => 'cash',
                 'status' => AdmissionPayment::STATUS_PAID,
-                'paid_at' => now(),
-                'receipt_number' => $this->receiptNumberService->generate(),
+                'paid_at' => $paidAt ?? now(),
+                'receipt_number' => $receiptNumber && !AdmissionPayment::query()->where('receipt_number', $receiptNumber)->exists()
+                    ? $receiptNumber
+                    : $this->receiptNumberService->generate(),
                 'user_id' => auth()->id(),
             ]);
 
