@@ -33,6 +33,7 @@ class PaymentSplitSnapshot extends Model
 
         // Payment
         'payment_amount',
+        'multi_class_discount',
 
         // Percentage snapshot
         'teacher_percentage',

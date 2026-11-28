@@ -84,6 +84,9 @@ class PaymentSplitSnapshotService
             */
             $paymentAmount = (float) $payment->amount;
 
+            // Multi-class discount: the teacher bears it (see split())
+            $multiClassDiscount = (float) ($payment->multi_class_discount ?? 0);
+
             /*
             |--------------------------------------------------------------------------
             | Resolve Percentages
@@ -102,7 +105,8 @@ class PaymentSplitSnapshotService
                 $paymentAmount,
                 $hallFee,
                 $teacherPercentage,
-                $organizerPercentage
+                $organizerPercentage,
+                $multiClassDiscount
             );
 
             /*
@@ -146,6 +150,7 @@ class PaymentSplitSnapshotService
 
                 // Payment
                 'payment_amount' => $paymentAmount,
+                'multi_class_discount' => $multiClassDiscount,
 
                 // Percentage snapshot
                 'teacher_percentage' => $teacherPercentage,
@@ -174,13 +179,22 @@ class PaymentSplitSnapshotService
      *
      * @return array{0: float, 1: float, 2: float} teacher, organizer, institution
      */
-    public static function split(float $paymentAmount, float $hallFee, float $teacherPercentage, float $organizerPercentage): array
+    public static function split(float $paymentAmount, float $hallFee, float $teacherPercentage, float $organizerPercentage, float $multiClassDiscount = 0): array
     {
-        $hallPart = min(max($hallFee, 0), max($paymentAmount, 0));
-        $classPart = round($paymentAmount - $hallPart, 2);
+        // Multi-class discount: the shares are made on the fee before it, and
+        // the teacher alone gives it up - the organizer and the institute get
+        // what they would get without the discount.
+        $multiClassDiscount = max($multiClassDiscount, 0);
+        $gross = $paymentAmount + $multiClassDiscount;
+
+        $hallPart = min(max($hallFee, 0), max($gross, 0));
+        $classPart = round($gross - $hallPart, 2);
 
         $teacher = round($classPart * ($teacherPercentage / 100), 2);
         $organizer = round($classPart * ($organizerPercentage / 100), 2);
+        if ($multiClassDiscount > 0) {
+            $teacher = round(max($teacher - $multiClassDiscount, 0), 2);
+        }
         $institution = round($paymentAmount - $teacher - $organizer, 2);
 
         return [$teacher, $organizer, $institution];

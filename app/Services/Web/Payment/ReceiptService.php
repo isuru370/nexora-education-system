@@ -245,6 +245,9 @@ class ReceiptService
 
             'total' => round($total, 2),
 
+            // several classes paid at once: the discount (a receipt line)
+            'multi_class_discount' => round(array_sum(array_column($classRows, 'multi_class_discount')), 2),
+
             /*
             | Extra fields for the web receipt (mobile ignores them).
             */
@@ -275,6 +278,7 @@ class ReceiptService
             'total_hall_fee' => $sum('hall_fee'),
             'total_final_fee' => $sum('total_fee'),
             'total_discount' => $sum('discount_amount'),
+            'total_multi_class_discount' => $sum('multi_class_discount'),
             'total_paid' => $sum('paid_amount'),
         ];
     }
@@ -408,6 +412,7 @@ class ReceiptService
             'hall_fee' => round((float) ($paymentData['fee']['hall_fee'] ?? 0), 2),
             'total_fee' => round((float) ($paymentData['fee']['total_fee'] ?? $classFee), 2),
             'discount_amount' => round((float) ($paymentData['fee']['discount_amount'] ?? 0), 2),
+            'multi_class_discount' => round((float) ($paymentData['fee']['multi_class_discount'] ?? 0), 2),
             'paid_amount' => round((float) ($paymentData['fee']['paid_amount'] ?? $payment->amount), 2),
             'payment_month' => $payment->payment_month
                 ? \Illuminate\Support\Carbon::parse($payment->payment_month)->format('Y F')

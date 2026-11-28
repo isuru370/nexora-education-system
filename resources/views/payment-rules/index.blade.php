@@ -79,6 +79,39 @@
                 </div>
             @endforeach
 
+            <div class="nx-card tw:mb-4!">
+                <div class="nx-card-header">
+                    <div>
+                        <h5 class="nx-card-title"><i class="bi bi-stack"></i> Multi-class discount</h5>
+                        <p class="nx-card-subtitle">
+                            A student who pays this many different classes at once gets this amount off the class fee
+                            of each of them (the hall fee does not change). Theory and Revision count as 2 classes;
+                            free cards and other branches do not count. The teacher's share is reduced by the discount.
+                            Example: 4 classes, Rs 100 - a student paying 4 classes of Rs 2,000 pays Rs 1,900 for each.
+                        </p>
+                    </div>
+                    <div class="ui-form-check ui-form-switch tw:text-[length:calc(1.275rem_+_0.3vw)]! tw:xl:text-[length:1.5rem]! tw:mb-0!">
+                        <input type="hidden" name="multi_class_enabled" value="0">
+                        <input class="ui-form-check-input" type="checkbox" role="switch" name="multi_class_enabled" value="1"
+                            id="multi_class_enabled" {{ old('multi_class_enabled', $multiClass['enabled']) ? 'checked' : '' }}>
+                    </div>
+                </div>
+                <div class="tw:p-4!">
+                    <div class="tw:flex tw:flex-wrap tw:-mt-4 tw:-mx-2" style="max-width: 560px">
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:sm:flex-[0_0_auto] tw:sm:w-[50%]">
+                            <label class="ui-form-label tw:font-semibold!" for="multi_class_min">Classes paid at once (at least)</label>
+                            <input type="number" class="ui-form-control" id="multi_class_min" name="multi_class_min" min="2" max="20"
+                                value="{{ old('multi_class_min', $multiClass['min_classes']) }}">
+                        </div>
+                        <div class="tw:shrink-0 tw:max-w-full tw:px-2 tw:mt-4 tw:w-full tw:sm:flex-[0_0_auto] tw:sm:w-[50%]">
+                            <label class="ui-form-label tw:font-semibold!" for="multi_class_amount">Discount per class (Rs)</label>
+                            <input type="number" class="ui-form-control" id="multi_class_amount" name="multi_class_amount" min="1" step="0.01"
+                                value="{{ old('multi_class_amount', $multiClass['amount'] > 0 ? $multiClass['amount'] : '') }}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <h5 class="tw:mt-6! tw:mb-4!"><i class="bi bi-qr-code-scan tw:text-(color:--nx-green)!"></i> Attendance</h5>
 
             <div class="nx-card tw:mb-4!">
