@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Web\PaymentRules;
 
 use App\Http\Controllers\Controller;
 use App\Support\AttendanceRules;
+use App\Support\MultiClassDiscount;
 use App\Support\PaymentRules;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -17,7 +18,10 @@ class PaymentRulesController extends Controller
 {
     public function index(): View
     {
-        return view('payment-rules.index', ['rules' => PaymentRules::all()]);
+        return view('payment-rules.index', [
+            'rules' => PaymentRules::all(),
+            'multiClass' => MultiClassDiscount::all(),
+        ]);
     }
 
     public function update(Request $request): RedirectResponse
@@ -31,6 +35,18 @@ class PaymentRulesController extends Controller
             'before_minutes' => ['nullable', 'integer', 'min:0', 'max:' . AttendanceRules::MAX_MINUTES],
             'after_minutes' => ['nullable', 'integer', 'min:0', 'max:' . AttendanceRules::MAX_MINUTES],
             'no_time_limit' => ['nullable', 'boolean'],
+            'multi_class_enabled' => ['nullable', 'boolean'],
+            'multi_class_min' => ['nullable', 'integer', 'min:2', 'max:20', 'required_if:multi_class_enabled,1'],
+            'multi_class_amount' => ['nullable', 'numeric', 'min:1', 'max:100000', 'required_if:multi_class_enabled,1'],
+        ], [
+            'multi_class_min.required_if' => 'Enter the number of classes for the multi-class discount.',
+            'multi_class_amount.required_if' => 'Enter the discount amount for the multi-class discount.',
+        ]);
+
+        MultiClassDiscount::save([
+            'enabled' => (bool) ($validated['multi_class_enabled'] ?? false),
+            'min_classes' => (int) ($validated['multi_class_min'] ?? MultiClassDiscount::DEFAULT_MIN),
+            'amount' => (float) ($validated['multi_class_amount'] ?? 0),
         ]);
 
         PaymentRules::save([

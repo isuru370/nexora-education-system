@@ -2,6 +2,7 @@
 
 namespace App\Services\Web\Payment;
 
+use App\Support\MultiClassDiscount;
 use App\Services\Branch\BranchAccessService;
 use App\Models\Payment;
 use App\Services\Notification\PaymentNotificationService;
@@ -107,6 +108,9 @@ class PaymentService
 
             'classes' => $this->dataBuilder
                 ->classes($enrollments),
+
+            // several classes paid at once: the screen shows the discount
+            'multi_class_discount' => MultiClassDiscount::all(),
         ];
     }
 
@@ -163,8 +167,19 @@ class PaymentService
      *     ↓
      * Receipt
      */
-    public function pay(array $data): array
+    /**
+     * @param  float  $multiClassDiscount  offline staff app only: the
+     *                                     multi-class discount the phone gave
+     *                                     (already checked against the rule)
+     */
+    public function pay(array $data, float $multiClassDiscount = 0): array
     {
+        // one class: no multi-class discount, never from the request
+        unset($data['multi_class_discount']);
+        if ($multiClassDiscount > 0) {
+            $data['multi_class_discount'] = $multiClassDiscount;
+        }
+
         /*
         |--------------------------------------------------------------------------
         | Validate Required Input
@@ -430,6 +445,29 @@ class PaymentService
         */
 
         $paidAt = now();
+
+        /*
+        |--------------------------------------------------------------------------
+        | 4b. Multi-class discount (Payment Rules)
+        |--------------------------------------------------------------------------
+        |
+        | Several classes paid at once: each one's class fee less the rule's
+        | amount. Worked out here, never taken from the request.
+        |
+        */
+
+        $enrollments = [];
+        foreach ($payments as $index => $item) {
+            unset($payments[$index]['multi_class_discount']);
+            $enrollments[$index] = isset($item['enrollment_id'])
+                ? $this->studentFinder->findEnrollment($firstStudent, (int) $item['enrollment_id'])
+                : null;
+        }
+        foreach (MultiClassDiscount::forEnrollments($enrollments) as $index => $discount) {
+            if ($discount > 0) {
+                $payments[$index]['multi_class_discount'] = $discount;
+            }
+        }
 
         /*
         |--------------------------------------------------------------------------

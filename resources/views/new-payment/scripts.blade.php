@@ -38,6 +38,38 @@ document.addEventListener('DOMContentLoaded', function () {
     const bulkPayUrl  = @json(route('new-payment.bulk-pay'));
     const monthInfoUrl = @json(route('new-payment.month-info'));
 
+    // Multi-class discount (Payment Rules): several classes paid at once get
+    // the amount off each class fee. The server works it out too.
+    const multiClassRule = @json(\App\Support\MultiClassDiscount::all());
+
+    /** enrollment_id => discount, for the classes picked together */
+    function multiClassDiscounts(enrollmentIds) {
+        const result = {};
+        if (!multiClassRule.enabled || enrollmentIds.length < 2) return result;
+
+        const items = enrollmentIds.map(function (id) {
+            return currentClasses.find(function (item) { return Number(item.enrollment_id) === Number(id); });
+        }).filter(function (item) {
+            return item && !item.is_free_card && Number(item.class_fee ?? item.final_fee ?? 0) > 0;
+        });
+
+        // different classes per branch
+        const perBranch = {};
+        items.forEach(function (item) {
+            const branch = String(item.branch_id ?? '');
+            perBranch[branch] = perBranch[branch] || {};
+            perBranch[branch][String(item.class_id ?? item.class_name) + '|' + String(item.class_category_fee_id ?? item.category_name)] = true;
+        });
+
+        items.forEach(function (item) {
+            if (Object.keys(perBranch[String(item.branch_id ?? '')]).length >= Number(multiClassRule.min_classes)) {
+                result[item.enrollment_id] = Math.min(Number(multiClassRule.amount), Number(item.class_fee ?? item.final_fee ?? 0));
+            }
+        });
+
+        return result;
+    }
+
     // Payment Rules details for the open single-class payment (or null)
     let monthInfo = null;
 
@@ -625,10 +657,22 @@ document.addEventListener('DOMContentLoaded', function () {
         if (classFeeInput) classFeeInput.value = feeSummary.classFee.toFixed(2);
         if (hallFeeInput)  hallFeeInput.value  = feeSummary.hallFee.toFixed(2);
 
+        const multiClass = Object.values(multiClassDiscounts(enrollmentIds)).reduce(function (a, b) { return a + b; }, 0);
+
         finalFeeInput.value = feeSummary.totalFee.toFixed(2);
-        discountInput.value = '0';
-        amountInput.value   = feeSummary.totalFee.toFixed(2);
+        discountInput.value = multiClass.toFixed(2);
+        amountInput.value   = (feeSummary.totalFee - multiClass).toFixed(2);
         noteInput.value     = '';
+
+        // the multi-class discount is fixed (Payment Rules)
+        discountInput.readOnly = multiClass > 0 || enrollmentIds.length > 1;
+        const multiNote = document.getElementById('payment-multi-class-note');
+        if (multiNote) {
+            multiNote.textContent = multiClass > 0
+                ? `Multi-class discount: ${Object.keys(multiClassDiscounts(enrollmentIds)).length} classes x Rs. ${formatMoney(multiClassRule.amount)} = Rs. ${formatMoney(multiClass)}`
+                : '';
+            multiNote.classList.toggle('tw:hidden!', multiClass <= 0);
+        }
 
         setCurrentMonth();
         resetMonthInfo();
@@ -920,6 +964,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
                 } else {
 
+                    const multiClass = multiClassDiscounts(enrollmentIds);
+
                     const payments = enrollmentIds.map(function (id) {
 
                         const enrollment = currentClasses.find(function (item) {
@@ -936,7 +982,8 @@ document.addEventListener('DOMContentLoaded', function () {
                         return {
                             code: currentStudent ? currentStudent.custom_id : '',
                             enrollment_id: id,
-                            amount: totalFee,
+                            // the server takes the multi-class discount off the class fee
+                            amount: Math.max(totalFee - Number(multiClass[id] || 0), 0),
                             payment_month: month + '-01',
                             mark_method: markMethod,
                             payment_method: paymentMethod,
@@ -1051,6 +1098,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 <div class="receipt-summary">
                     ${show('fees') && totalHallFee > 0 ? `Hall Fee: Rs. ${formatMoney(totalHallFee)}<br>` : ''}
                     <strong>TOTAL FEE: Rs. ${formatMoney(totalFee)}</strong>
+                    ${Number(receipt.multi_class_discount || 0) > 0 ? `<br>Multi-class discount: - Rs. ${formatMoney(receipt.multi_class_discount)}<br><strong>TOTAL PAID: Rs. ${formatMoney(receipt.summary?.total_paid ?? (totalFee - Number(receipt.multi_class_discount)))}</strong>` : ''}
                 </div>
                 <div class="receipt-line"></div>
                 ${lines([

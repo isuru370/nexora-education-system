@@ -38,6 +38,7 @@ class SyncOfflineRequest extends FormRequest
             'items.*.payment_month' => ['required_if:items.*.type,payment', 'nullable', 'date_format:Y-m'],
             'items.*.fee_option_id' => ['nullable', 'integer'],
             'items.*.receipt_number' => ['nullable', 'string', 'max:50'],
+            'items.*.multi_class_discount' => ['nullable', 'numeric', 'min:0'],
             'items.*.note' => ['nullable', 'string', 'max:255'],
             // enrollment
             'items.*.student_class_id' => ['required_if:items.*.type,enrollment', 'nullable', 'integer'],

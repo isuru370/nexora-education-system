@@ -198,6 +198,12 @@ class PaymentDataBuilder
 
             'enrollment_id' => $enrollment->id,
 
+            'branch_id' => (int) $enrollment->branch_id,
+
+            // a class + category, counted once for the multi-class discount
+            'class_id' => (int) $enrollment->student_class_id,
+            'class_category_fee_id' => (int) $enrollment->class_category_fee_id,
+
             'is_free_card' => (bool) $enrollment->is_free_card,
 
             /*
@@ -656,6 +662,10 @@ class PaymentDataBuilder
 
                 'discount_amount' =>
                     (float) $payment->discount_amount,
+
+                // part of the discount: several classes paid at once
+                'multi_class_discount' =>
+                    (float) ($payment->multi_class_discount ?? 0),
 
                 'paid_amount' => $paidAmount,
 
