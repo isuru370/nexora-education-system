@@ -6,6 +6,7 @@ use App\Models\ClassCategoryFeeOption;
 use App\Models\Payment;
 use App\Models\StudentClassEnrollment;
 use App\Models\StudentTute;
+use App\Support\MultiClassDiscount;
 use App\Support\PaymentRules;
 use Carbon\CarbonInterface as Carbon;
 use Illuminate\Support\Facades\DB;
@@ -83,6 +84,11 @@ class PaymentMonthInfoService
 
             'gross_fee' => $grossFee,
             'hall_fee' => $hallFee,
+            // multi-class discount: the screen counts the classes picked
+            'class_fee' => (float) $enrollment->final_fee,
+            'branch_id' => (int) $enrollment->branch_id,
+            'counts_for_multi_class' => MultiClassDiscount::counts($enrollment),
+            'multi_class_discount' => MultiClassDiscount::all(),
             'fee_option_enabled' => $rules['fee_option'] && $options !== [],
             'fee_options' => $options,
             'student_fee_option_id' => $enrollment->class_category_fee_option_id,

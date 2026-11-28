@@ -83,6 +83,18 @@ class PaymentMarker
         // 8-10. Gross fee (class fee + hall fee)
         $grossFee = $this->grossFee($enrollment);
 
+        // Multi-class discount: set by PaymentService::bulkPay (never by the
+        // cashier), off the class fee only
+        $multiClassDiscount = round(min(
+            max((float) ($data['multi_class_discount'] ?? 0), 0),
+            max((float) $enrollment->final_fee, 0)
+        ), 2);
+        if ($multiClassDiscount > 0) {
+            $discountAmount += $multiClassDiscount;
+            $data['note'] = trim(($data['note'] ?? '') . ' [Multi-class discount Rs. '
+                . number_format($multiClassDiscount, 2) . ']');
+        }
+
         // 11. Discount validation
         if ($discountAmount > $grossFee) {
             throw new \InvalidArgumentException(sprintf(
@@ -179,6 +191,7 @@ class PaymentMarker
                 'mark_method' => $markMethod,
                 'amount' => round($amount, 2),
                 'discount_amount' => round($discountAmount, 2),
+                'multi_class_discount' => $multiClassDiscount,
                 'paid_at' => $paidAt,
                 'payment_month' => $paymentMonth,
                 'payment_method' => $paymentMethod,

@@ -167,6 +167,8 @@
                                    value="0"
                                    min="0"
                                    step="0.01">
+                            {{-- Payment Rules > multi-class discount (filled by the script) --}}
+                            <small id="payment-multi-class-note" class="tw:block! tw:mt-1! tw:text-(color:--nx-green)! tw:font-semibold! tw:hidden!"></small>
                         </div>
 
 

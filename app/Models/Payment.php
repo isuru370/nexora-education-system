@@ -19,6 +19,7 @@ class Payment extends Model
         'mark_method',
         'amount',
         'discount_amount',
+        'multi_class_discount',
         'paid_at',
         'payment_month',
         'active_month_lock',

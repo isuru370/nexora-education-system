@@ -55,7 +55,8 @@ class RecalculateHallFeeSplits extends Command
                     (float) $snapshot->payment_amount,
                     (float) $snapshot->hall_fee,
                     (float) $snapshot->teacher_percentage,
-                    (float) $snapshot->organizer_percentage
+                    (float) $snapshot->organizer_percentage,
+                    (float) ($snapshot->multi_class_discount ?? 0)
                 );
 
                 if (abs($teacher - (float) $snapshot->teacher_amount) < 0.01

@@ -27,6 +27,7 @@ use App\Services\Web\StudentClassEnrollment\StudentClassEnrollmentService;
 use App\Support\AttendanceRules;
 use App\Support\CardMode;
 use App\Support\HallFee;
+use App\Support\MultiClassDiscount;
 use App\Support\PaymentRules;
 use Carbon\Carbon;
 use Illuminate\Database\QueryException;
@@ -132,6 +133,7 @@ class OfflineStaffService
                 'student_id' => $student->id,
                 'student_class_id' => (int) $enrollment->student_class_id,
                 'class_category_fee_id' => (int) $enrollment->class_category_fee_id,
+                'branch_id' => (int) $enrollment->branch_id,
                 'is_free_card' => (bool) $enrollment->is_free_card,
                 'fee_option' => $enrollment->classCategoryFeeOption
                     ? [
@@ -210,6 +212,8 @@ class OfflineStaffService
             'rules' => [
                 'attendance' => $rules,
                 'payment' => PaymentRules::all(),
+                // several classes paid at once (the phone works it out the same way)
+                'multi_class_discount' => MultiClassDiscount::all(),
                 'max_offline_days' => self::MAX_AGE_DAYS,
             ],
             'schedules' => $scheduleRows,
@@ -580,6 +584,13 @@ class OfflineStaffService
 
         $ids = ['student_id' => $studentId, 'enrollment_id' => $enrollment->id];
 
+        // Multi-class discount the phone gave (several classes paid at once):
+        // only while the rule is on, never more than its amount
+        $rule = MultiClassDiscount::all();
+        $multiClass = $rule['enabled'] && MultiClassDiscount::counts($enrollment)
+            ? round(min(max((float) ($item['multi_class_discount'] ?? 0), 0), $rule['amount']), 2)
+            : 0.0;
+
         // PaymentService: the same rules as online (amount, month paid, branch) + the parent SMS
         try {
             $result = $this->paymentService->pay([
@@ -595,7 +606,7 @@ class OfflineStaffService
                 'receipt_number' => $item['receipt_number'] ?? null,
                 'local_uuid' => $item['local_uuid'],
                 'note' => trim('Offline (staff app). ' . ($item['note'] ?? '')),
-            ]);
+            ], $multiClass);
         } catch (\RuntimeException $e) {
             // The online call reached the server but the answer was lost
             // (timeout), so the phone also saved it offline: same payment.
