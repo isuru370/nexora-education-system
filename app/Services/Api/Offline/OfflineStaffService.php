@@ -94,11 +94,9 @@ class OfflineStaffService
             ->orderBy('start_time')
             ->get();
 
-        $pairs = $schedules->map(fn ($s) => [(int) $s->student_class_id, (int) $s->class_category_fee_id])
-            ->unique(fn ($p) => $p[0] . '|' . $p[1])
-            ->values();
-
-        $enrollments = $pairs->isEmpty() ? collect() : StudentClassEnrollment::query()
+        // every active class of the student in these branches, as the online
+        // payment read (a fee is paid for any class, not only today's)
+        $enrollments = StudentClassEnrollment::query()
             ->with([
                 'student:id,custom_id,temporary_qr_code,temporary_qr_code_expire_date,permanent_qr_active,initial_name,full_name,grade_id,is_active,student_disable',
                 'student.grade:id,grade_name',
@@ -106,17 +104,13 @@ class OfflineStaffService
             ])
             ->where('is_active', true)
             ->whereIn('branch_id', $branchIds)
-            ->where(function ($query) use ($pairs) {
-                foreach ($pairs as [$classId, $feeId]) {
-                    $query->orWhere(fn ($q) => $q->where('student_class_id', $classId)->where('class_category_fee_id', $feeId));
-                }
-            })
             ->get();
 
         $paidMonths = $this->paidMonths($enrollments, $day);
 
         $students = [];
         $enrollmentRows = [];
+        $hallFees = [];
 
         foreach ($enrollments as $enrollment) {
             $student = $enrollment->student;
@@ -127,8 +121,11 @@ class OfflineStaffService
 
             $students[$student->id] ??= $this->studentRow($student, $day);
 
-            $hallFee = round($this->paymentMarker->hallFee($enrollment), 2);
-            $gross = round($this->paymentMarker->grossFee($enrollment), 2);
+            // one hall fee query per class + fee category, not per student
+            $hallKey = $enrollment->student_class_id . '|' . $enrollment->class_category_fee_id;
+            $hallFees[$hallKey] ??= round($this->paymentMarker->hallFee($enrollment), 2);
+            $hallFee = $hallFees[$hallKey];
+            $gross = round((float) $enrollment->final_fee + $hallFee, 2);
 
             $enrollmentRows[] = [
                 'id' => $enrollment->id,
@@ -166,7 +163,7 @@ class OfflineStaffService
             });
 
         $feeOptions = ClassCategoryFeeOption::query()
-            ->whereIn('class_category_fee_id', $pairs->pluck(1))
+            ->whereIn('class_category_fee_id', $enrollments->pluck('class_category_fee_id')->unique())
             ->get(['id', 'class_category_fee_id', 'label', 'fee'])
             ->groupBy('class_category_fee_id')
             ->map(fn ($rows) => $rows->map(fn ($o) => ['id' => $o->id, 'label' => $o->label, 'fee' => (float) $o->fee])->values());
@@ -321,7 +318,7 @@ class OfflineStaffService
 
         $rows = Payment::query()
             ->join('student_class_enrollments as e', 'e.id', '=', 'payments.student_class_enrollment_id')
-            ->whereIn('e.student_id', $enrollments->pluck('student_id')->unique())
+            ->whereIn('e.student_class_id', $enrollments->pluck('student_class_id')->unique())
             ->where('payments.status', 'completed')
             ->whereNull('payments.deleted_at')
             ->whereBetween('payments.payment_month', [$from->toDateString(), $to->toDateString()])

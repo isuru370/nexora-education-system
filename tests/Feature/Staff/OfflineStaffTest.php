@@ -76,6 +76,17 @@ class OfflineStaffTest extends TestCase
         $this->assertContains('2026-10', $e1['paid_months']);   // fixture: S1 paid October
 
         $this->assertStringNotContainsString('guardian', $response->getContent());
+
+        // a class not held today is still there for payments
+        DB::table('class_schedules')->where('id', $this->inst['schedule'])->update(['class_date' => '2026-10-14']);
+        $pack = $this->getJson('/api/offline/pack')->assertOk()->json('data');
+        $this->assertSame([], $pack['schedules']);
+        $e1 = collect($pack['enrollments'])->firstWhere('id', $this->inst['e1']);
+        $this->assertNotNull($e1);
+        $this->assertContains('2026-10', $e1['paid_months']);
+        $this->assertNotEmpty($pack['fee_options'][(string) $e1['class_category_fee_id']] ?? []);
+        // another branch's class is not for this cashier
+        $this->assertNull(collect($pack['enrollments'])->firstWhere('student_class_id', $this->inst['c2']));
         $this->assertStringNotContainsString('0771234567', $response->getContent());
     }
 
